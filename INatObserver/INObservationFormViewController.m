@@ -18,6 +18,7 @@
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize keyboardToolbar;
+@synthesize buttonCell;
 @synthesize speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate, observation;
@@ -61,6 +62,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [[self tableView] setSeparatorColor:[UIColor clearColor]];
     [self updateUIWithObservation];
             NSLog(@"text field species guess: %@", [speciesGuessTextField text]);
 }
@@ -79,6 +81,7 @@
     [self setDescriptionTextView:nil];
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
+    [self setButtonCell:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
