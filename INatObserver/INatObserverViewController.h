@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "INObservationFormViewController.h"
 
-@interface INatObserverViewController : UIViewController
+@class Observation;
+@class ObservationStore;
 
+@interface INatObserverViewController : UITableViewController <INObservationFormViewControllerDelegate>
+@property (nonatomic, weak) Observation *selectedObservation;
 @end
