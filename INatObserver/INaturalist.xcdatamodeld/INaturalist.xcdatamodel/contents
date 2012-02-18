@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Observation" representedClassName="Observation" syncable="YES">
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconic_taxon_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="id_please" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="inat_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="license" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="local_created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="local_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="local_updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="observed_on" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observed_on_string" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="out_of_range" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="place_guess" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="positional_accuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="positioning_device" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="positioning_method" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="private_latitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="private_longitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="private_positional_accuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="quality_grade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="species_guess" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="synced_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxon_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="user_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="465"/>
+    </elements>
+</model>

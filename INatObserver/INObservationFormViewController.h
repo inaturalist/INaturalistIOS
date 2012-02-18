@@ -28,7 +28,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
 @property (strong, nonatomic) IBOutlet UIToolbar *keyboardToolbar;
-@property (weak, nonatomic) IBOutlet UITableViewCell *buttonCell;
 
 - (IBAction)clickedClear:(id)sender;
 - (IBAction)keyboardDone:(id)sender;

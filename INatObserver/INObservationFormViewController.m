@@ -18,7 +18,7 @@
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize keyboardToolbar;
-@synthesize buttonCell;
+//@synthesize buttonCell;
 @synthesize speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate, observation;
@@ -28,7 +28,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        NSLog(@"initializing from nib");
+//        NSLog(@"initializing from nib");
     }
     return self;
 }
@@ -36,15 +36,13 @@
 - (void)updateUIWithObservation
 {
     if (observation) {
-        NSLog(@"observation speciesGuess: %@", observation.speciesGuess);
-        NSLog(@"speciesGuessTextField: %@", speciesGuessTextField);
-        [speciesGuessTextField setText:[observation speciesGuess]];
-        [observedAtLabel setText:[observation.observedAt description]];
-        [latitudeLabel setText:[NSString stringWithFormat:@"%f", observation.latitude]];
-        [longitudeLabel setText:[NSString stringWithFormat:@"%f", observation.longitude]];
-        [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", observation.positionalAccuracy]];
-//        [descriptionTextField setText:[observation description]];
-        [descriptionTextView setText:[observation description]];
+        [speciesGuessTextField setText:observation.species_guess];
+        [observedAtLabel setText:observation.observed_on_string];
+        if (observation.latitude) [latitudeLabel setText:[observation.latitude description]];
+        if (observation.longitude) [longitudeLabel setText:[NSString stringWithFormat:@"%f", [observation.longitude doubleValue]]];
+                                    
+        if (observation.positional_accuracy) [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", observation.positional_accuracy]];
+        [descriptionTextView setText:observation.inat_description];
     }
 }
 
@@ -62,26 +60,28 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [[self tableView] setSeparatorColor:[UIColor clearColor]];
+//    [[self tableView] setSeparatorColor:[UIColor clearColor]];
     [self updateUIWithObservation];
-            NSLog(@"text field species guess: %@", [speciesGuessTextField text]);
+    if ([observation isNew]) {
+        [[self navigationItem] setTitle:@"New observation"];
+    } else {
+        [[self navigationItem] setTitle:@"Edit observation"];
+    }
 }
 
 - (void)viewDidUnload
 {
     [self setSpeciesGuessTextField:nil];
-//    [self setDescriptionTextField:nil];
     [self setObservedAtLabel:nil];
     [self setLatitudeLabel:nil];
     [self setLongitudeLabel:nil];
     [self setPositionalAccuracyLabel:nil];
     [self setObservation:nil];
     [self setDelegate:nil];
-//    [self setDescriptionTextField:nil];
     [self setDescriptionTextView:nil];
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
-    [self setButtonCell:nil];
+//    [self setButtonCell:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -94,10 +94,10 @@
     return YES;
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    NSLog(@"started editing text field: %@", textField);
-}
+//- (void)textFieldDidBeginEditing:(UITextField *)textField
+//{
+//    NSLog(@"started editing text field: %@", textField);
+//}
 
 #pragma mark UITextViewDelegate methods
 //- (BOOL)textViewShouldEndEditing:(UITextView *)textView
@@ -135,7 +135,6 @@
 }
 
 - (IBAction)clickedSave:(id)sender {
-    NSLog(@"clickedSave");
     [self save];
     [self.delegate observationFormViewControllerDidSave:self];
 }
@@ -143,15 +142,17 @@
 - (void)save
 {
     // TODO write to store
-    NSLog(@"saving, species guess text field text: %@", [speciesGuessTextField text]);
-    [observation setSpeciesGuess:[speciesGuessTextField text]];
+    [observation setSpecies_guess:[speciesGuessTextField text]];
 //    [observation setDescription:[descriptionTextField text]];
-    [observation setDescription:[descriptionTextView text]];
+    [observation setInat_description:[descriptionTextView text]];
     [observation save];
 }
 
 - (IBAction)clickedCancel:(id)sender {
-    NSLog(@"clickedCancel, delegate: ");
+    if ([observation isNew]) {
+        NSLog(@"obs was new, destroying");
+        [observation destroy];
+    }
     [self.delegate observationFormViewControllerDidCancel:self];
 }
 

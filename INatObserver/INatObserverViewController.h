@@ -8,10 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import "INObservationFormViewController.h"
+#import "LoginViewController.h"
 
 @class Observation;
 @class ObservationStore;
 
-@interface INatObserverViewController : UITableViewController <INObservationFormViewControllerDelegate>
-@property (nonatomic, weak) Observation *selectedObservation;
+@interface INatObserverViewController : UITableViewController <INObservationFormViewControllerDelegate, RKObjectLoaderDelegate, LoginViewControllerDelegate>
+@property (nonatomic, strong) NSMutableArray *observations;
+@property (nonatomic, assign) int observationsToSyncCount;
+@property (nonatomic, strong) NSArray *syncToolbarItems;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *syncLabel;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *syncButton;
+
+- (IBAction)sync:(id)sender;
+- (IBAction)edit:(id)sender;
+
+- (void)loadData;
+- (void)checkSyncStatus;
 @end

@@ -15,34 +15,57 @@
 		1927514814E9CCC9000ABAC4 /* INatObserverAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INatObserverAppDelegate.m */; };
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
 		1927514E14E9CCC9000ABAC4 /* INatObserverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */; };
-		1927515914E9CEAE000ABAC4 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927515814E9CEAE000ABAC4 /* Observation.m */; };
 		1959CDAE14EA2FE10036F363 /* SSToolkit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1959CDAD14EA2FE10036F363 /* SSToolkit.bundle */; };
-		1959CDB114EA301A0036F363 /* libSSToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDA814EA2F180036F363 /* libSSToolkit.a */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
+		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
+		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
+		198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
+		198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F914EC93A200DB55C5 /* MobileCoreServices.framework */; };
+		198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FB14EC93AB00DB55C5 /* SystemConfiguration.framework */; };
+		198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FD14EC93B900DB55C5 /* libxml2.dylib */; };
+		198551FF14EC93C600DB55C5 /* libRestKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551E914EC931900DB55C5 /* libRestKit.a */; };
+		1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */; };
+		1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
+		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
+		198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552EB14EF5FB500DB55C5 /* DejalActivityView.m */; };
 		19C3A92714EA35CB0008F441 /* INObservationFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1959CDA714EA2F180036F363 /* PBXContainerItemProxy */ = {
+		198551E814EC931900DB55C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */;
+			containerPortal = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = SSToolkit;
+			remoteGlobalIDString = 25160D1614564E810060A5C5;
+			remoteInfo = RestKit;
 		};
-		1959CDA914EA2F180036F363 /* PBXContainerItemProxy */ = {
+		198551EA14EC931900DB55C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */;
+			containerPortal = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = B239101D1357DC3E00ADE21B;
-			remoteInfo = SSToolkitTests;
+			remoteGlobalIDString = 25160D2614564E820060A5C5;
+			remoteInfo = RestKitTests;
 		};
-		1959CDAF14EA30020036F363 /* PBXContainerItemProxy */ = {
+		198551EC14EC931900DB55C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */;
+			containerPortal = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 25160E62145651060060A5C5;
+			remoteInfo = RestKitFramework;
+		};
+		198551EE14EC931900DB55C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 25160E78145651060060A5C5;
+			remoteInfo = RestKitFrameworkTests;
+		};
+		198551F114EC937900DB55C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = SSToolkit;
+			remoteGlobalIDString = 25160D1514564E810060A5C5;
+			remoteInfo = RestKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -60,11 +83,23 @@
 		1927514A14E9CCC9000ABAC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		1927514C14E9CCC9000ABAC4 /* INatObserverViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatObserverViewController.h; sourceTree = "<group>"; };
 		1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatObserverViewController.m; sourceTree = "<group>"; };
-		1927515714E9CEAE000ABAC4 /* Observation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observation.h; sourceTree = "<group>"; };
-		1927515814E9CEAE000ABAC4 /* Observation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Observation.m; sourceTree = "<group>"; };
-		1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SSToolkit.xcodeproj; path = Vendor/SSToolkit/SSToolkit.xcodeproj; sourceTree = "<group>"; };
 		1959CDAD14EA2FE10036F363 /* SSToolkit.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SSToolkit.bundle; path = Vendor/SSToolkit/Resources/SSToolkit.bundle; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
+		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		198551F514EC939100DB55C5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		198551F714EC939900DB55C5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		198551F914EC93A200DB55C5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		198551FB14EC93AB00DB55C5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		198551FD14EC93B900DB55C5 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist.xcdatamodel; sourceTree = "<group>"; };
+		1985521C14ECA3CD00DB55C5 /* Observation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observation.h; sourceTree = "<group>"; };
+		1985521D14ECA3CD00DB55C5 /* Observation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Observation.m; sourceTree = "<group>"; };
+		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		198552E714EF208600DB55C5 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		198552EA14EF5FB400DB55C5 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DejalActivityView.h; sourceTree = "<group>"; };
+		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalActivityView.m; sourceTree = "<group>"; };
 		19C3A92414EA35CB0008F441 /* INObservationFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INObservationFormViewController.h; sourceTree = "<group>"; };
 		19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INObservationFormViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,9 +109,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				198551FF14EC93C600DB55C5 /* libRestKit.a in Frameworks */,
+				198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */,
+				198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */,
+				198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */,
+				198551F814EC939900DB55C5 /* Security.framework in Frameworks */,
+				198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */,
+				198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */,
 				1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */,
 				1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */,
-				1959CDB114EA301A0036F363 /* libSSToolkit.a in Frameworks */,
 				1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
 				1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
 			);
@@ -89,7 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				1927513D14E9CCC9000ABAC4 /* INatObserver */,
-				1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */,
+				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				1959CDAC14EA2FC80036F363 /* Resources */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
 				1927513414E9CCC9000ABAC4 /* Products */,
@@ -107,6 +148,12 @@
 		1927513614E9CCC9000ABAC4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				198551FD14EC93B900DB55C5 /* libxml2.dylib */,
+				198551F314EC938700DB55C5 /* CFNetwork.framework */,
+				198551F514EC939100DB55C5 /* CoreData.framework */,
+				198551F714EC939900DB55C5 /* Security.framework */,
+				198551F914EC93A200DB55C5 /* MobileCoreServices.framework */,
+				198551FB14EC93AB00DB55C5 /* SystemConfiguration.framework */,
 				1959CDB214EA30280036F363 /* QuartzCore.framework */,
 				1927513714E9CCC9000ABAC4 /* UIKit.framework */,
 				1927513914E9CCC9000ABAC4 /* Foundation.framework */,
@@ -118,15 +165,20 @@
 		1927513D14E9CCC9000ABAC4 /* INatObserver */ = {
 			isa = PBXGroup;
 			children = (
+				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
+				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				1927514614E9CCC9000ABAC4 /* INatObserverAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INatObserverAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				198552E614EF208600DB55C5 /* LoginViewController.h */,
+				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				19C3A92414EA35CB0008F441 /* INObservationFormViewController.h */,
 				19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */,
 				1927514C14E9CCC9000ABAC4 /* INatObserverViewController.h */,
 				1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */,
-				1927515714E9CEAE000ABAC4 /* Observation.h */,
-				1927515814E9CEAE000ABAC4 /* Observation.m */,
+				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
+				1985521C14ECA3CD00DB55C5 /* Observation.h */,
+				1985521D14ECA3CD00DB55C5 /* Observation.m */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INatObserver;
@@ -139,17 +191,9 @@
 				1927514014E9CCC9000ABAC4 /* InfoPlist.strings */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* INatObserver-Prefix.pch */,
+				198552E914EF369E00DB55C5 /* constants.h */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1959CD9F14EA2F170036F363 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1959CDA814EA2F180036F363 /* libSSToolkit.a */,
-				1959CDAA14EA2F180036F363 /* SSToolkitTests.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		1959CDAC14EA2FC80036F363 /* Resources */ = {
@@ -158,6 +202,17 @@
 				1959CDAD14EA2FE10036F363 /* SSToolkit.bundle */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		198551E214EC931900DB55C5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				198551E914EC931900DB55C5 /* libRestKit.a */,
+				198551EB14EC931900DB55C5 /* RestKitTests.octest */,
+				198551ED14EC931900DB55C5 /* RestKit.framework */,
+				198551EF14EC931900DB55C5 /* RestKitFrameworkTests.octest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,7 +229,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				1959CDB014EA30020036F363 /* PBXTargetDependency */,
+				198551F214EC937900DB55C5 /* PBXTargetDependency */,
 			);
 			name = INatObserver;
 			productName = INatObserver;
@@ -202,8 +257,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 1959CD9F14EA2F170036F363 /* Products */;
-					ProjectRef = 1959CD9E14EA2F170036F363 /* SSToolkit.xcodeproj */;
+					ProductGroup = 198551E214EC931900DB55C5 /* Products */;
+					ProjectRef = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -214,18 +269,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1959CDA814EA2F180036F363 /* libSSToolkit.a */ = {
+		198551E914EC931900DB55C5 /* libRestKit.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libSSToolkit.a;
-			remoteRef = 1959CDA714EA2F180036F363 /* PBXContainerItemProxy */;
+			path = libRestKit.a;
+			remoteRef = 198551E814EC931900DB55C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1959CDAA14EA2F180036F363 /* SSToolkitTests.app */ = {
+		198551EB14EC931900DB55C5 /* RestKitTests.octest */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = SSToolkitTests.app;
-			remoteRef = 1959CDA914EA2F180036F363 /* PBXContainerItemProxy */;
+			fileType = wrapper.cfbundle;
+			path = RestKitTests.octest;
+			remoteRef = 198551EA14EC931900DB55C5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		198551ED14EC931900DB55C5 /* RestKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RestKit.framework;
+			remoteRef = 198551EC14EC931900DB55C5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		198551EF14EC931900DB55C5 /* RestKitFrameworkTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RestKitFrameworkTests.octest;
+			remoteRef = 198551EE14EC931900DB55C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -251,18 +320,21 @@
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INatObserverAppDelegate.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* INatObserverViewController.m in Sources */,
-				1927515914E9CEAE000ABAC4 /* Observation.m in Sources */,
 				19C3A92714EA35CB0008F441 /* INObservationFormViewController.m in Sources */,
+				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
+				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
+				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
+				198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1959CDB014EA30020036F363 /* PBXTargetDependency */ = {
+		198551F214EC937900DB55C5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = SSToolkit;
-			targetProxy = 1959CDAF14EA30020036F363 /* PBXContainerItemProxy */;
+			name = RestKit;
+			targetProxy = 198551F114EC937900DB55C5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -336,7 +408,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INatObserver/INatObserver-Prefix.pch";
-				HEADER_SEARCH_PATHS = Vendor/SSToolkit;
+				HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/RestKit/Build\"";
 				INFOPLIST_FILE = "INatObserver/INatObserver-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -352,7 +424,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INatObserver/INatObserver-Prefix.pch";
-				HEADER_SEARCH_PATHS = Vendor/SSToolkit;
+				HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/RestKit/Build\"";
 				INFOPLIST_FILE = "INatObserver/INatObserver-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -385,6 +457,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
+			);
+			currentVersion = 1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */;
+			path = INaturalist.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1927512A14E9CCC8000ABAC4 /* Project object */;
 }
