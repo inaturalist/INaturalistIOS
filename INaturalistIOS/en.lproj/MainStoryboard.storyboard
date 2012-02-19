@@ -22,7 +22,7 @@
         <scene sceneID="efM-m4-d4c">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdD-iS-mtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="x2g-xK-zHb" customClass="INObservationFormViewController" sceneMemberID="viewController">
+                <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -243,7 +243,7 @@
         <scene sceneID="5">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
-                <viewController id="2" customClass="INatObserverViewController" sceneMemberID="viewController">
+                <viewController id="2" customClass="ObservationsViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="1W6-6t-1lE">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -442,31 +442,6 @@
         </scene>
     </scenes>
     <classes>
-        <class className="INObservationFormViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/INObservationFormViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedClear:"/>
-                <relationship kind="action" name="clickedSave:"/>
-                <relationship kind="action" name="keyboardDone:"/>
-                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="keyboardToolbar" candidateClass="UIToolbar"/>
-                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="INatObserverViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatObserverViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="edit:"/>
-                <relationship kind="action" name="sync:"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="syncLabel" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
         <class className="LoginViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
             <relationships>

@@ -1,17 +1,17 @@
 //
-//  INatObserverViewController.m
-//  INatObserver
+//  INaturalistIOSViewController.m
+//  INaturalistIOS
 //
 //  Created by Ken-ichi Ueda on 2/13/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import "INatObserverViewController.h"
+#import "ObservationsViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
 #import "DejalActivityView.h"
 
-@implementation INatObserverViewController
+@implementation ObservationsViewController
 @synthesize syncLabel;
 @synthesize syncButton;
 @synthesize observations;
@@ -193,12 +193,12 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"AddObservationSegue"]) {
-        INObservationFormViewController *vc = (INObservationFormViewController *)[segue.destinationViewController topViewController];
+        ObservationDetailViewController *vc = (ObservationDetailViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
-        INObservationFormViewController *vc = [segue destinationViewController];
+        ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [observations 
                           objectAtIndex:[[self.tableView 
@@ -210,8 +210,8 @@
     }
 }
 
-# pragma marl INObservationFormViewControllerDelegate methods
-- (void)observationFormViewControllerDidSave:(INObservationFormViewController *)controller
+# pragma marl INObservationDetailViewControllerDelegate methods
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     [[self navigationController] popToViewController:self animated:YES];
@@ -219,7 +219,7 @@
     [[self tableView] reloadData];
 }
 
-- (void)observationFormViewControllerDidCancel:(INObservationFormViewController *)controller
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     [[self navigationController] popToViewController:self animated:YES];

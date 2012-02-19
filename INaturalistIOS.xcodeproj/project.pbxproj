@@ -12,9 +12,9 @@
 		1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */; };
 		1927514214E9CCC9000ABAC4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1927514014E9CCC9000ABAC4 /* InfoPlist.strings */; };
 		1927514414E9CCC9000ABAC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514314E9CCC9000ABAC4 /* main.m */; };
-		1927514814E9CCC9000ABAC4 /* INatObserverAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INatObserverAppDelegate.m */; };
+		1927514814E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */; };
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
-		1927514E14E9CCC9000ABAC4 /* INatObserverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */; };
+		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
@@ -27,7 +27,7 @@
 		1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
 		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
 		198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552EB14EF5FB500DB55C5 /* DejalActivityView.m */; };
-		19C3A92714EA35CB0008F441 /* INObservationFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */; };
+		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,19 +69,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1927513314E9CCC9000ABAC4 /* INatObserver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INatObserver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INaturalistIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1927513714E9CCC9000ABAC4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1927513914E9CCC9000ABAC4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		1927513F14E9CCC9000ABAC4 /* INatObserver-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "INatObserver-Info.plist"; sourceTree = "<group>"; };
+		1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "INaturalistIOS-Info.plist"; sourceTree = "<group>"; };
 		1927514114E9CCC9000ABAC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1927514314E9CCC9000ABAC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		1927514514E9CCC9000ABAC4 /* INatObserver-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "INatObserver-Prefix.pch"; sourceTree = "<group>"; };
-		1927514614E9CCC9000ABAC4 /* INatObserverAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatObserverAppDelegate.h; sourceTree = "<group>"; };
-		1927514714E9CCC9000ABAC4 /* INatObserverAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatObserverAppDelegate.m; sourceTree = "<group>"; };
+		1927514514E9CCC9000ABAC4 /* INaturalistIOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "INaturalistIOS-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = INaturalistIOSAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INaturalistIOSAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1927514A14E9CCC9000ABAC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		1927514C14E9CCC9000ABAC4 /* INatObserverViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatObserverViewController.h; sourceTree = "<group>"; };
-		1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatObserverViewController.m; sourceTree = "<group>"; };
+		1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObservationsViewController.h; sourceTree = "<group>"; };
+		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -93,13 +93,13 @@
 		1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist.xcdatamodel; sourceTree = "<group>"; };
 		1985521C14ECA3CD00DB55C5 /* Observation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observation.h; sourceTree = "<group>"; };
 		1985521D14ECA3CD00DB55C5 /* Observation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Observation.m; sourceTree = "<group>"; };
-		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		198552E714EF208600DB55C5 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = constants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		198552EA14EF5FB400DB55C5 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DejalActivityView.h; sourceTree = "<group>"; };
 		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalActivityView.m; sourceTree = "<group>"; };
-		19C3A92414EA35CB0008F441 /* INObservationFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INObservationFormViewController.h; sourceTree = "<group>"; };
-		19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INObservationFormViewController.m; sourceTree = "<group>"; };
+		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
+		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,7 +127,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
-				1927513D14E9CCC9000ABAC4 /* INatObserver */,
+				1927513D14E9CCC9000ABAC4 /* INaturalistIOS */,
 				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
 				1927513414E9CCC9000ABAC4 /* Products */,
@@ -137,7 +137,7 @@
 		1927513414E9CCC9000ABAC4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1927513314E9CCC9000ABAC4 /* INatObserver.app */,
+				1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,35 +159,35 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1927513D14E9CCC9000ABAC4 /* INatObserver */ = {
+		1927513D14E9CCC9000ABAC4 /* INaturalistIOS */ = {
 			isa = PBXGroup;
 			children = (
 				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
 				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
-				1927514614E9CCC9000ABAC4 /* INatObserverAppDelegate.h */,
-				1927514714E9CCC9000ABAC4 /* INatObserverAppDelegate.m */,
+				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
+				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
 				198552E614EF208600DB55C5 /* LoginViewController.h */,
 				198552E714EF208600DB55C5 /* LoginViewController.m */,
-				19C3A92414EA35CB0008F441 /* INObservationFormViewController.h */,
-				19C3A92514EA35CB0008F441 /* INObservationFormViewController.m */,
-				1927514C14E9CCC9000ABAC4 /* INatObserverViewController.h */,
-				1927514D14E9CCC9000ABAC4 /* INatObserverViewController.m */,
+				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
+				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
+				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
+				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
 				1985521C14ECA3CD00DB55C5 /* Observation.h */,
 				1985521D14ECA3CD00DB55C5 /* Observation.m */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
-			path = INatObserver;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1927513F14E9CCC9000ABAC4 /* INatObserver-Info.plist */,
+				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
 				1927514014E9CCC9000ABAC4 /* InfoPlist.strings */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
-				1927514514E9CCC9000ABAC4 /* INatObserver-Prefix.pch */,
+				1927514514E9CCC9000ABAC4 /* INaturalistIOS-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
 			);
 			name = "Supporting Files";
@@ -207,9 +207,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1927513214E9CCC9000ABAC4 /* INatObserver */ = {
+		1927513214E9CCC9000ABAC4 /* INaturalistIOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "INatObserver" */;
+			buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "INaturalistIOS" */;
 			buildPhases = (
 				1927512F14E9CCC9000ABAC4 /* Sources */,
 				1927513014E9CCC9000ABAC4 /* Frameworks */,
@@ -220,9 +220,9 @@
 			dependencies = (
 				198551F214EC937900DB55C5 /* PBXTargetDependency */,
 			);
-			name = INatObserver;
-			productName = INatObserver;
-			productReference = 1927513314E9CCC9000ABAC4 /* INatObserver.app */;
+			name = INaturalistIOS;
+			productName = INaturalistIOS;
+			productReference = 1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -234,7 +234,7 @@
 				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = iNaturalist;
 			};
-			buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "INatObserver" */;
+			buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "INaturalistIOS" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -252,7 +252,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				1927513214E9CCC9000ABAC4 /* INatObserver */,
+				1927513214E9CCC9000ABAC4 /* INaturalistIOS */,
 			);
 		};
 /* End PBXProject section */
@@ -306,9 +306,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
-				1927514814E9CCC9000ABAC4 /* INatObserverAppDelegate.m in Sources */,
-				1927514E14E9CCC9000ABAC4 /* INatObserverViewController.m in Sources */,
-				19C3A92714EA35CB0008F441 /* INObservationFormViewController.m in Sources */,
+				1927514814E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m in Sources */,
+				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
+				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
@@ -395,14 +395,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "INatObserver/INatObserver-Prefix.pch";
+				GCC_PREFIX_HEADER = "INaturalistIOS/INaturalistIOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/RestKit/Build\"";
-				INFOPLIST_FILE = "INatObserver/INatObserver-Info.plist";
+				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = INaturalistIOS;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -411,14 +411,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "INatObserver/INatObserver-Prefix.pch";
+				GCC_PREFIX_HEADER = "INaturalistIOS/INaturalistIOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/RestKit/Build\"";
-				INFOPLIST_FILE = "INatObserver/INatObserver-Info.plist";
+				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = INaturalistIOS;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -426,7 +426,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "INatObserver" */ = {
+		1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "INaturalistIOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1927514F14E9CCC9000ABAC4 /* Debug */,
@@ -435,7 +435,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "INatObserver" */ = {
+		1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "INaturalistIOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1927515214E9CCC9000ABAC4 /* Debug */,

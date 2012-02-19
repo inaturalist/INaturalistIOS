@@ -1,20 +1,20 @@
 //
-//  INatObserverViewController.h
-//  INatObserver
+//  INaturalistIOSViewController.h
+//  INaturalistIOS
 //
 //  Created by Ken-ichi Ueda on 2/13/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "INObservationFormViewController.h"
+#import "ObservationDetailViewController.h"
 #import "LoginViewController.h"
 
 @class Observation;
 @class ObservationStore;
 @class DejalActivityView;
 
-@interface INatObserverViewController : UITableViewController <INObservationFormViewControllerDelegate, RKObjectLoaderDelegate, LoginViewControllerDelegate, RKRequestQueueDelegate>
+@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, LoginViewControllerDelegate, RKRequestQueueDelegate>
 {
     DejalActivityView *syncActivityView;
 }

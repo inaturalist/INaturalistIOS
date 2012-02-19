@@ -1,24 +1,20 @@
 //
 //  INObservationFormViewController.m
-//  INatObserver
+//  INaturalistIOS
 //
 //  Created by Ken-ichi Ueda on 2/13/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import "INObservationFormViewController.h"
+#import "ObservationDetailViewController.h"
 #import "Observation.h"
 
-@implementation INObservationFormViewController
-//@synthesize descriptionTextField;
-//@synthesize descriptionTextField;
-//@synthesize descriptionLabel;
+@implementation ObservationDetailViewController
 @synthesize observedAtLabel;
 @synthesize latitudeLabel;
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize keyboardToolbar;
-//@synthesize buttonCell;
 @synthesize speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate, observation;
@@ -28,7 +24,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-//        NSLog(@"initializing from nib");
     }
     return self;
 }
@@ -60,7 +55,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-//    [[self tableView] setSeparatorColor:[UIColor clearColor]];
     [self updateUIWithObservation];
     if ([observation isNew]) {
         [[self navigationItem] setTitle:@"New observation"];
@@ -81,7 +75,6 @@
     [self setDescriptionTextView:nil];
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
-//    [self setButtonCell:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -94,24 +87,8 @@
     return YES;
 }
 
-//- (void)textFieldDidBeginEditing:(UITextField *)textField
-//{
-//    NSLog(@"started editing text field: %@", textField);
-//}
 
 #pragma mark UITextViewDelegate methods
-//- (BOOL)textViewShouldEndEditing:(UITextView *)textView
-//{
-//    [descriptionTextView resignFirstResponder];
-//    return YES;
-//}
-
-//- (void)textViewDidBeginEditing:(UITextView *)textView
-//{
-//    NSLog(@"started editing textview");
-//    [textView setInputAccessoryView:keyboardToolbar];
-//}
-
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     [textView setInputAccessoryView:keyboardToolbar];
@@ -136,14 +113,12 @@
 
 - (IBAction)clickedSave:(id)sender {
     [self save];
-    [self.delegate observationFormViewControllerDidSave:self];
+    [self.delegate observationDetailViewControllerDidSave:self];
 }
 
 - (void)save
 {
-    // TODO write to store
     [observation setSpecies_guess:[speciesGuessTextField text]];
-//    [observation setDescription:[descriptionTextField text]];
     [observation setInat_description:[descriptionTextView text]];
     [observation save];
 }
@@ -153,9 +128,7 @@
         NSLog(@"obs was new, destroying");
         [observation destroy];
     }
-    [self.delegate observationFormViewControllerDidCancel:self];
+    [self.delegate observationDetailViewControllerDidCancel:self];
 }
-
-
 
 @end
