@@ -149,14 +149,20 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 - (void)willSave
 {
-    NSDate *now;
-    if ([self.changedValues objectForKey:@"synced_at"]) {
-        now = self.synced_at;
-    } else {
-        now = [NSDate date];
-    }
-    if ([self changedValues] != nil && (self.local_updated_at == nil || [self.local_updated_at timeIntervalSinceNow] < -1)) {
-        self.local_updated_at = now;
+    if ([self changedValues] != nil) {
+        NSDate *now;
+        if ([self.changedValues objectForKey:@"synced_at"]) {
+            now = self.synced_at;
+        } else {
+            now = [NSDate date];
+        }
+        if (self.local_updated_at) {
+            NSLog(@"[self.local_updated_at timeIntervalSinceNow]: %f", [self.local_updated_at timeIntervalSinceDate:now]);
+        }
+        if (!self.local_updated_at || [self.local_updated_at timeIntervalSinceDate:now] < -1) {
+            NSLog(@"setting local_updated_at to %@", now);
+            self.local_updated_at = now;
+        }
     }
     [super willSave];
 }

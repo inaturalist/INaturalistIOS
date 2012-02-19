@@ -9,6 +9,7 @@
 #import "INatObserverViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
+#import "DejalActivityView.h"
 
 @implementation INatObserverViewController
 @synthesize syncLabel;
@@ -16,6 +17,7 @@
 @synthesize observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
+@synthesize syncedObservationsCount = _syncedObservationsCount;
 
 - (id)init
 {
@@ -29,16 +31,21 @@
     NSArray *observationsToSync = [observations filteredArrayUsingPredicate:
                                    [NSPredicate predicateWithFormat:
                                     @"synced_at = nil OR synced_at < local_updated_at"]];
-//    [RKObjectManager sharedManager].client.username = @"username";
-//    [RKObjectManager sharedManager].client.password = @"password";
-    [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
     
+    if (observationsToSync.count == 0) return;
+    
+    syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                                         withLabel:[NSString 
+                                                                    stringWithFormat:
+                                                                    @"Syncing 1 of %d observations", observationsToSync.count]];
+    
+    // manually applying mappings b/c PUT and POST responses return JSON without a root element, 
+    // e.g. {foo: 'bar'} instead of observation: {foo: 'bar'}, which RestKit apparently can't 
+    // deal with using the name of the model it just posted.
     for (Observation *o in observationsToSync) {
         if (o.synced_at) {
-//            [[RKObjectManager sharedManager] putObject:o delegate:self];
             [[RKObjectManager sharedManager] putObject:o mapResponseWith:[Observation mapping] delegate:self];
         } else {
-//            [[RKObjectManager sharedManager] postObject:o delegate:self];
             [[RKObjectManager sharedManager] postObject:o mapResponseWith:[Observation mapping] delegate:self];
         }
     }
@@ -58,25 +65,17 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSLog(@"destroying observation");
         [[observations objectAtIndex:indexPath.row] destroy];
-        NSLog(@"removing obs from local array");
         [observations removeObjectAtIndex:indexPath.row];
-        NSLog(@"removing row from tableview");
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
     }
 }
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
-    NSLog(@"posted %@", object);
-}
-
 - (void)loadData
 {
-    NSLog(@"loadData");
     [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
     [self setObservationsToSyncCount:0];
+// if/when you want to bring back loading existing data, it's pretty easy
 //    if (!observations || [observations count] == 0) {
 //        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/observations/kueda" 
 //                                                     objectMapping:[Observation mapping] 
@@ -105,6 +104,7 @@
         [self.navigationController setToolbarHidden:YES];
         [self setToolbarItems:nil animated:YES];
     }
+    self.syncedObservationsCount = 0;
 }
 
 
@@ -119,21 +119,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Observation *o = [observations objectAtIndex:[indexPath row]];
-//    UITableViewCell *cell = [[self tableView] dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-//    if (!cell) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];
-//    }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     [[cell textLabel] setText:[o species_guess]];
     return cell;
 }
-
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    Observation *o = [[Observation all] objectAtIndex:[indexPath row]];
-//    NSLog(@"selected observation %@", o);
-//    [self setSelectedObservation:o];
-//}
 
 # pragma mark memory management
 
@@ -158,6 +147,8 @@
     if (!observations) {
         [self loadData];
     }
+    
+    [[[[RKObjectManager sharedManager] client] requestQueue] setDelegate:self]; // TODO, might have to unset this when this view closes?
 }
 
 - (void)viewDidUnload
@@ -242,23 +233,28 @@
 
 #pragma mark RKObjectLoaderDelegate methods
 - (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
-    NSLog(@"didLoadObject");
     NSDate *now = [NSDate date];
     for (Observation *o in objects) {
         [o setSynced_at:now];
     }
     [[[RKObjectManager sharedManager] objectStore] save];
-    [[self tableView] reloadData];
-    [self checkSyncStatus];
+    
+    self.syncedObservationsCount += 1;
+    if (syncActivityView) {
+        [[syncActivityView activityLabel] setText:
+         [NSString stringWithFormat:
+          @"Syncing %d of %d observations", 
+          self.syncedObservationsCount + 1, 
+          self.observationsToSyncCount]];
+    }
 }
 
-//- (void)objectLoader:(RKObjectLoader *)loader willMapData:(inout id *)mappableData
-//{
-//    NSLog(@"willMapData: %@", *mappableData);
-//}
-
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    NSLog(@"object loader failed with error: %@", [error debugDescription]);
+//    NSLog(@"object loader failed with error: %@", [error debugDescription]);
+    if (syncActivityView) {
+        [DejalBezelActivityView removeView];
+        syncActivityView = nil;
+    }
     
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     
@@ -269,17 +265,34 @@
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an unexpected error: %@", error.localizedDescription]
+                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription]
                                                     delegate:self 
                                            cancelButtonTitle:@"OK" 
                                            otherButtonTitles:nil];
         [av show];
     }
+    self.syncedObservationsCount = 0;
 }
 
 - (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader
 {
-    NSLog(@"object loader unexpected response");
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
+                                                 message:@"Unknown error! Please report this to help@inaturalist.org"
+                                                delegate:self 
+                                       cancelButtonTitle:@"OK" 
+                                       otherButtonTitles:nil];
+    [av show];
+}
+
+#pragma mark RKRequestQueueDelegate methods
+- (void)requestQueueDidFinishLoading:(RKRequestQueue *)queue
+{
+    [[self tableView] reloadData];
+    [self checkSyncStatus];
+    if (syncActivityView) {
+        [DejalBezelActivityView removeView];
+        syncActivityView = nil;
+    }
 }
 
 @end

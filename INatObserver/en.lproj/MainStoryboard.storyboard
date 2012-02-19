@@ -190,7 +190,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Save" style="done" id="OBs-5n-cT8">
-                            <color key="tintColor" red="0.57017116570194115" green="0.70108695652173914" blue="0.23917749214377432" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="clickedSave:" destination="x2g-xK-zHb" id="PPM-FR-u5Q"/>
                             </connections>
@@ -283,7 +283,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="31c-qh-A6S">
-                            <color key="tintColor" red="0.65882354974746704" green="0.80000007152557373" blue="0.19607844948768616" alpha="1" colorSpace="deviceRGB"/>
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <segue destination="0sH-Rn-Zcm" kind="modal" identifier="AddObservationSegue" id="VLj-Fw-sW6"/>
                             </connections>
@@ -426,7 +426,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Log in" style="done" id="tiA-DP-jEV">
-                            <color key="tintColor" red="0.57017116570000004" green="0.70108695649999997" blue="0.2391774921" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="signIn:" destination="wse-tJ-yO9" id="e39-xP-L1c"/>
                             </connections>
@@ -483,6 +483,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="wIj-b2-ODf"/>
+        <segue reference="QEa-ew-qt7"/>
     </inferredMetricsTieBreakers>
 </document>
