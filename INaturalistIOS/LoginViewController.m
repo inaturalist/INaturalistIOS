@@ -60,14 +60,12 @@
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
-    NSLog(@"password: %@", [RKClient sharedClient].password);
     [[RKClient sharedClient] get:@"/observations/new" delegate:self];
 }
 
 #pragma mark RKRequestDelegate methods
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-    NSLog(@"loaded response: %@", response);
     [[NSUserDefaults standardUserDefaults] setValue:[usernameField text] forKey:INatUsernamePrefKey];
     [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] forKey:INatPasswordPrefKey];
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
@@ -108,14 +106,11 @@
     }
     [DejalBezelActivityView removeView];
     [av show];
-    NSLog(@"removing activity view");
 }
 
 #pragma mark UITextFieldDelegate methods
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSLog(@"textField: %@", textField);
-    NSLog(@"usernameField: %@", usernameField);
     [textField resignFirstResponder];
     if (textField == usernameField) {
         [passwordField becomeFirstResponder];
@@ -124,4 +119,30 @@
     }
     return YES;
 }
+
+#pragma mark UITableView delegate methods
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1) {
+        UIAlertView *av = [[UIAlertView alloc] 
+                           initWithTitle:@"Ready to sign up?" 
+                                message:@"You're about to go to iNaturalist.org to create a new account.  Once you've done that and verified via email, come back here with your new login.  Ready?" 
+                           delegate:self 
+                           cancelButtonTitle:@"Maybe later"
+                           otherButtonTitles:@"Sign me up!", 
+                           nil];
+        [av show];
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+#pragma mark UIAlertViewDelegate methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) return;
+    NSURL *url = [NSURL URLWithString:
+                  [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
+    [[UIApplication sharedApplication] openURL:url];
+}
+
 @end

@@ -11,5 +11,6 @@
 
 #define INatUsernamePrefKey @"INatUsernamePrefKey"
 #define INatPasswordPrefKey @"INatPasswordPrefKey"
+#define INatBaseURL @"http://localhost:3000"
 
 #endif

@@ -15,7 +15,7 @@
 - (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
 @end
 
-@interface LoginViewController : UITableViewController <RKRequestDelegate>
+@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) id <LoginViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
