@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
+		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
+		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
 		1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
 		1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
 		1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */; };
@@ -69,6 +72,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1902812314F308AD005AC8D2 /* ImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageStore.h; sourceTree = "<group>"; };
+		1902812414F308AD005AC8D2 /* ImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStore.m; sourceTree = "<group>"; };
+		1902812614F315F2005AC8D2 /* INatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatModel.h; sourceTree = "<group>"; };
+		1902812714F315F2005AC8D2 /* INatModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatModel.m; sourceTree = "<group>"; };
+		1902813B14F36B44005AC8D2 /* ObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPhoto.h; sourceTree = "<group>"; };
+		1902813C14F36B44005AC8D2 /* ObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPhoto.m; sourceTree = "<group>"; };
 		1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INaturalistIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1927513714E9CCC9000ABAC4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1927513914E9CCC9000ABAC4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -173,9 +182,15 @@
 				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
 				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
 				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
+				1902812314F308AD005AC8D2 /* ImageStore.h */,
+				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
+				1902812614F315F2005AC8D2 /* INatModel.h */,
+				1902812714F315F2005AC8D2 /* INatModel.m */,
 				1985521C14ECA3CD00DB55C5 /* Observation.h */,
 				1985521D14ECA3CD00DB55C5 /* Observation.m */,
+				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
+				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INaturalistIOS;
@@ -313,6 +328,9 @@
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */,
+				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
+				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

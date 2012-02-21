@@ -8,6 +8,8 @@
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
+#import "ObservationPhoto.h"
+#import "ImageStore.h"
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -15,6 +17,7 @@
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize keyboardToolbar;
+@synthesize tmpImageView;
 @synthesize speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate, observation;
@@ -31,13 +34,20 @@
 - (void)updateUIWithObservation
 {
     if (observation) {
-        [speciesGuessTextField setText:observation.species_guess];
-        [observedAtLabel setText:observation.observed_on_string];
+        [speciesGuessTextField setText:observation.speciesGuess];
+        [observedAtLabel setText:observation.observedOnString];
         if (observation.latitude) [latitudeLabel setText:[observation.latitude description]];
         if (observation.longitude) [longitudeLabel setText:[NSString stringWithFormat:@"%f", [observation.longitude doubleValue]]];
                                     
-        if (observation.positional_accuracy) [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", observation.positional_accuracy]];
-        [descriptionTextView setText:observation.inat_description];
+        if (observation.positionalAccuracy) [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", observation.positionalAccuracy]];
+        [descriptionTextView setText:observation.inatDescription];
+        
+        for (ObservationPhoto *op in observation.observationPhotos) {
+            [tmpImageView setImage:[ImageStore.sharedImageStore find:op.photoKey]];
+            if ([tmpImageView image]) {
+                break;
+            }
+        }
     }
 }
 
@@ -75,6 +85,7 @@
     [self setDescriptionTextView:nil];
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
+    [self setTmpImageView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -93,6 +104,18 @@
 {
     [textView setInputAccessoryView:keyboardToolbar];
     return YES;
+}
+
+#pragma mark UIImagePickerControllerDelegate methods
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self dismissModalViewControllerAnimated:YES];
+    ObservationPhoto *op = [ObservationPhoto object];
+    [op setObservation:observation];
+    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+    [ImageStore.sharedImageStore store:[info objectForKey:UIImagePickerControllerOriginalImage] 
+                                forKey:op.photoKey];
+    [tmpImageView setImage:[ImageStore.sharedImageStore find:op.photoKey]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -118,8 +141,8 @@
 
 - (void)save
 {
-    [observation setSpecies_guess:[speciesGuessTextField text]];
-    [observation setInat_description:[descriptionTextView text]];
+    [observation setSpeciesGuess:[speciesGuessTextField text]];
+    [observation setInatDescription:[descriptionTextView text]];
     [observation save];
 }
 
@@ -129,6 +152,50 @@
         [observation destroy];
     }
     [self.delegate observationDetailViewControllerDidCancel:self];
+}
+
+- (IBAction)clickedAddPhoto:(id)sender {
+    UIActionSheet *photoChoice = [[UIActionSheet alloc] init];
+    [photoChoice setDelegate:self];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [photoChoice addButtonWithTitle:@"Take a photo"];
+        [photoChoice addButtonWithTitle:@"Choose from library"];
+        [photoChoice addButtonWithTitle:@"Cancel"];
+        [photoChoice setCancelButtonIndex:2];
+    } else {
+        [photoChoice addButtonWithTitle:@"Choose from library"];
+        [photoChoice addButtonWithTitle:@"Cancel"];
+        [photoChoice setCancelButtonIndex:1];
+    }
+    [photoChoice showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSInteger sourceType;
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        switch (buttonIndex) {
+            case 0:
+                sourceType = UIImagePickerControllerSourceTypeCamera;
+                break;
+            case 1:
+                sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                break;
+            default:
+                return;
+        }
+    } else {
+        if (buttonIndex == 0) {
+            sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        } else {
+            return;
+        }
+    }
+    
+    UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
+    [ipc setDelegate:self];
+    [ipc setSourceType:sourceType];
+    [self presentModalViewController:ipc animated:YES];
 }
 
 @end

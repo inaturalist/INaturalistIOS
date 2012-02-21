@@ -1,36 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Observation" representedClassName="Observation" syncable="YES">
-        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="iconic_taxon_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="id_please" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="inat_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconicTaxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="idPlease" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="inatDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="license" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="local_created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="local_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="local_updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" syncable="YES"/>
-        <attribute name="observed_on" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="observed_on_string" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="out_of_range" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="place_guess" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="positional_accuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="positioning_device" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="positioning_method" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="private_latitude" optional="YES" attributeType="Double" syncable="YES"/>
-        <attribute name="private_longitude" optional="YES" attributeType="Double" syncable="YES"/>
-        <attribute name="private_positional_accuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="quality_grade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="observedOn" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observedOnString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="outOfRange" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="placeGuess" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="positionalAccuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="positioningDevice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="positioningMethod" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="privateLatitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="privateLongitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="privatePositionalAccuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="qualityGrade" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="species_guess" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="synced_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="taxon_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="user_id" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="speciesGuess" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
+    </entity>
+    <entity name="ObservationPhoto" representedClassName="ObservationPhoto" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="largeURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="license_code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="mediumURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nativePageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nativeRealName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nativeUsername" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="observationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photoKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="position" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="smallURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="squareURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="thumbURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationPhotos" inverseEntity="Observation" syncable="YES"/>
     </entity>
     <elements>
         <element name="Observation" positionX="160" positionY="192" width="128" height="465"/>
+        <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="345"/>
     </elements>
 </model>

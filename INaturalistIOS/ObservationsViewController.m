@@ -30,7 +30,7 @@
 - (IBAction)sync:(id)sender {
     NSArray *observationsToSync = [observations filteredArrayUsingPredicate:
                                    [NSPredicate predicateWithFormat:
-                                    @"synced_at = nil OR synced_at < local_updated_at"]];
+                                    @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
     
     if (observationsToSync.count == 0) return;
     
@@ -43,7 +43,7 @@
     // e.g. {foo: 'bar'} instead of observation: {foo: 'bar'}, which RestKit apparently can't 
     // deal with using the name of the model it just posted.
     for (Observation *o in observationsToSync) {
-        if (o.synced_at) {
+        if (o.syncedAt) {
             [[RKObjectManager sharedManager] putObject:o mapResponseWith:[Observation mapping] delegate:self];
         } else {
             [[RKObjectManager sharedManager] postObject:o mapResponseWith:[Observation mapping] delegate:self];
@@ -93,7 +93,7 @@
 - (void)checkSyncStatus
 {
     self.observationsToSyncCount = [[[self observations] filteredArrayUsingPredicate:
-                                     [NSPredicate predicateWithFormat:@"synced_at = nil OR synced_at < local_updated_at"]] count];
+                                     [NSPredicate predicateWithFormat:@"syncedAt = nil OR syncedAt < localUpdatedAt"]] count];
     NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d observation", self.observationsToSyncCount];
     if (self.observationsToSyncCount != 1) [msg appendString:@"s"];
     [syncButton setTitle:msg];
@@ -120,7 +120,7 @@
 {
     Observation *o = [observations objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-    [[cell textLabel] setText:[o species_guess]];
+    [[cell textLabel] setText:[o speciesGuess]];
     return cell;
 }
 
@@ -193,7 +193,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"AddObservationSegue"]) {
-        ObservationDetailViewController *vc = (ObservationDetailViewController *)[segue.destinationViewController topViewController];
+        ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
         [vc setObservation:o];
@@ -235,7 +235,7 @@
 - (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
     NSDate *now = [NSDate date];
     for (Observation *o in objects) {
-        [o setSynced_at:now];
+        [o setSyncedAt:now];
     }
     [[[RKObjectManager sharedManager] objectStore] save];
     
@@ -250,7 +250,6 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-//    NSLog(@"object loader failed with error: %@", [error debugDescription]);
     if (syncActivityView) {
         [DejalBezelActivityView removeView];
         syncActivityView = nil;

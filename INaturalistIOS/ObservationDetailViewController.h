@@ -15,7 +15,7 @@
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end
 
-@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate>
+@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
@@ -27,11 +27,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
 @property (strong, nonatomic) IBOutlet UIToolbar *keyboardToolbar;
+@property (weak, nonatomic) IBOutlet UIImageView *tmpImageView;
 
 - (IBAction)clickedClear:(id)sender;
 - (IBAction)keyboardDone:(id)sender;
 - (IBAction)clickedSave:(id)sender;
 - (IBAction)clickedCancel:(id)sender;
+- (IBAction)clickedAddPhoto:(id)sender;
 - (void)save;
 - (void)updateUIWithObservation;
 
