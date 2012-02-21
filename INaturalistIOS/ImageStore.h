@@ -16,4 +16,5 @@
 - (void)destroy:(NSString *)key;
 - (NSString *)createKey;
 - (NSString *)pathForKey:(NSString *)key;
+- (void)clearCache;
 @end

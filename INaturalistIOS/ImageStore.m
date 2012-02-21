@@ -37,6 +37,11 @@ static ImageStore *sharedImageStore = nil;
     self = [super init];
     if (self) {
         [self setDictionary:[[NSMutableDictionary alloc] init]];
+        
+        [NSNotificationCenter.defaultCenter addObserver:self 
+                                               selector:@selector(clearCache:) 
+                                                   name:UIApplicationDidReceiveMemoryWarningNotification 
+                                                 object:nil];
     }
     return self;
 }
@@ -94,6 +99,11 @@ static ImageStore *sharedImageStore = nil;
                                                         error:&error];
     }
     return [NSString stringWithFormat:@"%@.jpg", [photoDirPath stringByAppendingPathComponent:key]];
+}
+
+- (void)clearCache
+{
+    [dictionary removeAllObjects];
 }
 
 @end
