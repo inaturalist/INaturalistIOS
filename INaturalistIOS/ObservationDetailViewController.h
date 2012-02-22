@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <TapkuLibrary/TapkuLibrary.h>
 @class Observation;
+@class ObservationPhoto;
 @class ObservationDetailViewController;
 
 @protocol ObservationDetailViewControllerDelegate <NSObject>
@@ -15,19 +17,21 @@
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end
 
-@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,TKCoverflowViewDelegate, TKCoverflowViewDataSource>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
+@property (nonatomic, strong) NSMutableArray *observationPhotos;
+@property (nonatomic, strong) TKCoverflowView *coverflowView;
 @property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
-
 @property (weak, nonatomic) IBOutlet UILabel *observedAtLabel;
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
 @property (strong, nonatomic) IBOutlet UIToolbar *keyboardToolbar;
-@property (weak, nonatomic) IBOutlet UIImageView *tmpImageView;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *saveButton;
+
 
 - (IBAction)clickedClear:(id)sender;
 - (IBAction)keyboardDone:(id)sender;
@@ -36,5 +40,10 @@
 - (IBAction)clickedAddPhoto:(id)sender;
 - (void)save;
 - (void)updateUIWithObservation;
+
+- (void)addPhoto:(ObservationPhoto *)op;
+- (void)removePhoto:(ObservationPhoto *)op;
+- (void)initCoverflowView;
+- (void)resizeHeaderView;
 
 @end

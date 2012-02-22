@@ -106,4 +106,9 @@ static ImageStore *sharedImageStore = nil;
     [dictionary removeAllObjects];
 }
 
+- (void)clearCache:(NSNotification *)note
+{
+    [self clearCache];
+}
+
 @end

@@ -1,3 +1,6 @@
 [submodule "Vendor/RestKit"]
 	path = Vendor/RestKit
 	url = git://github.com/RestKit/RestKit.git
+[submodule "Vendor/tapkulibrary"]
+	path = Vendor/tapkulibrary
+	url = git://github.com/kueda/tapkulibrary.git

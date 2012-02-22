@@ -175,13 +175,13 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self setToolbarItems:nil animated:YES];
+    [self.navigationController setToolbarHidden:YES animated:YES];
 	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
-    [self.navigationController setToolbarHidden:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
