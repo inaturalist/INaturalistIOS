@@ -109,8 +109,6 @@
 
 
 # pragma mark TableViewController methods
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [observations count];
@@ -120,7 +118,11 @@
 {
     Observation *o = [observations objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-    [[cell textLabel] setText:[o speciesGuess]];
+    if (o.speciesGuess) {
+        [cell.textLabel setText:o.speciesGuess];
+    } else {
+        [cell.textLabel setText:@"Something..."];
+    }
     return cell;
 }
 

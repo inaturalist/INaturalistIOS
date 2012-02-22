@@ -16,9 +16,9 @@
 @synthesize latitudeLabel;
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
-@synthesize keyboardToolbar;
-@synthesize saveButton;
-@synthesize speciesGuessTextField;
+@synthesize keyboardToolbar = _keyboardToolbar;
+@synthesize saveButton = _saveButton;
+@synthesize speciesGuessTextField = _speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate = _delegate;
 @synthesize observation = _observation;
@@ -28,7 +28,7 @@
 - (void)updateUIWithObservation
 {
     if (self.observation) {
-        [speciesGuessTextField setText:self.observation.speciesGuess];
+        [self.speciesGuessTextField setText:self.observation.speciesGuess];
         [observedAtLabel setText:self.observation.observedOnString];
         if (self.observation.latitude) [latitudeLabel setText:[self.observation.latitude description]];
         if (self.observation.longitude) [longitudeLabel setText:[NSString stringWithFormat:@"%f", [self.observation.longitude doubleValue]]];
@@ -36,6 +36,35 @@
         if (self.observation.positionalAccuracy) [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", self.observation.positionalAccuracy]];
         [descriptionTextView setText:self.observation.inatDescription];
     }
+}
+
+- (void)initUI
+{
+    if (!self.saveButton) {
+        self.saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
+                                                           style:UIBarButtonItemStyleDone 
+                                                          target:self
+                                                          action:@selector(clickedSave:)];
+        [self.saveButton setWidth:100.0];
+        [self.saveButton setTintColor:[UIColor colorWithRed:168.0/255 green:204.0/255 blue:50.0/255 alpha:1.0]];
+        NSLog(@"saveButton.tintColor: %@", self.saveButton.tintColor);
+    }
+    
+    if (!self.keyboardToolbar) {
+        self.keyboardToolbar = [[UIToolbar alloc] init];
+        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                                                              target:nil 
+                                                                              action:nil];
+        UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] initWithTitle:@"Clear" 
+                                                                        style:UIBarButtonItemStylePlain 
+                                                                       target:nil 
+                                                                       action:@selector(clickedClear:)];
+        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
+                                                                                    target:nil 
+                                                                                    action:@selector(keyboardDone:)];
+        [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
+    }
+    [self initCoverflowView];
 }
 
 #pragma mark - View lifecycle
@@ -52,16 +81,7 @@
         [[self navigationItem] setTitle:@"Edit observation"];
     }
     
-    [self initCoverflowView];
-    [self.navigationController setToolbarHidden:NO animated:YES];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                                                          target:nil 
-                                                                          action:nil];
-    [self setToolbarItems:[NSArray arrayWithObjects:
-                           flex, 
-                           saveButton, 
-                           flex, nil]
-                 animated:YES];
+    [self initUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -69,6 +89,19 @@
     NSLog(@"viewWillAppear");
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO animated:animated];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                                                          target:nil 
+                                                                          action:nil];
+    [self setToolbarItems:[NSArray arrayWithObjects:
+                           flex, 
+                           self.saveButton, 
+                           flex, nil]
+                 animated:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSLog(@"viewDidAppear, saveButton: %@", self.saveButton);
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,7 +125,6 @@
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
     [self setSaveButton:nil];
-    [self setObservationPhotos:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -109,7 +141,7 @@
 #pragma mark UITextViewDelegate methods
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
-    [textView setInputAccessoryView:keyboardToolbar];
+    [textView setInputAccessoryView:self.keyboardToolbar];
     return YES;
 }
 
@@ -153,10 +185,9 @@
         cover.baseline = coverflowView.frame.size.height - 20;
     }
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
-    UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey];
-    if (img) {
-        cover.image = img;
-    }
+    UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+    if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
+    if (img) cover.image = img;
     return cover;
 }
 
@@ -189,7 +220,7 @@
 
 - (void)save
 {
-    [self.observation setSpeciesGuess:[speciesGuessTextField text]];
+    [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     [self.observation setInatDescription:[descriptionTextView text]];
     [self.observation save];
 }

@@ -188,38 +188,13 @@
                     </navigationItem>
                     <connections>
                         <outlet property="descriptionTextView" destination="vam-8V-lM2" id="nQB-SE-nJC"/>
-                        <outlet property="keyboardToolbar" destination="lD7-Li-eOT" id="7gK-q2-MVV"/>
                         <outlet property="latitudeLabel" destination="M93-9f-xgT" id="dra-4c-ByL"/>
                         <outlet property="longitudeLabel" destination="46e-pE-mJn" id="EYP-Zt-NRz"/>
                         <outlet property="observedAtLabel" destination="e0j-MT-hzk" id="T1v-8B-9J7"/>
                         <outlet property="positionalAccuracyLabel" destination="R4F-3k-D7x" id="BpL-bd-Cja"/>
-                        <outlet property="saveButton" destination="OBs-5n-cT8" id="jVu-87-sgc"/>
                         <outlet property="speciesGuessTextField" destination="pmm-Vg-XgJ" id="TRe-tA-Q8z"/>
                     </connections>
                 </tableViewController>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="lD7-Li-eOT">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                    <items>
-                        <barButtonItem title="Clear" id="c4X-mF-kJm">
-                            <connections>
-                                <action selector="clickedClear:" destination="x2g-xK-zHb" id="tS3-az-RkJ"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="CTe-IS-Mg5"/>
-                        <barButtonItem title="Done" style="done" id="CMG-z4-AAg">
-                            <connections>
-                                <action selector="keyboardDone:" destination="x2g-xK-zHb" id="qdh-bV-TpC"/>
-                            </connections>
-                        </barButtonItem>
-                    </items>
-                </toolbar>
-                <barButtonItem title="Save" style="done" id="OBs-5n-cT8">
-                    <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
-                    <connections>
-                        <action selector="clickedSave:" destination="x2g-xK-zHb" id="PPM-FR-u5Q"/>
-                    </connections>
-                </barButtonItem>
             </objects>
             <point key="canvasLocation" x="514" y="195"/>
         </scene>
@@ -523,14 +498,11 @@
                 <relationship kind="action" name="clickedSave:"/>
                 <relationship kind="action" name="keyboardDone:"/>
                 <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="keyboardToolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="saveButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="tmpImageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
         <class className="ObservationsViewController" superclassName="UITableViewController">
