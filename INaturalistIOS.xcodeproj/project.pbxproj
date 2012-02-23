@@ -28,6 +28,9 @@
 		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
 		198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552EB14EF5FB500DB55C5 /* DejalActivityView.m */; };
 		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
+		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
+		CAF65CB314F5CAC9003D63BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF65CB214F5CAC9003D63BB /* MapKit.framework */; };
+		CAF65CB514F5CAD3003D63BB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF65CB414F5CAD3003D63BB /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +103,10 @@
 		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalActivityView.m; sourceTree = "<group>"; };
 		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
 		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
+		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		CAF65CB414F5CAD3003D63BB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +114,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAF65CB514F5CAD3003D63BB /* CoreLocation.framework in Frameworks */,
+				CAF65CB314F5CAC9003D63BB /* MapKit.framework in Frameworks */,
 				198551FF14EC93C600DB55C5 /* libRestKit.a in Frameworks */,
 				198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */,
 				198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */,
@@ -127,6 +136,8 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
+				CAF65CB414F5CAD3003D63BB /* CoreLocation.framework */,
+				CAF65CB214F5CAC9003D63BB /* MapKit.framework */,
 				1927513D14E9CCC9000ABAC4 /* INaturalistIOS */,
 				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
@@ -167,6 +178,8 @@
 				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
+				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
 				198552E614EF208600DB55C5 /* LoginViewController.h */,
 				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
@@ -313,6 +326,7 @@
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */,
+				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
