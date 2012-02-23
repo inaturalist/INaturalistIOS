@@ -65,7 +65,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
                              @"Mount Diablo State Park, Contra Costa County, CA, USA", 
                              @"somewhere in nevada", nil];    
     Observation *o = [Observation object];
-    o.species_guess = [speciesGuesses objectAtIndex:rand()*speciesGuesses.count];
+    o.species_guess = [speciesGuesses objectAtIndex:rand() % speciesGuesses.count];
     o.observed_on = [NSDate date];
     o.place_guess = [placeGuesses objectAtIndex:rand() % [placeGuesses count]];
     o.latitude = [NSNumber numberWithInt:rand() % 89];

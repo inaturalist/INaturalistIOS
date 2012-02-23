@@ -50,9 +50,10 @@
     [super viewDidLoad];
     [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
     for (Observation *obs in self.observations) {
+        Observation *simObs = [Observation stub];
         CLLocationCoordinate2D annotationCoord;
-        annotationCoord.latitude = [[NSNumber numberWithInt:rand() % 89] doubleValue];
-        annotationCoord.longitude = [[NSNumber numberWithInt:rand() % 179] doubleValue];
+        annotationCoord.latitude = [[simObs latitude] doubleValue];
+        annotationCoord.longitude = [[simObs longitude] doubleValue];
         
         MKPointAnnotation *annotationPoint = [[MKPointAnnotation alloc] init];
         annotationPoint.coordinate = annotationCoord;
