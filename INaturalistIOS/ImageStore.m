@@ -74,49 +74,81 @@ static ImageStore *sharedImageStore = nil;
     [data writeToFile:filePath atomically:YES];
     
     // generate small
-    [self generateSmallImageForKey:key];
+    NSNumber *longEdge = [NSNumber numberWithFloat:
+                          MAX([UIScreen mainScreen].bounds.size.width, 
+                              [UIScreen mainScreen].bounds.size.height)];
+    [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
+       key, @"key",
+       [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
+       longEdge, @"longEdge",
+       [NSNumber numberWithFloat:1.0], @"compression",
+       nil]];
+
+    // generate large
+    NSNumber *largeLongEdge = [NSNumber numberWithFloat:2.0 *
+                               MAX([UIScreen mainScreen].bounds.size.width, 
+                                   [UIScreen mainScreen].bounds.size.height)];
+    [self performSelectorInBackground:@selector(generateImageWithParams:) 
+                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
+                                       key, @"key",
+                                       [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
+                                       largeLongEdge, @"longEdge",
+                                       [NSNumber numberWithFloat:1.0], @"compression",
+                                       nil]];
     
     // generate square
-    [self performSelectorInBackground:@selector(generateSquareImageForKey:) withObject:key];
+    [self performSelectorInBackground:@selector(generateImageWithParams:) 
+                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
+                                       key, @"key",
+                                       [NSNumber numberWithInt:ImageStoreSquareSize], @"size",
+                                       [NSNumber numberWithFloat:0.5], @"compression",
+                                       nil]];
 }
 
-- (void)generateSquareImageForKey:(NSString *)key
+- (void)generateImageWithParams:(NSDictionary *)params
 {
-    UIImage *image = [self find:key];
-    if (!image) {
-        NSLog(@"Error: failed to generate square thumbnail for %@: image not in store.", key);
-        return;
-    }
-    UIImage *squareImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:CGSizeMake(75, 75)];
-    [self.dictionary setValue:squareImage forKey:[self keyForKey:key forSize:ImageStoreSquareSize]];
-    NSString *filePath = [self pathForKey:key forSize:ImageStoreSquareSize];
-    NSData *data = UIImageJPEGRepresentation(squareImage, 0.5);
-    [data writeToFile:filePath atomically:YES];
-}
-
-- (void)generateSmallImageForKey:(NSString *)key
-{
-    UIImage *image = [self find:key];
-    if (!image) {
-        NSLog(@"Error: failed to generate small thumbnail for %@: image not in store.", key);
-        return;
-    }
-    float smallWidth = image.size.width;
-    float smallHeight = image.size.height;
-    float max = MAX([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
-    float scaleFactor = max / MAX(smallWidth, smallHeight);
-    if (smallWidth > smallHeight) {
-        smallWidth = max;
-        smallHeight = smallHeight * scaleFactor;
-    } else {
-        smallHeight = max;
-        smallWidth = smallWidth * scaleFactor;
-    }
-    UIImage *smallImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:CGSizeMake(smallWidth, smallHeight)];
+    NSLog(@"params: %@", params);
+    NSString *key = [params objectForKey:@"key"];
+    if (!key) return;
     
-    [self.dictionary setValue:smallImage forKey:[self keyForKey:key forSize:ImageStoreSmallSize]];
-    NSString *filePath = [self pathForKey:key forSize:ImageStoreSmallSize];
-    NSData *data = UIImageJPEGRepresentation(smallImage, 0.5);
+    int size = [[params objectForKey:@"size"] intValue];
+    if (!size) size = ImageStoreOriginalSize;
+    
+    NSString *sizedKey = [self keyForKey:key forSize:size];
+    
+    CGFloat longEdge = [[params objectForKey:@"longEdge"] floatValue];
+    float compression = [[params objectForKey:@"compression"] floatValue];
+    if (!compression || compression == 0) compression = 1.0;
+    
+    UIImage *image = [self find:key];
+    if (!image) {
+        NSLog(@"Error: failed to generate image for %@: image not in store.", key);
+        return;
+    }
+    
+    CGSize imgSize;
+    if (size == ImageStoreSquareSize) {
+        imgSize = CGSizeMake(75, 75);
+    } else {
+        float newWidth = image.size.width;
+        float newHeight = image.size.height;
+        float max = longEdge ? longEdge : MAX(newWidth, newHeight);
+        float scaleFactor = max / MAX(newWidth, newHeight);
+        if (newWidth > newHeight) {
+            newWidth = max;
+            newHeight = newHeight * scaleFactor;
+        } else {
+            newHeight = max;
+            newWidth = newWidth * scaleFactor;
+        }   
+        imgSize = CGSizeMake(newWidth, newHeight);
+    }
+    
+    UIImage *newImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:imgSize];
+    
+    [self.dictionary setValue:newImage forKey:sizedKey];
+    NSString *filePath = [self pathForKey:sizedKey];
+    NSData *data = UIImageJPEGRepresentation(newImage, compression);
     [data writeToFile:filePath atomically:YES];
 }
 
@@ -276,6 +308,11 @@ static ImageStore *sharedImageStore = nil;
     CGImageRelease(ref);
     
     return newImage; 
+}
+
+- (NSString *)urlStringForKey:(NSString *)key forSize:(int)size
+{
+    return [NSString stringWithFormat:@"documents://photos/%@.jpg", [self keyForKey:key forSize:size]];
 }
 
 @end

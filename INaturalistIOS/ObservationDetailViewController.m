@@ -10,6 +10,8 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
+#import "PhotoViewController.h"
+#import "PhotoSource.h"
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -113,6 +115,12 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:YES animated:animated];
+    [super viewWillDisappear:animated];
+}
+
 - (void)viewDidUnload
 {
     NSLog(@"viewDidUnload");
@@ -194,6 +202,21 @@
 - (void)coverflowView:(TKCoverflowView*)coverflowView coverAtIndexWasBroughtToFront:(int)index
 {
 	NSLog(@"Front %d",index);
+}
+
+- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasDoubleTapped:(int)index
+{
+    ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
+    if (!op) return;
+    NSString *photoSourceTitle = [NSString 
+                                  stringWithFormat:@"Photos for %@", 
+                                  (self.observation.speciesGuess ? self.observation.speciesGuess : @"Something")];
+    PhotoSource *photoSource = [[PhotoSource alloc] 
+                                initWithPhotos:self.observation.sortedObservationPhotos 
+                                title:photoSourceTitle];
+    PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
+    vc.photoSource = photoSource;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 
@@ -282,15 +305,7 @@
     _observation = observation;
     
     if (observation && [observation.observationPhotos count] > 0) {
-        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" 
-                                                                        ascending:YES];
-        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" 
-                                                                        ascending:YES];
-        
-        NSArray *sortedObservationPhotos = [observation.observationPhotos 
-                                            sortedArrayUsingDescriptors:
-                                            [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
-        for (ObservationPhoto *op in sortedObservationPhotos) {
+        for (ObservationPhoto *op in observation.sortedObservationPhotos) {
             [self addPhoto:op];
         }
     } else {

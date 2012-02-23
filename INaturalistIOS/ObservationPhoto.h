@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <Three20/Three20.h>
 #import "INatModel.h"
 
 @class Observation;
 
-@interface ObservationPhoto : INatModel
+@interface ObservationPhoto : INatModel <TTPhoto>
 
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSString * largeURL;
@@ -34,5 +35,7 @@
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) Observation *observation;
 @property (nonatomic, retain) NSString * photoKey;
+
+@property (nonatomic, assign) id<TTPhotoSource> photoSource;
 
 @end

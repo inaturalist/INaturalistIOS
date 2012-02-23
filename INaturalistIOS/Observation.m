@@ -41,6 +41,8 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic syncedAt;
 @dynamic observationPhotos;
 
+@synthesize sortedObservationPhotos = _sortedObservationPhotos;
+
 + (Observation *)stub
 {
     NSArray *speciesGuesses = [[NSArray alloc] initWithObjects:
@@ -70,20 +72,20 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         defaultMapping = [RKManagedObjectMapping mappingForClass:[Observation class]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
-         @"speciesGuess", @"species_guess",
-         @"description", @"inat_description",
-         @"createdAt", @"created_at",
-         @"updatedAt", @"updated_at",
-         @"observedOnString", @"observed_on_string",
-         @"placeGuess", @"place_guess",
+         @"speciesGuess", @"speciesGuess",
+         @"description", @"inatDescription",
+         @"createdAt", @"createdAt",
+         @"updatedAt", @"updatedAt",
+         @"observedOnString", @"observedOnString",
+         @"placeGuess", @"placeGuess",
          @"latitude", @"latitude",
          @"longitude", @"longitude",
-         @"positional_accuracy", @"positional_accuracy",
-         @"privateLatitude", @"private_latitude",
-         @"privateLongitude", @"private_longitude",
-         @"privatePositional_accuracy", @"private_positional_accuracy",
-         @"taxonID", @"taxon_id",
-         @"iconicTaxonID", @"iconic_taxon_id",
+         @"positional_accuracy", @"positionalAccuracy",
+         @"privateLatitude", @"privateLatitude",
+         @"privateLongitude", @"privateLongitude",
+         @"privatePositional_accuracy", @"privatePositionalAccuracy",
+         @"taxonID", @"taxonID",
+         @"iconicTaxonID", @"iconicTaxonID",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -115,6 +117,18 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     NSDate *now = [NSDate date];
     if (!self.observedOn) [self setObservedOn:now];
     return self;
+}
+
+- (NSArray *)sortedObservationPhotos
+{
+    if (!_sortedObservationPhotos) {
+        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
+        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
+        self.sortedObservationPhotos = [self.observationPhotos 
+                                        sortedArrayUsingDescriptors:
+                                        [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+    }
+    return _sortedObservationPhotos;
 }
 
 - (void)setObservedOn:(NSDate *)newDate

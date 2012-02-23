@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-//#import "NSManagedObject+INatModel.h
 #import "INatModel.h"
 
 @interface Observation : INatModel
@@ -40,5 +39,7 @@
 @property (nonatomic, retain) NSString * license;
 @property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSSet * observationPhotos;
+
+@property (nonatomic, strong) NSArray *sortedObservationPhotos;
 
 @end

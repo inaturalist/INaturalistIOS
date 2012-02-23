@@ -55,7 +55,7 @@
     if ([self changedValues] != nil) {
         NSDate *now;
         if ([self.changedValues objectForKey:@"syncedAt"]) {
-            now = [self performSelector:@selector(syncedAt:)];
+            now = [self performSelector:@selector(syncedAt)];
         } else {
             now = [NSDate date];
         }

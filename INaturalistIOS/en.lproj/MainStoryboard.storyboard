@@ -284,7 +284,7 @@
         <scene sceneID="e73-h5-xu6">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9h-gt-HSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tabBarController definesPresentationContext="YES" id="ln2-Xm-kuL" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" id="ln2-Xm-kuL" customClass="INatUITabBarController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="CX2-0f-gTP">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
@@ -480,6 +480,9 @@
         </scene>
     </scenes>
     <classes>
+        <class className="INatUITabBarController" superclassName="UITabBarController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
+        </class>
         <class className="LoginViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
             <relationships>

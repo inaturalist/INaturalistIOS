@@ -9,8 +9,11 @@
 #import <Foundation/Foundation.h>
 
 enum {
+    ImageStoreOriginalSize = 0,
     ImageStoreSquareSize = 1,
-    ImageStoreSmallSize = 2
+    ImageStoreSmallSize = 2,
+    ImageStoreMediumSize = 3,
+    ImageStoreLargeSize = 4
 };
 
 #define radians( degrees ) ( degrees * M_PI / 180 )
@@ -27,7 +30,7 @@ enum {
 - (NSString *)pathForKey:(NSString *)key;
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size;
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size;
-- (void)generateSmallImageForKey:(NSString *)key;
-- (void)generateSquareImageForKey:(NSString *)key;
+- (void)generateImageWithParams:(NSDictionary *)params;
 - (void)clearCache;
+- (NSString *)urlStringForKey:(NSString *)key forSize:(int)size;
 @end
