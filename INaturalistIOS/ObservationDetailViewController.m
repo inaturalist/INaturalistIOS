@@ -204,7 +204,7 @@
 	NSLog(@"Front %d",index);
 }
 
-- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasDoubleTapped:(int)index
+- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasSingleTapped:(int)index
 {
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
     if (!op) return;
@@ -212,22 +212,50 @@
                                   stringWithFormat:@"Photos for %@", 
                                   (self.observation.speciesGuess ? self.observation.speciesGuess : @"Something")];
     PhotoSource *photoSource = [[PhotoSource alloc] 
-                                initWithPhotos:self.observation.sortedObservationPhotos 
+                                initWithPhotos:self.observationPhotos 
                                 title:photoSourceTitle];
     PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
     vc.photoSource = photoSource;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-
+#pragma mark UIViewController
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSInteger sourceType;
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        switch (buttonIndex) {
+            case 0:
+                sourceType = UIImagePickerControllerSourceTypeCamera;
+                break;
+            case 1:
+                sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                break;
+            default:
+                return;
+        }
+    } else {
+        if (buttonIndex == 0) {
+            sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        } else {
+            return;
+        }
+    }
+    
+    UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
+    [ipc setDelegate:self];
+    [ipc setSourceType:sourceType];
+    [self presentModalViewController:ipc animated:YES];
+}
 
-
+#pragma mark ObservationDetailViewController
 - (IBAction)clickedClear:(id)sender {
     [descriptionTextView setText:nil];
 }
@@ -270,34 +298,6 @@
         [photoChoice setCancelButtonIndex:1];
     }
     [photoChoice showFromTabBar:self.tabBarController.tabBar];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSInteger sourceType;
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        switch (buttonIndex) {
-            case 0:
-                sourceType = UIImagePickerControllerSourceTypeCamera;
-                break;
-            case 1:
-                sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                break;
-            default:
-                return;
-        }
-    } else {
-        if (buttonIndex == 0) {
-            sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        } else {
-            return;
-        }
-    }
-    
-    UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
-    [ipc setDelegate:self];
-    [ipc setSourceType:sourceType];
-    [self presentModalViewController:ipc animated:YES];
 }
 
 - (void)setObservation:(Observation *)observation

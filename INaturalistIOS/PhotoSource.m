@@ -52,6 +52,12 @@
 
 - (id<TTPhoto>)photoAtIndex:(NSInteger)index
 {
-    return [self.photos objectAtIndex:index];
+    // for some reason TTThumbViewController will ask for photos beyond the maxPhotoIndex, 
+    // so we need to check for indices out of range
+    if (index > self.maxPhotoIndex) {
+        return nil;
+    } else {
+        return [self.photos objectAtIndex:index];
+    }
 }
 @end

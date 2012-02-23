@@ -144,4 +144,11 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+- (void)willSave
+{
+    // sortedObservationPhotos is transient and needs to be reset
+    self.sortedObservationPhotos = nil;
+    [super willSave];
+}
+
 @end

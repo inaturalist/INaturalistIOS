@@ -34,6 +34,7 @@
 @dynamic photoKey;
 
 @synthesize photoSource = _photoSource;
+@synthesize index = _index;
 
 - (void)prepareForDeletion
 {
@@ -83,11 +84,6 @@
         }
     }
     return url;
-}
-
-- (NSInteger)index
-{
-    return [self.observation.sortedObservationPhotos indexOfObject:self];
 }
 
 - (CGSize)size

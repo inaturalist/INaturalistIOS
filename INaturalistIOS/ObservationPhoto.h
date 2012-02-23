@@ -37,5 +37,6 @@
 @property (nonatomic, retain) NSString * photoKey;
 
 @property (nonatomic, assign) id<TTPhotoSource> photoSource;
+@property (nonatomic, assign) int index;
 
 @end
