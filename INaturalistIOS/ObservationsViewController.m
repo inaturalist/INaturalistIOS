@@ -9,7 +9,9 @@
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
+#import "ObservationPhoto.h"
 #import "DejalActivityView.h"
+#import "ImageStore.h"
 
 @implementation ObservationsViewController
 @synthesize syncLabel;
@@ -118,6 +120,13 @@
 {
     Observation *o = [observations objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
+    if (o.sortedObservationPhotos.count > 0) {
+        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
+        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        [cell.imageView setImage:img];
+    } else {
+        [cell.imageView setImage:nil];
+    }
     if (o.speciesGuess) {
         [cell.textLabel setText:o.speciesGuess];
     } else {

@@ -479,45 +479,6 @@
             <point key="canvasLocation" x="520" y="859"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="INatUITabBarController" superclassName="UITabBarController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
-        </class>
-        <class className="LoginViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancel:"/>
-                <relationship kind="action" name="signIn:"/>
-                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="usernameField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="ObservationDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedAddPhoto:"/>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedClear:"/>
-                <relationship kind="action" name="clickedSave:"/>
-                <relationship kind="action" name="keyboardDone:"/>
-                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="ObservationsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="edit:"/>
-                <relationship kind="action" name="sync:"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="syncLabel" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
