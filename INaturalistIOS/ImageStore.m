@@ -280,18 +280,30 @@ static ImageStore *sharedImageStore = nil;
         CGFloat oldScaledWidth = scaledWidth;
         scaledWidth = scaledHeight;
         scaledHeight = oldScaledWidth;
+        CGFloat translation;
+        if (targetWidth == targetHeight) {
+            translation = -targetHeight;
+        } else {
+            translation = -scaledHeight;
+        }
         
         CGContextRotateCTM (bitmap, radians(90));
-        CGContextTranslateCTM (bitmap, 0, -scaledHeight);
+        CGContextTranslateCTM (bitmap, 0, translation);
         
     } else if (sourceImage.imageOrientation == UIImageOrientationRight) {
         thumbnailPoint = CGPointMake(thumbnailPoint.y, thumbnailPoint.x);
         CGFloat oldScaledWidth = scaledWidth;
         scaledWidth = scaledHeight;
         scaledHeight = oldScaledWidth;
+        CGFloat translation;
+        if (targetWidth == targetHeight) {
+            translation = -targetWidth;
+        } else {
+            translation = -scaledWidth;
+        }
         
         CGContextRotateCTM (bitmap, radians(-90));
-        CGContextTranslateCTM (bitmap, -scaledWidth, 0);
+        CGContextTranslateCTM (bitmap, translation, 0);
         
     } else if (sourceImage.imageOrientation == UIImageOrientationUp) {
         // NOTHING
