@@ -69,7 +69,8 @@
         [self.navigationController popViewControllerAnimated:YES];
     } else {
         [self invalidateView]; 
-        [self showActivity:nil]; 
+        [self showActivity:nil];
+        _thumbsController = nil;
         _centerPhotoIndex = [self.photoSource numberOfPhotos] % (self.centerPhotoIndex + 1);
         _centerPhoto = [self.photoSource photoAtIndex:_centerPhotoIndex];
         [_scrollView reloadData]; 

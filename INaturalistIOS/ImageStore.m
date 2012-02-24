@@ -107,7 +107,6 @@ static ImageStore *sharedImageStore = nil;
 
 - (void)generateImageWithParams:(NSDictionary *)params
 {
-    NSLog(@"params: %@", params);
     NSString *key = [params objectForKey:@"key"];
     if (!key) return;
     
@@ -160,11 +159,10 @@ static ImageStore *sharedImageStore = nil;
     [self.dictionary removeObjectForKey:key];
     [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:key] error:NULL];
     
-    [self.dictionary removeObjectForKey:[self keyForKey:key forSize:ImageStoreSmallSize]];
-    [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:[self keyForKey:key forSize:ImageStoreSmallSize]] error:NULL];
-    
-    [self.dictionary removeObjectForKey:[self keyForKey:key forSize:ImageStoreSquareSize]];
-    [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:[self keyForKey:key forSize:ImageStoreSquareSize]] error:NULL];
+    for (int size = 1; size <= ImageStoreLargeSize; size++) {
+        [self.dictionary removeObjectForKey:[self keyForKey:key forSize:size]];
+        [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:[self keyForKey:key forSize:size]] error:NULL];
+    }
 }
 
 // http://stackoverflow.com/questions/8684551/generate-a-uuid-string-with-arc-enabled
@@ -207,6 +205,12 @@ static ImageStore *sharedImageStore = nil;
             break;
         case ImageStoreSmallSize:
             str = [NSString stringWithFormat:@"%@-small", key];
+            break;
+        case ImageStoreMediumSize:
+            str = [NSString stringWithFormat:@"%@-medium", key];
+            break;
+        case ImageStoreLargeSize:
+            str = [NSString stringWithFormat:@"%@-large", key];
             break;
         default:
             str = key;

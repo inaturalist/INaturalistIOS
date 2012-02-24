@@ -42,7 +42,12 @@
 
 - (void)initUI
 {
+    NSLog(@"initUI");
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                                                          target:nil 
+                                                                          action:nil];
     if (!self.saveButton) {
+        NSLog(@"setting saveButton");
         self.saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
@@ -53,24 +58,31 @@
     }
     
     if (!self.keyboardToolbar) {
+        NSLog(@"setting keyboardToolbar");
         self.keyboardToolbar = [[UIToolbar alloc] init];
-        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                                                              target:nil 
-                                                                              action:nil];
+        self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
+        [self.keyboardToolbar sizeToFit];
         UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] initWithTitle:@"Clear" 
-                                                                        style:UIBarButtonItemStylePlain 
-                                                                       target:nil 
+                                                                        style:UIBarButtonItemStyleBordered
+                                                                       target:self
                                                                        action:@selector(clickedClear:)];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
-                                                                                    target:nil 
+                                                                                    target:self 
                                                                                     action:@selector(keyboardDone:)];
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
+    
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    [self setToolbarItems:[NSArray arrayWithObjects:
+                           flex, 
+                           self.saveButton, 
+                           flex, nil]
+                 animated:YES];
+    
     [self refreshCoverflowView];
 }
 
 #pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     NSLog(@"viewDidLoad");
@@ -78,27 +90,17 @@
     // Do any additional setup after loading the view from its nib.
     [self updateUIWithObservation];
     if ([self.observation isNew]) {
-        [[self navigationItem] setTitle:@"New observation"];
+        [[self navigationItem] setTitle:@"Add observation"];
     } else {
         [[self navigationItem] setTitle:@"Edit observation"];
     }
-    
-    [self initUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"viewWillAppear");
     [super viewWillAppear:animated];
-    [self.navigationController setToolbarHidden:NO animated:animated];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                                                          target:nil 
-                                                                          action:nil];
-    [self setToolbarItems:[NSArray arrayWithObjects:
-                           flex, 
-                           self.saveButton, 
-                           flex, nil]
-                 animated:YES];
+    [self initUI];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -169,6 +171,7 @@
 #pragma mark TKCoverflowViewDelegate methods
 - (void)initCoverflowView
 {
+    NSLog(@"initCoverflowView");
     float width = [UIScreen mainScreen].bounds.size.width,
           height = width / 1.342,
           coverDim = height - 10,
@@ -184,10 +187,21 @@
 
 - (void)refreshCoverflowView
 {
+    NSLog(@"refreshCoverflowView");
     if (!self.coverflowView) {
         [self initCoverflowView];
     }
+    if (self.coverflowView.superview != self.tableView.tableHeaderView) {
+        [self.tableView.tableHeaderView addSubview:self.coverflowView];
+    }
     self.coverflowView.numberOfCovers = [self.observationPhotos count];
+    if (self.coverflowView.numberOfCovers == 0) {
+        [self.coverflowView setHidden:YES];
+    } else {
+        [self.coverflowView setHidden:NO];
+    }
+    [self.coverflowView setNeedsDisplay];
+    [self.coverflowView setNeedsLayout];
     [self resizeHeaderView];
 }
 
@@ -356,23 +370,17 @@
 
 - (void)resizeHeaderView
 {
+    NSLog(@"resizeHeaderView, self.coverflowView: %@", self.coverflowView);
     if (!self.coverflowView) return;
+    if (self.coverflowView.hidden) NSLog(@"coverflowView was hidden");
     UIView *headerView = self.tableView.tableHeaderView;
     CGRect r = headerView.bounds;
     if (self.observationPhotos.count > 0) {
-        [self.coverflowView setHidden:NO];
-        if (r.size.height < self.coverflowView.bounds.size.height) {
-            [headerView setBounds:
-             CGRectMake(0, 0, r.size.width, self.coverflowView.bounds.size.height)];
-        }
+        [headerView setBounds:
+         CGRectMake(0, 0, r.size.width, self.coverflowView.bounds.size.height)];
     } else {
-        [self.coverflowView setHidden:YES];
-        if (r.size.height >= self.coverflowView.bounds.size.height) {
-            [headerView setBounds:
-             CGRectMake(0, 0, 
-                        r.size.width, 
-                        self.coverflowView.bounds.size.height - r.size.height)];
-        }
+        [headerView setBounds:
+         CGRectMake(0, 0, r.size.width, 0)];
     }
     [self.tableView setNeedsLayout];
     [self.tableView setNeedsDisplay];
