@@ -35,6 +35,7 @@
 
 @synthesize photoSource = _photoSource;
 @synthesize index = _index;
+@synthesize size = _size;
 
 - (void)prepareForDeletion
 {
@@ -88,12 +89,18 @@
 
 - (CGSize)size
 {
-    UIImage *img = [[ImageStore sharedImageStore] find:self.photoKey forSize:ImageStoreLargeSize];
-    if (img) {
-        return img.size;
-    } else {
-        return UIScreen.mainScreen.bounds.size;
+    // since size is a struct, it sort of already has all its "attributes" in place, 
+    // but they have been initialized to zero, so this is the equivalent of a null check
+    if (_size.width == 0) {
+        UIImage *img = [[ImageStore sharedImageStore] find:self.photoKey forSize:ImageStoreLargeSize];
+        if (img) {
+            [self setSize:img.size];
+        } else {
+            [self setSize:UIScreen.mainScreen.bounds.size];
+        }
     }
+    return _size;
+
 }
 
 - (NSString *)caption

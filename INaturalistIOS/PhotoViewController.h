@@ -9,6 +9,14 @@
 //#import "TTPhotoViewController.h"
 #import <Three20/Three20.h>
 
-@interface PhotoViewController : TTPhotoViewController
+@protocol PhotoViewControllerDelegate <NSObject>
+- (void)photoViewControllerDeletePhoto:(id<TTPhoto>)photo;
+@end
 
+@interface PhotoViewController : TTPhotoViewController <UIActionSheetDelegate>
+@property (nonatomic, strong) UIBarButtonItem *deleteButton;
+@property (nonatomic, strong) id <PhotoViewControllerDelegate> delegate;
+
+- (void)deletePhoto:(id)sender;
+- (void)deleteCenterPhoto;
 @end

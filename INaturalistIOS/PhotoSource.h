@@ -10,8 +10,9 @@
 
 @interface PhotoSource : TTURLRequestModel <TTModel, TTPhotoSource>
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, strong) NSArray *photos;
+@property (nonatomic, strong) NSMutableArray *photos;
 
 - (id)initWithPhotos:(NSArray *)photos title:(NSString *)title;
+- (void)removePhoto:(id<TTPhoto>)photo;
 
 @end

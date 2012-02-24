@@ -66,7 +66,7 @@
                                                                                     action:@selector(keyboardDone:)];
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
-    [self initCoverflowView];
+    [self refreshCoverflowView];
 }
 
 #pragma mark - View lifecycle
@@ -178,10 +178,17 @@
     self.coverflowView = [[TKCoverflowView alloc] initWithFrame:r];
 	self.coverflowView.coverflowDelegate = self;
 	self.coverflowView.dataSource = self;
-    self.coverflowView.numberOfCovers = [self.observationPhotos count];
     self.coverflowView.coverSize = CGSizeMake(coverWidth, coverHeight);
-    [self resizeHeaderView];
     [self.tableView.tableHeaderView addSubview:self.coverflowView];
+}
+
+- (void)refreshCoverflowView
+{
+    if (!self.coverflowView) {
+        [self initCoverflowView];
+    }
+    self.coverflowView.numberOfCovers = [self.observationPhotos count];
+    [self resizeHeaderView];
 }
 
 - (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverAtIndex:(int)index
@@ -215,6 +222,7 @@
                                 initWithPhotos:self.observationPhotos 
                                 title:photoSourceTitle];
     PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
+    vc.delegate = self;
     vc.photoSource = photoSource;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -253,6 +261,16 @@
     [ipc setDelegate:self];
     [ipc setSourceType:sourceType];
     [self presentModalViewController:ipc animated:YES];
+}
+
+#pragma mark PhotoViewControllerDelegate
+- (void)photoViewControllerDeletePhoto:(id<TTPhoto>)photo
+{
+    NSLog(@"photoViewControllerDeletePhoto, photo: %@", photo);
+    ObservationPhoto *op = (ObservationPhoto *)photo;
+    [self.observationPhotos removeObject:op];
+    [op destroy];
+    [self refreshCoverflowView];
 }
 
 #pragma mark ObservationDetailViewController
@@ -306,22 +324,27 @@
     
     if (observation && [observation.observationPhotos count] > 0) {
         for (ObservationPhoto *op in observation.sortedObservationPhotos) {
-            [self addPhoto:op];
+            [self.observationPhotos addObject:op];
         }
+        [self refreshCoverflowView];
     } else {
         [self.observationPhotos removeAllObjects];
     }
 }
 
-- (void)addPhoto:(ObservationPhoto *)op
+- (NSMutableArray *)observationPhotos
 {
-    if (!self.observationPhotos) {
+    if (!_observationPhotos) {
         self.observationPhotos = [[NSMutableArray alloc] init];
     }
+    return _observationPhotos;
+}
+
+- (void)addPhoto:(ObservationPhoto *)op
+{
     [self.observationPhotos addObject:op];
-    self.coverflowView.numberOfCovers = [self.observationPhotos count];
+    [self refreshCoverflowView];
     [self.coverflowView setCurrentIndex:self.coverflowView.numberOfCovers-1];
-    [self resizeHeaderView];
 }
 
 - (void)removePhoto:(ObservationPhoto *)op
@@ -344,9 +367,11 @@
         }
     } else {
         [self.coverflowView setHidden:YES];
-        if (r.size.height > self.coverflowView.bounds.size.height) {
+        if (r.size.height >= self.coverflowView.bounds.size.height) {
             [headerView setBounds:
-             CGRectMake(0, 0, r.size.width, 0)];
+             CGRectMake(0, 0, 
+                        r.size.width, 
+                        self.coverflowView.bounds.size.height - r.size.height)];
         }
     }
     [self.tableView setNeedsLayout];

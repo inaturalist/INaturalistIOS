@@ -16,7 +16,7 @@
 {
     self = [super init];
     if (self) {
-        self.photos = photos;
+        self.photos = [[NSMutableArray alloc] initWithArray:photos];
         self.title = title;
         for (int i = 0; i < photos.count; i++) {
             id<TTPhoto> p = [self.photos objectAtIndex:i];
@@ -27,6 +27,16 @@
         }
     }
     return self;
+}
+
+- (void)removePhoto:(id<TTPhoto>)photo
+{
+//    NSLog(@"removing photo %@", photo);
+    [self.photos removeObject:photo];
+    for (int i = 0; i < self.photos.count; i++) {
+        id<TTPhoto> p = [self.photos objectAtIndex:i];
+        [p setIndex:i];
+    }
 }
 
 #pragma mark TTModel

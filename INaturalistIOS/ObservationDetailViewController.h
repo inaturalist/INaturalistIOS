@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
+#import "PhotoViewController.h"
+
 @class Observation;
 @class ObservationPhoto;
 @class ObservationDetailViewController;
@@ -17,7 +19,7 @@
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end
 
-@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,TKCoverflowViewDelegate, TKCoverflowViewDataSource>
+@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TKCoverflowViewDelegate, TKCoverflowViewDataSource,PhotoViewControllerDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
@@ -44,6 +46,7 @@
 - (void)addPhoto:(ObservationPhoto *)op;
 - (void)removePhoto:(ObservationPhoto *)op;
 - (void)initCoverflowView;
+- (void)refreshCoverflowView;
 - (void)resizeHeaderView;
 
 @end
