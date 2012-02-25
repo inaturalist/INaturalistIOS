@@ -21,6 +21,8 @@
 @property (nonatomic, strong) NSMutableArray *observations;
 @property (nonatomic, assign) int observationsToSyncCount;
 @property (nonatomic, assign) int syncedObservationsCount;
+@property (nonatomic, assign) int observationPhotosToSyncCount;
+@property (nonatomic, assign) int syncedObservationPhotosCount;
 @property (nonatomic, strong) NSArray *syncToolbarItems;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *syncLabel;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *syncButton;
@@ -28,6 +30,9 @@
 - (IBAction)sync:(id)sender;
 - (IBAction)edit:(id)sender;
 
+- (void)syncObservations;
+- (void)syncObservationPhotos;
 - (void)loadData;
 - (void)checkSyncStatus;
+- (int)itemsToSyncCount;
 @end

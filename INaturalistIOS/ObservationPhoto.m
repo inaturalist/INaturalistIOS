@@ -10,13 +10,13 @@
 #import "Observation.h"
 #import "ImageStore.h"
 
+static RKManagedObjectMapping *defaultMapping = nil;
+static RKManagedObjectMapping *defaultSerializationMapping = nil;
+
 @implementation ObservationPhoto
 
-@dynamic createdAt;
 @dynamic largeURL;
-@dynamic license_code;
-@dynamic localCreatedAt;
-@dynamic localUpdatedAt;
+@dynamic licenseCode;
 @dynamic mediumURL;
 @dynamic nativePageURL;
 @dynamic nativeRealName;
@@ -24,14 +24,13 @@
 @dynamic observationID;
 @dynamic originalURL;
 @dynamic position;
-@dynamic recordID;
 @dynamic smallURL;
 @dynamic squareURL;
 @dynamic syncedAt;
 @dynamic thumbURL;
-@dynamic updatedAt;
 @dynamic observation;
 @dynamic photoKey;
+@dynamic nativePhotoID;
 
 @synthesize photoSource = _photoSource;
 @synthesize index = _index;
@@ -41,6 +40,59 @@
 {
     [super prepareForDeletion];
     [[ImageStore sharedImageStore] destroy:self.photoKey];
+}
+
++ (RKManagedObjectMapping *)mapping
+{
+    if (!defaultMapping) {
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]];
+        [defaultMapping mapKeyPathsToAttributes:
+         @"id", @"recordID",
+         @"photo_id", @"photoID",
+         @"observation_id", @"observationID",
+         @"createdAt", @"createdAt",
+         @"updatedAt", @"updatedAt",
+         @"position", @"position",
+         @"photo.original_url", @"originalURL",
+         @"photo.large_url", @"largeURL",
+         @"photo.medium_url", @"mediumURL",
+         @"photo.small_url", @"smallURL",
+         @"photo.thumb_url", @"thumbURL",
+         @"photo.square_url", @"squareURL",
+         @"photo.native_page_url", @"nativePageURL",
+         @"photo.native_photo_id", @"nativePhotoID",
+         @"photo.native_username", @"nativeUsername",
+         @"photo.native_realname", @"nativeRealName",
+         @"photo.license_code", @"license_code",
+         nil];
+        defaultMapping.primaryKeyAttribute = @"recordID";
+    }
+    return defaultMapping;
+}
+
++ (RKManagedObjectMapping *)serializationMapping
+{
+    if (!defaultSerializationMapping) {
+        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]];
+        [defaultSerializationMapping mapKeyPathsToAttributes:
+         @"observationID", @"observation_photo[observation_id]",
+         @"position", @"observation_photo[position]",
+         nil];
+    }
+    return defaultSerializationMapping;
+}
+
+// TODO create observationID getter that checks the associated observation for its recordID
+- (NSNumber *)observationID
+{
+    NSLog(@"accessing observationID");
+    [self willAccessValueForKey:@"observationID"];
+    if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
+        NSLog(@"observationID was not set, setting to %@", self.observation.recordID);
+        [self setPrimitiveObservationID:self.observation.recordID];
+    }
+    [self didAccessValueForKey:@"observationID"];
+    return [self primitiveObservationID];
 }
 
 #pragma mark TTPhoto protocol methods

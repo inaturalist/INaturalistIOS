@@ -14,12 +14,14 @@
 #import "ImageStore.h"
 
 @implementation ObservationsViewController
-@synthesize syncLabel;
-@synthesize syncButton;
-@synthesize observations;
+@synthesize syncLabel = _syncLabel;
+@synthesize syncButton = _syncButton;
+@synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
+@synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
 @synthesize syncedObservationsCount = _syncedObservationsCount;
+@synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 
 - (id)init
 {
@@ -30,16 +32,28 @@
 }
 
 - (IBAction)sync:(id)sender {
-    NSArray *observationsToSync = [observations filteredArrayUsingPredicate:
-                                   [NSPredicate predicateWithFormat:
-                                    @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
+    [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    if (self.observationsToSyncCount > 0) {
+        [self syncObservations];
+    } else {
+        [self syncObservationPhotos];
+    }
+}
+
+- (void)syncObservations
+{
+    NSArray *observationsToSync = [Observation needingSync];
     
     if (observationsToSync.count == 0) return;
     
-    syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                                         withLabel:[NSString 
-                                                                    stringWithFormat:
-                                                                    @"Syncing 1 of %d observations", observationsToSync.count]];
+    NSLog(@"syncActivityView: %@", syncActivityView);
+    NSString *activityMsg = [NSString stringWithFormat:@"Syncing 1 of %d observations", observationsToSync.count];
+    if (syncActivityView) {
+        [[syncActivityView activityLabel] setText:activityMsg];
+    } else {
+        syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                                             withLabel:activityMsg];
+    }
     
     // manually applying mappings b/c PUT and POST responses return JSON without a root element, 
     // e.g. {foo: 'bar'} instead of observation: {foo: 'bar'}, which RestKit apparently can't 
@@ -49,6 +63,41 @@
             [[RKObjectManager sharedManager] putObject:o mapResponseWith:[Observation mapping] delegate:self];
         } else {
             [[RKObjectManager sharedManager] postObject:o mapResponseWith:[Observation mapping] delegate:self];
+        }
+    }
+}
+
+- (void)syncObservationPhotos
+{
+    NSLog(@"syncObservationPhotos");
+    NSArray *observationPhotosToSync = [ObservationPhoto needingSync];
+    
+    if (observationPhotosToSync.count == 0) return;
+    
+    NSLog(@"resetting syncActivityView");
+    NSString *activityMsg = [NSString stringWithFormat:@"Syncing 1 of %d photos", observationPhotosToSync.count];
+    if (syncActivityView) {
+        [[syncActivityView activityLabel] setText:activityMsg];
+    } else {
+        syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                                             withLabel:activityMsg];
+    }
+    
+    for (ObservationPhoto *op in observationPhotosToSync) {
+        if (op.syncedAt) {
+            [[RKObjectManager sharedManager] putObject:op mapResponseWith:[ObservationPhoto mapping] delegate:self];
+        } else {
+            [[RKObjectManager sharedManager] postObject:op delegate:self block:^(RKObjectLoader *loader) {
+                RKObjectMapping* serializationMapping = [[[RKObjectManager sharedManager] mappingProvider] serializationMappingForClass:[ObservationPhoto class]];
+                NSError* error = nil;
+                NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] serializedObject:&error];
+                RKParams* params = [RKParams paramsWithDictionary:dictionary];
+                [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
+                                                                  forSize:ImageStoreLargeSize] 
+                       forParam:@"file"];
+                loader.params = params;
+                loader.objectMapping = [ObservationPhoto mapping];
+            }];
         }
     }
 }
@@ -67,8 +116,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [[observations objectAtIndex:indexPath.row] destroy];
-        [observations removeObjectAtIndex:indexPath.row];
+        [[self.observations objectAtIndex:indexPath.row] destroy];
+        [self.observations removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
     }
 }
@@ -94,12 +143,14 @@
 
 - (void)checkSyncStatus
 {
-    self.observationsToSyncCount = [[[self observations] filteredArrayUsingPredicate:
-                                     [NSPredicate predicateWithFormat:@"syncedAt = nil OR syncedAt < localUpdatedAt"]] count];
-    NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d observation", self.observationsToSyncCount];
-    if (self.observationsToSyncCount != 1) [msg appendString:@"s"];
-    [syncButton setTitle:msg];
-    if (self.observationsToSyncCount > 0) {
+//    self.observationsToSyncCount = [[[self observations] filteredArrayUsingPredicate:
+//                                     [NSPredicate predicateWithFormat:@"syncedAt = nil OR syncedAt < localUpdatedAt"]] count];
+    self.observationsToSyncCount = [Observation needingSyncCount];
+    self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
+    NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d item", self.itemsToSyncCount];
+    if (self.itemsToSyncCount != 1) [msg appendString:@"s"];
+    [self.syncButton setTitle:msg];
+    if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
         [self setToolbarItems:self.syncToolbarItems animated:YES];
     } else {
@@ -109,16 +160,23 @@
     self.syncedObservationsCount = 0;
 }
 
+- (int)itemsToSyncCount
+{
+    if (!self.observationsToSyncCount) self.observationsToSyncCount = 0;
+    if (!self.observationPhotosToSyncCount) self.observationPhotosToSyncCount = 0;
+    return self.observationsToSyncCount + self.observationPhotosToSyncCount;
+}
+
 
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [observations count];
+    return [self.observations count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Observation *o = [observations objectAtIndex:[indexPath row]];
+    Observation *o = [self.observations objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
@@ -136,7 +194,6 @@
 }
 
 # pragma mark memory management
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -144,7 +201,6 @@
 }
 
 #pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -152,10 +208,10 @@
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-                               syncButton, 
+                               self.syncButton, 
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                nil]];
-    if (!observations) {
+    if (!self.observations) {
         [self loadData];
     }
     
@@ -211,7 +267,7 @@
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
-        Observation *o = [observations 
+        Observation *o = [self.observations 
                           objectAtIndex:[[self.tableView 
                                           indexPathForSelectedRow] row]];
         [vc setObservation:o];
@@ -244,23 +300,39 @@
 
 #pragma mark RKObjectLoaderDelegate methods
 - (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
+    NSLog(@"objectLoader didLoadObjects");
+    if (objects.count == 0) return;
+    
     NSDate *now = [NSDate date];
-    for (Observation *o in objects) {
+    for (INatModel *o in objects) {
         [o setSyncedAt:now];
     }
     [[[RKObjectManager sharedManager] objectStore] save];
     
-    self.syncedObservationsCount += 1;
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:
-         [NSString stringWithFormat:
-          @"Syncing %d of %d observations", 
-          self.syncedObservationsCount + 1, 
-          self.observationsToSyncCount]];
+    NSString *activityMsg;
+    if ([[objects firstObject] isKindOfClass:[Observation class]]) {
+        self.syncedObservationsCount += 1;
+        activityMsg = [NSString stringWithFormat:@"Syncing %d of %d observations", 
+                       self.syncedObservationsCount + 1, 
+                       self.observationsToSyncCount];
+        if (self.syncedObservationsCount >= self.observationsToSyncCount) {
+            [self syncObservationPhotos];
+        } else if (syncActivityView) {
+            [[syncActivityView activityLabel] setText:activityMsg];
+        }
+    } else {
+        self.syncedObservationPhotosCount += 1;
+        activityMsg = [NSString stringWithFormat:@"Syncing %d of %d photos", 
+                       self.syncedObservationPhotosCount + 1, 
+                       self.observationPhotosToSyncCount];
+        if (syncActivityView) {
+            [[syncActivityView activityLabel] setText:activityMsg];
+        }
     }
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    NSLog(@"failed with error: %@", error);
     if (syncActivityView) {
         [DejalBezelActivityView removeView];
         syncActivityView = nil;
@@ -268,20 +340,32 @@
     
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    NSString *errorMsg;
+    bool jsonParsingError = false, authFailure = false;
+    NSLog(@"objectLoader.response.statusCode: %d", objectLoader.response.statusCode);
+    switch (objectLoader.response.statusCode) {
+        // UNPROCESSABLE ENTITY
+        case 422:
+            errorMsg = @"Unprocessable entity";
+            break;
+            
+        default:
+            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+            errorMsg = error.localizedDescription;
+    }
+    
     if (jsonParsingError || authFailure) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription]
+                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", errorMsg]
                                                     delegate:self 
                                            cancelButtonTitle:@"OK" 
                                            otherButtonTitles:nil];
         [av show];
     }
-    self.syncedObservationsCount = 0;
 }
 
 - (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader

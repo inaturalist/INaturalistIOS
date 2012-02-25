@@ -15,11 +15,8 @@
 
 @interface ObservationPhoto : INatModel <TTPhoto>
 
-@property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSString * largeURL;
-@property (nonatomic, retain) NSString * license_code;
-@property (nonatomic, retain) NSDate * localCreatedAt;
-@property (nonatomic, retain) NSDate * localUpdatedAt;
+@property (nonatomic, retain) NSString * licenseCode;
 @property (nonatomic, retain) NSString * mediumURL;
 @property (nonatomic, retain) NSString * nativePageURL;
 @property (nonatomic, retain) NSString * nativeRealName;
@@ -27,17 +24,22 @@
 @property (nonatomic, retain) NSNumber * observationID;
 @property (nonatomic, retain) NSString * originalURL;
 @property (nonatomic, retain) NSNumber * position;
-@property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSString * smallURL;
 @property (nonatomic, retain) NSString * squareURL;
-@property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSString * thumbURL;
-@property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) Observation *observation;
 @property (nonatomic, retain) NSString * photoKey;
+@property (nonatomic, retain) NSString * nativePhotoID;
 
 @property (nonatomic, assign) id<TTPhotoSource> photoSource;
 @property (nonatomic, assign) int index;
 @property (nonatomic, assign) CGSize size;
 
+@end
+
+// Overriding accessors for Core Data attributes is a bit weird.  Check out
+// https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CoreData/Articles/cdAccessorMethods.html
+@interface ObservationPhoto (PrimitiveAccessors)
+- (NSNumber *)primitiveObservationID;
+- (void)setPrimitiveObservationID:(NSNumber *)newObservationId;
 @end

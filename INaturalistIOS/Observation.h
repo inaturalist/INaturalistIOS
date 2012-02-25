@@ -18,10 +18,6 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSNumber * positionalAccuracy;
-@property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic, retain) NSDate * updatedAt;
-@property (nonatomic, retain) NSDate * localCreatedAt;
-@property (nonatomic, retain) NSDate * localUpdatedAt;
 @property (nonatomic, retain) NSDate * observedOn;
 @property (nonatomic, retain) NSString * observedOnString;
 @property (nonatomic, retain) NSNumber * userID;
@@ -37,7 +33,6 @@
 @property (nonatomic, retain) NSString * positioningDevice;
 @property (nonatomic, retain) NSNumber * outOfRange;
 @property (nonatomic, retain) NSString * license;
-@property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSSet * observationPhotos;
 
 @property (nonatomic, strong) NSArray *sortedObservationPhotos;

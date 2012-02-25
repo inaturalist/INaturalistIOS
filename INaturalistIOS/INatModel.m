@@ -10,6 +10,13 @@
 
 @implementation INatModel
 
+@dynamic recordID;
+@dynamic createdAt;
+@dynamic updatedAt;
+@dynamic localCreatedAt;
+@dynamic localUpdatedAt;
+@dynamic syncedAt;
+
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
@@ -17,6 +24,28 @@
     NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
     return [self objectsWithFetchRequest:request];
+}
+
++ (NSArray *)needingSync
+{
+    
+    return [self objectsWithFetchRequest:self.needingSyncRequest];
+}
+
++ (NSFetchRequest *)needingSyncRequest
+{
+    NSFetchRequest *request = [self fetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:
+                           @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    return request;
+}
+
++ (int)needingSyncCount
+{
+    NSError *error;
+    return [self.managedObjectContext countForFetchRequest:self.needingSyncRequest error:&error];
 }
 
 + (id)stub

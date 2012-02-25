@@ -19,10 +19,6 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic latitude;
 @dynamic longitude;
 @dynamic positionalAccuracy;
-@dynamic createdAt;
-@dynamic updatedAt;
-@dynamic localCreatedAt;
-@dynamic localUpdatedAt;
 @dynamic observedOn;
 @dynamic observedOnString;
 @dynamic userID;
@@ -38,7 +34,6 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic positioningDevice;
 @dynamic outOfRange;
 @dynamic license;
-@dynamic syncedAt;
 @dynamic observationPhotos;
 
 @synthesize sortedObservationPhotos = _sortedObservationPhotos;

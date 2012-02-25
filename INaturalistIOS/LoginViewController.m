@@ -68,6 +68,7 @@
 {
     [[NSUserDefaults standardUserDefaults] setValue:[usernameField text] forKey:INatUsernamePrefKey];
     [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] forKey:INatPasswordPrefKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
     if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
         [self.delegate loginViewControllerDidLogIn:self];
