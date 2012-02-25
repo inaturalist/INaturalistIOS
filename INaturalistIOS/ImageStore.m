@@ -73,10 +73,11 @@ static ImageStore *sharedImageStore = nil;
     NSData *data = UIImageJPEGRepresentation(image, 0.8);
     [data writeToFile:filePath atomically:YES];
     
+    float screenMax = MAX([UIScreen mainScreen].bounds.size.width, 
+                          [UIScreen mainScreen].bounds.size.height);
+    
     // generate small
-    NSNumber *longEdge = [NSNumber numberWithFloat:
-                          MAX([UIScreen mainScreen].bounds.size.width, 
-                              [UIScreen mainScreen].bounds.size.height)];
+    NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
     [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
        key, @"key",
        [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
@@ -85,14 +86,11 @@ static ImageStore *sharedImageStore = nil;
        nil]];
 
     // generate large
-    NSNumber *largeLongEdge = [NSNumber numberWithFloat:2.0 *
-                               MAX([UIScreen mainScreen].bounds.size.width, 
-                                   [UIScreen mainScreen].bounds.size.height)];
     [self performSelectorInBackground:@selector(generateImageWithParams:) 
                            withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
                                        key, @"key",
                                        [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
-                                       largeLongEdge, @"longEdge",
+                                       [NSNumber numberWithFloat:2.0 * screenMax], @"longEdge",
                                        [NSNumber numberWithFloat:1.0], @"compression",
                                        nil]];
     
@@ -238,6 +236,13 @@ static ImageStore *sharedImageStore = nil;
     CGFloat height = imageSize.height;
     CGFloat targetWidth = targetSize.width;
     CGFloat targetHeight = targetSize.height;
+    
+    // don't scale up
+    if (targetSize.width > width || targetSize.height > height) {
+        targetWidth = width;
+        targetHeight = height;
+    }
+    
     CGFloat scaleFactor = 0.0;
     CGFloat scaledWidth = targetWidth;
     CGFloat scaledHeight = targetHeight;
