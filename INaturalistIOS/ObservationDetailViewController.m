@@ -13,6 +13,10 @@
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
 
+static int PhotoActionSheetTag = 0;
+static int LocationActionSheetTag = 1;
+static int LocationTableViewSection = 2;
+
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
 @synthesize latitudeLabel;
@@ -304,6 +308,15 @@
 #pragma mark UIActionSheetDelegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    if (actionSheet.tag == PhotoActionSheetTag) {
+        [self photoActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+    } else {
+        [self locationActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+    }
+}
+
+- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
     NSInteger sourceType;
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         switch (buttonIndex) {
@@ -328,6 +341,21 @@
     [ipc setDelegate:self];
     [ipc setSourceType:sourceType];
     [self presentModalViewController:ipc animated:YES];
+}
+
+- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            [self startUpdatingLocation];
+            break;
+        case 1:
+            // TODO open location editing view controller
+            break;            
+        default:
+            break;
+    }
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 #pragma mark PhotoViewControllerDelegate
@@ -369,7 +397,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (indexPath.section == LocationTableViewSection) {
+        UIActionSheet *locationActionSheet = [[UIActionSheet alloc] init];
+        locationActionSheet.delegate = self;
+        locationActionSheet.tag = LocationActionSheetTag;
+        [locationActionSheet addButtonWithTitle:@"Get current location"];
+        [locationActionSheet addButtonWithTitle:@"Edit location"];
+        [locationActionSheet addButtonWithTitle:@"Cancel"];
+        [locationActionSheet setCancelButtonIndex:2];
+        [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+    }
 }
 
 
@@ -405,6 +442,7 @@
 
 - (IBAction)clickedAddPhoto:(id)sender {
     UIActionSheet *photoChoice = [[UIActionSheet alloc] init];
+    photoChoice.tag = PhotoActionSheetTag;
     [photoChoice setDelegate:self];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [photoChoice addButtonWithTitle:@"Take a photo"];

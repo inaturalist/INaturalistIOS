@@ -57,4 +57,7 @@
 - (void)startUpdatingLocation;
 - (void)stopUpdatingLocation;
 
+- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+
 @end
