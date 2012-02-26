@@ -18,6 +18,7 @@
 @synthesize latitudeLabel;
 @synthesize longitudeLabel;
 @synthesize positionalAccuracyLabel;
+@synthesize placeGuessField = _placeGuessField;
 @synthesize keyboardToolbar = _keyboardToolbar;
 @synthesize saveButton = _saveButton;
 @synthesize speciesGuessTextField = _speciesGuessTextField;
@@ -26,18 +27,35 @@
 @synthesize observation = _observation;
 @synthesize observationPhotos = _observationPhotos;
 @synthesize coverflowView = _coverflowView;
+@synthesize locationManager = _locationManager;
+@synthesize locationTimer = _locationTimer;
+@synthesize geocoder = _geocoder;
 
-- (void)updateUIWithObservation
+- (void)observationToUI
 {
     if (self.observation) {
         [self.speciesGuessTextField setText:self.observation.speciesGuess];
-        [observedAtLabel setText:self.observation.observedOnString];
-        if (self.observation.latitude) [latitudeLabel setText:[self.observation.latitude description]];
-        if (self.observation.longitude) [longitudeLabel setText:[NSString stringWithFormat:@"%f", [self.observation.longitude doubleValue]]];
+        [self.observedAtLabel setText:self.observation.observedOnString];
+        [self.placeGuessField setText:self.observation.placeGuess];
+        if (self.observation.latitude) [latitudeLabel setText:self.observation.latitude.description];
+        if (self.observation.longitude) [longitudeLabel setText:self.observation.longitude.description];
                                     
-        if (self.observation.positionalAccuracy) [positionalAccuracyLabel setText:[NSString stringWithFormat:@"%d", self.observation.positionalAccuracy]];
+        if (self.observation.positionalAccuracy) {
+            [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
+        }
         [descriptionTextView setText:self.observation.inatDescription];
     }
+}
+
+- (void)uiToObservation
+{
+    [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
+    [self.observation setInatDescription:[descriptionTextView text]];
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    self.observation.latitude = [numberFormatter numberFromString:self.latitudeLabel.text];
+    NSLog(@"set latitude: %@", self.observation.latitude);
+    self.observation.longitude = [numberFormatter numberFromString:self.longitudeLabel.text];
+    self.observation.positionalAccuracy = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
 }
 
 - (void)initUI
@@ -88,7 +106,7 @@
     NSLog(@"viewDidLoad");
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self updateUIWithObservation];
+    [self observationToUI];
     if ([self.observation isNew]) {
         [[self navigationItem] setTitle:@"Add observation"];
     } else {
@@ -96,16 +114,45 @@
     }
 }
 
+- (void)startUpdatingLocation
+{
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+    }
+    if (!self.locationTimer) {
+        self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 
+                                                              target:self 
+                                                            selector:@selector(stopUpdatingLocation) 
+                                                            userInfo:nil 
+                                                             repeats:NO];
+        NSLog(@"locationTimer: %@", self.locationTimer);
+    }
+    NSLog(@"starting location manager updates");
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)stopUpdatingLocation
+{
+    NSLog(@"stopping location updates");
+    [self.locationManager stopUpdatingLocation];
+    [self.locationTimer invalidate];
+    self.locationTimer = nil;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"viewWillAppear");
     [super viewWillAppear:animated];
-    [self initUI];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     NSLog(@"viewDidAppear, saveButton: %@", self.saveButton);
+    [self initUI];
+    if (self.observation.isNew && [self.latitudeLabel.text isEqualToString:@"???"]) {
+        [self startUpdatingLocation];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -113,7 +160,6 @@
     NSLog(@"didReceiveMemoryWarning");
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    [self.observation save];
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -126,6 +172,10 @@
 - (void)viewDidUnload
 {
     NSLog(@"viewDidUnload");
+    
+    // ensure UI state gets stored in the observation
+    [self uiToObservation];
+    
     [self setSpeciesGuessTextField:nil];
     [self setObservedAtLabel:nil];
     [self setLatitudeLabel:nil];
@@ -135,6 +185,9 @@
     [self setDescriptionTextView:nil];
     [self setKeyboardToolbar:nil];
     [self setSaveButton:nil];
+    [self stopUpdatingLocation];
+    [self setLocationManager:nil];
+    [self setPlaceGuessField:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -283,9 +336,42 @@
     NSLog(@"photoViewControllerDeletePhoto, photo: %@", photo);
     ObservationPhoto *op = (ObservationPhoto *)photo;
     [self.observationPhotos removeObject:op];
-    [op destroy];
+    [op deleteEntity];
     [self refreshCoverflowView];
 }
+
+#pragma mark CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    if (newLocation.timestamp.timeIntervalSinceNow < -60) {
+        return;
+    }
+    [self.latitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.latitude]];
+    [self.longitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.longitude]];
+    self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [NSNumber numberWithFloat:newLocation.horizontalAccuracy].intValue];
+    if (newLocation.horizontalAccuracy < 10) {
+        [self stopUpdatingLocation];
+    }
+    
+    if (self.placeGuessField.text.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
+        if (!self.geocoder) {
+            self.geocoder = [[CLGeocoder alloc] init];
+        }
+        [self.geocoder cancelGeocode];
+        [self.geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+            CLPlacemark *pm = [placemarks firstObject]; 
+            if (pm) {
+                self.placeGuessField.text = [[NSArray arrayWithObjects:pm.name, pm.locality, pm.administrativeArea, pm.ISOcountryCode, nil] componentsJoinedByString:@", "];
+            }
+        }];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
 
 #pragma mark ObservationDetailViewController
 - (IBAction)clickedClear:(id)sender {
@@ -303,8 +389,7 @@
 
 - (void)save
 {
-    [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
-    [self.observation setInatDescription:[descriptionTextView text]];
+    [self uiToObservation];
     [self.observation save];
 }
 
@@ -312,6 +397,8 @@
     if ([self.observation isNew]) {
         NSLog(@"obs was new, destroying");
         [self.observation destroy];
+    } else {
+        [self.observation.managedObjectContext undo];
     }
     [self.delegate observationDetailViewControllerDidCancel:self];
 }

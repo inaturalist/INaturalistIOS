@@ -147,8 +147,17 @@
 //                                     [NSPredicate predicateWithFormat:@"syncedAt = nil OR syncedAt < localUpdatedAt"]] count];
     self.observationsToSyncCount = [Observation needingSyncCount];
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
-    NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d item", self.itemsToSyncCount];
-    if (self.itemsToSyncCount != 1) [msg appendString:@"s"];
+//    NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d item", self.itemsToSyncCount];
+    NSMutableString *msg = [NSMutableString stringWithString:@"Sync "];
+    if (self.observationsToSyncCount > 0) {
+        [msg appendString:[NSString stringWithFormat:@"%d observation", self.observationsToSyncCount]];
+        if (self.observationsToSyncCount > 1) [msg appendString:@"s"];
+        if (self.observationPhotosToSyncCount > 0) [msg appendString:@", "];
+    }
+    if (self.observationPhotosToSyncCount > 0) {
+        [msg appendString:[NSString stringWithFormat:@"%d photo", self.observationPhotosToSyncCount]];
+        if (self.observationPhotosToSyncCount > 1) [msg appendString:@"s"];
+    }
     [self.syncButton setTitle:msg];
     if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
@@ -241,6 +250,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self setEditing:NO];
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:YES];
 	[super viewWillDisappear:animated];

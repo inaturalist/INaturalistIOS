@@ -21,6 +21,7 @@
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
 		193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD57B14F42351005209CA /* libTapkuLibrary.a */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
+		1973592114F97A9D00A33E03 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1973592014F97A9D00A33E03 /* CoreLocation.framework */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
 		198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
@@ -226,6 +227,7 @@
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TapkuLibrary.xcodeproj; path = Vendor/tapkulibrary/src/TapkuLibrary.xcodeproj; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		1973592014F97A9D00A33E03 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		198551F514EC939100DB55C5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -268,6 +270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1973592114F97A9D00A33E03 /* CoreLocation.framework in Frameworks */,
 				198CF8EC14F5C03C0064DF05 /* libThree20UI.a in Frameworks */,
 				198CF8ED14F5C03C0064DF05 /* libThree20UICommon.a in Frameworks */,
 				198CF8EE14F5C03C0064DF05 /* libThree20UINavigator.a in Frameworks */,
@@ -297,6 +300,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
+				1973592014F97A9D00A33E03 /* CoreLocation.framework */,
 				1927513D14E9CCC9000ABAC4 /* INaturalistIOS */,
 				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				198CF8E014F5B0F40064DF05 /* Vendor */,

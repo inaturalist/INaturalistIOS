@@ -19,7 +19,7 @@
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end
 
-@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TKCoverflowViewDelegate, TKCoverflowViewDataSource,PhotoViewControllerDelegate>
+@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TKCoverflowViewDelegate, TKCoverflowViewDataSource,PhotoViewControllerDelegate, CLLocationManagerDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
@@ -31,8 +31,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
+@property (weak, nonatomic) IBOutlet UITextField *placeGuessField;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
 @property (strong, nonatomic) UIBarButtonItem *saveButton;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, strong) NSTimer *locationTimer;
+@property (nonatomic, strong) CLGeocoder *geocoder;
 
 
 - (IBAction)clickedClear:(id)sender;
@@ -41,12 +45,16 @@
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedAddPhoto:(id)sender;
 - (void)save;
-- (void)updateUIWithObservation;
+- (void)observationToUI;
+- (void)uiToObservation;
 
 - (void)addPhoto:(ObservationPhoto *)op;
 - (void)removePhoto:(ObservationPhoto *)op;
 - (void)initCoverflowView;
 - (void)refreshCoverflowView;
 - (void)resizeHeaderView;
+
+- (void)startUpdatingLocation;
+- (void)stopUpdatingLocation;
 
 @end
