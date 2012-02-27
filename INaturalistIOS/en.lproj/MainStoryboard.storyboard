@@ -205,7 +205,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qft-ju-lfU" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="cnB-zK-8oP" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Observations" id="s0d-iz-ydn"/>
+                    <tabBarItem key="tabBarItem" title="Observations" image="notebook-tab.png" id="s0d-iz-ydn"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="Pyp-ZA-ogu">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -312,7 +312,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" id="cRX-mc-7PA"/>
+                    <tabBarItem key="tabBarItem" title="Map" image="map-tab.png" id="cRX-mc-7PA"/>
                     <connections>
                         <outlet property="mapView" destination="QJD-2D-Vqg" id="AmF-aT-FdL"/>
                     </connections>
@@ -338,7 +338,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Settings" id="Doe-87-R2f"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="settings-tab.png" id="Doe-87-R2f"/>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="-850" y="1869"/>
@@ -476,6 +476,11 @@
             <point key="canvasLocation" x="520" y="859"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="map-tab.png" width="23" height="20"/>
+        <image name="notebook-tab.png" width="18" height="25"/>
+        <image name="settings-tab.png" width="20" height="20"/>
+    </resources>
     <classes>
         <class className="INatUITabBarController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
@@ -518,7 +523,6 @@
                 <relationship kind="action" name="edit:"/>
                 <relationship kind="action" name="sync:"/>
                 <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="syncLabel" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
     </classes>

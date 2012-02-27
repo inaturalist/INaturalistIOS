@@ -199,6 +199,8 @@
     if (!self.observations) {
         [self loadData];
     }
+//    self.navigationItem.titleView = [[UIImage alloc] initWithContentsOfFile:@"header-logo.png"];
+    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
     NSLog(@"viewDidLoad, self.syncButton: %@", self.syncButton);
     NSLog(@"viewDidLoad, syncButton: %@", syncButton);
     
