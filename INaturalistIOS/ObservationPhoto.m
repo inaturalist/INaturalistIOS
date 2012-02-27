@@ -35,6 +35,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @synthesize photoSource = _photoSource;
 @synthesize index = _index;
 @synthesize size = _size;
+@synthesize caption = _caption;
 
 - (void)prepareForDeletion
 {
@@ -157,9 +158,12 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 - (NSString *)caption
 {
-    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-    [fmt setDateFormat:@"hh:mm aaa MMM d, yyyy"];
-    return [NSString stringWithFormat:@"Added at %@", [fmt stringFromDate:self.localCreatedAt]];
+    if (!_caption) {
+        NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+        [fmt setDateFormat:@"hh:mm aaa MMM d, yyyy"];
+        _caption = [NSString stringWithFormat:@"Added at %@", [fmt stringFromDate:self.localCreatedAt]];
+    }
+    return _caption;
 }
 
 @end

@@ -66,10 +66,8 @@
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
-    if (![self performSelector:NSSelectorFromString(@"localCreatedAt")]) {
-        NSLog(@"now");
-        NSDate *now = [NSDate date];
-        [self performSelector:@selector(setLocalCreatedAt:) withObject:now];
+    if (!self.localCreatedAt) {
+        [self setLocalCreatedAt:[NSDate date]];
     }
     return self;
 }
@@ -88,10 +86,9 @@
         } else {
             now = [NSDate date];
         }
-        NSDate *stamp = [self performSelector:NSSelectorFromString(@"localUpdatedAt")];
+        NSDate *stamp = self.localUpdatedAt;
         if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
-            NSLog(@"setting local_updated_at to %@", now);
-            [self performSelector:@selector(setLocalUpdatedAt:) withObject:now];
+            [self setLocalUpdatedAt:now];
         }
     }
     [super willSave];

@@ -34,6 +34,7 @@
 @property (nonatomic, assign) id<TTPhotoSource> photoSource;
 @property (nonatomic, assign) int index;
 @property (nonatomic, assign) CGSize size;
+@property (nonatomic, copy) NSString *caption;
 
 @end
 

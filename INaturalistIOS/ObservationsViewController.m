@@ -199,10 +199,7 @@
     if (!self.observations) {
         [self loadData];
     }
-//    self.navigationItem.titleView = [[UIImage alloc] initWithContentsOfFile:@"header-logo.png"];
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
-    NSLog(@"viewDidLoad, self.syncButton: %@", self.syncButton);
-    NSLog(@"viewDidLoad, syncButton: %@", syncButton);
     
     [[[[RKObjectManager sharedManager] client] requestQueue] setDelegate:self]; // TODO, might have to unset this when this view closes?
 }
@@ -216,17 +213,10 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    NSLog(@"viewWillAppear, self.syncButton: %@", self.syncButton);
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
-    NSLog(@"viewDidAppear, self.syncButton: %@", self.syncButton);
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                self.syncButton, 
