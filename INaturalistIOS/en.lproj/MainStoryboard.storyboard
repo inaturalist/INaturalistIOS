@@ -267,20 +267,14 @@
                     </navigationItem>
                     <connections>
                         <outlet property="syncButton" destination="r7b-jc-Kqj" id="ZEM-2s-eAN"/>
-                        <outlet property="syncLabel" destination="hjo-xd-aBK" id="nLZ-4i-NLw"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="Iwt-4E-pF9"/>
                     </connections>
                 </viewController>
-                <barButtonItem title="0 obs to sync" style="plain" id="hjo-xd-aBK"/>
                 <barButtonItem title="Sync" style="done" id="r7b-jc-Kqj">
                     <connections>
                         <action selector="sync:" destination="2" id="taN-EH-nC5"/>
                     </connections>
                 </barButtonItem>
-                <progressView opaque="NO" contentMode="scaleToFill" progress="0.5" id="Ych-x8-tQm">
-                    <rect key="frame" x="0.0" y="0.0" width="150" height="9"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </progressView>
             </objects>
             <point key="canvasLocation" x="-350" y="197"/>
         </scene>

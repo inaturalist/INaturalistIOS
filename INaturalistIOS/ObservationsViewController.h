@@ -24,8 +24,7 @@
 @property (nonatomic, assign) int observationPhotosToSyncCount;
 @property (nonatomic, assign) int syncedObservationPhotosCount;
 @property (nonatomic, strong) NSArray *syncToolbarItems;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *syncLabel;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *syncButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton; // if the button is just kind of floating and not assigned a super view, it will get deallocated UNLESS we have a strong reference here
 
 - (IBAction)sync:(id)sender;
 - (IBAction)edit:(id)sender;

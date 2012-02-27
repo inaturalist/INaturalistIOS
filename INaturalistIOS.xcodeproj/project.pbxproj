@@ -241,8 +241,8 @@
 		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		198552E714EF208600DB55C5 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = constants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		198552EA14EF5FB400DB55C5 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DejalActivityView.h; sourceTree = "<group>"; };
-		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalActivityView.m; sourceTree = "<group>"; };
+		198552EA14EF5FB400DB55C5 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DejalActivityView.h; path = INaturalistIOS/DejalActivityView.h; sourceTree = "<group>"; };
+		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DejalActivityView.m; path = INaturalistIOS/DejalActivityView.m; sourceTree = "<group>"; };
 		198CF86F14F5AC420064DF05 /* Three20.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20.xcodeproj; path = Vendor/three20/src/Three20/Three20.xcodeproj; sourceTree = "<group>"; };
 		198CF89F14F5AE180064DF05 /* Three20Core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Core.xcodeproj; path = Vendor/three20/src/Three20Core/Three20Core.xcodeproj; sourceTree = "<group>"; };
 		198CF8A014F5AE180064DF05 /* Three20Network.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Network.xcodeproj; path = Vendor/three20/src/Three20Network/Three20Network.xcodeproj; sourceTree = "<group>"; };
@@ -300,9 +300,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
-				1973592014F97A9D00A33E03 /* CoreLocation.framework */,
 				1927513D14E9CCC9000ABAC4 /* INaturalistIOS */,
-				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				198CF8E014F5B0F40064DF05 /* Vendor */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
 				1927513414E9CCC9000ABAC4 /* Products */,
@@ -320,6 +318,7 @@
 		1927513614E9CCC9000ABAC4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1973592014F97A9D00A33E03 /* CoreLocation.framework */,
 				198551FD14EC93B900DB55C5 /* libxml2.dylib */,
 				193BD56F14F41FEA005209CA /* MapKit.framework */,
 				198551F314EC938700DB55C5 /* CFNetwork.framework */,
@@ -338,8 +337,6 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalistIOS */ = {
 			isa = PBXGroup;
 			children = (
-				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
-				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
@@ -362,9 +359,9 @@
 				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
 				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
 				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
-				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
 				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
+				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INaturalistIOS;
 			sourceTree = "<group>";
@@ -429,11 +426,14 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
+				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
 				198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */,
 				198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */,
 				198CF8E714F5C02F0064DF05 /* libRestKit.a */,
 				198CF8DE14F5AEA80064DF05 /* Three20.bundle */,
+				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				198CF89F14F5AE180064DF05 /* Three20Core.xcodeproj */,
 				198CF8A014F5AE180064DF05 /* Three20Network.xcodeproj */,
 				198CF8A114F5AE180064DF05 /* Three20Style.xcodeproj */,

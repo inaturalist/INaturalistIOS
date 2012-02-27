@@ -14,22 +14,13 @@
 #import "ImageStore.h"
 
 @implementation ObservationsViewController
-@synthesize syncLabel = _syncLabel;
-@synthesize syncButton = _syncButton;
+@synthesize syncButton;
 @synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
 @synthesize syncedObservationsCount = _syncedObservationsCount;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
-
-- (id)init
-{
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    [[self tableView] setSeparatorColor:[UIColor lightGrayColor]];
-    [[self tableView] setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
-    return self;
-}
 
 - (IBAction)sync:(id)sender {
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
@@ -135,19 +126,10 @@
     [self checkSyncStatus];
 }
 
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    return [self init];
-}
-
 - (void)checkSyncStatus
 {
-//    self.observationsToSyncCount = [[[self observations] filteredArrayUsingPredicate:
-//                                     [NSPredicate predicateWithFormat:@"syncedAt = nil OR syncedAt < localUpdatedAt"]] count];
     self.observationsToSyncCount = [Observation needingSyncCount];
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
-//    NSMutableString *msg = [NSMutableString stringWithFormat:@"Sync %d item", self.itemsToSyncCount];
     NSMutableString *msg = [NSMutableString stringWithString:@"Sync "];
     if (self.observationsToSyncCount > 0) {
         [msg appendString:[NSString stringWithFormat:@"%d observation", self.observationsToSyncCount]];
@@ -214,24 +196,19 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
-    [self setSyncToolbarItems:[NSArray arrayWithObjects:
-                               [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-                               self.syncButton, 
-                               [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-                               nil]];
     if (!self.observations) {
         [self loadData];
     }
+    NSLog(@"viewDidLoad, self.syncButton: %@", self.syncButton);
+    NSLog(@"viewDidLoad, syncButton: %@", syncButton);
     
     [[[[RKObjectManager sharedManager] client] requestQueue] setDelegate:self]; // TODO, might have to unset this when this view closes?
 }
 
 - (void)viewDidUnload
 {
+    NSLog(@"viewDidUnload");
     [self setTableView:nil];
-    [self setSyncLabel:nil];
-    [self setSyncButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -240,17 +217,26 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear, self.syncButton: %@", self.syncButton);
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
+    NSLog(@"viewDidAppear, self.syncButton: %@", self.syncButton);
+    [self setSyncToolbarItems:[NSArray arrayWithObjects:
+                               [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                               self.syncButton, 
+                               [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                               nil]];
     [self checkSyncStatus];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self setEditing:NO];
+    // TODO update edit button
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:YES];
 	[super viewWillDisappear:animated];

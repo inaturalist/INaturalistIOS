@@ -55,9 +55,9 @@ static int LocationTableViewSection = 2;
 {
     [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     [self.observation setInatDescription:[descriptionTextView text]];
+    [self.observation setPlaceGuess:[self.placeGuessField text]];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     self.observation.latitude = [numberFormatter numberFromString:self.latitudeLabel.text];
-    NSLog(@"set latitude: %@", self.observation.latitude);
     self.observation.longitude = [numberFormatter numberFromString:self.longitudeLabel.text];
     self.observation.positionalAccuracy = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
 }
