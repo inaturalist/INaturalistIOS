@@ -47,7 +47,7 @@
     [manager.mappingProvider setObjectMapping:[ObservationPhoto mapping] forKeyPath:@"observation_photo"];
     
     // DEBUG
-    //    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+//    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];

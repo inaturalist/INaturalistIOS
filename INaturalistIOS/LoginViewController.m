@@ -60,52 +60,58 @@
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
-    [[RKClient sharedClient] get:@"/observations/new" delegate:self];
+    [[RKClient sharedClient] get:@"/observations/new.json" delegate:self];
 }
 
 #pragma mark RKRequestDelegate methods
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-    [[NSUserDefaults standardUserDefaults] setValue:[usernameField text] forKey:INatUsernamePrefKey];
-    [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] forKey:INatPasswordPrefKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
-        [self.delegate loginViewControllerDidLogIn:self];
-    }
     [DejalBezelActivityView removeView];
+    if (response.statusCode == 200) {
+        [[NSUserDefaults standardUserDefaults] setValue:[usernameField text] forKey:INatUsernamePrefKey];
+        [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] forKey:INatPasswordPrefKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
+            [self.delegate loginViewControllerDidLogIn:self];
+        }
+        [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
-    NSLog(@"did fail with error: %@", error);
-    UIAlertView *av;
     // KLUDGE!! RestKit doesn't seem to handle failed auth very well
     bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
     bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
     if (jsonParsingError || authFailure) {
-        [[RKClient sharedClient] setUsername:nil];
-        [[RKClient sharedClient] setPassword:nil];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatUsernamePrefKey];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatPasswordPrefKey];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerFailedToLogIn:)]) {
-            [self.delegate loginViewControllerFailedToLogIn:self];
-        }
-        
-        av = [[UIAlertView alloc] initWithTitle:@"Log in failed" 
-                                   message:@"Username or password were invalid." 
-                                  delegate:self 
-                         cancelButtonTitle:@"OK" 
-                         otherButtonTitles:nil];
-        
+        [self failedLogin];
     } else {
-        av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
                                         message:[NSString stringWithFormat:@"Looks like there was an unexpected error: %@", error.localizedDescription]
                                        delegate:self 
                               cancelButtonTitle:@"OK" 
                               otherButtonTitles:nil];
+        [av show];
     }
     [DejalBezelActivityView removeView];
+}
+
+- (void)failedLogin
+{
+    [[RKClient sharedClient] setUsername:nil];
+    [[RKClient sharedClient] setPassword:nil];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatUsernamePrefKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatPasswordPrefKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerFailedToLogIn:)]) {
+        [self.delegate loginViewControllerFailedToLogIn:self];
+    }
+    
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Log in failed" 
+                                    message:@"Username or password were invalid." 
+                                   delegate:self 
+                          cancelButtonTitle:@"OK" 
+                          otherButtonTitles:nil];
     [av show];
 }
 

@@ -10,6 +10,7 @@
 		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
+		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
 		1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
 		1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */; };
@@ -224,6 +225,8 @@
 		1902812714F315F2005AC8D2 /* INatModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatModel.m; sourceTree = "<group>"; };
 		1902813B14F36B44005AC8D2 /* ObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPhoto.h; sourceTree = "<group>"; };
 		1902813C14F36B44005AC8D2 /* ObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPhoto.m; sourceTree = "<group>"; };
+		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INaturalistIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1927513714E9CCC9000ABAC4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1927513914E9CCC9000ABAC4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -392,6 +395,8 @@
 				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
 				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
 				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INaturalistIOS;
@@ -801,6 +806,7 @@
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,
+				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,5 +24,5 @@
 
 - (IBAction)signIn:(id)sender;
 - (IBAction)cancel:(id)sender;
-
+- (void)failedLogin;
 @end
