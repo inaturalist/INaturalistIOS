@@ -13,4 +13,5 @@
 
 - (void)initUI;
 - (void)signOut;
+- (void)localSignOut;
 @end

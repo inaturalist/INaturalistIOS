@@ -73,20 +73,36 @@ static const int AccountActionCellTag = 1;
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
-    NSLog(@"request didFailLoadWithError: %@", error);
+    // if couldn't connect to the Internet, just clear auth data
+    if (error.code == -1004) {
+        [self localSignOut];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error" 
+                                                     message:error.localizedDescription
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+    }
     [DejalBezelActivityView removeView];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
     NSLog(@"request didLoadResponse: %@", response);
+    [self localSignOut];
+    [DejalBezelActivityView removeView];
+}
+
+- (void)localSignOut
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults synchronize];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self initUI];
-    [DejalBezelActivityView removeView];
 }
 
 @end
