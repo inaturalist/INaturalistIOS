@@ -196,6 +196,7 @@
                         <outlet property="placeGuessField" destination="1bw-oa-ona" id="QEB-0i-KJx"/>
                         <outlet property="positionalAccuracyLabel" destination="R4F-3k-D7x" id="BpL-bd-Cja"/>
                         <outlet property="speciesGuessTextField" destination="pmm-Vg-XgJ" id="TRe-tA-Q8z"/>
+                        <segue destination="cey-Gr-CWF" kind="modal" identifier="EditLocationSegue" id="uPj-lO-3yZ"/>
                     </connections>
                 </tableViewController>
             </objects>
@@ -524,6 +525,67 @@
             </objects>
             <point key="canvasLocation" x="520" y="859"/>
         </scene>
+        <scene sceneID="FJe-lg-0bS">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZlM-DO-RzF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="cey-Gr-CWF" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Ixx-vq-ex3"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="hAe-3W-FKC">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Rzg-af-Bgj" kind="relationship" relationship="rootViewController" id="0DW-l7-Ia8"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="967" y="195"/>
+        </scene>
+        <scene sceneID="Fhq-My-k45">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jsb-hA-Wdu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="Rzg-af-Bgj" customClass="EditLocationViewController" sceneMemberID="viewController">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="Uop-fH-Vxa">
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsUserLocation="YES" id="Gcx-ee-7sQ">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Rzg-af-Bgj" id="YfJ-uD-6S7"/>
+                                </connections>
+                            </mapView>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" id="2pe-cu-SzE" customClass="CrossHairView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Edit Location" id="zpr-b5-V8G">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="qfi-HT-h2C">
+                            <connections>
+                                <action selector="clickedCancel:" destination="Rzg-af-Bgj" id="njm-tX-LeN"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="HTV-5Y-tK1">
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
+                            <connections>
+                                <action selector="clickedDone:" destination="Rzg-af-Bgj" id="7HP-b2-yQ0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="crossHairView" destination="2pe-cu-SzE" id="EOh-uo-4Gl"/>
+                        <outlet property="mapView" destination="Gcx-ee-7sQ" id="oNe-cO-daJ"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="1395" y="195"/>
+        </scene>
     </scenes>
     <resources>
         <image name="map-tab.png" width="31" height="20"/>
@@ -531,6 +593,22 @@
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
     <classes>
+        <class className="CrossHairView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
+        </class>
+        <class className="EditLocationViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedCurrentLocationButton:"/>
+                <relationship kind="action" name="clickedDone:"/>
+                <relationship kind="action" name="clickedMapTypeButton:"/>
+                <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
+                <relationship kind="outlet" name="currentLocationButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="mapTypeButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
+            </relationships>
+        </class>
         <class className="INatUITabBarController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
         </class>

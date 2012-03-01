@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
 #import "PhotoViewController.h"
+#import "EditLocationViewController.h"
 
 @class Observation;
 @class ObservationPhoto;
@@ -19,7 +20,7 @@
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end
 
-@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TKCoverflowViewDelegate, TKCoverflowViewDataSource,PhotoViewControllerDelegate, CLLocationManagerDelegate>
+@interface ObservationDetailViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TKCoverflowViewDelegate, TKCoverflowViewDataSource,PhotoViewControllerDelegate, CLLocationManagerDelegate, EditLocationViewControllerDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;

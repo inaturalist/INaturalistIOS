@@ -12,6 +12,7 @@
 #import "ImageStore.h"
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
+#import "EditLocationViewController.h"
 
 static int PhotoActionSheetTag = 0;
 static int LocationActionSheetTag = 1;
@@ -350,7 +351,7 @@ static int LocationTableViewSection = 2;
             [self startUpdatingLocation];
             break;
         case 1:
-            // TODO open location editing view controller
+            [self performSegueWithIdentifier:@"EditLocationSegue" sender:self];
             break;            
         default:
             break;
@@ -406,6 +407,18 @@ static int LocationTableViewSection = 2;
         [locationActionSheet addButtonWithTitle:@"Cancel"];
         [locationActionSheet setCancelButtonIndex:2];
         [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+    }
+}
+
+# pragma mark - EditLocationViewControllerDelegate
+- (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location
+{
+    self.latitudeLabel.text = [NSString stringWithFormat:@"%f", [location.latitude doubleValue]];
+    self.longitudeLabel.text = [NSString stringWithFormat:@"%f", [location.longitude doubleValue]];
+    if (location.accuracy) {
+        self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [location.accuracy intValue]];
+    } else {
+        self.positionalAccuracyLabel.text = @"???";
     }
 }
 
@@ -512,6 +525,21 @@ static int LocationTableViewSection = 2;
     [headerView setNeedsLayout];
     [headerView setNeedsDisplay];
     [self.tableView setTableHeaderView:headerView];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"EditLocationSegue"]) {
+        NSLog(@"EditLocationSegue is happening!");
+        EditLocationViewController *vc = (EditLocationViewController *)[segue.destinationViewController topViewController];
+        [vc setDelegate:self];
+        [self uiToObservation];
+        if (self.observation.latitude) {
+            [vc setCurrentLocation:[[INatLocation alloc] initWithLatitude:self.observation.latitude
+                                                                longitude:self.observation.longitude
+                                                                 accuracy:self.observation.positionalAccuracy]];
+        }
+    }
 }
 
 @end
