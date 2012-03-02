@@ -169,6 +169,8 @@
         }
         [self updateAccuracyCircle];
         [self updateCrossHair];
+        
+        self.currentLocation.positioningMethod = mapView.userTrackingMode == MKUserTrackingModeFollow ? @"gps" : @"manual";
     }
 }
 
@@ -179,9 +181,11 @@
         self.currentLocation.latitude = [NSNumber numberWithDouble:self.mapView.userLocation.location.coordinate.latitude];
         self.currentLocation.longitude = [NSNumber numberWithDouble:self.mapView.userLocation.location.coordinate.longitude];
         self.currentLocation.accuracy = [NSNumber numberWithDouble:self.mapView.userLocation.location.horizontalAccuracy];
+        self.currentLocation.positioningMethod = @"gps";
     } else {
         self.currentLocationButton.style = UIBarButtonItemStyleBordered;
         self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:self.view.bounds.size.width / 8.0]];
+        self.currentLocation.positioningMethod = @"manual";
     }
     [self updateAccuracyCircle];
 }
@@ -191,8 +195,10 @@
     if (mapView.userTrackingMode == MKUserTrackingModeFollow) {
         self.currentLocation.accuracy = [NSNumber numberWithLong:userLocation.location.horizontalAccuracy];
         [self updateAccuracyCircle];
+        self.currentLocation.positioningMethod = @"gps";
     } else {
         self.currentLocation.accuracy = nil;
+        self.currentLocation.positioningMethod = @"manual";
     }
 }
 
@@ -214,6 +220,7 @@
 @synthesize longitude = _longitude;
 @synthesize accuracy = _accuracy;
 @synthesize updatedAt = _updatedAt;
+@synthesize positioningMethod = _positioningMethod;
 
 - (id)initWithLatitude:(NSNumber *)latitude longitude:(NSNumber *)longitude accuracy:(NSNumber *)accuracy
 {

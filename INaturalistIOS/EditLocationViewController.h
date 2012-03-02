@@ -45,5 +45,6 @@
 @property (nonatomic, strong) NSNumber *longitude;
 @property (nonatomic, strong) NSNumber *accuracy;
 @property (nonatomic, strong) NSDate *updatedAt;
+@property (nonatomic, strong) NSString *positioningMethod;
 - (id)initWithLatitude:(NSNumber *)latitude longitude:(NSNumber *)longitude accuracy:(NSNumber *)accuracy;
 @end

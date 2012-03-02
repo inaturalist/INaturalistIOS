@@ -371,6 +371,7 @@ static int LocationTableViewSection = 2;
     }
     [self.latitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.latitude]];
     [self.longitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.longitude]];
+    self.observation.positioningMethod = @"gps";
     self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [NSNumber numberWithFloat:newLocation.horizontalAccuracy].intValue];
     if (newLocation.horizontalAccuracy < 10) {
         [self stopUpdatingLocation];
@@ -401,6 +402,7 @@ static int LocationTableViewSection = 2;
 {
     self.latitudeLabel.text = [NSString stringWithFormat:@"%f", [location.latitude doubleValue]];
     self.longitudeLabel.text = [NSString stringWithFormat:@"%f", [location.longitude doubleValue]];
+    self.observation.positioningMethod = location.positioningMethod;
     [self reverseGeocodeCoordinates];
     if (location.accuracy) {
         self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [location.accuracy intValue]];
@@ -495,9 +497,7 @@ static int LocationTableViewSection = 2;
 
 - (void)resizeHeaderView
 {
-    NSLog(@"resizeHeaderView, self.coverflowView: %@", self.coverflowView);
     if (!self.coverflowView) return;
-    if (self.coverflowView.hidden) NSLog(@"coverflowView was hidden");
     UIView *headerView = self.tableView.tableHeaderView;
     CGRect r = headerView.bounds;
     if (self.observationPhotos.count > 0) {
@@ -517,14 +517,16 @@ static int LocationTableViewSection = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"EditLocationSegue"]) {
-        NSLog(@"EditLocationSegue is happening!");
+        [self stopUpdatingLocation];
         EditLocationViewController *vc = (EditLocationViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
         [self uiToObservation];
         if (self.observation.latitude) {
-            [vc setCurrentLocation:[[INatLocation alloc] initWithLatitude:self.observation.latitude
-                                                                longitude:self.observation.longitude
-                                                                 accuracy:self.observation.positionalAccuracy]];
+            INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.latitude
+                                                             longitude:self.observation.longitude
+                                                              accuracy:self.observation.positionalAccuracy];
+            loc.positioningMethod = self.observation.positioningMethod;
+            [vc setCurrentLocation:loc];
         }
     }
 }
