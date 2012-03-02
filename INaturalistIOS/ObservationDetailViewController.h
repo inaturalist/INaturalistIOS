@@ -40,9 +40,9 @@
 @property (nonatomic, strong) CLGeocoder *geocoder;
 
 
-- (IBAction)clickedClear:(id)sender;
-- (IBAction)keyboardDone:(id)sender;
-- (IBAction)clickedSave:(id)sender;
+- (void)clickedClear;
+- (void)keyboardDone;
+- (void)clickedSave;
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedAddPhoto:(id)sender;
 - (void)save;
@@ -54,6 +54,7 @@
 - (void)initCoverflowView;
 - (void)refreshCoverflowView;
 - (void)resizeHeaderView;
+- (void)reverseGeocodeCoordinates;
 
 - (void)startUpdatingLocation;
 - (void)stopUpdatingLocation;

@@ -65,33 +65,29 @@ static int LocationTableViewSection = 2;
 
 - (void)initUI
 {
-    NSLog(@"initUI");
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
                                                                           target:nil 
                                                                           action:nil];
     if (!self.saveButton) {
-        NSLog(@"setting saveButton");
         self.saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
-                                                          action:@selector(clickedSave:)];
+                                                          action:@selector(clickedSave)];
         [self.saveButton setWidth:100.0];
         [self.saveButton setTintColor:[UIColor colorWithRed:168.0/255 green:204.0/255 blue:50.0/255 alpha:1.0]];
-        NSLog(@"saveButton.tintColor: %@", self.saveButton.tintColor);
     }
     
     if (!self.keyboardToolbar) {
-        NSLog(@"setting keyboardToolbar");
         self.keyboardToolbar = [[UIToolbar alloc] init];
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
         [self.keyboardToolbar sizeToFit];
         UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] initWithTitle:@"Clear" 
                                                                         style:UIBarButtonItemStyleBordered
                                                                        target:self
-                                                                       action:@selector(clickedClear:)];
+                                                                       action:@selector(clickedClear)];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
                                                                                     target:self 
-                                                                                    action:@selector(keyboardDone:)];
+                                                                                    action:@selector(keyboardDone)];
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
     
@@ -131,9 +127,7 @@ static int LocationTableViewSection = 2;
                                                             selector:@selector(stopUpdatingLocation) 
                                                             userInfo:nil 
                                                              repeats:NO];
-        NSLog(@"locationTimer: %@", self.locationTimer);
     }
-    NSLog(@"starting location manager updates");
     [self.locationManager startUpdatingLocation];
 }
 
@@ -383,19 +377,11 @@ static int LocationTableViewSection = 2;
     }
     
     if (self.placeGuessField.text.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
-        if (!self.geocoder) {
-            self.geocoder = [[CLGeocoder alloc] init];
-        }
-        [self.geocoder cancelGeocode];
-        [self.geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
-            CLPlacemark *pm = [placemarks firstObject]; 
-            if (pm) {
-                self.placeGuessField.text = [[NSArray arrayWithObjects:pm.name, pm.locality, pm.administrativeArea, pm.ISOcountryCode, nil] componentsJoinedByString:@", "];
-            }
-        }];
+        [self reverseGeocodeCoordinates];
     }
 }
 
+# pragma mark - TableViewDelegate methods
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == LocationTableViewSection) {
@@ -415,6 +401,7 @@ static int LocationTableViewSection = 2;
 {
     self.latitudeLabel.text = [NSString stringWithFormat:@"%f", [location.latitude doubleValue]];
     self.longitudeLabel.text = [NSString stringWithFormat:@"%f", [location.longitude doubleValue]];
+    [self reverseGeocodeCoordinates];
     if (location.accuracy) {
         self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [location.accuracy intValue]];
     } else {
@@ -424,15 +411,15 @@ static int LocationTableViewSection = 2;
 
 
 #pragma mark ObservationDetailViewController
-- (IBAction)clickedClear:(id)sender {
+- (void)clickedClear {
     [descriptionTextView setText:nil];
 }
 
-- (IBAction)keyboardDone:(id)sender {
+- (void)keyboardDone {
     [descriptionTextView resignFirstResponder];
 }
 
-- (IBAction)clickedSave:(id)sender {
+- (void)clickedSave {
     [self save];
     [self.delegate observationDetailViewControllerDidSave:self];
 }
@@ -540,6 +527,23 @@ static int LocationTableViewSection = 2;
                                                                  accuracy:self.observation.positionalAccuracy]];
         }
     }
+}
+
+- (void)reverseGeocodeCoordinates
+{
+    [self uiToObservation];
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue] 
+                                                 longitude:[self.observation.longitude doubleValue]];
+    if (!self.geocoder) {
+        self.geocoder = [[CLGeocoder alloc] init];
+    }
+    [self.geocoder cancelGeocode];
+    [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
+        CLPlacemark *pm = [placemarks firstObject]; 
+        if (pm) {
+            self.placeGuessField.text = [[NSArray arrayWithObjects:pm.name, pm.locality, pm.administrativeArea, pm.ISOcountryCode, nil] componentsJoinedByString:@", "];
+        }
+    }];
 }
 
 @end
