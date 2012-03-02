@@ -146,4 +146,14 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [super willSave];
 }
 
+- (NSString *)observedOnPrettyString
+{
+    if (!self.observedOn) return @"Unknown";
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    [fmt setTimeZone:[NSTimeZone localTimeZone]];
+    [fmt setDateStyle:NSDateFormatterMediumStyle];
+    [fmt setTimeStyle:NSDateFormatterMediumStyle];
+    return [fmt stringFromDate:self.observedOn];
+}
+
 @end

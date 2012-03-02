@@ -37,4 +37,5 @@
 
 @property (nonatomic, strong) NSArray *sortedObservationPhotos;
 
+- (NSString *)observedOnPrettyString;
 @end

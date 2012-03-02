@@ -38,6 +38,8 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
+@property (nonatomic, strong) UIDatePicker *datePicker;
+@property (nonatomic, strong) UIActionSheet *currentActionSheet;
 
 
 - (void)clickedClear;
@@ -61,5 +63,8 @@
 
 - (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+
+- (void)dismissActionSheet;
+- (void)doneDatePicker;
 
 @end

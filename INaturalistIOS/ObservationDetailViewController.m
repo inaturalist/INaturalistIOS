@@ -16,7 +16,9 @@
 
 static int PhotoActionSheetTag = 0;
 static int LocationActionSheetTag = 1;
+static int ObservedOnActionSheetTag = 2;
 static int LocationTableViewSection = 2;
+static int ObservedOnTableViewSection = 3;
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -35,12 +37,14 @@ static int LocationTableViewSection = 2;
 @synthesize locationManager = _locationManager;
 @synthesize locationTimer = _locationTimer;
 @synthesize geocoder = _geocoder;
+@synthesize datePicker = _datePicker;
+@synthesize currentActionSheet = _currentActionSheet;
 
 - (void)observationToUI
 {
     if (self.observation) {
         [self.speciesGuessTextField setText:self.observation.speciesGuess];
-        [self.observedAtLabel setText:self.observation.observedOnString];
+        [self.observedAtLabel setText:self.observation.observedOnPrettyString];
         [self.placeGuessField setText:self.observation.placeGuess];
         if (self.observation.latitude) [latitudeLabel setText:self.observation.latitude.description];
         if (self.observation.longitude) [longitudeLabel setText:self.observation.longitude.description];
@@ -187,6 +191,9 @@ static int LocationTableViewSection = 2;
     [self stopUpdatingLocation];
     [self setLocationManager:nil];
     [self setPlaceGuessField:nil];
+    [self setGeocoder:nil];
+    [self setDatePicker:nil];
+    [self setCurrentActionSheet:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -394,6 +401,48 @@ static int LocationTableViewSection = 2;
         [locationActionSheet addButtonWithTitle:@"Cancel"];
         [locationActionSheet setCancelButtonIndex:2];
         [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else if (indexPath.section == ObservedOnTableViewSection) {
+        // this is an extremely silly way to get the height right, but the only other 
+        // way I've found is to alter the bounds *after* the action sheet has appeared, 
+        // which messes up the animation.
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Choose a date"
+                                                           delegate:nil 
+                                                  cancelButtonTitle:nil 
+                                             destructiveButtonTitle:nil 
+                                                  otherButtonTitles:@"", @"", @"", @"", nil];
+        self.currentActionSheet = sheet;
+        sheet.delegate = self;
+        sheet.tag = ObservedOnActionSheetTag;
+        
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        toolbar.barStyle = UIBarStyleBlackTranslucent;
+        [toolbar sizeToFit];
+        [toolbar setItems:[NSArray arrayWithObjects:
+                           [[UIBarButtonItem alloc] 
+                            initWithTitle:@"Cancel" 
+                            style:UIBarButtonItemStyleBordered 
+                            target:self 
+                            action:@selector(dismissActionSheet)], 
+                           [[UIBarButtonItem alloc] 
+                            initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                            target:nil 
+                            action:nil],
+                           [[UIBarButtonItem alloc] 
+                            initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
+                            target:self
+                            action:@selector(doneDatePicker)],
+                           nil] 
+                 animated:YES];
+        [sheet addSubview:toolbar];
+        
+        if (!self.datePicker) {
+            self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, toolbar.frame.size.height, 320, 320)];
+        }
+        self.datePicker.maximumDate = [NSDate date];
+        self.datePicker.date = self.observation.observedOn;
+        [sheet addSubview:self.datePicker];
+        
+        [sheet showFromTabBar:self.tabBarController.tabBar];
     }
 }
 
@@ -546,6 +595,20 @@ static int LocationTableViewSection = 2;
             self.placeGuessField.text = [[NSArray arrayWithObjects:pm.name, pm.locality, pm.administrativeArea, pm.ISOcountryCode, nil] componentsJoinedByString:@", "];
         }
     }];
+}
+
+- (void)dismissActionSheet
+{
+    if (!self.currentActionSheet) return;
+    [self.currentActionSheet dismissWithClickedButtonIndex:0 animated:YES];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+}
+
+- (void)doneDatePicker
+{
+    self.observation.observedOn = self.datePicker.date;
+    [self dismissActionSheet];
+    self.observedAtLabel.text = [self.observation observedOnPrettyString];
 }
 
 @end
