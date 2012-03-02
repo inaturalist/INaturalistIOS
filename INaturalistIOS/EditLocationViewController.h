@@ -12,6 +12,7 @@
 @class EditLocationViewController;
 @class CrossHairView;
 @class INatLocation;
+@class AccuracyCircleView;
 
 @protocol EditLocationViewControllerDelegate <NSObject>
 @optional
@@ -26,6 +27,7 @@
 @property (strong, nonatomic) UIBarButtonItem *currentLocationButton;
 @property (strong, nonatomic) UIBarButtonItem *mapTypeButton;
 @property (weak, nonatomic) IBOutlet CrossHairView *crossHairView;
+@property (weak, nonatomic) IBOutlet AccuracyCircleView *accuracyCircleView;
 
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedDone:(id)sender;
@@ -33,6 +35,7 @@
 - (void)clickedMapTypeButton;
 
 - (void)updateCrossHair;
+- (void)updateAccuracyCircle;
 - (double)degreesToMeters:(double)degrees;
 - (double)metersToDegrees:(double)meters;
 @end

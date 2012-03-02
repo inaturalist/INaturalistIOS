@@ -12,6 +12,8 @@
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
 		1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
+		191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
+		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
 		1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1922D9A014FEBF58003778B2 /* CrossHairView.m */; };
 		1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
 		1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
@@ -231,6 +233,10 @@
 		1905715F14FDFF49007FBE30 /* EditLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationViewController.m; sourceTree = "<group>"; };
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		191B0B30150015EA00F2508E /* AccuracyCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccuracyCircleView.h; path = ../AccuracyCircleView.h; sourceTree = "<group>"; };
+		191B0B31150015EA00F2508E /* AccuracyCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccuracyCircleView.m; path = ../AccuracyCircleView.m; sourceTree = "<group>"; };
+		191B0B331500A8D900F2508E /* EditLocationAnnoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationAnnoView.h; sourceTree = "<group>"; };
+		191B0B341500A8D900F2508E /* EditLocationAnnoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationAnnoView.m; sourceTree = "<group>"; };
 		1922D99F14FEBF58003778B2 /* CrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossHairView.h; sourceTree = "<group>"; };
 		1922D9A014FEBF58003778B2 /* CrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossHairView.m; sourceTree = "<group>"; };
 		1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INaturalistIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -406,8 +412,12 @@
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
 				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
+				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
+				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
 				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
 				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
+				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
+				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
 			);
 			path = INaturalistIOS;
 			sourceTree = "<group>";
@@ -819,6 +829,8 @@
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
 				1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
+				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
+				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

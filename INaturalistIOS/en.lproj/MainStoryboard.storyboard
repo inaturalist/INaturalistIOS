@@ -560,6 +560,13 @@
                             <view userInteractionEnabled="NO" contentMode="scaleToFill" id="2pe-cu-SzE" customClass="CrossHairView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" id="KoI-Ay-egU" customClass="AccuracyCircleView">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
@@ -579,6 +586,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="accuracyCircleView" destination="KoI-Ay-egU" id="C2g-c8-fqs"/>
                         <outlet property="crossHairView" destination="2pe-cu-SzE" id="EOh-uo-4Gl"/>
                         <outlet property="mapView" destination="Gcx-ee-7sQ" id="oNe-cO-daJ"/>
                     </connections>
@@ -593,6 +601,9 @@
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
     <classes>
+        <class className="AccuracyCircleView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AccuracyCircleView.h"/>
+        </class>
         <class className="CrossHairView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
         </class>
@@ -600,12 +611,9 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
             <relationships>
                 <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedCurrentLocationButton:"/>
                 <relationship kind="action" name="clickedDone:"/>
-                <relationship kind="action" name="clickedMapTypeButton:"/>
+                <relationship kind="outlet" name="accuracyCircleView" candidateClass="AccuracyCircleView"/>
                 <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
-                <relationship kind="outlet" name="currentLocationButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="mapTypeButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
             </relationships>
         </class>

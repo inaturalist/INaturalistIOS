@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EditLocationAnnoView.h"
 
-@interface CrossHairView : UIView
+@interface CrossHairView : EditLocationAnnoView
 @property (nonatomic, strong) UILabel *xLabel;
 @property (nonatomic, strong) UILabel *yLabel;
-@property (nonatomic, strong) UIColor *color;
-@property (nonatomic, strong) UIColor *textColor;
 
 - (void)initSubviews;
-- (UIView *)makeLabelView:(UILabel *)label rect:(CGRect)rect roundedCorner:(int)corner;
 @end
