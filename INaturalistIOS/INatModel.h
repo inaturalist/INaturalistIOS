@@ -24,6 +24,7 @@
 + (id)stub;
 + (RKManagedObjectMapping *)mapping;
 + (RKManagedObjectMapping *)serializationMapping;
++ (void)deleteAll;
 - (void)save;
 - (void)destroy;
 @end

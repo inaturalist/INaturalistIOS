@@ -67,20 +67,20 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         defaultMapping = [RKManagedObjectMapping mappingForClass:[Observation class]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
-         @"speciesGuess", @"speciesGuess",
+         @"species_guess", @"speciesGuess",
          @"description", @"inatDescription",
-         @"createdAt", @"createdAt",
-         @"updatedAt", @"updatedAt",
-         @"observedOnString", @"observedOnString",
-         @"placeGuess", @"placeGuess",
+         @"created_at", @"createdAt",
+         @"updated_at", @"updatedAt",
+         @"observed_on_string", @"observedOnString",
+         @"place_guess", @"placeGuess",
          @"latitude", @"latitude",
          @"longitude", @"longitude",
          @"positional_accuracy", @"positionalAccuracy",
-         @"privateLatitude", @"privateLatitude",
-         @"privateLongitude", @"privateLongitude",
-         @"privatePositional_accuracy", @"privatePositionalAccuracy",
-         @"taxonID", @"taxonID",
-         @"iconicTaxonID", @"iconicTaxonID",
+         @"private_latitude", @"privateLatitude",
+         @"private_longitude", @"privateLongitude",
+         @"private_positional_accuracy", @"privatePositionalAccuracy",
+         @"taxon_id", @"taxonID",
+         @"iconic_taxon_id", @"iconicTaxonID",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }

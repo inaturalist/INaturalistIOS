@@ -254,9 +254,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf">
-                        <barButtonItem key="leftBarButtonItem" title="Edit" id="smo-gY-aiP">
+                        <barButtonItem key="leftBarButtonItem" title="Edit" id="0Fk-rY-9h1">
                             <connections>
-                                <action selector="edit:" destination="2" id="gUO-AP-Ltx"/>
+                                <action selector="edit:" destination="2" id="uXk-xm-Qpf"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="31c-qh-A6S">
@@ -267,6 +267,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="0Fk-rY-9h1" id="mdZ-o7-jWm"/>
                         <outlet property="syncButton" destination="r7b-jc-Kqj" id="ZEM-2s-eAN"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="Iwt-4E-pF9"/>
                     </connections>
@@ -600,70 +601,6 @@
         <image name="notebook-tab.png" width="18" height="25"/>
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
-    <classes>
-        <class className="AccuracyCircleView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AccuracyCircleView.h"/>
-        </class>
-        <class className="CrossHairView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
-        </class>
-        <class className="EditLocationViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedDone:"/>
-                <relationship kind="outlet" name="accuracyCircleView" candidateClass="AccuracyCircleView"/>
-                <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
-                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
-            </relationships>
-        </class>
-        <class className="INatUITabBarController" superclassName="UITabBarController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
-        </class>
-        <class className="LoginViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancel:"/>
-                <relationship kind="action" name="signIn:"/>
-                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="usernameField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="MapViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
-            </relationships>
-        </class>
-        <class className="ObservationDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedAddPhoto:"/>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedClear:"/>
-                <relationship kind="action" name="clickedSave:"/>
-                <relationship kind="action" name="keyboardDone:"/>
-                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="placeGuessField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="ObservationsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="edit:"/>
-                <relationship kind="action" name="sync:"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
@@ -671,6 +608,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="nqN-gg-ATR"/>
-        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Iwt-4E-pF9"/>
     </inferredMetricsTieBreakers>
 </document>

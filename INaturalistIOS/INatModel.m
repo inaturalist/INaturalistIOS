@@ -63,6 +63,14 @@
     return (RKManagedObjectMapping *)[[self mapping] inverseMapping];
 }
 
++ (void)deleteAll
+{
+    for (INatModel *o in [self allObjects]) {
+        [o deleteEntity];
+    }
+    [[[RKObjectManager sharedManager] objectStore] save];
+}
+
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];

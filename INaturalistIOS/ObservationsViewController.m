@@ -13,6 +13,8 @@
 #import "DejalActivityView.h"
 #import "ImageStore.h"
 
+static int DeleteAllAlertViewTag = 0;
+
 @implementation ObservationsViewController
 @synthesize syncButton;
 @synthesize observations = _observations;
@@ -21,6 +23,8 @@
 @synthesize syncToolbarItems = _syncToolbarItems;
 @synthesize syncedObservationsCount = _syncedObservationsCount;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
+@synthesize deleteAllButton = _deleteAllButton;
+@synthesize editButton = _editButton;
 
 - (IBAction)sync:(id)sender {
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
@@ -95,13 +99,50 @@
 
 - (IBAction)edit:(id)sender {
     if ([self isEditing]) {
-        [sender setTitle:@"Edit"];
-        [self setEditing:NO animated:YES];
-        [self checkSyncStatus];
+        [self stopEditing];
     } else {
         [sender setTitle:@"Done"];
+        [(UIBarButtonItem *)sender setStyle:UIBarButtonItemStyleDone];
         [self setEditing:YES animated:YES];
+        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        if (!self.deleteAllButton) {
+            self.deleteAllButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete all" 
+                                                                    style:UIBarButtonItemStyleDone 
+                                                                   target:self 
+                                                                   action:@selector(clickedDeleteAll)];
+        }
+        [self setToolbarItems:[NSArray arrayWithObjects:flex, self.deleteAllButton, flex, nil] animated:YES];
+        [self.navigationController setToolbarHidden:NO animated:YES];
     }
+}
+
+- (void)stopEditing
+{
+    [self.editButton setTitle:@"Edit"];
+    [self.editButton setStyle:UIBarButtonItemStyleBordered];
+    [self setEditing:NO animated:YES];
+    [self checkSyncStatus];
+}
+
+- (void)clickedDeleteAll
+{
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure" 
+                                                 message:@"This will delete all the observations on this device, but you need to go to iNaturalist.org to delete them from the website." 
+                                                delegate:self 
+                                       cancelButtonTitle:@"Cancel" 
+                                       otherButtonTitles:@"Delete all", nil];
+    av.tag = DeleteAllAlertViewTag;
+    [av show];
+}
+
+- (void)deleteAll
+{
+    // note: you'll probably want to empty self.observations and reload the 
+    // tableView's data, otherwise the tableView's references to the observation 
+    // objects is going to cause a problem when Core Data deletes them
+    [Observation deleteAll];
+    [DejalBezelActivityView removeView];
+    [self stopEditing];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -117,8 +158,8 @@
 {
     [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
     [self setObservationsToSyncCount:0];
-// if/when you want to bring back loading existing data, it's pretty easy
-//    if (!observations || [observations count] == 0) {
+    // if/when you want to bring back loading existing data, it's pretty easy
+//    if (!self.observations || [self.observations count] == 0) {
 //        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/observations/kueda" 
 //                                                     objectMapping:[Observation mapping] 
 //                                                          delegate:self];
@@ -208,6 +249,7 @@
 {
     NSLog(@"viewDidUnload");
     [self setTableView:nil];
+    [self setEditButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -374,6 +416,17 @@
     if (syncActivityView) {
         [DejalBezelActivityView removeView];
         syncActivityView = nil;
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == DeleteAllAlertViewTag && buttonIndex == 1) {
+        [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                          withLabel:@"Deleting observations..."];
+        [self.observations removeAllObjects];
+        [self.tableView reloadData];
+        [self performSelectorInBackground:@selector(deleteAll) withObject:nil];
     }
 }
 
