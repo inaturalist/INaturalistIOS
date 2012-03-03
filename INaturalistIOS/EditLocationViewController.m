@@ -33,10 +33,11 @@
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     if (!self.currentLocationButton) {
-        self.currentLocationButton = [[UIBarButtonItem alloc] initWithTitle:@"C" 
+        self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location.png"]
                                                                       style:UIBarButtonItemStyleBordered 
                                                                      target:self 
                                                                      action:@selector(clickedCurrentLocationButton)];
+        [self.currentLocationButton setWidth:30];
     }
     if (!self.mapTypeButton) {
         self.mapTypeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl 

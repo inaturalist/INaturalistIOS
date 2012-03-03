@@ -14,6 +14,8 @@
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
 		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
+		191B0B4A150197BC00F2508E /* current_location.png in Resources */ = {isa = PBXBuildFile; fileRef = 191B0B48150197BC00F2508E /* current_location.png */; };
+		191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 191B0B49150197BC00F2508E /* current_location@2x.png */; };
 		1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1922D9A014FEBF58003778B2 /* CrossHairView.m */; };
 		1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
 		1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
@@ -237,6 +239,8 @@
 		191B0B31150015EA00F2508E /* AccuracyCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccuracyCircleView.m; path = ../AccuracyCircleView.m; sourceTree = "<group>"; };
 		191B0B331500A8D900F2508E /* EditLocationAnnoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationAnnoView.h; sourceTree = "<group>"; };
 		191B0B341500A8D900F2508E /* EditLocationAnnoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationAnnoView.m; sourceTree = "<group>"; };
+		191B0B48150197BC00F2508E /* current_location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = current_location.png; sourceTree = "<group>"; };
+		191B0B49150197BC00F2508E /* current_location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "current_location@2x.png"; sourceTree = "<group>"; };
 		1922D99F14FEBF58003778B2 /* CrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossHairView.h; sourceTree = "<group>"; };
 		1922D9A014FEBF58003778B2 /* CrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossHairView.m; sourceTree = "<group>"; };
 		1927513314E9CCC9000ABAC4 /* INaturalistIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INaturalistIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -409,7 +413,6 @@
 				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
 				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
-				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
 				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
 				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
@@ -418,6 +421,7 @@
 				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
 				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
 				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INaturalistIOS;
 			sourceTree = "<group>";
@@ -425,6 +429,8 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				191B0B48150197BC00F2508E /* current_location.png */,
+				191B0B49150197BC00F2508E /* current_location@2x.png */,
 				19A5F63C14FB61E600757636 /* header-logo.png */,
 				19A5F63E14FB622200757636 /* header-logo@2x.png */,
 				19A5F64014FB644A00757636 /* notebook-tab.png */,
@@ -801,6 +807,8 @@
 				19A5F64614FB655200757636 /* map-tab.png in Resources */,
 				19A5F64714FB655200757636 /* map-tab@2x.png in Resources */,
 				19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */,
+				191B0B4A150197BC00F2508E /* current_location.png in Resources */,
+				191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
