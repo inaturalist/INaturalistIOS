@@ -8,7 +8,10 @@
 
 #import "MapViewController.h"
 #import "Observation.h"
+#import "ObservationPhoto.h"
+#import "ImageStore.h"
 #import <MapKit/MapKit.h>
+
 @interface MapViewController()
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @end
@@ -17,59 +20,51 @@
 @synthesize mapView = _mapView;
 @synthesize observations = _observations;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 #pragma mark - View lifecycle
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
+- (void)viewWillAppear:(BOOL)animated
 {
-    
-}
-*/
-
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
-    for (Observation *obs in self.observations) {
-        Observation *simObs = [Observation stub];
-        CLLocationCoordinate2D annotationCoord;
-        annotationCoord.latitude = [[simObs latitude] doubleValue];
-        annotationCoord.longitude = [[simObs longitude] doubleValue];
-        
-        MKPointAnnotation *annotationPoint = [[MKPointAnnotation alloc] init];
-        annotationPoint.coordinate = annotationCoord;
-        annotationPoint.title = [obs speciesGuess];
-        annotationPoint.subtitle = [obs observedOnString];
-        [self.mapView addAnnotation:annotationPoint]; 
+    [self.mapView removeAnnotations:[self.mapView annotations]];
+    [self setObservations:[NSMutableArray arrayWithArray:[Observation all]]];
+    for (int i = 0; i < self.observations.count; i ++) {
+        Observation *obs = [self.observations objectAtIndex:i];
+        MKPointAnnotation *anno = [[MKPointAnnotation alloc] init];
+        anno.coordinate = CLLocationCoordinate2DMake([obs.latitude doubleValue], [obs.longitude doubleValue]);
+        anno.title = [obs speciesGuess];
+        anno.subtitle = [obs observedOnPrettyString];
+        [self.mapView addAnnotation:anno];
     }
+    
+    [super viewWillAppear:animated];
 }
+
+// This doesn't quite work yet, I think b/c the annotations in mapView.annotations aren't kept in the order they're added.  
+// Probably need to sublcass MKPointAnnotation to hold a ref to the observation
+//- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+//{
+//    MKPinAnnotationView *av = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"ObservationAnnotation"];
+//    if (!av) {
+//        av = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"ObservationAnnotation"];
+//        av.canShowCallout = YES;
+//    }
+//    Observation *o = [self.observations objectAtIndex:[self.mapView.annotations indexOfObject:annotation]];
+//    if (o && [o.observationPhotos count] > 0) {
+//        ObservationPhoto *op = [o.observationPhotos anyObject];
+//        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+//        iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+//        iv.contentMode = UIViewContentModeScaleAspectFill;
+//        av.leftCalloutAccessoryView = iv;
+//    } else {
+//        av.leftCalloutAccessoryView = nil;
+//    }
+//    return av;
+//}
 
 
 - (void)viewDidUnload
 {
-    [self setMapView:nil];
+    self.observations = nil;
+    [self.mapView removeAnnotations:self.mapView.annotations];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
