@@ -14,11 +14,13 @@
 #import "PhotoSource.h"
 #import "EditLocationViewController.h"
 
-static int PhotoActionSheetTag = 0;
-static int LocationActionSheetTag = 1;
-static int ObservedOnActionSheetTag = 2;
-static int LocationTableViewSection = 2;
-static int ObservedOnTableViewSection = 3;
+static const int PhotoActionSheetTag = 0;
+static const int LocationActionSheetTag = 1;
+static const int ObservedOnActionSheetTag = 2;
+static const int DeleteActionSheetTag = 3;
+static const int ViewActionSheetTag = 4;
+static const int LocationTableViewSection = 2;
+static const int ObservedOnTableViewSection = 3;
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -28,6 +30,8 @@ static int ObservedOnTableViewSection = 3;
 @synthesize placeGuessField = _placeGuessField;
 @synthesize keyboardToolbar = _keyboardToolbar;
 @synthesize saveButton = _saveButton;
+@synthesize deleteButton = _deleteButton;
+@synthesize viewButton = _viewButton;
 @synthesize speciesGuessTextField = _speciesGuessTextField;
 @synthesize descriptionTextView;
 @synthesize delegate = _delegate;
@@ -87,6 +91,21 @@ static int ObservedOnTableViewSection = 3;
                                                       alpha:1.0]];
     }
     
+    if (!self.deleteButton) {
+        self.deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                          target:self
+                                                          action:@selector(clickedDelete)];
+    }
+    
+    if (!self.viewButton) {
+        self.viewButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                        target:self
+                                                                        action:@selector(clickedView)];
+        if (!self.observation.syncedAt) {
+            [self.viewButton setEnabled:NO];
+        }
+    }
+    
     if (!self.keyboardToolbar) {
         self.keyboardToolbar = [[UIToolbar alloc] init];
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
@@ -105,9 +124,12 @@ static int ObservedOnTableViewSection = 3;
     
     [self.navigationController setToolbarHidden:NO animated:YES];
     [self setToolbarItems:[NSArray arrayWithObjects:
+                           self.deleteButton,
                            flex, 
                            self.saveButton, 
-                           flex, nil]
+                           flex, 
+                           self.viewButton,
+                           nil]
                  animated:YES];
     
     [self refreshCoverflowView];
@@ -321,10 +343,19 @@ static int ObservedOnTableViewSection = 3;
 #pragma mark UIActionSheetDelegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (actionSheet.tag == PhotoActionSheetTag) {
-        [self photoActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
-    } else {
-        [self locationActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+    switch (actionSheet.tag) {
+        case PhotoActionSheetTag:
+            [self photoActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+            break;
+        case DeleteActionSheetTag:
+            [self deleteActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+            break;
+        case ViewActionSheetTag:
+            [self viewActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+            break;
+        default:
+            [self locationActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+            break;
     }
 }
 
@@ -371,10 +402,26 @@ static int ObservedOnTableViewSection = 3;
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
+- (void)deleteActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [self.observation destroy];
+        [self.delegate observationDetailViewControllerDidSave:self];
+    }
+}
+
+- (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        NSURL *url = [NSURL URLWithString:
+                      [NSString stringWithFormat:@"%@/observations/%d", INatBaseURL, [self.observation.recordID intValue]]];
+        [[UIApplication sharedApplication] openURL:url];
+    }
+}
+
 #pragma mark PhotoViewControllerDelegate
 - (void)photoViewControllerDeletePhoto:(id<TTPhoto>)photo
 {
-    NSLog(@"photoViewControllerDeletePhoto, photo: %@", photo);
     ObservationPhoto *op = (ObservationPhoto *)photo;
     [self.observationPhotos removeObject:op];
     [op deleteEntity];
@@ -494,6 +541,27 @@ static int ObservedOnTableViewSection = 3;
     [self save];
     [self.delegate observationDetailViewControllerDidSave:self];
 }
+
+- (void)clickedDelete
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
+                                                             delegate:self 
+                                                    cancelButtonTitle:@"Cancel" 
+                                               destructiveButtonTitle:@"Delete observation" 
+                                                    otherButtonTitles:nil];
+    actionSheet.tag = DeleteActionSheetTag;
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (void)clickedView
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
+                                                             delegate:self 
+                                                    cancelButtonTitle:@"Cancel" 
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"View on iNaturalist.org" , nil];
+    actionSheet.tag = ViewActionSheetTag;
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];}
 
 - (void)save
 {

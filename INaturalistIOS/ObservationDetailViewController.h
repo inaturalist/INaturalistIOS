@@ -35,6 +35,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *placeGuessField;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
 @property (strong, nonatomic) UIBarButtonItem *saveButton;
+@property (strong, nonatomic) UIBarButtonItem *deleteButton;
+@property (strong, nonatomic) UIBarButtonItem *viewButton;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
@@ -45,6 +47,8 @@
 - (void)clickedClear;
 - (void)keyboardDone;
 - (void)clickedSave;
+- (void)clickedDelete;
+- (void)clickedView;
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedAddPhoto:(id)sender;
 - (void)save;
@@ -63,6 +67,8 @@
 
 - (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+- (void)deleteActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+- (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 - (void)dismissActionSheet;
 - (void)doneDatePicker;

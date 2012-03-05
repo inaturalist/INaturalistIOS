@@ -46,15 +46,15 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Add some notes" id="qJK-jT-EPE">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="113" id="a9A-Ps-CU9">
-                                        <rect key="frame" x="0.0" y="137" width="320" height="114"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="72" id="a9A-Ps-CU9">
+                                        <rect key="frame" x="0.0" y="137" width="320" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="10" y="1" width="300" height="112"/>
+                                            <rect key="frame" x="10" y="1" width="300" height="71"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Brief description of what you saw" id="vam-8V-lM2">
-                                                    <rect key="frame" x="0.0" y="0.0" width="300" height="107"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="300" height="71"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -73,7 +73,7 @@
                             <tableViewSection headerTitle="Location" id="Q0S-qE-f4O">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="51" id="PIn-6t-1ba">
-                                        <rect key="frame" x="0.0" y="297" width="320" height="52"/>
+                                        <rect key="frame" x="0.0" y="256" width="320" height="52"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="50"/>
@@ -147,7 +147,7 @@
                             <tableViewSection headerTitle="Date / Time" id="Z4l-tt-zMs">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="e0j-MT-hzk" style="IBUITableViewCellStyleDefault" id="Hxh-Sg-hf4">
-                                        <rect key="frame" x="0.0" y="395" width="320" height="45"/>
+                                        <rect key="frame" x="0.0" y="354" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
