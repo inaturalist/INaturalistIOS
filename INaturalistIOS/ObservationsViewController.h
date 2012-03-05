@@ -29,6 +29,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
 
 - (IBAction)sync:(id)sender;
+- (void)stopSync;
 - (IBAction)edit:(id)sender;
 - (void)stopEditing;
 

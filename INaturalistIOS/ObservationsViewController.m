@@ -35,6 +35,19 @@ static int DeleteAllAlertViewTag = 0;
     }
 }
 
+- (void)stopSync
+{
+    if (syncActivityView) {
+        [DejalBezelActivityView removeView];
+        syncActivityView = nil;
+    }
+    
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    
+    // sleep is ok now
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
 - (void)syncObservations
 {
     NSArray *observationsToSync = [Observation needingSync];
@@ -250,7 +263,7 @@ static int DeleteAllAlertViewTag = 0;
 
 - (void)viewDidUnload
 {
-    NSLog(@"viewDidUnload");
+    [self stopSync];
     [self setTableView:nil];
     [self setEditButton:nil];
     [super viewDidUnload];
@@ -365,17 +378,9 @@ static int DeleteAllAlertViewTag = 0;
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    NSLog(@"failed with error: %@", error);
-    if (syncActivityView) {
-        [DejalBezelActivityView removeView];
-        syncActivityView = nil;
-    }
-    
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
-    
+    [self stopSync];
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
-    NSLog(@"objectLoader.response.statusCode: %d", objectLoader.response.statusCode);
     switch (objectLoader.response.statusCode) {
         // UNPROCESSABLE ENTITY
         case 422:
@@ -399,35 +404,25 @@ static int DeleteAllAlertViewTag = 0;
                                            otherButtonTitles:nil];
         [av show];
     }
-    
-    // sleep is ok now
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader
 {
+    [self stopSync];
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
                                                  message:@"Unknown error! Please report this to help@inaturalist.org"
                                                 delegate:self 
                                        cancelButtonTitle:@"OK" 
                                        otherButtonTitles:nil];
     [av show];
-    
-    // sleep is ok now
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 #pragma mark RKRequestQueueDelegate methods
 - (void)requestQueueDidFinishLoading:(RKRequestQueue *)queue
 {
+    [self stopSync];
     [[self tableView] reloadData];
     [self checkSyncStatus];
-    if (syncActivityView) {
-        [DejalBezelActivityView removeView];
-        syncActivityView = nil;
-    }
-    // sleep is ok now
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
