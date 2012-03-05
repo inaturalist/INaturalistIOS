@@ -41,7 +41,9 @@ static int DeleteAllAlertViewTag = 0;
     
     if (observationsToSync.count == 0) return;
     
-    NSLog(@"syncActivityView: %@", syncActivityView);
+    // make sure the app doesn't sleep while syncing
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
     NSString *activityMsg = [NSString stringWithFormat:@"Syncing 1 of %d observations", observationsToSync.count];
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
@@ -64,12 +66,13 @@ static int DeleteAllAlertViewTag = 0;
 
 - (void)syncObservationPhotos
 {
-    NSLog(@"syncObservationPhotos");
     NSArray *observationPhotosToSync = [ObservationPhoto needingSync];
     
     if (observationPhotosToSync.count == 0) return;
     
-    NSLog(@"resetting syncActivityView");
+    // make sure the app doesn't sleep while syncing
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
     NSString *activityMsg = [NSString stringWithFormat:@"Syncing 1 of %d photos", observationPhotosToSync.count];
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
@@ -396,6 +399,9 @@ static int DeleteAllAlertViewTag = 0;
                                            otherButtonTitles:nil];
         [av show];
     }
+    
+    // sleep is ok now
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader
@@ -406,6 +412,9 @@ static int DeleteAllAlertViewTag = 0;
                                        cancelButtonTitle:@"OK" 
                                        otherButtonTitles:nil];
     [av show];
+    
+    // sleep is ok now
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 #pragma mark RKRequestQueueDelegate methods
@@ -417,6 +426,8 @@ static int DeleteAllAlertViewTag = 0;
         [DejalBezelActivityView removeView];
         syncActivityView = nil;
     }
+    // sleep is ok now
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
