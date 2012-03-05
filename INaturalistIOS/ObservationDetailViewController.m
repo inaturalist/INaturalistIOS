@@ -58,40 +58,48 @@ static int ObservedOnTableViewSection = 3;
 
 - (void)uiToObservation
 {
+    if (!self.speciesGuessTextField) return;
     [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     [self.observation setInatDescription:[descriptionTextView text]];
     [self.observation setPlaceGuess:[self.placeGuessField text]];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     self.observation.latitude = [numberFormatter numberFromString:self.latitudeLabel.text];
     self.observation.longitude = [numberFormatter numberFromString:self.longitudeLabel.text];
-    self.observation.positionalAccuracy = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
+    self.observation.positionalAccuracy = [numberFormatter 
+                                           numberFromString:self.positionalAccuracyLabel.text];
 }
 
 - (void)initUI
 {
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                                                          target:nil 
-                                                                          action:nil];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] 
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                             target:nil 
+                             action:nil];
     if (!self.saveButton) {
         self.saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
                                                           action:@selector(clickedSave)];
         [self.saveButton setWidth:100.0];
-        [self.saveButton setTintColor:[UIColor colorWithRed:168.0/255 green:204.0/255 blue:50.0/255 alpha:1.0]];
+        [self.saveButton setTintColor:[UIColor colorWithRed:168.0/255 
+                                                      green:204.0/255 
+                                                       blue:50.0/255 
+                                                      alpha:1.0]];
     }
     
     if (!self.keyboardToolbar) {
         self.keyboardToolbar = [[UIToolbar alloc] init];
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
         [self.keyboardToolbar sizeToFit];
-        UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] initWithTitle:@"Clear" 
-                                                                        style:UIBarButtonItemStyleBordered
-                                                                       target:self
-                                                                       action:@selector(clickedClear)];
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
-                                                                                    target:self 
-                                                                                    action:@selector(keyboardDone)];
+        UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] 
+                                        initWithTitle:@"Clear" 
+                                        style:UIBarButtonItemStyleBordered
+                                        target:self
+                                        action:@selector(clickedClear)];
+        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] 
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
+                                       target:self 
+                                       action:@selector(keyboardDone)];
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
     
@@ -138,9 +146,13 @@ static int ObservedOnTableViewSection = 3;
 - (void)stopUpdatingLocation
 {
     NSLog(@"stopping location updates");
-    [self.locationManager stopUpdatingLocation];
-    [self.locationTimer invalidate];
-    self.locationTimer = nil;
+    if (self.locationManager) {
+        [self.locationManager stopUpdatingLocation];
+    }
+    if (self.locationTimer) {
+        [self.locationTimer invalidate];
+        self.locationTimer = nil;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -162,6 +174,7 @@ static int ObservedOnTableViewSection = 3;
 {
     NSLog(@"didReceiveMemoryWarning");
     // Releases the view if it doesn't have a superview.
+    self.coverflowView = nil;
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
 }
@@ -174,8 +187,6 @@ static int ObservedOnTableViewSection = 3;
 
 - (void)viewDidUnload
 {
-    NSLog(@"viewDidUnload");
-    
     // ensure UI state gets stored in the observation
     [self uiToObservation];
     
@@ -376,15 +387,24 @@ static int ObservedOnTableViewSection = 3;
     if (newLocation.timestamp.timeIntervalSinceNow < -60) {
         return;
     }
-    [self.latitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.latitude]];
-    [self.longitudeLabel setText:[NSString stringWithFormat:@"%f", newLocation.coordinate.longitude]];
+    
+    self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
+    self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude]; 
+    self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
     self.observation.positioningMethod = @"gps";
-    self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [NSNumber numberWithFloat:newLocation.horizontalAccuracy].intValue];
+    
+    if (self.latitudeLabel) {
+        self.latitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
+        self.longitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
+        self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", 
+                                             [self.observation.positionalAccuracy intValue]];
+    }
+    
     if (newLocation.horizontalAccuracy < 10) {
         [self stopUpdatingLocation];
     }
     
-    if (self.placeGuessField.text.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
+    if (self.observation.placeGuess.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
         [self reverseGeocodeCoordinates];
     }
 }
@@ -592,7 +612,16 @@ static int ObservedOnTableViewSection = 3;
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
-            self.placeGuessField.text = [[NSArray arrayWithObjects:pm.name, pm.locality, pm.administrativeArea, pm.ISOcountryCode, nil] componentsJoinedByString:@", "];
+            self.observation.placeGuess = [[NSArray arrayWithObjects:
+                                            pm.name, 
+                                            pm.locality, 
+                                            pm.administrativeArea, 
+                                            pm.ISOcountryCode, 
+                                            nil] 
+                                           componentsJoinedByString:@", "];
+            if (self.placeGuessField) {
+                self.placeGuessField.text = self.observation.placeGuess;
+            }
         }
     }];
 }
