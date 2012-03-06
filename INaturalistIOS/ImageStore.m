@@ -336,4 +336,19 @@ static ImageStore *sharedImageStore = nil;
     return [NSString stringWithFormat:@"documents://photos/%@.jpg", [self keyForKey:key forSize:size]];
 }
 
+- (UIImage *)iconicTaxonImageForName:(NSString *)name
+{
+    NSString *iconicTaxonName = name ? [name lowercaseString] : @"unknown";
+    NSString *key = [NSString stringWithFormat:@"iconic_taxon_%@", iconicTaxonName];
+    UIImage *img = [self.dictionary objectForKey:key];
+    if (!img) {
+        img = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", key]];
+        if (!img) {
+            img = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
+        }
+        [self.dictionary setObject:img forKey:key];
+    }
+    return img;
+}
+
 @end

@@ -108,5 +108,10 @@
     [[[RKObjectManager sharedManager] objectStore] save];
 }
 
+- (BOOL)needsSync
+{
+    return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.localUpdatedAt] < 0;
+}
+
 
 @end

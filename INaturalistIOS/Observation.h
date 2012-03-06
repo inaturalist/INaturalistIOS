@@ -20,10 +20,12 @@
 @property (nonatomic, retain) NSNumber * positionalAccuracy;
 @property (nonatomic, retain) NSDate * observedOn;
 @property (nonatomic, retain) NSString * observedOnString;
+@property (nonatomic, retain) NSDate * timeObservedAt;
 @property (nonatomic, retain) NSNumber * userID;
 @property (nonatomic, retain) NSString * placeGuess;
 @property (nonatomic, retain) NSNumber * idPlease;
 @property (nonatomic, retain) NSNumber * iconicTaxonID;
+@property (nonatomic, retain) NSString * iconicTaxonName;
 @property (nonatomic, retain) NSNumber * privateLatitude;
 @property (nonatomic, retain) NSNumber * privateLongitude;
 @property (nonatomic, retain) NSNumber * privatePositionalAccuracy;
@@ -38,4 +40,5 @@
 @property (nonatomic, strong) NSArray *sortedObservationPhotos;
 
 - (NSString *)observedOnPrettyString;
+- (NSString *)observedOnShortString;
 @end

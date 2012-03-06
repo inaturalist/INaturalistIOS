@@ -51,6 +51,7 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
+    NSLog(@"restkit config complete");
 }
 
 @end

@@ -14,6 +14,11 @@
 #import "ImageStore.h"
 
 static int DeleteAllAlertViewTag = 0;
+static const int ObservationCellImageTag = 5;
+static const int ObservationCellTitleTag = 1;
+static const int ObservationCellSubTitleTag = 2;
+static const int ObservationCellUpperRightTag = 3;
+static const int ObservationCellLowerRightTag = 4;
 
 @implementation ObservationsViewController
 @synthesize syncButton;
@@ -226,18 +231,36 @@ static int DeleteAllAlertViewTag = 0;
 {
     Observation *o = [self.observations objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
+    UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
+    UILabel *subtitle = (UILabel *)[cell viewWithTag:ObservationCellSubTitleTag];
+    UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
+    UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
+    UIImage *img;
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
-        [cell.imageView setImage:img];
+        img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
     } else {
-        [cell.imageView setImage:nil];
+        img = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
+    [imageView setImage:img];
     if (o.speciesGuess) {
-        [cell.textLabel setText:o.speciesGuess];
+        [title setText:o.speciesGuess];
     } else {
-        [cell.textLabel setText:@"Something..."];
+        [title setText:@"Something..."];
     }
+    
+    if (o.placeGuess) {
+        subtitle.text = o.placeGuess;
+    } else if (o.latitude) {
+        subtitle.text = [NSString stringWithFormat:@"%f, %f", o.latitude, o.longitude];
+    } else {
+        subtitle.text = @"Somewhere...";
+    }
+    
+    upperRight.text = o.observedOnShortString;
+    syncImage.hidden = !o.needsSync;
+    
     return cell;
 }
 
@@ -309,6 +332,7 @@ static int DeleteAllAlertViewTag = 0;
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
+        o.observedOn = [NSDate date];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
         ObservationDetailViewController *vc = [segue destinationViewController];

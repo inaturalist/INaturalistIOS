@@ -33,4 +33,5 @@ enum {
 - (void)generateImageWithParams:(NSDictionary *)params;
 - (void)clearCache;
 - (NSString *)urlStringForKey:(NSString *)key forSize:(int)size;
+- (UIImage *)iconicTaxonImageForName:(NSString *)name;
 @end

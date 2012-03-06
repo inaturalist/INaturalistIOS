@@ -4,6 +4,7 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="iconicTaxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="iconicTaxonName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="idPlease" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="inatDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" syncable="YES"/>
@@ -26,6 +27,7 @@
         <attribute name="speciesGuess" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="taxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="timeObservedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
@@ -55,7 +57,7 @@
         <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationPhotos" inverseEntity="Observation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="465"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="480"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
     </elements>
 </model>

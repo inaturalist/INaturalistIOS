@@ -21,10 +21,12 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic positionalAccuracy;
 @dynamic observedOn;
 @dynamic observedOnString;
+@dynamic timeObservedAt;
 @dynamic userID;
 @dynamic placeGuess;
 @dynamic idPlease;
 @dynamic iconicTaxonID;
+@dynamic iconicTaxonName;
 @dynamic privateLatitude;
 @dynamic privateLongitude;
 @dynamic privatePositionalAccuracy;
@@ -37,6 +39,14 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic observationPhotos;
 
 @synthesize sortedObservationPhotos = _sortedObservationPhotos;
+
++ (NSArray *)all
+{
+    NSFetchRequest *request = [self fetchRequest];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"observedOn" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    return [self objectsWithFetchRequest:request];
+}
 
 + (Observation *)stub
 {
@@ -71,7 +81,9 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"description", @"inatDescription",
          @"created_at", @"createdAt",
          @"updated_at", @"updatedAt",
+//         @"observed_on", @"observedOn",
          @"observed_on_string", @"observedOnString",
+         @"time_observed_at_utc", @"timeObservedAt",
          @"place_guess", @"placeGuess",
          @"latitude", @"latitude",
          @"longitude", @"longitude",
@@ -81,6 +93,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"private_positional_accuracy", @"privatePositionalAccuracy",
          @"taxon_id", @"taxonID",
          @"iconic_taxon_id", @"iconicTaxonID",
+         @"iconic_taxon_name", @"iconicTaxonName",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -109,8 +122,9 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
-    NSDate *now = [NSDate date];
-    if (!self.observedOn) [self setObservedOn:now];
+    if (!self.observedOn) {
+        if (self.timeObservedAt) self.observedOn = self.timeObservedAt;
+    }
     return self;
 }
 
@@ -153,6 +167,23 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [fmt setTimeZone:[NSTimeZone localTimeZone]];
     [fmt setDateStyle:NSDateFormatterMediumStyle];
     [fmt setTimeStyle:NSDateFormatterMediumStyle];
+    return [fmt stringFromDate:self.observedOn];
+}
+
+- (NSString *)observedOnShortString
+{
+    if (!self.observedOn) return @"?";
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    NSDate *now = [NSDate date];
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [cal components:NSDayCalendarUnit fromDate:self.observedOn toDate:now options:0];
+    if (comps.day == 0) {
+        fmt.dateStyle = NSDateFormatterNoStyle;
+        fmt.timeStyle = NSDateFormatterShortStyle;
+    } else {
+        fmt.dateStyle = NSDateFormatterShortStyle;
+        fmt.timeStyle = NSDateFormatterNoStyle;
+    }
     return [fmt stringFromDate:self.observedOn];
 }
 

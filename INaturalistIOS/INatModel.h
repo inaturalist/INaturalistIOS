@@ -27,4 +27,5 @@
 + (void)deleteAll;
 - (void)save;
 - (void)destroy;
+- (BOOL)needsSync;
 @end
