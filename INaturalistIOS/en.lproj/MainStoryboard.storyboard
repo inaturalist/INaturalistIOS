@@ -48,7 +48,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Add some notes" id="qJK-jT-EPE">
+                            <tableViewSection headerTitle="Notes" id="qJK-jT-EPE">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="72" id="a9A-Ps-CU9">
                                         <rect key="frame" x="0.0" y="137" width="320" height="73"/>
@@ -421,6 +421,32 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Credits" id="wVj-s3-ngo">
+                                <cells>
+                                    <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Qrv-G3-6nh" rowHeight="75" style="IBUITableViewCellStyleDefault" id="FZh-GR-7cJ">
+                                        <rect key="frame" x="0.0" y="182" width="320" height="77"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="10" y="1" width="300" height="74"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qrv-G3-6nh">
+                                                    <rect key="frame" x="10" y="0.0" width="280" height="74"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <string key="text">This app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists!</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="shadowColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                                    <size key="shadowOffset" width="0.0" height="1"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="ydS-en-xrb" id="al3-Ax-pgO"/>
@@ -717,7 +743,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="nqN-gg-ATR"/>
         <segue reference="Iwt-4E-pF9"/>
+        <segue reference="nqN-gg-ATR"/>
     </inferredMetricsTieBreakers>
 </document>

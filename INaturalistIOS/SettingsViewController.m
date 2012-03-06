@@ -26,8 +26,10 @@ static const int AccountActionCellTag = 1;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
+    creditsCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
