@@ -506,7 +506,7 @@ static const int ObservedOnTableViewSection = 3;
             self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, toolbar.frame.size.height, 320, 320)];
         }
         self.datePicker.maximumDate = [NSDate date];
-        self.datePicker.date = self.observation.observedOn;
+        self.datePicker.date = self.observation.localObservedOn;
         [sheet addSubview:self.datePicker];
         
         [sheet showFromTabBar:self.tabBarController.tabBar];
@@ -703,7 +703,7 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)doneDatePicker
 {
-    self.observation.observedOn = self.datePicker.date;
+    self.observation.localObservedOn = self.datePicker.date;
     [self dismissActionSheet];
     self.observedAtLabel.text = [self.observation observedOnPrettyString];
 }

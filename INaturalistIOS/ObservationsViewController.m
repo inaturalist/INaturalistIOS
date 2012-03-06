@@ -332,7 +332,7 @@ static const int ObservationCellLowerRightTag = 4;
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
-        o.observedOn = [NSDate date];
+        o.localObservedOn = [NSDate date];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
         ObservationDetailViewController *vc = [segue destinationViewController];

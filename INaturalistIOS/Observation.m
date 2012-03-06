@@ -20,6 +20,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic longitude;
 @dynamic positionalAccuracy;
 @dynamic observedOn;
+@dynamic localObservedOn;
 @dynamic observedOnString;
 @dynamic timeObservedAt;
 @dynamic userID;
@@ -43,7 +44,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"observedOn" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
     return [self objectsWithFetchRequest:request];
 }
@@ -62,7 +63,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
                              @"somewhere in nevada", nil];    
     Observation *o = [Observation object];
     o.speciesGuess = [speciesGuesses objectAtIndex:rand() % speciesGuesses.count];
-    o.observedOn = [NSDate date];
+    o.localObservedOn = [NSDate date];
     o.placeGuess = [placeGuesses objectAtIndex:rand() % [placeGuesses count]];
     o.latitude = [NSNumber numberWithInt:rand() % 89];
     o.longitude = [NSNumber numberWithInt:rand() % 179];
@@ -81,7 +82,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"description", @"inatDescription",
          @"created_at", @"createdAt",
          @"updated_at", @"updatedAt",
-//         @"observed_on", @"observedOn",
+         @"observed_on", @"observedOn",
          @"observed_on_string", @"observedOnString",
          @"time_observed_at_utc", @"timeObservedAt",
          @"place_guess", @"placeGuess",
@@ -122,8 +123,9 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
-    if (!self.observedOn) {
-        if (self.timeObservedAt) self.observedOn = self.timeObservedAt;
+    if (!self.localObservedOn) {
+        if (self.timeObservedAt) self.localObservedOn = self.timeObservedAt;
+        else if (self.observedOn) self.localObservedOn = self.observedOn;
     }
     return self;
 }
@@ -140,16 +142,16 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return _sortedObservationPhotos;
 }
 
-- (void)setObservedOn:(NSDate *)newDate
+- (void)setLocalObservedOn:(NSDate *)newDate
 {
-    [self willChangeValueForKey:@"observedOn"];
-    [self setPrimitiveValue:newDate forKey:@"observedOn"];
-    [self didChangeValueForKey:@"observedOn"];
+    [self willChangeValueForKey:@"localObservedOn"];
+    [self setPrimitiveValue:newDate forKey:@"localObservedOn"];
+    [self didChangeValueForKey:@"localObservedOn"];
     if (!self.observedOnString) {
         NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
         [fmt setTimeZone:[NSTimeZone localTimeZone]];
         [fmt setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
-        self.observedOnString = [fmt stringFromDate:self.observedOn];
+        self.observedOnString = [fmt stringFromDate:self.localObservedOn];
     }
 }
 
@@ -162,21 +164,21 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 - (NSString *)observedOnPrettyString
 {
-    if (!self.observedOn) return @"Unknown";
+    if (!self.localObservedOn) return @"Unknown";
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     [fmt setTimeZone:[NSTimeZone localTimeZone]];
     [fmt setDateStyle:NSDateFormatterMediumStyle];
     [fmt setTimeStyle:NSDateFormatterMediumStyle];
-    return [fmt stringFromDate:self.observedOn];
+    return [fmt stringFromDate:self.localObservedOn];
 }
 
 - (NSString *)observedOnShortString
 {
-    if (!self.observedOn) return @"?";
+    if (!self.localObservedOn) return @"?";
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     NSDate *now = [NSDate date];
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *comps = [cal components:NSDayCalendarUnit fromDate:self.observedOn toDate:now options:0];
+    NSDateComponents *comps = [cal components:NSDayCalendarUnit fromDate:self.localObservedOn toDate:now options:0];
     if (comps.day == 0) {
         fmt.dateStyle = NSDateFormatterNoStyle;
         fmt.timeStyle = NSDateFormatterShortStyle;
@@ -184,7 +186,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         fmt.dateStyle = NSDateFormatterShortStyle;
         fmt.timeStyle = NSDateFormatterNoStyle;
     }
-    return [fmt stringFromDate:self.observedOn];
+    return [fmt stringFromDate:self.localObservedOn];
 }
 
 @end

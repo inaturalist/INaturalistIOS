@@ -10,6 +10,7 @@
         <attribute name="latitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="license" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localObservedOn" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="observedOn" optional="YES" attributeType="Date" syncable="YES"/>
@@ -57,7 +58,7 @@
         <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationPhotos" inverseEntity="Observation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="480"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="510"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
     </elements>
 </model>

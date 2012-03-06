@@ -19,6 +19,7 @@
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSNumber * positionalAccuracy;
 @property (nonatomic, retain) NSDate * observedOn;
+@property (nonatomic, retain) NSDate * localObservedOn;
 @property (nonatomic, retain) NSString * observedOnString;
 @property (nonatomic, retain) NSDate * timeObservedAt;
 @property (nonatomic, retain) NSNumber * userID;

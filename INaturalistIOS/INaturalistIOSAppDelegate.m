@@ -46,6 +46,13 @@
     [manager.mappingProvider setSerializationMapping:[ObservationPhoto serializationMapping] forClass:[ObservationPhoto class]];
     [manager.mappingProvider setObjectMapping:[ObservationPhoto mapping] forKeyPath:@"observation_photo"];
     
+    // Make sure RK knows how to parse simple dates
+    NSDateFormatter* dateFormatter = [NSDateFormatter new];
+    [dateFormatter  setDateFormat:@"yyyy-MM-dd"];
+    dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    dateFormatter.locale = [NSLocale currentLocale];
+    [RKObjectMapping addDefaultDateFormatter:dateFormatter];
+    
     // DEBUG
 //    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // END DEBUG
