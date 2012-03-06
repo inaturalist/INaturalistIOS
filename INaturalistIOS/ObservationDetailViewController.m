@@ -133,6 +133,12 @@ static const int ObservedOnTableViewSection = 3;
                  animated:YES];
     
     [self refreshCoverflowView];
+    
+    if (self.observation.iconicTaxonName) {
+        UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
+        img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -151,6 +157,12 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)startUpdatingLocation
 {
+    UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
+                                     [NSIndexPath indexPathForRow:0 inSection:2]];
+    UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
+    UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
+    [av startAnimating];
+    img.hidden = YES;
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
@@ -167,7 +179,17 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)stopUpdatingLocation
 {
-    NSLog(@"stopping location updates");
+    if (self.tableView) {
+        UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
+                                         [NSIndexPath indexPathForRow:0 inSection:2]];
+        if (locationCell) {
+            UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
+            UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
+            [av stopAnimating];
+            img.hidden = NO;
+        }
+    }
+    
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
