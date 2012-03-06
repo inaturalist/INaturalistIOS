@@ -27,6 +27,7 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton; // if the button is just kind of floating and not assigned a super view, it will get deallocated UNLESS we have a strong reference here
 @property (nonatomic, strong) UIBarButtonItem *deleteAllButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
 
 - (IBAction)sync:(id)sender;
 - (void)stopSync;

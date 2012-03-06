@@ -30,9 +30,23 @@ static const int ObservationCellLowerRightTag = 4;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize deleteAllButton = _deleteAllButton;
 @synthesize editButton = _editButton;
+@synthesize stopSyncButton = _stopSyncButton;
 
 - (IBAction)sync:(id)sender {
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    
+    if (!self.stopSyncButton) {
+        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:@"Stop sync" 
+                                                               style:UIBarButtonItemStyleBordered 
+                                                              target:self 
+                                                              action:@selector(stopSync)];
+        self.stopSyncButton.tintColor = [UIColor redColor];
+    }
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self.navigationController setToolbarHidden:NO];
+    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
+                 animated:YES];
+    
     if (self.observationsToSyncCount > 0) {
         [self syncObservations];
     } else {
@@ -48,6 +62,7 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    [self checkSyncStatus];
     
     // sleep is ok now
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
@@ -57,7 +72,10 @@ static const int ObservationCellLowerRightTag = 4;
 {
     NSArray *observationsToSync = [Observation needingSync];
     
-    if (observationsToSync.count == 0) return;
+    if (observationsToSync.count == 0) {
+        [self stopSync];
+        return;
+    }
     
     // make sure the app doesn't sleep while syncing
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -66,7 +84,7 @@ static const int ObservationCellLowerRightTag = 4;
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
     } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
+        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
                                                              withLabel:activityMsg];
     }
     
@@ -86,7 +104,10 @@ static const int ObservationCellLowerRightTag = 4;
 {
     NSArray *observationPhotosToSync = [ObservationPhoto needingSync];
     
-    if (observationPhotosToSync.count == 0) return;
+    if (observationPhotosToSync.count == 0) {
+        [self stopSync];
+        return;
+    }
     
     // make sure the app doesn't sleep while syncing
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -95,7 +116,7 @@ static const int ObservationCellLowerRightTag = 4;
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
     } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.navigationController.view
+        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
                                                              withLabel:activityMsg];
     }
     
@@ -131,6 +152,7 @@ static const int ObservationCellLowerRightTag = 4;
                                                                     style:UIBarButtonItemStyleDone 
                                                                    target:self 
                                                                    action:@selector(clickedDeleteAll)];
+            self.deleteAllButton.tintColor = [UIColor redColor];
         }
         [self setToolbarItems:[NSArray arrayWithObjects:flex, self.deleteAllButton, flex, nil] animated:YES];
         [self.navigationController setToolbarHidden:NO animated:YES];
