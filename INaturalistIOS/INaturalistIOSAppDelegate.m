@@ -53,6 +53,8 @@
     dateFormatter.locale = [NSLocale currentLocale];
     [RKObjectMapping addDefaultDateFormatter:dateFormatter];
     
+    [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
+    
     // DEBUG
 //    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // END DEBUG
