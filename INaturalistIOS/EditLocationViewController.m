@@ -20,10 +20,6 @@
 @synthesize accuracyCircleView = _accuracyCircleView;
 
 #pragma mark - View lifecycle
-- (void)viewDidLoad
-{
-    // TODO append accuracy control view
-}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -66,11 +62,11 @@
 }
 
 - (void)viewDidUnload {
+    [super viewDidUnload];
     [self setMapView:nil];
     [self setMapTypeButton:nil];
     [self setCrossHairView:nil];
     [self setAccuracyCircleView:nil];
-    [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -150,7 +146,7 @@
 
 - (void)clickedMapTypeButton
 {
-    // TODO
+    [self performSegueWithIdentifier:@"MapTypeSegue" sender:self];
 }
 
 - (void)updateCrossHair

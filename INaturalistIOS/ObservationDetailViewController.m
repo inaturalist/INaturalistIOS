@@ -106,6 +106,16 @@ static const int ObservedOnTableViewSection = 3;
         }
     }
     
+    [self setToolbarItems:[NSArray arrayWithObjects:
+                           self.deleteButton,
+                           flex, 
+                           self.saveButton, 
+                           flex, 
+                           self.viewButton,
+                           nil]
+                 animated:NO];
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    
     if (!self.keyboardToolbar) {
         self.keyboardToolbar = [[UIToolbar alloc] init];
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
@@ -121,16 +131,6 @@ static const int ObservedOnTableViewSection = 3;
                                        action:@selector(keyboardDone)];
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
-    
-    [self.navigationController setToolbarHidden:NO animated:YES];
-    [self setToolbarItems:[NSArray arrayWithObjects:
-                           self.deleteButton,
-                           flex, 
-                           self.saveButton, 
-                           flex, 
-                           self.viewButton,
-                           nil]
-                 animated:YES];
     
     [self refreshCoverflowView];
     
@@ -155,100 +155,62 @@ static const int ObservedOnTableViewSection = 3;
     }
 }
 
-- (void)startUpdatingLocation
-{
-    UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
-                                     [NSIndexPath indexPathForRow:0 inSection:2]];
-    UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
-    UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
-    [av startAnimating];
-    img.hidden = YES;
-    if (!self.locationManager) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self;
-    }
-    if (!self.locationTimer) {
-        self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 
-                                                              target:self 
-                                                            selector:@selector(stopUpdatingLocation) 
-                                                            userInfo:nil 
-                                                             repeats:NO];
-    }
-    [self.locationManager startUpdatingLocation];
-}
-
-- (void)stopUpdatingLocation
-{
-    if (self.tableView) {
-        UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
-                                         [NSIndexPath indexPathForRow:0 inSection:2]];
-        if (locationCell) {
-            UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
-            UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
-            [av stopAnimating];
-            img.hidden = NO;
-        }
-    }
-    
-    if (self.locationManager) {
-        [self.locationManager stopUpdatingLocation];
-    }
-    if (self.locationTimer) {
-        [self.locationTimer invalidate];
-        self.locationTimer = nil;
-    }
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"viewWillAppear");
+    // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"viewDidAppear, saveButton: %@", self.saveButton);
+    NSLog(@"viewDidAppear");
     [self initUI];
     if (self.observation.isNew && [self.latitudeLabel.text isEqualToString:@"???"]) {
         [self startUpdatingLocation];
     }
+    [self.navigationController setToolbarHidden:NO animated:animated];
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
 {
     NSLog(@"didReceiveMemoryWarning");
     // Releases the view if it doesn't have a superview.
-    self.coverflowView = nil;
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
+    [self setLocationManager:nil];
+    [self setGeocoder:nil];
+    [self setDatePicker:nil];
+    [self setCurrentActionSheet:nil];
+    [self setKeyboardToolbar:nil];
+    self.saveButton = nil;
+    self.deleteButton = nil;
+    self.viewButton = nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES animated:animated];
+    NSLog(@"viewWillDisappear");
+    // ensure UI state gets stored in the observation
+    if (self.observation && !self.observation.isDeleted) {
+        [self uiToObservation];
+    }
+    [self stopUpdatingLocation];
     [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload
 {
-    // ensure UI state gets stored in the observation
-    [self uiToObservation];
-    
+    NSLog(@"viewDidUnload");
     [self setSpeciesGuessTextField:nil];
     [self setObservedAtLabel:nil];
     [self setLatitudeLabel:nil];
     [self setLongitudeLabel:nil];
     [self setPositionalAccuracyLabel:nil];
     [self setDescriptionTextView:nil];
-    [self setDescriptionTextView:nil];
-    [self setKeyboardToolbar:nil];
-    [self setSaveButton:nil];
-    [self stopUpdatingLocation];
-    [self setLocationManager:nil];
     [self setPlaceGuessField:nil];
-    [self setGeocoder:nil];
-    [self setDatePicker:nil];
-    [self setCurrentActionSheet:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -352,6 +314,7 @@ static const int ObservedOnTableViewSection = 3;
     PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
     vc.delegate = self;
     vc.photoSource = photoSource;
+    [self.navigationController setToolbarHidden:YES];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -428,6 +391,7 @@ static const int ObservedOnTableViewSection = 3;
 {
     if (buttonIndex == 0) {
         [self.observation destroy];
+        self.observation = nil;
         [self.delegate observationDetailViewControllerDidSave:self];
     }
 }
@@ -593,8 +557,8 @@ static const int ObservedOnTableViewSection = 3;
 
 - (IBAction)clickedCancel:(id)sender {
     if ([self.observation isNew]) {
-        NSLog(@"obs was new, destroying");
-        [self.observation destroy];
+        [self.observation deleteEntity];
+        self.observation = nil;
     } else {
         [self.observation.managedObjectContext undo];
     }
@@ -687,6 +651,53 @@ static const int ObservedOnTableViewSection = 3;
             loc.positioningMethod = self.observation.positioningMethod;
             [vc setCurrentLocation:loc];
         }
+    }
+}
+
+- (void)startUpdatingLocation
+{
+    UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
+                                     [NSIndexPath indexPathForRow:0 inSection:2]];
+    UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
+    UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
+    [av startAnimating];
+    img.hidden = YES;
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+    }
+    if (!self.locationTimer) {
+        self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 
+                                                              target:self 
+                                                            selector:@selector(stopUpdatingLocation) 
+                                                            userInfo:nil 
+                                                             repeats:NO];
+    }
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)stopUpdatingLocation
+{
+    NSLog(@"stopUpdatingLocation");
+    if (self.isViewLoaded && self.tableView) {
+        UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
+                                         [NSIndexPath indexPathForRow:0 inSection:2]];
+        if (locationCell) {
+            NSLog(@"updating location cell");
+            UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
+            UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
+            [av stopAnimating];
+            img.hidden = NO;
+        }
+    }
+    
+    if (self.locationManager) {
+        NSLog(@"stopping location manager");
+        [self.locationManager stopUpdatingLocation];
+    }
+    if (self.locationTimer) {
+        NSLog(@"invalidating location timer");
+        [self.locationTimer invalidate];
     }
 }
 

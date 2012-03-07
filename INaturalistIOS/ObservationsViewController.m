@@ -188,15 +188,6 @@ static const int ObservationCellLowerRightTag = 4;
     [self stopEditing];
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [[self.observations objectAtIndex:indexPath.row] destroy];
-        [self.observations removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }
-}
-
 - (void)loadData
 {
     [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
@@ -275,10 +266,10 @@ static const int ObservationCellLowerRightTag = 4;
         [title setText:@"Something..."];
     }
     
-    if (o.placeGuess) {
+    if (o.placeGuess && o.placeGuess.length > 0) {
         subtitle.text = o.placeGuess;
     } else if (o.latitude) {
-        subtitle.text = [NSString stringWithFormat:@"%f, %f", o.latitude, o.longitude];
+        subtitle.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
     } else {
         subtitle.text = @"Somewhere...";
     }
@@ -287,6 +278,17 @@ static const int ObservationCellLowerRightTag = 4;
     syncImage.hidden = !o.needsSync;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        Observation *o = [self.observations objectAtIndex:indexPath.row];
+        [self.observations removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        [o destroy];
+        [self checkSyncStatus];
+    }
 }
 
 # pragma mark memory management
@@ -311,9 +313,7 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)viewDidUnload
 {
-    [self stopSync];
     [self setTableView:nil];
-    [self setEditButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -333,7 +333,8 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self setEditing:NO];
+    [self stopSync];
+    [self stopEditing];
     // TODO update edit button
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:YES];
