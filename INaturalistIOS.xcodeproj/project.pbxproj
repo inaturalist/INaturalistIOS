@@ -42,6 +42,7 @@
 		19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530666150592DB004951D8 /* iconic_taxon_reptilia.png */; };
 		19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530667150592DB004951D8 /* iconic_taxon_unknown.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
+		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
@@ -288,6 +289,8 @@
 		19530666150592DB004951D8 /* iconic_taxon_reptilia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_reptilia.png; sourceTree = "<group>"; };
 		19530667150592DB004951D8 /* iconic_taxon_unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_unknown.png; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		19640DE41508100A003BF888 /* MapTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTypeViewController.h; sourceTree = "<group>"; };
+		19640DE51508100A003BF888 /* MapTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTypeViewController.m; sourceTree = "<group>"; };
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -427,6 +430,8 @@
 				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				19640DE41508100A003BF888 /* MapTypeViewController.h */,
+				19640DE51508100A003BF888 /* MapTypeViewController.m */,
 				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
 				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
 				198552E614EF208600DB55C5 /* LoginViewController.h */,
@@ -915,6 +920,7 @@
 				1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
 				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
+				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

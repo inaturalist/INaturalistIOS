@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import "MapTypeViewController.h"
 
 @class EditLocationViewController;
 @class CrossHairView;
@@ -20,7 +21,7 @@
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location;
 @end
 
-@interface EditLocationViewController : UIViewController <MKMapViewDelegate>
+@interface EditLocationViewController : UIViewController <MKMapViewDelegate, MapTypeViewControllerDelegate>
 @property (weak, nonatomic) UIViewController *delegate;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) INatLocation *currentLocation;

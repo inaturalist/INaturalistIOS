@@ -199,6 +199,12 @@
     }
 }
 
+# pragma mark MapTypeViewControllerDelegate
+- (void)mapTypeControllerDidChange:(MapTypeViewController *)controller mapType:(NSNumber *)mapType
+{
+    self.mapView.mapType = mapType.intValue;
+}
+
 - (void)updateAccuracyCircle
 {
     if (!self.currentLocation || !self.currentLocation.accuracy) {
@@ -207,6 +213,15 @@
         [self.accuracyCircleView setHidden:NO];
         self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
         self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy longValue]];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"MapTypeSegue"]) {
+        MapTypeViewController *vc = [segue destinationViewController];
+        vc.delegate = self;
+        vc.mapType = self.mapView.mapType;
     }
 }
 
