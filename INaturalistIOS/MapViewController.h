@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "MapTypeViewController.h"
+#import "ObservationDetailViewController.h"
 
-@interface MapViewController : UIViewController <MKMapViewDelegate, MapTypeViewControllerDelegate>
-@property (nonatomic, strong) NSMutableArray *observations;
+@interface MapViewController : UIViewController <MKMapViewDelegate, MapTypeViewControllerDelegate, ObservationDetailViewControllerDelegate>
 @property (nonatomic, strong) UIBarButtonItem *currentLocationButton;
 @property (nonatomic, strong) UIBarButtonItem *mapTypeButton;
 - (void)clickedCurrentLocationButton;
 - (void)clickedMapTypeButton;
+- (void)loadObservations;
 @end

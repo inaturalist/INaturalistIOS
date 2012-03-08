@@ -373,7 +373,7 @@ static const int ObservationCellLowerRightTag = 4;
     }
 }
 
-# pragma marl INObservationDetailViewControllerDelegate methods
+# pragma mark INObservationDetailViewControllerDelegate methods
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];

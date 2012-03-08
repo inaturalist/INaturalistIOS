@@ -562,7 +562,9 @@ static const int ObservedOnTableViewSection = 3;
     } else {
         [self.observation.managedObjectContext undo];
     }
-    [self.delegate observationDetailViewControllerDidCancel:self];
+    if ([self.delegate respondsToSelector:@selector(observationDetailViewControllerDidCancel:)]) {
+        [self.delegate observationDetailViewControllerDidCancel:self];
+    }
 }
 
 - (IBAction)clickedAddPhoto:(id)sender {

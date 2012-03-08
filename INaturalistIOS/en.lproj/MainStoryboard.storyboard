@@ -204,6 +204,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="descriptionTextView" destination="vam-8V-lM2" id="nQB-SE-nJC"/>
                         <outlet property="latitudeLabel" destination="M93-9f-xgT" id="dra-4c-ByL"/>
@@ -216,7 +217,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="514" y="195"/>
+            <point key="canvasLocation" x="514" y="419"/>
         </scene>
         <scene sceneID="Q6O-Cb-vaZ">
             <objects>
@@ -231,7 +232,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="-850" y="197"/>
+            <point key="canvasLocation" x="-776" y="419"/>
         </scene>
         <scene sceneID="5">
             <objects>
@@ -316,7 +317,7 @@
                     </connections>
                 </barButtonItem>
             </objects>
-            <point key="canvasLocation" x="-350" y="197"/>
+            <point key="canvasLocation" x="-276" y="419"/>
         </scene>
         <scene sceneID="e73-h5-xu6">
             <objects>
@@ -356,9 +357,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="t6Y-Cf-972"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="mapView" destination="QJD-2D-Vqg" id="AmF-aT-FdL"/>
                         <segue destination="aOM-Gu-XVb" kind="modal" identifier="MapTypeSegue" modalTransitionStyle="partialCurl" id="6Re-on-nUT"/>
+                        <segue destination="x2g-xK-zHb" kind="push" identifier="EditObservationSegue" id="Hty-2R-mlm"/>
                     </connections>
                 </viewController>
             </objects>
@@ -474,14 +477,13 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="94" y="859"/>
+            <point key="canvasLocation" x="514" y="1153"/>
         </scene>
         <scene sceneID="zbl-Uk-Ap2">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bdr-RS-ClE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="l2X-u6-R0s" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="l2X-u6-R0s" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Map" image="map-tab.png" id="x9r-Ta-0Z8"/>
-                    <nil key="simulatedTopBarMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="ACi-xc-RFn">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -528,7 +530,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1933" y="1446"/>
+            <point key="canvasLocation" x="1937" y="1836"/>
         </scene>
         <scene sceneID="vz0-xH-bUj">
             <objects>
@@ -646,7 +648,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="520" y="859"/>
+            <point key="canvasLocation" x="967" y="1153"/>
         </scene>
         <scene sceneID="FJe-lg-0bS">
             <objects>
@@ -663,7 +665,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="967" y="195"/>
+            <point key="canvasLocation" x="967" y="419"/>
         </scene>
         <scene sceneID="Fhq-My-k45">
             <objects>
@@ -716,7 +718,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1395" y="195"/>
+            <point key="canvasLocation" x="1395" y="419"/>
         </scene>
     </scenes>
     <resources>
@@ -806,8 +808,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Iwt-4E-pF9"/>
+        <segue reference="Hty-2R-mlm"/>
         <segue reference="6Re-on-nUT"/>
-        <segue reference="nqN-gg-ATR"/>
     </inferredMetricsTieBreakers>
 </document>
