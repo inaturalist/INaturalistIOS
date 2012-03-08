@@ -11,6 +11,10 @@
 
 #define INatUsernamePrefKey @"INatUsernamePrefKey"
 #define INatPasswordPrefKey @"INatPasswordPrefKey"
-#define INatBaseURL @"http://localhost:3000"
+#ifdef DEBUG
+    #define INatBaseURL @"http://localhost:3000"
+#else
+    #define INatBaseURL @"http://www.inaturalist.org"
+#endif
 
 #endif
