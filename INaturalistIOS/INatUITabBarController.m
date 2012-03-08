@@ -13,6 +13,7 @@
 // make sure view controllers in the tabs can autorotate
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    if (toInterfaceOrientation == UIDeviceOrientationPortrait) return YES;
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
 @end
