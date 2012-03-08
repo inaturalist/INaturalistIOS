@@ -330,7 +330,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
-                        <segue destination="ktn-b0-Mgs" kind="relationship" relationship="viewControllers" id="vmd-L9-hew"/>
+                        <segue destination="l2X-u6-R0s" kind="relationship" relationship="viewControllers" id="A9X-Gm-TJz"/>
                         <segue destination="ydS-en-xrb" kind="relationship" relationship="viewControllers" id="ILD-eE-B2s"/>
                     </connections>
                 </tabBarController>
@@ -355,14 +355,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" image="map-tab.png" id="cRX-mc-7PA"/>
+                    <navigationItem key="navigationItem" id="t6Y-Cf-972"/>
                     <connections>
                         <outlet property="mapView" destination="QJD-2D-Vqg" id="AmF-aT-FdL"/>
-                        <segue destination="aOM-Gu-XVb" kind="modal" modalTransitionStyle="partialCurl" id="6Re-on-nUT"/>
+                        <segue destination="aOM-Gu-XVb" kind="modal" identifier="MapTypeSegue" modalTransitionStyle="partialCurl" id="6Re-on-nUT"/>
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-816" y="1185"/>
+            <point key="canvasLocation" x="-292" y="1836"/>
         </scene>
         <scene sceneID="D7K-6M-lYV">
             <objects>
@@ -460,7 +460,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="-816" y="1802"/>
+            <point key="canvasLocation" x="-776" y="1153"/>
         </scene>
         <scene sceneID="Wdg-74-j0c">
             <objects>
@@ -475,6 +475,22 @@
                 </navigationController>
             </objects>
             <point key="canvasLocation" x="94" y="859"/>
+        </scene>
+        <scene sceneID="zbl-Uk-Ap2">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bdr-RS-ClE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="l2X-u6-R0s" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Map" image="map-tab.png" id="x9r-Ta-0Z8"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="ACi-xc-RFn">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ktn-b0-Mgs" kind="relationship" relationship="rootViewController" id="PUo-jd-tZ4"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-776" y="1836"/>
         </scene>
         <scene sceneID="aIU-HC-7Q0">
             <objects>
@@ -512,7 +528,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1985" y="1458"/>
+            <point key="canvasLocation" x="1933" y="1446"/>
         </scene>
         <scene sceneID="vz0-xH-bUj">
             <objects>
@@ -790,8 +806,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Iwt-4E-pF9"/>
+        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="6Re-on-nUT"/>
         <segue reference="nqN-gg-ATR"/>
-        <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>
