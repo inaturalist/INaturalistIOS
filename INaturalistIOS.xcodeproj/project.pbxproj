@@ -43,6 +43,7 @@
 		19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530667150592DB004951D8 /* iconic_taxon_unknown.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
 		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
+		19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DEB150835A5003BF888 /* ObservationAnnotation.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
@@ -291,6 +292,8 @@
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		19640DE41508100A003BF888 /* MapTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTypeViewController.h; sourceTree = "<group>"; };
 		19640DE51508100A003BF888 /* MapTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTypeViewController.m; sourceTree = "<group>"; };
+		19640DEA150835A5003BF888 /* ObservationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAnnotation.h; sourceTree = "<group>"; };
+		19640DEB150835A5003BF888 /* ObservationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAnnotation.m; sourceTree = "<group>"; };
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -427,44 +430,46 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalistIOS */ = {
 			isa = PBXGroup;
 			children = (
-				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
-				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
-				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
-				19640DE41508100A003BF888 /* MapTypeViewController.h */,
-				19640DE51508100A003BF888 /* MapTypeViewController.m */,
-				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
-				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
-				198552E614EF208600DB55C5 /* LoginViewController.h */,
-				198552E714EF208600DB55C5 /* LoginViewController.m */,
-				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
-				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
-				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
-				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
-				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
-				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
-				1902812314F308AD005AC8D2 /* ImageStore.h */,
-				1902812414F308AD005AC8D2 /* ImageStore.m */,
-				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
-				1902812614F315F2005AC8D2 /* INatModel.h */,
-				1902812714F315F2005AC8D2 /* INatModel.m */,
-				1985521C14ECA3CD00DB55C5 /* Observation.h */,
-				1985521D14ECA3CD00DB55C5 /* Observation.m */,
-				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
-				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
-				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
-				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
-				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
-				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
-				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
-				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
-				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
 				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
 				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
 				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
 				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
 				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
 				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
+				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
+				1902812314F308AD005AC8D2 /* ImageStore.h */,
+				1902812414F308AD005AC8D2 /* ImageStore.m */,
+				1902812614F315F2005AC8D2 /* INatModel.h */,
+				1902812714F315F2005AC8D2 /* INatModel.m */,
+				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
+				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
+				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
+				1927514614E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.h */,
+				1927514714E9CCC9000ABAC4 /* INaturalistIOSAppDelegate.m */,
+				198552E614EF208600DB55C5 /* LoginViewController.h */,
+				198552E714EF208600DB55C5 /* LoginViewController.m */,
+				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				19640DE41508100A003BF888 /* MapTypeViewController.h */,
+				19640DE51508100A003BF888 /* MapTypeViewController.m */,
+				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
+				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
+				19640DEA150835A5003BF888 /* ObservationAnnotation.h */,
+				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
+				1985521C14ECA3CD00DB55C5 /* Observation.h */,
+				1985521D14ECA3CD00DB55C5 /* Observation.m */,
+				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
+				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
+				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
+				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
+				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
+				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
+				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
+				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
+				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
+				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			path = INaturalistIOS;
@@ -921,6 +926,7 @@
 				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
+				19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

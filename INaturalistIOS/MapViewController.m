@@ -10,6 +10,7 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
+#import "ObservationAnnotation.h"
 #import <MapKit/MapKit.h>
 
 @interface MapViewController()
@@ -35,11 +36,7 @@
     double maxLat = 0, minLat = 0, maxLon = 0, minLon = 0;
     for (int i = 0; i < self.observations.count; i ++) {
         Observation *obs = [self.observations objectAtIndex:i];
-        MKPointAnnotation *anno = [[MKPointAnnotation alloc] init];
-        anno.coordinate = CLLocationCoordinate2DMake([obs.latitude doubleValue], 
-                                                     [obs.longitude doubleValue]);
-        anno.title = obs.speciesGuess && obs.speciesGuess.length > 0 ? obs.speciesGuess : @"Something...";
-        anno.subtitle = [obs observedOnPrettyString];
+        ObservationAnnotation *anno = [[ObservationAnnotation alloc] initWithObservation:obs];
         [self.mapView addAnnotation:anno];
         minLat = minLat == 0 || anno.coordinate.latitude  < minLat ? anno.coordinate.latitude  : minLat;
         minLon = minLon == 0 || anno.coordinate.longitude < minLon ? anno.coordinate.longitude : minLon;
@@ -75,25 +72,26 @@
 
 // This doesn't quite work yet, I think b/c the annotations in mapView.annotations aren't kept in the order they're added.  
 // Probably need to sublcass MKPointAnnotation to hold a ref to the observation
-//- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
-//{
-//    MKPinAnnotationView *av = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"ObservationAnnotation"];
-//    if (!av) {
-//        av = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"ObservationAnnotation"];
-//        av.canShowCallout = YES;
-//    }
-//    Observation *o = [self.observations objectAtIndex:[self.mapView.annotations indexOfObject:annotation]];
-//    if (o && [o.observationPhotos count] > 0) {
-//        ObservationPhoto *op = [o.observationPhotos anyObject];
-//        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-//        iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
-//        iv.contentMode = UIViewContentModeScaleAspectFill;
-//        av.leftCalloutAccessoryView = iv;
-//    } else {
-//        av.leftCalloutAccessoryView = nil;
-//    }
-//    return av;
-//}
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    MKPinAnnotationView *av = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"ObservationAnnotation"];
+    if (!av) {
+        av = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"ObservationAnnotation"];
+        av.canShowCallout = YES;
+    }
+    ObservationAnnotation *anno = av.annotation;
+    Observation *o = anno.observation;
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    iv.contentMode = UIViewContentModeScaleAspectFill;
+    if (o && [o.observationPhotos count] > 0) {
+        ObservationPhoto *op = [o.observationPhotos anyObject];
+        iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+    } else {
+        iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+    }
+    av.leftCalloutAccessoryView = iv;
+    return av;
+}
 
 
 - (void)viewDidUnload
@@ -131,6 +129,11 @@
     } else {
         self.currentLocationButton.style = UIBarButtonItemStyleBordered;
     }
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    
 }
 
 

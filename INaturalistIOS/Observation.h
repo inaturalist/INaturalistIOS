@@ -42,4 +42,5 @@
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
+- (UIColor *)iconicTaxonColor;
 @end

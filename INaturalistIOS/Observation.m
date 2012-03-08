@@ -189,4 +189,28 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return [fmt stringFromDate:self.localObservedOn];
 }
 
+- (UIColor *)iconicTaxonColor
+{
+    if ([self.iconicTaxonName isEqualToString:@"Animalia"] || 
+        [self.iconicTaxonName isEqualToString:@"Actinopterygii"] ||
+        [self.iconicTaxonName isEqualToString:@"Amphibia"] ||
+        [self.iconicTaxonName isEqualToString:@"Reptilia"] ||
+        [self.iconicTaxonName isEqualToString:@"Aves"] ||
+        [self.iconicTaxonName isEqualToString:@"Mammalia"]) {
+        return [UIColor blueColor];
+    } else if ([self.iconicTaxonName isEqualToString:@"Mollusca"] ||
+               [self.iconicTaxonName isEqualToString:@"Insecta"] ||
+               [self.iconicTaxonName isEqualToString:@"Arachnida"]) {
+        return [UIColor orangeColor];
+    } else if ([self.iconicTaxonName isEqualToString:@"Plantae"]) {
+        return [UIColor greenColor];
+    } else if ([self.iconicTaxonName isEqualToString:@"Protozoa"]) {
+        return [UIColor purpleColor];
+    } else if ([self.iconicTaxonName isEqualToString:@"Fungi"]) {
+        return [UIColor redColor];
+    } else {
+        return [UIColor darkGrayColor];
+    }
+}
+
 @end
