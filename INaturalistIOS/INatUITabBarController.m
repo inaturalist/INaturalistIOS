@@ -1,6 +1,6 @@
 //
 //  INatUITabBarController.m
-//  INaturalistIOS
+//  iNaturalist
 //
 //  Created by Ken-ichi Ueda on 2/23/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.

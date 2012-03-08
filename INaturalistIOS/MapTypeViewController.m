@@ -1,6 +1,6 @@
 //
 //  MapTypeViewController.m
-//  INaturalistIOS
+//  iNaturalist
 //
 //  Created by Ken-ichi Ueda on 3/7/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
