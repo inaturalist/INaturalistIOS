@@ -362,6 +362,7 @@
                         <outlet property="mapView" destination="QJD-2D-Vqg" id="AmF-aT-FdL"/>
                         <segue destination="aOM-Gu-XVb" kind="modal" identifier="MapTypeSegue" modalTransitionStyle="partialCurl" id="6Re-on-nUT"/>
                         <segue destination="x2g-xK-zHb" kind="push" identifier="EditObservationSegue" id="Hty-2R-mlm"/>
+                        <segue destination="x2g-xK-zHb" kind="push" identifier="AddObservationSegue" id="wiZ-QX-aXI"/>
                     </connections>
                 </viewController>
             </objects>
@@ -809,7 +810,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Iwt-4E-pF9"/>
-        <segue reference="Hty-2R-mlm"/>
         <segue reference="6Re-on-nUT"/>
+        <segue reference="wiZ-QX-aXI"/>
     </inferredMetricsTieBreakers>
 </document>

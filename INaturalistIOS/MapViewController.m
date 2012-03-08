@@ -22,6 +22,7 @@
 @synthesize mapView = _mapView;
 @synthesize currentLocationButton = _currentLocationButton;
 @synthesize mapTypeButton = _mapTypeButton;
+@synthesize addObservationButton = _addObservationButton;
 
 - (void)loadObservations
 {
@@ -75,7 +76,23 @@
                                                                            target:self 
                                                                            action:@selector(clickedMapTypeButton)];
     }
-    [self setToolbarItems:[NSArray arrayWithObjects:self.currentLocationButton, flex, self.mapTypeButton, nil]];
+    if (!self.addObservationButton) {
+        self.addObservationButton = [[UIBarButtonItem alloc] initWithTitle:@"Add observation" 
+                                                           style:UIBarButtonItemStyleDone 
+                                                          target:self
+                                                          action:@selector(clickedAddObservationButton)];
+        [self.addObservationButton setTintColor:[UIColor colorWithRed:168.0/255 
+                                                      green:204.0/255 
+                                                       blue:50.0/255 
+                                                      alpha:1.0]];
+    }
+    [self setToolbarItems:[NSArray arrayWithObjects:
+                           self.currentLocationButton, 
+                           flex, 
+                           self.addObservationButton, 
+                           flex, 
+                           self.mapTypeButton, 
+                           nil]];
     
     [super viewWillAppear:animated];
 }
@@ -113,6 +130,11 @@
 - (void)clickedMapTypeButton
 {
     [self performSegueWithIdentifier:@"MapTypeSegue" sender:self];
+}
+
+- (void)clickedAddObservationButton
+{
+    [self performSegueWithIdentifier:@"AddObservationSegue" sender:self];
 }
 
 # pragma mark - MKMapViewDelegate

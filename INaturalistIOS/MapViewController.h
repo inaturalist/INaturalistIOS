@@ -14,7 +14,9 @@
 @interface MapViewController : UIViewController <MKMapViewDelegate, MapTypeViewControllerDelegate, ObservationDetailViewControllerDelegate>
 @property (nonatomic, strong) UIBarButtonItem *currentLocationButton;
 @property (nonatomic, strong) UIBarButtonItem *mapTypeButton;
+@property (nonatomic, strong) UIBarButtonItem *addObservationButton;
 - (void)clickedCurrentLocationButton;
 - (void)clickedMapTypeButton;
+- (void)clickedAddObservationButton;
 - (void)loadObservations;
 @end
