@@ -37,6 +37,7 @@
 - (void)syncObservations;
 - (void)syncObservationPhotos;
 - (void)loadData;
+- (void)reload;
 - (void)checkSyncStatus;
 - (int)itemsToSyncCount;
 - (void)clickedDeleteAll;

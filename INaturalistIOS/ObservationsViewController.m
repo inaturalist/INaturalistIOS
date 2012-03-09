@@ -198,7 +198,19 @@ static const int ObservationCellLowerRightTag = 4;
 //                                                     objectMapping:[Observation mapping] 
 //                                                          delegate:self];
 //    }
+//    if (self.observations.count == 0) {
+//        for (int i = 0; i < 500; i++) {
+//            [self.observations addObject:[Observation stub]];
+//        }
+//        [[[RKObjectManager sharedManager] objectStore] save];
+//    }
     [self checkSyncStatus];
+}
+
+- (void)reload
+{
+    [self loadData];
+    [[self tableView] reloadData];
 }
 
 - (void)checkSyncStatus
@@ -309,6 +321,10 @@ static const int ObservationCellLowerRightTag = 4;
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
     
     [[[[RKObjectManager sharedManager] client] requestQueue] setDelegate:self]; // TODO, might have to unset this when this view closes?
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(reload) 
+                                                 name:NSManagedObjectContextDidSaveNotification 
+                                               object:[Observation managedObjectContext]];
 }
 
 - (void)viewDidUnload
@@ -378,8 +394,6 @@ static const int ObservationCellLowerRightTag = 4;
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     [[self navigationController] popToViewController:self animated:YES];
-    [self loadData];
-    [[self tableView] reloadData];
 }
 
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
@@ -475,6 +489,7 @@ static const int ObservationCellLowerRightTag = 4;
     [self checkSyncStatus];
 }
 
+#pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if (alertView.tag == DeleteAllAlertViewTag && buttonIndex == 1) {

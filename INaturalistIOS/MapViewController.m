@@ -55,6 +55,10 @@
     self.mapView.mapType = MKMapTypeHybrid;
     [self loadObservations];
     [self zoomToObservations];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(loadObservations) 
+                                                 name:NSManagedObjectContextDidSaveNotification 
+                                               object:[Observation managedObjectContext]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
