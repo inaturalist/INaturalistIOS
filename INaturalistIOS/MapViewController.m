@@ -123,10 +123,8 @@
 - (void)clickedCurrentLocationButton
 {
     if (self.mapView.userTrackingMode == MKUserTrackingModeFollow) {
-        NSLog(@"clickedCurrentLocationButton, turning off user tracking");
         [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
     } else {
-        NSLog(@"clickedCurrentLocationButton, turning ON user tracking");
         [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
     }
 }
@@ -145,10 +143,8 @@
 - (void)mapView:(MKMapView *)mapView didChangeUserTrackingMode:(MKUserTrackingMode)mode animated:(BOOL)animated
 {
     if (mode == MKUserTrackingModeFollow) {
-        NSLog(@"didChangeUserTrackingMode, setting button stule to DONE");
         self.currentLocationButton.style = UIBarButtonItemStyleDone;
     } else {
-        NSLog(@"didChangeUserTrackingMode, setting button stule to BORDERED");
         self.currentLocationButton.style = UIBarButtonItemStyleBordered;
     }
 }
@@ -166,7 +162,8 @@
     }
     MKPinAnnotationView *av = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:@"ObservationAnnotation"];
     if (!av) {
-        av = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"ObservationAnnotation"];
+        av = [[MKPinAnnotationView alloc] initWithAnnotation:annotation 
+                                             reuseIdentifier:@"ObservationAnnotation"];
         av.canShowCallout = YES;
         av.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         av.leftCalloutAccessoryView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
@@ -175,7 +172,7 @@
     ObservationAnnotation *anno = annotation;
     Observation *o = anno.observation;
     UIImageView *iv = (UIImageView *)av.leftCalloutAccessoryView;
-    if (o && [o.observationPhotos count] > 0) {
+    if (o && o.observationPhotos.count > 0) {
         ObservationPhoto *op = [o.observationPhotos anyObject];
         iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
     } else {
