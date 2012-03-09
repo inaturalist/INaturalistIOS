@@ -685,7 +685,6 @@ static const int ObservedOnTableViewSection = 3;
         UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
                                          [NSIndexPath indexPathForRow:0 inSection:2]];
         if (locationCell) {
-            NSLog(@"updating location cell");
             UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
             UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];
             [av stopAnimating];
@@ -694,11 +693,9 @@ static const int ObservedOnTableViewSection = 3;
     }
     
     if (self.locationManager) {
-        NSLog(@"stopping location manager");
         [self.locationManager stopUpdatingLocation];
     }
     if (self.locationTimer) {
-        NSLog(@"invalidating location timer");
         [self.locationTimer invalidate];
     }
 }

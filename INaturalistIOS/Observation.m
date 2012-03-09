@@ -10,6 +10,9 @@
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
+static NSDateFormatter *prettyDateFormatter = nil;
+static NSDateFormatter *shortDateFormatter = nil;
+static NSDateFormatter *isoDateFormatter = nil;
 
 @implementation Observation
 
@@ -120,6 +123,37 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return defaultSerializationMapping;
 }
 
++ (NSDateFormatter *)prettyDateFormatter
+{
+    if (!prettyDateFormatter) {
+        prettyDateFormatter = [[NSDateFormatter alloc] init];
+        [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    }
+    return prettyDateFormatter;
+}
+
++ (NSDateFormatter *)shortDateFormatter
+{
+    if (!shortDateFormatter) {
+        shortDateFormatter = [[NSDateFormatter alloc] init];
+        shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    return shortDateFormatter;
+}
+
++ (NSDateFormatter *)isoDateFormatter
+{
+    if (!isoDateFormatter) {
+        isoDateFormatter = [[NSDateFormatter alloc] init];
+        [isoDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [isoDateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
+    }
+    return isoDateFormatter;
+}
+
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
@@ -147,12 +181,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [self willChangeValueForKey:@"localObservedOn"];
     [self setPrimitiveValue:newDate forKey:@"localObservedOn"];
     [self didChangeValueForKey:@"localObservedOn"];
-    if (!self.observedOnString) {
-        NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-        [fmt setTimeZone:[NSTimeZone localTimeZone]];
-        [fmt setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
-        self.observedOnString = [fmt stringFromDate:self.localObservedOn];
-    }
+    self.observedOnString = [Observation.isoDateFormatter stringFromDate:self.localObservedOn];
 }
 
 - (void)willSave
@@ -165,17 +194,13 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (NSString *)observedOnPrettyString
 {
     if (!self.localObservedOn) return @"Unknown";
-    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-    [fmt setTimeZone:[NSTimeZone localTimeZone]];
-    [fmt setDateStyle:NSDateFormatterMediumStyle];
-    [fmt setTimeStyle:NSDateFormatterMediumStyle];
-    return [fmt stringFromDate:self.localObservedOn];
+    return [Observation.prettyDateFormatter stringFromDate:self.localObservedOn];
 }
 
 - (NSString *)observedOnShortString
 {
     if (!self.localObservedOn) return @"?";
-    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    NSDateFormatter *fmt = Observation.shortDateFormatter;
     NSDate *now = [NSDate date];
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *comps = [cal components:NSDayCalendarUnit fromDate:self.localObservedOn toDate:now options:0];

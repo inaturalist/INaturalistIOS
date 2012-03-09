@@ -40,6 +40,9 @@
 
 @property (nonatomic, strong) NSArray *sortedObservationPhotos;
 
++ (NSDateFormatter *)prettyDateFormatter;
++ (NSDateFormatter *)shortDateFormatter;
++ (NSDateFormatter *)isoDateFormatter;
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;
