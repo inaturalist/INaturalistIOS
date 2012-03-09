@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UIBarButtonItem *deleteAllButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
+@property (nonatomic, strong) RKObjectLoader *loader;
 
 - (IBAction)sync:(id)sender;
 - (void)stopSync;
@@ -42,4 +43,5 @@
 - (int)itemsToSyncCount;
 - (void)clickedDeleteAll;
 - (void)deleteAll;
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 @end

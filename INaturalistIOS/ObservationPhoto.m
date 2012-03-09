@@ -86,10 +86,8 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 // TODO create observationID getter that checks the associated observation for its recordID
 - (NSNumber *)observationID
 {
-    NSLog(@"accessing observationID");
     [self willAccessValueForKey:@"observationID"];
     if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
-        NSLog(@"observationID was not set, setting to %@", self.observation.recordID);
         [self setPrimitiveObservationID:self.observation.recordID];
     }
     [self didAccessValueForKey:@"observationID"];

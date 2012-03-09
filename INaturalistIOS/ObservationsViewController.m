@@ -31,6 +31,7 @@ static const int ObservationCellLowerRightTag = 4;
 @synthesize deleteAllButton = _deleteAllButton;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
+@synthesize loader = _loader;
 
 - (IBAction)sync:(id)sender {
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
@@ -248,6 +249,12 @@ static const int ObservationCellLowerRightTag = 4;
     return self.observationsToSyncCount + self.observationPhotosToSyncCount;
 }
 
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
+{
+    if (self.view && ![[UIApplication sharedApplication] isIdleTimerDisabled]) {
+        [self reload];
+    }
+}
 
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -317,12 +324,18 @@ static const int ObservationCellLowerRightTag = 4;
 	// Do any additional setup after loading the view, typically from a nib.
     if (!self.observations) {
         [self loadData];
+        
+//        NSDate *now = [NSDate date];
+//        for (Observation *o in self.observations) {
+//            o.localUpdatedAt = now;
+//        }
+//        [[[RKObjectManager sharedManager] objectStore] save];
     }
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
     
     [[[[RKObjectManager sharedManager] client] requestQueue] setDelegate:self]; // TODO, might have to unset this when this view closes?
     [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(reload) 
+                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
 }
@@ -410,7 +423,6 @@ static const int ObservationCellLowerRightTag = 4;
 
 #pragma mark RKObjectLoaderDelegate methods
 - (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
-    NSLog(@"objectLoader didLoadObjects");
     if (objects.count == 0) return;
     
     NSDate *now = [NSDate date];
@@ -442,6 +454,10 @@ static const int ObservationCellLowerRightTag = 4;
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // was running into a bug in release build config where the object loader was 
+    // getting deallocated after handling an error.  This is a kludge.
+    self.loader = objectLoader;
+    
     [self stopSync];
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
