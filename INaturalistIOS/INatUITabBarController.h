@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface INatUITabBarController : UITabBarController
-
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 @end

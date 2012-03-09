@@ -232,13 +232,10 @@ static const int ObservationCellLowerRightTag = 4;
     if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
         [self setToolbarItems:self.syncToolbarItems animated:YES];
-        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", self.itemsToSyncCount];
     } else {
         [self.navigationController setToolbarHidden:YES];
         [self setToolbarItems:nil animated:YES];
-        self.navigationController.tabBarItem.badgeValue = nil;
     }
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.itemsToSyncCount];
     self.syncedObservationsCount = 0;
 }
 
