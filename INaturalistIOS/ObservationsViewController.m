@@ -63,6 +63,7 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    [[self tableView] reloadData];
     [self checkSyncStatus];
     
     // sleep is ok now
@@ -498,8 +499,6 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)requestQueueDidFinishLoading:(RKRequestQueue *)queue
 {
     [self stopSync];
-    [[self tableView] reloadData];
-    [self checkSyncStatus];
 }
 
 #pragma mark UIAlertViewDelegate
