@@ -14,9 +14,7 @@
 
 - (void)viewDidLoad
 {
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:0];
-    item.badgeValue = [NSString stringWithFormat:@"%d", 
-                       [UIApplication sharedApplication].applicationIconBadgeNumber];
+    [self setObservationsTabBadge];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
@@ -31,6 +29,11 @@
 }
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
+{
+    [self setObservationsTabBadge];
+}
+
+- (void)setObservationsTabBadge
 {
     int obsSyncCount = [Observation needingSyncCount];
     int photoSyncCount = [ObservationPhoto needingSyncCount];

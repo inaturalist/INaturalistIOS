@@ -10,4 +10,5 @@
 
 @interface INatUITabBarController : UITabBarController
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
+- (void)setObservationsTabBadge;
 @end
