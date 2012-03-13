@@ -37,7 +37,15 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
     [RKClient.sharedClient setPassword:[defaults objectForKey:INatPasswordPrefKey]];
-    [RKClient.sharedClient setValue:@"iNaturalist/2.0.0 (iOS OS_VERSION DEVICE_NAME DEVICE_VERSION)" 
+    
+    // User Agent
+    UIDevice *d = [UIDevice currentDevice];
+    NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [RKClient.sharedClient setValue:[NSString stringWithFormat:@"iNaturalist/%@ (iOS %@ %@ %@)", 
+                                     appVersion,
+                                     d.systemName, 
+                                     d.systemVersion, 
+                                     d.model] 
                  forHTTPHeaderField:@"User-Agent"];
     
     // Serialization
