@@ -45,6 +45,8 @@
 		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
 		19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DEB150835A5003BF888 /* ObservationAnnotation.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
+		197A60531511298D0061B83B /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60511511298D0061B83B /* projects.png */; };
+		197A60541511298D0061B83B /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60521511298D0061B83B /* projects@2x.png */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
 		198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
@@ -82,8 +84,6 @@
 		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
 		19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */; };
-		19D0479B1510256500BB5DBC /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D047991510256500BB5DBC /* projects.png */; };
-		19D0479C1510256500BB5DBC /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D0479A1510256500BB5DBC /* projects@2x.png */; };
 		19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D9B54514F62B850017B70A /* INatUITabBarController.m */; };
 		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
 		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
@@ -307,6 +307,8 @@
 		19640DEA150835A5003BF888 /* ObservationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAnnotation.h; sourceTree = "<group>"; };
 		19640DEB150835A5003BF888 /* ObservationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAnnotation.m; sourceTree = "<group>"; };
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
+		197A60511511298D0061B83B /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
+		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		198551F514EC939100DB55C5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -356,8 +358,6 @@
 		19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_chromista.png; sourceTree = "<group>"; };
 		19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Inflections.h"; sourceTree = "<group>"; };
 		19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Inflections.m"; sourceTree = "<group>"; };
-		19D047991510256500BB5DBC /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
-		19D0479A1510256500BB5DBC /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		19D9B54414F62B840017B70A /* INatUITabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatUITabBarController.h; sourceTree = "<group>"; };
 		19D9B54514F62B850017B70A /* INatUITabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatUITabBarController.m; sourceTree = "<group>"; };
 		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
@@ -500,8 +500,8 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				19D047991510256500BB5DBC /* projects.png */,
-				19D0479A1510256500BB5DBC /* projects@2x.png */,
+				197A60511511298D0061B83B /* projects.png */,
+				197A60521511298D0061B83B /* projects@2x.png */,
 				19F6218D150ECA8300C58F28 /* projects-tab@2x.png */,
 				19F6218E150ECA8300C58F28 /* projects-tab.png */,
 				1912DA9215059C0E005555B8 /* glyphish */,
@@ -981,8 +981,8 @@
 				19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */,
 				19F62190150ECA8300C58F28 /* projects-tab.png in Resources */,
 				19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */,
-				19D0479B1510256500BB5DBC /* projects.png in Resources */,
-				19D0479C1510256500BB5DBC /* projects@2x.png in Resources */,
+				197A60531511298D0061B83B /* projects.png in Resources */,
+				197A60541511298D0061B83B /* projects@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
