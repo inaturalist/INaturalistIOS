@@ -18,6 +18,7 @@ static const int ProjectCellTitleTag = 2;
 @implementation ProjectsViewController
 @synthesize projectUsers = _projectUsers;
 @synthesize loader = _loader;
+@synthesize lastSyncedAt = _lastSyncedAt;
 
 - (void)loadData
 {
@@ -41,6 +42,7 @@ static const int ProjectCellTitleTag = 2;
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username]
                                                      objectMapping:[ProjectUser mapping] 
                                                           delegate:self];
+        self.lastSyncedAt = [NSDate date];
     } else {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     }
@@ -62,6 +64,14 @@ static const int ProjectCellTitleTag = 2;
         [self loadData];
     }
     [super viewDidLoad];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSString *username = [NSUserDefaults.standardUserDefaults objectForKey:INatUsernamePrefKey];
+    if (self.projectUsers.count == 0 && username && !self.lastSyncedAt) {
+        [self sync];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

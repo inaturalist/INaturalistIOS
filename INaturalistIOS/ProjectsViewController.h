@@ -12,6 +12,7 @@
 @interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate>
 @property (nonatomic, strong) NSMutableArray *projectUsers;
 @property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, strong) NSDate *lastSyncedAt;
 
 - (IBAction)clickedSync:(id)sender;
 - (void)loadData;
