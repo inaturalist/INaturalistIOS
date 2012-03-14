@@ -80,7 +80,19 @@
 		19A5F64714FB655200757636 /* map-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64514FB655200757636 /* map-tab@2x.png */; };
 		19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64814FB655D00757636 /* settings-tab@2x.png */; };
 		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
+		19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */; };
+		19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */; };
+		19D0479B1510256500BB5DBC /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D047991510256500BB5DBC /* projects.png */; };
+		19D0479C1510256500BB5DBC /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D0479A1510256500BB5DBC /* projects@2x.png */; };
 		19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D9B54514F62B850017B70A /* INatUITabBarController.m */; };
+		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
+		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
+		19F62190150ECA8300C58F28 /* projects-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218E150ECA8300C58F28 /* projects-tab.png */; };
+		19F62193150ECBEE00C58F28 /* List.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62192150ECBEE00C58F28 /* List.m */; };
+		19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62195150ECC0200C58F28 /* ListedTaxon.m */; };
+		19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
+		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
+		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -341,8 +353,27 @@
 		19A5F64814FB655D00757636 /* settings-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-tab@2x.png"; sourceTree = "<group>"; };
 		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
 		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
+		19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_chromista.png; sourceTree = "<group>"; };
+		19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Inflections.h"; sourceTree = "<group>"; };
+		19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Inflections.m"; sourceTree = "<group>"; };
+		19D047991510256500BB5DBC /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
+		19D0479A1510256500BB5DBC /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		19D9B54414F62B840017B70A /* INatUITabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatUITabBarController.h; sourceTree = "<group>"; };
 		19D9B54514F62B850017B70A /* INatUITabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatUITabBarController.m; sourceTree = "<group>"; };
+		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
+		19F62187150EC6B700C58F28 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
+		19F6218D150ECA8300C58F28 /* projects-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab@2x.png"; sourceTree = "<group>"; };
+		19F6218E150ECA8300C58F28 /* projects-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab.png"; sourceTree = "<group>"; };
+		19F62191150ECBEE00C58F28 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = List.h; sourceTree = "<group>"; };
+		19F62192150ECBEE00C58F28 /* List.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = List.m; sourceTree = "<group>"; };
+		19F62194150ECC0200C58F28 /* ListedTaxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListedTaxon.h; sourceTree = "<group>"; };
+		19F62195150ECC0200C58F28 /* ListedTaxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListedTaxon.m; sourceTree = "<group>"; };
+		19F62197150ECC1200C58F28 /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Project.h; sourceTree = "<group>"; };
+		19F62198150ECC1200C58F28 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Project.m; sourceTree = "<group>"; };
+		19F6219A150ECC2400C58F28 /* ProjectObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObservation.h; sourceTree = "<group>"; };
+		19F6219B150ECC2400C58F28 /* ProjectObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservation.m; sourceTree = "<group>"; };
+		19F6219D150ECC2E00C58F28 /* ProjectUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectUser.h; sourceTree = "<group>"; };
+		19F6219E150ECC2E00C58F28 /* ProjectUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectUser.m; sourceTree = "<group>"; };
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -430,46 +461,14 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
-				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
-				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
-				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
-				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
-				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
-				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
-				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
-				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
-				1902812314F308AD005AC8D2 /* ImageStore.h */,
-				1902812414F308AD005AC8D2 /* ImageStore.m */,
-				1902812614F315F2005AC8D2 /* INatModel.h */,
-				1902812714F315F2005AC8D2 /* INatModel.m */,
-				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
-				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
-				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
-				198552E614EF208600DB55C5 /* LoginViewController.h */,
-				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
-				19640DE41508100A003BF888 /* MapTypeViewController.h */,
-				19640DE51508100A003BF888 /* MapTypeViewController.m */,
-				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
-				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
-				19640DEA150835A5003BF888 /* ObservationAnnotation.h */,
-				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
-				1985521C14ECA3CD00DB55C5 /* Observation.h */,
-				1985521D14ECA3CD00DB55C5 /* Observation.m */,
-				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
-				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
-				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
-				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
-				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
-				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
-				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
-				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
-				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
-				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
-				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
+				19F621A1150ECD0100C58F28 /* Models */,
+				19F621A3150ECD8000C58F28 /* Views */,
+				19F621A2150ECD3000C58F28 /* Controllers */,
+				19F621A4150ECDC700C58F28 /* Helpers */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			name = INaturalist;
@@ -501,12 +500,17 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				19D047991510256500BB5DBC /* projects.png */,
+				19D0479A1510256500BB5DBC /* projects@2x.png */,
+				19F6218D150ECA8300C58F28 /* projects-tab@2x.png */,
+				19F6218E150ECA8300C58F28 /* projects-tab.png */,
 				1912DA9215059C0E005555B8 /* glyphish */,
 				1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */,
 				1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */,
 				1953065D150592DB004951D8 /* iconic_taxon_animalia.png */,
 				1953065E150592DB004951D8 /* iconic_taxon_arachnida.png */,
 				1953065F150592DB004951D8 /* iconic_taxon_aves.png */,
+				19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */,
 				19530660150592DB004951D8 /* iconic_taxon_fungi.png */,
 				19530661150592DB004951D8 /* iconic_taxon_insecta.png */,
 				19530662150592DB004951D8 /* iconic_taxon_mammalia.png */,
@@ -628,6 +632,84 @@
 				19D9B54314F612270017B70A /* RestKitFrameworkTests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		19F621A1150ECD0100C58F28 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1902812614F315F2005AC8D2 /* INatModel.h */,
+				1902812714F315F2005AC8D2 /* INatModel.m */,
+				19F62191150ECBEE00C58F28 /* List.h */,
+				19F62192150ECBEE00C58F28 /* List.m */,
+				19F62194150ECC0200C58F28 /* ListedTaxon.h */,
+				19F62195150ECC0200C58F28 /* ListedTaxon.m */,
+				1985521C14ECA3CD00DB55C5 /* Observation.h */,
+				1985521D14ECA3CD00DB55C5 /* Observation.m */,
+				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
+				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
+				19F62197150ECC1200C58F28 /* Project.h */,
+				19F62198150ECC1200C58F28 /* Project.m */,
+				19F6219A150ECC2400C58F28 /* ProjectObservation.h */,
+				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
+				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
+				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		19F621A2150ECD3000C58F28 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
+				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
+				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
+				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
+				198552E614EF208600DB55C5 /* LoginViewController.h */,
+				198552E714EF208600DB55C5 /* LoginViewController.m */,
+				19640DE41508100A003BF888 /* MapTypeViewController.h */,
+				19640DE51508100A003BF888 /* MapTypeViewController.m */,
+				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
+				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
+				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
+				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
+				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
+				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
+				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
+				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
+				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
+				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		19F621A3150ECD8000C58F28 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
+				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
+				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
+				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
+				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
+				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		19F621A4150ECDC700C58F28 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1902812314F308AD005AC8D2 /* ImageStore.h */,
+				1902812414F308AD005AC8D2 /* ImageStore.m */,
+				19640DEA150835A5003BF888 /* ObservationAnnotation.h */,
+				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
+				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
+				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
+				19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */,
+				19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -896,6 +978,11 @@
 				19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */,
 				1912DA9115059C08005555B8 /* 01-refresh.png in Resources */,
 				196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */,
+				19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */,
+				19F62190150ECA8300C58F28 /* projects-tab.png in Resources */,
+				19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */,
+				19D0479B1510256500BB5DBC /* projects.png in Resources */,
+				19D0479C1510256500BB5DBC /* projects@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,6 +1015,13 @@
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */,
+				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
+				19F62193150ECBEE00C58F28 /* List.m in Sources */,
+				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
+				19F62199150ECC1200C58F28 /* Project.m in Sources */,
+				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
+				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
+				19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

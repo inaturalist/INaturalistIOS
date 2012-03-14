@@ -83,7 +83,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return defaultSerializationMapping;
 }
 
-// TODO create observationID getter that checks the associated observation for its recordID
+// checks the associated observation for its recordID
 - (NSNumber *)observationID
 {
     [self willAccessValueForKey:@"observationID"];
@@ -101,16 +101,20 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     if (self.photoKey) {
         switch (version) {
             case TTPhotoVersionThumbnail:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey forSize:ImageStoreSquareSize];
+                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
+                                                             forSize:ImageStoreSquareSize];
                 break;
             case TTPhotoVersionSmall:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey forSize:ImageStoreSmallSize];
+                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
+                                                             forSize:ImageStoreSmallSize];
                 break;
             case TTPhotoVersionMedium:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey forSize:ImageStoreSmallSize];
+                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
+                                                             forSize:ImageStoreSmallSize];
                 break;
             case TTPhotoVersionLarge:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey forSize:ImageStoreLargeSize];
+                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
+                                                             forSize:ImageStoreLargeSize];
                 break;
             default:
                 url = nil;

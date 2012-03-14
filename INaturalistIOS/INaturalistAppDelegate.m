@@ -9,6 +9,10 @@
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
+#import "Project.h"
+#import "ProjectObservation.h"
+#import "ProjectUser.h"
+#import "NSString+Inflections.h"
 
 @implementation INaturalistAppDelegate
 
@@ -27,12 +31,6 @@
     RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:INatBaseURL];
     manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"];
     
-    // Routes
-    [manager.router routeClass:[Observation class] toResourcePath:@"/observations/:recordID"];
-    [manager.router routeClass:[Observation class] toResourcePath:@"/observations" forMethod:RKRequestMethodPOST];
-    [manager.router routeClass:[ObservationPhoto class] toResourcePath:@"/observation_photos/:recordID"];
-    [manager.router routeClass:[ObservationPhoto class] toResourcePath:@"/observation_photos" forMethod:RKRequestMethodPOST];
-    
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
@@ -48,11 +46,28 @@
                                      d.model] 
                  forHTTPHeaderField:@"User-Agent"];
     
-    // Serialization
-    [manager.mappingProvider setSerializationMapping:[Observation serializationMapping] forClass:[Observation class]];
-    [manager.mappingProvider setObjectMapping:[Observation mapping] forKeyPath:@"observation"];
-    [manager.mappingProvider setSerializationMapping:[ObservationPhoto serializationMapping] forClass:[ObservationPhoto class]];
-    [manager.mappingProvider setObjectMapping:[ObservationPhoto mapping] forKeyPath:@"observation_photo"];
+    NSArray *models = [NSArray arrayWithObjects:
+                       Observation.class, 
+                       ObservationPhoto.class, 
+                       Project.class, 
+                       ProjectObservation.class, 
+                       ProjectUser.class, 
+                       nil];
+    NSString *underscored;
+    NSString *pluralized;
+    for (id model in models) {
+        underscored = NSStringFromClass(model).underscore;
+        pluralized = underscored.pluralize;
+        // Routes
+        [manager.router routeClass:model toResourcePath:[NSString stringWithFormat:@"/%@/:recordID", pluralized]];
+        [manager.router routeClass:model
+                    toResourcePath:[NSString stringWithFormat:@"/%@", pluralized] 
+                         forMethod:RKRequestMethodPOST];
+        
+        // Serialization
+        [manager.mappingProvider setObjectMapping:[model mapping] forKeyPath:underscored];
+        [manager.mappingProvider setSerializationMapping:[model serializationMapping] forClass:model];
+    }
     
     // Make sure RK knows how to parse simple dates
     NSDateFormatter* dateFormatter = [NSDateFormatter new];

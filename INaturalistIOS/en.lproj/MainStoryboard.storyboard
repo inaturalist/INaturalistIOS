@@ -332,6 +332,7 @@
                     <connections>
                         <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
                         <segue destination="l2X-u6-R0s" kind="relationship" relationship="viewControllers" id="A9X-Gm-TJz"/>
+                        <segue destination="t06-UC-YUc" kind="relationship" relationship="viewControllers" id="i8C-Km-UsP"/>
                         <segue destination="ydS-en-xrb" kind="relationship" relationship="viewControllers" id="ILD-eE-B2s"/>
                     </connections>
                 </tabBarController>
@@ -367,6 +368,21 @@
                 </viewController>
             </objects>
             <point key="canvasLocation" x="-292" y="1836"/>
+        </scene>
+        <scene sceneID="B1T-ab-195">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OH8-ZU-FEU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="t06-UC-YUc" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="ZUi-2S-ebn"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="ADj-Zy-Z0u">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Kvl-LX-MOH" kind="relationship" relationship="rootViewController" id="T5i-nH-hqf"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-776" y="2496"/>
         </scene>
         <scene sceneID="D7K-6M-lYV">
             <objects>
@@ -494,6 +510,59 @@
                 </navigationController>
             </objects>
             <point key="canvasLocation" x="-776" y="1836"/>
+        </scene>
+        <scene sceneID="OSJ-NK-jjp">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NKF-8P-W2j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="Kvl-LX-MOH" customClass="ProjectsViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Lbw-e8-dxf">
+                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" id="EzP-MT-5na">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project name" lineBreakMode="tailTruncation" minimumFontSize="10" id="r3N-gL-j8R">
+                                            <rect key="frame" x="52" y="11" width="248" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view tag="1" contentMode="scaleAspectFit" id="92R-nd-fDz" customClass="TTImageView">
+                                            <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Kvl-LX-MOH" id="TGI-1V-RlE"/>
+                            <outlet property="delegate" destination="Kvl-LX-MOH" id="K6o-jt-ohH"/>
+                        </connections>
+                    </tableView>
+                    <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="GmQ-fX-MuU"/>
+                    <navigationItem key="navigationItem" title="Projects" id="6UX-BL-9DW">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="dgx-of-NYR">
+                            <connections>
+                                <action selector="clickedSync:" destination="Kvl-LX-MOH" id="gly-Tm-Vs3"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="pIq-2G-oJw"/>
+                    </connections>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="-292" y="2496"/>
         </scene>
         <scene sceneID="aIU-HC-7Q0">
             <objects>
@@ -729,6 +798,7 @@
         <image name="iconic_taxon_unknown.png" width="75" height="75"/>
         <image name="map-tab.png" width="31" height="20"/>
         <image name="notebook-tab.png" width="18" height="25"/>
+        <image name="projects-tab.png" width="30" height="22"/>
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
     <classes>
@@ -799,8 +869,20 @@
                 <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
+        <class className="ProjectsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+            </relationships>
+        </class>
         <class className="SettingsViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
+        </class>
+        <class className="TTImageView" superclassName="TTView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTImageView.h"/>
+        </class>
+        <class className="TTView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -809,8 +891,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Iwt-4E-pF9"/>
+        <segue reference="nqN-gg-ATR"/>
+        <segue reference="pIq-2G-oJw"/>
         <segue reference="6Re-on-nUT"/>
-        <segue reference="wiZ-QX-aXI"/>
     </inferredMetricsTieBreakers>
 </document>

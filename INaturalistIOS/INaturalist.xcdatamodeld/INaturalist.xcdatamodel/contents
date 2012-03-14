@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="List" representedClassName="List" syncable="YES">
+        <attribute name="comprehensive" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="placeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxonID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="listedTaxa" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ListedTaxon" inverseName="list" inverseEntity="ListedTaxon" syncable="YES"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectList" inverseEntity="Project" syncable="YES"/>
+    </entity>
+    <entity name="ListedTaxon" representedClassName="ListedTaxon" syncable="YES">
+        <attribute name="ancestry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="establishmentMeans" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstObservationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastObservationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="listID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="occurrenceStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="placeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxonDefaultName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxonID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="taxonName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="list" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="listedTaxa" inverseEntity="List" syncable="YES"/>
+    </entity>
     <entity name="Observation" representedClassName="Observation" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
@@ -32,6 +69,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
+        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservation" inverseName="observation" inverseEntity="ProjectObservation" syncable="YES"/>
     </entity>
     <entity name="ObservationPhoto" representedClassName="ObservationPhoto" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -57,8 +95,57 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationPhotos" inverseEntity="Observation" syncable="YES"/>
     </entity>
+    <entity name="Project" representedClassName="Project" syncable="YES">
+        <attribute name="cachedSlug" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observedTaxaCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="terms" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="projectList" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="project" inverseEntity="List" syncable="YES"/>
+        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservation" inverseName="project" inverseEntity="ProjectObservation" syncable="YES"/>
+        <relationship name="projectUsers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectUser" inverseName="project" inverseEntity="ProjectUser" syncable="YES"/>
+    </entity>
+    <entity name="ProjectObservation" representedClassName="ProjectObservation" syncable="YES">
+        <attribute name="curatorIdentificationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="observation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="projectObservations" inverseEntity="Observation" syncable="YES"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectObservations" inverseEntity="Project" syncable="YES"/>
+    </entity>
+    <entity name="ProjectUser" representedClassName="ProjectUser" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observationsCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="role" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxaCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userLogin" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectUsers" inverseEntity="Project" syncable="YES"/>
+    </entity>
     <elements>
+        <element name="List" positionX="160" positionY="192" width="128" height="270"/>
+        <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="315"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="510"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
+        <element name="Project" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
     </elements>
 </model>
