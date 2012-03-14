@@ -19,6 +19,7 @@ static const int ProjectCellTitleTag = 2;
 @synthesize projectUsers = _projectUsers;
 @synthesize loader = _loader;
 @synthesize lastSyncedAt = _lastSyncedAt;
+@synthesize noContentLabel = _noContentLabel;
 
 - (void)loadData
 {
@@ -26,10 +27,37 @@ static const int ProjectCellTitleTag = 2;
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
     self.projectUsers = [NSMutableArray arrayWithArray:projectUsers];
+    [self checkEmpty];
 }
 
 - (IBAction)clickedSync:(id)sender {
     [self sync];
+}
+
+- (void)checkEmpty
+{
+    if (self.projectUsers.count == 0) {
+        if (self.noContentLabel) {
+            self.noContentLabel.hidden = NO;
+        } else {
+            self.noContentLabel = [[UILabel alloc] init];
+            self.noContentLabel.text = @"You don't have any projects yet.";
+            self.noContentLabel.backgroundColor = [UIColor whiteColor];
+            self.noContentLabel.textColor = [UIColor grayColor];
+            self.noContentLabel.numberOfLines = 0;
+            [self.noContentLabel sizeToFit];
+            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.bounds = CGRectMake(self.noContentLabel.bounds.origin.x + 20, 
+                                                    self.noContentLabel.bounds.origin.y + 20, 
+                                                    self.view.bounds.size.width, 
+                                                    self.noContentLabel.bounds.size.height + 20);
+            self.noContentLabel.center = CGPointMake(self.view.center.x, 
+                                                     self.navigationController.view.center.y - self.navigationController.navigationBar.bounds.size.height - 15);
+            [self.view addSubview:self.noContentLabel];
+        }
+    } else if (self.noContentLabel) {
+        [self.noContentLabel removeFromSuperview];
+    }
 }
 
 - (void)sync
@@ -64,6 +92,11 @@ static const int ProjectCellTitleTag = 2;
         [self loadData];
     }
     [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated

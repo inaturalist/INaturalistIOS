@@ -32,6 +32,7 @@ static const int ObservationCellLowerRightTag = 4;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize loader = _loader;
+@synthesize noContentLabel = _noContentLabel;
 
 - (IBAction)sync:(id)sender {
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
@@ -240,6 +241,33 @@ static const int ObservationCellLowerRightTag = 4;
     self.syncedObservationsCount = 0;
 }
 
+- (void)checkEmpty
+{
+    if (self.observations.count == 0) {
+        if (self.noContentLabel) {
+            self.noContentLabel.hidden = NO;
+        } else {
+            self.noContentLabel = [[UILabel alloc] init];
+            self.noContentLabel.text = @"You don't have any observations yet.";
+            self.noContentLabel.backgroundColor = [UIColor whiteColor];
+            self.noContentLabel.textColor = [UIColor grayColor];
+            self.noContentLabel.numberOfLines = 0;
+            [self.noContentLabel sizeToFit];
+            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.bounds = CGRectMake(self.noContentLabel.bounds.origin.x + 20, 
+                                                    self.noContentLabel.bounds.origin.y + 20, 
+                                                    self.view.bounds.size.width, 
+                                                    self.noContentLabel.bounds.size.height + 20);
+            self.noContentLabel.center = CGPointMake(self.view.center.x, 
+                                                     self.navigationController.view.center.y - self.navigationController.navigationBar.bounds.size.height - 10);
+            [self.view addSubview:self.noContentLabel];
+        }
+    } else if (self.noContentLabel) {
+        self.noContentLabel.hidden = YES;
+        [self.noContentLabel removeFromSuperview];
+    }
+}
+
 - (int)itemsToSyncCount
 {
     if (!self.observationsToSyncCount) self.observationsToSyncCount = 0;
@@ -346,6 +374,11 @@ static const int ObservationCellLowerRightTag = 4;
     // e.g. self.myOutlet = nil;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self checkEmpty];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -362,7 +395,6 @@ static const int ObservationCellLowerRightTag = 4;
 {
     [self stopSync];
     [self stopEditing];
-    // TODO update edit button
     [self setToolbarItems:nil animated:YES];
     [self.navigationController setToolbarHidden:YES animated:YES];
 	[super viewWillDisappear:animated];

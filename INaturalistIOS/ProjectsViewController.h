@@ -13,9 +13,11 @@
 @property (nonatomic, strong) NSMutableArray *projectUsers;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (nonatomic, strong) UILabel *noContentLabel;
 
 - (IBAction)clickedSync:(id)sender;
 - (void)loadData;
 - (void)sync;
 - (void)stopSync;
+- (void)checkEmpty;
 @end
