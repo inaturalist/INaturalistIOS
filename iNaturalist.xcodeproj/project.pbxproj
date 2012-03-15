@@ -47,6 +47,7 @@
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
 		197A60531511298D0061B83B /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60511511298D0061B83B /* projects.png */; };
 		197A60541511298D0061B83B /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60521511298D0061B83B /* projects@2x.png */; };
+		197A6057151155DE0061B83B /* ProjectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectDetailViewController.m */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
 		198551F614EC939100DB55C5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
 		198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
@@ -309,6 +310,8 @@
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
 		197A60511511298D0061B83B /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
 		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
+		197A6055151155DE0061B83B /* ProjectDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailViewController.h; sourceTree = "<group>"; };
+		197A6056151155DE0061B83B /* ProjectDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectDetailViewController.m; sourceTree = "<group>"; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		198551F514EC939100DB55C5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -676,6 +679,8 @@
 				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
 				198CF8E114F5B1350064DF05 /* PhotoViewController.h */,
 				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
+				197A6055151155DE0061B83B /* ProjectDetailViewController.h */,
+				197A6056151155DE0061B83B /* ProjectDetailViewController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
@@ -1022,6 +1027,7 @@
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */,
+				197A6057151155DE0061B83B /* ProjectDetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

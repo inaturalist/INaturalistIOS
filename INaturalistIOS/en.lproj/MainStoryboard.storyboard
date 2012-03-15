@@ -542,6 +542,9 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <connections>
+                                    <segue destination="g3g-03-X0K" kind="push" identifier="ProjectSegue" id="Dsf-QY-sZT"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -563,6 +566,114 @@
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="-292" y="2496"/>
+        </scene>
+        <scene sceneID="nrG-r2-jeJ">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y5P-nk-vUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="g3g-03-X0K" customClass="ProjectDetailViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" id="WN1-Zn-FtW">
+                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="t52-RB-yyt">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <view contentMode="center" id="Ylj-cd-RUn" customClass="TTImageView">
+                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                </view>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Project title is way too long brother" lineBreakMode="tailTruncation" minimumFontSize="10" id="bKM-7Q-aRA">
+                                    <rect key="frame" x="78" y="8" width="232" height="29"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <view contentMode="scaleToFill" id="NpP-SL-YSS" customClass="TTStyledTextLabel">
+                                    <rect key="frame" x="78" y="45" width="232" height="16"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" red="0.90196079015731812" green="0.90196079015731812" blue="0.90196079015731812" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonOneNameCell" rowHeight="54" id="tO6-P3-aIO">
+                                <rect key="frame" x="0.0" y="92" width="320" height="54"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="dYu-ti-1gC">
+                                            <rect key="frame" x="56" y="11" width="244" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-BoldOblique" family="Helvetica" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view tag="1" contentMode="scaleAspectFit" id="WWc-2o-jbM" customClass="TTImageView">
+                                            <rect key="frame" x="5" y="5" width="43" height="43"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonTwoNamesCell" rowHeight="54" id="CgW-Ad-4uh">
+                                <rect key="frame" x="0.0" y="146" width="320" height="54"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Common name" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="ju8-if-UDh">
+                                            <rect key="frame" x="56" y="2" width="244" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view tag="1" contentMode="scaleAspectFit" id="CRf-tm-UqZ" customClass="TTImageView">
+                                            <rect key="frame" x="5" y="5" width="43" height="43"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" minimumFontSize="10" id="bW0-Pb-mB9">
+                                            <rect key="frame" x="56" y="27" width="244" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="g3g-03-X0K" id="fZb-Yj-k8Q"/>
+                            <outlet property="delegate" destination="g3g-03-X0K" id="2zO-v2-yjU"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Project" id="Pc6-ER-pVU">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="YpC-0K-6eW">
+                            <connections>
+                                <action selector="clickedSync:" destination="g3g-03-X0K" id="czn-4z-SxR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="projectIcon" destination="Ylj-cd-RUn" id="1Qk-sc-nvV"/>
+                        <outlet property="projectSubtitle" destination="NpP-SL-YSS" id="dtC-O1-J5b"/>
+                        <outlet property="projectTitle" destination="bKM-7Q-aRA" id="zgE-Df-ZC7"/>
+                    </connections>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="238" y="2496"/>
         </scene>
         <scene sceneID="aIU-HC-7Q0">
             <objects>
@@ -869,6 +980,15 @@
                 <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
+        <class className="ProjectDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
+                <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
+                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+            </relationships>
+        </class>
         <class className="ProjectsViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectsViewController.h"/>
             <relationships>
@@ -880,6 +1000,9 @@
         </class>
         <class className="TTImageView" superclassName="TTView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TTImageView.h"/>
+        </class>
+        <class className="TTStyledTextLabel" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTStyledTextLabel.h"/>
         </class>
         <class className="TTView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TTView.h"/>

@@ -71,15 +71,6 @@
     [[[RKObjectManager sharedManager] objectStore] save];
 }
 
-- (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
-{
-    self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
-    if (!self.localCreatedAt) {
-        [self setLocalCreatedAt:[NSDate date]];
-    }
-    return self;
-}
-
 - (void)save
 {
     [[[RKObjectManager sharedManager] objectStore] save];
@@ -96,7 +87,10 @@
         }
         NSDate *stamp = self.localUpdatedAt;
         if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
-            [self setLocalUpdatedAt:now];
+            [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
+            if (![self primitiveValueForKey:@"localCreatedAt"]) {
+                [self setPrimitiveValue:now forKey:@"localCreatedAt"];
+            }
         }
     }
     [super willSave];

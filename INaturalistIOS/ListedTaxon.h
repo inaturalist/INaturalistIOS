@@ -32,5 +32,7 @@
 @property (nonatomic, retain) NSString * ancestry;
 @property (nonatomic, retain) NSNumber * placeID;
 @property (nonatomic, retain) List *list;
+@property (nonatomic, retain) NSString * photoURL;
+@property (nonatomic, retain) NSString * iconicTaxonName;
 
 @end

@@ -30,5 +30,6 @@
 @property (nonatomic, retain) List *projectList;
 @property (nonatomic, retain) NSSet *projectObservations;
 @property (nonatomic, retain) NSSet *projectUsers;
+@property (nonatomic, retain) NSNumber * listID;
 
 @end

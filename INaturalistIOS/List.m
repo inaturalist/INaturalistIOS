@@ -7,7 +7,10 @@
 //
 
 #import "List.h"
+#import "ListedTaxon.h"
 
+static RKManagedObjectMapping *defaultMapping = nil;
+//static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 @implementation List
 
@@ -26,5 +29,31 @@
 @dynamic projectID;
 @dynamic listedTaxa;
 @dynamic project;
+
++ (RKManagedObjectMapping *)mapping
+{
+    if (!defaultMapping) {
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class]];
+        [defaultMapping mapKeyPathsToAttributes:
+         @"id", @"recordID",
+         @"created_at", @"createdAt",
+         @"updated_at", @"updatedAt",
+         @"title", @"title",
+         @"description", @"desc",
+         @"comprehensive", @"comprehensive",
+         @"place_id", @"placeID",
+         @"project_id", @"projectID",
+         @"taxon_id", @"taxonID",
+         @"type", @"type",
+         nil];
+        
+        [defaultMapping mapKeyPath:@"listed_taxa" 
+                    toRelationship:@"listedTaxa" 
+                       withMapping:[ListedTaxon mapping]
+                         serialize:NO];
+        defaultMapping.primaryKeyAttribute = @"recordID";
+    }
+    return defaultMapping;
+}
 
 @end

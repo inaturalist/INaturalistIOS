@@ -8,6 +8,7 @@
 
 #import <Three20/Three20.h>
 #import "ProjectsViewController.h"
+#import "ProjectDetailViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
 #import "DejalActivityView.h"
@@ -82,6 +83,17 @@ static const int ProjectCellTitleTag = 2;
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     [self loadData];
     [[self tableView] reloadData];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ProjectSegue"]) {
+        ProjectDetailViewController *vc = [segue destinationViewController];
+        ProjectUser *pu = [self.projectUsers 
+                          objectAtIndex:[[self.tableView 
+                                          indexPathForSelectedRow] row]];
+        [vc setProject:pu.project];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -190,10 +202,6 @@ static const int ProjectCellTitleTag = 2;
                                            otherButtonTitles:nil];
         [av show];
     }
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
 }
 
 #pragma mark - LoginViewControllerDelegate

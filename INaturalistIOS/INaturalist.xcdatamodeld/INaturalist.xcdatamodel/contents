@@ -23,11 +23,13 @@
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="establishmentMeans" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstObservationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="iconicTaxonName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastObservationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="listID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="occurrenceStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photoURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="placeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -100,6 +102,7 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="iconURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="listID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="observedTaxaCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -141,10 +144,10 @@
     </entity>
     <elements>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
-        <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="315"/>
+        <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="345"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="510"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
-        <element name="Project" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="Project" positionX="160" positionY="192" width="128" height="300"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="150"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
     </elements>

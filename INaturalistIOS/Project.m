@@ -32,6 +32,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic projectList;
 @dynamic projectObservations;
 @dynamic projectUsers;
+@dynamic listID;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -47,7 +48,12 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"icon_url", @"iconURL",
          @"project_type", @"projectType",
          @"terms", @"terms",
+         @"project_list.id", @"listID",
          nil];
+        [defaultMapping mapKeyPath:@"project_list" 
+                    toRelationship:@"projectList" 
+                       withMapping:[List mapping]
+                         serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;
