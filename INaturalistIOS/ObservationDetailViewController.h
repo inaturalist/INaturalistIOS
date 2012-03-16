@@ -16,6 +16,7 @@
 @class ObservationDetailViewController;
 
 @protocol ObservationDetailViewControllerDelegate <NSObject>
+@optional
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller;
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
 @end

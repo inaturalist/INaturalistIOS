@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
+#import "ObservationDetailViewController.h"
 
 @class Project;
 
-@interface ProjectDetailViewController : UITableViewController <RKObjectLoaderDelegate>
+@interface ProjectDetailViewController : UITableViewController <RKObjectLoaderDelegate, ObservationDetailViewControllerDelegate>
 
 @property (nonatomic, strong) Project *project;
 @property (nonatomic, strong) NSMutableArray *listedTaxa;
@@ -22,6 +23,7 @@
 @property (nonatomic, strong) NSDate *lastSyncedAt;
 
 - (IBAction)clickedSync:(id)sender;
+- (void)clickedAdd:(id)sender event:(UIEvent *)event;
 - (void)sync;
 - (void)stopSync;
 - (void)loadData;

@@ -108,6 +108,7 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     [self checkEmpty];
 }
 
@@ -143,6 +144,7 @@ static const int ProjectCellTitleTag = 2;
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:ProjectCellImageTag];
+    [imageView unsetImage];
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = pu.project.title;
     imageView.defaultImage = [UIImage imageNamed:@"projects"];

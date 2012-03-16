@@ -7,6 +7,7 @@
 //
 
 #import "ProjectDetailViewController.h"
+#import "Observation.h"
 #import "Project.h"
 #import "List.h"
 #import "ListedTaxon.h"
@@ -18,7 +19,6 @@ static const int ListedTaxonCellTitleTag = 2;
 static const int ListedTaxonCellSubtitleTag = 3;
 
 @implementation ProjectDetailViewController
-
 @synthesize project = _project;
 @synthesize listedTaxa = _listedTaxa;
 @synthesize projectIcon = _projectIcon;
@@ -29,6 +29,15 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (IBAction)clickedSync:(id)sender {
     [self sync];
+}
+
+- (void)clickedAdd:(id)sender event:(UIEvent *)event
+{
+    CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+    
+    ListedTaxon *lt = [self.listedTaxa objectAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:@"AddObservationSegue" sender:lt];
 }
 
 - (void)sync
@@ -59,20 +68,41 @@ static const int ListedTaxonCellSubtitleTag = 3;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
+        ObservationDetailViewController *vc = [segue destinationViewController];
+        [vc setDelegate:self];
+        Observation *o = [Observation object];
+        o.localObservedOn = [NSDate date];
+        if ([sender isKindOfClass:ListedTaxon.class]) {
+            ListedTaxon *lt = sender;
+            o.taxonID = lt.taxonID;
+            o.speciesGuess = lt.taxonDefaultName;
+        }
+        [vc setObservation:o];
+    }
+}
+
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
+    if (!self.listedTaxa) {
+        [self loadData];
+    }
     self.projectIcon.defaultImage = [UIImage imageNamed:@"projects.png"];
     self.projectIcon.urlPath = self.project.iconURL;
     self.projectTitle.text = self.project.title;
     self.projectSubtitle.textColor = [UIColor grayColor];
     self.projectSubtitle.font = [UIFont systemFontOfSize:12.0];
-    self.projectSubtitle.text = [TTStyledText textFromXHTML:self.project.desc
-                                                 lineBreaks:NO 
-                                                       URLs:YES];
-    if (!self.listedTaxa) {
-        [self loadData];
-    }
+    self.projectSubtitle.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"%d listed taxa", self.listedTaxa.count]
+                                            lineBreaks:NO 
+                                                  URLs:YES];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -106,7 +136,21 @@ static const int ListedTaxonCellSubtitleTag = 3;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
+    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"] 
+                         forState:UIControlStateNormal];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
+                         forState:UIControlStateHighlighted];
+    [addButton setTitle:@"Add" forState:UIControlStateNormal];
+    [addButton setTitle:@"Add" forState:UIControlStateHighlighted];
+    addButton.titleLabel.textColor = [UIColor whiteColor];
+    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryView = addButton;
+    
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
+    [imageView unsetImage];
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
     titleLabel.text = lt.taxonDefaultName;
     imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:lt.iconicTaxonName];
@@ -122,7 +166,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    NSLog(@"loaded %d objects", objects.count);
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
@@ -168,5 +211,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
                                        cancelButtonTitle:@"OK" 
                                        otherButtonTitles:nil];
     [av show];
+}
+
+#pragma mark - ObservationDetailViewControllerDelegate
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [[self navigationController] popToViewController:self animated:YES];
 }
 @end
