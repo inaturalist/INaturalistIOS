@@ -44,8 +44,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
                                       withLabel:@"Syncing list..."];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue]
-                                                 objectMapping:[List mapping] 
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 
                                                       delegate:self];
 }
 
@@ -59,7 +58,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)loadData
 {
-    self.listedTaxa = [NSMutableArray arrayWithArray:[self.project.projectList.listedTaxa allObjects]];
+    NSArray *sorts = [NSArray arrayWithObjects:
+                      [[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES], 
+                      [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES], 
+                      nil];
+    self.listedTaxa = [NSMutableArray arrayWithArray:
+                       [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

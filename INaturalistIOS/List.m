@@ -46,7 +46,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"taxon_id", @"taxonID",
          @"type", @"type",
          nil];
-        
         [defaultMapping mapKeyPath:@"listed_taxa" 
                     toRelationship:@"listedTaxa" 
                        withMapping:[ListedTaxon mapping]

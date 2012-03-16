@@ -57,6 +57,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"taxon.iconic_taxon_name", @"iconicTaxonName",
          @"taxon.photo_url", @"photoURL",
          nil];
+        [defaultMapping connectRelationship:@"list" withObjectForPrimaryKeyAttribute:@"listID"];
         [defaultMapping mapRelationship:@"list" withMapping:[List mapping]];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }

@@ -55,6 +55,10 @@
 // and replacing RegexKitLite with NSRegularExpression
 - (NSString *)pluralize
 {
-    return [self stringByAppendingString:@"s"];
+    if ([self.lowercaseString isEqualToString:@"taxon"] || [self.lowercaseString isEqualToString:@"listed_taxon"]) {
+        return [self stringByReplacingOccurrencesOfString:@"axon" withString:@"axa"];
+    } else {
+        return [self stringByAppendingString:@"s"];
+    }
 }
 @end

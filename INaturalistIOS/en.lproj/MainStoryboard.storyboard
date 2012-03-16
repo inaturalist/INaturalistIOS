@@ -600,7 +600,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view contentMode="center" id="Ylj-cd-RUn" customClass="TTImageView">
+                                <view contentMode="scaleAspectFit" id="Ylj-cd-RUn" customClass="TTImageView">
                                     <rect key="frame" x="5" y="5" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

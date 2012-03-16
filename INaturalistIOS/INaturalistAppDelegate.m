@@ -7,6 +7,8 @@
 //
 
 #import "INaturalistAppDelegate.h"
+#import "List.h"
+#import "ListedTaxon.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "Project.h"
@@ -47,6 +49,8 @@
                  forHTTPHeaderField:@"User-Agent"];
     
     NSArray *models = [NSArray arrayWithObjects:
+                       List.class,
+                       ListedTaxon.class,
                        Observation.class, 
                        ObservationPhoto.class, 
                        Project.class, 
@@ -66,6 +70,7 @@
         
         // Serialization
         [manager.mappingProvider setObjectMapping:[model mapping] forKeyPath:underscored];
+        [manager.mappingProvider setObjectMapping:[model mapping] forKeyPath:pluralized];
         [manager.mappingProvider setSerializationMapping:[model serializationMapping] forClass:model];
     }
     
@@ -79,7 +84,7 @@
     [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
     // DEBUG
-//    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
