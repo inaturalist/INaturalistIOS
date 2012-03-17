@@ -185,8 +185,30 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection id="eOa-xX-57W">
-                                <cells/>
+                            <tableViewSection headerTitle="Projects" id="ZOk-5a-K6O">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="J9i-XA-tlL" style="IBUITableViewCellStyleDefault" id="BHb-6Q-TqB">
+                                        <rect key="frame" x="0.0" y="445" width="320" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="10" y="1" width="300" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Choose projects" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J9i-XA-tlL">
+                                                    <rect key="frame" x="10" y="0.0" width="280" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <segue destination="OkY-L0-NP4" kind="modal" identifier="ProjectChooserSegue" id="5VS-Fz-shh"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
                             </tableViewSection>
                         </sections>
                         <connections>
@@ -856,6 +878,79 @@
             <point key="canvasLocation" x="1151" y="1153"/>
         </scene>
         <!--Navigation Controller-->
+        <scene sceneID="hiu-OG-F64">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bqE-Eu-ph3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="OkY-L0-NP4" sceneMemberID="viewController">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="bNa-Oh-4hz">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="qKT-rx-ger" kind="relationship" relationship="rootViewController" id="DdD-zM-ajn"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="967" y="-157"/>
+        </scene>
+        <!--Project Chooser View Controller - Choose projects-->
+        <scene sceneID="R9u-gg-yJG">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="P33-Yu-EhD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="qKT-rx-ger" customClass="ProjectChooserViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsMultipleSelection="YES" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" id="gKw-6m-rZQ">
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" id="BXg-UH-Aqz">
+                                <rect key="frame" x="0.0" y="22" width="320" height="54"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="qsE-wG-WNP">
+                                            <rect key="frame" x="57" y="16" width="243" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <view tag="1" contentMode="scaleAspectFit" id="Nzm-nG-y5B" customClass="TTImageView">
+                                            <rect key="frame" x="5" y="5" width="44" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="qKT-rx-ger" id="VMf-cA-MrS"/>
+                            <outlet property="delegate" destination="qKT-rx-ger" id="LaZ-7Q-rH0"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Choose projects" id="Nsa-pu-mCD">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="hKK-sS-qAN">
+                            <connections>
+                                <action selector="clickedCancel:" destination="qKT-rx-ger" id="fTi-zx-Dst"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="mgd-CX-pVK">
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
+                            <connections>
+                                <action selector="clickedDone:" destination="qKT-rx-ger" id="28j-ah-uhf"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="1395" y="-157"/>
+        </scene>
+        <!--Navigation Controller-->
         <scene sceneID="FJe-lg-0bS">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZlM-DO-RzF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1006,6 +1101,13 @@
                 <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
+        <class className="ProjectChooserViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectChooserViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedDone:"/>
+            </relationships>
+        </class>
         <class className="ProjectDetailViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
             <relationships>
@@ -1040,8 +1142,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="6Re-on-nUT"/>
         <segue reference="pIq-2G-oJw"/>
         <segue reference="3K4-WT-L9k"/>
+        <segue reference="6Re-on-nUT"/>
     </inferredMetricsTieBreakers>
 </document>

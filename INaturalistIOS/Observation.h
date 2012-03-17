@@ -37,8 +37,7 @@
 @property (nonatomic, retain) NSNumber * outOfRange;
 @property (nonatomic, retain) NSString * license;
 @property (nonatomic, retain) NSSet * observationPhotos;
-
-@property (nonatomic, strong) NSArray *sortedObservationPhotos;
+@property (nonatomic, retain) NSSet * projectObservations;
 
 + (NSDateFormatter *)prettyDateFormatter;
 + (NSDateFormatter *)shortDateFormatter;
@@ -46,4 +45,6 @@
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;
+- (NSArray *)sortedObservationPhotos;
+- (NSArray *)sortedProjectObservations;
 @end

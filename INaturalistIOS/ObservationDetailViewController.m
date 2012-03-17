@@ -12,6 +12,8 @@
 #import "ImageStore.h"
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
+#import "Project.h"
+#import "ProjectObservation.h"
 #import "EditLocationViewController.h"
 
 static const int PhotoActionSheetTag = 0;
@@ -21,6 +23,7 @@ static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
 static const int LocationTableViewSection = 2;
 static const int ObservedOnTableViewSection = 3;
+static const int ProjectsSection = 4;
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -144,7 +147,6 @@ static const int ObservedOnTableViewSection = 3;
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
-    NSLog(@"viewDidLoad");
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self observationToUI];
@@ -157,7 +159,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"viewWillAppear");
     // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [super viewWillAppear:animated];
@@ -165,7 +166,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"viewDidAppear");
     [self initUI];
     if (self.observation.isNew && [self.latitudeLabel.text isEqualToString:@"???"]) {
         [self startUpdatingLocation];
@@ -176,7 +176,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)didReceiveMemoryWarning
 {
-    NSLog(@"didReceiveMemoryWarning");
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
@@ -192,7 +191,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"viewWillDisappear");
     // ensure UI state gets stored in the observation
     if (self.observation && !self.observation.isDeleted) {
         [self uiToObservation];
@@ -203,7 +201,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)viewDidUnload
 {
-    NSLog(@"viewDidUnload");
     [self setSpeciesGuessTextField:nil];
     [self setObservedAtLabel:nil];
     [self setLatitudeLabel:nil];
@@ -247,7 +244,6 @@ static const int ObservedOnTableViewSection = 3;
 #pragma mark TKCoverflowViewDelegate methods
 - (void)initCoverflowView
 {
-    NSLog(@"initCoverflowView");
     float width = [UIScreen mainScreen].bounds.size.width,
           height = width / 1.342,
           coverDim = height - 10,
@@ -263,7 +259,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)refreshCoverflowView
 {
-    NSLog(@"refreshCoverflowView");
     if (!self.coverflowView) {
         [self initCoverflowView];
     }
@@ -298,7 +293,7 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)coverflowView:(TKCoverflowView*)coverflowView coverAtIndexWasBroughtToFront:(int)index
 {
-	NSLog(@"Front %d",index);
+	// required but not required
 }
 
 - (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasSingleTapped:(int)index
@@ -443,6 +438,38 @@ static const int ObservedOnTableViewSection = 3;
 }
 
 # pragma mark - TableViewDelegate methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (section == ProjectsSection) {
+        return self.observation.projectObservations.count + 1;
+    } else {
+        return [super tableView:tableView numberOfRowsInSection:section];
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // The projects section is composed of one static cell and n dynamic cells.  
+    // So we intercept dataSource calls to create those dynamic cells here
+    // https://devforums.apple.com/message/505098
+    if (indexPath.section == ProjectsSection) {
+        
+        // if this is anything other than the last cell, create a dynamic cell
+        if (indexPath.row < self.observation.projectObservations.count) {
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                                           reuseIdentifier:@"ProjectCell"];
+            ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
+            cell.textLabel.text = po.project.title;
+            return cell;
+        }
+        
+        // otherwise reset the indexPath so the table view thinks it's retrieving the static cell at index 0
+        indexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
+        
+    }
+    return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == LocationTableViewSection) {
@@ -496,7 +523,23 @@ static const int ObservedOnTableViewSection = 3;
         [sheet addSubview:self.datePicker];
         
         [sheet showFromTabBar:self.tabBarController.tabBar];
+    } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == ProjectsSection) {
+        return 44;
+    } else {
+        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 0;
 }
 
 # pragma mark - EditLocationViewControllerDelegate
@@ -513,8 +556,28 @@ static const int ObservedOnTableViewSection = 3;
     }
 }
 
+# pragma mark - ProjectChooserViewControllerDelegate
+- (void)projectChooserViewController:(ProjectChooserViewController *)controller 
+                       choseProjects:(NSArray *)projects
+{
+    NSMutableArray *newProjects = [NSMutableArray arrayWithArray:projects];
+    for (ProjectObservation *po in self.observation.projectObservations) {
+        if ([projects containsObject:po.project]) {
+            [newProjects removeObject:po.project];
+        } else {
+            [po deleteEntity];
+        }
+    }
+    for (Project *p in newProjects) {
+        ProjectObservation *po = [ProjectObservation object];
+        po.observation = self.observation;
+        po.project = p;
+    }
+    [self.tableView reloadData];
+    [self observationToUI];
+}
 
-#pragma mark ObservationDetailViewController
+#pragma mark - ObservationDetailViewController
 - (void)clickedClear {
     [descriptionTextView setText:nil];
 }
@@ -641,11 +704,11 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    [self stopUpdatingLocation];
+    [self uiToObservation];
     if ([segue.identifier isEqualToString:@"EditLocationSegue"]) {
-        [self stopUpdatingLocation];
         EditLocationViewController *vc = (EditLocationViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
-        [self uiToObservation];
         if (self.observation.latitude) {
             INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.latitude
                                                              longitude:self.observation.longitude
@@ -653,6 +716,14 @@ static const int ObservedOnTableViewSection = 3;
             loc.positioningMethod = self.observation.positioningMethod;
             [vc setCurrentLocation:loc];
         }
+    } else if ([segue.identifier isEqualToString:@"ProjectChooserSegue"]) {
+        ProjectChooserViewController *vc = (ProjectChooserViewController *)[segue.destinationViewController topViewController];
+        [vc setDelegate:self];
+        NSMutableArray *projects = [[NSMutableArray alloc] init];
+        for (ProjectObservation *po in self.observation.projectObservations) {
+            [projects addObject:po.project];
+        }
+        vc.chosenProjects = projects;
     }
 }
 
@@ -680,7 +751,6 @@ static const int ObservedOnTableViewSection = 3;
 
 - (void)stopUpdatingLocation
 {
-    NSLog(@"stopUpdatingLocation");
     if (self.isViewLoaded && self.tableView) {
         UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
                                          [NSIndexPath indexPathForRow:0 inSection:2]];

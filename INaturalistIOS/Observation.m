@@ -41,8 +41,7 @@ static NSDateFormatter *isoDateFormatter = nil;
 @dynamic outOfRange;
 @dynamic license;
 @dynamic observationPhotos;
-
-@synthesize sortedObservationPhotos = _sortedObservationPhotos;
+@dynamic projectObservations;
 
 + (NSArray *)all
 {
@@ -166,14 +165,18 @@ static NSDateFormatter *isoDateFormatter = nil;
 
 - (NSArray *)sortedObservationPhotos
 {
-    if (!_sortedObservationPhotos) {
-        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
-        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
-        self.sortedObservationPhotos = [self.observationPhotos 
-                                        sortedArrayUsingDescriptors:
-                                        [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
-    }
-    return _sortedObservationPhotos;
+    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
+    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
+    return [self.observationPhotos 
+            sortedArrayUsingDescriptors:
+            [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+}
+
+- (NSArray *)sortedProjectObservations
+{
+    NSSortDescriptor *titleSort = [[NSSortDescriptor alloc] initWithKey:@"project.title" ascending:YES];
+    return [self.projectObservations sortedArrayUsingDescriptors:
+            [NSArray arrayWithObjects:titleSort, nil]];
 }
 
 - (void)setLocalObservedOn:(NSDate *)newDate
@@ -182,13 +185,6 @@ static NSDateFormatter *isoDateFormatter = nil;
     [self setPrimitiveValue:newDate forKey:@"localObservedOn"];
     [self didChangeValueForKey:@"localObservedOn"];
     self.observedOnString = [Observation.isoDateFormatter stringFromDate:self.localObservedOn];
-}
-
-- (void)willSave
-{
-    // sortedObservationPhotos is transient and needs to be reset
-    self.sortedObservationPhotos = nil;
-    [super willSave];
 }
 
 - (NSString *)observedOnPrettyString
