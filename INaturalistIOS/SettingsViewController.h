@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "LoginViewController.h"
 
-@interface SettingsViewController : UITableViewController <LoginViewControllerDelegate, RKRequestDelegate>
+@interface SettingsViewController : UITableViewController <LoginViewControllerDelegate, UIAlertViewDelegate>
 
 - (void)initUI;
+- (void)clickedSignOut;
 - (void)signOut;
 - (void)localSignOut;
 @end

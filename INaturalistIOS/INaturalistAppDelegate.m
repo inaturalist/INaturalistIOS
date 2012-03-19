@@ -84,7 +84,7 @@
     [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
     // DEBUG
-    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+//    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
