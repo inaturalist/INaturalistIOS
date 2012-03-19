@@ -35,6 +35,7 @@
 
 - (void)zoomToObservations
 {
+    if (self.mapView.annotations.count == 0) return;
     double maxLat = 0, minLat = 0, maxLon = 0, minLon = 0;
     for (ObservationAnnotation *anno in self.mapView.annotations) {
         minLat = minLat == 0 || anno.coordinate.latitude  < minLat ? anno.coordinate.latitude  : minLat;
@@ -47,6 +48,25 @@
                                                        MKCoordinateSpanMake(fabs(maxLat - minLat), 
                                                                             fabs(maxLon - minLon)));
     [self.mapView setRegion:[self.mapView regionThatFits:region] animated:NO];
+}
+
+- (void)clickedCurrentLocationButton
+{
+    if (self.mapView.userTrackingMode == MKUserTrackingModeFollow) {
+        [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
+    } else {
+        [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
+    }
+}
+
+- (void)clickedMapTypeButton
+{
+    [self performSegueWithIdentifier:@"MapTypeSegue" sender:self];
+}
+
+- (void)clickedAddObservationButton
+{
+    [self performSegueWithIdentifier:@"AddObservationSegue" sender:self];
 }
 
 #pragma mark - View lifecycle
@@ -118,25 +138,6 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void)clickedCurrentLocationButton
-{
-    if (self.mapView.userTrackingMode == MKUserTrackingModeFollow) {
-        [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
-    } else {
-        [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
-    }
-}
-
-- (void)clickedMapTypeButton
-{
-    [self performSegueWithIdentifier:@"MapTypeSegue" sender:self];
-}
-
-- (void)clickedAddObservationButton
-{
-    [self performSegueWithIdentifier:@"AddObservationSegue" sender:self];
 }
 
 # pragma mark - MKMapViewDelegate
