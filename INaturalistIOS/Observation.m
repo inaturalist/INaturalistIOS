@@ -13,6 +13,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 static NSDateFormatter *prettyDateFormatter = nil;
 static NSDateFormatter *shortDateFormatter = nil;
 static NSDateFormatter *isoDateFormatter = nil;
+static NSDateFormatter *jsDateFormatter = nil;
 
 @implementation Observation
 
@@ -153,6 +154,17 @@ static NSDateFormatter *isoDateFormatter = nil;
     return isoDateFormatter;
 }
 
+// Javascript-like date format, e.g. @"Sun Mar 18 2012 17:07:20 GMT-0700 (PDT)"
++ (NSDateFormatter *)jsDateFormatter
+{
+    if (!jsDateFormatter) {
+        jsDateFormatter = [[NSDateFormatter alloc] init];
+        [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
+    }
+    return jsDateFormatter;
+}
+
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 {
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
@@ -184,7 +196,7 @@ static NSDateFormatter *isoDateFormatter = nil;
     [self willChangeValueForKey:@"localObservedOn"];
     [self setPrimitiveValue:newDate forKey:@"localObservedOn"];
     [self didChangeValueForKey:@"localObservedOn"];
-    self.observedOnString = [Observation.isoDateFormatter stringFromDate:self.localObservedOn];
+    self.observedOnString = [Observation.jsDateFormatter stringFromDate:self.localObservedOn];
 }
 
 - (NSString *)observedOnPrettyString

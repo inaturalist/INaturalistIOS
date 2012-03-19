@@ -42,6 +42,7 @@
 + (NSDateFormatter *)prettyDateFormatter;
 + (NSDateFormatter *)shortDateFormatter;
 + (NSDateFormatter *)isoDateFormatter;
++ (NSDateFormatter *)jsDateFormatter;
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;
