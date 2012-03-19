@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="List" representedClassName="List" syncable="YES">
         <attribute name="comprehensive" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -71,7 +71,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
-        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservation" inverseName="observation" inverseEntity="ProjectObservation" syncable="YES"/>
+        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservation" inverseName="observation" inverseEntity="ProjectObservation" syncable="YES"/>
     </entity>
     <entity name="ObservationPhoto" representedClassName="ObservationPhoto" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -113,7 +113,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="projectList" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="project" inverseEntity="List" syncable="YES"/>
-        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservation" inverseName="project" inverseEntity="ProjectObservation" syncable="YES"/>
+        <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservation" inverseName="project" inverseEntity="ProjectObservation" syncable="YES"/>
         <relationship name="projectUsers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectUser" inverseName="project" inverseEntity="ProjectUser" syncable="YES"/>
     </entity>
     <entity name="ProjectObservation" representedClassName="ProjectObservation" syncable="YES">
@@ -145,7 +145,7 @@
     <elements>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="345"/>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="510"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="525"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
         <element name="Project" positionX="160" positionY="192" width="128" height="300"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="150"/>
