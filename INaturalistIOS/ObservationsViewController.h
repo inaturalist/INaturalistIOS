@@ -45,4 +45,5 @@
 - (void)clickedDeleteAll;
 - (void)deleteAll;
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
+- (BOOL)isSyncing;
 @end

@@ -35,6 +35,9 @@ static const int ObservationCellLowerRightTag = 4;
 @synthesize noContentLabel = _noContentLabel;
 
 - (IBAction)sync:(id)sender {
+    if (self.isSyncing) {
+        return;
+    }
     [RKObjectManager sharedManager].client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
     
     if (!self.stopSyncButton) {
@@ -65,10 +68,16 @@ static const int ObservationCellLowerRightTag = 4;
     
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     [[self tableView] reloadData];
-    [self checkSyncStatus];
     
     // sleep is ok now
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
+    [self checkSyncStatus];
+}
+
+- (BOOL)isSyncing
+{
+    return [UIApplication sharedApplication].isIdleTimerDisabled;
 }
 
 - (void)syncObservations
@@ -143,6 +152,9 @@ static const int ObservationCellLowerRightTag = 4;
 }
 
 - (IBAction)edit:(id)sender {
+    if (self.isSyncing) {
+        [self stopSync];
+    }
     if ([self isEditing]) {
         [self stopEditing];
     } else {
@@ -207,7 +219,6 @@ static const int ObservationCellLowerRightTag = 4;
 //        }
 //        [[[RKObjectManager sharedManager] objectStore] save];
 //    }
-    [self checkSyncStatus];
 }
 
 - (void)reload
@@ -332,7 +343,12 @@ static const int ObservationCellLowerRightTag = 4;
         [self.observations removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         [o destroy];
-        [self checkSyncStatus];
+        if (!self.isEditing) {
+            [self checkSyncStatus];
+        }
+        if (self.observations.count == 0) {
+            [self stopEditing];
+        }
     }
 }
 
@@ -388,7 +404,9 @@ static const int ObservationCellLowerRightTag = 4;
                                self.syncButton, 
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                nil]];
-    [self checkSyncStatus];
+    if (!self.isSyncing) {
+        [self checkSyncStatus];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
