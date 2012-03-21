@@ -66,14 +66,28 @@ static const int ProjectsSection = 4;
 - (void)uiToObservation
 {
     if (!self.speciesGuessTextField) return;
-    [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
-    [self.observation setInatDescription:[descriptionTextView text]];
-    [self.observation setPlaceGuess:[self.placeGuessField text]];
+    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]) {
+        [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
+    }
+    if (![self.observation.speciesGuess isEqualToString:self.descriptionTextView.text]) {
+        [self.observation setInatDescription:[descriptionTextView text]];
+    }
+    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]) {
+        [self.observation setPlaceGuess:[self.placeGuessField text]];
+    }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    self.observation.latitude = [numberFormatter numberFromString:self.latitudeLabel.text];
-    self.observation.longitude = [numberFormatter numberFromString:self.longitudeLabel.text];
-    self.observation.positionalAccuracy = [numberFormatter 
-                                           numberFromString:self.positionalAccuracyLabel.text];
+    NSNumber *newLat = [numberFormatter numberFromString:self.latitudeLabel.text];
+    NSNumber *newLon = [numberFormatter numberFromString:self.longitudeLabel.text];
+    NSNumber *newAcc = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
+    if (![self.observation.latitude isEqualToNumber:newLat]) {
+        self.observation.latitude = newLat;
+    }
+    if (![self.observation.longitude isEqualToNumber:newLon]) {
+        self.observation.longitude = newLon;
+    }
+    if (![self.observation.positionalAccuracy isEqualToNumber:newAcc]) {
+        self.observation.positionalAccuracy = newAcc;
+    }
 }
 
 - (void)initUI
@@ -568,11 +582,13 @@ static const int ProjectsSection = 4;
         } else {
             [po deleteEntity];
         }
+        self.observation.localUpdatedAt = [NSDate date];
     }
     for (Project *p in newProjects) {
         ProjectObservation *po = [ProjectObservation object];
         po.observation = self.observation;
         po.project = p;
+        self.observation.localUpdatedAt = [NSDate date];
     }
     [self.tableView reloadData];
     [self observationToUI];

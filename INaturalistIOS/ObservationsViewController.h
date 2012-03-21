@@ -33,6 +33,7 @@
 @property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
 @property (nonatomic, strong) UILabel *noContentLabel;
 @property (nonatomic, strong) SyncQueue *syncQueue;
+@property (nonatomic, strong) NSMutableArray *syncErrors;
 
 - (IBAction)sync:(id)sender;
 - (void)stopSync;

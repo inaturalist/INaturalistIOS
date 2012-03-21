@@ -78,10 +78,15 @@
 
 - (void)willSave
 {
-    if ([self changedValues] != nil) {
+    NSDictionary *relats = self.class.entityDescription.relationshipsByName;
+    NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
+    for (NSString *relatName in relats.keyEnumerator) {
+        [changes removeObjectForKey:relatName];
+    }
+    if (changes.count > 0) {
         NSDate *now;
-        if ([self.changedValues objectForKey:@"syncedAt"]) {
-            now = [self performSelector:@selector(syncedAt)];
+        if ([changes objectForKey:@"syncedAt"]) {
+            now = self.syncedAt;
         } else {
             now = [NSDate date];
         }

@@ -11,6 +11,7 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
+#import "Project.h"
 #import "DejalActivityView.h"
 #import "ImageStore.h"
 
@@ -34,6 +35,7 @@ static const int ObservationCellLowerRightTag = 4;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize noContentLabel = _noContentLabel;
 @synthesize syncQueue = _syncQueue;
+@synthesize syncErrors = _syncErrors;
 
 - (IBAction)sync:(id)sender {
     if (self.isSyncing) {
@@ -455,7 +457,6 @@ static const int ObservationCellLowerRightTag = 4;
 }
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
-    NSLog(@"syncQueueSynced, number:%d of:%d", number, total);
     NSString *activityMsg = [NSString stringWithFormat:@"Synced %d of %d %@", 
                              number, 
                              total, 
@@ -472,13 +473,32 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)syncQueueFinished
 {
     [self stopSync];
+    if (self.syncErrors && self.syncErrors.count > 0) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Heads up" 
+                                                     message:[self.syncErrors componentsJoinedByString:@"\n\n"]
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        self.syncErrors = nil;
+    }
+    
+    // make sure any deleted records get gone
+    [[[RKObjectManager sharedManager] objectStore] save];
 }
 
 - (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
 {
     if ([objectLoader.targetObject isKindOfClass:ProjectObservation.class]) {
         ProjectObservation *po = (ProjectObservation *)objectLoader.targetObject;
-        NSLog(@"deleting erroneous proj obs: %@", po);
+        if (!self.syncErrors) {
+            self.syncErrors = [[NSMutableArray alloc] init];
+        }
+        [self.syncErrors addObject:[NSString stringWithFormat:@"%@ (%@) couldn't be added to project %@: %@", 
+                                    po.observation.speciesGuess, 
+                                    po.observation.observedOnShortString,
+                                    po.project.title,
+                                    error.localizedDescription]];
         [po deleteEntity];
     } else {
         [syncQueue stop];
