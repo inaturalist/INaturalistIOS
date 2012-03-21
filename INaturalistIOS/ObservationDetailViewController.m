@@ -473,8 +473,30 @@ static const int ProjectsSection = 4;
         if (indexPath.row < self.observation.projectObservations.count) {
             UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
                                                            reuseIdentifier:@"ProjectCell"];
+            [cell setBackgroundColor:[UIColor whiteColor]];
             ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
-            cell.textLabel.text = po.project.title;
+            
+            float imageMargin = 5;
+            TTImageView *imageView = [[TTImageView alloc] initWithFrame:CGRectMake(imageMargin,imageMargin,33,33)];
+            [imageView unsetImage];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            imageView.defaultImage = [UIImage imageNamed:@"projects"];
+            imageView.urlPath = po.project.iconURL;
+            [imageView setBackgroundColor:[UIColor clearColor]];
+            [cell.contentView addSubview:imageView];
+            
+            float labelWidth = cell.bounds.size.width - imageView.frame.size.width 
+                - imageMargin
+                - imageMargin
+                - 30;// ??
+            UILabel *label = [[UILabel alloc] initWithFrame:
+                              CGRectMake(imageView.bounds.size.width + imageMargin + imageMargin, 
+                                         0, 
+                                         labelWidth,
+                                         43)];
+            label.text = po.project.title;
+            [cell.contentView addSubview:label];
+            label.font = [UIFont boldSystemFontOfSize:17];
             return cell;
         }
         
