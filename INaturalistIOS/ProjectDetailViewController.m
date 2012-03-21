@@ -9,6 +9,7 @@
 #import "ProjectDetailViewController.h"
 #import "Observation.h"
 #import "Project.h"
+#import "ProjectObservation.h"
 #import "List.h"
 #import "ListedTaxon.h"
 #import "ImageStore.h"
@@ -78,6 +79,9 @@ static const int ListedTaxonCellSubtitleTag = 3;
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
+        ProjectObservation *po = [ProjectObservation object];
+        po.observation = o;
+        po.project = self.project;
         o.localObservedOn = [NSDate date];
         if ([sender isKindOfClass:ListedTaxon.class]) {
             ListedTaxon *lt = sender;
@@ -218,6 +222,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
 }
 
 #pragma mark - ObservationDetailViewControllerDelegate
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [[self navigationController] popToViewController:self animated:YES];
+}
+
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
