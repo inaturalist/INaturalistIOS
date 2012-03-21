@@ -74,6 +74,7 @@
 		198CF8EC14F5C03C0064DF05 /* libThree20UI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8E914F5C03B0064DF05 /* libThree20UI.a */; };
 		198CF8ED14F5C03C0064DF05 /* libThree20UICommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */; };
 		198CF8EE14F5C03C0064DF05 /* libThree20UINavigator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */; };
+		1997411115194E89006FBEA0 /* SyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* SyncQueue.m */; };
 		19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
 		19A5F61114FB486000757636 /* appicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F61014FB486000757636 /* appicon.png */; };
 		19A5F61314FB486200757636 /* appicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F61214FB486200757636 /* appicon@2x.png */; };
@@ -354,6 +355,8 @@
 		198CF8E914F5C03B0064DF05 /* libThree20UI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UI.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UI.a"; sourceTree = "<group>"; };
 		198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UICommon.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UICommon.a"; sourceTree = "<group>"; };
 		198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UINavigator.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UINavigator.a"; sourceTree = "<group>"; };
+		1997410F15194E89006FBEA0 /* SyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncQueue.h; sourceTree = "<group>"; };
+		1997411015194E89006FBEA0 /* SyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncQueue.m; sourceTree = "<group>"; };
 		19A5F60814FB289B00757636 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		19A5F61014FB486000757636 /* appicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appicon.png; path = ../appicon.png; sourceTree = "<group>"; };
 		19A5F61214FB486200757636 /* appicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "appicon@2x.png"; path = "../appicon@2x.png"; sourceTree = "<group>"; };
@@ -724,12 +727,14 @@
 			children = (
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
+				19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */,
+				19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */,
 				19640DEA150835A5003BF888 /* ObservationAnnotation.h */,
 				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
 				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
 				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
-				19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */,
-				19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */,
+				1997410F15194E89006FBEA0 /* SyncQueue.h */,
+				1997411015194E89006FBEA0 /* SyncQueue.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1050,6 +1055,7 @@
 				19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */,
 				197A6057151155DE0061B83B /* ProjectDetailViewController.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
+				1997411115194E89006FBEA0 /* SyncQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,11 +47,31 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     if (!defaultSerializationMapping) {
         defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[self class]];
         [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"projectID", @"project_id",
-         @"observationID", @"observation_id",
+         @"projectID", @"project_observation[project_id]",
+         @"observationID", @"project_observation[observation_id]",
          nil];
     }
     return defaultSerializationMapping;
+}
+
+// checks the associated observation for its recordID
+- (NSNumber *)observationID
+{
+    [self willAccessValueForKey:@"observationID"];
+    if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
+        [self setPrimitiveObservationID:self.observation.recordID];
+    }
+    [self didAccessValueForKey:@"observationID"];
+    return [self primitiveObservationID];
+}
+- (NSNumber *)projectID
+{
+    [self willAccessValueForKey:@"projectID"];
+    if (!self.primitiveProjectID || [self.primitiveProjectID intValue] == 0) {
+        [self setPrimitiveProjectID:self.project.recordID];
+    }
+    [self didAccessValueForKey:@"projectID"];
+    return [self primitiveProjectID];
 }
 
 @end

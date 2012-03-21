@@ -196,6 +196,7 @@ static const int ProjectsSection = 4;
         [self uiToObservation];
     }
     [self stopUpdatingLocation];
+    [self keyboardDone];
     [super viewWillDisappear:animated];
 }
 

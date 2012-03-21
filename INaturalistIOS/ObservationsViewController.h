@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "ObservationDetailViewController.h"
 #import "LoginViewController.h"
+#import "SyncQueue.h"
 
+@class INatModel;
 @class Observation;
 @class ObservationStore;
 @class DejalActivityView;
 
-@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, LoginViewControllerDelegate, RKRequestQueueDelegate, UIAlertViewDelegate>
+
+@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate>
 {
     DejalActivityView *syncActivityView;
 }
@@ -28,16 +31,15 @@
 @property (nonatomic, strong) UIBarButtonItem *deleteAllButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
-@property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) UILabel *noContentLabel;
+@property (nonatomic, strong) SyncQueue *syncQueue;
 
 - (IBAction)sync:(id)sender;
 - (void)stopSync;
 - (IBAction)edit:(id)sender;
 - (void)stopEditing;
 
-- (void)syncObservations;
-- (void)syncObservationPhotos;
+- (void)syncObservationPhoto:(ObservationPhoto *)op;
 - (void)loadData;
 - (void)reload;
 - (void)checkSyncStatus;

@@ -117,6 +117,7 @@
         <relationship name="projectUsers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectUser" inverseName="project" inverseEntity="ProjectUser" syncable="YES"/>
     </entity>
     <entity name="ProjectObservation" representedClassName="ProjectObservation" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="curatorIdentificationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -124,6 +125,7 @@
         <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="observation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="projectObservations" inverseEntity="Observation" syncable="YES"/>
         <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectObservations" inverseEntity="Project" syncable="YES"/>
     </entity>
@@ -148,7 +150,7 @@
         <element name="Observation" positionX="160" positionY="192" width="128" height="525"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
         <element name="Project" positionX="160" positionY="192" width="128" height="300"/>
-        <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
     </elements>
 </model>

@@ -11,6 +11,7 @@
 #import "DejalActivityView.h"
 #import "Observation.h"
 #import "ProjectUser.h"
+#import "ProjectObservation.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -60,6 +61,7 @@ static const int AccountActionCellTag = 1;
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing out..."];
     [Observation deleteAll];
     [ProjectUser deleteAll];
+    [ProjectObservation deleteAll];
     [self localSignOut];
     [DejalBezelActivityView removeView];
 }

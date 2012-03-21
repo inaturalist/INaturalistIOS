@@ -14,7 +14,6 @@
 #import "Project.h"
 #import "ProjectObservation.h"
 #import "ProjectUser.h"
-#import "NSString+Inflections.h"
 
 @implementation INaturalistAppDelegate
 
@@ -85,6 +84,7 @@
     
     // DEBUG
 //    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+//    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];

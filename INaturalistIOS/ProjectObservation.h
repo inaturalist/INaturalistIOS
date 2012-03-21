@@ -26,3 +26,10 @@
 @property (nonatomic, retain) Observation *observation;
 
 @end
+
+@interface ProjectObservation (PrimitiveAccessors)
+- (NSNumber *)primitiveObservationID;
+- (void)setPrimitiveObservationID:(NSNumber *)newObservationId;
+- (NSNumber *)primitiveProjectID;
+- (void)setPrimitiveProjectID:(NSNumber *)newProjectId;
+@end

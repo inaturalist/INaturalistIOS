@@ -11,6 +11,6 @@
 @interface NSString (Inflections)
 
 - (NSString *)underscore;
-//- (NSString *)camelize;
 - (NSString *)pluralize;
+- (NSString *)humanize;
 @end

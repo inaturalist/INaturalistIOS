@@ -1,0 +1,186 @@
+//
+//  SyncQueue.m
+//  iNaturalist
+//
+//  Created by Ken-ichi Ueda on 3/20/12.
+//  Copyright (c) 2012 iNaturalist. All rights reserved.
+//
+
+#import "SyncQueue.h"
+#import "INatModel.h"
+
+@implementation SyncQueue
+@synthesize queue = _queue;
+@synthesize delegate = _delegate;
+@synthesize loader = _loader;
+
+- (id)initWithDelegate:(id)delegate
+{
+    self = [super init];
+    if (self) {
+        self.delegate = delegate;
+        self.queue = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+- (void)addModel:(id)model
+{
+    [self addModel:model syncSelector:nil];
+}
+
+- (void)addModel:(id)model syncSelector:(SEL)syncSelector
+{
+    NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                              model, @"model", 
+                              [NSNumber numberWithInt:[model needingSync].count], @"needingSyncCount",
+                              [NSNumber numberWithInt:0], @"syncedCount",
+                              nil];
+    if (syncSelector) [d setValue:NSStringFromSelector(syncSelector) forKey:@"syncSelector"];
+    [self.queue addObject:d];    
+}
+
+- (void)start
+{
+    RKObjectManager.sharedManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    if (self.queue.count == 0) {
+        [self finish];
+        return;
+    }
+    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    id model = [current objectForKey:@"model"];
+    NSArray *recordsToSync = [model needingSync];
+    if (recordsToSync.count == 0) {
+        [self.queue removeObjectAtIndex:0];
+        if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
+            [self.delegate performSelector:@selector(syncQueueFinishedSyncFor:) withObject:model];
+        }
+        [self start];
+        return;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(syncQueueStartedSyncFor:)]) {
+        [self.delegate performSelector:@selector(syncQueueStartedSyncFor:) withObject:model];
+    }
+    
+    // manually applying mappings b/c PUT and POST responses return JSON without a root element, 
+    // e.g. {foo: 'bar'} instead of observation: {foo: 'bar'}, which RestKit apparently can't 
+    // deal with using the name of the model it just posted.
+    for (INatModel *record in recordsToSync) {
+        if ([current objectForKey:@"syncSelector"]) {
+            SEL syncSelector = NSSelectorFromString([current objectForKey:@"syncSelector"]);
+            if ([self.delegate respondsToSelector:syncSelector]) {
+                [self.delegate performSelector:syncSelector withObject:record];
+            }
+        } else {
+            if (record.syncedAt) {
+                [[RKObjectManager sharedManager] putObject:record mapResponseWith:[model mapping] delegate:self];
+            } else {
+                [[RKObjectManager sharedManager] postObject:record mapResponseWith:[model mapping] delegate:self];
+            }
+        }
+    }
+}
+
+- (void)stop
+{
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    // sleep is ok now
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+}
+
+- (void)finish
+{
+    [self stop];
+    if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
+        [self.delegate performSelector:@selector(syncQueueFinished)];
+    }
+}
+
+#pragma mark RKObjectLoaderDelegate methods
+- (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
+    if (objects.count == 0) return;
+    
+    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
+    NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
+    
+    NSDate *now = [NSDate date];
+    INatModel *o;
+    for (int i = 0; i < objects.count; i++) {
+        o = [objects objectAtIndex:i];
+        [o setSyncedAt:now];
+        
+        if ([self.delegate respondsToSelector:@selector(syncQueueSynced:number:of:)]) {
+            NSMethodSignature *sig = [[self.delegate class]
+                                      instanceMethodSignatureForSelector:@selector(syncQueueSynced:number:of:)];
+            NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
+            NSInteger number = [syncedCount intValue] + 1;
+            [current setValue:[NSNumber numberWithInt:number] forKey:@"syncedCount"];
+            NSInteger of = [needingSyncCount intValue];
+            [inv setTarget:self.delegate];
+            [inv setSelector:@selector(syncQueueSynced:number:of:)];
+            [inv setArgument:&o atIndex:2];
+            [inv setArgument:&number atIndex:3];
+            [inv setArgument:&of atIndex:4];
+            [inv invoke];
+        }
+    }
+    
+    [[[RKObjectManager sharedManager] objectStore] save];
+    
+    if ([current objectForKey:@"syncedCount"] >= needingSyncCount) {
+        [self start];
+    }
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // was running into a bug in release build config where the object loader was 
+    // getting deallocated after handling an error.  This is a kludge.
+    self.loader = objectLoader;
+    bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+    bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    
+    if (jsonParsingError || authFailure) {
+        [self stop];
+        if ([self.delegate respondsToSelector:@selector(syncQueueAuthRequired)]) {
+            [self.delegate performSelector:@selector(syncQueueAuthRequired)];
+        }
+    } else if ([self.delegate respondsToSelector:@selector(syncQueue:objectLoader:didFailWithError:)]) {
+        NSMethodSignature *sig = [[self.delegate class]
+                                  instanceMethodSignatureForSelector:@selector(syncQueue:objectLoader:didFailWithError:)];
+        NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
+        SyncQueue *sq = self;
+        [inv setTarget:self.delegate];
+        [inv setSelector:@selector(syncQueue:objectLoader:didFailWithError:)];
+        [inv setArgument:&sq atIndex:2];
+        [inv setArgument:&objectLoader atIndex:3];
+        [inv setArgument:&error atIndex:4];
+        [inv invoke];
+    } else {
+        [self stop];
+    }
+    
+    // even if it was an error the object was still handled, so update the 
+    // counter and move the queue forward if necessary
+    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
+    NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
+    [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1] 
+               forKey:@"syncedCount"];
+    if ([current objectForKey:@"syncedCount"] >= needingSyncCount) {
+        [self start];
+    }
+}
+
+- (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader
+{
+    self.loader = objectLoader;
+    [self stop];
+    if ([self.delegate respondsToSelector:@selector(syncQueueUnexpectedResponse)]) {
+        [self.delegate performSelector:@selector(syncQueueUnexpectedResponse)];
+    }
+}
+
+@end

@@ -61,4 +61,9 @@
         return [self stringByAppendingString:@"s"];
     }
 }
+
+- (NSString *)humanize
+{
+    return [self.underscore stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+}
 @end
