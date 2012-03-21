@@ -19,6 +19,7 @@ static const int ProjectCellTitleTag = 2;
 @synthesize delegate = _delegate;
 @synthesize projectUsers = _projectUsers;
 @synthesize chosenProjects = _chosenProjects;
+@synthesize noContentLabel = _noContentLabel;
 
 - (void)loadData
 {
@@ -47,11 +48,36 @@ static const int ProjectCellTitleTag = 2;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)checkEmpty
+{
+    if (self.projectUsers.count == 0) {
+        if (!self.noContentLabel) {
+            self.noContentLabel = [[UILabel alloc] init];
+            self.noContentLabel.text = @"You don't have any projects yet.";
+            self.noContentLabel.backgroundColor = [UIColor clearColor];
+            self.noContentLabel.textColor = [UIColor grayColor];
+            self.noContentLabel.numberOfLines = 0;
+            [self.noContentLabel sizeToFit];
+            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.center = CGPointMake(self.view.center.x, 
+                                                     self.tableView.rowHeight * 3 + (self.tableView.rowHeight / 2));
+        }
+        [self.view addSubview:self.noContentLabel];
+    } else if (self.noContentLabel) {
+        [self.noContentLabel removeFromSuperview];
+    }
+}
+
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated

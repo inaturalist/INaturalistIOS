@@ -21,6 +21,7 @@
 @property (weak, nonatomic) UIViewController *delegate;
 @property (nonatomic, strong) NSArray *projectUsers;
 @property (nonatomic, strong) NSMutableArray *chosenProjects;
+@property (nonatomic, strong) UILabel *noContentLabel;
 
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedDone:(id)sender;

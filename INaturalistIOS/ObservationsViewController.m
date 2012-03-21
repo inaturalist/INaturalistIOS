@@ -213,26 +213,19 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)checkEmpty
 {
     if (self.observations.count == 0) {
-        if (self.noContentLabel) {
-            self.noContentLabel.hidden = NO;
-        } else {
+        if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.text = @"You don't have any observations yet.";
-            self.noContentLabel.backgroundColor = [UIColor whiteColor];
+            self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;
             [self.noContentLabel sizeToFit];
             self.noContentLabel.textAlignment = UITextAlignmentCenter;
-            self.noContentLabel.bounds = CGRectMake(self.noContentLabel.bounds.origin.x + 20, 
-                                                    self.noContentLabel.bounds.origin.y + 20, 
-                                                    self.view.bounds.size.width, 
-                                                    self.noContentLabel.bounds.size.height + 20);
             self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.navigationController.view.center.y - self.navigationController.navigationBar.bounds.size.height - 10);
-            [self.view addSubview:self.noContentLabel];
+                                                     self.tableView.rowHeight * 3 + (self.tableView.rowHeight / 2));
         }
+        [self.view addSubview:self.noContentLabel];
     } else if (self.noContentLabel) {
-        self.noContentLabel.hidden = YES;
         [self.noContentLabel removeFromSuperview];
     }
 }
