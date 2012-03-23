@@ -36,11 +36,11 @@
 @property (nonatomic, retain) NSString * conservationStatusSourceName;
 @property (nonatomic, retain) NSString * rank;
 @property (nonatomic, retain) NSOrderedSet *taxonPhotos;
+
++ (UIColor *)iconicTaxonColor:(NSString *)iconicTaxonName;
 @end
 
 @interface Taxon (CoreDataGeneratedAccessors)
-
-+ (UIColor *)iconicTaxonColor:(NSString *)iconicTaxonName;
 - (void)insertObject:(NSManagedObject *)value inTaxonPhotosAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromTaxonPhotosAtIndex:(NSUInteger)idx;
 - (void)insertTaxonPhotos:(NSArray *)value atIndexes:(NSIndexSet *)indexes;

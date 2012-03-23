@@ -26,7 +26,7 @@
  * Queue of INatModels to sync with the server. Ensures that records of each
  * model are fully * synced before moving on to the next model.
  */
-@interface SyncQueue : NSObject <RKObjectLoaderDelegate, RKRequestQueueDelegate>
+@interface SyncQueue : NSObject <RKObjectLoaderDelegate, RKRequestQueueDelegate, RKRequestDelegate>
 @property (nonatomic, strong) NSMutableArray *queue;
 @property (nonatomic, weak) id delegate;
 @property (nonatomic, strong) RKObjectLoader *loader;
@@ -44,6 +44,7 @@
  */
 - (void)addModel:(id)model syncSelector:(SEL)syncSelector;
 - (void)start;
+- (void)startDelete;
 - (void)stop;
 - (void)finish;
 @end

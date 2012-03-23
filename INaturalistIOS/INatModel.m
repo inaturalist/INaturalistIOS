@@ -7,6 +7,7 @@
 //
 
 #import "INatModel.h"
+#import "DeletedRecord.h"
 
 @implementation INatModel
 
@@ -42,10 +43,18 @@
     return request;
 }
 
-+ (int)needingSyncCount
++ (NSInteger)needingSyncCount
 {
     NSError *error;
     return [self.managedObjectContext countForFetchRequest:self.needingSyncRequest error:&error];
+}
+
++ (NSInteger)deletedRecordCount
+{
+    NSFetchRequest *request = [DeletedRecord fetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", NSStringFromClass(self)]];
+    NSError *error;
+    return [self.managedObjectContext countForFetchRequest:request error:&error];
 }
 
 + (id)stub

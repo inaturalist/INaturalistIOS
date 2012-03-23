@@ -12,6 +12,7 @@
 #import "SyncQueue.h"
 
 @class INatModel;
+@class DeletedRecord;
 @class Observation;
 @class ObservationStore;
 @class DejalActivityView;

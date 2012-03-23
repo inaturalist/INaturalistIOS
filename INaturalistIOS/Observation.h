@@ -61,3 +61,16 @@
 - (void)setPrimitiveIconicTaxonName:(NSNumber *)newIconicTaxonName;
 @end
 
+@interface Observation (CoreDataGeneratedAccessors)
+- (void)insertObject:(NSManagedObject *)value inProjectObservationsAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromProjectObservationsAtIndex:(NSUInteger)idx;
+- (void)insertProjectObservations:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeProjectObservationsAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInProjectObservationsAtIndex:(NSUInteger)idx withObject:(NSManagedObject *)value;
+- (void)replaceProjectObservationsAtIndexes:(NSIndexSet *)indexes withProjectObservations:(NSArray *)values;
+- (void)addProjectObservationsObject:(NSManagedObject *)value;
+- (void)removeProjectObservationsObject:(NSManagedObject *)value;
+- (void)addProjectObservations:(NSSet *)values;
+- (void)removeProjectObservations:(NSSet *)values;
+@end
+

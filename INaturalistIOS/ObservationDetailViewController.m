@@ -616,14 +616,18 @@ static const int ProjectsSection = 4;
                        choseProjects:(NSArray *)projects
 {
     NSMutableArray *newProjects = [NSMutableArray arrayWithArray:projects];
+    NSMutableSet *deletedProjects = [[NSMutableSet alloc] init];
     for (ProjectObservation *po in self.observation.projectObservations) {
         if ([projects containsObject:po.project]) {
             [newProjects removeObject:po.project];
         } else {
             [po deleteEntity];
+            [deletedProjects addObject:po];
         }
         self.observation.localUpdatedAt = [NSDate date];
     }
+    [self.observation removeProjectObservations:deletedProjects];
+    
     for (Project *p in newProjects) {
         ProjectObservation *po = [ProjectObservation object];
         po.observation = self.observation;

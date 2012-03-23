@@ -9,6 +9,7 @@
 #import "ProjectObservation.h"
 #import "Project.h"
 #import "Observation.h"
+#import "DeletedRecord.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -72,6 +73,15 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     }
     [self didAccessValueForKey:@"projectID"];
     return [self primitiveProjectID];
+}
+
+- (void)prepareForDeletion
+{
+    if (self.syncedAt) {
+        DeletedRecord *dr = [DeletedRecord object];
+        dr.recordID = self.recordID;
+        dr.modelName = NSStringFromClass(self.class);
+    }
 }
 
 @end

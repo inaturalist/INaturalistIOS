@@ -8,6 +8,7 @@
 
 #import "SyncQueue.h"
 #import "INatModel.h"
+#import "DeletedRecord.h"
 
 @implementation SyncQueue
 @synthesize queue = _queue;
@@ -33,8 +34,9 @@
 {
     NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                               model, @"model", 
-                              [NSNumber numberWithInt:[model needingSync].count], @"needingSyncCount",
+                              [NSNumber numberWithInt:[model needingSyncCount]], @"needingSyncCount",
                               [NSNumber numberWithInt:0], @"syncedCount",
+                              [NSNumber numberWithInt:[model deletedRecordCount]], @"deletedRecordCount",
                               nil];
     if (syncSelector) [d setValue:NSStringFromSelector(syncSelector) forKey:@"syncSelector"];
     [self.queue addObject:d];    
@@ -50,7 +52,17 @@
     }
     NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
     id model = [current objectForKey:@"model"];
+    NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
+    
     NSArray *recordsToSync = [model needingSync];
+    
+    
+    // delete objects first
+    if (deletedRecordCount > 0) {
+        [self startDelete];
+        return;
+    }
+    
     if (recordsToSync.count == 0) {
         [self.queue removeObjectAtIndex:0];
         if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
@@ -81,6 +93,22 @@
             }
         }
     }
+}
+
+- (void)startDelete
+{
+    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    id model = [current objectForKey:@"model"];
+    NSArray *deletedRecords = [DeletedRecord objectsWithPredicate:
+                               [NSPredicate predicateWithFormat:
+                                @"modelName = %@", NSStringFromClass(model)]];
+    for (DeletedRecord *dr in deletedRecords) {
+        [[RKClient sharedClient] delete:[NSString stringWithFormat:@"/%@/%d", 
+                                         dr.modelName.underscore.pluralize, 
+                                         dr.recordID.intValue] 
+                               delegate:self];
+    }
+
 }
 
 - (void)stop
@@ -180,6 +208,39 @@
     [self stop];
     if ([self.delegate respondsToSelector:@selector(syncQueueUnexpectedResponse)]) {
         [self.delegate performSelector:@selector(syncQueueUnexpectedResponse)];
+    }
+}
+
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
+{
+    if (request.method != RKRequestMethodDELETE) return;
+    [self stop];
+}
+
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
+{
+    if (request.method != RKRequestMethodDELETE) return;
+    
+    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    id model = [current objectForKey:@"model"];
+    NSNumber *deletedRecordCount = [current objectForKey:@"deletedRecordCount"];
+    [current setValue:[NSNumber numberWithInt:[deletedRecordCount intValue] - 1] 
+               forKey:@"deletedRecordCount"];
+    
+    // if we're done deleting
+    if ([[current objectForKey:@"deletedRecordCount"] intValue] <= 0) {
+        // remove all deleted records
+        NSArray *deletedRecords = [DeletedRecord objectsWithPredicate:
+                                   [NSPredicate predicateWithFormat:
+                                    @"modelName = %@", NSStringFromClass(model)]];
+        for (DeletedRecord *dr in deletedRecords) {
+            [dr deleteEntity];
+        }
+        NSError *error;
+        [[DeletedRecord managedObjectContext] save:&error];
+        
+        // move the queue forward
+        [self start];
     }
 }
 

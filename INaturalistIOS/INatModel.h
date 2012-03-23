@@ -20,7 +20,8 @@
 + (NSArray *)all;
 + (NSArray *)needingSync;
 + (NSFetchRequest *)needingSyncRequest;
-+ (int)needingSyncCount;
++ (NSInteger)needingSyncCount;
++ (NSInteger)deletedRecordCount;
 + (id)stub;
 + (RKManagedObjectMapping *)mapping;
 + (RKManagedObjectMapping *)serializationMapping;

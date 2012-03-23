@@ -11,6 +11,7 @@
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
 		1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
+		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		19122E3F1512D3F4009BD3D0 /* add_button_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */; };
 		19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */; };
@@ -279,6 +280,8 @@
 		1902813C14F36B44005AC8D2 /* ObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPhoto.m; sourceTree = "<group>"; };
 		1905715E14FDFF49007FBE30 /* EditLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationViewController.h; sourceTree = "<group>"; };
 		1905715F14FDFF49007FBE30 /* EditLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationViewController.m; sourceTree = "<group>"; };
+		190687C5151BF71F00D5B6E4 /* DeletedRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedRecord.h; sourceTree = "<group>"; };
+		190687C6151BF71F00D5B6E4 /* DeletedRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedRecord.m; sourceTree = "<group>"; };
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button_highlight.png; sourceTree = "<group>"; };
@@ -688,6 +691,8 @@
 		19F621A1150ECD0100C58F28 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				190687C5151BF71F00D5B6E4 /* DeletedRecord.h */,
+				190687C6151BF71F00D5B6E4 /* DeletedRecord.m */,
 				1902812614F315F2005AC8D2 /* INatModel.h */,
 				1902812714F315F2005AC8D2 /* INatModel.m */,
 				19F62191150ECBEE00C58F28 /* List.h */,
@@ -1100,6 +1105,7 @@
 				1997411115194E89006FBEA0 /* SyncQueue.m in Sources */,
 				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
+				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,7 @@
 #import "Observation.h"
 #import "ProjectUser.h"
 #import "ProjectObservation.h"
+#import "DeletedRecord.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -59,9 +60,18 @@ static const int AccountActionCellTag = 1;
 - (void)signOut
 {
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing out..."];
+    for (UIViewController *vc in self.tabBarController.viewControllers) {
+        if ([vc isKindOfClass:UINavigationController.class]) {
+            [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
+        }
+    }
     [Observation deleteAll];
     [ProjectUser deleteAll];
-    [ProjectObservation deleteAll];
+    [ProjectObservation deleteAll]; 
+    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
+         [dr deleteEntity];
+    }
+    [[[RKObjectManager sharedManager] objectStore] save];
     [self localSignOut];
     [DejalBezelActivityView removeView];
 }

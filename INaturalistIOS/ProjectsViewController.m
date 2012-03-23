@@ -94,16 +94,14 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)viewDidLoad
 {
-    if (!self.projectUsers) {
-        [self loadData];
-    }
     [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
-    [self checkEmpty];
+    [self loadData];
+    [self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated
