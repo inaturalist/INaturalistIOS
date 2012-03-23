@@ -64,6 +64,7 @@
 - (void)clickedView;
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedAddPhoto:(id)sender;
+- (IBAction)clickedSpeciesButton:(id)sender;
 - (void)save;
 - (void)observationToUI;
 - (void)uiToObservation;

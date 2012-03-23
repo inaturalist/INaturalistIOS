@@ -11,6 +11,7 @@
 #import "INatModel.h"
 
 @class List;
+@class Taxon;
 
 @interface ListedTaxon : INatModel
 
@@ -34,5 +35,6 @@
 @property (nonatomic, retain) List *list;
 @property (nonatomic, retain) NSString * photoURL;
 @property (nonatomic, retain) NSString * iconicTaxonName;
+@property (nonatomic, retain) Taxon *taxon;
 
 @end

@@ -47,6 +47,16 @@
 		19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530666150592DB004951D8 /* iconic_taxon_reptilia.png */; };
 		19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530667150592DB004951D8 /* iconic_taxon_unknown.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
+		195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
+		195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
+		195F324D151AC3BA0019CB85 /* 06-magnify.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F324C151AC3BA0019CB85 /* 06-magnify.png */; };
+		195F324F151AE55A0019CB85 /* 06-magnify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F324E151AE55A0019CB85 /* 06-magnify@2x.png */; };
+		195F3251151AE56A0019CB85 /* 01-refresh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3250151AE56A0019CB85 /* 01-refresh@2x.png */; };
+		195F3253151AE5760019CB85 /* 83-calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3252151AE5760019CB85 /* 83-calendar@2x.png */; };
+		195F3256151AE5C40019CB85 /* 103-map.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3254151AE5C40019CB85 /* 103-map.png */; };
+		195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3255151AE5C40019CB85 /* 103-map@2x.png */; };
+		195F325A151AE6140019CB85 /* 298-circlex.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3258151AE6140019CB85 /* 298-circlex.png */; };
+		195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3259151AE6140019CB85 /* 298-circlex@2x.png */; };
 		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
 		19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DEB150835A5003BF888 /* ObservationAnnotation.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
@@ -315,6 +325,18 @@
 		19530666150592DB004951D8 /* iconic_taxon_reptilia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_reptilia.png; sourceTree = "<group>"; };
 		19530667150592DB004951D8 /* iconic_taxon_unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_unknown.png; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
+		195F3247151A8AB60019CB85 /* Taxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Taxon.m; sourceTree = "<group>"; };
+		195F3249151A8AF70019CB85 /* TaxonPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonPhoto.h; sourceTree = "<group>"; };
+		195F324A151A8AF70019CB85 /* TaxonPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonPhoto.m; sourceTree = "<group>"; };
+		195F324C151AC3BA0019CB85 /* 06-magnify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "06-magnify.png"; sourceTree = "<group>"; };
+		195F324E151AE55A0019CB85 /* 06-magnify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "06-magnify@2x.png"; sourceTree = "<group>"; };
+		195F3250151AE56A0019CB85 /* 01-refresh@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01-refresh@2x.png"; sourceTree = "<group>"; };
+		195F3252151AE5760019CB85 /* 83-calendar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar@2x.png"; sourceTree = "<group>"; };
+		195F3254151AE5C40019CB85 /* 103-map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "103-map.png"; sourceTree = "<group>"; };
+		195F3255151AE5C40019CB85 /* 103-map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "103-map@2x.png"; sourceTree = "<group>"; };
+		195F3258151AE6140019CB85 /* 298-circlex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "298-circlex.png"; sourceTree = "<group>"; };
+		195F3259151AE6140019CB85 /* 298-circlex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "298-circlex@2x.png"; sourceTree = "<group>"; };
 		19640DE41508100A003BF888 /* MapTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTypeViewController.h; sourceTree = "<group>"; };
 		19640DE51508100A003BF888 /* MapTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTypeViewController.m; sourceTree = "<group>"; };
 		19640DEA150835A5003BF888 /* ObservationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAnnotation.h; sourceTree = "<group>"; };
@@ -431,8 +453,16 @@
 		1912DA9215059C0E005555B8 /* glyphish */ = {
 			isa = PBXGroup;
 			children = (
-				196420B21506C0E6005ACB6E /* 83-calendar.png */,
 				1912DA9015059C08005555B8 /* 01-refresh.png */,
+				195F3250151AE56A0019CB85 /* 01-refresh@2x.png */,
+				195F324C151AC3BA0019CB85 /* 06-magnify.png */,
+				195F324E151AE55A0019CB85 /* 06-magnify@2x.png */,
+				195F3254151AE5C40019CB85 /* 103-map.png */,
+				195F3255151AE5C40019CB85 /* 103-map@2x.png */,
+				195F3258151AE6140019CB85 /* 298-circlex.png */,
+				195F3259151AE6140019CB85 /* 298-circlex@2x.png */,
+				196420B21506C0E6005ACB6E /* 83-calendar.png */,
+				195F3252151AE5760019CB85 /* 83-calendar@2x.png */,
 			);
 			name = glyphish;
 			sourceTree = "<group>";
@@ -674,6 +704,10 @@
 				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
 				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
 				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
+				195F3246151A8AB60019CB85 /* Taxon.h */,
+				195F3247151A8AB60019CB85 /* Taxon.m */,
+				195F3249151A8AF70019CB85 /* TaxonPhoto.h */,
+				195F324A151A8AF70019CB85 /* TaxonPhoto.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1014,6 +1048,14 @@
 				19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */,
 				19122E411512D3F4009BD3D0 /* add_button.png in Resources */,
 				19122E421512D3F4009BD3D0 /* add_button@2x.png in Resources */,
+				195F324D151AC3BA0019CB85 /* 06-magnify.png in Resources */,
+				195F324F151AE55A0019CB85 /* 06-magnify@2x.png in Resources */,
+				195F3251151AE56A0019CB85 /* 01-refresh@2x.png in Resources */,
+				195F3253151AE5760019CB85 /* 83-calendar@2x.png in Resources */,
+				195F3256151AE5C40019CB85 /* 103-map.png in Resources */,
+				195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */,
+				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
+				195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1056,6 +1098,8 @@
 				197A6057151155DE0061B83B /* ProjectDetailViewController.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				1997411115194E89006FBEA0 /* SyncQueue.m in Sources */,
+				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
+				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

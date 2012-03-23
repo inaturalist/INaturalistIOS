@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
 
+@class Taxon;
+
 @interface Observation : INatModel
 
 @property (nonatomic, retain) NSString * speciesGuess;
@@ -38,6 +40,7 @@
 @property (nonatomic, retain) NSString * license;
 @property (nonatomic, retain) NSSet * observationPhotos;
 @property (nonatomic, retain) NSSet * projectObservations;
+@property (nonatomic, retain) Taxon *taxon;
 
 + (NSDateFormatter *)prettyDateFormatter;
 + (NSDateFormatter *)shortDateFormatter;
@@ -48,4 +51,13 @@
 - (UIColor *)iconicTaxonColor;
 - (NSArray *)sortedObservationPhotos;
 - (NSArray *)sortedProjectObservations;
+
 @end
+
+@interface Observation (PrimitiveAccessors)
+- (NSNumber *)primitiveTaxonID;
+- (void)setPrimitiveTaxonID:(NSNumber *)newTaxonId;
+- (NSNumber *)primitiveIconicTaxonName;
+- (void)setPrimitiveIconicTaxonName:(NSNumber *)newIconicTaxonName;
+@end
+

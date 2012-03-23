@@ -8,6 +8,7 @@
 
 #import "ListedTaxon.h"
 #import "List.h"
+#import "Taxon.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 //static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -34,6 +35,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic list;
 @dynamic photoURL;
 @dynamic iconicTaxonName;
+@dynamic taxon;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -59,6 +61,10 @@ static RKManagedObjectMapping *defaultMapping = nil;
          nil];
         [defaultMapping connectRelationship:@"list" withObjectForPrimaryKeyAttribute:@"listID"];
         [defaultMapping mapRelationship:@"list" withMapping:[List mapping]];
+        [defaultMapping mapKeyPath:@"taxon" 
+                    toRelationship:@"taxon" 
+                       withMapping:[Taxon mapping]
+                         serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;

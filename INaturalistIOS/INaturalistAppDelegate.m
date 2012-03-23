@@ -14,6 +14,8 @@
 #import "Project.h"
 #import "ProjectObservation.h"
 #import "ProjectUser.h"
+#import "Taxon.h"
+#import "TaxonPhoto.h"
 
 @implementation INaturalistAppDelegate
 
@@ -55,6 +57,8 @@
                        Project.class, 
                        ProjectObservation.class, 
                        ProjectUser.class, 
+                       Taxon.class,
+                       TaxonPhoto.class,
                        nil];
     NSString *underscored;
     NSString *pluralized;

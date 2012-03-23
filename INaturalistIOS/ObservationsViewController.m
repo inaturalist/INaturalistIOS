@@ -342,6 +342,7 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self reload];
     [self checkEmpty];
 }
 

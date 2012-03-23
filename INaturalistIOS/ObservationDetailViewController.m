@@ -14,6 +14,8 @@
 #import "PhotoSource.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "Taxon.h"
+#import "TaxonPhoto.h"
 #import "EditLocationViewController.h"
 
 static const int PhotoActionSheetTag = 0;
@@ -49,17 +51,40 @@ static const int ProjectsSection = 4;
 
 - (void)observationToUI
 {
-    if (self.observation) {
-        [self.speciesGuessTextField setText:self.observation.speciesGuess];
-        [self.observedAtLabel setText:self.observation.observedOnPrettyString];
-        [self.placeGuessField setText:self.observation.placeGuess];
-        if (self.observation.latitude) [latitudeLabel setText:self.observation.latitude.description];
-        if (self.observation.longitude) [longitudeLabel setText:self.observation.longitude.description];
-                                    
-        if (self.observation.positionalAccuracy) {
-            [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
+    if (!self.observation) return;
+    [self.speciesGuessTextField setText:self.observation.speciesGuess];
+    [self.observedAtLabel setText:self.observation.observedOnPrettyString];
+    [self.placeGuessField setText:self.observation.placeGuess];
+    if (self.observation.latitude) [latitudeLabel setText:self.observation.latitude.description];
+    if (self.observation.longitude) [longitudeLabel setText:self.observation.longitude.description];
+    
+    if (self.observation.positionalAccuracy) {
+        [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
+    }
+    [descriptionTextView setText:self.observation.inatDescription];
+    
+    UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    TTImageView *img = (TTImageView *)[speciesCell viewWithTag:1];
+    UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
+    img.style = [TTShapeStyle styleWithShape:[TTRoundedRectangleShape shapeWithTopLeft:5 
+                                                                              topRight:5 
+                                                                           bottomRight:5 
+                                                                            bottomLeft:5] 
+                                        next:[TTContentStyle styleWithNext:nil]];
+    [img unsetImage];
+    img.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
+    if (self.observation.taxon) {
+        if (self.observation.taxon.taxonPhotos.count > 0) {
+            TaxonPhoto *tp = (TaxonPhoto *)self.observation.taxon.taxonPhotos.firstObject;
+            img.urlPath = tp.squareURL;
         }
-        [descriptionTextView setText:self.observation.inatDescription];
+        self.speciesGuessTextField.enabled = NO;
+        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
+        self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.iconicTaxonName];
+    } else {
+        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
+        self.speciesGuessTextField.enabled = YES;
+        self.speciesGuessTextField.textColor = [UIColor blackColor];
     }
 }
 
@@ -150,12 +175,7 @@ static const int ProjectsSection = 4;
     }
     
     [self refreshCoverflowView];
-    
-    if (self.observation.iconicTaxonName) {
-        UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
-        img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
-    }
+    [self observationToUI];
 }
 
 #pragma mark - View lifecycle
@@ -163,7 +183,6 @@ static const int ProjectsSection = 4;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self observationToUI];
     if ([self.observation isNew]) {
         [[self navigationItem] setTitle:@"Add observation"];
     } else {
@@ -205,10 +224,10 @@ static const int ProjectsSection = 4;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // ensure UI state gets stored in the observation
-    if (self.observation && !self.observation.isDeleted) {
-        [self uiToObservation];
-    }
+//    // ensure UI state gets stored in the observation
+//    if (self.observation && !self.observation.isDeleted) {
+//        [self uiToObservation];
+//    }
     [self stopUpdatingLocation];
     [self keyboardDone];
     [super viewWillDisappear:animated];
@@ -502,7 +521,6 @@ static const int ProjectsSection = 4;
         
         // otherwise reset the indexPath so the table view thinks it's retrieving the static cell at index 0
         indexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
-        
     }
     return [super tableView:tableView cellForRowAtIndexPath:indexPath];
 }
@@ -662,7 +680,7 @@ static const int ProjectsSection = 4;
         [self.observation deleteEntity];
         self.observation = nil;
     } else {
-        [self.observation.managedObjectContext undo];
+        [self.observation.managedObjectContext rollback];
     }
     if ([self.delegate respondsToSelector:@selector(observationDetailViewControllerDidCancel:)]) {
         [self.delegate observationDetailViewControllerDidCancel:self];
@@ -684,6 +702,21 @@ static const int ProjectsSection = 4;
         [photoChoice setCancelButtonIndex:1];
     }
     [photoChoice showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (IBAction)clickedSpeciesButton:(id)sender {
+    if (self.observation && self.observation.taxon) {
+        if ([self.observation.speciesGuess isEqualToString:self.observation.taxon.defaultName]) {
+            self.observation.speciesGuess = nil;
+        }
+        self.observation.taxon = nil;
+        self.observation.taxonID = nil;
+        self.observation.iconicTaxonID = nil;
+        self.observation.iconicTaxonName = nil;
+        [self observationToUI];
+    } else {
+        // TODO start species selector!
+    }
 }
 
 - (void)setObservation:(Observation *)observation

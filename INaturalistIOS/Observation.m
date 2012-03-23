@@ -7,6 +7,7 @@
 //
 
 #import "Observation.h"
+#import "Taxon.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -43,6 +44,7 @@ static NSDateFormatter *jsDateFormatter = nil;
 @dynamic license;
 @dynamic observationPhotos;
 @dynamic projectObservations;
+@dynamic taxon;
 
 + (NSArray *)all
 {
@@ -244,6 +246,26 @@ static NSDateFormatter *jsDateFormatter = nil;
     } else {
         return [UIColor darkGrayColor];
     }
+}
+
+- (NSNumber *)taxonID
+{
+    [self willAccessValueForKey:@"taxonID"];
+    if (!self.primitiveTaxonID || [self.primitiveTaxonID intValue] == 0) {
+        [self setPrimitiveTaxonID:self.taxon.recordID];
+    }
+    [self didAccessValueForKey:@"taxonID"];
+    return [self primitiveTaxonID];
+}
+
+- (NSNumber *)iconicTaxonName
+{
+    [self willAccessValueForKey:@"iconicTaxonName"];
+    if (!self.primitiveIconicTaxonName) {
+        [self setPrimitiveIconicTaxonName:[self.taxon primitiveValueForKey:@"iconicTaxonName"]];
+    }
+    [self didAccessValueForKey:@"iconicTaxonName"];
+    return [self primitiveIconicTaxonName];
 }
 
 @end

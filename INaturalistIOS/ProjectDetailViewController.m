@@ -85,7 +85,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
         o.localObservedOn = [NSDate date];
         if ([sender isKindOfClass:ListedTaxon.class]) {
             ListedTaxon *lt = sender;
-            o.taxonID = lt.taxonID;
+            o.taxon = lt.taxon;
             o.speciesGuess = lt.taxonDefaultName;
         }
         [vc setObservation:o];
@@ -103,9 +103,17 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.projectTitle.text = self.project.title;
     self.projectSubtitle.textColor = [UIColor grayColor];
     self.projectSubtitle.font = [UIFont systemFontOfSize:12.0];
-    self.projectSubtitle.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"%d listed taxa", self.listedTaxa.count]
+    self.projectSubtitle.text = [TTStyledText textFromXHTML:self.project.desc
                                             lineBreaks:NO 
                                                   URLs:YES];
+    
+    CAGradientLayer *lyr = [CAGradientLayer layer];
+    lyr.colors = [NSArray arrayWithObjects:
+                  (id)[UIColor whiteColor].CGColor, 
+                  (id)[UIColor colorWithRed:(220/255.0)  green:(220/255.0)  blue:(220/255.0)  alpha:1.0].CGColor, nil];
+    lyr.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0], [NSNumber numberWithFloat:1], nil];
+    lyr.frame = self.tableView.tableHeaderView.bounds;
+    [self.tableView.tableHeaderView.layer insertSublayer:lyr atIndex:0];
 }
 
 - (void)viewWillAppear:(BOOL)animated
