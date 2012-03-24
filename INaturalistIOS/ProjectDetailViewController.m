@@ -12,8 +12,10 @@
 #import "ProjectObservation.h"
 #import "List.h"
 #import "ListedTaxon.h"
+#import "Taxon.h"
 #import "ImageStore.h"
 #import "DejalActivityView.h"
+#import "TaxonDetailViewController.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
@@ -89,6 +91,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
             o.speciesGuess = lt.taxonDefaultName;
         }
         [vc setObservation:o];
+    } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
+        TaxonDetailViewController *vc = [segue destinationViewController];
+        ListedTaxon *lt = [self.listedTaxa
+                           objectAtIndex:[[self.tableView 
+                                           indexPathForSelectedRow] row]];
+        vc.taxon = lt.taxon;
     }
 }
 
@@ -114,11 +122,13 @@ static const int ListedTaxonCellSubtitleTag = 3;
     lyr.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0], [NSNumber numberWithFloat:1], nil];
     lyr.frame = self.tableView.tableHeaderView.bounds;
     [self.tableView.tableHeaderView.layer insertSublayer:lyr atIndex:0];
+    [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES];
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -126,6 +136,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     if (self.listedTaxa.count == 0 && !self.lastSyncedAt) {
         [self sync];
     }
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidUnload {
@@ -171,7 +182,13 @@ static const int ListedTaxonCellSubtitleTag = 3;
     titleLabel.text = lt.taxonDefaultName;
     imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:lt.iconicTaxonName];
     imageView.urlPath = lt.photoURL;
-    if (![lt.taxonName isEqualToString:lt.taxonDefaultName]) {
+    if ([lt.taxonName isEqualToString:lt.taxonDefaultName]) {
+        if (lt.taxon.rankLevel.intValue >= 30) {
+            titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
+        } else {
+            titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
+        }
+    } else {
         UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
         subtitleLabel.text = lt.taxonName;
     }

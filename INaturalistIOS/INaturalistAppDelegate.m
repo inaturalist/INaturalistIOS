@@ -16,6 +16,7 @@
 #import "ProjectUser.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
+#import <Three20/Three20.h>
 
 @implementation INaturalistAppDelegate
 
@@ -92,6 +93,8 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
+    
+    [[TTURLRequestQueue mainQueue] setMaxContentLength:0];
 }
 
 @end

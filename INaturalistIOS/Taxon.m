@@ -48,7 +48,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"updated_at", @"updatedAt",
          @"name", @"name",
          @"ancestry", @"ancestry",
-         @"conservation_status_code", @"conservationStatusCode",
+         @"conservation_status", @"conservationStatusCode",
          @"conservation_status_name", @"conservationStatusName",
          @"conservation_status_source.title", @"conservationStatusSourceName",
          @"default_name.name", @"defaultName",
