@@ -200,7 +200,11 @@ static const int ProjectsSection = 4;
 - (void)viewDidAppear:(BOOL)animated
 {
     [self initUI];
-    if (self.observation.isNew && [self.latitudeLabel.text isEqualToString:@"???"]) {
+    if (self.observation.isNew && 
+        (
+         [self.latitudeLabel.text isEqualToString:@"???"] || // observation has no coordinates yet
+         self.locationManager                                // location updates already started, but view trashed due to mem warning
+         )) {
         [self startUpdatingLocation];
     }
     [self.navigationController setToolbarHidden:NO animated:animated];
@@ -212,7 +216,6 @@ static const int ProjectsSection = 4;
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
-    [self setLocationManager:nil];
     [self setGeocoder:nil];
     [self setKeyboardToolbar:nil];
     self.saveButton = nil;
@@ -222,11 +225,6 @@ static const int ProjectsSection = 4;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-//    // ensure UI state gets stored in the observation
-//    if (self.observation && !self.observation.isDeleted) {
-//        [self uiToObservation];
-//    }
-    [self stopUpdatingLocation];
     [self keyboardDone];
     [super viewWillDisappear:animated];
 }
@@ -647,6 +645,7 @@ static const int ProjectsSection = 4;
 }
 
 - (void)clickedSave {
+    [self stopUpdatingLocation];
     [self save];
     [self.delegate observationDetailViewControllerDidSave:self];
 }
@@ -679,6 +678,7 @@ static const int ProjectsSection = 4;
 }
 
 - (IBAction)clickedCancel:(id)sender {
+    [self stopUpdatingLocation];
     if ([self.observation isNew]) {
         [self.observation deleteEntity];
         self.observation = nil;
