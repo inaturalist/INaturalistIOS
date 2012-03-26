@@ -32,6 +32,15 @@ static const int ProjectCellTitleTag = 2;
 }
 
 - (IBAction)clickedSync:(id)sender {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
+                                                     message:@"You must be connected to the Internet to sync."
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
     [self sync];
 }
 
@@ -108,7 +117,7 @@ static const int ProjectCellTitleTag = 2;
 - (void)viewDidAppear:(BOOL)animated
 {
     NSString *username = [NSUserDefaults.standardUserDefaults objectForKey:INatUsernamePrefKey];
-    if (self.projectUsers.count == 0 && username && !self.lastSyncedAt) {
+    if (self.projectUsers.count == 0 && username && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
 }

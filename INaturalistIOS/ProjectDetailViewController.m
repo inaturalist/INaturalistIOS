@@ -31,6 +31,15 @@ static const int ListedTaxonCellSubtitleTag = 3;
 @synthesize lastSyncedAt = _lastSyncedAt;
 
 - (IBAction)clickedSync:(id)sender {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
+                                                     message:@"You must be connected to the Internet to sync."
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
     [self sync];
 }
 
@@ -133,7 +142,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (self.listedTaxa.count == 0 && !self.lastSyncedAt) {
+    if (self.listedTaxa.count == 0 && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
     [super viewDidAppear:animated];

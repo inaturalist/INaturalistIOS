@@ -42,6 +42,17 @@ static const int ObservationCellLowerRightTag = 4;
     if (self.isSyncing) {
         return;
     }
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
+                                                     message:@"You must be connected to the Internet to sync with iNaturalist.org"
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
+    
     NSString *activityMsg = @"Syncing...";
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];

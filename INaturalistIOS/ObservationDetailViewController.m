@@ -847,7 +847,15 @@ static const int ProjectsSection = 4;
 
 - (void)reverseGeocodeCoordinates
 {
+    if (self.placeGuessField) {
+        self.placeGuessField.text = nil;
+    }
     [self uiToObservation];
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
     CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue] 
                                                  longitude:[self.observation.longitude doubleValue]];
     if (!self.geocoder) {
