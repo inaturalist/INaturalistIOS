@@ -53,9 +53,7 @@
     NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
     id model = [current objectForKey:@"model"];
     NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
-    
     NSArray *recordsToSync = [model needingSync];
-    
     
     // delete objects first
     if (deletedRecordCount > 0) {
@@ -158,7 +156,7 @@
     
     [[[RKObjectManager sharedManager] objectStore] save];
     
-    if ([current objectForKey:@"syncedCount"] >= needingSyncCount) {
+    if ([[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
         [self start];
     }
 }
@@ -197,7 +195,7 @@
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
     [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1] 
                forKey:@"syncedCount"];
-    if ([current objectForKey:@"syncedCount"] >= needingSyncCount) {
+    if ([[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
         [self start];
     }
 }

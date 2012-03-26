@@ -316,15 +316,17 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+//    // if you need to test syncing lots of obs
+//    [Observation deleteAll];
+//    for (int i = 0; i < 50; i++) {
+//        [self.observations addObject:[Observation stub]];
+//    }
+//    [[[RKObjectManager sharedManager] objectStore] save];
+    
 	// Do any additional setup after loading the view, typically from a nib.
     if (!self.observations) {
         [self loadData];
-        
-//        NSDate *now = [NSDate date];
-//        for (Observation *o in self.observations) {
-//            o.localUpdatedAt = now;
-//        }
-//        [[[RKObjectManager sharedManager] objectStore] save];
     }
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
     
