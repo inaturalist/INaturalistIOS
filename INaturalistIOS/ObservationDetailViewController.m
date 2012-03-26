@@ -214,8 +214,6 @@ static const int ProjectsSection = 4;
     // Release any cached data, images, etc that aren't in use.
     [self setLocationManager:nil];
     [self setGeocoder:nil];
-    [self setDatePicker:nil];
-    [self setCurrentActionSheet:nil];
     [self setKeyboardToolbar:nil];
     self.saveButton = nil;
     self.deleteButton = nil;
@@ -395,6 +393,7 @@ static const int ProjectsSection = 4;
         }
     }
     
+    [self uiToObservation];
     UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
     [ipc setDelegate:self];
     [ipc setSourceType:sourceType];
