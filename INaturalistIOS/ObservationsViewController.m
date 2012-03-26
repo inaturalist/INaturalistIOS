@@ -224,7 +224,8 @@ static const int ObservationCellLowerRightTag = 4;
             [self.noContentLabel sizeToFit];
             self.noContentLabel.textAlignment = UITextAlignmentCenter;
             self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.tableView.rowHeight * 3 + (self.tableView.rowHeight / 2));
+                                                     self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
+            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
         [self.view addSubview:self.noContentLabel];
     } else if (self.noContentLabel) {
@@ -381,7 +382,7 @@ static const int ObservationCellLowerRightTag = 4;
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return (interfaceOrientation == UIDeviceOrientationPortrait);
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

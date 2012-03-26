@@ -47,7 +47,8 @@ static const int ProjectCellTitleTag = 2;
             [self.noContentLabel sizeToFit];
             self.noContentLabel.textAlignment = UITextAlignmentCenter;
             self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.tableView.rowHeight * 3 + (self.tableView.rowHeight / 2));
+                                                     self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
+            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
         [self.view addSubview:self.noContentLabel];
     } else if (self.noContentLabel) {
