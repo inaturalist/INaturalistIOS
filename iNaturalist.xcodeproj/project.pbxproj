@@ -811,7 +811,7 @@
 		1927512A14E9CCC8000ABAC4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = iNaturalist;
 			};
 			buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */;

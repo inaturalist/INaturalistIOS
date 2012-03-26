@@ -14,6 +14,7 @@
 #import "Project.h"
 #import "DejalActivityView.h"
 #import "ImageStore.h"
+#import "INatUITabBarController.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -158,6 +159,7 @@ static const int ObservationCellLowerRightTag = 4;
     // objects is going to cause a problem when Core Data deletes them
     [Observation deleteAll];
     [DejalBezelActivityView removeView];
+    [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
     [self stopEditing];
 }
 

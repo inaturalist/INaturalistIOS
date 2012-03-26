@@ -18,7 +18,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
-                                               object:[Observation managedObjectContext]];
+                                               object:[[[RKObjectManager sharedManager] objectStore] managedObjectContext]];
 }
 
 // make sure view controllers in the tabs can autorotate
@@ -35,9 +35,9 @@
 
 - (void)setObservationsTabBadge
 {
-    int obsSyncCount = [Observation needingSyncCount];
-    int photoSyncCount = [ObservationPhoto needingSyncCount];
-    int theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
+    NSInteger obsSyncCount = [Observation needingSyncCount];
+    NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
+    NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
     UITabBarItem *item = [self.tabBar.items objectAtIndex:0];
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%d", theCount];
