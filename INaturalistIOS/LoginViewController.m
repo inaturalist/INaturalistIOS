@@ -60,7 +60,8 @@
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
-    [[RKClient sharedClient] get:@"/observations/new.json" delegate:self];
+    [[RKClient sharedClient] get:[NSString stringWithFormat:@"/users/%@/edit.json", RKClient.sharedClient.username] 
+                        delegate:self];
 }
 
 #pragma mark RKRequestDelegate methods
@@ -75,6 +76,8 @@
             [self.delegate loginViewControllerDidLogIn:self];
         }
         [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self failedLogin];
     }
 }
 
