@@ -625,11 +625,11 @@
             </objects>
             <point key="canvasLocation" x="-292" y="2496"/>
         </scene>
-        <!--Project Detail View Controller - Project-->
+        <!--Project List View Controller - Project-->
         <scene sceneID="nrG-r2-jeJ">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y5P-nk-vUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="g3g-03-X0K" customClass="ProjectDetailViewController" sceneMemberID="viewController">
+                <tableViewController id="g3g-03-X0K" customClass="ProjectListViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" id="WN1-Zn-FtW">
                         <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1278,15 +1278,6 @@
             <relationships>
                 <relationship kind="action" name="clickedCancel:"/>
                 <relationship kind="action" name="clickedDone:"/>
-            </relationships>
-        </class>
-        <class className="ProjectDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedSync:"/>
-                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
-                <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
-                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
             </relationships>
         </class>
         <class className="ProjectsViewController" superclassName="UITableViewController">

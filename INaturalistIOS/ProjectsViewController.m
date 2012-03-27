@@ -8,7 +8,7 @@
 
 #import <Three20/Three20.h>
 #import "ProjectsViewController.h"
-#import "ProjectDetailViewController.h"
+#import "ProjectListViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
 #import "DejalActivityView.h"
@@ -92,7 +92,7 @@ static const int ProjectCellTitleTag = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"ProjectSegue"]) {
-        ProjectDetailViewController *vc = [segue destinationViewController];
+        ProjectListViewController *vc = [segue destinationViewController];
         ProjectUser *pu = [self.projectUsers 
                           objectAtIndex:[[self.tableView 
                                           indexPathForSelectedRow] row]];
