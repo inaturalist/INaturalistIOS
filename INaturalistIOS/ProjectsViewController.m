@@ -158,8 +158,10 @@ static const int ProjectCellTitleTag = 2;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    NSLog(@"loaded %d objects", objects.count);
-    if (objects.count == 0) return;
+    if (objects.count == 0) {
+        [self stopSync];
+        return;
+    }
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
