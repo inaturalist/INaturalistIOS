@@ -185,6 +185,18 @@ static const int TaxonDescTag = 1;
     return cell;
 }
 
+#pragma mark - ScrollViewDelegate
+// This is necessary to stop the section headers from sticking to the top of the screen
+// http://stackoverflow.com/questions/664781/change-default-scrolling-behavior-of-uitableview-section-header
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat sectionHeaderHeight = 30;
+    if (scrollView.contentOffset.y <= sectionHeaderHeight && scrollView.contentOffset.y >= 0) {
+        scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+    } else if (scrollView.contentOffset.y>=sectionHeaderHeight) {
+        scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
+    }
+}
+
 #pragma mark - TTImageViewDelegate
 - (void)imageView:(TTImageView *)imageView didLoadImage:(UIImage *)image
 {
