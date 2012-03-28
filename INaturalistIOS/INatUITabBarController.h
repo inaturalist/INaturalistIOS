@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Three20/Three20.h>
 
-@interface INatUITabBarController : UITabBarController
+@interface INatUITabBarController : UITabBarController <TTNavigatorDelegate>
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 - (void)setObservationsTabBadge;
 @end

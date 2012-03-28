@@ -112,6 +112,8 @@
 		19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
 		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
 		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
+		19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87447152254FC00A65F9A /* ProjectDetailViewController.m */; };
+		19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -350,7 +352,7 @@
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
 		197A60511511298D0061B83B /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
 		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
-		197A6055151155DE0061B83B /* ProjectListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = ProjectListViewController.h; sourceTree = "<group>"; };
+		197A6055151155DE0061B83B /* ProjectListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectListViewController.h; sourceTree = "<group>"; };
 		197A6056151155DE0061B83B /* ProjectListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectListViewController.m; sourceTree = "<group>"; };
 		198551E114EC931900DB55C5 /* RestKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RestKit.xcodeproj; path = Vendor/SSToolkit/../RestKit/RestKit.xcodeproj; sourceTree = "<group>"; };
 		198551F314EC938700DB55C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -419,6 +421,10 @@
 		19F6219B150ECC2400C58F28 /* ProjectObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservation.m; sourceTree = "<group>"; };
 		19F6219D150ECC2E00C58F28 /* ProjectUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectUser.h; sourceTree = "<group>"; };
 		19F6219E150ECC2E00C58F28 /* ProjectUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectUser.m; sourceTree = "<group>"; };
+		19F87446152254FB00A65F9A /* ProjectDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailViewController.h; sourceTree = "<group>"; };
+		19F87447152254FC00A65F9A /* ProjectDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectDetailViewController.m; sourceTree = "<group>"; };
+		19F874821522E58E00A65F9A /* INatWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatWebController.h; sourceTree = "<group>"; };
+		19F874831522E58F00A65F9A /* INatWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatWebController.m; sourceTree = "<group>"; };
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -727,6 +733,8 @@
 				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
 				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
 				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
+				19F874821522E58E00A65F9A /* INatWebController.h */,
+				19F874831522E58F00A65F9A /* INatWebController.m */,
 				198552E614EF208600DB55C5 /* LoginViewController.h */,
 				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				19640DE41508100A003BF888 /* MapTypeViewController.h */,
@@ -741,6 +749,8 @@
 				198CF8E214F5B1350064DF05 /* PhotoViewController.m */,
 				191490A21513C7C300231C80 /* ProjectChooserViewController.h */,
 				191490A31513C7C300231C80 /* ProjectChooserViewController.m */,
+				19F87446152254FB00A65F9A /* ProjectDetailViewController.h */,
+				19F87447152254FC00A65F9A /* ProjectDetailViewController.m */,
 				197A6055151155DE0061B83B /* ProjectListViewController.h */,
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
@@ -1112,6 +1122,8 @@
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
 				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
 				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
+				19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
+				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

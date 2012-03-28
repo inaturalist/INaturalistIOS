@@ -26,6 +26,7 @@
 {
     // Override point for customization after application launch.
     [self configureRestKit];
+    [self configureThree20];
     
     return YES;
 }
@@ -93,8 +94,13 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
-    
+}
+
+- (void)configureThree20
+{
     [[TTURLRequestQueue mainQueue] setMaxContentLength:0];
+    TTNavigator* navigator = [TTNavigator navigator];
+    navigator.window = self.window;
 }
 
 @end

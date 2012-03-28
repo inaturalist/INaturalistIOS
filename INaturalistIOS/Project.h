@@ -21,7 +21,7 @@
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSString * iconURL;
 @property (nonatomic, retain) NSString * projectType;
-@property (nonatomic, retain) NSString * cached_slug;
+@property (nonatomic, retain) NSString * cachedSlug;
 @property (nonatomic, retain) NSNumber * observedTaxaCount;
 @property (nonatomic, retain) NSDate * localCreatedAt;
 @property (nonatomic, retain) NSDate * localUpdatedAt;

@@ -9,6 +9,7 @@
 #import "INatUITabBarController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
+#import "INatWebController.h"
 
 @implementation INatUITabBarController
 
@@ -19,6 +20,9 @@
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[[[RKObjectManager sharedManager] objectStore] managedObjectContext]];
+    
+    TTNavigator* navigator = [TTNavigator navigator];
+    navigator.delegate = self;
 }
 
 // make sure view controllers in the tabs can autorotate
@@ -45,5 +49,17 @@
         item.badgeValue = nil;
     }
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:theCount];
+}
+
+#pragma mark - TTNagigatorDelegate
+// http://stackoverflow.com/questions/8771176/ttnavigator-not-pushing-onto-navigation-stack
+- (BOOL)navigator: (TTBaseNavigator *)navigator shouldOpenURL:(NSURL *)url {
+    if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
+        UINavigationController *nc = (UINavigationController *)self.selectedViewController;
+        INatWebController *webController = [[INatWebController alloc] init];
+        [webController openURL:url];
+        [nc pushViewController:webController animated:YES];
+    }
+    return NO;
 }
 @end

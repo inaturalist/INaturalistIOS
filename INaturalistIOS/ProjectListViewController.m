@@ -16,6 +16,7 @@
 #import "ImageStore.h"
 #import "DejalActivityView.h"
 #import "TaxonDetailViewController.h"
+#import "ProjectDetailViewController.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
@@ -106,7 +107,10 @@ static const int ListedTaxonCellSubtitleTag = 3;
                            objectAtIndex:[[self.tableView 
                                            indexPathForSelectedRow] row]];
         vc.taxon = lt.taxon;
-    }
+    } else if ([segue.identifier isEqualToString:@"ProjectDetailSegue"]) {
+        ProjectDetailViewController *vc = [segue destinationViewController];
+        vc.project = self.project;
+    } 
 }
 
 #pragma mark - lifecycle
@@ -118,11 +122,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.projectIcon.defaultImage = [UIImage imageNamed:@"projects.png"];
     self.projectIcon.urlPath = self.project.iconURL;
     self.projectTitle.text = self.project.title;
-    self.projectSubtitle.textColor = [UIColor grayColor];
-    self.projectSubtitle.font = [UIFont systemFontOfSize:12.0];
-    self.projectSubtitle.text = [TTStyledText textFromXHTML:self.project.desc
-                                            lineBreaks:NO 
-                                                  URLs:YES];
     
     CAGradientLayer *lyr = [CAGradientLayer layer];
     lyr.colors = [NSArray arrayWithObjects:

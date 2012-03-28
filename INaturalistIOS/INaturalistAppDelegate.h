@@ -13,4 +13,5 @@
 @property (strong, nonatomic) UIWindow *window;
 
 - (void)configureRestKit;
+- (void)configureThree20;
 @end

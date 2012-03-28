@@ -2,127 +2,24 @@
 //  ProjectDetailViewController.m
 //  iNaturalist
 //
-//  Created by Ken-ichi Ueda on 3/14/12.
+//  Created by Ken-ichi Ueda on 3/27/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
 #import "ProjectDetailViewController.h"
-#import "Observation.h"
-#import "Project.h"
-#import "ProjectObservation.h"
-#import "List.h"
-#import "ListedTaxon.h"
-#import "Taxon.h"
-#import "ImageStore.h"
-#import "DejalActivityView.h"
-#import "TaxonDetailViewController.h"
-
-static const int ListedTaxonCellImageTag = 1;
-static const int ListedTaxonCellTitleTag = 2;
-static const int ListedTaxonCellSubtitleTag = 3;
 
 @implementation ProjectDetailViewController
 @synthesize project = _project;
-@synthesize listedTaxa = _listedTaxa;
+@synthesize sectionHeaderViews = _sectionHeaderViews;
 @synthesize projectIcon = _projectIcon;
 @synthesize projectTitle = _projectTitle;
-@synthesize projectSubtitle = _projectSubtitle;
-@synthesize loader = _loader;
-@synthesize lastSyncedAt = _lastSyncedAt;
 
-- (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
-                                                     message:@"You must be connected to the Internet to sync."
-                                                    delegate:self 
-                                           cancelButtonTitle:@"OK" 
-                                           otherButtonTitles:nil];
-        [av show];
-        return;
-    }
-    [self sync];
-}
-
-- (void)clickedAdd:(id)sender event:(UIEvent *)event
-{
-    CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    
-    ListedTaxon *lt = [self.listedTaxa objectAtIndex:indexPath.row];
-    [self performSegueWithIdentifier:@"AddObservationSegue" sender:lt];
-}
-
-- (void)sync
-{
-    [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                      withLabel:@"Syncing list..."];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 
-                                                      delegate:self];
-}
-
-- (void)stopSync
-{
-    [DejalBezelActivityView removeView];
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
-    [self loadData];
-    [[self tableView] reloadData];
-}
-
-- (void)loadData
-{
-    NSArray *sorts = [NSArray arrayWithObjects:
-                      [[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES], 
-                      [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES], 
-                      nil];
-    self.listedTaxa = [NSMutableArray arrayWithArray:
-                       [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
-        Observation *o = [Observation object];
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = o;
-        po.project = self.project;
-        o.localObservedOn = [NSDate date];
-        if ([sender isKindOfClass:ListedTaxon.class]) {
-            ListedTaxon *lt = sender;
-            o.taxon = lt.taxon;
-            o.speciesGuess = lt.taxonDefaultName;
-        }
-        [vc setObservation:o];
-    } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
-        TaxonDetailViewController *vc = [segue destinationViewController];
-        ListedTaxon *lt = [self.listedTaxa
-                           objectAtIndex:[[self.tableView 
-                                           indexPathForSelectedRow] row]];
-        vc.taxon = lt.taxon;
-    }
-}
-
-#pragma mark - lifecycle
+#pragma mark - View lifecycle
 - (void)viewDidLoad
 {
-    if (!self.listedTaxa) {
-        [self loadData];
-    }
     self.projectIcon.defaultImage = [UIImage imageNamed:@"projects.png"];
     self.projectIcon.urlPath = self.project.iconURL;
     self.projectTitle.text = self.project.title;
-    self.projectSubtitle.textColor = [UIColor grayColor];
-    self.projectSubtitle.font = [UIFont systemFontOfSize:12.0];
-    self.projectSubtitle.text = [TTStyledText textFromXHTML:self.project.desc
-                                            lineBreaks:NO 
-                                                  URLs:YES];
     
     CAGradientLayer *lyr = [CAGradientLayer layer];
     lyr.colors = [NSArray arrayWithObjects:
@@ -134,137 +31,108 @@ static const int ListedTaxonCellSubtitleTag = 3;
     [super viewDidLoad];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.navigationController setToolbarHidden:YES];
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    if (self.listedTaxa.count == 0 && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [self sync];
-    }
-    [super viewDidAppear:animated];
-}
-
 - (void)viewDidUnload {
     [self setProjectIcon:nil];
     [self setProjectTitle:nil];
-    [self setProjectSubtitle:nil];
     [super viewDidUnload];
 }
 
-#pragma mark - Table view data source
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+#pragma mark - Table view delegate
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.listedTaxa.count;
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        CGSize s = [self.project.desc sizeWithFont:[UIFont systemFontOfSize:16] 
+                                           constrainedToSize:CGSizeMake(320, 1000) 
+                                               lineBreakMode:UILineBreakModeWordWrap];
+        return s.height + 10;
+    } else if (indexPath.section == 1 && indexPath.row == 0) {
+        CGSize s = [self.project.terms sizeWithFont:[UIFont systemFontOfSize:16] 
+                                 constrainedToSize:CGSizeMake(320, 1000) 
+                                     lineBreakMode:UILineBreakModeWordWrap];
+        return s.height + 10;
+    }
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (!self.sectionHeaderViews) {
+        self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
+    }
+    NSNumber *key = [NSNumber numberWithInt:section];
+    if ([self.sectionHeaderViews objectForKey:key]) {
+        return [self.sectionHeaderViews objectForKey:key];
+    }
+    
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
+    header.backgroundColor = [UIColor whiteColor];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
+    label.font = [UIFont boldSystemFontOfSize:17];
+    label.textColor = [UIColor darkGrayColor];
+    switch (section) {
+        case 0:
+            label.text = @"Description";
+            break;
+        case 1:
+            label.text = @"Terms";
+            break;
+        default:
+            break;
+    }
+    [header addSubview:label];
+    
+    [self.sectionHeaderViews setObject:header forKey:key];
+    return header;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ListedTaxon *lt = [self.listedTaxa objectAtIndex:[indexPath row]];
-    
-    NSString *cellIdentifier = [lt.taxonName isEqualToString:lt.taxonDefaultName] ? @"ListedTaxonOneNameCell" : @"ListedTaxonTwoNamesCell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
-    
-    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"] 
-                         forState:UIControlStateNormal];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
-                         forState:UIControlStateHighlighted];
-    [addButton setTitle:@"Add" forState:UIControlStateNormal];
-    [addButton setTitle:@"Add" forState:UIControlStateHighlighted];
-    addButton.titleLabel.textColor = [UIColor whiteColor];
-    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.accessoryView = addButton;
-    
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
-    [imageView unsetImage];
-    UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
-    titleLabel.text = lt.taxonDefaultName;
-    imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:lt.iconicTaxonName];
-    imageView.urlPath = lt.photoURL;
-    if ([lt.taxonName isEqualToString:lt.taxonDefaultName]) {
-        if (lt.taxon.rankLevel.intValue >= 30) {
-            titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
-        } else {
-            titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    TTStyledTextLabel *rowContent;
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        NSLog(@"rowContent: %@", rowContent);
+        if (!rowContent.text) {
+            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.desc]
+                                              lineBreaks:NO 
+                                                    URLs:YES];
+            [rowContent sizeToFit];
+            rowContent.backgroundColor = [UIColor whiteColor];
+            NSLog(@"rowContent.text: %@", rowContent.text);
         }
-    } else {
-        UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
-        subtitleLabel.text = lt.taxonName;
+    } else if (indexPath.section == 1 && indexPath.row == 0) {
+        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        if (!rowContent.text) {
+            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.terms]
+                                               lineBreaks:NO 
+                                                     URLs:YES];
+            [rowContent sizeToFit];
+            rowContent.backgroundColor = [UIColor whiteColor];
+        }
     }
-    
     return cell;
 }
 
-#pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    if (objects.count == 0) return;
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
+#pragma mark - ScrollViewDelegate
+// This is necessary to stop the section headers from sticking to the top of the screen
+// http://stackoverflow.com/questions/664781/change-default-scrolling-behavior-of-uitableview-section-header
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat sectionHeaderHeight = 30;
+    if (scrollView.contentOffset.y <= sectionHeaderHeight && scrollView.contentOffset.y >= 0) {
+        scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+    } else if (scrollView.contentOffset.y>=sectionHeaderHeight) {
+        scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
     }
-    
-    NSArray *rejects = [ListedTaxon objectsWithPredicate:
-                        [NSPredicate predicateWithFormat:@"listID = %d AND syncedAt < %@", 
-                         self.project.listID.intValue, now]];
-    for (ListedTaxon *lt in rejects) {
-        [lt deleteEntity];
-    }
-    
-    [[[RKObjectManager sharedManager] objectStore] save];
-    
-    [self stopSync];
 }
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // was running into a bug in release build config where the object loader was 
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
-    
-    [self stopSync];
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-            // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = @"Unprocessable entity";
-            break;
-            
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-    
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                 message:[NSString stringWithFormat:@"Looks like there was an error: %@", errorMsg]
-                                                delegate:self 
-                                       cancelButtonTitle:@"OK" 
-                                       otherButtonTitles:nil];
-    [av show];
-}
-
-#pragma mark - ObservationDetailViewControllerDelegate
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
+- (IBAction)clickedViewButton:(id)sender {
+    NSURL *url = [NSURL URLWithString:
+                  [NSString stringWithFormat:@"%@/projects/%@", INatBaseURL, self.project.cachedSlug]];
+    [[UIApplication sharedApplication] openURL:url];
 }
 @end

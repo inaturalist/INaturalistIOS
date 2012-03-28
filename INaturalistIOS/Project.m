@@ -23,7 +23,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic updatedAt;
 @dynamic iconURL;
 @dynamic projectType;
-@dynamic cached_slug;
+@dynamic cachedSlug;
 @dynamic observedTaxaCount;
 @dynamic localCreatedAt;
 @dynamic localUpdatedAt;
