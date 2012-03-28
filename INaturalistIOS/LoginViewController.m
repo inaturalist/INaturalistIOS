@@ -12,23 +12,6 @@
 @implementation LoginViewController
 @synthesize usernameField, passwordField, delegate;
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 - (IBAction)cancel:(id)sender {
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
@@ -45,13 +28,10 @@
     [self setUsernameField:nil];
     [self setPasswordField:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
@@ -60,8 +40,12 @@
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
-    [[RKClient sharedClient] get:[NSString stringWithFormat:@"/users/%@/edit.json", RKClient.sharedClient.username] 
-                        delegate:self];
+    [[RKClient sharedClient] post:@"/session.json" 
+                           params:[NSDictionary dictionaryWithObjectsAndKeys:
+                                   [usernameField text], @"login", 
+                                   [passwordField text], @"password",
+                                   nil] 
+                         delegate:self];
 }
 
 #pragma mark RKRequestDelegate methods
@@ -69,8 +53,21 @@
 {
     [DejalBezelActivityView removeView];
     if (response.statusCode == 200) {
-        [[NSUserDefaults standardUserDefaults] setValue:[usernameField text] forKey:INatUsernamePrefKey];
-        [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] forKey:INatPasswordPrefKey];
+        NSString *jsonString = [[NSString alloc] initWithData:response.body 
+                                                     encoding:NSUTF8StringEncoding];
+        NSError* error = nil;
+        id<RKParser> parser = [[RKParserRegistry sharedRegistry] parserForMIMEType:@"application/json"];
+        NSDictionary *parsedData = [parser objectFromString:jsonString error:&error];
+        if (parsedData == nil && error) {
+            // Parser error...
+            [self failedLogin];
+            return;
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setValue:[parsedData objectForKey:@"login"] 
+                                                 forKey:INatUsernamePrefKey];
+        [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] 
+                                                 forKey:INatPasswordPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
             [self.delegate loginViewControllerDidLogIn:self];
