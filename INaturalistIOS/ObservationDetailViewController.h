@@ -55,6 +55,7 @@
 @property (nonatomic, strong) CLGeocoder *geocoder;
 @property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
+@property (nonatomic, assign) BOOL locationUpdatesOn;
 
 
 - (void)clickedClear;

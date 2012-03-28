@@ -29,8 +29,8 @@ static const int ProjectsSection = 4;
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
-@synthesize latitudeLabel;
-@synthesize longitudeLabel;
+@synthesize latitudeLabel = _latitudeLabel;
+@synthesize longitudeLabel = _longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize placeGuessField = _placeGuessField;
 @synthesize keyboardToolbar = _keyboardToolbar;
@@ -48,6 +48,7 @@ static const int ProjectsSection = 4;
 @synthesize geocoder = _geocoder;
 @synthesize datePicker = _datePicker;
 @synthesize currentActionSheet = _currentActionSheet;
+@synthesize locationUpdatesOn = _locationUpdatesOn;
 
 - (void)observationToUI
 {
@@ -55,8 +56,10 @@ static const int ProjectsSection = 4;
     [self.speciesGuessTextField setText:self.observation.speciesGuess];
     [self.observedAtLabel setText:self.observation.observedOnPrettyString];
     [self.placeGuessField setText:self.observation.placeGuess];
-    if (self.observation.latitude) [latitudeLabel setText:self.observation.latitude.description];
-    if (self.observation.longitude) [longitudeLabel setText:self.observation.longitude.description];
+    if (self.observation.latitude) [self.latitudeLabel setText:self.observation.latitude.description];
+    if (self.observation.longitude) {
+        [self.longitudeLabel setText:self.observation.longitude.description];
+    }
     
     if (self.observation.positionalAccuracy) {
         [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
@@ -203,7 +206,7 @@ static const int ProjectsSection = 4;
     if (self.observation.isNew && 
         (
          [self.latitudeLabel.text isEqualToString:@"???"] || // observation has no coordinates yet
-         self.locationManager                                // location updates already started, but view trashed due to mem warning
+         self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
          )) {
         [self startUpdatingLocation];
     }
@@ -600,12 +603,12 @@ static const int ProjectsSection = 4;
     self.latitudeLabel.text = [NSString stringWithFormat:@"%f", [location.latitude doubleValue]];
     self.longitudeLabel.text = [NSString stringWithFormat:@"%f", [location.longitude doubleValue]];
     self.observation.positioningMethod = location.positioningMethod;
-    [self reverseGeocodeCoordinates];
     if (location.accuracy) {
         self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", [location.accuracy intValue]];
     } else {
         self.positionalAccuracyLabel.text = @"???";
     }
+    [self reverseGeocodeCoordinates];
 }
 
 # pragma mark - ProjectChooserViewControllerDelegate
@@ -804,6 +807,7 @@ static const int ProjectsSection = 4;
 
 - (void)startUpdatingLocation
 {
+    self.locationUpdatesOn = YES;
     UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
                                      [NSIndexPath indexPathForRow:0 inSection:2]];
     UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
@@ -826,6 +830,7 @@ static const int ProjectsSection = 4;
 
 - (void)stopUpdatingLocation
 {
+    self.locationUpdatesOn = NO;
     if (self.isViewLoaded && self.tableView) {
         UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
                                          [NSIndexPath indexPathForRow:0 inSection:2]];
