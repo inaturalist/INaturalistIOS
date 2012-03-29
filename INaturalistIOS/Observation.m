@@ -101,6 +101,10 @@ static NSDateFormatter *jsDateFormatter = nil;
          @"iconic_taxon_id", @"iconicTaxonID",
          @"iconic_taxon_name", @"iconicTaxonName",
          nil];
+        [defaultMapping mapKeyPath:@"taxon" 
+                    toRelationship:@"taxon" 
+                       withMapping:[Taxon mapping]
+                         serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;
