@@ -14,6 +14,7 @@
 @synthesize queue = _queue;
 @synthesize delegate = _delegate;
 @synthesize loader = _loader;
+@synthesize started = _started;
 
 - (id)initWithDelegate:(id)delegate
 {
@@ -50,6 +51,7 @@
         [self finish];
         return;
     }
+    self.started = YES;
     NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
     id model = [current objectForKey:@"model"];
     NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
@@ -111,6 +113,7 @@
 
 - (void)stop
 {
+    self.started = NO;
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     // sleep is ok now
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
@@ -122,6 +125,11 @@
     if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
         [self.delegate performSelector:@selector(syncQueueFinished)];
     }
+}
+
+- (BOOL)isRunning
+{
+    return (self.started == YES);
 }
 
 #pragma mark RKObjectLoaderDelegate methods
@@ -195,7 +203,7 @@
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
     [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1] 
                forKey:@"syncedCount"];
-    if ([[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
+    if (self.isRunning && [[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
         [self start];
     }
 }

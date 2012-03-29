@@ -30,6 +30,8 @@
 @property (nonatomic, strong) NSMutableArray *queue;
 @property (nonatomic, weak) id delegate;
 @property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, assign) BOOL started;
+
 - (id)initWithDelegate:(id)delegate;
 
 /**
@@ -47,4 +49,5 @@
 - (void)startDelete;
 - (void)stop;
 - (void)finish;
+- (BOOL)isRunning;
 @end
