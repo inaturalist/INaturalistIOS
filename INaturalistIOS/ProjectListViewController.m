@@ -55,6 +55,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)sync
 {
+    self.lastSyncedAt = [NSDate date];
     [DejalBezelActivityView activityViewForView:self.navigationController.view
                                       withLabel:@"Syncing list..."];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 

@@ -21,6 +21,7 @@ static const int ProjectCellTitleTag = 2;
 @synthesize loader = _loader;
 @synthesize lastSyncedAt = _lastSyncedAt;
 @synthesize noContentLabel = _noContentLabel;
+@synthesize projectsSearchController = _projectsSearchController;
 
 - (void)loadData
 {
@@ -91,12 +92,14 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"ProjectSegue"]) {
-        ProjectListViewController *vc = [segue destinationViewController];
+    ProjectListViewController *vc = [segue destinationViewController];
+    if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectUser *pu = [self.projectUsers 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
+                           objectAtIndex:[[self.tableView 
+                                           indexPathForSelectedRow] row]];
         [vc setProject:pu.project];
+    } else if ([segue.identifier isEqualToString:@"ProjectSegue"] && [sender isKindOfClass:Project.class]) {
+        [vc setProject:sender];
     }
 }
 
@@ -105,6 +108,11 @@ static const int ProjectCellTitleTag = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
+    if (!self.projectsSearchController) {
+        self.projectsSearchController = [[ProjectsSearchController alloc] 
+                                         initWithSearchDisplayController:self.searchDisplayController];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated

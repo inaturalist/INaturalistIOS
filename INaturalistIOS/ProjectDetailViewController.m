@@ -7,12 +7,95 @@
 //
 
 #import "ProjectDetailViewController.h"
+#import "DejalActivityView.h"
 
 @implementation ProjectDetailViewController
 @synthesize project = _project;
+@synthesize projectUser = _projectUser;
 @synthesize sectionHeaderViews = _sectionHeaderViews;
 @synthesize projectIcon = _projectIcon;
+@synthesize joinButton = _joinButton;
 @synthesize projectTitle = _projectTitle;
+
+- (void)setProject:(Project *)project
+{
+    _project = project;
+    self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %@", project.recordID]];
+}
+
+- (void)setProjectUser:(ProjectUser *)projectUser
+{
+    _projectUser = projectUser;
+    if (self.joinButton) {
+        [self setupJoinButton];
+    }
+}
+
+- (void)setupJoinButton
+{
+    if (self.projectUser && ![self.projectUser isNew]) {
+        self.joinButton.title = @"Leave";
+        self.joinButton.tintColor = [UIColor blackColor];
+    } else {
+        self.joinButton.title = @"Join";
+        self.joinButton.tintColor = [UIColor colorWithRed:155/255.0 
+                                                    green:196/255.0 
+                                                     blue:48/255.0 
+                                                    alpha:1];
+    }
+}
+
+- (IBAction)clickedViewButton:(id)sender {
+    NSURL *url = [NSURL URLWithString:
+                  [NSString stringWithFormat:@"%@/projects/%@", INatBaseURL, self.project.cachedSlug]];
+    [[UIApplication sharedApplication] openURL:url];
+}
+
+- (IBAction)clickedJoin:(id)sender {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet required" 
+                                                     message:@"You must be connected to the Internet to do this."
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
+    if (self.projectUser) {
+        [self leave];
+    } else {
+        [self join];
+    }
+}
+
+- (void)join
+{
+    [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                      withLabel:@"Joining..."];
+    ProjectUser *pu = [ProjectUser object];
+    pu.project = self.project;
+    [[RKObjectManager sharedManager] postObject:pu delegate:self block:^(RKObjectLoader *loader) {
+        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
+        loader.objectMapping = [ProjectUser mapping];
+    }];
+}
+
+- (void)leave
+{
+    [DejalBezelActivityView activityViewForView:self.navigationController.view
+                                      withLabel:@"Leaving..."];
+    [[RKObjectManager sharedManager] deleteObject:self.projectUser delegate:self block:^(RKObjectLoader *loader) {
+        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
+    }];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"LoginSegue"]) {
+        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
+        [vc setDelegate:self];
+    }
+}
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad
@@ -28,12 +111,15 @@
     lyr.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0], [NSNumber numberWithFloat:1], nil];
     lyr.frame = self.tableView.tableHeaderView.bounds;
     [self.tableView.tableHeaderView.layer insertSublayer:lyr atIndex:0];
+    
+    [self setupJoinButton];
     [super viewDidLoad];
 }
 
 - (void)viewDidUnload {
     [self setProjectIcon:nil];
     [self setProjectTitle:nil];
+    [self setJoinButton:nil];
     [super viewDidUnload];
 }
 
@@ -130,9 +216,36 @@
     }
 }
 
-- (IBAction)clickedViewButton:(id)sender {
-    NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"%@/projects/%@", INatBaseURL, self.project.cachedSlug]];
-    [[UIApplication sharedApplication] openURL:url];
+#pragma mark - RKObjectLoader
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
+{
+    ProjectUser *pu = object;
+    if (pu) {
+        pu.syncedAt = [NSDate date];
+        [pu save];
+    }
+    self.projectUser = pu;
+    [DejalBezelActivityView removeView];
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
+{
+    [DejalBezelActivityView removeView];
+    if (objectLoader.response.statusCode == 401) {
+        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
+                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription]
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+}
+
+#pragma mark - LoginViewControllerDelegate
+- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
+{
+    [self clickedJoin:nil];
 }
 @end

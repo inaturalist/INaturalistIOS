@@ -722,6 +722,9 @@ static const int ProjectsSection = 4;
         [self observationToUI];
     } else {
         // TODO start species selector!
+        if (self.searchDisplayController) {
+            [self.searchDisplayController setActive:YES animated:YES];
+        }
     }
 }
 

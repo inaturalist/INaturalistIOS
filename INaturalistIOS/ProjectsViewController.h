@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "LoginViewController.h"
+#import "ProjectsSearchController.h"
 
 @interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate>
 @property (nonatomic, strong) NSMutableArray *projectUsers;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *lastSyncedAt;
 @property (nonatomic, strong) UILabel *noContentLabel;
+@property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
 
 - (IBAction)clickedSync:(id)sender;
 - (void)loadData;

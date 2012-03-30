@@ -12,7 +12,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdD-iS-mtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -546,7 +546,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="1054" y="1153"/>
+            <point key="canvasLocation" x="1314" y="1153"/>
         </scene>
         <!--Navigation Controller - Map-->
         <scene sceneID="zbl-Uk-Ap2">
@@ -577,9 +577,17 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" barStyle="blackOpaque" id="yIp-C2-mYF">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="Kvl-LX-MOH" id="7Qs-tU-3gG"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" rowHeight="54" id="EzP-MT-5na">
-                                <rect key="frame" x="0.0" y="22" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="66" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
@@ -601,7 +609,7 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <segue destination="g3g-03-X0K" kind="push" identifier="ProjectSegue" id="Dsf-QY-sZT"/>
+                                    <segue destination="g3g-03-X0K" kind="push" identifier="ProjectListSegue" id="Dsf-QY-sZT"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -619,9 +627,20 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="searchDisplayController" destination="F2e-S7-oDZ" id="JCS-IJ-2tl"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="pIq-2G-oJw"/>
+                        <segue destination="wOO-15-L7q" kind="push" identifier="ProjectSegue" id="CpP-mM-GJW"/>
                     </connections>
                 </tableViewController>
+                <searchDisplayController id="F2e-S7-oDZ">
+                    <connections>
+                        <outlet property="delegate" destination="Kvl-LX-MOH" id="E3f-ns-aHS"/>
+                        <outlet property="searchBar" destination="yIp-C2-mYF" id="kyz-go-z6k"/>
+                        <outlet property="searchContentsController" destination="Kvl-LX-MOH" id="njs-Km-nv9"/>
+                        <outlet property="searchResultsDataSource" destination="Kvl-LX-MOH" id="frf-zh-qRM"/>
+                        <outlet property="searchResultsDelegate" destination="Kvl-LX-MOH" id="Szj-KV-xG3"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="-292" y="2496"/>
         </scene>
@@ -1056,7 +1075,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="1507" y="1153"/>
+            <point key="canvasLocation" x="1767" y="1153"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hiu-OG-F64">
@@ -1308,11 +1327,20 @@
                             <outlet property="delegate" destination="wOO-15-L7q" id="5CP-Af-mXc"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Project Details" id="XXq-bW-vbF"/>
+                    <navigationItem key="navigationItem" title="Project Details" id="XXq-bW-vbF">
+                        <barButtonItem key="rightBarButtonItem" title="Join" id="wCV-Z1-3g6">
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
+                            <connections>
+                                <action selector="clickedJoin:" destination="wOO-15-L7q" id="NXP-UM-wSQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="joinButton" destination="wCV-Z1-3g6" id="O2I-ji-0zK"/>
                         <outlet property="projectIcon" destination="xXG-M1-ixv" id="98u-YB-WDB"/>
                         <outlet property="projectTitle" destination="X8Y-bf-fBQ" id="Alz-Jl-2aQ"/>
+                        <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="m7M-nd-sFM"/>
                     </connections>
                 </tableViewController>
             </objects>
@@ -1409,7 +1437,9 @@
         <class className="ProjectDetailViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
             <relationships>
+                <relationship kind="action" name="clickedJoin:"/>
                 <relationship kind="action" name="clickedViewButton:"/>
+                <relationship kind="outlet" name="joinButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
                 <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
             </relationships>
@@ -1454,9 +1484,10 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="3K4-WT-L9k"/>
+        <segue reference="pIq-2G-oJw"/>
+        <segue reference="CpP-mM-GJW"/>
         <segue reference="Qwd-7p-HHF"/>
+        <segue reference="GQg-PD-Nl6"/>
         <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="sKu-Sy-oMc"/>
     </inferredMetricsTieBreakers>
 </document>
