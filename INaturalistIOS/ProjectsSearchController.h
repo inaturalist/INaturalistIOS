@@ -9,13 +9,8 @@
 //  http://clingingtoideas.blogspot.com/2010/02/uitableview-how-to-part-2-search.html
 
 #import <Foundation/Foundation.h>
+#import "RecordSearchController.h"
 
-@interface ProjectsSearchController : NSObject <UITableViewDataSource, UITableViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate, RKObjectLoaderDelegate>
-@property (nonatomic, retain) NSMutableArray *searchResults;
-@property (nonatomic, copy) NSString *savedSearchTerm;
-@property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
+@interface ProjectsSearchController : RecordSearchController
 
-- (id)initWithSearchDisplayController:(UISearchDisplayController *)searchDisplayController;
-- (void)searchLocal:(NSString *)query;
-- (void)searchRemote:(NSString *)query;
 @end

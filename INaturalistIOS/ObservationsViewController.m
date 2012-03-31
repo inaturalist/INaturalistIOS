@@ -417,19 +417,6 @@ static const int ObservationCellLowerRightTag = 4;
     }
 }
 
-# pragma mark INObservationDetailViewControllerDelegate methods
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
 #pragma mark LoginControllerViewDelegate methods
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {

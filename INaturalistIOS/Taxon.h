@@ -51,4 +51,5 @@
 - (void)removeTaxonPhotosObject:(NSManagedObject *)value;
 - (void)addTaxonPhotos:(NSOrderedSet *)values;
 - (void)removeTaxonPhotos:(NSOrderedSet *)values;
+- (NSArray *)children;
 @end

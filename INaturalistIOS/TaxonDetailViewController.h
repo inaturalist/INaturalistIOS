@@ -8,13 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
-#import "ObservationDetailViewController.h"
 
 @class Taxon;
 
-@interface TaxonDetailViewController : UITableViewController <TTImageViewDelegate, ObservationDetailViewControllerDelegate>
+@protocol TaxonDetailViewControllerDelegate <NSObject>
+@optional
+- (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
+@end
+
+@interface TaxonDetailViewController : UITableViewController <TTImageViewDelegate>
 @property (nonatomic, strong) Taxon *taxon;
 @property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;
+@property (nonatomic, strong) UIViewController *delegate;
 - (void)scaleHeaderView:(BOOL)animated;
 - (IBAction)clickedViewWikipedia:(id)sender;
+- (IBAction)clickedActionButton:(id)sender;
 @end

@@ -117,6 +117,11 @@
 		19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748615251D6A00A65F9A /* ProjectsSearchController.m */; };
 		19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */; };
 		19F87490152665B100A65F9A /* DejalOutsideKeyboardActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748F152665B100A65F9A /* DejalOutsideKeyboardActivityView.m */; };
+		19F87493152670B200A65F9A /* RecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87492152670B100A65F9A /* RecordSearchController.m */; };
+		19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874951526763E00A65F9A /* TaxaSearchController.m */; };
+		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
+		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
+		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -433,6 +438,14 @@
 		19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProjectTableViewCell.xib; sourceTree = "<group>"; };
 		19F8748E152665B100A65F9A /* DejalOutsideKeyboardActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DejalOutsideKeyboardActivityView.h; sourceTree = "<group>"; };
 		19F8748F152665B100A65F9A /* DejalOutsideKeyboardActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalOutsideKeyboardActivityView.m; sourceTree = "<group>"; };
+		19F87491152670B000A65F9A /* RecordSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = RecordSearchController.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
+		19F87492152670B100A65F9A /* RecordSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSearchController.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
+		19F874941526763D00A65F9A /* TaxaSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchController.h; sourceTree = "<group>"; };
+		19F874951526763E00A65F9A /* TaxaSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchController.m; sourceTree = "<group>"; };
+		19F87497152679F000A65F9A /* TaxaSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchViewController.h; sourceTree = "<group>"; };
+		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
+		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
+		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -761,14 +774,20 @@
 				19F87447152254FC00A65F9A /* ProjectDetailViewController.m */,
 				197A6055151155DE0061B83B /* ProjectListViewController.h */,
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
-				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
-				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
-				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
-				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
-				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
 				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
+				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
+				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
+				19F87491152670B000A65F9A /* RecordSearchController.h */,
+				19F87492152670B100A65F9A /* RecordSearchController.m */,
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+				19F874941526763D00A65F9A /* TaxaSearchController.h */,
+				19F874951526763E00A65F9A /* TaxaSearchController.m */,
+				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
+				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
+				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
+				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -783,6 +802,8 @@
 				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
 				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
 				19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */,
+				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
+				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1090,6 +1111,8 @@
 				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
 				195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */,
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
+				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
+				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1140,6 +1163,9 @@
 				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87490152665B100A65F9A /* DejalOutsideKeyboardActivityView.m in Sources */,
+				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
+				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
+				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

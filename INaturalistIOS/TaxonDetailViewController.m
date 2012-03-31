@@ -23,6 +23,7 @@ static const int TaxonDescTag = 1;
 
 @synthesize taxon = _taxon;
 @synthesize sectionHeaderViews = _sectionHeaderViews;
+@synthesize delegate = _delegate;
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -57,11 +58,19 @@ static const int TaxonDescTag = 1;
     [[UIApplication sharedApplication] openURL:url];
 }
 
+- (IBAction)clickedActionButton:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:)]) {
+        [self.delegate performSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:) 
+                            withObject:self.taxon];
+    } else {
+        [self performSegueWithIdentifier:@"AddObservationSegue" sender:nil];
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
         ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
         Observation *o = [Observation object];
         o.localObservedOn = [NSDate date];
         o.taxon = self.taxon;
@@ -201,19 +210,6 @@ static const int TaxonDescTag = 1;
 - (void)imageView:(TTImageView *)imageView didLoadImage:(UIImage *)image
 {
     [self scaleHeaderView:YES];
-}
-
-# pragma mark - ObservationDetailViewControllerDelegate
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
 }
 
 @end

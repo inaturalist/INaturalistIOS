@@ -122,4 +122,18 @@ static RKManagedObjectMapping *defaultMapping = nil;
     }
 }
 
+- (NSArray *)children
+{
+    NSString *queryAncestry;
+    if (self.ancestry && self.ancestry.length > 0) {
+        queryAncestry = [NSString stringWithFormat:@"%@/%d", self.ancestry, self.recordID.intValue];
+    } else {
+        queryAncestry = [NSString stringWithFormat:@"%d", self.recordID.intValue];
+    }
+    NSFetchRequest *request = [Taxon fetchRequest];
+    request.predicate = [NSPredicate predicateWithFormat:@"ancestry = %@", queryAncestry];
+    request.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]];
+    return [Taxon objectsWithFetchRequest:request];
+}
+
 @end

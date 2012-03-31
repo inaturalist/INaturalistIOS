@@ -216,14 +216,6 @@
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
 {
     [self loadObservations];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
 }
 
 @end

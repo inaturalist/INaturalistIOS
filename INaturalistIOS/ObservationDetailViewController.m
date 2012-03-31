@@ -49,6 +49,7 @@ static const int ProjectsSection = 4;
 @synthesize datePicker = _datePicker;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
+@synthesize observationWasNew = _observationWasNew;
 
 - (void)observationToUI
 {
@@ -421,7 +422,10 @@ static const int ProjectsSection = 4;
     if (buttonIndex == 0) {
         [self.observation destroy];
         self.observation = nil;
-        [self.delegate observationDetailViewControllerDidSave:self];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
+            [self.delegate observationDetailViewControllerDidSave:self];
+        }
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
@@ -638,6 +642,18 @@ static const int ProjectsSection = 4;
     [self observationToUI];
 }
 
+#pragma mark - TaxaSearchViewControllerDelegate
+- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
+{
+    [self dismissModalViewControllerAnimated:YES];
+    self.observation.taxon = taxon;
+    self.observation.taxonID = taxon.recordID;
+    self.observation.iconicTaxonName = taxon.iconicTaxonName;
+    self.observation.iconicTaxonID = taxon.iconicTaxonID;
+    self.observation.speciesGuess = taxon.defaultName;
+    [self observationToUI];
+}
+
 #pragma mark - ObservationDetailViewController
 - (void)clickedClear {
     [descriptionTextView setText:nil];
@@ -650,7 +666,10 @@ static const int ProjectsSection = 4;
 - (void)clickedSave {
     [self stopUpdatingLocation];
     [self save];
-    [self.delegate observationDetailViewControllerDidSave:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
+        [self.delegate observationDetailViewControllerDidSave:self];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)clickedDelete
@@ -682,7 +701,7 @@ static const int ProjectsSection = 4;
 
 - (IBAction)clickedCancel:(id)sender {
     [self stopUpdatingLocation];
-    if ([self.observation isNew]) {
+    if (self.observationWasNew) {
         [self.observation deleteEntity];
         self.observation = nil;
     } else {
@@ -691,6 +710,7 @@ static const int ProjectsSection = 4;
     if ([self.delegate respondsToSelector:@selector(observationDetailViewControllerDidCancel:)]) {
         [self.delegate observationDetailViewControllerDidCancel:self];
     }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)clickedAddPhoto:(id)sender {
@@ -721,10 +741,7 @@ static const int ProjectsSection = 4;
         self.observation.iconicTaxonName = nil;
         [self observationToUI];
     } else {
-        // TODO start species selector!
-        if (self.searchDisplayController) {
-            [self.searchDisplayController setActive:YES animated:YES];
-        }
+        [self performSegueWithIdentifier:@"TaxaSearchSegue" sender:nil];
     }
 }
 
@@ -740,6 +757,7 @@ static const int ProjectsSection = 4;
     } else {
         [self.observationPhotos removeAllObjects];
     }
+    self.observationWasNew = [observation isNew];
 }
 
 - (NSMutableArray *)observationPhotos
@@ -805,6 +823,9 @@ static const int ProjectsSection = 4;
             [projects addObject:po.project];
         }
         vc.chosenProjects = projects;
+    } else if ([segue.identifier isEqualToString:@"TaxaSearchSegue"]) {
+        TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
+        [vc setDelegate:self];
     }
 }
 

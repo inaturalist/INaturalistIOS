@@ -11,6 +11,7 @@
 #import "PhotoViewController.h"
 #import "EditLocationViewController.h"
 #import "ProjectChooserViewController.h"
+#import "TaxaSearchViewController.h"
 
 @class Observation;
 @class ObservationPhoto;
@@ -33,7 +34,8 @@
     PhotoViewControllerDelegate, 
     CLLocationManagerDelegate, 
     EditLocationViewControllerDelegate,
-    ProjectChooserViewControllerDelegate>
+    ProjectChooserViewControllerDelegate,
+    TaxaSearchViewControllerDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
@@ -56,7 +58,7 @@
 @property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
 @property (nonatomic, assign) BOOL locationUpdatesOn;
-
+@property (nonatomic, assign) BOOL observationWasNew;
 
 - (void)clickedClear;
 - (void)keyboardDone;
