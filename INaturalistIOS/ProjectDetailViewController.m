@@ -61,7 +61,7 @@
         [av show];
         return;
     }
-    if (self.projectUser) {
+    if (self.projectUser && self.projectUser.syncedAt) {
         [self leave];
     } else {
         [self join];
@@ -72,9 +72,12 @@
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
                                       withLabel:@"Joining..."];
-    ProjectUser *pu = [ProjectUser object];
-    pu.project = self.project;
-    [[RKObjectManager sharedManager] postObject:pu delegate:self block:^(RKObjectLoader *loader) {
+    if (!self.projectUser) {
+        self.projectUser = [ProjectUser object];
+        self.projectUser.project = self.project;
+        self.projectUser.projectID = self.project.recordID;
+    }
+    [[RKObjectManager sharedManager] postObject:self.projectUser delegate:self block:^(RKObjectLoader *loader) {
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
         loader.objectMapping = [ProjectUser mapping];
     }];
@@ -182,14 +185,12 @@
     TTStyledTextLabel *rowContent;
     if (indexPath.section == 0 && indexPath.row == 0) {
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
-        NSLog(@"rowContent: %@", rowContent);
         if (!rowContent.text) {
             rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.desc]
                                               lineBreaks:NO 
                                                     URLs:YES];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
-            NSLog(@"rowContent.text: %@", rowContent.text);
         }
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
