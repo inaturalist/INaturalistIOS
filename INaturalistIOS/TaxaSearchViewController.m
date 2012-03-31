@@ -49,32 +49,33 @@ static const int TaxonCellSubtitleTag = 3;
 
 - (void)loadData
 {
-    if (!self.taxa || self.taxa.count == 0) {
-        if (self.taxon) {
-            self.taxa = [NSMutableArray arrayWithArray:self.taxon.children];
-            
-            if (self.taxa.count == 0 && !self.lastRequestAt) {
-                [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue]];
-            }
-        } else {
-            NSFetchRequest *request = [Taxon fetchRequest];
-            [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-            [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES]]];
-            self.taxa = [NSMutableArray arrayWithArray:[Taxon objectsWithFetchRequest:request]];
-            if (self.taxa.count == 0 && !self.lastRequestAt) {
-                [self loadRemoteTaxaWithURL:@"/taxa"];
-            }
+    if (self.taxon) {
+        self.taxa = [NSMutableArray arrayWithArray:self.taxon.children];
+        
+        if (!self.lastRequestAt) {
+            [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue] 
+                                  modal:(self.taxa.count == 0)];
+        }
+    } else {
+        NSFetchRequest *request = [Taxon fetchRequest];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
+        [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES]]];
+        self.taxa = [NSMutableArray arrayWithArray:[Taxon objectsWithFetchRequest:request]];
+        if (self.taxa.count == 0 && !self.lastRequestAt) {
+            [self loadRemoteTaxaWithURL:@"/taxa" modal:YES];
         }
     }
 }
 
-- (void)loadRemoteTaxaWithURL:(NSString *)url
+- (void)loadRemoteTaxaWithURL:(NSString *)url modal:(BOOL)modal
 {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;
     }
-    [DejalBezelActivityView activityViewForView:self.navigationController.view 
-                                      withLabel:@"Loading..."];
+    if (modal) {
+        [DejalBezelActivityView activityViewForView:self.navigationController.view 
+                                          withLabel:@"Loading..."];
+    }
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
                                                       delegate:self 
                                                          block:^(RKObjectLoader *loader) {
