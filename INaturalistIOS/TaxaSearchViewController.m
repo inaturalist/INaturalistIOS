@@ -38,7 +38,7 @@ static const int TaxonCellSubtitleTag = 3;
         self.navigationItem.title = self.taxon.defaultName;
     }
     
-    if (self.query) {
+    if (self.query && self.query.length > 0) {
         [self.searchDisplayController setActive:YES];
         self.searchDisplayController.searchBar.text = self.query;
     }
