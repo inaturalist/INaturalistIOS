@@ -37,6 +37,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic conservationStatusSourceName;
 @dynamic rank;
 @dynamic taxonPhotos;
+@dynamic listedTaxa;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -134,6 +135,16 @@ static RKManagedObjectMapping *defaultMapping = nil;
     request.predicate = [NSPredicate predicateWithFormat:@"ancestry = %@", queryAncestry];
     request.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]];
     return [Taxon objectsWithFetchRequest:request];
+}
+
+- (BOOL)isSpeciesOrLower
+{
+    return (self.rankLevel.intValue > 0 && self.rankLevel.intValue <= 10);
+}
+
+- (BOOL)isGenusOrLower
+{
+    return (self.rankLevel.intValue > 0 && self.rankLevel.intValue <= 20);
 }
 
 @end

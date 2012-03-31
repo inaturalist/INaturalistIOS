@@ -36,6 +36,7 @@
 @property (nonatomic, retain) NSString * conservationStatusSourceName;
 @property (nonatomic, retain) NSString * rank;
 @property (nonatomic, retain) NSOrderedSet *taxonPhotos;
+@property (nonatomic, retain) NSOrderedSet *listedTaxa;
 
 + (UIColor *)iconicTaxonColor:(NSString *)iconicTaxonName;
 @end
@@ -52,4 +53,6 @@
 - (void)addTaxonPhotos:(NSOrderedSet *)values;
 - (void)removeTaxonPhotos:(NSOrderedSet *)values;
 - (NSArray *)children;
+- (BOOL)isSpeciesOrLower;
+- (BOOL)isGenusOrLower;
 @end

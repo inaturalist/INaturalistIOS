@@ -52,7 +52,20 @@ static const int TaxonCellSubtitleTag = 3;
     if (self.taxon) {
         self.taxa = [NSMutableArray arrayWithArray:self.taxon.children];
         
-        if (!self.lastRequestAt) {
+        if (self.lastRequestAt) {
+            // delete children that didn't come down in the last request.  Children endpoint should be comprehensive.
+            NSMutableArray *taxaToDelete = [[NSMutableArray alloc] init];
+            for (Taxon *t in self.taxa) {
+                if ([self.lastRequestAt timeIntervalSinceDate:t.syncedAt] > 0 && t.listedTaxa.count == 0) {
+                    [taxaToDelete addObject:t];
+                }
+            }
+            for (Taxon *t in taxaToDelete) {
+                [self.taxa removeObject:t];
+                [t deleteEntity];
+            }
+            [[[RKObjectManager sharedManager] objectStore] save];
+        } else {
             [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue] 
                                   modal:(self.taxa.count == 0)];
         }
@@ -146,7 +159,13 @@ static const int TaxonCellSubtitleTag = 3;
         }
     } else {
         UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:TaxonCellSubtitleTag];
-        subtitleLabel.text = t.name;
+        if (t.isGenusOrLower) {
+            subtitleLabel.text = t.name;
+            subtitleLabel.font = [UIFont italicSystemFontOfSize:subtitleLabel.font.pointSize];
+        } else {
+            subtitleLabel.text = [NSString stringWithFormat:@"%@ %@", [t.rank capitalizedString], t.name];
+            subtitleLabel.font = [UIFont systemFontOfSize:subtitleLabel.font.pointSize];
+        }
     }
     
     return cell;
@@ -178,7 +197,7 @@ static const int TaxonCellSubtitleTag = 3;
 - (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController
 {
     UIViewController *vc;
-    if (taxon.rankLevel.intValue <= 10) {
+    if (taxon.isSpeciesOrLower) {
         TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL] 
                                            instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
         tdvc.taxon = taxon;
@@ -207,7 +226,6 @@ static const int TaxonCellSubtitleTag = 3;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    [DejalBezelActivityView removeViewAnimated:YES];
     NSDate *now = [NSDate date];
     self.lastRequestAt = now;
     INatModel *o;
@@ -218,6 +236,7 @@ static const int TaxonCellSubtitleTag = 3;
     [[[RKObjectManager sharedManager] objectStore] save];
     [self loadData];
     [self.tableView reloadData];
+    [DejalBezelActivityView removeViewAnimated:YES];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
