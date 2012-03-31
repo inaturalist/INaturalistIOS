@@ -826,6 +826,7 @@ static const int ProjectsSection = 4;
     } else if ([segue.identifier isEqualToString:@"TaxaSearchSegue"]) {
         TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
+        vc.query = self.observation.speciesGuess;
     }
 }
 

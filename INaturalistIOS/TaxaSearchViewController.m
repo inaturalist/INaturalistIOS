@@ -23,6 +23,7 @@ static const int TaxonCellSubtitleTag = 3;
 @synthesize taxa = _taxa;
 @synthesize lastRequestAt = _lastRequestAt;
 @synthesize delegate = _delegate;
+@synthesize query = _query;
 
 - (void)viewDidLoad
 {
@@ -35,6 +36,11 @@ static const int TaxonCellSubtitleTag = 3;
     [self loadData];
     if (self.taxon) {
         self.navigationItem.title = self.taxon.defaultName;
+    }
+    
+    if (self.query) {
+        [self.searchDisplayController setActive:YES];
+        self.searchDisplayController.searchBar.text = self.query;
     }
     
     [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];

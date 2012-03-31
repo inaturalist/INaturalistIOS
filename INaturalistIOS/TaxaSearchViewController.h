@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSMutableArray *taxa;
 @property (nonatomic, strong) NSDate *lastRequestAt;
 @property (nonatomic, strong) UIViewController *delegate;
+@property (nonatomic, strong) NSString *query;
 - (IBAction)clickedCancel:(id)sender;
 - (void)loadData;
 - (void)showTaxon:(Taxon *)taxon;
