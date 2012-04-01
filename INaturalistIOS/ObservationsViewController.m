@@ -112,8 +112,9 @@ static const int ObservationCellLowerRightTag = 4;
             NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
                                         serializedObject:&error];
             RKParams* params = [RKParams paramsWithDictionary:dictionary];
+            NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
             [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                              forSize:ImageStoreLargeSize] 
+                                                              forSize:imageSize] 
                    forParam:@"file"];
             loader.params = params;
             loader.objectMapping = [ObservationPhoto mapping];
