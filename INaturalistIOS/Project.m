@@ -33,6 +33,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic projectObservations;
 @dynamic projectUsers;
 @dynamic listID;
+@dynamic projectObservationRuleTerms;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -49,6 +50,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"project_type", @"projectType",
          @"terms", @"terms",
          @"project_list.id", @"listID",
+         @"project_observation_rule_terms", @"projectObservationRuleTerms",
          nil];
         [defaultMapping mapKeyPath:@"project_list" 
                     toRelationship:@"projectList" 
@@ -57,6 +59,17 @@ static RKManagedObjectMapping *defaultMapping = nil;
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;
+}
+
+- (BOOL)observationsRestrictedToList
+{
+    NSArray *rules = [self.projectObservationRuleTerms componentsSeparatedByString:@"|"];
+    for (NSString *rule in rules) {
+        if ([rule isEqualToString:@"must be on list"]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

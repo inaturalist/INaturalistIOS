@@ -48,8 +48,17 @@ static const int ListedTaxonCellSubtitleTag = 3;
 {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+    ListedTaxon *lt;
     
-    ListedTaxon *lt = [self.listedTaxa objectAtIndex:indexPath.row];
+    if (self.project.observationsRestrictedToList) {
+        lt = [self.listedTaxa objectAtIndex:indexPath.row];
+    } else {
+        if (indexPath.row == 0) {
+            lt = nil;
+        } else {
+            lt = [self.listedTaxa objectAtIndex:indexPath.row-1];
+        }
+    }
     [self performSegueWithIdentifier:@"AddObservationSegue" sender:lt];
 }
 
@@ -104,9 +113,11 @@ static const int ListedTaxonCellSubtitleTag = 3;
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        ListedTaxon *lt = [self.listedTaxa
-                           objectAtIndex:[[self.tableView 
-                                           indexPathForSelectedRow] row]];
+        NSInteger row = [[self.tableView indexPathForSelectedRow] row];
+        if (!self.project.observationsRestrictedToList) {
+            row -= 1;
+        }
+        ListedTaxon *lt = [self.listedTaxa objectAtIndex:row];
         vc.taxon = lt.taxon;
     } else if ([segue.identifier isEqualToString:@"ProjectDetailSegue"]) {
         ProjectDetailViewController *vc = [segue destinationViewController];
@@ -158,14 +169,25 @@ static const int ListedTaxonCellSubtitleTag = 3;
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.listedTaxa.count;
+    if (self.project.observationsRestrictedToList) {
+        return self.listedTaxa.count;
+    } else {
+        return self.listedTaxa.count + 1;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ListedTaxon *lt = [self.listedTaxa objectAtIndex:[indexPath row]];
-    
-    NSString *cellIdentifier = [lt.taxonName isEqualToString:lt.taxonDefaultName] ? @"ListedTaxonOneNameCell" : @"ListedTaxonTwoNamesCell";
+    ListedTaxon *lt;
+    NSString *cellIdentifier;
+    NSInteger row = self.project.observationsRestrictedToList ? indexPath.row : (indexPath.row - 1);
+    if (!self.project.observationsRestrictedToList && indexPath.row == 0) {
+        lt = nil;
+        cellIdentifier = @"ListedTaxonOneNameCell";
+    } else {
+        lt = [self.listedTaxa objectAtIndex:row];
+        cellIdentifier = [lt.taxonName isEqualToString:lt.taxonDefaultName] ? @"ListedTaxonOneNameCell" : @"ListedTaxonTwoNamesCell";
+    }
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
@@ -188,18 +210,22 @@ static const int ListedTaxonCellSubtitleTag = 3;
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
     [imageView unsetImage];
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
-    titleLabel.text = lt.taxonDefaultName;
-    imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:lt.iconicTaxonName];
-    imageView.urlPath = lt.photoURL;
-    if ([lt.taxonName isEqualToString:lt.taxonDefaultName]) {
-        if (lt.taxon.rankLevel.intValue >= 30) {
-            titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
+    titleLabel.text = lt == nil ? @"Unknown species" : lt.taxonDefaultName;
+    imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:(lt ? lt.iconicTaxonName : @"unknown")];
+    imageView.urlPath = lt ? lt.photoURL : nil;
+    if (lt) {
+        if ([lt.taxonName isEqualToString:lt.taxonDefaultName]) {
+            if (lt.taxon.rankLevel.intValue >= 30) {
+                titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
+            } else {
+                titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
+            }
         } else {
-            titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
+            UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
+            subtitleLabel.text = lt.taxonName;
         }
     } else {
-        UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
-        subtitleLabel.text = lt.taxonName;
+        titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
     }
     
     return cell;

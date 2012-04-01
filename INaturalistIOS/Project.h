@@ -31,5 +31,8 @@
 @property (nonatomic, retain) NSSet *projectObservations;
 @property (nonatomic, retain) NSSet *projectUsers;
 @property (nonatomic, retain) NSNumber * listID;
+@property (nonatomic, retain) NSString *projectObservationRuleTerms;
+
+- (BOOL)observationsRestrictedToList;
 
 @end
