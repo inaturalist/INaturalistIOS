@@ -48,6 +48,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
 @property (weak, nonatomic) IBOutlet UITextField *placeGuessField;
+@property (weak, nonatomic) IBOutlet UISwitch *idPleaseSwitch;
+@property (weak, nonatomic) IBOutlet UITableViewCell *geoprivacyCell;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
 @property (strong, nonatomic) UIBarButtonItem *saveButton;
 @property (strong, nonatomic) UIBarButtonItem *deleteButton;

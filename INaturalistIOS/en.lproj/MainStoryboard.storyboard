@@ -201,10 +201,61 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="More" id="cQc-hZ-KcA">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="wy4-k0-V87">
+                                        <rect key="frame" x="0.0" y="445" width="320" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="10" y="1" width="300" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="at2-o1-jr0">
+                                                    <rect key="frame" x="213" y="8" width="79" height="27"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                </switch>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Need ID help?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
+                                                    <rect key="frame" x="10" y="11" width="195" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="CrY-as-UVn" detailTextLabel="JkM-AH-Zal" style="IBUITableViewCellStyleValue1" id="16N-fe-L3v">
+                                        <rect key="frame" x="0.0" y="490" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="10" y="0.0" width="300" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Geoprivacy" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrY-as-UVn">
+                                                    <rect key="frame" x="10" y="11" width="93" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="open" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JkM-AH-Zal">
+                                                    <rect key="frame" x="252" y="11" width="38" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.2196078431372549" green="0.32941176470588235" blue="0.52941176470588236" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="Projects" id="ZOk-5a-K6O">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="J9i-XA-tlL" style="IBUITableViewCellStyleDefault" id="BHb-6Q-TqB">
-                                        <rect key="frame" x="0.0" y="445" width="320" height="45"/>
+                                        <rect key="frame" x="0.0" y="580" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
@@ -247,6 +298,8 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="descriptionTextView" destination="vam-8V-lM2" id="nQB-SE-nJC"/>
+                        <outlet property="geoprivacyCell" destination="16N-fe-L3v" id="3ho-ei-ZlT"/>
+                        <outlet property="idPleaseSwitch" destination="at2-o1-jr0" id="cYh-hS-9Zv"/>
                         <outlet property="latitudeLabel" destination="M93-9f-xgT" id="dra-4c-ByL"/>
                         <outlet property="longitudeLabel" destination="46e-pE-mJn" id="EYP-Zt-NRz"/>
                         <outlet property="observedAtLabel" destination="e0j-MT-hzk" id="T1v-8B-9J7"/>
@@ -1482,6 +1535,8 @@
                 <relationship kind="action" name="clickedCancel:"/>
                 <relationship kind="action" name="clickedSpeciesButton:"/>
                 <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="geoprivacyCell" candidateClass="UITableViewCell"/>
+                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
@@ -1565,5 +1620,8 @@
     <inferredMetricsTieBreakers>
         <segue reference="j7U-kg-ECN"/>
         <segue reference="m7M-nd-sFM"/>
+        <segue reference="wiZ-QX-aXI"/>
+        <segue reference="i4O-ab-ts2"/>
+        <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -23,9 +23,11 @@ static const int LocationActionSheetTag = 1;
 static const int ObservedOnActionSheetTag = 2;
 static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
+static const int GeoprivacyActionSheetTag = 5;
 static const int LocationTableViewSection = 2;
 static const int ObservedOnTableViewSection = 3;
-static const int ProjectsSection = 4;
+static const int MoreSection = 4;
+static const int ProjectsSection = 5;
 
 @implementation ObservationDetailViewController
 @synthesize observedAtLabel;
@@ -33,6 +35,8 @@ static const int ProjectsSection = 4;
 @synthesize longitudeLabel = _longitudeLabel;
 @synthesize positionalAccuracyLabel;
 @synthesize placeGuessField = _placeGuessField;
+@synthesize idPleaseSwitch = _idPleaseSwitch;
+@synthesize geoprivacyCell = _geoprivacyCell;
 @synthesize keyboardToolbar = _keyboardToolbar;
 @synthesize saveButton = _saveButton;
 @synthesize deleteButton = _deleteButton;
@@ -90,6 +94,13 @@ static const int ProjectsSection = 4;
         self.speciesGuessTextField.enabled = YES;
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }
+    
+    if (self.observation.idPlease) {
+        [self.idPleaseSwitch setOn:self.observation.idPlease.boolValue];
+    }
+    if (self.observation.geoprivacy) {
+        self.geoprivacyCell.detailTextLabel.text = self.observation.geoprivacy;
+    }
 }
 
 - (void)uiToObservation
@@ -117,6 +128,7 @@ static const int ProjectsSection = 4;
     if (![self.observation.positionalAccuracy isEqualToNumber:newAcc]) {
         self.observation.positionalAccuracy = newAcc;
     }
+    self.observation.idPlease = [NSNumber numberWithBool:self.idPleaseSwitch.on];
 }
 
 - (void)initUI
@@ -242,6 +254,8 @@ static const int ProjectsSection = 4;
     [self setPositionalAccuracyLabel:nil];
     [self setDescriptionTextView:nil];
     [self setPlaceGuessField:nil];
+    [self setIdPleaseSwitch:nil];
+    [self setGeoprivacyCell:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -367,6 +381,9 @@ static const int ProjectsSection = 4;
         case ViewActionSheetTag:
             [self viewActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
             break;
+        case GeoprivacyActionSheetTag:
+            [self geoprivacyActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
+            break;
         default:
             [self locationActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
             break;
@@ -436,6 +453,26 @@ static const int ProjectsSection = 4;
                       [NSString stringWithFormat:@"%@/observations/%d", INatBaseURL, [self.observation.recordID intValue]]];
         [[UIApplication sharedApplication] openURL:url];
     }
+}
+
+- (void)geoprivacyActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [self uiToObservation];
+    switch (buttonIndex) {
+        case 0:
+            self.observation.geoprivacy = @"open";
+            break;
+        case 1:
+            self.observation.geoprivacy = @"obscured";
+            break;
+        case 2:
+            self.observation.geoprivacy = @"private";
+            break;
+        default:
+            break;
+    }
+    [self observationToUI];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 #pragma mark PhotoViewControllerDelegate
@@ -584,6 +621,16 @@ static const int ProjectsSection = 4;
         [sheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if (indexPath.section == MoreSection && indexPath.row == 1) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Choose how your coordinates are displayed on the website."
+                                                                 delegate:self 
+                                                        cancelButtonTitle:@"Cancel" 
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Open", @"Obscured", @"Private", nil];
+        actionSheet.tag = GeoprivacyActionSheetTag;
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else {
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     }
 }
 
@@ -691,7 +738,8 @@ static const int ProjectsSection = 4;
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:@"View on iNaturalist.org" , nil];
     actionSheet.tag = ViewActionSheetTag;
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];}
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
 
 - (void)save
 {

@@ -124,6 +124,8 @@ static NSDateFormatter *jsDateFormatter = nil;
          @"positionalAccuracy", @"observation[positional_accuracy]",
          @"taxonID", @"observation[taxon_id]",
          @"iconicTaxonID", @"observation[iconic_taxon_id]",
+         @"idPlease", @"observation[id_please]",
+         @"geoprivacy", @"observation[geoprivacy]",
          nil];
     }
     return defaultSerializationMapping;
