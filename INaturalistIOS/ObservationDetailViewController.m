@@ -302,6 +302,7 @@ static const int ProjectsSection = 5;
 	self.coverflowView.coverflowDelegate = self;
 	self.coverflowView.dataSource = self;
     self.coverflowView.coverSize = CGSizeMake(coverWidth, coverHeight);
+    [self.coverflowView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.tableView.tableHeaderView addSubview:self.coverflowView];
 }
 
