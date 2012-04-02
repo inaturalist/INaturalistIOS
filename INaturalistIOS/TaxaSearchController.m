@@ -29,7 +29,10 @@ static const int TaxonCellSubtitleTag = 3;
 
 - (NSPredicate *)predicateForQuery:(NSString *)query
 {
-    return [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@ OR defaultName CONTAINS[cd] %@", query, query];
+    query = [query stringByReplacingOccurrencesOfString:@" " withString:@"*"];
+    query = [query stringByReplacingOccurrencesOfString:@"-" withString:@"*"];
+    query = [NSString stringWithFormat:@"*%@*", query];
+    return [NSPredicate predicateWithFormat:@"name LIKE[cd] %@ OR defaultName LIKE[cd] %@", query, query];
 }
 
 #pragma mark - UISearchDisplayControllerDelegate

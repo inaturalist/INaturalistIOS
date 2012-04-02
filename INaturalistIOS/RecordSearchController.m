@@ -44,12 +44,14 @@
 
 - (NSPredicate *)predicateForQuery:(NSString *)query
 {
-    return [NSPredicate predicateWithFormat:@"title CONTAINS[cd] %@", query];
+    query = [query stringByReplacingCharactersInRange:NSRangeFromString(@" -") withString:@"*"];
+    return [NSPredicate predicateWithFormat:@"title LIKE[cd] %@", query];
 }
 
 - (void)searchLocal:(NSString *)query
 {
     NSFetchRequest *r = [self.model fetchRequest];
+    query = [query stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
     [r setPredicate:[self predicateForQuery:query]];
     [r setFetchLimit:500];
     self.searchResults = [NSMutableArray arrayWithArray:[self.model objectsWithFetchRequest:r]];
