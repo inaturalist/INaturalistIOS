@@ -12,6 +12,7 @@
 #import "EditLocationViewController.h"
 #import "ProjectChooserViewController.h"
 #import "TaxaSearchViewController.h"
+#import "DCRoundSwitch.h"
 
 @class Observation;
 @class ObservationPhoto;
@@ -48,7 +49,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *positionalAccuracyLabel;
 @property (weak, nonatomic) IBOutlet UITextField *placeGuessField;
-@property (weak, nonatomic) IBOutlet UISwitch *idPleaseSwitch;
+@property (weak, nonatomic) IBOutlet DCRoundSwitch *idPleaseSwitch;
 @property (weak, nonatomic) IBOutlet UITableViewCell *geoprivacyCell;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
 @property (strong, nonatomic) UIBarButtonItem *saveButton;

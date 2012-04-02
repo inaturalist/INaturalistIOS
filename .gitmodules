@@ -7,3 +7,6 @@
 [submodule "Vendor/three20"]
 	path = Vendor/three20
 	url = git://github.com/facebook/three20.git
+[submodule "Vendor/DCRoundSwitch"]
+	path = Vendor/DCRoundSwitch
+	url = git://github.com/computerlogicx/DCRoundSwitch.git

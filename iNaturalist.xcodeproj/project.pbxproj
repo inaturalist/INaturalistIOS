@@ -11,6 +11,10 @@
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
 		1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
+		190619B8152A363E0001A307 /* DCRoundSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B1152A363E0001A307 /* DCRoundSwitch.m */; };
+		190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B3152A363E0001A307 /* DCRoundSwitchKnobLayer.m */; };
+		190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B5152A363E0001A307 /* DCRoundSwitchOutlineLayer.m */; };
+		190619BB152A363E0001A307 /* DCRoundSwitchToggleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B7152A363E0001A307 /* DCRoundSwitchToggleLayer.m */; };
 		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
 		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
@@ -291,6 +295,14 @@
 		1902813C14F36B44005AC8D2 /* ObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPhoto.m; sourceTree = "<group>"; };
 		1905715E14FDFF49007FBE30 /* EditLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationViewController.h; sourceTree = "<group>"; };
 		1905715F14FDFF49007FBE30 /* EditLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationViewController.m; sourceTree = "<group>"; };
+		190619B0152A363E0001A307 /* DCRoundSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitch.h; sourceTree = "<group>"; };
+		190619B1152A363E0001A307 /* DCRoundSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitch.m; sourceTree = "<group>"; };
+		190619B2152A363E0001A307 /* DCRoundSwitchKnobLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitchKnobLayer.h; sourceTree = "<group>"; };
+		190619B3152A363E0001A307 /* DCRoundSwitchKnobLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitchKnobLayer.m; sourceTree = "<group>"; };
+		190619B4152A363E0001A307 /* DCRoundSwitchOutlineLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitchOutlineLayer.h; sourceTree = "<group>"; };
+		190619B5152A363E0001A307 /* DCRoundSwitchOutlineLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitchOutlineLayer.m; sourceTree = "<group>"; };
+		190619B6152A363E0001A307 /* DCRoundSwitchToggleLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitchToggleLayer.h; sourceTree = "<group>"; };
+		190619B7152A363E0001A307 /* DCRoundSwitchToggleLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitchToggleLayer.m; sourceTree = "<group>"; };
 		190687C5151BF71F00D5B6E4 /* DeletedRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedRecord.h; sourceTree = "<group>"; };
 		190687C6151BF71F00D5B6E4 /* DeletedRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedRecord.m; sourceTree = "<group>"; };
 		190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonDetailViewController.h; sourceTree = "<group>"; };
@@ -483,6 +495,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		190619AF152A363E0001A307 /* DCRoundSwitch */ = {
+			isa = PBXGroup;
+			children = (
+				190619B0152A363E0001A307 /* DCRoundSwitch.h */,
+				190619B1152A363E0001A307 /* DCRoundSwitch.m */,
+				190619B2152A363E0001A307 /* DCRoundSwitchKnobLayer.h */,
+				190619B3152A363E0001A307 /* DCRoundSwitchKnobLayer.m */,
+				190619B4152A363E0001A307 /* DCRoundSwitchOutlineLayer.h */,
+				190619B5152A363E0001A307 /* DCRoundSwitchOutlineLayer.m */,
+				190619B6152A363E0001A307 /* DCRoundSwitchToggleLayer.h */,
+				190619B7152A363E0001A307 /* DCRoundSwitchToggleLayer.m */,
+			);
+			name = DCRoundSwitch;
+			path = Vendor/DCRoundSwitch/DCRoundSwitch;
+			sourceTree = "<group>";
+		};
 		1912DA9215059C0E005555B8 /* glyphish */ = {
 			isa = PBXGroup;
 			children = (
@@ -666,6 +694,7 @@
 				198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */,
 				198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */,
 				198CF8E714F5C02F0064DF05 /* libRestKit.a */,
+				190619AF152A363E0001A307 /* DCRoundSwitch */,
 				198CF8DE14F5AEA80064DF05 /* Three20.bundle */,
 				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				198CF89F14F5AE180064DF05 /* Three20Core.xcodeproj */,
@@ -1166,6 +1195,10 @@
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				190619B8152A363E0001A307 /* DCRoundSwitch.m in Sources */,
+				190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */,
+				190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */,
+				190619BB152A363E0001A307 /* DCRoundSwitchToggleLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1271,6 +1304,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = iNaturalist;
+				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1296,6 +1330,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = iNaturalist;
+				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

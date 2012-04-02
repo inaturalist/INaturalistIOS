@@ -210,10 +210,6 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="at2-o1-jr0">
-                                                    <rect key="frame" x="213" y="8" width="79" height="27"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                                </switch>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Need ID help?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
                                                     <rect key="frame" x="10" y="11" width="195" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -221,6 +217,11 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
+                                                <view contentMode="scaleToFill" id="BzJ-Tf-DWf" customClass="DCRoundSwitch">
+                                                    <rect key="frame" x="213" y="8" width="79" height="27"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
@@ -299,7 +300,7 @@
                     <connections>
                         <outlet property="descriptionTextView" destination="vam-8V-lM2" id="nQB-SE-nJC"/>
                         <outlet property="geoprivacyCell" destination="16N-fe-L3v" id="3ho-ei-ZlT"/>
-                        <outlet property="idPleaseSwitch" destination="at2-o1-jr0" id="cYh-hS-9Zv"/>
+                        <outlet property="idPleaseSwitch" destination="BzJ-Tf-DWf" id="3Mo-YP-2ef"/>
                         <outlet property="latitudeLabel" destination="M93-9f-xgT" id="dra-4c-ByL"/>
                         <outlet property="longitudeLabel" destination="46e-pE-mJn" id="EYP-Zt-NRz"/>
                         <outlet property="observedAtLabel" destination="e0j-MT-hzk" id="T1v-8B-9J7"/>
@@ -1490,6 +1491,9 @@
         <class className="CrossHairView" superclassName="EditLocationAnnoView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
         </class>
+        <class className="DCRoundSwitch" superclassName="UIControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DCRoundSwitch.h"/>
+        </class>
         <class className="EditLocationAnnoView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationAnnoView.h"/>
         </class>
@@ -1536,7 +1540,7 @@
                 <relationship kind="action" name="clickedSpeciesButton:"/>
                 <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="geoprivacyCell" candidateClass="UITableViewCell"/>
-                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="DCRoundSwitch"/>
                 <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>

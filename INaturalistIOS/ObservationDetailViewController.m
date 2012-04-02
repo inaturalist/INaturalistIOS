@@ -190,6 +190,9 @@ static const int ProjectsSection = 5;
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
     }
     
+    self.idPleaseSwitch.onText = @"YES";
+    self.idPleaseSwitch.offText = @"NO";
+    
     [self refreshCoverflowView];
     [self observationToUI];
 }
