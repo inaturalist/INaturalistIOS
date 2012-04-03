@@ -44,7 +44,9 @@
 
 - (NSPredicate *)predicateForQuery:(NSString *)query
 {
-    query = [query stringByReplacingCharactersInRange:NSRangeFromString(@" -") withString:@"*"];
+    query = [query stringByReplacingOccurrencesOfString:@" " withString:@"*"];
+    query = [query stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+    query = [NSString stringWithFormat:@"*%@*", query];
     return [NSPredicate predicateWithFormat:@"title LIKE[cd] %@", query];
 }
 
