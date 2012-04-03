@@ -171,6 +171,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return YES;
     }
     [self.navigationController popViewControllerAnimated:YES];
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Welcome to iNaturalist!" 
+                                                 message:@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well." 
+                                                delegate:self 
+                                       cancelButtonTitle:@"OK" 
+                                       otherButtonTitles:nil];
+    [av show];
     return NO;
 }
 

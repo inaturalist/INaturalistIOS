@@ -47,7 +47,7 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)checkEmpty
 {
-    if (self.projectUsers.count == 0) {
+    if (self.projectUsers.count == 0 && !self.searchDisplayController.active) {
         if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.text = @"You don't have any projects yet.";
