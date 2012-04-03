@@ -101,17 +101,42 @@ static const int AccountActionCellTag = 1;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (cell.tag) {
+        case UsernameCellTag:
+            if ([defaults objectForKey:INatUsernamePrefKey]) {
+                [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            } else {
+                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                } else {
+                    [self networkUnreachableAlert];
+                }
+            }
+            break;
         case AccountActionCellTag:
             if ([defaults objectForKey:INatUsernamePrefKey]) {
                 [self clickedSignOut];
             } else {
-                [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                } else {
+                    [self networkUnreachableAlert];
+                }
             }
             break;
             
         default:
             break;
     }
+}
+
+- (void)networkUnreachableAlert
+{
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
+                                                 message:@"Try again next time you're connected to the Internet." 
+                                                delegate:self 
+                                       cancelButtonTitle:@"OK" 
+                                       otherButtonTitles:nil];
+    [av show];
 }
 
 #pragma mark - UIAlertViewDelegate

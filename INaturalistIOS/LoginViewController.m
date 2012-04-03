@@ -8,6 +8,7 @@
 
 #import "LoginViewController.h"
 #import "DejalActivityView.h"
+#import "INatWebController.h"
 
 @implementation LoginViewController
 @synthesize usernameField, passwordField, delegate;
@@ -131,14 +132,22 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1) {
-        UIAlertView *av = [[UIAlertView alloc] 
-                           initWithTitle:@"Ready to sign up?" 
-                                message:@"You're about to go to iNaturalist.org to create a new account.  Once you've done that and verified via email, come back here with your new login.  Ready?" 
-                           delegate:self 
-                           cancelButtonTitle:@"Maybe later"
-                           otherButtonTitles:@"Sign me up!", 
-                           nil];
-        [av show];
+        if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            UINavigationController *nc = self.navigationController;
+            INatWebController *webController = [[INatWebController alloc] init];
+            NSURL *url = [NSURL URLWithString:
+                          [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
+            [webController openURL:url];
+            webController.delegate = self;
+            [nc pushViewController:webController animated:YES];
+        } else {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
+                                                         message:@"Try again next time you're connected to the Internet." 
+                                                        delegate:self 
+                                               cancelButtonTitle:@"OK" 
+                                               otherButtonTitles:nil];
+            [av show];
+        }
     }
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
@@ -150,6 +159,19 @@
     NSURL *url = [NSURL URLWithString:
                   [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
     [[UIApplication sharedApplication] openURL:url];
+}
+
+#pragma mark - TTWebControllerDelegate
+- (BOOL)webController:(TTWebController *)controller 
+              webView:(UIWebView *)webView 
+shouldStartLoadWithRequest:(NSURLRequest *)request 
+       navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"]) {
+        return YES;
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+    return NO;
 }
 
 @end

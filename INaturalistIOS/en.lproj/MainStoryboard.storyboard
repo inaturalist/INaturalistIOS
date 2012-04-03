@@ -1156,7 +1156,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Don't have an account?" id="3DS-CL-NMe">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hsp-PZ-83S" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hsp-PZ-83S" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
                                         <rect key="frame" x="0.0" y="182" width="320" height="46"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">

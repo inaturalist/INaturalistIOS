@@ -44,12 +44,14 @@
     // User Agent
     UIDevice *d = [UIDevice currentDevice];
     NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    [RKClient.sharedClient setValue:[NSString stringWithFormat:@"iNaturalist/%@ (iOS %@ %@ %@)", 
-                                     appVersion,
-                                     d.systemName, 
-                                     d.systemVersion, 
-                                     d.model] 
-                 forHTTPHeaderField:@"User-Agent"];
+    NSString *userAgent = [NSString stringWithFormat:@"iNaturalist/%@ (iOS %@ %@ %@)", 
+                           appVersion,
+                           d.systemName, 
+                           d.systemVersion, 
+                           d.model];
+    [RKClient.sharedClient setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    NSDictionary *userAgentDict = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:userAgentDict];
     
     NSArray *models = [NSArray arrayWithObjects:
                        List.class,

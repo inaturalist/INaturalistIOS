@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Three20/Three20.h>
 
 @class LoginViewController;
 
@@ -16,7 +17,7 @@
 - (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
 @end
 
-@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate>
+@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, TTWebControllerDelegate>
 
 @property (nonatomic, weak) id <LoginViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;

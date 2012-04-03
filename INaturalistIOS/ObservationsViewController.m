@@ -44,12 +44,18 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
                                                      message:@"You must be connected to the Internet to sync with iNaturalist.org"
                                                     delegate:self 
                                            cancelButtonTitle:@"OK" 
                                            otherButtonTitles:nil];
         [av show];
+        return;
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults objectForKey:INatUsernamePrefKey]) {
+        [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
         return;
     }
     
@@ -483,6 +489,12 @@ static const int ObservationCellLowerRightTag = 4;
     
     // make sure any deleted records get gone
     [[[RKObjectManager sharedManager] objectStore] save];
+}
+
+- (void)syncQueueAuthRequired
+{
+    [self stopSync];
+    [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
 }
 
 - (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
