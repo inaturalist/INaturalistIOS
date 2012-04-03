@@ -15,6 +15,7 @@
 		190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B3152A363E0001A307 /* DCRoundSwitchKnobLayer.m */; };
 		190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B5152A363E0001A307 /* DCRoundSwitchOutlineLayer.m */; };
 		190619BB152A363E0001A307 /* DCRoundSwitchToggleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B7152A363E0001A307 /* DCRoundSwitchToggleLayer.m */; };
+		190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 190619BC152A3D3C0001A307 /* AssetsLibrary.framework */; };
 		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
 		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
@@ -303,6 +304,7 @@
 		190619B5152A363E0001A307 /* DCRoundSwitchOutlineLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitchOutlineLayer.m; sourceTree = "<group>"; };
 		190619B6152A363E0001A307 /* DCRoundSwitchToggleLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitchToggleLayer.h; sourceTree = "<group>"; };
 		190619B7152A363E0001A307 /* DCRoundSwitchToggleLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRoundSwitchToggleLayer.m; sourceTree = "<group>"; };
+		190619BC152A3D3C0001A307 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		190687C5151BF71F00D5B6E4 /* DeletedRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedRecord.h; sourceTree = "<group>"; };
 		190687C6151BF71F00D5B6E4 /* DeletedRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedRecord.m; sourceTree = "<group>"; };
 		190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonDetailViewController.h; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */,
 				19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */,
 				198CF8EC14F5C03C0064DF05 /* libThree20UI.a in Frameworks */,
 				198CF8ED14F5C03C0064DF05 /* libThree20UICommon.a in Frameworks */,
@@ -549,6 +552,7 @@
 		1927513614E9CCC9000ABAC4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				190619BC152A3D3C0001A307 /* AssetsLibrary.framework */,
 				19A5F60814FB289B00757636 /* CoreLocation.framework */,
 				CAF65CB214F5CAC9003D63BB /* MapKit.framework */,
 				198551FD14EC93B900DB55C5 /* libxml2.dylib */,

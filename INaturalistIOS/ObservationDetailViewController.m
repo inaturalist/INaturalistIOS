@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
@@ -30,6 +31,7 @@ static const int MoreSection = 4;
 static const int ProjectsSection = 5;
 
 @implementation ObservationDetailViewController
+
 @synthesize observedAtLabel;
 @synthesize latitudeLabel = _latitudeLabel;
 @synthesize longitudeLabel = _longitudeLabel;
@@ -54,6 +56,7 @@ static const int ProjectsSection = 5;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
 @synthesize observationWasNew = _observationWasNew;
+@synthesize lastImageReferenceURL = _lastImageReferenceURL;
 
 - (void)observationToUI
 {
@@ -286,9 +289,25 @@ static const int ProjectsSection = 5;
     ObservationPhoto *op = [ObservationPhoto object];
     [op setObservation:self.observation];
     [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    [ImageStore.sharedImageStore store:[info objectForKey:UIImagePickerControllerOriginalImage] 
-                                forKey:op.photoKey];
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
     [self addPhoto:op];
+    
+    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
+    if (referenceURL) {
+        self.lastImageReferenceURL = referenceURL;
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import metadata?" 
+                                                     message:@"Do you want to set the date, time, and location of this observation from the photo's metadata?" 
+                                                    delegate:self 
+                                           cancelButtonTitle:@"No" 
+                                           otherButtonTitles:@"Yes", nil];
+        [av show];
+    } else {
+        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
+        [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
+                                       metadata:[info objectForKey:UIImagePickerControllerMediaMetadata]
+                                completionBlock:nil];
+    }
 }
 
 
@@ -491,9 +510,8 @@ static const int ProjectsSection = 5;
 #pragma mark CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
-    if (newLocation.timestamp.timeIntervalSinceNow < -60) {
-        return;
-    }
+    if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
+    if (!self.locationUpdatesOn) return;
     
     self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
     self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude]; 
@@ -705,6 +723,46 @@ static const int ProjectsSection = 5;
     [self observationToUI];
 }
 
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // right now the only alert view is for existing asset processing
+    if (buttonIndex == 1) {
+        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
+        [assetsLib assetForURL:self.lastImageReferenceURL resultBlock:^(ALAsset *asset) {
+            [self uiToObservation];
+            // extract the metadata
+            NSDate *imageDate = [asset valueForProperty:ALAssetPropertyDate];
+            if (imageDate) {
+                self.observation.localObservedOn = imageDate;
+            }
+            CLLocation *imageLoc = [asset valueForProperty:ALAssetPropertyLocation];
+            if (imageLoc) {
+                [self stopUpdatingLocation];
+                self.observation.latitude = [NSNumber numberWithDouble:imageLoc.coordinate.latitude];
+                self.observation.longitude = [NSNumber numberWithDouble:imageLoc.coordinate.longitude];
+                if (imageLoc.horizontalAccuracy && imageLoc.horizontalAccuracy > 0) {
+                    self.observation.positionalAccuracy = [NSNumber numberWithDouble:imageLoc.horizontalAccuracy];
+                } else {
+                    self.observation.positionalAccuracy = nil;
+                }
+            }
+            [self observationToUI];
+            [self reverseGeocodeCoordinates];
+            self.lastImageReferenceURL = nil;
+        } failureBlock:^(NSError *error) {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error" 
+                                                         message:error.localizedDescription delegate:nil 
+                                               cancelButtonTitle:@"OK" 
+                                               otherButtonTitles:nil];
+            [av show];
+            self.lastImageReferenceURL = nil;
+        }];
+    } else {
+        self.lastImageReferenceURL = nil;
+    }
+}
+
 #pragma mark - ObservationDetailViewController
 - (void)clickedClear {
     [descriptionTextView setText:nil];
@@ -909,8 +967,8 @@ static const int ProjectsSection = 5;
 {
     self.locationUpdatesOn = NO;
     if (self.isViewLoaded && self.tableView) {
-        UITableViewCell *locationCell = [self.tableView cellForRowAtIndexPath:
-                                         [NSIndexPath indexPathForRow:0 inSection:2]];
+        UITableViewCell *locationCell = [self tableView:self.tableView cellForRowAtIndexPath:
+                                         [NSIndexPath indexPathForRow:0 inSection:LocationTableViewSection]];
         if (locationCell) {
             UIActivityIndicatorView *av = (UIActivityIndicatorView *)[locationCell viewWithTag:1];
             UIImageView *img = (UIImageView *)[locationCell viewWithTag:2];

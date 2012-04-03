@@ -36,7 +36,8 @@
     CLLocationManagerDelegate, 
     EditLocationViewControllerDelegate,
     ProjectChooserViewControllerDelegate,
-    TaxaSearchViewControllerDelegate>
+    TaxaSearchViewControllerDelegate,
+    UIAlertViewDelegate>
 
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
@@ -62,6 +63,7 @@
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
 @property (nonatomic, assign) BOOL locationUpdatesOn;
 @property (nonatomic, assign) BOOL observationWasNew;
+@property (nonatomic, strong) NSURL *lastImageReferenceURL;
 
 - (void)clickedClear;
 - (void)keyboardDone;
