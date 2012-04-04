@@ -54,8 +54,13 @@
 #pragma mark - TTNagigatorDelegate
 // http://stackoverflow.com/questions/8771176/ttnavigator-not-pushing-onto-navigation-stack
 - (BOOL)navigator: (TTBaseNavigator *)navigator shouldOpenURL:(NSURL *)url {
-    if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
-        UINavigationController *nc = (UINavigationController *)self.selectedViewController;
+    UINavigationController *nc;
+    if ([self.selectedViewController.presentedViewController isKindOfClass:UINavigationController.class]) {
+        nc = (UINavigationController *)self.selectedViewController.presentedViewController;
+    } else if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
+        nc = (UINavigationController *)self.selectedViewController;
+    }
+    if (nc) {
         INatWebController *webController = [[INatWebController alloc] init];
         [webController openURL:url];
         [nc pushViewController:webController animated:YES];

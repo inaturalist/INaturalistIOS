@@ -12,7 +12,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdD-iS-mtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -905,7 +905,7 @@
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <sections>
-                            <tableViewSection headerTitle="Description" id="Df8-ua-w8x">
+                            <tableViewSection headerTitle="Wikipedia Description" id="Df8-ua-w8x">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="mwy-XY-Qq0">
                                         <rect key="frame" x="0.0" y="92" width="320" height="44"/>
@@ -935,7 +935,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                    <state key="normal" title="View on Wikipedia">
+                                                    <state key="normal" title="View more...">
                                                         <color key="titleColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -943,7 +943,7 @@
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="clickedViewWikipedia:" destination="dfk-gc-ShG" eventType="touchUpInside" id="ssc-tA-Xkc"/>
+                                                        <action selector="clickedViewMore:" destination="dfk-gc-ShG" eventType="touchUpInside" id="2Vk-li-0qM"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -1638,7 +1638,7 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxonDetailViewController.h"/>
             <relationships>
                 <relationship kind="action" name="clickedActionButton:"/>
-                <relationship kind="action" name="clickedViewWikipedia:"/>
+                <relationship kind="action" name="clickedViewMore:"/>
             </relationships>
         </class>
     </classes>
@@ -1648,10 +1648,10 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="hvR-ND-N81"/>
         <segue reference="j7U-kg-ECN"/>
-        <segue reference="8j7-c4-5Sv"/>
+        <segue reference="hvR-ND-N81"/>
         <segue reference="m7M-nd-sFM"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>

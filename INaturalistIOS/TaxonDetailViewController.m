@@ -48,14 +48,17 @@ static const int TaxonDescTag = 1;
     [self.tableView endUpdates];
 }
 
-- (IBAction)clickedViewWikipedia:(id)sender {
-    NSString *wikipediaTitle = self.taxon.wikipediaTitle;
-    if (!wikipediaTitle) {
-        wikipediaTitle = [self.taxon.name stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+- (IBAction)clickedViewMore:(id)sender {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"View more about this species on..."
+                                                             delegate:self 
+                                                    cancelButtonTitle:@"Cancel" 
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"iNaturalist", @"EOL", @"Wikipedia", nil];
+    if (self.tabBarController) {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else {
+        [actionSheet showInView:self.view];
     }
-    NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", wikipediaTitle]];
-    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (IBAction)clickedActionButton:(id)sender {
@@ -119,9 +122,9 @@ static const int TaxonDescTag = 1;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        CGSize s = [self.taxon.wikipediaSummary sizeWithFont:[UIFont systemFontOfSize:15] 
-                                           constrainedToSize:CGSizeMake(320, 320) 
-                                               lineBreakMode:UILineBreakModeWordWrap];
+        CGSize s = [[self.taxon.wikipediaSummary stringByRemovingHTML] sizeWithFont:[UIFont systemFontOfSize:15] 
+                                                                  constrainedToSize:CGSizeMake(320, 320) 
+                                                                      lineBreakMode:UILineBreakModeWordWrap];
         return s.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
@@ -210,6 +213,32 @@ static const int TaxonDescTag = 1;
 - (void)imageView:(TTImageView *)imageView didLoadImage:(UIImage *)image
 {
     [self scaleHeaderView:YES];
+}
+
+#pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex > 2) {
+        return;
+    }
+    
+    NSString *wikipediaTitle = self.taxon.wikipediaTitle;
+    NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
+    NSString *url;
+    if (buttonIndex == 0) {
+        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile", INatBaseURL, self.taxon.recordID.intValue];
+    } else if (buttonIndex == 1) {
+        url = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
+    } else if (buttonIndex == 2) {
+        if (!wikipediaTitle) {
+            wikipediaTitle = escapedName;
+        }
+        url = [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", wikipediaTitle];
+    } else {
+        return;
+    }
+    TTNavigator* navigator = [TTNavigator navigator];
+    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
 }
 
 @end
