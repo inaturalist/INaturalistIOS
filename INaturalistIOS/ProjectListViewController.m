@@ -97,7 +97,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
+    if ([segue.identifier isEqualToString:@"AddObservationSegue"] || [segue.identifier isEqualToString:@"AddObservationRowSegue"]) {
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
@@ -112,13 +112,13 @@ static const int ListedTaxonCellSubtitleTag = 3;
         }
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
-        TaxonDetailViewController *vc = [segue destinationViewController];
         NSInteger row = [[self.tableView indexPathForSelectedRow] row];
         if (!self.project.observationsRestrictedToList) {
             row -= 1;
         }
+        TaxonDetailViewController *vc = [segue destinationViewController];
         ListedTaxon *lt = [self.listedTaxa objectAtIndex:row];
-        vc.taxon = lt.taxon;
+        if (lt) vc.taxon = lt.taxon;
     } else if ([segue.identifier isEqualToString:@"ProjectDetailSegue"]) {
         ProjectDetailViewController *vc = [segue destinationViewController];
         vc.project = self.project;
@@ -183,7 +183,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     NSInteger row = self.project.observationsRestrictedToList ? indexPath.row : (indexPath.row - 1);
     if (!self.project.observationsRestrictedToList && indexPath.row == 0) {
         lt = nil;
-        cellIdentifier = @"ListedTaxonOneNameCell";
+        cellIdentifier = @"AddObservationCell";
     } else {
         lt = [self.listedTaxa objectAtIndex:row];
         cellIdentifier = [lt.taxonName isEqualToString:lt.taxonDefaultName] ? @"ListedTaxonOneNameCell" : @"ListedTaxonTwoNamesCell";
@@ -210,7 +210,9 @@ static const int ListedTaxonCellSubtitleTag = 3;
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
     [imageView unsetImage];
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
-    titleLabel.text = lt == nil ? @"Unknown species" : lt.taxonDefaultName;
+    if (lt) {
+        titleLabel.text = lt.taxonDefaultName;
+    }
     imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:(lt ? lt.iconicTaxonName : @"unknown")];
     imageView.urlPath = lt ? lt.photoURL : nil;
     if (lt) {
