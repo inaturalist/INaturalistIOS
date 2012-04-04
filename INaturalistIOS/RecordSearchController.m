@@ -17,6 +17,8 @@
 @synthesize searchURL = _searchURL;
 @synthesize requestTimer = _requestTimer;
 @synthesize delegate = _delegate;
+@synthesize noContentLabel = _noContentLabel;
+@synthesize isLoading = _isLoading;
 
 - (id)initWithSearchDisplayController:(UISearchDisplayController *)searchDisplayController
 {
@@ -64,10 +66,35 @@
     if (self.savedSearchTerm.length && self.savedSearchTerm.length < 3) {
         return;
     }
+    self.isLoading = YES;
     NSString *url = [NSString stringWithFormat:self.searchURL, self.savedSearchTerm];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
                                                  objectMapping:[self.model mapping]
                                                       delegate:self];
+    [self checkRemoteLoading];
+}
+
+- (void)checkRemoteLoading
+{
+    if (self.searchResults.count == 0 && self.isLoading) {
+        UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+        if (!self.noContentLabel) {
+            self.noContentLabel = [[UILabel alloc] init];
+            self.noContentLabel.text = @"Searching...";
+            self.noContentLabel.font = [UIFont boldSystemFontOfSize:20];
+            self.noContentLabel.backgroundColor = [UIColor whiteColor];
+            self.noContentLabel.textColor = [UIColor grayColor];
+            self.noContentLabel.numberOfLines = 0;
+            [self.noContentLabel sizeToFit];
+            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.center = CGPointMake(tableView.center.x, 
+                                                     tableView.rowHeight * 2 + (tableView.rowHeight / 2));
+            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+        }
+        [tableView addSubview:self.noContentLabel];
+    } else if (self.noContentLabel) {
+        [self.noContentLabel removeFromSuperview];
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -145,12 +172,16 @@
     [[[RKObjectManager sharedManager] objectStore] save];
     [self searchLocal:self.savedSearchTerm];
     [self.searchDisplayController.searchResultsTableView reloadData];
+    self.isLoading = NO;
+    [self checkRemoteLoading];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
 {
     //    NSLog(@"objectLoader didFailWithError: %@", error);
     //    just assume no results
+    self.isLoading = NO;
+    [self checkRemoteLoading];
 }
 
 @end

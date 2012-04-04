@@ -26,6 +26,8 @@
 @property (nonatomic, strong) NSString *searchURL;
 @property (nonatomic, strong) NSTimer *requestTimer;
 @property (nonatomic, strong) UIViewController *delegate;
+@property (nonatomic, strong) UILabel *noContentLabel;
+@property (nonatomic, assign) BOOL isLoading;
 
 - (id)initWithSearchDisplayController:(UISearchDisplayController *)searchDisplayController;
 - (void)searchLocal:(NSString *)query;
