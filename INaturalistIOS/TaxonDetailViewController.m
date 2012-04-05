@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <TapkuLibrary/TapkuLibrary.h>
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
 #import "Observation.h"

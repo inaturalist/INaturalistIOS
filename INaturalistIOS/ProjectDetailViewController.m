@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <TapkuLibrary/TapkuLibrary.h>
 #import "ProjectDetailViewController.h"
 #import "DejalActivityView.h"
 
@@ -130,14 +131,18 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        CGSize s = [self.project.desc sizeWithFont:[UIFont systemFontOfSize:16] 
-                                           constrainedToSize:CGSizeMake(320, 1000) 
-                                               lineBreakMode:UILineBreakModeWordWrap];
+        NSString *desc = [self.project.desc stringByRemovingHTML];
+        desc = [desc stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+        CGSize s = [desc sizeWithFont:[UIFont systemFontOfSize:15] 
+                    constrainedToSize:CGSizeMake(320, 1000) 
+                        lineBreakMode:UILineBreakModeWordWrap];
         return s.height + 10;
     } else if (indexPath.section == 1 && indexPath.row == 0) {
-        CGSize s = [self.project.terms sizeWithFont:[UIFont systemFontOfSize:16] 
-                                 constrainedToSize:CGSizeMake(320, 1000) 
-                                     lineBreakMode:UILineBreakModeWordWrap];
+        NSString *terms = [self.project.terms stringByRemovingHTML];
+        terms = [terms stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+        CGSize s = [terms sizeWithFont:[UIFont systemFontOfSize:15] 
+                     constrainedToSize:CGSizeMake(320, 1000) 
+                         lineBreakMode:UILineBreakModeWordWrap];
         return s.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
@@ -187,8 +192,8 @@
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
             rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.desc]
-                                              lineBreaks:NO 
-                                                    URLs:YES];
+                                               lineBreaks:YES
+                                                     URLs:YES];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
         }
@@ -196,7 +201,7 @@
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
             rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.terms]
-                                               lineBreaks:NO 
+                                               lineBreaks:YES
                                                      URLs:YES];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];

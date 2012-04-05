@@ -25,28 +25,6 @@ static const int TaxonCellSubtitleTag = 3;
 @synthesize delegate = _delegate;
 @synthesize query = _query;
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    if (!self.taxaSearchController) {
-        self.taxaSearchController = [[TaxaSearchController alloc] 
-                                         initWithSearchDisplayController:self.searchDisplayController];
-        self.taxaSearchController.delegate = self;
-    }
-    [self loadData];
-    if (self.taxon) {
-        self.navigationItem.title = self.taxon.defaultName;
-    }
-    
-    if (self.query && self.query.length > 0) {
-        [self.searchDisplayController setActive:YES];
-        self.searchDisplayController.searchBar.text = self.query;
-    }
-    
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
-}
-
 - (void)loadData
 {
     if (self.taxon) {
@@ -117,6 +95,30 @@ static const int TaxonCellSubtitleTag = 3;
     }
 }
 
+#pragma mark - lifecycle
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (!self.taxaSearchController) {
+        self.taxaSearchController = [[TaxaSearchController alloc] 
+                                     initWithSearchDisplayController:self.searchDisplayController];
+        self.taxaSearchController.delegate = self;
+    }
+    [self loadData];
+    if (self.taxon) {
+        self.navigationItem.title = self.taxon.defaultName;
+    }
+    
+    if (self.query && self.query.length > 0) {
+        [self.searchDisplayController setActive:YES];
+        self.searchDisplayController.searchBar.text = self.query;
+    }
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
+}
+
+#pragma mark - UITableViewDelegate
 - (UITableViewCell *)cellForTaxon:(Taxon *)t inTableView:(UITableView *)tableView
 {
     NSString *cellIdentifier = [t.name isEqualToString:t.defaultName] ? @"TaxonOneNameCell" : @"TaxonTwoNameCell";
@@ -138,7 +140,6 @@ static const int TaxonCellSubtitleTag = 3;
     [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.accessoryView = addButton;
-    
     
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:TaxonCellImageTag];
     [imageView unsetImage];
