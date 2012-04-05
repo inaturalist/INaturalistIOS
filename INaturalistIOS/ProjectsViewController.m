@@ -56,8 +56,9 @@ static const int ProjectCellTitleTag = 2;
             self.noContentLabel.numberOfLines = 0;
             [self.noContentLabel sizeToFit];
             self.noContentLabel.textAlignment = UITextAlignmentCenter;
-            self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
+            self.noContentLabel.center = CGPointMake(self.tableView.center.x, 
+                                                     self.tableView.tableHeaderView.frame.size.height +
+                                                     (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
         [self.view addSubview:self.noContentLabel];
