@@ -516,22 +516,26 @@ static const int ObservationCellLowerRightTag = 4;
         [po deleteEntity];
     } else {
         [syncQueue stop];
-        [self stopSync];
-        NSString *alertTitle;
-        NSString *alertMessage;
-        if (error.domain == RKRestKitErrorDomain && error.code == RKRequestConnectionTimeoutError) {
-            alertTitle = @"Request timed out";
-            alertMessage = @"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.";
+        if ([self isSyncing]) {
+            [self stopSync];
+            NSString *alertTitle;
+            NSString *alertMessage;
+            if (error.domain == RKRestKitErrorDomain && error.code == RKRequestConnectionTimeoutError) {
+                alertTitle = @"Request timed out";
+                alertMessage = @"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.";
+            } else {
+                alertTitle = @"Whoops!";
+                alertMessage = [NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription];
+            }
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle 
+                                                         message:alertMessage
+                                                        delegate:self 
+                                               cancelButtonTitle:@"OK" 
+                                               otherButtonTitles:nil];
+            [av show];
         } else {
-            alertTitle = @"Whoops!";
-            alertMessage = [NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription];
+            [self stopSync];
         }
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle 
-                                                     message:alertMessage
-                                                    delegate:self 
-                                           cancelButtonTitle:@"OK" 
-                                           otherButtonTitles:nil];
-        [av show];
     }
 }
 
