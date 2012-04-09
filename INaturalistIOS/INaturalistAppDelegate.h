@@ -11,6 +11,7 @@
 @interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) RKObjectManager *photoObjectManager;
 
 - (void)configureRestKit;
 - (void)configureThree20;

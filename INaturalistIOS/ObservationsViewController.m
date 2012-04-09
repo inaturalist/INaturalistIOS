@@ -15,6 +15,7 @@
 #import "DejalActivityView.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
+#import "INaturalistAppDelegate.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -108,11 +109,13 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)syncObservationPhoto:(ObservationPhoto *)op
 {
+    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
+    app.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
     if (op.syncedAt) {
-        [[RKObjectManager sharedManager] putObject:op mapResponseWith:[ObservationPhoto mapping] delegate:self.syncQueue];
+        [app.photoObjectManager putObject:op mapResponseWith:[ObservationPhoto mapping] delegate:self.syncQueue];
     } else {
-        [[RKObjectManager sharedManager] postObject:op delegate:self.syncQueue block:^(RKObjectLoader *loader) {
-            RKObjectMapping* serializationMapping = [RKObjectManager.sharedManager.mappingProvider 
+        [app.photoObjectManager postObject:op delegate:self.syncQueue block:^(RKObjectLoader *loader) {
+            RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
                                                      serializationMappingForClass:[ObservationPhoto class]];
             NSError* error = nil;
             NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
@@ -122,6 +125,7 @@ static const int ObservationCellLowerRightTag = 4;
             [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
                                                               forSize:imageSize] 
                    forParam:@"file"];
+            NSLog(@"loader.URLRequest: %@", loader.URLRequest);
             loader.params = params;
             loader.objectMapping = [ObservationPhoto mapping];
         }];

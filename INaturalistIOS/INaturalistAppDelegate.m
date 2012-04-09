@@ -21,6 +21,7 @@
 @implementation INaturalistAppDelegate
 
 @synthesize window = _window;
+@synthesize photoObjectManager = _photoObjectManager;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -96,6 +97,24 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
+    
+    
+    // setup photo object manager
+    self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:INatMediaBaseURL];
+    self.photoObjectManager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"];
+    [self.photoObjectManager.router routeClass:ObservationPhoto.class 
+                                toResourcePath:@"/observation_photos.json/:recordID"];
+    [self.photoObjectManager.router routeClass:ObservationPhoto.class
+                toResourcePath:@"/observation_photos.json"
+                     forMethod:RKRequestMethodPOST];
+    [self.photoObjectManager.mappingProvider setObjectMapping:[ObservationPhoto.class mapping] forKeyPath:@"observation_photos"];
+    [self.photoObjectManager.mappingProvider setSerializationMapping:[ObservationPhoto.class serializationMapping] 
+                                                            forClass:ObservationPhoto.class];
+    self.photoObjectManager.client.requestQueue.showsNetworkActivityIndicatorWhenBusy = YES;
+    [self.photoObjectManager.client setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    [self.photoObjectManager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
+    [self.photoObjectManager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    self.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
 }
 
 - (void)configureThree20
