@@ -466,6 +466,9 @@ static const int ProjectsSection = 5;
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
+        NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification 
+                                                                         object:self.observation];
+        [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -779,6 +782,9 @@ static const int ProjectsSection = 5;
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }
+    NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification 
+                                                                     object:self.observation];
+    [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

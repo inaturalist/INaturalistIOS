@@ -17,9 +17,9 @@
 {
     [self setObservationsTabBadge];
     [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
-                                                 name:NSManagedObjectContextDidSaveNotification 
-                                               object:[[[RKObjectManager sharedManager] objectStore] managedObjectContext]];
+                                             selector:@selector(handleUserSavedObservationNotification:) 
+                                                 name:INatUserSavedObservationNotification 
+                                               object:nil];
     
     TTNavigator* navigator = [TTNavigator navigator];
     navigator.delegate = self;
@@ -32,7 +32,7 @@
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
+- (void)handleUserSavedObservationNotification:(NSNotification *)notification
 {
     [self setObservationsTabBadge];
 }

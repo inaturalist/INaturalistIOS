@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
 
+#define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
+
 @class Taxon;
 
 @interface Observation : INatModel
