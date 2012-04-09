@@ -287,6 +287,7 @@ static const int ProjectsSection = 5;
 {
     [self dismissModalViewControllerAnimated:YES];
     ObservationPhoto *op = [ObservationPhoto object];
+    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
     [op setObservation:self.observation];
     [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
@@ -639,7 +640,6 @@ static const int ProjectsSection = 5;
         self.datePicker.maximumDate = [NSDate date];
         self.datePicker.date = self.observation.localObservedOn;
         [sheet addSubview:self.datePicker];
-        
         [sheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -650,6 +650,7 @@ static const int ProjectsSection = 5;
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:@"Open", @"Obscured", @"Private", nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
+        self.currentActionSheet = actionSheet;
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
     } else {
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
