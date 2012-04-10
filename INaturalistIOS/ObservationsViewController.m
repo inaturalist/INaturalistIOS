@@ -60,14 +60,6 @@ static const int ObservationCellLowerRightTag = 4;
         return;
     }
     
-    NSString *activityMsg = @"Syncing...";
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-    } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
-                                                             withLabel:activityMsg];
-    }
-    
     if (!self.stopSyncButton) {
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:@"Stop sync" 
                                                                style:UIBarButtonItemStyleBordered 
@@ -79,6 +71,15 @@ static const int ObservationCellLowerRightTag = 4;
     [self.navigationController setToolbarHidden:NO];
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
                  animated:YES];
+    
+    NSString *activityMsg = @"Syncing...";
+    if (syncActivityView) {
+        [[syncActivityView activityLabel] setText:activityMsg];
+    } else {
+        self.tableView.scrollEnabled = NO;
+        syncActivityView = [DejalBezelActivityView activityViewForView:self.tableView
+                                                             withLabel:activityMsg];
+    }
     
     self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
     [self.syncQueue addModel:Observation.class];
@@ -98,6 +99,8 @@ static const int ObservationCellLowerRightTag = 4;
         [self.syncQueue stop];
     }
     [[self tableView] reloadData];
+    
+    self.tableView.scrollEnabled = YES;
     
     [self checkSyncStatus];
 }
