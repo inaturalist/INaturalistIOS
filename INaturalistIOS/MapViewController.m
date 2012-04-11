@@ -37,16 +37,26 @@
 {
     if (self.mapView.annotations.count == 0) return;
     double maxLat = 0, minLat = 0, maxLon = 0, minLon = 0;
-    for (ObservationAnnotation *anno in self.mapView.annotations) {
-        minLat = minLat == 0 || anno.coordinate.latitude  < minLat ? anno.coordinate.latitude  : minLat;
-        minLon = minLon == 0 || anno.coordinate.longitude < minLon ? anno.coordinate.longitude : minLon;
-        maxLat = maxLat == 0 || anno.coordinate.latitude  > maxLat ? anno.coordinate.latitude  : maxLat;
-        maxLon = maxLon == 0 || anno.coordinate.longitude > maxLon ? anno.coordinate.longitude : maxLon;
+    MKCoordinateRegion region;
+    if (self.mapView.annotations.count == 1) {
+        ObservationAnnotation *anno = [self.mapView.annotations firstObject];
+        float d = 1000.0;
+        if (anno.observation.positionalAccuracy) {
+            d = anno.observation.positionalAccuracy.floatValue * 5;
+        }
+        region = MKCoordinateRegionMakeWithDistance(anno.coordinate, d, d);
+    } else {
+        for (ObservationAnnotation *anno in self.mapView.annotations) {
+            minLat = minLat == 0 || anno.coordinate.latitude  < minLat ? anno.coordinate.latitude  : minLat;
+            minLon = minLon == 0 || anno.coordinate.longitude < minLon ? anno.coordinate.longitude : minLon;
+            maxLat = maxLat == 0 || anno.coordinate.latitude  > maxLat ? anno.coordinate.latitude  : maxLat;
+            maxLon = maxLon == 0 || anno.coordinate.longitude > maxLon ? anno.coordinate.longitude : maxLon;
+        }
+        region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(minLat + (maxLat - minLat) / 2.0, 
+                                                                   minLon + (maxLon - minLon) / 2.0), 
+                                        MKCoordinateSpanMake(fabs(maxLat - minLat), 
+                                                             fabs(maxLon - minLon)));
     }
-    MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(minLat + (maxLat - minLat) / 2.0, 
-                                                                                  minLon + (maxLon - minLon) / 2.0), 
-                                                       MKCoordinateSpanMake(fabs(maxLat - minLat), 
-                                                                            fabs(maxLon - minLon)));
     [self.mapView setRegion:[self.mapView regionThatFits:region] animated:NO];
 }
 
