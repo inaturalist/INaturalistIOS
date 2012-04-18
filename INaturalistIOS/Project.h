@@ -32,6 +32,9 @@
 @property (nonatomic, retain) NSSet *projectUsers;
 @property (nonatomic, retain) NSNumber * listID;
 @property (nonatomic, retain) NSString *projectObservationRuleTerms;
+@property (nonatomic, retain) NSDate * featuredAt;
+@property (nonatomic, retain) NSNumber * latitude;
+@property (nonatomic, retain) NSNumber * longitude;
 
 - (BOOL)observationsRestrictedToList;
 

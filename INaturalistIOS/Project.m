@@ -34,6 +34,9 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic projectUsers;
 @dynamic listID;
 @dynamic projectObservationRuleTerms;
+@dynamic featuredAt;
+@dynamic latitude;
+@dynamic longitude;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -51,6 +54,9 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"terms", @"terms",
          @"project_list.id", @"listID",
          @"project_observation_rule_terms", @"projectObservationRuleTerms",
+         @"featured_at_utc", @"featuredAt",
+         @"rule_place.latitude", @"latitude",
+         @"rule_place.longitude", @"longitude",
          nil];
         [defaultMapping mapKeyPath:@"project_list" 
                     toRelationship:@"projectList" 

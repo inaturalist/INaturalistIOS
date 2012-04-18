@@ -11,25 +11,87 @@
 #import "ProjectListViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
-#import "DejalActivityView.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
+static const int ListControlIndexUser = 0;
+static const int ListControlIndexFeatured = 1;
+static const int ListControlIndexNearby = 2;
 
 @implementation ProjectsViewController
-@synthesize projectUsers = _projectUsers;
+@synthesize projects = _projects;
 @synthesize loader = _loader;
-@synthesize lastSyncedAt = _lastSyncedAt;
+@synthesize projectUsersSyncedAt = _lastSyncedAt;
+@synthesize featuredProjectsSyncedAt = _featuredProjectsSyncedAt;
+@synthesize nearbyProjectsSyncedAt = _nearbyProjectsSyncedAt;
 @synthesize noContentLabel = _noContentLabel;
 @synthesize projectsSearchController = _projectsSearchController;
+@synthesize listControl = _listControl;
+@synthesize listControlItem = _listControlItem;
+@synthesize locationManager = _locationManager;
+@synthesize lastLocation = _lastLocation;
+@synthesize syncButton = _syncButton;
+@synthesize syncActivityItem = _syncActivityItem;
 
 - (void)loadData
+{
+    BOOL syncNeeded = NO;
+    switch (self.listControl.selectedSegmentIndex) {
+        case ListControlIndexFeatured:
+            [self loadFeaturedProjects];
+            syncNeeded = self.featuredProjectsSyncedAt ? NO : YES;
+            break;
+        case ListControlIndexNearby:
+            [self loadNearbyProjects];
+            syncNeeded = self.nearbyProjectsSyncedAt ? NO : YES;
+            break;
+        default:
+            [self loadUserProjects];
+            syncNeeded = self.projectUsersSyncedAt ? NO : YES;
+            break;
+    }
+    [self checkEmpty];
+    [self.tableView reloadData];
+    
+    if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [self sync];
+    }
+}
+
+- (void)loadUserProjects
 {
     NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
-    self.projectUsers = [NSMutableArray arrayWithArray:projectUsers];
-    [self checkEmpty];
+    self.projects = [NSMutableArray arrayWithArray:[projectUsers valueForKey:@"project"]];
+}
+
+- (void)loadFeaturedProjects
+{
+    self.projects = [NSMutableArray arrayWithArray:[Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]]];
+}
+
+- (void)loadNearbyProjects
+{
+    NSFetchRequest *request = [Project fetchRequest];
+    request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
+    request.fetchLimit = 500;
+    NSArray *projects = [Project objectsWithFetchRequest:request];
+    self.projects = [NSMutableArray arrayWithArray:[projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
+        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue 
+                                                            longitude:p1.longitude.doubleValue];
+        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue 
+                                                            longitude:p2.longitude.doubleValue];
+        NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
+        NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
+        return [p1Distance compare:p2Distance];
+    }]];
+    [self.projects filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue 
+                                                     longitude:p.longitude.doubleValue];
+        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
+        return d.doubleValue < 500000; // meters
+    }]];
 }
 
 - (IBAction)clickedSync:(id)sender {
@@ -47,20 +109,31 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)checkEmpty
 {
-    if (self.projectUsers.count == 0 && !self.searchDisplayController.active) {
-        if (!self.noContentLabel) {
+    if (self.projects.count == 0 && !self.searchDisplayController.active) {
+        if (self.noContentLabel) {
+            [self.noContentLabel removeFromSuperview];
+        } else {
             self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.text = @"You don't have any projects yet.";
             self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.numberOfLines = 0;
-            [self.noContentLabel sizeToFit];
             self.noContentLabel.textAlignment = UITextAlignmentCenter;
-            self.noContentLabel.center = CGPointMake(self.tableView.center.x, 
-                                                     self.tableView.tableHeaderView.frame.size.height +
-                                                     (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
+        
+        if (self.listControl.selectedSegmentIndex == ListControlIndexFeatured) {
+            self.noContentLabel.text = @"No featured projects.";
+        } else if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
+            self.noContentLabel.text = @"No nearby projects.";
+        } else {
+            self.noContentLabel.text = @"You haven't joined any projects yet.";
+        }
+        self.noContentLabel.numberOfLines = 0;
+        [self.noContentLabel sizeToFit];
+        [self.noContentLabel setBounds:CGRectMake(0, 0, self.tableView.tableHeaderView.frame.size.width, 44)];
+        self.noContentLabel.center = CGPointMake(self.tableView.center.x, 
+                                                 self.tableView.tableHeaderView.frame.size.height +
+                                                 (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
+        
         [self.view addSubview:self.noContentLabel];
     } else if (self.noContentLabel) {
         [self.noContentLabel removeFromSuperview];
@@ -69,38 +142,123 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)sync
 {
+    self.navigationItem.rightBarButtonItem = self.syncActivityItem;
+    switch (self.listControl.selectedSegmentIndex) {
+        case ListControlIndexFeatured:
+            [self syncFeaturedProjects];
+            break;
+        case ListControlIndexNearby:
+            [self syncNearbyProjects];
+            break;            
+        default:
+            [self syncUserProjects];
+            break;
+    }
+}
+
+- (void)syncFeaturedProjects
+{
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/projects.json?featured=true"
+                                                 objectMapping:[Project mapping] 
+                                                      delegate:self];
+    self.featuredProjectsSyncedAt = [NSDate date];
+}
+
+- (void)syncNearbyProjects
+{
+    self.nearbyProjectsSyncedAt = [NSDate date];
+    if (!self.lastLocation) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Couldn't determine your location" 
+                                                     message:@"Make sure iNat has permission to access your location or give the GPS some time to fetch it."
+                                                    delegate:self 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        [self stopSync];
+        return;
+    }
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f", 
+                                                                self.lastLocation.coordinate.latitude, 
+                                                                self.lastLocation.coordinate.longitude]
+                                                 objectMapping:[Project mapping] 
+                                                      delegate:self];
+}
+
+- (void)syncUserProjects
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
     if (username && username.length > 0) {
-        [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                          withLabel:@"Syncing projects..."];
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username]
                                                      objectMapping:[ProjectUser mapping] 
                                                           delegate:self];
-        self.lastSyncedAt = [NSDate date];
     } else {
+        [self stopSync];
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     }
+    self.projectUsersSyncedAt = [NSDate date];
 }
 
 - (void)stopSync
 {
-    [DejalBezelActivityView removeView];
+    self.navigationItem.rightBarButtonItem = self.syncButton;
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
-    [self loadData];
-    [[self tableView] reloadData];
+}
+
+- (UIBarButtonItem *)listControlItem
+{
+    if (!_listControlItem) {
+        _listControlItem = [[UIBarButtonItem alloc] initWithCustomView:self.listControl];
+    }
+    return _listControlItem;
+}
+
+- (UISegmentedControl *)listControl
+{
+    if (!_listControl) {
+        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Joined", @"Featured", @"Nearby", nil]];
+        _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+        _listControl.selectedSegmentIndex = (username && username.length > 0) ? 0 : 1;
+        
+        [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
+    }
+    return _listControl;
+}
+
+- (UIBarButtonItem *)syncActivityItem
+{
+    if (!_syncActivityItem) {
+        UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
+        [aiv startAnimating];
+        _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
+    }
+    return _syncActivityItem;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    ProjectListViewController *vc = [segue destinationViewController];
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
-        ProjectUser *pu = [self.projectUsers 
-                           objectAtIndex:[[self.tableView 
-                                           indexPathForSelectedRow] row]];
-        [vc setProject:pu.project];
-    } else if ([segue.identifier isEqualToString:@"ProjectSegue"] && [sender isKindOfClass:Project.class]) {
-        [vc setProject:sender];
+        ProjectListViewController *vc = [segue destinationViewController];
+        Project *p = [self.projects 
+                      objectAtIndex:[[self.tableView 
+                                      indexPathForSelectedRow] row]];
+        [vc setProject:p];
+    } else if ([segue.identifier isEqualToString:@"ProjectSegue"]) {
+        ProjectListViewController *vc = [segue destinationViewController];
+        if ([sender isKindOfClass:Project.class]) {
+            [vc setProject:sender];
+        } else {
+            Project *p = [self.projects 
+                          objectAtIndex:[[self.tableView 
+                                          indexPathForSelectedRow] row]];
+            [vc setProject:p];
+        }
+    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
+        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
+        vc.delegate = self;
     }
 }
 
@@ -114,20 +272,35 @@ static const int ProjectCellTitleTag = 2;
         self.projectsSearchController = [[ProjectsSearchController alloc] 
                                          initWithSearchDisplayController:self.searchDisplayController];
     }
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        self.locationManager.distanceFilter = 1000;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
+    
+    [self.navigationController setToolbarHidden:NO];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self setToolbarItems:[NSArray arrayWithObjects:
+                           flex,
+                           self.listControlItem,
+                           flex, 
+                           nil]];
+    
+    if (self.locationManager) {
+        [self.locationManager startUpdatingLocation];
+    }
     [self loadData];
-    [self.tableView reloadData];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    NSString *username = [NSUserDefaults.standardUserDefaults objectForKey:INatUsernamePrefKey];
-    if (self.projectUsers.count == 0 && username && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [self sync];
+    if (self.locationManager) {
+        [self.locationManager stopUpdatingLocation];
     }
 }
 
@@ -141,7 +314,7 @@ static const int ProjectCellTitleTag = 2;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.projectUsers.count;
+    return self.projects.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -153,37 +326,56 @@ static const int ProjectCellTitleTag = 2;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
+    Project *p = [self.projects objectAtIndex:[indexPath row]];
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:ProjectCellImageTag];
     [imageView unsetImage];
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
-    title.text = pu.project.title;
+    title.text = p.title;
     imageView.defaultImage = [UIImage imageNamed:@"projects"];
-    imageView.urlPath = pu.project.iconURL;
+    imageView.urlPath = p.iconURL;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.listControl.selectedSegmentIndex == ListControlIndexUser) {
+        [self performSegueWithIdentifier:@"ProjectListSegue" sender:self];
+    } else {
+        [self performSegueWithIdentifier:@"ProjectSegue" sender:self];
+    }
 }
 
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    if (objects.count == 0) {
-        [self stopSync];
-        return;
-    }
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
     }
     
-    NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-    for (ProjectUser *pu in rejects) {
-        [pu deleteEntity];
+    if ([objectLoader.resourcePath rangeOfString:@"featured"].location != NSNotFound) {
+        NSArray *rejects = [Project objectsWithPredicate:
+                            [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
+        for (Project *p in rejects) {
+            if (p.projectUsers.count == 0) {
+                [p deleteEntity];
+            } else {
+                p.featuredAt = nil;
+                p.syncedAt = now;
+            }
+        }
+    } else if ([objectLoader.resourcePath rangeOfString:@"projects/user"].location != NSNotFound) {
+        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
+        for (ProjectUser *pu in rejects) {
+            [pu deleteEntity];
+        }
     }
     
     [[[RKObjectManager sharedManager] objectStore] save];
     
     [self stopSync];
+    [self loadData];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
@@ -222,6 +414,18 @@ static const int ProjectCellTitleTag = 2;
 #pragma mark - LoginViewControllerDelegate
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
+    self.projectUsersSyncedAt = nil;
     [self sync];
+}
+
+#pragma mark - CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    self.lastLocation = newLocation;
+}
+
+- (void)viewDidUnload {
+    [self setSyncButton:nil];
+    [super viewDidUnload];
 }
 @end

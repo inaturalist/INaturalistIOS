@@ -35,7 +35,10 @@
 - (void)configureRestKit
 {
     RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:INatBaseURL];
-    manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"];
+    manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
+                                                       usingSeedDatabaseName:nil 
+                                                          managedObjectModel:[self getManagedObjectModel] 
+                                                                    delegate:self];
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -92,8 +95,8 @@
     [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
     // DEBUG
-//    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
-//    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+//        RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+//        RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
@@ -101,12 +104,15 @@
     
     // setup photo object manager
     self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:INatMediaBaseURL];
-    self.photoObjectManager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"];
+    self.photoObjectManager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
+                                                                       usingSeedDatabaseName:nil 
+                                                                          managedObjectModel:[self getManagedObjectModel] 
+                                                                                    delegate:self];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
                                 toResourcePath:@"/observation_photos.json/:recordID"];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class
-                toResourcePath:@"/observation_photos.json"
-                     forMethod:RKRequestMethodPOST];
+                                toResourcePath:@"/observation_photos.json"
+                                     forMethod:RKRequestMethodPOST];
     [self.photoObjectManager.mappingProvider setObjectMapping:[ObservationPhoto.class mapping] forKeyPath:@"observation_photos"];
     [self.photoObjectManager.mappingProvider setSerializationMapping:[ObservationPhoto.class serializationMapping] 
                                                             forClass:ObservationPhoto.class];
@@ -117,11 +123,57 @@
     self.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
 }
 
+// get configured model, or perform migration if necessary
+- (NSManagedObjectModel *)getManagedObjectModel
+{
+    if (managedObjectModel) {
+        return managedObjectModel;
+    }
+    
+    NSError *error = nil;
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *storePath = [docDir stringByAppendingPathComponent:@"inaturalist.sqlite"];
+    NSURL *storeURL = [NSURL fileURLWithPath:storePath];
+    
+    NSString *momPath = [[NSBundle mainBundle] pathForResource:@"iNaturalist" ofType:@"momd"];
+    if (!momPath) {
+        return [NSManagedObjectModel mergedModelFromBundles:nil];
+    }
+    
+    
+    NSURL *momURL = [NSURL fileURLWithPath:momPath];
+    NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
+    
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+    
+    if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                           configuration:nil 
+                                     URL:storeURL
+                                 options:options 
+                                   error:&error]) {
+        [NSException raise:@"Failed to open database" format:error.localizedDescription];
+    }
+    
+    managedObjectModel = psc.managedObjectModel;
+    return managedObjectModel;
+}
+
 - (void)configureThree20
 {
     [[TTURLRequestQueue mainQueue] setMaxContentLength:0];
     TTNavigator* navigator = [TTNavigator navigator];
     navigator.window = self.window;
+}
+
+- (BOOL)loggedIn
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+    return (username && username.length > 0);
 }
 
 @end

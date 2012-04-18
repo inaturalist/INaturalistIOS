@@ -9,6 +9,7 @@
 #import <TapkuLibrary/TapkuLibrary.h>
 #import "ProjectDetailViewController.h"
 #import "DejalActivityView.h"
+#import "INaturalistAppDelegate.h"
 
 @implementation ProjectDetailViewController
 @synthesize project = _project;
@@ -47,9 +48,9 @@
 }
 
 - (IBAction)clickedViewButton:(id)sender {
-    NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"%@/projects/%@", INatBaseURL, self.project.cachedSlug]];
-    [[UIApplication sharedApplication] openURL:url];
+    NSString *url = [NSString stringWithFormat:@"%@/projects/%@", INatBaseURL, self.project.cachedSlug];
+    TTNavigator* navigator = [TTNavigator navigator];
+    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
 }
 
 - (IBAction)clickedJoin:(id)sender {
@@ -65,7 +66,11 @@
     if (self.projectUser && self.projectUser.syncedAt) {
         [self leave];
     } else {
-        [self join];
+        if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
+            [self join];
+        } else {
+            [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        }
     }
 }
 
@@ -101,6 +106,24 @@
     }
 }
 
+- (NSString *)projectDescription
+{
+    if (self.project && self.project.desc) {
+        return self.project.desc;
+    } else {
+        return @"No description.";
+    }
+}
+
+- (NSString *)projectTerms
+{
+    if (self.project && self.project.terms && self.project.terms.length != 0) {
+        return self.project.terms;
+    } else {
+        return @"No terms.";
+    }
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
@@ -120,6 +143,11 @@
     [super viewDidLoad];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:YES animated:animated];
+}
+
 - (void)viewDidUnload {
     [self setProjectIcon:nil];
     [self setProjectTitle:nil];
@@ -131,14 +159,14 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        NSString *desc = [self.project.desc stringByRemovingHTML];
+        NSString *desc = [[self projectDescription] stringByRemovingHTML];
         desc = [desc stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
         CGSize s = [desc sizeWithFont:[UIFont systemFontOfSize:15] 
                     constrainedToSize:CGSizeMake(320, 1000) 
                         lineBreakMode:UILineBreakModeWordWrap];
         return s.height + 10;
     } else if (indexPath.section == 1 && indexPath.row == 0) {
-        NSString *terms = [self.project.terms stringByRemovingHTML];
+        NSString *terms = [[self projectTerms] stringByRemovingHTML];
         terms = [terms stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
         CGSize s = [terms sizeWithFont:[UIFont systemFontOfSize:15] 
                      constrainedToSize:CGSizeMake(320, 1000) 
@@ -191,7 +219,7 @@
     if (indexPath.section == 0 && indexPath.row == 0) {
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.desc]
+            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectDescription]]
                                                lineBreaks:YES
                                                      URLs:YES];
             [rowContent sizeToFit];
@@ -200,7 +228,7 @@
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", self.project.terms]
+            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]]
                                                lineBreaks:YES
                                                      URLs:YES];
             [rowContent sizeToFit];
@@ -253,5 +281,12 @@
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
     [self clickedJoin:nil];
+}
+
+- (void)loginViewControllerDidCancel:(LoginViewController *)controller
+{
+    if (self.projectUser) {
+        [self.projectUser destroy];
+    }
 }
 @end

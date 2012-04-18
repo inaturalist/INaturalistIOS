@@ -311,6 +311,7 @@
 		190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonDetailViewController.m; sourceTree = "<group>"; };
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.1.xcdatamodel; sourceTree = "<group>"; };
 		19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button_highlight.png; sourceTree = "<group>"; };
 		19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_button_highlight@2x.png"; sourceTree = "<group>"; };
 		19122E3D1512D3F4009BD3D0 /* add_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button.png; sourceTree = "<group>"; };
@@ -1366,9 +1367,10 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = 1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */;
+			currentVersion = 190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

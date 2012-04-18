@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="2.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="2.1" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11D50" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="DeletedRecord" representedClassName="DeletedRecord" syncable="YES">
         <attribute name="modelName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -107,10 +107,13 @@
         <attribute name="cachedSlug" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="featuredAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="iconURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="listID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="observedTaxaCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="projectObservationRuleTerms" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="projectType" optional="YES" attributeType="String" syncable="YES"/>
@@ -207,7 +210,7 @@
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="540"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
-        <element name="Project" positionX="160" positionY="192" width="128" height="315"/>
+        <element name="Project" positionX="160" positionY="192" width="128" height="360"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
         <element name="Taxon" positionX="160" positionY="192" width="128" height="435"/>

@@ -9,10 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
-
+{
+    NSManagedObjectModel *managedObjectModel;
+}
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) RKObjectManager *photoObjectManager;
 
 - (void)configureRestKit;
 - (void)configureThree20;
+- (BOOL)loggedIn;
 @end

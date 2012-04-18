@@ -15,6 +15,9 @@
 
 - (IBAction)cancel:(id)sender {
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidCancel:)]) {
+        [self.delegate performSelector:@selector(loginViewControllerDidCancel:) withObject:self];
+    }
 }
 
 #pragma mark - View lifecycle

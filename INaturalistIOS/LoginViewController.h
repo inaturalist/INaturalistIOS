@@ -14,6 +14,7 @@
 @protocol LoginViewControllerDelegate <NSObject>
 @optional
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller;
+- (void)loginViewControllerDidCancel:(LoginViewController *)controller;
 - (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
 @end
 

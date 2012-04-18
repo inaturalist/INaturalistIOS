@@ -7,15 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
 #import "LoginViewController.h"
 #import "ProjectsSearchController.h"
 
-@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate>
-@property (nonatomic, strong) NSMutableArray *projectUsers;
+@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate>
+@property (nonatomic, strong) NSMutableArray *projects;
 @property (nonatomic, strong) RKObjectLoader *loader;
-@property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (nonatomic, strong) NSDate *projectUsersSyncedAt;
+@property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
+@property (nonatomic, strong) NSDate *nearbyProjectsSyncedAt;
 @property (nonatomic, strong) UILabel *noContentLabel;
 @property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
+@property (nonatomic, strong) UISegmentedControl *listControl;
+@property (nonatomic, strong) UIBarButtonItem *listControlItem;
+@property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, strong) CLLocation *lastLocation;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
 - (void)loadData;

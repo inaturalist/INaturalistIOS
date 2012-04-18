@@ -128,7 +128,6 @@ static const int ObservationCellLowerRightTag = 4;
             [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
                                                               forSize:imageSize] 
                    forParam:@"file"];
-            NSLog(@"loader.URLRequest: %@", loader.URLRequest);
             loader.params = params;
             loader.objectMapping = [ObservationPhoto mapping];
         }];
