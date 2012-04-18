@@ -9,6 +9,7 @@
 #import "SyncQueue.h"
 #import "INatModel.h"
 #import "DeletedRecord.h"
+#import "Observation.h"
 
 @implementation SyncQueue
 @synthesize queue = _queue;
@@ -125,6 +126,8 @@
     if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
         [self.delegate performSelector:@selector(syncQueueFinished)];
     }
+    NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
 }
 
 - (BOOL)isRunning
