@@ -64,13 +64,21 @@ static const int ProjectsSection = 5;
     [self.speciesGuessTextField setText:self.observation.speciesGuess];
     [self.observedAtLabel setText:self.observation.observedOnPrettyString];
     [self.placeGuessField setText:self.observation.placeGuess];
-    if (self.observation.latitude) [self.latitudeLabel setText:self.observation.latitude.description];
+    if (self.observation.latitude) {
+        [self.latitudeLabel setText:self.observation.latitude.description];
+    } else {
+        self.latitudeLabel.text = nil;
+    }
     if (self.observation.longitude) {
         [self.longitudeLabel setText:self.observation.longitude.description];
+    } else {
+        self.longitudeLabel.text = nil;
     }
     
     if (self.observation.positionalAccuracy) {
         [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
+    } else {
+        self.positionalAccuracyLabel.text = nil;
     }
     [descriptionTextView setText:self.observation.inatDescription];
     
@@ -732,6 +740,7 @@ static const int ProjectsSection = 5;
 {
     // right now the only alert view is for existing asset processing
     if (buttonIndex == 1) {
+        [self stopUpdatingLocation];
         ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
         [assetsLib assetForURL:self.lastImageReferenceURL resultBlock:^(ALAsset *asset) {
             [self uiToObservation];
@@ -742,7 +751,6 @@ static const int ProjectsSection = 5;
             }
             CLLocation *imageLoc = [asset valueForProperty:ALAssetPropertyLocation];
             if (imageLoc) {
-                [self stopUpdatingLocation];
                 self.observation.latitude = [NSNumber numberWithDouble:imageLoc.coordinate.latitude];
                 self.observation.longitude = [NSNumber numberWithDouble:imageLoc.coordinate.longitude];
                 if (imageLoc.horizontalAccuracy && imageLoc.horizontalAccuracy > 0) {
@@ -750,9 +758,18 @@ static const int ProjectsSection = 5;
                 } else {
                     self.observation.positionalAccuracy = nil;
                 }
+            } else {
+                self.observation.placeGuess = nil;
+                self.observation.latitude = nil;
+                self.observation.longitude = nil;
+                self.observation.positionalAccuracy = nil;
+                self.observation.positioningMethod = nil;
+                self.observation.positioningDevice = nil;
             }
             [self observationToUI];
-            [self reverseGeocodeCoordinates];
+            if (self.observation.latitude) {
+                [self reverseGeocodeCoordinates];
+            }
             self.lastImageReferenceURL = nil;
         } failureBlock:^(NSError *error) {
             UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error" 
@@ -931,6 +948,8 @@ static const int ProjectsSection = 5;
                                                               accuracy:self.observation.positionalAccuracy];
             loc.positioningMethod = self.observation.positioningMethod;
             [vc setCurrentLocation:loc];
+        } else {
+            [vc setCurrentLocation:nil];
         }
     } else if ([segue.identifier isEqualToString:@"ProjectChooserSegue"]) {
         ProjectChooserViewController *vc = (ProjectChooserViewController *)[segue.destinationViewController topViewController];

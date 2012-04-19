@@ -48,16 +48,19 @@
         MKCoordinateRegion region;
         region.center.latitude = lat;
         region.center.longitude = lon;
-        if (self.currentLocation && self.currentLocation.accuracy) {
+        if (self.currentLocation.accuracy) {
             double accuracyInDegrees = [self metersToDegrees:[self.currentLocation.accuracy longValue]];
             region.span.latitudeDelta = accuracyInDegrees * 5;
             region.span.longitudeDelta = accuracyInDegrees * 5;
         } else {
-            region.span.latitudeDelta = 1;
-            region.span.longitudeDelta = 1;
+            region.span.latitudeDelta = 5;
+            region.span.longitudeDelta = 5;
         }
         [self.mapView setRegion:[self.mapView regionThatFits:region]];
         [self updateAccuracyCircle];
+    } else {
+        MKCoordinateRegion region = MKCoordinateRegionMake(self.mapView.centerCoordinate, MKCoordinateSpanMake(180, 360));
+        [self.mapView setRegion:region animated:YES];
     }
 }
 
