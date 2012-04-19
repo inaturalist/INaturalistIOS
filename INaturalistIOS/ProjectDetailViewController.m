@@ -108,8 +108,8 @@
 
 - (NSString *)projectDescription
 {
-    if (self.project && self.project.desc) {
-        return self.project.desc;
+    if (self.project && self.project.desc && self.project.desc.length != 0) {
+        return [self.project.desc stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
     } else {
         return @"No description.";
     }
@@ -118,7 +118,7 @@
 - (NSString *)projectTerms
 {
     if (self.project && self.project.terms && self.project.terms.length != 0) {
-        return self.project.terms;
+        return [self.project.terms stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
     } else {
         return @"No terms.";
     }
