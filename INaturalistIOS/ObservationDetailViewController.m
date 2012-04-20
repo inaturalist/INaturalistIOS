@@ -301,6 +301,7 @@ static const int ProjectsSection = 5;
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     [ImageStore.sharedImageStore store:image forKey:op.photoKey];
     [self addPhoto:op];
+    op.localCreatedAt = [NSDate date];
     
     NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     if (referenceURL) {
