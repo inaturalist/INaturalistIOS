@@ -232,7 +232,7 @@ static const int ProjectsSection = 5;
     [self initUI];
     if (self.observation.isNew && 
         (
-         [self.latitudeLabel.text isEqualToString:@"???"] || // observation has no coordinates yet
+         self.observation.latitude == nil || // observation has no coordinates yet
          self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
          )) {
         [self startUpdatingLocation];
