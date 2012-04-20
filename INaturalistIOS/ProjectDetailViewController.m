@@ -11,6 +11,8 @@
 #import "DejalActivityView.h"
 #import "INaturalistAppDelegate.h"
 
+static const int LeaveProjectAlertViewTag = 1;
+
 @implementation ProjectDetailViewController
 @synthesize project = _project;
 @synthesize projectUser = _projectUser;
@@ -64,7 +66,13 @@
         return;
     }
     if (self.projectUser && self.projectUser.syncedAt) {
-        [self leave];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to leave this project?" 
+                                                     message:@"This will also remove your observations from this project."
+                                                    delegate:self 
+                                           cancelButtonTitle:@"Cancel"
+                                           otherButtonTitles:@"Leave", nil];
+        av.tag = LeaveProjectAlertViewTag;
+        [av show];
     } else {
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
@@ -287,6 +295,18 @@
 {
     if (self.projectUser) {
         [self.projectUser destroy];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag != LeaveProjectAlertViewTag) {
+        return;
+    }
+    
+    if (buttonIndex == 1) {
+        [self leave];
     }
 }
 @end

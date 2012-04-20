@@ -12,7 +12,7 @@
 #import "ProjectUser.h"
 #import "LoginViewController.h"
 
-@interface ProjectDetailViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate>
+@interface ProjectDetailViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, UIAlertViewDelegate>
 @property (nonatomic, strong) Project *project;
 @property (nonatomic, strong) ProjectUser *projectUser;
 @property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;

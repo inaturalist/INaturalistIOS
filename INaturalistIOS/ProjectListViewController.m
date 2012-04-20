@@ -236,6 +236,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
+    [self stopSync];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
@@ -250,8 +251,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
     }
     
     [[[RKObjectManager sharedManager] objectStore] save];
-    
-    [self stopSync];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
