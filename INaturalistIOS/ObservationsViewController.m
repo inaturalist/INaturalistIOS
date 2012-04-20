@@ -365,8 +365,6 @@ static const int ObservationCellLowerRightTag = 4;
 {
     [self setTableView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -517,9 +515,7 @@ static const int ObservationCellLowerRightTag = 4;
                                     error.localizedDescription]];
         [po deleteEntity];
     } else {
-        [syncQueue stop];
         if ([self isSyncing]) {
-            [self stopSync];
             NSString *alertTitle;
             NSString *alertMessage;
             if (error.domain == RKRestKitErrorDomain && error.code == RKRequestConnectionTimeoutError) {
@@ -535,9 +531,8 @@ static const int ObservationCellLowerRightTag = 4;
                                                cancelButtonTitle:@"OK" 
                                                otherButtonTitles:nil];
             [av show];
-        } else {
-            [self stopSync];
-        }
+        } 
+        [self stopSync];
     }
 }
 
