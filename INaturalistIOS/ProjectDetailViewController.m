@@ -180,6 +180,18 @@ static const int LeaveProjectAlertViewTag = 1;
                      constrainedToSize:CGSizeMake(320, 1000) 
                          lineBreakMode:UILineBreakModeWordWrap];
         return s.height + 10;
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
+        NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
+        NSString *first;
+        if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
+            first = [terms objectAtIndex:0];
+        } else {
+            first = [NSString stringWithString:@"No observation rules"];
+        }
+        CGSize s = [first sizeWithFont:[UIFont systemFontOfSize:15] 
+                     constrainedToSize:CGSizeMake(320, 1000) 
+                         lineBreakMode:UILineBreakModeWordWrap];
+        return s.height * terms.count + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -211,6 +223,9 @@ static const int LeaveProjectAlertViewTag = 1;
         case 1:
             label.text = @"Terms";
             break;
+        case 2:
+            label.text = @"Observation Rules";
+            break;
         default:
             break;
     }
@@ -237,6 +252,26 @@ static const int LeaveProjectAlertViewTag = 1;
         rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
             rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]]
+                                               lineBreaks:YES
+                                                     URLs:YES];
+            [rowContent sizeToFit];
+            rowContent.backgroundColor = [UIColor whiteColor];
+        }
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
+        rowContent = (TTStyledTextLabel *)[cell viewWithTag:2];
+        if (!rowContent.text) {
+            NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
+            NSMutableString *termsString;
+            if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
+                termsString = [NSMutableString stringWithString:@"<div><ul>"];
+                for (NSString *term in terms) {
+                    [termsString appendString:[NSString stringWithFormat:@"<li>- %@</li>", term]];
+                }
+                [termsString appendString:@"</ul></div>"];
+            } else {
+                termsString = [NSMutableString stringWithString:@"<div>No observation rules.</div>"];
+            }
+            rowContent.text = [TTStyledText textFromXHTML:termsString
                                                lineBreaks:YES
                                                      URLs:YES];
             [rowContent sizeToFit];
