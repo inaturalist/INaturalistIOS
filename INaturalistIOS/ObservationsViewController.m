@@ -114,23 +114,24 @@ static const int ObservationCellLowerRightTag = 4;
 {
     INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
     app.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
-    if (op.syncedAt) {
-        [app.photoObjectManager putObject:op mapResponseWith:[ObservationPhoto mapping] delegate:self.syncQueue];
+    void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
+        RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
+                                                 serializationMappingForClass:[ObservationPhoto class]];
+        NSError* error = nil;
+        NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
+                                    serializedObject:&error];
+        RKParams* params = [RKParams paramsWithDictionary:dictionary];
+        NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
+        [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
+                                                          forSize:imageSize] 
+               forParam:@"file"];
+        loader.params = params;
+        loader.objectMapping = [ObservationPhoto mapping];
+    };
+    if (op.syncedAt && op.recordID) {
+        [app.photoObjectManager putObject:op delegate:self.syncQueue block:prepareObservationPhoto];
     } else {
-        [app.photoObjectManager postObject:op delegate:self.syncQueue block:^(RKObjectLoader *loader) {
-            RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
-                                                     serializationMappingForClass:[ObservationPhoto class]];
-            NSError* error = nil;
-            NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
-                                        serializedObject:&error];
-            RKParams* params = [RKParams paramsWithDictionary:dictionary];
-            NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
-            [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                              forSize:imageSize] 
-                   forParam:@"file"];
-            loader.params = params;
-            loader.objectMapping = [ObservationPhoto mapping];
-        }];
+        [app.photoObjectManager postObject:op delegate:self.syncQueue block:prepareObservationPhoto];
     }
 }
 

@@ -109,7 +109,7 @@
                                                                           managedObjectModel:[self getManagedObjectModel] 
                                                                                     delegate:self];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
-                                toResourcePath:@"/observation_photos.json/:recordID"];
+                                toResourcePath:@"/observation_photos/:recordID.json"];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class
                                 toResourcePath:@"/observation_photos.json"
                                      forMethod:RKRequestMethodPOST];
