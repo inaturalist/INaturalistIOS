@@ -24,4 +24,5 @@
 - (void)join;
 - (void)leave;
 - (void)setupJoinButton;
+- (NSInteger)heightForHTML:(NSString *)html;
 @end

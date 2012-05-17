@@ -163,23 +163,27 @@ static const int LeaveProjectAlertViewTag = 1;
     [super viewDidUnload];
 }
 
+- (NSInteger)heightForHTML:(NSString *)html
+{
+    NSString *s = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+    s = [s stringByReplacingOccurrencesOfString:@"<BR>" withString:@"\n"];
+    s = [s stringByReplacingOccurrencesOfString:@"<p>" withString:@""];
+    s = [s stringByReplacingOccurrencesOfString:@"</p>" withString:@"\n"];
+    s = [s stringByRemovingHTML];
+    s = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    CGSize size = [s sizeWithFont:[UIFont systemFontOfSize:15] 
+                    constrainedToSize:CGSizeMake(320, 1000) 
+                    lineBreakMode:UILineBreakModeWordWrap];
+    return size.height;
+}
+
 #pragma mark - Table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        NSString *desc = [[self projectDescription] stringByRemovingHTML];
-        desc = [desc stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
-        CGSize s = [desc sizeWithFont:[UIFont systemFontOfSize:15] 
-                    constrainedToSize:CGSizeMake(320, 1000) 
-                        lineBreakMode:UILineBreakModeWordWrap];
-        return s.height + 10;
+        return [self heightForHTML:[self projectDescription]] + 10;
     } else if (indexPath.section == 1 && indexPath.row == 0) {
-        NSString *terms = [[self projectTerms] stringByRemovingHTML];
-        terms = [terms stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
-        CGSize s = [terms sizeWithFont:[UIFont systemFontOfSize:15] 
-                     constrainedToSize:CGSizeMake(320, 1000) 
-                         lineBreakMode:UILineBreakModeWordWrap];
-        return s.height + 10;
+        return [self heightForHTML:[self projectTerms]] + 10;
     } else if (indexPath.section == 2 && indexPath.row == 0) {
         NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
         NSString *first;
