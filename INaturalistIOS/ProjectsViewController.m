@@ -242,12 +242,6 @@ static const int ListControlIndexNearby = 2;
 {
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectListViewController *vc = [segue destinationViewController];
-        Project *p = [self.projects 
-                      objectAtIndex:[[self.tableView 
-                                      indexPathForSelectedRow] row]];
-        [vc setProject:p];
-    } else if ([segue.identifier isEqualToString:@"ProjectSegue"]) {
-        ProjectListViewController *vc = [segue destinationViewController];
         if ([sender isKindOfClass:Project.class]) {
             [vc setProject:sender];
         } else {
@@ -340,11 +334,7 @@ static const int ListControlIndexNearby = 2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.listControl.selectedSegmentIndex == ListControlIndexUser) {
-        [self performSegueWithIdentifier:@"ProjectListSegue" sender:self];
-    } else {
-        [self performSegueWithIdentifier:@"ProjectSegue" sender:self];
-    }
+    [self performSegueWithIdentifier:@"ProjectListSegue" sender:self];
 }
 
 #pragma mark - RKObjectLoaderDelegate

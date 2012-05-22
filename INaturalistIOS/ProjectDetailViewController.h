@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;
 - (IBAction)clickedViewButton:(id)sender;
 - (IBAction)clickedJoin:(id)sender;
+- (IBAction)clickedClose:(id)sender;
 - (void)join;
 - (void)leave;
 - (void)setupJoinButton;

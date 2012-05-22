@@ -82,6 +82,10 @@ static const int LeaveProjectAlertViewTag = 1;
     }
 }
 
+- (IBAction)clickedClose:(id)sender {
+    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)join
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
@@ -304,6 +308,7 @@ static const int LeaveProjectAlertViewTag = 1;
     if (pu) {
         pu.syncedAt = [NSDate date];
         [pu save];
+        [self clickedClose:nil];
     }
     self.projectUser = pu;
     [DejalBezelActivityView removeView];

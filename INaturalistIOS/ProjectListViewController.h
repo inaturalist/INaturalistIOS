@@ -11,10 +11,13 @@
 #import "ObservationDetailViewController.h"
 
 @class Project;
+@class ProjectUser;
 
 @interface ProjectListViewController : UITableViewController <RKObjectLoaderDelegate, ObservationDetailViewControllerDelegate>
 
 @property (nonatomic, strong) Project *project;
+@property (nonatomic, strong) ProjectUser *projectUser;
+@property (nonatomic, assign) BOOL detailsPresented;
 @property (nonatomic, strong) NSMutableArray *listedTaxa;
 @property (weak, nonatomic) IBOutlet TTImageView *projectIcon;
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;

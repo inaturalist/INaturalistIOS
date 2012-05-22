@@ -24,12 +24,14 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 @implementation ProjectListViewController
 @synthesize project = _project;
+@synthesize projectUser = _projectUser;
 @synthesize listedTaxa = _listedTaxa;
 @synthesize projectIcon = _projectIcon;
 @synthesize projectTitle = _projectTitle;
 @synthesize projectSubtitle = _projectSubtitle;
 @synthesize loader = _loader;
 @synthesize lastSyncedAt = _lastSyncedAt;
+@synthesize detailsPresented = _detailsPresented;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -120,14 +122,18 @@ static const int ListedTaxonCellSubtitleTag = 3;
         ListedTaxon *lt = [self.listedTaxa objectAtIndex:row];
         if (lt) vc.taxon = lt.taxon;
     } else if ([segue.identifier isEqualToString:@"ProjectDetailSegue"]) {
-        ProjectDetailViewController *vc = [segue destinationViewController];
+        ProjectDetailViewController *vc = (ProjectDetailViewController *)[segue.destinationViewController topViewController];
         vc.project = self.project;
+        self.detailsPresented = YES;
     } 
 }
 
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
+    if (self.project) {
+        self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %@", self.project.recordID]];
+    }
     if (!self.listedTaxa) {
         [self loadData];
     }
@@ -153,10 +159,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (self.listedTaxa.count == 0 && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    [super viewDidAppear:animated];
+    if (!self.projectUser && !self.detailsPresented) {
+        [self performSegueWithIdentifier:@"ProjectDetailSegue" sender:nil];
+    } else if (self.listedTaxa.count == 0 && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
-    [super viewDidAppear:animated];
 }
 
 - (void)viewDidUnload {

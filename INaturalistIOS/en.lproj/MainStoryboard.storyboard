@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11E53" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -12,7 +12,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdD-iS-mtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -682,7 +682,6 @@
                         <outlet property="searchDisplayController" destination="F2e-S7-oDZ" id="JCS-IJ-2tl"/>
                         <outlet property="syncButton" destination="dgx-of-NYR" id="eAf-cI-2Kg"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="pIq-2G-oJw"/>
-                        <segue destination="wOO-15-L7q" kind="push" identifier="ProjectSegue" id="CpP-mM-GJW"/>
                         <segue destination="g3g-03-X0K" kind="push" identifier="ProjectListSegue" id="PvC-8z-NVM"/>
                     </connections>
                 </tableViewController>
@@ -737,7 +736,7 @@
                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <segue destination="wOO-15-L7q" kind="push" identifier="ProjectDetailSegue" id="j7U-kg-ECN"/>
+                                        <segue destination="9AX-vc-dhX" kind="modal" identifier="ProjectDetailSegue" modalTransitionStyle="flipHorizontal" id="izG-vs-zpd"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -1373,6 +1372,24 @@
             </objects>
             <point key="canvasLocation" x="1751" y="419"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="URD-3e-IGz">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LKE-w0-yP5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="9AX-vc-dhX" sceneMemberID="viewController">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="P1d-tN-epc">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="wOO-15-L7q" kind="relationship" relationship="rootViewController" id="gZW-n5-WNs"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="594" y="3304"/>
+        </scene>
         <!--Project Detail View Controller - Project Details-->
         <scene sceneID="RFm-v0-efa">
             <objects>
@@ -1499,6 +1516,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Project Details" id="XXq-bW-vbF">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="HB8-Oo-jRB">
+                            <connections>
+                                <action selector="clickedClose:" destination="wOO-15-L7q" id="GZ9-hu-N3k"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Join" id="wCV-Z1-3g6">
                             <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
@@ -1613,6 +1635,7 @@
         <class className="ProjectDetailViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
             <relationships>
+                <relationship kind="action" name="clickedClose:"/>
                 <relationship kind="action" name="clickedJoin:"/>
                 <relationship kind="action" name="clickedViewButton:"/>
                 <relationship kind="outlet" name="joinButton" candidateClass="UIBarButtonItem"/>
@@ -1668,10 +1691,9 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="CpP-mM-GJW"/>
-        <segue reference="m7M-nd-sFM"/>
         <segue reference="hvR-ND-N81"/>
-        <segue reference="951-R5-gTN"/>
+        <segue reference="8j7-c4-5Sv"/>
+        <segue reference="m7M-nd-sFM"/>
         <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>

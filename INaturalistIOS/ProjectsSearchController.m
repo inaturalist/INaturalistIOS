@@ -52,7 +52,7 @@ static NSString *CellIdentifier = @"ProjectCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Project *p = [self.searchResults objectAtIndex:indexPath.row];
-    [self.searchDisplayController.searchContentsController performSegueWithIdentifier:@"ProjectSegue" sender:p];
+    [self.searchDisplayController.searchContentsController performSegueWithIdentifier:@"ProjectListSegue" sender:p];
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
