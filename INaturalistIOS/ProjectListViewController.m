@@ -31,6 +31,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
 @synthesize projectSubtitle = _projectSubtitle;
 @synthesize loader = _loader;
 @synthesize lastSyncedAt = _lastSyncedAt;
+@synthesize syncButton = _syncButton;
+@synthesize stopSyncButton = _stopSyncButton;
 @synthesize detailsPresented = _detailsPresented;
 
 - (IBAction)clickedSync:(id)sender {
@@ -43,7 +45,12 @@ static const int ListedTaxonCellSubtitleTag = 3;
         [av show];
         return;
     }
-    [self sync];
+    
+    if (self.tableView.scrollEnabled) {
+        [self sync];
+    } else {
+        [self stopSync];
+    }
 }
 
 - (void)clickedAdd:(id)sender event:(UIEvent *)event
@@ -66,8 +73,16 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)sync
 {
+    if (!self.stopSyncButton) {
+        self.stopSyncButton = [[UIBarButtonItem alloc] 
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+                               target:self 
+                               action:@selector(stopSync)];
+    }
+    self.navigationItem.rightBarButtonItem = self.stopSyncButton;
     self.lastSyncedAt = [NSDate date];
-    [DejalBezelActivityView activityViewForView:self.navigationController.view
+    self.tableView.scrollEnabled = NO;
+    [DejalBezelActivityView activityViewForView:self.tableView
                                       withLabel:@"Syncing list..."];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 
                                                       delegate:self];
@@ -75,6 +90,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)stopSync
 {
+    self.navigationItem.rightBarButtonItem = self.syncButton;
+    self.tableView.scrollEnabled = YES;
     [DejalBezelActivityView removeView];
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     [self loadData];
@@ -167,10 +184,17 @@ static const int ListedTaxonCellSubtitleTag = 3;
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self stopSync];
+    [super viewWillDisappear:animated];
+}
+
 - (void)viewDidUnload {
     [self setProjectIcon:nil];
     [self setProjectTitle:nil];
     [self setProjectSubtitle:nil];
+    [self setSyncButton:nil];
     [super viewDidUnload];
 }
 

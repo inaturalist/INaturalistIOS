@@ -846,6 +846,7 @@
                     <connections>
                         <outlet property="projectIcon" destination="Ylj-cd-RUn" id="1Qk-sc-nvV"/>
                         <outlet property="projectTitle" destination="bKM-7Q-aRA" id="zgE-Df-ZC7"/>
+                        <outlet property="syncButton" destination="YpC-0K-6eW" id="KHg-C4-ye9"/>
                         <segue destination="x2g-xK-zHb" kind="push" identifier="AddObservationSegue" id="3K4-WT-L9k"/>
                     </connections>
                 </tableViewController>
@@ -1650,6 +1651,7 @@
                 <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
                 <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
                 <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
         <class className="ProjectsViewController" superclassName="UITableViewController">

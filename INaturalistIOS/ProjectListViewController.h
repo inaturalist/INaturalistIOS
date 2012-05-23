@@ -24,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet TTStyledTextLabel *projectSubtitle;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
+@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
 
 - (IBAction)clickedSync:(id)sender;
 - (void)clickedAdd:(id)sender event:(UIEvent *)event;
