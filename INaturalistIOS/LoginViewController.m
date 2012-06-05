@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import "INaturalistAppDelegate.h"
 #import "LoginViewController.h"
 #import "DejalActivityView.h"
 #import "INatWebController.h"
@@ -41,9 +42,12 @@
 
 
 - (IBAction)signIn:(id)sender {
+    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
     [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
+    app.photoObjectManager.client.username = [usernameField text];
+    app.photoObjectManager.client.password = [passwordField text];
     [[RKClient sharedClient] post:@"/session.json" 
                            params:[NSDictionary dictionaryWithObjectsAndKeys:
                                    [usernameField text], @"login", 
