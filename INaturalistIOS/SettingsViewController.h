@@ -15,4 +15,5 @@
 - (void)clickedSignOut;
 - (void)signOut;
 - (void)localSignOut;
+- (void)networkUnreachableAlert;
 @end
