@@ -773,8 +773,13 @@ static const int ProjectsSection = 5;
             }
             self.lastImageReferenceURL = nil;
         } failureBlock:^(NSError *error) {
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error" 
-                                                         message:error.localizedDescription delegate:nil 
+            NSString *msg = error.localizedFailureReason;
+            if (error.code == ALAssetsLibraryAccessUserDeniedError) {
+                msg = @"You've denied iNaturalist access to certain kinds of data, most likely location data, so some of the photo data couldn't be imported.  To change this, open your Settings app, click Location Services, and make sure Location Services are on for iNaturalist.";
+            }
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import Error"
+                                                         message:msg
+                                                        delegate:nil 
                                                cancelButtonTitle:@"OK" 
                                                otherButtonTitles:nil];
             [av show];
