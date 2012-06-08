@@ -81,10 +81,12 @@ static const int ObservationCellLowerRightTag = 4;
                                                              withLabel:activityMsg];
     }
     
-    self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
-    [self.syncQueue addModel:Observation.class];
-    [self.syncQueue addModel:ProjectObservation.class];
-    [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
+    if (!self.syncQueue) {
+        self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
+        [self.syncQueue addModel:Observation.class];
+        [self.syncQueue addModel:ProjectObservation.class];
+        [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
+    }
     [self.syncQueue start];
 }
 
@@ -532,6 +534,7 @@ static const int ObservationCellLowerRightTag = 4;
                                                cancelButtonTitle:@"OK" 
                                                otherButtonTitles:nil];
             [av show];
+            [objectLoader cancel];
         } 
         [self stopSync];
     }
