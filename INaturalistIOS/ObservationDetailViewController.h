@@ -95,5 +95,6 @@
 
 - (void)dismissActionSheet;
 - (void)doneDatePicker;
+- (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location;
 
 @end
