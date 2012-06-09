@@ -25,7 +25,7 @@ static const int ObservationCellUpperRightTag = 3;
 static const int ObservationCellLowerRightTag = 4;
 
 @implementation ObservationsViewController
-@synthesize syncButton;
+@synthesize syncButton = _syncButton;
 @synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
@@ -83,10 +83,10 @@ static const int ObservationCellLowerRightTag = 4;
     
     if (!self.syncQueue) {
         self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
-        [self.syncQueue addModel:Observation.class];
-        [self.syncQueue addModel:ProjectObservation.class];
-        [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
     }
+    [self.syncQueue addModel:Observation.class];
+    [self.syncQueue addModel:ProjectObservation.class];
+    [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
     [self.syncQueue start];
 }
 

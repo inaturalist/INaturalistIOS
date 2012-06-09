@@ -538,7 +538,6 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
-				1964A99F1581DBB1005F2E0B /* ImageIO.framework */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				198CF8E014F5B0F40064DF05 /* Vendor */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
@@ -557,6 +556,7 @@
 		1927513614E9CCC9000ABAC4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1964A99F1581DBB1005F2E0B /* ImageIO.framework */,
 				190619BC152A3D3C0001A307 /* AssetsLibrary.framework */,
 				19A5F60814FB289B00757636 /* CoreLocation.framework */,
 				CAF65CB214F5CAC9003D63BB /* MapKit.framework */,
@@ -1277,7 +1277,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ken-Ichi UEDA";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1286,7 +1286,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09754B38-63E3-4D84-B6C4-5A3F6EAA65EF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
