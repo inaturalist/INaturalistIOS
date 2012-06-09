@@ -121,6 +121,8 @@
     [self.photoObjectManager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
     [self.photoObjectManager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
     self.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    self.photoObjectManager.client.timeoutInterval = 180.0;
+    self.photoObjectManager.requestQueue.concurrentRequestsLimit = 2;
 }
 
 // get configured model, or perform migration if necessary
