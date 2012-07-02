@@ -128,6 +128,7 @@ static const int ProjectsSection = 5;
         [self.observation setPlaceGuess:[self.placeGuessField text]];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setLocale:[NSLocale systemLocale]];
     NSNumber *newLat = [numberFormatter numberFromString:self.latitudeLabel.text];
     NSNumber *newLon = [numberFormatter numberFromString:self.longitudeLabel.text];
     NSNumber *newAcc = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];

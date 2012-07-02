@@ -57,6 +57,7 @@
             region.span.longitudeDelta = 5;
         }
         [self.mapView setRegion:[self.mapView regionThatFits:region]];
+        [self updateCrossHair];
         [self updateAccuracyCircle];
     } else {
         MKCoordinateRegion region = MKCoordinateRegionMake(self.mapView.centerCoordinate, MKCoordinateSpanMake(180, 360));
