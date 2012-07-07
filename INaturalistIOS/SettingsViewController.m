@@ -25,9 +25,11 @@ static const int AccountActionCellTag = 1;
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    UITableViewCell *versionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     creditsCell.backgroundView = nil;
+    versionCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
@@ -36,6 +38,10 @@ static const int AccountActionCellTag = 1;
         usernameCell.detailTextLabel.text = @"Unknown";
         accountActionCell.textLabel.text = @"Sign in";
     }
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    versionCell.textLabel.text = [NSString stringWithFormat:@"Version %@, build %@",
+                                  [info objectForKey:@"CFBundleShortVersionString"],
+                                  [info objectForKey:@"CFBundleVersion"]];
     [self.tableView reloadData];
 }
 
