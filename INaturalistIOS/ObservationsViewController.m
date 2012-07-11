@@ -16,6 +16,7 @@
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
+#import "TutorialViewController.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -275,6 +276,20 @@ static const int ObservationCellLowerRightTag = 4;
     }
 }
 
+- (void)autoLaunchTutorial
+{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    if ([settings objectForKey:@"tutorialSeen"]) {
+        return;
+    }
+    TutorialViewController *vc = [[TutorialViewController alloc] initWithDefaultTutorial];
+    UINavigationController *modalNavController = [[UINavigationController alloc]
+                                                    initWithRootViewController:vc];
+    [self presentViewController:modalNavController animated:YES completion:nil];
+    [settings setObject:[NSNumber numberWithBool:YES] forKey:@"tutorialSeen"];
+    [settings synchronize];
+}
+
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -345,6 +360,7 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"ObservationsViewController didLoad");
 
 //    // if you need to test syncing lots of obs
 //    [Observation deleteAll];
@@ -363,6 +379,7 @@ static const int ObservationCellLowerRightTag = 4;
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
+    [self autoLaunchTutorial];
 }
 
 - (void)viewDidUnload

@@ -11,9 +11,12 @@
 
 @interface SettingsViewController : UITableViewController <LoginViewControllerDelegate, UIAlertViewDelegate>
 
+@property (nonatomic, strong) NSString *versionText;
 - (void)initUI;
 - (void)clickedSignOut;
 - (void)signOut;
 - (void)localSignOut;
 - (void)networkUnreachableAlert;
+- (void)launchTutorial;
+- (void)sendSupportEmail;
 @end

@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-//#import "TTPhotoViewController.h"
 #import <Three20/Three20.h>
 
 @protocol PhotoViewControllerDelegate <NSObject>

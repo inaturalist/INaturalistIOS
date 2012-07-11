@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSString * photoKey;
 @property (nonatomic, retain) NSString * nativePhotoID;
 
+// TTPhoto attributes
 @property (nonatomic, assign) id<TTPhotoSource> photoSource;
 @property (nonatomic, assign) int index;
 @property (nonatomic, assign) CGSize size;

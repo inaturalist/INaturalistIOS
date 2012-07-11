@@ -18,6 +18,8 @@
 		190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 190619BC152A3D3C0001A307 /* AssetsLibrary.framework */; };
 		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
 		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
+		1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1315AB752800A6EF6E /* TutorialViewController.m */; };
+		1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1615AB75BB00A6EF6E /* PhotoStub.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		19122E3F1512D3F4009BD3D0 /* add_button_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */; };
 		19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */; };
@@ -110,6 +112,11 @@
 		19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */; };
 		19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D9B54514F62B850017B70A /* INatUITabBarController.m */; };
+		19F05B4915AD43410090B6E1 /* tutorial1.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F05B4415AD43410090B6E1 /* tutorial1.png */; };
+		19F05B4A15AD43410090B6E1 /* tutorial2.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F05B4515AD43410090B6E1 /* tutorial2.png */; };
+		19F05B4B15AD43410090B6E1 /* tutorial3.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F05B4615AD43410090B6E1 /* tutorial3.png */; };
+		19F05B4C15AD43410090B6E1 /* tutorial4.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F05B4715AD43410090B6E1 /* tutorial4.png */; };
+		19F05B4D15AD43410090B6E1 /* tutorial5.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F05B4815AD43410090B6E1 /* tutorial5.png */; };
 		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
 		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
 		19F62190150ECA8300C58F28 /* projects-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218E150ECA8300C58F28 /* projects-tab.png */; };
@@ -310,6 +317,10 @@
 		190687C6151BF71F00D5B6E4 /* DeletedRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedRecord.m; sourceTree = "<group>"; };
 		190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonDetailViewController.h; sourceTree = "<group>"; };
 		190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonDetailViewController.m; sourceTree = "<group>"; };
+		1909EA1215AB752800A6EF6E /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialViewController.h; sourceTree = "<group>"; };
+		1909EA1315AB752800A6EF6E /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialViewController.m; sourceTree = "<group>"; };
+		1909EA1515AB75BB00A6EF6E /* PhotoStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoStub.h; sourceTree = "<group>"; };
+		1909EA1615AB75BB00A6EF6E /* PhotoStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoStub.m; sourceTree = "<group>"; };
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.1.xcdatamodel; sourceTree = "<group>"; };
@@ -432,6 +443,11 @@
 		19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Inflections.m"; sourceTree = "<group>"; };
 		19D9B54414F62B840017B70A /* INatUITabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatUITabBarController.h; sourceTree = "<group>"; };
 		19D9B54514F62B850017B70A /* INatUITabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatUITabBarController.m; sourceTree = "<group>"; };
+		19F05B4415AD43410090B6E1 /* tutorial1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1.png; sourceTree = "<group>"; };
+		19F05B4515AD43410090B6E1 /* tutorial2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial2.png; sourceTree = "<group>"; };
+		19F05B4615AD43410090B6E1 /* tutorial3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial3.png; sourceTree = "<group>"; };
+		19F05B4715AD43410090B6E1 /* tutorial4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial4.png; sourceTree = "<group>"; };
+		19F05B4815AD43410090B6E1 /* tutorial5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial5.png; sourceTree = "<group>"; };
 		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
 		19F62187150EC6B700C58F28 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
 		19F6218D150ECA8300C58F28 /* projects-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab@2x.png"; sourceTree = "<group>"; };
@@ -617,6 +633,11 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				19F05B4415AD43410090B6E1 /* tutorial1.png */,
+				19F05B4515AD43410090B6E1 /* tutorial2.png */,
+				19F05B4615AD43410090B6E1 /* tutorial3.png */,
+				19F05B4715AD43410090B6E1 /* tutorial4.png */,
+				19F05B4815AD43410090B6E1 /* tutorial5.png */,
 				19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */,
 				19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,
@@ -826,6 +847,8 @@
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
+				1909EA1215AB752800A6EF6E /* TutorialViewController.h */,
+				1909EA1315AB752800A6EF6E /* TutorialViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -849,6 +872,8 @@
 		19F621A4150ECDC700C58F28 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				19F8748E152665B100A65F9A /* DejalOutsideKeyboardActivityView.h */,
+				19F8748F152665B100A65F9A /* DejalOutsideKeyboardActivityView.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */,
@@ -857,10 +882,10 @@
 				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
 				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
 				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
+				1909EA1515AB75BB00A6EF6E /* PhotoStub.h */,
+				1909EA1615AB75BB00A6EF6E /* PhotoStub.m */,
 				1997410F15194E89006FBEA0 /* SyncQueue.h */,
 				1997411015194E89006FBEA0 /* SyncQueue.m */,
-				19F8748E152665B100A65F9A /* DejalOutsideKeyboardActivityView.h */,
-				19F8748F152665B100A65F9A /* DejalOutsideKeyboardActivityView.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1151,6 +1176,11 @@
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
+				19F05B4915AD43410090B6E1 /* tutorial1.png in Resources */,
+				19F05B4A15AD43410090B6E1 /* tutorial2.png in Resources */,
+				19F05B4B15AD43410090B6E1 /* tutorial3.png in Resources */,
+				19F05B4C15AD43410090B6E1 /* tutorial4.png in Resources */,
+				19F05B4D15AD43410090B6E1 /* tutorial5.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1208,6 +1238,8 @@
 				190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */,
 				190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */,
 				190619BB152A363E0001A307 /* DCRoundSwitchToggleLayer.m in Sources */,
+				1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */,
+				1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
