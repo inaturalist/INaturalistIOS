@@ -29,5 +29,5 @@
 - (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController;
 - (void)clickedAccessory:(id)sender event:(UIEvent *)event;
 - (UITableViewCell *)cellForTaxon:(Taxon *)taxon inTableView:(UITableView *)tableView;
-- (void)loadRemoteTaxaWithURL:(NSString *)url modal:(BOOL)modal;
+- (void)loadRemoteTaxaWithURL:(NSString *)url;
 @end

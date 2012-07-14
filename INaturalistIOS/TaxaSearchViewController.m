@@ -44,8 +44,9 @@ static const int TaxonCellSubtitleTag = 3;
             }
             [[[RKObjectManager sharedManager] objectStore] save];
         } else {
-            [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue] 
-                                  modal:(self.taxa.count == 0)];
+            [self performSelector:@selector(loadRemoteTaxaWithURL:) 
+                       withObject:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue] 
+                       afterDelay:0.5];
         }
     } else {
         NSFetchRequest *request = [Taxon fetchRequest];
@@ -53,19 +54,21 @@ static const int TaxonCellSubtitleTag = 3;
         [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES]]];
         self.taxa = [NSMutableArray arrayWithArray:[Taxon objectsWithFetchRequest:request]];
         if (self.taxa.count == 0 && !self.lastRequestAt) {
-            [self loadRemoteTaxaWithURL:@"/taxa" modal:YES];
+            [self performSelector:@selector(loadRemoteTaxaWithURL:) 
+                       withObject:@"/taxa"
+                       afterDelay:0.5];
         }
     }
 }
 
-- (void)loadRemoteTaxaWithURL:(NSString *)url modal:(BOOL)modal
+- (void)loadRemoteTaxaWithURL:(NSString *)url
 {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;
     }
+    BOOL modal = self.taxa.count == 0;
     if (modal) {
-        [DejalBezelActivityView activityViewForView:self.navigationController.view 
-                                          withLabel:@"Loading..."];
+        [DejalBezelActivityView activityViewForView:self.tableView withLabel:@"Loading..."];
     }
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
                                                       delegate:self 
@@ -104,7 +107,7 @@ static const int TaxonCellSubtitleTag = 3;
                                      initWithSearchDisplayController:self.searchDisplayController];
         self.taxaSearchController.delegate = self;
     }
-    [self loadData];
+    
     if (self.taxon) {
         self.navigationItem.title = self.taxon.defaultName;
     }
@@ -116,6 +119,8 @@ static const int TaxonCellSubtitleTag = 3;
     
     [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
+    
+    [self loadData];
 }
 
 #pragma mark - UITableViewDelegate
