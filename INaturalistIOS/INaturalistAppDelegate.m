@@ -104,15 +104,13 @@
     
     // setup photo object manager
     self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:INatMediaBaseURL];
-    self.photoObjectManager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
-                                                                       usingSeedDatabaseName:nil 
-                                                                          managedObjectModel:[self getManagedObjectModel] 
-                                                                                    delegate:self];
+    self.photoObjectManager.objectStore = [manager objectStore];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
-                                toResourcePath:@"/observation_photos/:recordID.json"];
+                                toResourcePath:@"/observation_photos/:recordID\\.json"];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class
-                                toResourcePath:@"/observation_photos.json"
+                                toResourcePath:@"/observation_photos\\.json"
                                      forMethod:RKRequestMethodPOST];
+    [self.photoObjectManager.mappingProvider setObjectMapping:[ObservationPhoto.class mapping] forKeyPath:@"observation_photo"];
     [self.photoObjectManager.mappingProvider setObjectMapping:[ObservationPhoto.class mapping] forKeyPath:@"observation_photos"];
     [self.photoObjectManager.mappingProvider setSerializationMapping:[ObservationPhoto.class serializationMapping] 
                                                             forClass:ObservationPhoto.class];
