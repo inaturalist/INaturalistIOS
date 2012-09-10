@@ -53,6 +53,7 @@ static const int ProjectsSection = 5;
 @synthesize locationTimer = _locationTimer;
 @synthesize geocoder = _geocoder;
 @synthesize datePicker = _datePicker;
+@synthesize popOver = _popOver;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
 @synthesize observationWasNew = _observationWasNew;
@@ -449,7 +450,16 @@ static const int ProjectsSection = 5;
     UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
     [ipc setDelegate:self];
     [ipc setSourceType:sourceType];
-    [self presentModalViewController:ipc animated:YES];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
+        [popover presentPopoverFromRect:CGRectMake(0.0, 0.0, 0.0, 0.0)
+                                 inView:self.view
+               permittedArrowDirections:UIPopoverArrowDirectionAny
+                               animated:YES];
+        self.popOver = popover;
+    } else {
+        [self presentModalViewController:ipc animated:YES];
+    }
 }
 
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
