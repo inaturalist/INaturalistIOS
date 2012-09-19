@@ -15,6 +15,7 @@
 #import "DCRoundSwitch.h"
 
 @class Observation;
+@class ObservationField;
 @class ObservationPhoto;
 @class ObservationDetailViewController;
 
@@ -102,5 +103,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (UITableViewCell *)tableView:(UITableView *)tableView observationFieldValueCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+- (NSArray *)projectsRequireField:(ObservationField *)observationField;
 
 @end

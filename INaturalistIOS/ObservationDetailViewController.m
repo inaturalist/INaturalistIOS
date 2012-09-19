@@ -741,6 +741,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         roundSwitch.onText = [[ofv.observationField.allowedValuesArray firstObject] uppercaseString];
         roundSwitch.offText = [[ofv.observationField.allowedValuesArray lastObject] uppercaseString];
         [roundSwitch setOn:[ofv.value isEqualToString:[ofv.observationField.allowedValuesArray firstObject]]];
+        if ([self projectsRequireField:ofv.observationField].count > 0) {
+            label.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
+        }
     } else {
         NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueDefaultCell owner:self options:nil];
         cell = [nibObjects objectAtIndex:0];
@@ -749,6 +752,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         label.text = ofv.observationField.name;
         textField.text = ofv.value;
         textField.delegate = self;
+        if ([self projectsRequireField:ofv.observationField].count > 0) {
+            textField.placeholder = @"required";
+            label.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
+        }
     }
     [self.ofvCells setObject:cell forKey:ofv.observationField.name];
     return cell;
@@ -955,6 +962,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)clickedSave {
     [self stopUpdatingLocation];
+    if (![self validate]) {
+        return;
+    }
     [self save];
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
@@ -963,6 +973,33 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                      object:self.observation];
     [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (BOOL)validate
+{
+    [self uiToObservation];
+    for (ProjectObservation *po in self.observation.projectObservations) {
+        for (ProjectObservationField *pof in po.project.projectObservationFields) {
+            if (pof.required.boolValue) {
+                ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+                    return [obj.observationField isEqual:pof.observationField];
+                }] anyObject];
+                if (!ofv || ofv.value == nil || ofv.value.length == 0) {
+                    NSString *msg = [NSString stringWithFormat:@"%@ requires that you fill out the %@ field", 
+                                     pof.project.title, 
+                                     pof.observationField.name];
+                    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Missing Field"
+                                                                 message:msg
+                                                                delegate:nil 
+                                                       cancelButtonTitle:@"OK" 
+                                                       otherButtonTitles:nil];
+                    [av show];
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 - (void)clickedDelete
@@ -1256,6 +1293,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     self.observation.localObservedOn = self.datePicker.date;
     [self dismissActionSheet];
     self.observedAtLabel.text = [self.observation observedOnPrettyString];
+}
+
+- (NSArray *)projectsRequireField:(ObservationField *)observationField
+{
+    NSMutableArray *a = [[NSMutableArray alloc] init];
+    for (ProjectObservation *po in self.observation.projectObservations) {
+        for (ProjectObservationField *pof in po.project.projectObservationFields) {
+            if ([pof.observationField isEqual:observationField] && pof.required.boolValue) {
+                [a addObject:pof.project];
+            }
+        }
+    }
+    return a;
 }
 
 @end
