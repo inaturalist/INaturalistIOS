@@ -824,6 +824,20 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else if (indexPath.section == MoreSection && indexPath.row > 1) {
+        ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 2];
+        NSMutableString *msg = [NSMutableString stringWithString:ofv.observationField.desc];
+        NSArray *projects = [self projectsRequireField:ofv.observationField];
+        if (projects.count > 0) {
+            [msg appendFormat:@"\n\nRequired by %@", [[projects valueForKey:@"title"] componentsJoinedByString:@", "]];
+        }
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:ofv.observationField.name
+                                                     message:msg
+                                                    delegate:nil 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
+        [av show];
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     } else {
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     }
