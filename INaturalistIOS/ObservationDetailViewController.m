@@ -873,6 +873,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         po.project = p;
         self.observation.localUpdatedAt = [NSDate date];
     }
+    [self reloadObservationFieldValues];
     [self.tableView reloadData];
     [self observationToUI];
 }
@@ -1081,6 +1082,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)reloadObservationFieldValues
 {
     [self.observationFieldValues removeAllObjects];
+    [self.ofvCells removeAllObjects];
     
     for (ProjectObservation *po in self.observation.projectObservations) {
         for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
