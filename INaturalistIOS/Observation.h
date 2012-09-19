@@ -41,6 +41,7 @@
 @property (nonatomic, retain) NSNumber * outOfRange;
 @property (nonatomic, retain) NSString * license;
 @property (nonatomic, retain) NSSet * observationPhotos;
+@property (nonatomic, retain) NSSet * observationFieldValues;
 @property (nonatomic, retain) NSSet * projectObservations;
 @property (nonatomic, retain) Taxon *taxon;
 
@@ -74,5 +75,9 @@
 - (void)removeProjectObservationsObject:(NSManagedObject *)value;
 - (void)addProjectObservations:(NSSet *)values;
 - (void)removeProjectObservations:(NSSet *)values;
+- (void)addObservationFieldValuesObject:(NSManagedObject *)value;
+- (void)removeObservationFieldValuesObject:(NSManagedObject *)value;
+- (void)addObservationFieldValues:(NSSet *)values;
+- (void)removeObservationFieldValues:(NSSet *)values;
 @end
 

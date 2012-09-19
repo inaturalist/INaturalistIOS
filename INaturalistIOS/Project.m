@@ -9,6 +9,7 @@
 #import "Project.h"
 #import "List.h"
 #import "ProjectObservation.h"
+#import "ProjectObservationField.h"
 #import "ProjectUser.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
@@ -34,6 +35,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic projectUsers;
 @dynamic listID;
 @dynamic projectObservationRuleTerms;
+@dynamic projectObservationFields;
 @dynamic featuredAt;
 @dynamic latitude;
 @dynamic longitude;
@@ -62,6 +64,10 @@ static RKManagedObjectMapping *defaultMapping = nil;
                     toRelationship:@"projectList" 
                        withMapping:[List mapping]
                          serialize:NO];
+        [defaultMapping mapKeyPath:@"project_observation_fields" 
+                    toRelationship:@"projectObservationFields" 
+                       withMapping:[ProjectObservationField mapping]
+                         serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;
@@ -76,6 +82,14 @@ static RKManagedObjectMapping *defaultMapping = nil;
         }
     }
     return NO;
+}
+
+- (NSArray *)sortedProjectObservationFields
+{
+//    return [[self.projectObservationFields allObjects] sortedArrayUsingSelector:@selector(position)];
+    return [[self.projectObservationFields allObjects] sortedArrayUsingComparator:^NSComparisonResult(ProjectObservationField *obj1, ProjectObservationField *obj2) {
+        return [obj1.position compare:obj2.position];
+    }];
 }
 
 @end

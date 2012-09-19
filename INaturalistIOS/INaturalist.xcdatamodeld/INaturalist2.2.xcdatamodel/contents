@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="2.1" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="2.2" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="DeletedRecord" representedClassName="DeletedRecord" syncable="YES">
         <attribute name="modelName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -75,9 +75,37 @@
         <attribute name="timeObservedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationFieldValue" inverseName="observation" inverseEntity="ObservationFieldValue" syncable="YES"/>
         <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
         <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservation" inverseName="observation" inverseEntity="ProjectObservation" syncable="YES"/>
         <relationship name="taxon" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Taxon" inverseName="observations" inverseEntity="Taxon" syncable="YES"/>
+    </entity>
+    <entity name="ObservationField" representedClassName="ObservationField" syncable="YES">
+        <attribute name="allowedValues" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="datatype" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ObservationFieldValue" inverseName="observationField" inverseEntity="ObservationFieldValue" syncable="YES"/>
+        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservationField" inverseName="observationField" inverseEntity="ProjectObservationField" syncable="YES"/>
+    </entity>
+    <entity name="ObservationFieldValue" representedClassName="ObservationFieldValue" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observationFieldID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="observationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="observation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationFieldValues" inverseEntity="Observation" syncable="YES"/>
+        <relationship name="observationField" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ObservationField" inverseName="observationFieldValues" inverseEntity="ObservationField" syncable="YES"/>
     </entity>
     <entity name="ObservationPhoto" representedClassName="ObservationPhoto" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -123,6 +151,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="projectList" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="project" inverseEntity="List" syncable="YES"/>
+        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservationField" inverseName="project" inverseEntity="ProjectObservationField" syncable="YES"/>
         <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservation" inverseName="project" inverseEntity="ProjectObservation" syncable="YES"/>
         <relationship name="projectUsers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectUser" inverseName="project" inverseEntity="ProjectUser" syncable="YES"/>
     </entity>
@@ -138,6 +167,20 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="observation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="projectObservations" inverseEntity="Observation" syncable="YES"/>
         <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectObservations" inverseEntity="Project" syncable="YES"/>
+    </entity>
+    <entity name="ProjectObservationField" representedClassName="ProjectObservationField" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="observationFieldID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="position" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="required" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="observationField" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ObservationField" inverseName="projectObservationFields" inverseEntity="ObservationField" syncable="YES"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectObservationFields" inverseEntity="Project" syncable="YES"/>
     </entity>
     <entity name="ProjectUser" representedClassName="ProjectUser" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -209,9 +252,12 @@
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="540"/>
+        <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
+        <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="195"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
         <element name="Project" positionX="160" positionY="192" width="128" height="360"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
+        <element name="ProjectObservationField" positionX="160" positionY="192" width="128" height="225"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
         <element name="Taxon" positionX="160" positionY="192" width="128" height="435"/>
         <element name="TaxonPhoto" positionX="160" positionY="192" width="128" height="345"/>

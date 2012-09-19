@@ -43,6 +43,7 @@ static NSDateFormatter *jsDateFormatter = nil;
 @dynamic outOfRange;
 @dynamic license;
 @dynamic observationPhotos;
+@dynamic observationFieldValues;
 @dynamic projectObservations;
 @dynamic taxon;
 
@@ -86,7 +87,7 @@ static NSDateFormatter *jsDateFormatter = nil;
          @"species_guess", @"speciesGuess",
          @"description", @"inatDescription",
          @"created_at_utc", @"createdAt",
-         @"created_at_utc", @"updatedAt",
+         @"updated_at_utc", @"updatedAt",
          @"observed_on", @"observedOn",
          @"observed_on_string", @"observedOnString",
          @"time_observed_at_utc", @"timeObservedAt",

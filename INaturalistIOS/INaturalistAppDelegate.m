@@ -10,9 +10,12 @@
 #import "List.h"
 #import "ListedTaxon.h"
 #import "Observation.h"
+#import "ObservationField.h"
+#import "ObservationFieldValue.h"
 #import "ObservationPhoto.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "ProjectObservationField.h"
 #import "ProjectUser.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
@@ -61,9 +64,12 @@
                        List.class,
                        ListedTaxon.class,
                        Observation.class, 
+                       ObservationField.class,
+                       ObservationFieldValue.class,
                        ObservationPhoto.class, 
                        Project.class, 
                        ProjectObservation.class, 
+                       ProjectObservationField.class,
                        ProjectUser.class, 
                        Taxon.class,
                        TaxonPhoto.class,

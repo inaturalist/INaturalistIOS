@@ -12,10 +12,13 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
+#import "ObservationField.h"
+#import "ObservationFieldValue.h"
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "ProjectObservationField.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "EditLocationViewController.h"
@@ -30,6 +33,8 @@ static const int LocationTableViewSection = 2;
 static const int ObservedOnTableViewSection = 3;
 static const int MoreSection = 4;
 static const int ProjectsSection = 5;
+NSString *const ObservationFieldValueDefaultCell = @"ObservationFieldValueDefaultCell";
+NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchCell";
 
 @implementation ObservationDetailViewController
 
@@ -49,6 +54,7 @@ static const int ProjectsSection = 5;
 @synthesize delegate = _delegate;
 @synthesize observation = _observation;
 @synthesize observationPhotos = _observationPhotos;
+@synthesize observationFieldValues = _observationFieldValues;
 @synthesize coverflowView = _coverflowView;
 @synthesize locationManager = _locationManager;
 @synthesize locationTimer = _locationTimer;
@@ -59,6 +65,7 @@ static const int ProjectsSection = 5;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
 @synthesize observationWasNew = _observationWasNew;
 @synthesize lastImageReferenceURL = _lastImageReferenceURL;
+@synthesize ofvCells = _ofvCells;
 
 - (void)observationToUI
 {
@@ -114,6 +121,8 @@ static const int ProjectsSection = 5;
     if (self.observation.geoprivacy) {
         self.geoprivacyCell.detailTextLabel.text = self.observation.geoprivacy;
     }
+    
+    // Note: populating dynamic table cell values probably occurs in tableView:cellForRowAtIndexPath:ß
 }
 
 - (void)uiToObservation
@@ -143,6 +152,25 @@ static const int ProjectsSection = 5;
         self.observation.positionalAccuracy = newAcc;
     }
     self.observation.idPlease = [NSNumber numberWithBool:self.idPleaseSwitch.on];
+    
+    for (NSString *key in self.ofvCells) {
+        UITableViewCell *cell = [self.ofvCells objectForKey:key];
+        NSUInteger ofvIndex = [self.observationFieldValues indexOfObjectPassingTest:^BOOL(ObservationFieldValue *obj, NSUInteger idx, BOOL *stop) {
+            return [obj.observationField.name isEqualToString:key];
+        }];
+        ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:ofvIndex];
+        if ([cell.reuseIdentifier isEqualToString:ObservationFieldValueSwitchCell]) {
+            DCRoundSwitch *roundSwitch = (DCRoundSwitch *)[cell viewWithTag:2];
+            if (roundSwitch.on) {
+                ofv.value = [ofv.observationField.allowedValuesArray firstObject];
+            } else {
+                ofv.value = [ofv.observationField.allowedValuesArray lastObject];
+            }
+        } else {
+            UITextField *textField = (UITextField *)[cell viewWithTag:2];
+            ofv.value = textField.text;
+        }
+    }
 }
 
 - (void)initUI
@@ -631,6 +659,8 @@ static const int ProjectsSection = 5;
 {
     if (section == ProjectsSection) {
         return self.observation.projectObservations.count + 1;
+    } else if (section == MoreSection) {
+        return self.observationFieldValues.count + 2;
     } else {
         return [super tableView:tableView numberOfRowsInSection:section];
     }
@@ -645,39 +675,83 @@ static const int ProjectsSection = 5;
         
         // if this is anything other than the last cell, create a dynamic cell
         if (indexPath.row < self.observation.projectObservations.count) {
-            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                                           reuseIdentifier:@"ProjectCell"];
-            [cell setBackgroundColor:[UIColor whiteColor]];
-            ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
-            
-            float imageMargin = 5;
-            TTImageView *imageView = [[TTImageView alloc] initWithFrame:CGRectMake(imageMargin,imageMargin,33,33)];
-            [imageView unsetImage];
-            imageView.contentMode = UIViewContentModeScaleAspectFit;
-            imageView.defaultImage = [UIImage imageNamed:@"projects"];
-            imageView.urlPath = po.project.iconURL;
-            [imageView setBackgroundColor:[UIColor clearColor]];
-            [cell.contentView addSubview:imageView];
-            
-            float labelWidth = cell.bounds.size.width - imageView.frame.size.width 
-                - imageMargin
-                - imageMargin
-                - 30;// ??
-            UILabel *label = [[UILabel alloc] initWithFrame:
-                              CGRectMake(imageView.bounds.size.width + imageMargin + imageMargin, 
-                                         0, 
-                                         labelWidth,
-                                         43)];
-            label.text = po.project.title;
-            [cell.contentView addSubview:label];
-            label.font = [UIFont boldSystemFontOfSize:17];
-            return cell;
+            return [self tableView:tableView projectCellForRowAtIndexPath:indexPath];
         }
         
         // otherwise reset the indexPath so the table view thinks it's retrieving the static cell at index 0
         indexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
+    } else if (indexPath.section == MoreSection) {
+        if (indexPath.row > 1) {
+            return [self tableView:tableView observationFieldValueCellForRowAtIndexPath:indexPath];
+        }
     }
     return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                                   reuseIdentifier:@"ProjectCell"];
+    [cell setBackgroundColor:[UIColor whiteColor]];
+    ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
+    
+    float imageMargin = 5;
+    TTImageView *imageView = [[TTImageView alloc] initWithFrame:CGRectMake(imageMargin,imageMargin,33,33)];
+    [imageView unsetImage];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.defaultImage = [UIImage imageNamed:@"projects"];
+    imageView.urlPath = po.project.iconURL;
+    [imageView setBackgroundColor:[UIColor clearColor]];
+    [cell.contentView addSubview:imageView];
+    
+    float labelWidth = cell.bounds.size.width - imageView.frame.size.width 
+        - imageMargin
+        - imageMargin
+        - 30;// ??
+    UILabel *label = [[UILabel alloc] initWithFrame:
+                      CGRectMake(imageView.bounds.size.width + imageMargin + imageMargin, 
+                                 0, 
+                                 labelWidth,
+                                 43)];
+    label.text = po.project.title;
+    [cell.contentView addSubview:label];
+    label.font = [UIFont boldSystemFontOfSize:17];
+    return cell;
+}
+
+// Note that the technique employed here of loading the nib every time we create a cell could 
+// be a performance problem, at least when the cells first appear. Using normal cell dequeing 
+// works, but doesn't seem to preserve the state of text fields in the cells
+- (UITableViewCell *)tableView:(UITableView *)tableView observationFieldValueCellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:(indexPath.row - 2)];
+    if (!ofv.value) {
+        ofv.value = ofv.defaultValue;
+    }
+    UITableViewCell *cell = [self.ofvCells objectForKey:ofv.observationField.name];
+    if (cell) {
+        return cell;
+    }
+    if (ofv.observationField.allowedValuesArray.count == 2) {
+        NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueSwitchCell owner:self options:nil];
+        cell = [nibObjects objectAtIndex:0];
+        UILabel *label = (UILabel *)[cell viewWithTag:1];
+        DCRoundSwitch *roundSwitch = (DCRoundSwitch *)[cell viewWithTag:2];
+        label.text = ofv.observationField.name;
+        roundSwitch.onText = [[ofv.observationField.allowedValuesArray firstObject] uppercaseString];
+        roundSwitch.offText = [[ofv.observationField.allowedValuesArray lastObject] uppercaseString];
+        [roundSwitch setOn:[ofv.value isEqualToString:[ofv.observationField.allowedValuesArray firstObject]]];
+    } else {
+        NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueDefaultCell owner:self options:nil];
+        cell = [nibObjects objectAtIndex:0];
+        UILabel *label = (UILabel *)[cell viewWithTag:1];
+        UITextField *textField = (UITextField *)[cell viewWithTag:2];
+        label.text = ofv.observationField.name;
+        textField.text = ofv.value;
+        textField.delegate = self;
+    }
+    [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -750,7 +824,7 @@ static const int ProjectsSection = 5;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == ProjectsSection) {
+    if (indexPath.section == ProjectsSection || indexPath.section == MoreSection) {
         return 44;
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
@@ -976,6 +1050,7 @@ static const int ProjectsSection = 5;
     } else {
         [self.observationPhotos removeAllObjects];
     }
+    [self reloadObservationFieldValues];
     self.observationWasNew = [observation isNew];
 }
 
@@ -985,6 +1060,43 @@ static const int ProjectsSection = 5;
         self.observationPhotos = [[NSMutableArray alloc] init];
     }
     return _observationPhotos;
+}
+
+- (NSMutableArray *)observationFieldValues
+{
+    if (!_observationFieldValues) {
+        self.observationFieldValues = [[NSMutableArray alloc] init];
+    }
+    return _observationFieldValues;
+}
+
+- (NSMutableDictionary *)ofvCells
+{
+    if (!_ofvCells) {
+        self.ofvCells = [[NSMutableDictionary alloc] init];
+    }
+    return _ofvCells;
+}
+
+- (void)reloadObservationFieldValues
+{
+    [self.observationFieldValues removeAllObjects];
+    
+    for (ProjectObservation *po in self.observation.projectObservations) {
+        for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
+            ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+                return [obj.observationField isEqual:pof.observationField];
+            }] anyObject];
+            if (!ofv) {
+                ofv = [ObservationFieldValue object];
+                ofv.observation = self.observation;
+                ofv.observationField = pof.observationField;
+            }
+            if (![self.observationFieldValues containsObject:ofv]) {
+                [self.observationFieldValues addObject:ofv];
+            }
+        }
+    }
 }
 
 - (void)addPhoto:(ObservationPhoto *)op

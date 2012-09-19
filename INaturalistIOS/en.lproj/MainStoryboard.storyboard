@@ -218,8 +218,8 @@
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" id="BzJ-Tf-DWf" customClass="DCRoundSwitch">
-                                                    <rect key="frame" x="213" y="8" width="79" height="27"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <rect key="frame" x="200" y="8" width="90" height="27"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -1762,9 +1762,9 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="sKu-Sy-oMc"/>
         <segue reference="nqN-gg-ATR"/>
+        <segue reference="i4O-ab-ts2"/>
         <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="hvR-ND-N81"/>
+        <segue reference="sKu-Sy-oMc"/>
     </inferredMetricsTieBreakers>
 </document>

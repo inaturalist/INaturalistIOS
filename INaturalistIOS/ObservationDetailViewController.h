@@ -42,6 +42,7 @@
 @property (nonatomic, weak) id <ObservationDetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) Observation *observation;
 @property (nonatomic, strong) NSMutableArray *observationPhotos;
+@property (nonatomic, strong) NSMutableArray *observationFieldValues;
 @property (nonatomic, strong) TKCoverflowView *coverflowView;
 @property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
@@ -65,6 +66,7 @@
 @property (nonatomic, assign) BOOL locationUpdatesOn;
 @property (nonatomic, assign) BOOL observationWasNew;
 @property (nonatomic, strong) NSURL *lastImageReferenceURL;
+@property (nonatomic, strong) NSMutableDictionary *ofvCells;
 
 - (void)clickedClear;
 - (void)keyboardDone;
@@ -97,5 +99,8 @@
 - (void)dismissActionSheet;
 - (void)doneDatePicker;
 - (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location;
+
+- (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UITableViewCell *)tableView:(UITableView *)tableView observationFieldValueCellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

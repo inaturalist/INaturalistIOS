@@ -378,11 +378,13 @@ static const int ListControlIndexNearby = 2;
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
     switch (objectLoader.response.statusCode) {
-            // UNPROCESSABLE ENTITY
+        // Unauthorized
+        case 401:
+            authFailure = true;
+        // UNPROCESSABLE ENTITY
         case 422:
             errorMsg = @"Unprocessable entity";
             break;
-            
         default:
             // KLUDGE!! RestKit doesn't seem to handle failed auth very well
             jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
