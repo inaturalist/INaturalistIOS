@@ -92,8 +92,8 @@
         <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ObservationFieldValue" inverseName="observationField" inverseEntity="ObservationFieldValue" syncable="YES"/>
-        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservationField" inverseName="observationField" inverseEntity="ProjectObservationField" syncable="YES"/>
+        <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationFieldValue" inverseName="observationField" inverseEntity="ObservationFieldValue" syncable="YES"/>
+        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservationField" inverseName="observationField" inverseEntity="ProjectObservationField" syncable="YES"/>
     </entity>
     <entity name="ObservationFieldValue" representedClassName="ObservationFieldValue" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -102,6 +102,7 @@
         <attribute name="observationFieldID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="observationID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="observation" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="observationFieldValues" inverseEntity="Observation" syncable="YES"/>
@@ -150,8 +151,8 @@
         <attribute name="terms" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="projectList" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="project" inverseEntity="List" syncable="YES"/>
-        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectObservationField" inverseName="project" inverseEntity="ProjectObservationField" syncable="YES"/>
+        <relationship name="projectList" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="List" inverseName="project" inverseEntity="List" syncable="YES"/>
+        <relationship name="projectObservationFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservationField" inverseName="project" inverseEntity="ProjectObservationField" syncable="YES"/>
         <relationship name="projectObservations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectObservation" inverseName="project" inverseEntity="ProjectObservation" syncable="YES"/>
         <relationship name="projectUsers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProjectUser" inverseName="project" inverseEntity="ProjectUser" syncable="YES"/>
     </entity>
@@ -253,7 +254,7 @@
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="540"/>
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
-        <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="195"/>
+        <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="375"/>
         <element name="Project" positionX="160" positionY="192" width="128" height="360"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>

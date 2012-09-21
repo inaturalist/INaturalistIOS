@@ -9,6 +9,7 @@
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
+#import "ObservationFieldValue.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
@@ -87,6 +88,7 @@ static const int ObservationCellLowerRightTag = 4;
     }
     [self.syncQueue.queue removeAllObjects];
     [self.syncQueue addModel:Observation.class];
+    [self.syncQueue addModel:ObservationFieldValue.class];
     [self.syncQueue addModel:ProjectObservation.class];
     [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
     [self.syncQueue start];

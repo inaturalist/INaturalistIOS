@@ -1041,6 +1041,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)save
 {
     [self uiToObservation];
+    for (ObservationFieldValue *ofv in self.observation.observationFieldValues) {
+        if (ofv.value == nil || ofv.value.length == 0) {
+            [ofv deleteEntity]; 
+        }
+    }
     [self.observation save];
 }
 
@@ -1134,10 +1139,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     [self.observationFieldValues removeAllObjects];
     [self.ofvCells removeAllObjects];
+    NSMutableSet *existing = [NSMutableSet setWithSet:self.observation.observationFieldValues];
     
     for (ProjectObservation *po in self.observation.projectObservations) {
         for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
-            ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+            ObservationFieldValue *ofv = [[existing objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
                 return [obj.observationField isEqual:pof.observationField];
             }] anyObject];
             if (!ofv) {
@@ -1147,8 +1153,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             }
             if (![self.observationFieldValues containsObject:ofv]) {
                 [self.observationFieldValues addObject:ofv];
+                [existing removeObject:ofv];
             }
         }
+    }
+    for (ObservationFieldValue *remaining in existing) {
+        [self.observationFieldValues addObject:remaining];
     }
 }
 

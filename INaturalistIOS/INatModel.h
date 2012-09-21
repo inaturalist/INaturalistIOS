@@ -24,7 +24,7 @@
 + (NSInteger)deletedRecordCount;
 + (id)stub;
 + (RKManagedObjectMapping *)mapping;
-+ (RKManagedObjectMapping *)serializationMapping;
++ (RKObjectMapping *)serializationMapping;
 + (void)deleteAll;
 - (void)save;
 - (void)destroy;

@@ -20,10 +20,19 @@
 @property (nonatomic, retain) NSString * value;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSDate * updatedAt;
+@property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSDate * localCreatedAt;
 @property (nonatomic, retain) NSDate * localUpdatedAt;
 @property (nonatomic, retain) ObservationField *observationField;
 @property (nonatomic, retain) Observation *observation;
 
 - (NSString *)defaultValue;
+@end
+
+@interface ObservationFieldValue (PrimitiveAccessors)
+- (NSNumber *)primitiveObservationFieldID;
+- (void)setPrimitiveObservationFieldID:(NSNumber *)newPrimitiveObservationFieldID;
+- (NSNumber *)primitiveObservationID;
+- (void)setPrimitiveObservationID:(NSNumber *)newPrimitiveObservationID;
+- (void)setPrimitiveValue:(NSString *)newPrimitiveValue;
 @end

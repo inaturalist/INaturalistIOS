@@ -7,10 +7,11 @@
 //
 
 #import "Observation.h"
+#import "ObservationFieldValue.h"
 #import "Taxon.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
-static RKManagedObjectMapping *defaultSerializationMapping = nil;
+static RKObjectMapping *defaultSerializationMapping = nil;
 static NSDateFormatter *prettyDateFormatter = nil;
 static NSDateFormatter *shortDateFormatter = nil;
 static NSDateFormatter *isoDateFormatter = nil;
@@ -111,10 +112,10 @@ static NSDateFormatter *jsDateFormatter = nil;
     return defaultMapping;
 }
 
-+ (RKManagedObjectMapping *)serializationMapping
++ (RKObjectMapping *)serializationMapping
 {
     if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[Observation class]];
+        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Observation class]] inverseMapping];
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"speciesGuess", @"observation[species_guess]",
          @"inatDescription", @"observation[description]",
