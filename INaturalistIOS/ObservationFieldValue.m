@@ -75,7 +75,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     [self willAccessValueForKey:@"observationFieldID"];
     if (!self.primitiveObservationFieldID || [self.primitiveObservationFieldID intValue] == 0) {
+        [self willChangeValueForKey:@"observationFieldID"];
         [self setPrimitiveObservationFieldID:self.observationField.recordID];
+        [self didChangeValueForKey:@"observationFieldID"];
     }
     [self didAccessValueForKey:@"observationFieldID"];
     return [self primitiveObservationFieldID];
@@ -85,18 +87,34 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     [self willAccessValueForKey:@"observationID"];
     if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
+        [self willChangeValueForKey:@"observationID"];
         [self setPrimitiveObservationID:self.observation.recordID];
+        [self didChangeValueForKey:@"observationID"];
     }
     [self didAccessValueForKey:@"observationID"];
     return [self primitiveObservationID];
 }
 
-- (void)setValue:(NSString *)newValue
+- (NSString *)value
 {
     [self willAccessValueForKey:@"value"];
+    NSString *v = [self primitiveValueForKey:@"value"];
+    [self didAccessValueForKey:@"value"];
+    if (!v || v.length == 0) {
+        v = [self defaultValue];
+        [self willChangeValueForKey:@"value"];
+        [self setPrimitiveValue:v forKey:@"value"];
+        [self didChangeValueForKey:@"value"];
+    }
+    return v;
+}
+
+- (void)setValue:(NSString *)newValue
+{
+    [self willChangeValueForKey:@"value"];
     [self setPrimitiveValue:[newValue stringByTrimmingCharactersInSet:
                              [NSCharacterSet whitespaceCharacterSet]]];
-    [self didAccessValueForKey:@"value"];
+    [self didChangeValueForKey:@"value"];
 }
 
 @end

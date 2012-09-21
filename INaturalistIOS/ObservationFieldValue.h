@@ -34,5 +34,6 @@
 - (void)setPrimitiveObservationFieldID:(NSNumber *)newPrimitiveObservationFieldID;
 - (NSNumber *)primitiveObservationID;
 - (void)setPrimitiveObservationID:(NSNumber *)newPrimitiveObservationID;
+- (NSString *)primitiveValue;
 - (void)setPrimitiveValue:(NSString *)newPrimitiveValue;
 @end
