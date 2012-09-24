@@ -220,6 +220,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.keyboardToolbar = [[UIToolbar alloc] init];
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
         [self.keyboardToolbar sizeToFit];
+        UIBarButtonItem *prevButton = [[UIBarButtonItem alloc] 
+                                        initWithTitle:@"Prev" 
+                                        style:UIBarButtonItemStyleBordered
+                                        target:self
+                                        action:@selector(focusOnPrevField)];
+        UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] 
+                                        initWithTitle:@"Next" 
+                                        style:UIBarButtonItemStyleBordered
+                                        target:self
+                                        action:@selector(focusOnNextField)];
         UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] 
                                         initWithTitle:@"Clear" 
                                         style:UIBarButtonItemStyleBordered
@@ -229,7 +239,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
                                        target:self 
                                        action:@selector(keyboardDone)];
-        [self.keyboardToolbar setItems:[NSArray arrayWithObjects:clearButton, flex, doneButton, nil]];
+        [self.keyboardToolbar setItems:[NSArray arrayWithObjects:
+                                        prevButton, 
+                                        nextButton,
+                                        clearButton, 
+                                        flex, 
+                                        doneButton, 
+                                        nil]];
     }
     
     self.idPleaseSwitch.onText = @"YES";
@@ -307,8 +323,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark UITextFieldDelegate methods
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    [textField setInputAccessoryView:self.keyboardToolbar];
+    return YES;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    if (textField == self.speciesGuessTextField) {
+        [self clickedSpeciesButton:nil];    
+    }
     [textField resignFirstResponder];
     return YES;
 }
@@ -966,12 +991,90 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark - ObservationDetailViewController
+
+- (void)focusOnPrevField
+{
+    UIView *curr = [self.view findFirstResponder];
+    UIView *cell = curr.superview;
+    while (cell && ![cell isKindOfClass:UITableViewCell.class]) {
+        cell = [cell superview];
+    }
+    if (cell) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
+        // check prev siblings
+        for (int row = indexPath.row-1; row >= 0; row--) {
+            if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
+                return;
+            }
+        }
+        // check prev sections
+        for (int section = indexPath.section-1; section >= 0; section--) {
+            for (int row = [self.tableView numberOfRowsInSection:section]-1; row >= 0; row--) {
+                if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
+                    return;
+                }
+            }
+        }
+    }
+}
+
+- (void)focusOnNextField
+{
+    UIView *curr = [self.view findFirstResponder];
+    UIView *cell = curr.superview;
+    while (cell && ![cell isKindOfClass:UITableViewCell.class]) {
+        cell = [cell superview];
+    }
+    if (cell) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
+        // check next siblings
+        for (int row = indexPath.row+1; row < [self.tableView numberOfRowsInSection:indexPath.section]; row++) {
+            if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
+                return;
+            }
+        }
+        // check next sections
+        for (int section = indexPath.section+1; section < self.tableView.numberOfSections; section++) {
+            for (int row = 0; row < [self.tableView numberOfRowsInSection:section]; row++) {
+                if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
+                    return;
+                }
+            }
+        }
+    }
+}
+
+- (BOOL)focusOnFieldAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [self tableView:self.tableView cellForRowAtIndexPath:indexPath];
+    UIView *field = [cell descendentPassingTest:^BOOL (UIView *v) {
+        if ([v isKindOfClass:UITextField.class] || [v isKindOfClass:UITextView.class]) {
+            return [v isKindOfClass:UITextField.class] ? [(UITextField *)v isEnabled] : YES;
+        } else {
+            return NO;
+        }
+    }];
+    if (field) {
+        [field becomeFirstResponder];
+        [self.tableView scrollToRowAtIndexPath:indexPath
+                              atScrollPosition:UITableViewScrollPositionTop 
+                                      animated:YES];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)clickedClear {
-    [descriptionTextView setText:nil];
+    UIView *field = [self.view findFirstResponder];
+    if ([field isKindOfClass:UITextField.class]) {
+        [(UITextField *)field setText:nil];
+    } else {
+        [(UITextView *)field setText:nil];
+    }
 }
 
 - (void)keyboardDone {
-    [descriptionTextView resignFirstResponder];
+    [[self.view findFirstResponder] resignFirstResponder];
 }
 
 - (void)clickedSave {

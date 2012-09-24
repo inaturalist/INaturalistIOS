@@ -69,6 +69,9 @@
 @property (nonatomic, strong) NSURL *lastImageReferenceURL;
 @property (nonatomic, strong) NSMutableDictionary *ofvCells;
 
+- (void)focusOnPrevField;
+- (void)focusOnNextField;
+- (BOOL)focusOnFieldAtIndexPath:(NSIndexPath *)indexPath;
 - (void)clickedClear;
 - (void)keyboardDone;
 - (void)clickedSave;
