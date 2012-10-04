@@ -29,7 +29,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class]];
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
          @"created_at", @"createdAt",
@@ -46,7 +46,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 + (RKManagedObjectMapping *)serializationMapping
 {
     if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[self class]];
+        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"projectID", @"project_observation[project_id]",
          @"observationID", @"project_observation[observation_id]",

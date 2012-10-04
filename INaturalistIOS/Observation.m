@@ -82,7 +82,8 @@ static NSDateFormatter *jsDateFormatter = nil;
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[Observation class]];
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[Observation class]
+                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
          @"species_guess", @"speciesGuess",
@@ -115,7 +116,8 @@ static NSDateFormatter *jsDateFormatter = nil;
 + (RKObjectMapping *)serializationMapping
 {
     if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Observation class]] inverseMapping];
+        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Observation class]
+                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"speciesGuess", @"observation[species_guess]",
          @"inatDescription", @"observation[description]",

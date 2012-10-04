@@ -46,7 +46,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]];
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
          @"photo_id", @"photoID",
@@ -74,7 +74,8 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 + (RKManagedObjectMapping *)serializationMapping
 {
     if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]];
+        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]
+                                                         inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"observationID", @"observation_photo[observation_id]",
          @"position", @"observation_photo[position]",

@@ -42,7 +42,8 @@ static const int TaxonCellSubtitleTag = 3;
                 [self.taxa removeObject:t];
                 [t deleteEntity];
             }
-            [[[RKObjectManager sharedManager] objectStore] save];
+            NSError *error = nil;
+            [[[RKObjectManager sharedManager] objectStore] save:&error];
         } else {
             [self performSelector:@selector(loadRemoteTaxaWithURL:) 
                        withObject:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue] 
@@ -70,9 +71,10 @@ static const int TaxonCellSubtitleTag = 3;
     if (modal) {
         [DejalBezelActivityView activityViewForView:self.tableView withLabel:@"Loading..."];
     }
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
-                                                      delegate:self 
-                                                         block:^(RKObjectLoader *loader) {
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                                                         usingBlock:^(RKObjectLoader *loader) {
+        loader.delegate = self;
         loader.objectMapping = [Taxon mapping];
     }];
 }
@@ -239,7 +241,8 @@ static const int TaxonCellSubtitleTag = 3;
         o = [objects objectAtIndex:i];
         [o setSyncedAt:now];
     }
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self loadData];
     [self.tableView reloadData];
     [DejalBezelActivityView removeViewAnimated:YES];

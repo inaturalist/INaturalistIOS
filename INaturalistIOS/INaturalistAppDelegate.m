@@ -37,7 +37,7 @@
 
 - (void)configureRestKit
 {
-    RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:INatBaseURL];
+    RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatBaseURL]];
     manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
                                                        usingSeedDatabaseName:nil 
                                                           managedObjectModel:[self getManagedObjectModel] 
@@ -109,7 +109,7 @@
     
     
     // setup photo object manager
-    self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:INatMediaBaseURL];
+    self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatMediaBaseURL]];
     self.photoObjectManager.objectStore = [manager objectStore];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
                                 toResourcePath:@"/observation_photos/:recordID\\.json"];

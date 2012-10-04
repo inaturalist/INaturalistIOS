@@ -46,7 +46,7 @@
 + (NSInteger)needingSyncCount
 {
     NSError *error;
-    return [self.managedObjectContext countForFetchRequest:self.needingSyncRequest error:&error];
+    return [[NSManagedObjectContext defaultContext] countForFetchRequest:self.needingSyncRequest error:&error];
 }
 
 + (NSInteger)deletedRecordCount
@@ -54,7 +54,7 @@
     NSFetchRequest *request = [DeletedRecord fetchRequest];
     [request setPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", NSStringFromClass(self)]];
     NSError *error;
-    return [self.managedObjectContext countForFetchRequest:request error:&error];
+    return [[NSManagedObjectContext defaultContext] countForFetchRequest:request error:&error];
 }
 
 + (id)stub
@@ -64,7 +64,7 @@
 
 + (RKManagedObjectMapping *)mapping
 {
-    return [RKManagedObjectMapping mappingForClass:[self class]];
+    return [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
 }
 
 + (RKManagedObjectMapping *)serializationMapping
@@ -77,12 +77,19 @@
     for (INatModel *o in [self allObjects]) {
         [o deleteEntity];
     }
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+}
+
++ (NSManagedObjectContext *)managedObjectContext
+{
+    return [NSManagedObjectContext defaultContext];
 }
 
 - (void)save
 {
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
 - (void)willSave
@@ -113,7 +120,8 @@
 - (void)destroy
 {
     [self deleteEntity];
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError* error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
 - (BOOL)needsSync

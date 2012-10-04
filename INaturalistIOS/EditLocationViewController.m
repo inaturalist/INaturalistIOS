@@ -216,7 +216,7 @@
     } else {
         [self.accuracyCircleView setHidden:NO];
         self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
-        self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy longValue]];
+        self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
     }
 }
 

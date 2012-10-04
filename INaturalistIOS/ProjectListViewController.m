@@ -282,7 +282,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
         [lt deleteEntity];
     }
     
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {

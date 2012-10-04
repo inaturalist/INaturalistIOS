@@ -87,7 +87,8 @@ static const int VersionCellTag = 4;
     for (DeletedRecord *dr in [DeletedRecord allObjects]) {
          [dr deleteEntity];
     }
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self localSignOut];
     [DejalBezelActivityView removeView];
 }

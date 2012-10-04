@@ -121,6 +121,7 @@ static const int ObservationCellLowerRightTag = 4;
     INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
     app.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
     void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
+        loader.delegate = self.syncQueue;
         RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
                                                  serializationMappingForClass:[ObservationPhoto class]];
         NSError* error = nil;
@@ -135,9 +136,9 @@ static const int ObservationCellLowerRightTag = 4;
         loader.objectMapping = [ObservationPhoto mapping];
     };
     if (op.syncedAt && op.recordID) {
-        [app.photoObjectManager putObject:op delegate:self.syncQueue block:prepareObservationPhoto];
+        [app.photoObjectManager putObject:op usingBlock:prepareObservationPhoto];
     } else {
-        [app.photoObjectManager postObject:op delegate:self.syncQueue block:prepareObservationPhoto];
+        [app.photoObjectManager postObject:op usingBlock:prepareObservationPhoto];
     }
 }
 
@@ -515,7 +516,8 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     // make sure any deleted records get gone
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
 - (void)syncQueueAuthRequired
@@ -541,7 +543,7 @@ static const int ObservationCellLowerRightTag = 4;
         if ([self isSyncing]) {
             NSString *alertTitle;
             NSString *alertMessage;
-            if (error.domain == RKRestKitErrorDomain && error.code == RKRequestConnectionTimeoutError) {
+            if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
                 alertTitle = @"Request timed out";
                 alertMessage = @"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.";
             } else {

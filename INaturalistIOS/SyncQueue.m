@@ -165,7 +165,8 @@
         }
     }
     
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
     
     if ([[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
         [self start];
@@ -245,8 +246,8 @@
         for (DeletedRecord *dr in deletedRecords) {
             [dr deleteEntity];
         }
-        NSError *error;
-        [[DeletedRecord managedObjectContext] save:&error];
+        NSError *error = nil;
+        [[NSManagedObjectContext defaultContext] save:&error];
         
         // move the queue forward
         [self start];

@@ -363,7 +363,8 @@ static const int ListControlIndexNearby = 2;
         }
     }
     
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
     
     [self stopSync];
     [self loadData];

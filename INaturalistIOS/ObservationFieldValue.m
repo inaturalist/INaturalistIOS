@@ -30,7 +30,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]];
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]
+                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id",                     @"recordID",
          @"created_at_utc",         @"createdAt",
@@ -51,7 +52,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 + (RKObjectMapping *)serializationMapping
 {
     if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]] inverseMapping];
+        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]
+                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"recordID",           @"observation_field_value[id]",
          @"value",              @"observation_field_value[value]",

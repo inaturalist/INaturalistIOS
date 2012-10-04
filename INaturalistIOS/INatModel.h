@@ -26,6 +26,7 @@
 + (RKManagedObjectMapping *)mapping;
 + (RKObjectMapping *)serializationMapping;
 + (void)deleteAll;
++ (NSManagedObjectContext *)managedObjectContext;
 - (void)save;
 - (void)destroy;
 - (BOOL)needsSync;

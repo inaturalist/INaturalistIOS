@@ -43,7 +43,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class]];
+        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
         [defaultMapping mapKeyPathsToAttributes:
          @"id", @"recordID",
          @"created_at", @"createdAt",

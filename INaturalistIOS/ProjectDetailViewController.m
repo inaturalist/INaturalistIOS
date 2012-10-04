@@ -95,7 +95,8 @@ static const int LeaveProjectAlertViewTag = 1;
         self.projectUser.project = self.project;
         self.projectUser.projectID = self.project.recordID;
     }
-    [[RKObjectManager sharedManager] postObject:self.projectUser delegate:self block:^(RKObjectLoader *loader) {
+    [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
+        loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
         loader.objectMapping = [ProjectUser mapping];
     }];
@@ -105,7 +106,8 @@ static const int LeaveProjectAlertViewTag = 1;
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
                                       withLabel:@"Leaving..."];
-    [[RKObjectManager sharedManager] deleteObject:self.projectUser delegate:self block:^(RKObjectLoader *loader) {
+    [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
+        loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
     }];
 }

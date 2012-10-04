@@ -169,7 +169,8 @@
         o = [objects objectAtIndex:i];
         [o setSyncedAt:now];
     }
-    [[[RKObjectManager sharedManager] objectStore] save];
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self searchLocal:self.savedSearchTerm];
     [self.searchDisplayController.searchResultsTableView reloadData];
     self.isLoading = NO;
