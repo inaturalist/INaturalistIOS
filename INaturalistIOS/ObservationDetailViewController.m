@@ -61,7 +61,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize locationManager = _locationManager;
 @synthesize locationTimer = _locationTimer;
 @synthesize geocoder = _geocoder;
-@synthesize datePicker = _datePicker;
 @synthesize popOver = _popOver;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
@@ -810,51 +809,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [locationActionSheet setCancelButtonIndex:2];
         [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == ObservedOnTableViewSection) {
-        // this is an extremely silly way to get the height right, but the only other 
-        // way I've found is to alter the bounds *after* the action sheet has appeared, 
-        // which messes up the animation.
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Choose a date"
-                                                           delegate:nil 
-                                                  cancelButtonTitle:nil 
-                                             destructiveButtonTitle:nil 
-                                                  otherButtonTitles:@"", @"", @"", @"", nil];
-        self.currentActionSheet = sheet;
-        sheet.delegate = self;
-        sheet.tag = ObservedOnActionSheetTag;
-        
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        toolbar.barStyle = UIBarStyleBlackTranslucent;
-        [toolbar sizeToFit];
-        [toolbar setItems:[NSArray arrayWithObjects:
-                           [[UIBarButtonItem alloc] 
-                            initWithTitle:@"Cancel" 
-                            style:UIBarButtonItemStyleBordered 
-                            target:self 
-                            action:@selector(dismissActionSheet)], 
-                           [[UIBarButtonItem alloc] 
-                            initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                            target:nil 
-                            action:nil],
-                           [[UIBarButtonItem alloc] 
-                            initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
-                            target:self
-                            action:@selector(doneDatePicker)],
-                           nil] 
-                 animated:YES];
-        [sheet addSubview:toolbar];
-        
-        if (!self.datePicker) {
-            self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, toolbar.frame.size.height, 320, 320)];
-        }
-        self.datePicker.maximumDate = [NSDate date];
-        self.datePicker.date = self.observation.localObservedOn;
-        [sheet addSubview:self.datePicker];
-        [sheet showFromTabBar:self.tabBarController.tabBar];
-//        [ActionSheetDatePicker showPickerWithTitle:@"Choose a date"
-//                                    datePickerMode:UIDatePickerModeDateAndTime selectedDate:self.observation.observedOn
-//                                            target:self
-//                                            action:@selector(doneDatePicker)
-//                                            origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
+        [ActionSheetDatePicker showPickerWithTitle:@"Choose a date"
+                                    datePickerMode:UIDatePickerModeDateAndTime selectedDate:self.observation.localObservedOn
+                                            target:self
+                                            action:@selector(doneDatePicker:element:)
+                                            origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == MoreSection && indexPath.row == 1) {
@@ -1459,11 +1418,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
-- (void)doneDatePicker
+- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element
 {
-    self.observation.localObservedOn = self.datePicker.date;
-    [self dismissActionSheet];
+    self.observation.localObservedOn = selectedDate;
     self.observedAtLabel.text = [self.observation observedOnPrettyString];
+    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (NSArray *)projectsRequireField:(ObservationField *)observationField

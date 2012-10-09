@@ -61,7 +61,6 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
-@property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) UIPopoverController *popOver;
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
 @property (nonatomic, assign) BOOL locationUpdatesOn;
@@ -101,7 +100,7 @@
 - (void)geoprivacyActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 - (void)dismissActionSheet;
-- (void)doneDatePicker;
+- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element;
 - (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath;
