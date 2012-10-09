@@ -10,3 +10,6 @@
 [submodule "Vendor/DCRoundSwitch"]
 	path = Vendor/DCRoundSwitch
 	url = git://github.com/computerlogicx/DCRoundSwitch.git
+[submodule "Vendor/ActionSheetPicker"]
+	path = Vendor/ActionSheetPicker
+	url = git://github.com/kueda/ActionSheetPicker.git

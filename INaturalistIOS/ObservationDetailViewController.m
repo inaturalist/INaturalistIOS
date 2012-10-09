@@ -22,6 +22,7 @@
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "EditLocationViewController.h"
+#import "ActionSheetPicker.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -34,6 +35,7 @@ static const int ObservedOnTableViewSection = 3;
 static const int MoreSection = 4;
 static const int ProjectsSection = 5;
 NSString *const ObservationFieldValueDefaultCell = @"ObservationFieldValueDefaultCell";
+NSString *const ObservationFieldValueStaticCell = @"ObservationFieldValueStaticCell";
 NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchCell";
 
 @implementation ObservationDetailViewController
@@ -769,6 +771,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if ([self projectsRequireField:ofv.observationField].count > 0) {
             label.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
         }
+    } else if (ofv.observationField.allowedValuesArray.count > 2) {
+        NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueStaticCell owner:self options:nil];
+        cell = [nibObjects objectAtIndex:0];
+        UILabel *leftLabel = (UILabel *)[cell viewWithTag:1];
+        UILabel *rightLabel = (UILabel *)[cell viewWithTag:2];
+        leftLabel.text = ofv.observationField.name;
+        rightLabel.text = ofv.value == nil ? ofv.defaultValue : ofv.value;
+        if ([self projectsRequireField:ofv.observationField].count > 0) {
+            leftLabel.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
+        }
     } else {
         NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueDefaultCell owner:self options:nil];
         cell = [nibObjects objectAtIndex:0];
@@ -838,6 +850,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.datePicker.date = self.observation.localObservedOn;
         [sheet addSubview:self.datePicker];
         [sheet showFromTabBar:self.tabBarController.tabBar];
+//        [ActionSheetDatePicker showPickerWithTitle:@"Choose a date"
+//                                    datePickerMode:UIDatePickerModeDateAndTime selectedDate:self.observation.observedOn
+//                                            target:self
+//                                            action:@selector(doneDatePicker)
+//                                            origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == MoreSection && indexPath.row == 1) {
@@ -850,7 +867,36 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.currentActionSheet = actionSheet;
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == MoreSection && indexPath.row > 1) {
-        ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 2];
+        [self didSelectObservationFieldValueRow:indexPath];
+    } else {
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    }
+}
+
+- (void)didSelectObservationFieldValueRow:(NSIndexPath *)indexPath
+{
+    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 2];
+    if (ofv.observationField.allowedValuesArray.count > 2) {
+        NSInteger index = [ofv.observationField.allowedValuesArray indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [obj isEqualToString:ofv.value];
+        }];
+        if (index < 1 || index >= ofv.observationField.allowedValuesArray.count) {
+            index = 0;
+        }
+        UITableViewCell *cell = [self tableView:self.tableView observationFieldValueCellForRowAtIndexPath:indexPath];
+        [ActionSheetStringPicker showPickerWithTitle:ofv.observationField.name
+                                                rows:ofv.observationField.allowedValuesArray
+                                    initialSelection:index
+                                           doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                               UILabel *label = (UILabel *)[cell viewWithTag:2];
+                                               label.text = selectedValue;
+                                               [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                           }
+                                         cancelBlock:^(ActionSheetStringPicker *picker) {
+                                             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                         }
+                                              origin:cell];
+    } else {
         NSMutableString *msg = [NSMutableString stringWithString:ofv.observationField.desc];
         NSArray *projects = [self projectsRequireField:ofv.observationField];
         if (projects.count > 0) {
@@ -858,12 +904,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         }
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:ofv.observationField.name
                                                      message:msg
-                                                    delegate:nil 
-                                           cancelButtonTitle:@"OK" 
+                                                    delegate:nil
+                                           cancelButtonTitle:@"OK"
                                            otherButtonTitles:nil];
         [av show];
-        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-    } else {
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     }
 }
