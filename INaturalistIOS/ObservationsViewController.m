@@ -222,6 +222,10 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)checkSyncStatus
 {
     self.observationsToSyncCount = [Observation needingSyncCount];
+    if (self.observationsToSyncCount == 0) {
+        self.observationsToSyncCount = [[NSSet setWithArray:[[ObservationFieldValue needingSync] valueForKey:@"observationID"]] count];
+        
+    }
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
     NSMutableString *msg = [NSMutableString stringWithString:@"Sync "];
     if (self.observationsToSyncCount > 0) {

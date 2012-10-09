@@ -45,7 +45,7 @@
 
 + (NSInteger)needingSyncCount
 {
-    NSError *error;
+    NSError *error = nil;
     return [[NSManagedObjectContext defaultContext] countForFetchRequest:self.needingSyncRequest error:&error];
 }
 
