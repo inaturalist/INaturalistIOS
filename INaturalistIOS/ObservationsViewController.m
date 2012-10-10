@@ -367,7 +367,6 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"ObservationsViewController didLoad");
 
 //    // if you need to test syncing lots of obs
 //    [Observation deleteAll];

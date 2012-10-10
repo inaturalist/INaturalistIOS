@@ -395,31 +395,53 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [self dismissModalViewControllerAnimated:YES];
+    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    if (image) {
+        [self pickedImage:image withInfo:info];
+    } else if (referenceURL) {
+        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
+        [assetsLib assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef iref = [rep fullResolutionImage];
+            if (iref) {
+                [self pickedImage:[UIImage imageWithCGImage:iref] withInfo:info];
+            }
+        } failureBlock:^(NSError *error) {
+            NSLog(@"error: %@", error);
+        }];
+    } else {
+        NSLog(@"ERROR: no image specified.");
+    }
+}
+
+- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
+{
+    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     ObservationPhoto *op = [ObservationPhoto object];
     op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
     [op setObservation:self.observation];
     [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     [ImageStore.sharedImageStore store:image forKey:op.photoKey];
     [self addPhoto:op];
     op.localCreatedAt = [NSDate date];
     
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     if (referenceURL) {
         self.lastImageReferenceURL = referenceURL;
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import metadata?" 
-                                                     message:@"Do you want to set the date, time, and location of this observation from the photo's metadata?" 
-                                                    delegate:self 
-                                           cancelButtonTitle:@"No" 
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import metadata?"
+                                                     message:@"Do you want to set the date, time, and location of this observation from the photo's metadata?"
+                                                    delegate:self
+                                           cancelButtonTitle:@"No"
                                            otherButtonTitles:@"Yes", nil];
         [av show];
     } else {
         ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue] 
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue]
                                                      longitude:[self.observation.longitude doubleValue]];
         
         NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
-        [meta setValue:[self getGPSDictionaryForLocation:loc] 
+        [meta setValue:[self getGPSDictionaryForLocation:loc]
                 forKey:((NSString * )kCGImagePropertyGPSDictionary)];
         [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
                                        metadata:meta
