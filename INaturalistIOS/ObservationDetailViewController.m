@@ -908,6 +908,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                            doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
                                                UILabel *label = (UILabel *)[cell viewWithTag:2];
                                                label.text = selectedValue;
+                                               ofv.value = selectedValue;
                                                [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
                                            }
                                          cancelBlock:^(ActionSheetStringPicker *picker) {
