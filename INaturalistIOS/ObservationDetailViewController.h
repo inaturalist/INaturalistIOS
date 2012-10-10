@@ -16,6 +16,7 @@
 
 @class Observation;
 @class ObservationField;
+@class ObservationFieldValue;
 @class ObservationPhoto;
 @class ObservationDetailViewController;
 
@@ -23,6 +24,11 @@
 @optional
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller;
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller;
+@end
+
+@interface OFVTaxaSearchControllerDelegate : NSObject <TaxaSearchViewControllerDelegate>
+@property (nonatomic, strong) ObservationDetailViewController *controller;
+@property (nonatomic, strong) NSIndexPath *indexPath;
 @end
 
 @interface ObservationDetailViewController : UITableViewController <
@@ -67,6 +73,7 @@
 @property (nonatomic, assign) BOOL observationWasNew;
 @property (nonatomic, strong) NSURL *lastImageReferenceURL;
 @property (nonatomic, strong) NSMutableDictionary *ofvCells;
+@property (nonatomic, strong) OFVTaxaSearchControllerDelegate *ofvTaxaSearchControllerDelegate;
 
 - (void)focusOnPrevField;
 - (void)focusOnNextField;
@@ -107,5 +114,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView observationFieldValueCellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSArray *)projectsRequireField:(ObservationField *)observationField;
+- (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath;
+- (void)clearCurrentObservationField;
 
 @end
+

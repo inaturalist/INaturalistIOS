@@ -38,6 +38,31 @@ NSString *const ObservationFieldValueDefaultCell = @"ObservationFieldValueDefaul
 NSString *const ObservationFieldValueStaticCell = @"ObservationFieldValueStaticCell";
 NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchCell";
 
+@implementation OFVTaxaSearchControllerDelegate
+@synthesize controller = _controller;
+@synthesize indexPath = _indexPath;
+
+- (id)initWithController:(ObservationDetailViewController *)controller
+{
+    self = [super init];
+    if (self) {
+        self.controller = controller;
+    }
+    return self;
+}
+
+- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
+{
+    [self.controller dismissModalViewControllerAnimated:YES];
+    ObservationFieldValue *ofv = [self.controller observationFieldValueForIndexPath:self.indexPath];
+    [self.controller.ofvCells removeObjectForKey:ofv.observationField.name];
+    ofv.value = [taxon.recordID stringValue];
+    [self.controller.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.indexPath]
+                                     withRowAnimation:UITableViewRowAnimationNone];
+}
+@end
+
+
 @implementation ObservationDetailViewController
 
 @synthesize observedAtLabel;
@@ -67,6 +92,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize observationWasNew = _observationWasNew;
 @synthesize lastImageReferenceURL = _lastImageReferenceURL;
 @synthesize ofvCells = _ofvCells;
+@synthesize ofvTaxaSearchControllerDelegate = _ofvTaxaSearchControllerDelegate;
 
 - (void)observationToUI
 {
@@ -167,6 +193,23 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             } else {
                 ofv.value = [ofv.observationField.allowedValuesArray lastObject];
             }
+        } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
+            Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
+            UILabel *label = (UILabel *)[cell viewWithTag:2];
+            
+            if ([label.text isEqualToString:@"unknown"]) {
+                ofv.value = nil;
+            
+            // This is messed up, but the ofv value is usually set when the UI is updated,
+            // and I haven't found a good way to store the taxon ID in the UI while still
+            // displaying the name, so we do a check here to make sure they match and if
+            // not try to find the taxon by the name in the label.
+            } else if (t == nil || ![t.name isEqualToString:label.text]) {
+                t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", label.text]];
+                if (t) {
+                    ofv.value = [t.recordID stringValue];
+                }
+            }
         } else {
             UITextField *textField = (UITextField *)[cell viewWithTag:2];
             ofv.value = textField.text;
@@ -266,6 +309,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         [[self navigationItem] setTitle:@"Edit observation"];
     }
+    self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -750,7 +794,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 // works, but doesn't seem to preserve the state of text fields in the cells
 - (UITableViewCell *)tableView:(UITableView *)tableView observationFieldValueCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:(indexPath.row - 2)];
+    ObservationFieldValue *ofv = [self observationFieldValueForIndexPath:indexPath];
     if (!ofv.value) {
         ofv.value = ofv.defaultValue;
     }
@@ -780,6 +824,18 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if ([self projectsRequireField:ofv.observationField].count > 0) {
             leftLabel.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
         }
+    } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
+        NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueStaticCell owner:self options:nil];
+        cell = [nibObjects objectAtIndex:0];
+        UILabel *leftLabel = (UILabel *)[cell viewWithTag:1];
+        UILabel *rightLabel = (UILabel *)[cell viewWithTag:2];
+        leftLabel.text = ofv.observationField.name;
+        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
+        if (t) {
+            rightLabel.text = t.name;
+        } else {
+            rightLabel.text = ofv.value.length == 0 ? @"unknown" : ofv.value;
+        }
     } else {
         NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueDefaultCell owner:self options:nil];
         cell = [nibObjects objectAtIndex:0];
@@ -791,6 +847,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if ([self projectsRequireField:ofv.observationField].count > 0) {
             textField.placeholder = @"required";
             label.textColor = [UIColor colorWithRed:1 green:20.0/255 blue:147.0/255 alpha:1];
+        }
+        if ([ofv.observationField.datatype isEqualToString:@"numeric"]) {
+            textField.keyboardType = UIKeyboardTypeDecimalPad;
         }
     }
     [self.ofvCells setObject:cell forKey:ofv.observationField.name];
@@ -855,6 +914,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                              [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
                                          }
                                               origin:cell];
+    } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
+        [self performSegueWithIdentifier:@"OFVTaxonSegue" sender:self];
     } else {
         NSMutableString *msg = [NSMutableString stringWithString:ofv.observationField.desc];
         NSArray *projects = [self projectsRequireField:ofv.observationField];
@@ -1329,6 +1390,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
         vc.query = self.observation.speciesGuess;
+    } else if ([segue.identifier isEqualToString:@"OFVTaxonSegue"]) {
+        TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
+        self.ofvTaxaSearchControllerDelegate.indexPath = [self.tableView indexPathForSelectedRow];
+        ObservationFieldValue *ofv = [self observationFieldValueForIndexPath:self.ofvTaxaSearchControllerDelegate.indexPath];
+        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
+        vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear"
+                                                                               style:UIBarButtonItemStylePlain
+                                                                              target:self
+                                                                              action:@selector(clearCurrentObservationField)];
+        if (t) {
+            vc.query = t.name;
+        }
+        [vc setDelegate:self.ofvTaxaSearchControllerDelegate];
     }
 }
 
@@ -1436,6 +1510,25 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         }
     }
     return a;
+}
+
+- (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.observationFieldValues objectAtIndex:(indexPath.row - 2)];
+}
+
+- (void)clearCurrentObservationField
+{
+    NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+    ObservationFieldValue *ofv = [self observationFieldValueForIndexPath:indexPath];
+    if (ofv) {
+        ofv.value = nil;
+        [self.ofvCells removeObjectForKey:ofv.observationField.name];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                              withRowAnimation:UITableViewRowAnimationNone];
+    }
+    [self dismissModalViewControllerAnimated:YES];
+    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 @end
