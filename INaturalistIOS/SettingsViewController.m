@@ -14,6 +14,7 @@
 #import "ProjectObservation.h"
 #import "DeletedRecord.h"
 #import "TutorialViewController.h"
+#import "INatUITabBarController.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -102,6 +103,7 @@ static const int VersionCellTag = 4;
     [[NSUserDefaults standardUserDefaults] synchronize];
     [RKClient.sharedClient setUsername:nil];
     [RKClient.sharedClient setPassword:nil];
+    [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
     [self initUI];
 }
 
