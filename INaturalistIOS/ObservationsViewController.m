@@ -47,10 +47,10 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
-                                                     message:@"You must be connected to the Internet to sync with iNaturalist.org"
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
@@ -63,7 +63,7 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:@"Stop sync" 
+        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
                                                                style:UIBarButtonItemStyleBordered 
                                                               target:self 
                                                               action:@selector(stopSync)];
@@ -74,7 +74,7 @@ static const int ObservationCellLowerRightTag = 4;
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
                  animated:YES];
     
-    NSString *activityMsg = @"Syncing...";
+    NSString *activityMsg = NSLocalizedString(@"Syncing...",nil);
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
     } else {
@@ -149,12 +149,12 @@ static const int ObservationCellLowerRightTag = 4;
     if ([self isEditing]) {
         [self stopEditing];
     } else {
-        [sender setTitle:@"Done"];
+        [sender setTitle:NSLocalizedString(@"Done",nil)];
         [(UIBarButtonItem *)sender setStyle:UIBarButtonItemStyleDone];
         [self setEditing:YES animated:YES];
         UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         if (!self.deleteAllButton) {
-            self.deleteAllButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete all" 
+            self.deleteAllButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Delete all",nil)
                                                                     style:UIBarButtonItemStyleDone 
                                                                    target:self 
                                                                    action:@selector(clickedDeleteAll)];
@@ -167,7 +167,7 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)stopEditing
 {
-    [self.editButton setTitle:@"Edit"];
+    [self.editButton setTitle:NSLocalizedString(@"Edit",nil)];
     [self.editButton setStyle:UIBarButtonItemStyleBordered];
     [self setEditing:NO animated:YES];
     [self checkSyncStatus];
@@ -175,11 +175,11 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)clickedDeleteAll
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure" 
-                                                 message:@"This will delete all the observations on this device, but you need to go to iNaturalist.org to delete them from the website." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure",nil)
+                                                 message:NSLocalizedString(@"This will delete all the observations on this device, but you need to go to iNaturalist.org to delete them from the website.",nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"Cancel" 
-                                       otherButtonTitles:@"Delete all", nil];
+                                       cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                       otherButtonTitles:NSLocalizedString(@"Delete all",nil), nil];
     av.tag = DeleteAllAlertViewTag;
     [av show];
 }
@@ -227,14 +227,14 @@ static const int ObservationCellLowerRightTag = 4;
         
     }
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
-    NSMutableString *msg = [NSMutableString stringWithString:@"Sync "];
+    NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Sync ",nil)];
     if (self.observationsToSyncCount > 0) {
-        [msg appendString:[NSString stringWithFormat:@"%d observation", self.observationsToSyncCount]];
+        [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observation",nil), self.observationsToSyncCount]];
         if (self.observationsToSyncCount > 1) [msg appendString:@"s"];
         if (self.observationPhotosToSyncCount > 0) [msg appendString:@", "];
     }
     if (self.observationPhotosToSyncCount > 0) {
-        [msg appendString:[NSString stringWithFormat:@"%d photo", self.observationPhotosToSyncCount]];
+        [msg appendString:[NSString stringWithFormat: NSLocalizedString(@"%d photo",nil), self.observationPhotosToSyncCount]];
         if (self.observationPhotosToSyncCount > 1) [msg appendString:@"s"];
     }
     [self.syncButton setTitle:msg];
@@ -253,7 +253,7 @@ static const int ObservationCellLowerRightTag = 4;
     if (self.observations.count == 0) {
         if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.text = @"You don't have any observations yet.";
+            self.noContentLabel.text = NSLocalizedString(@"You don't have any observations yet.",nil);
             self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;
@@ -323,7 +323,7 @@ static const int ObservationCellLowerRightTag = 4;
     if (o.speciesGuess) {
         [title setText:o.speciesGuess];
     } else {
-        [title setText:@"Something..."];
+        [title setText:NSLocalizedString(@"Something...",nil)];
     }
     
     if (o.placeGuess && o.placeGuess.length > 0) {
@@ -331,7 +331,7 @@ static const int ObservationCellLowerRightTag = 4;
     } else if (o.latitude) {
         subtitle.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
     } else {
-        subtitle.text = @"Somewhere...";
+        subtitle.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
     upperRight.text = o.observedOnShortString;
@@ -466,7 +466,7 @@ static const int ObservationCellLowerRightTag = 4;
 {
     if (alertView.tag == DeleteAllAlertViewTag && buttonIndex == 1) {
         [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                          withLabel:@"Deleting observations..."];
+                                          withLabel:NSLocalizedString(@"Deleting observations...",nil)];
         [self.observations removeAllObjects];
         [self.tableView reloadData];
         [self performSelectorInBackground:@selector(deleteAll) withObject:nil];
@@ -478,9 +478,9 @@ static const int ObservationCellLowerRightTag = 4;
 {
     NSString *activityMsg;
     if (model == ObservationPhoto.class) {
-        activityMsg = @"Syncing photos...";
+        activityMsg = NSLocalizedString(@"Syncing photos...",nil);
     } else {
-        activityMsg = [NSString stringWithFormat:@"Syncing %@...", NSStringFromClass(model).humanize.pluralize];
+        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSStringFromClass(model).humanize.pluralize];
     }
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];
@@ -492,7 +492,7 @@ static const int ObservationCellLowerRightTag = 4;
 }
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
-    NSString *activityMsg = [NSString stringWithFormat:@"Synced %d of %d %@", 
+    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
                              number, 
                              total, 
                              NSStringFromClass(record.class).humanize.pluralize];
@@ -509,10 +509,10 @@ static const int ObservationCellLowerRightTag = 4;
 {
     [self stopSync];
     if (self.syncErrors && self.syncErrors.count > 0) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Heads up" 
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
                                                      message:[self.syncErrors componentsJoinedByString:@"\n\n"]
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         self.syncErrors = nil;
@@ -536,7 +536,7 @@ static const int ObservationCellLowerRightTag = 4;
         if (!self.syncErrors) {
             self.syncErrors = [[NSMutableArray alloc] init];
         }
-        [self.syncErrors addObject:[NSString stringWithFormat:@"%@ (%@) couldn't be added to project %@: %@", 
+        [self.syncErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
                                     po.observation.speciesGuess, 
                                     po.observation.observedOnShortString,
                                     po.project.title,
@@ -547,16 +547,16 @@ static const int ObservationCellLowerRightTag = 4;
             NSString *alertTitle;
             NSString *alertMessage;
             if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
-                alertTitle = @"Request timed out";
-                alertMessage = @"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.";
+                alertTitle = NSLocalizedString(@"Request timed out",nil);
+                alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
             } else {
-                alertTitle = @"Whoops!";
-                alertMessage = [NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription];
+                alertTitle = NSLocalizedString(@"Whoops!",nil);
+                alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
             }
             UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle 
                                                          message:alertMessage
                                                         delegate:self 
-                                               cancelButtonTitle:@"OK" 
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                otherButtonTitles:nil];
             [av show];
             [objectLoader cancel];
@@ -568,10 +568,10 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)syncQueueUnexpectedResponse
 {
     [self stopSync];
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                 message:@"There was an unexpected error."
-                                                delegate:self 
-                                       cancelButtonTitle:@"OK" 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                 message:NSLocalizedString(@"There was an unexpected error.",nil)
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                        otherButtonTitles:nil];
     [av show];
 }

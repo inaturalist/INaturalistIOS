@@ -224,7 +224,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                              target:nil 
                              action:nil];
     if (!self.saveButton) {
-        self.saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" 
+        self.saveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString( @"Save",nil)
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
                                                           action:@selector(clickedSave)];
@@ -265,17 +265,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.keyboardToolbar.barStyle = UIBarStyleBlackOpaque;
         [self.keyboardToolbar sizeToFit];
         UIBarButtonItem *prevButton = [[UIBarButtonItem alloc] 
-                                        initWithTitle:@"Prev" 
+                                        initWithTitle:NSLocalizedString(@"Prev", @"Previous")
                                         style:UIBarButtonItemStyleBordered
                                         target:self
                                         action:@selector(focusOnPrevField)];
         UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] 
-                                        initWithTitle:@"Next" 
+                                        initWithTitle:NSLocalizedString(@"Next",nil)
                                         style:UIBarButtonItemStyleBordered
                                         target:self
                                         action:@selector(focusOnNextField)];
         UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] 
-                                        initWithTitle:@"Clear" 
+                                        initWithTitle:NSLocalizedString(@"Clear",nil)
                                         style:UIBarButtonItemStyleBordered
                                         target:self
                                         action:@selector(clickedClear)];
@@ -305,9 +305,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     if ([self.observation isNew]) {
-        [[self navigationItem] setTitle:@"Add observation"];
+        [[self navigationItem] setTitle:NSLocalizedString(@"Add observation",nil)];
     } else {
-        [[self navigationItem] setTitle:@"Edit observation"];
+        [[self navigationItem] setTitle:NSLocalizedString(@"Edit observation",nil)];
     }
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
 }
@@ -429,11 +429,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     if (referenceURL) {
         self.lastImageReferenceURL = referenceURL;
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import metadata?"
-                                                     message:@"Do you want to set the date, time, and location of this observation from the photo's metadata?"
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import metadata?", nil)
+                                                     message:NSLocalizedString(@"Do you want to set the date, time, and location of this observation from the photo's metadata?",nil)
                                                     delegate:self
-                                           cancelButtonTitle:@"No"
-                                           otherButtonTitles:@"Yes", nil];
+                                           cancelButtonTitle:NSLocalizedString(@"No", nil)
+                                           otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
         [av show];
     } else {
         ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
@@ -884,13 +884,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         UIActionSheet *locationActionSheet = [[UIActionSheet alloc] init];
         locationActionSheet.delegate = self;
         locationActionSheet.tag = LocationActionSheetTag;
-        [locationActionSheet addButtonWithTitle:@"Get current location"];
-        [locationActionSheet addButtonWithTitle:@"Edit location"];
-        [locationActionSheet addButtonWithTitle:@"Cancel"];
+        [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Get current location",nil)];
+        [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Edit location",nil)];
+        [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [locationActionSheet setCancelButtonIndex:2];
         [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == ObservedOnTableViewSection) {
-        [ActionSheetDatePicker showPickerWithTitle:@"Choose a date"
+        [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
                                     datePickerMode:UIDatePickerModeDateAndTime selectedDate:self.observation.localObservedOn
                                             target:self
                                             action:@selector(doneDatePicker:element:)
@@ -898,11 +898,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == MoreSection && indexPath.row == 1) {
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Choose how your coordinates are displayed on the website."
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Choose how your coordinates are displayed on the website.",nil)
                                                                  delegate:self 
-                                                        cancelButtonTitle:@"Cancel" 
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:@"Open", @"Obscured", @"Private", nil];
+                                                        otherButtonTitles:NSLocalizedString(@"Open",nil),
+                                      NSLocalizedString(@"Obscured",nil), NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
@@ -943,12 +944,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         NSMutableString *msg = [NSMutableString stringWithString:ofv.observationField.desc];
         NSArray *projects = [self projectsRequireField:ofv.observationField];
         if (projects.count > 0) {
-            [msg appendFormat:@"\n\nRequired by %@", [[projects valueForKey:@"title"] componentsJoinedByString:@", "]];
+            [msg appendFormat:NSLocalizedString(@"\n\nRequired by %@",nil), [[projects valueForKey:@"title"] componentsJoinedByString:@", "]];
         }
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:ofv.observationField.name
                                                      message:msg
                                                     delegate:nil
-                                           cancelButtonTitle:@"OK"
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
@@ -1062,12 +1063,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         } failureBlock:^(NSError *error) {
             NSString *msg = error.localizedFailureReason;
             if (error.code == ALAssetsLibraryAccessUserDeniedError) {
-                msg = @"You've denied iNaturalist access to certain kinds of data, most likely location data, so some of the photo data couldn't be imported.  To change this, open your Settings app, click Location Services, and make sure Location Services are on for iNaturalist.";
+                msg = NSLocalizedString(@"You've denied iNaturalist access to certain kinds of data, most likely location data, so some of the photo data couldn't be imported.  To change this, open your Settings app, click Location Services, and make sure Location Services are on for iNaturalist.",nil);
             }
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Import Error"
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import Error",nil)
                                                          message:msg
                                                         delegate:nil 
-                                               cancelButtonTitle:@"OK" 
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                otherButtonTitles:nil];
             [av show];
             self.lastImageReferenceURL = nil;
@@ -1189,13 +1190,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                     return [obj.observationField isEqual:pof.observationField];
                 }] anyObject];
                 if (!ofv || ofv.value == nil || ofv.value.length == 0) {
-                    NSString *msg = [NSString stringWithFormat:@"%@ requires that you fill out the %@ field", 
+                    NSString *msg = [NSString stringWithFormat:NSLocalizedString(@"%@ requires that you fill out the %@ field",nil),
                                      pof.project.title, 
                                      pof.observationField.name];
-                    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Missing Field"
+                    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Field",nil)
                                                                  message:msg
                                                                 delegate:nil 
-                                                       cancelButtonTitle:@"OK" 
+                                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                        otherButtonTitles:nil];
                     [av show];
                     return false;
@@ -1210,8 +1211,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
-                                                    cancelButtonTitle:@"Cancel" 
-                                               destructiveButtonTitle:@"Delete observation" 
+                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                               destructiveButtonTitle:NSLocalizedString(@"Delete observation",nil)
                                                     otherButtonTitles:nil];
     actionSheet.tag = DeleteActionSheetTag;
     [actionSheet showFromTabBar:self.tabBarController.tabBar];
@@ -1221,9 +1222,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
-                                                    cancelButtonTitle:@"Cancel" 
+                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"View on iNaturalist.org" , nil];
+                                                    otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
     actionSheet.tag = ViewActionSheetTag;
     [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
@@ -1258,13 +1259,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     photoChoice.tag = PhotoActionSheetTag;
     [photoChoice setDelegate:self];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [photoChoice addButtonWithTitle:@"Take a photo"];
-        [photoChoice addButtonWithTitle:@"Choose from library"];
-        [photoChoice addButtonWithTitle:@"Cancel"];
+        [photoChoice addButtonWithTitle:NSLocalizedString(@"Take a photo",nil)];
+        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
+        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [photoChoice setCancelButtonIndex:2];
     } else {
-        [photoChoice addButtonWithTitle:@"Choose from library"];
-        [photoChoice addButtonWithTitle:@"Cancel"];
+        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
+        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [photoChoice setCancelButtonIndex:1];
     }
     [photoChoice showFromTabBar:self.tabBarController.tabBar];
@@ -1418,7 +1419,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.ofvTaxaSearchControllerDelegate.indexPath = [self.tableView indexPathForSelectedRow];
         ObservationFieldValue *ofv = [self observationFieldValueForIndexPath:self.ofvTaxaSearchControllerDelegate.indexPath];
         Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
-        vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear"
+        vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Clear",nil)
                                                                                style:UIBarButtonItemStylePlain
                                                                               target:self
                                                                               action:@selector(clearCurrentObservationField)];

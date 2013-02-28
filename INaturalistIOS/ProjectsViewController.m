@@ -96,10 +96,10 @@ static const int ListControlIndexNearby = 2;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
-                                                     message:@"You must be connected to the Internet to sync."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
@@ -168,10 +168,10 @@ static const int ListControlIndexNearby = 2;
 {
     self.nearbyProjectsSyncedAt = [NSDate date];
     if (!self.lastLocation) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Couldn't determine your location" 
-                                                     message:@"Make sure iNat has permission to access your location or give the GPS some time to fetch it."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
+                                                     message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         [self stopSync];
@@ -396,10 +396,10 @@ static const int ListControlIndexNearby = 2;
     if (jsonParsingError || authFailure) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", errorMsg]
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
     }

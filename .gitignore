@@ -1,3 +1,5 @@
 *.DS_Store
 INaturalist.xcodeproj/project.xcworkspace
 INaturalist.xcodeproj/xcuserdata
+
+Vendor/three20

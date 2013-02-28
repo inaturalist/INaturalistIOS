@@ -37,10 +37,10 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
-                                                     message:@"You must be connected to the Internet to sync."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
@@ -231,8 +231,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
                          forState:UIControlStateNormal];
     [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
                          forState:UIControlStateHighlighted];
-    [addButton setTitle:@"Add" forState:UIControlStateNormal];
-    [addButton setTitle:@"Add" forState:UIControlStateHighlighted];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
     addButton.titleLabel.textColor = [UIColor whiteColor];
     addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
     [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
@@ -307,10 +307,10 @@ static const int ListedTaxonCellSubtitleTag = 3;
             errorMsg = error.localizedDescription;
     }
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                 message:[NSString stringWithFormat:@"Looks like there was an error: %@", errorMsg]
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                 message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                 delegate:self 
-                                       cancelButtonTitle:@"OK" 
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                        otherButtonTitles:nil];
     [av show];
 }

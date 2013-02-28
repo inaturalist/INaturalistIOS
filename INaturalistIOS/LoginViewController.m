@@ -94,10 +94,10 @@
     if (jsonParsingError || authFailure) {
         [self failedLogin];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                        message:[NSString stringWithFormat:@"Looks like there was an unexpected error: %@", error.localizedDescription]
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                        message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]
                                        delegate:self 
-                              cancelButtonTitle:@"OK" 
+                              cancelButtonTitle:NSLocalizedString(@"OK",nil)
                               otherButtonTitles:nil];
         [av show];
     }
@@ -115,10 +115,10 @@
         [self.delegate loginViewControllerFailedToLogIn:self];
     }
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Log in failed" 
-                                    message:@"Username or password were invalid." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log in failed",nil)
+                                    message:NSLocalizedString(@"Username or password were invalid.", nil)
                                    delegate:self 
-                          cancelButtonTitle:@"OK" 
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
                           otherButtonTitles:nil];
     [av show];
 }
@@ -148,10 +148,10 @@
             webController.delegate = self;
             [nc pushViewController:webController animated:YES];
         } else {
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
-                                                         message:@"Try again next time you're connected to the Internet." 
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                         message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                         delegate:self 
-                                               cancelButtonTitle:@"OK" 
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                otherButtonTitles:nil];
             [av show];
         }
@@ -178,10 +178,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return YES;
     }
     [self.navigationController popViewControllerAnimated:YES];
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Welcome to iNaturalist!" 
-                                                 message:@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Welcome to iNaturalist!", nil)
+                                                 message:NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"OK" 
+                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                        otherButtonTitles:nil];
     [av show];
     return NO;

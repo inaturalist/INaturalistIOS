@@ -57,20 +57,20 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (IBAction)clickedJoin:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet required" 
-                                                     message:@"You must be connected to the Internet to do this."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet required",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to do this.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
     }
     if (self.projectUser && self.projectUser.syncedAt) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to leave this project?" 
-                                                     message:@"This will also remove your observations from this project."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?",nil)
+                                                     message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"Cancel"
-                                           otherButtonTitles:@"Leave", nil];
+                                           cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                           otherButtonTitles:NSLocalizedString(@"Leave",nil), nil];
         av.tag = LeaveProjectAlertViewTag;
         [av show];
     } else {
@@ -322,10 +322,10 @@ static const int LeaveProjectAlertViewTag = 1;
     if (objectLoader.response.statusCode == 401) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription]
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
     }

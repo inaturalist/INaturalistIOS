@@ -66,11 +66,11 @@ static const int VersionCellTag = 4;
 
 - (void)clickedSignOut
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure?" 
-                                                 message:@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
+                                                 message:NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"Cancel" 
-                                       otherButtonTitles:@"Sign out", nil];
+                                       cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                       otherButtonTitles:NSLocalizedString(@"Sign out",nil), nil];
     [av show];
 }
 
@@ -125,10 +125,10 @@ static const int VersionCellTag = 4;
 
 - (void)networkUnreachableAlert
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
-                                                 message:@"Try again next time you're connected to the Internet." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                 message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"OK" 
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                        otherButtonTitles:nil];
     [av show];
 }

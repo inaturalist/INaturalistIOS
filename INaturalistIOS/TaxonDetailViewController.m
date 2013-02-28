@@ -50,11 +50,12 @@ static const int TaxonDescTag = 1;
 }
 
 - (IBAction)clickedViewMore:(id)sender {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"View more about this species on..."
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"View more about this species on...",nil)
                                                              delegate:self 
-                                                    cancelButtonTitle:@"Cancel" 
+                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"iNaturalist", @"EOL", @"Wikipedia", nil];
+                                                    otherButtonTitles:NSLocalizedString(@"iNaturalist",nil),
+                                  NSLocalizedString(@"EOL",nil), NSLocalizedString(@"Wikipedia",nil), nil];
     if (self.tabBarController) {
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
     } else {
