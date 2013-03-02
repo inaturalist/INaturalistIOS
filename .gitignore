@@ -3,3 +3,5 @@ INaturalist.xcodeproj/project.xcworkspace
 INaturalist.xcodeproj/xcuserdata
 
 Vendor/three20
+
+Vendor/RestKit
