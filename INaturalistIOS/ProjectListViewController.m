@@ -83,7 +83,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.lastSyncedAt = [NSDate date];
     self.tableView.scrollEnabled = NO;
     [DejalBezelActivityView activityViewForView:self.tableView
-                                      withLabel:@"Syncing list..."];
+                                      withLabel:NSLocalizedString(@"Syncing list...",nil)];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 
                                                       delegate:self];
 }
@@ -297,7 +297,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     switch (objectLoader.response.statusCode) {
             // UNPROCESSABLE ENTITY
         case 422:
-            errorMsg = @"Unprocessable entity";
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
             break;
             
         default:

@@ -69,7 +69,7 @@ static const int TaxonCellSubtitleTag = 3;
     }
     BOOL modal = self.taxa.count == 0;
     if (modal) {
-        [DejalBezelActivityView activityViewForView:self.tableView withLabel:@"Loading..."];
+        [DejalBezelActivityView activityViewForView:self.tableView withLabel:NSLocalizedString(@"Loading...",nil)];
     }
     
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]

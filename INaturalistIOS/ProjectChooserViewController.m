@@ -53,7 +53,7 @@ static const int ProjectCellTitleTag = 2;
     if (self.projectUsers.count == 0) {
         if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.text = @"You don't have any projects yet.";
+            self.noContentLabel.text = NSLocalizedString(@"You don't have any projects yet.",nil);
             self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;

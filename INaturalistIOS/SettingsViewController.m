@@ -42,14 +42,14 @@ static const int VersionCellTag = 4;
     
     if ([defaults objectForKey:INatUsernamePrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        accountActionCell.textLabel.text = @"Sign out";
+        accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
-        usernameCell.detailTextLabel.text = @"Unknown";
-        accountActionCell.textLabel.text = @"Sign in";
+        usernameCell.detailTextLabel.text = NSLocalizedString(@"Unknown",nil);
+        accountActionCell.textLabel.text = NSLocalizedString(@"Sign in",nil);
     }
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:@"Version %@, build %@",
+    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"Version %@, build %@",nil),
                         [info objectForKey:@"CFBundleShortVersionString"],
                         [info objectForKey:@"CFBundleVersion"]];
     
@@ -76,7 +76,7 @@ static const int VersionCellTag = 4;
 
 - (void)signOut
 {
-    [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing out..."];
+    [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing out...",nil)];
     for (UIViewController *vc in self.tabBarController.viewControllers) {
         if ([vc isKindOfClass:UINavigationController.class]) {
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];

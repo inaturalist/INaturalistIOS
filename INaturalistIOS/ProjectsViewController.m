@@ -121,11 +121,11 @@ static const int ListControlIndexNearby = 2;
         }
         
         if (self.listControl.selectedSegmentIndex == ListControlIndexFeatured) {
-            self.noContentLabel.text = @"No featured projects.";
+            self.noContentLabel.text = NSLocalizedString(@"No featured projects.", nil);
         } else if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
-            self.noContentLabel.text = @"No nearby projects.";
+            self.noContentLabel.text = NSLocalizedString(@"No nearby projects.",nil);
         } else {
-            self.noContentLabel.text = @"You haven't joined any projects yet.";
+            self.noContentLabel.text = NSLocalizedString(@"You haven't joined any projects yet.",nil);
         }
         self.noContentLabel.numberOfLines = 0;
         [self.noContentLabel sizeToFit];
@@ -216,7 +216,7 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Joined", @"Featured", @"Nearby", nil]];
+        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"Joined",nil), NSLocalizedString(@"Featured",nil), NSLocalizedString(@"Nearby",nil), nil]];
         _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -384,7 +384,7 @@ static const int ListControlIndexNearby = 2;
             authFailure = true;
         // UNPROCESSABLE ENTITY
         case 422:
-            errorMsg = @"Unprocessable entity";
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
             break;
         default:
             // KLUDGE!! RestKit doesn't seem to handle failed auth very well

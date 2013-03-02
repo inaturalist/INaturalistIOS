@@ -105,7 +105,7 @@ static const int TaxonDescTag = 1;
         TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
         taxonImage.urlPath = tp.mediumURL;
         taxonImage.delegate = self;
-        attributionLabel.text = [NSString stringWithFormat:@"Photo %@", tp.attribution];
+        attributionLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Photo %@",nil), tp.attribution];
         if ([taxonImage isLoaded]) {
             [self scaleHeaderView:NO];
         }
@@ -154,10 +154,10 @@ static const int TaxonDescTag = 1;
     label.textColor = [UIColor darkGrayColor];
     switch (section) {
         case 0:
-            label.text = @"Description";
+            label.text = NSLocalizedString(@"Description",nil);
             break;
         case 1:
-            label.text = @"Conservation Status";
+            label.text = NSLocalizedString(@"Conservation Status",nil);
             break;
         default:
             break;

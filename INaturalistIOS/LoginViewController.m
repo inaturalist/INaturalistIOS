@@ -43,7 +43,7 @@
 
 - (IBAction)signIn:(id)sender {
     INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing in..."];
+    [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
     [[RKClient sharedClient] setUsername:[usernameField text]];
     [[RKClient sharedClient] setPassword:[passwordField text]];
     app.photoObjectManager.client.username = [usernameField text];
