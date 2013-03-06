@@ -1627,10 +1627,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="m7M-nd-sFM"/>
-        <segue reference="Qwd-7p-HHF"/>
-        <segue reference="8j7-c4-5Sv"/>
-        <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="8j7-c4-5Sv"/>
+        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Qwd-7p-HHF"/>
+        <segue reference="9nq-dq-fjy"/>
     </inferredMetricsTieBreakers>
 </document>

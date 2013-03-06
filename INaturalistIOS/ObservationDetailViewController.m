@@ -685,7 +685,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     if (buttonIndex == 0) {
         NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/observations/%d", INatBaseURL, [self.observation.recordID intValue]]];
+                      [NSString stringWithFormat:NSLocalizedString(@"%@/observations/%d",nil), INatBaseURL, [self.observation.recordID intValue]]];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
@@ -695,13 +695,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self uiToObservation];
     switch (buttonIndex) {
         case 0:
-            self.observation.geoprivacy = @"open";
+            self.observation.geoprivacy = NSLocalizedString( @"open",nil);
             break;
         case 1:
-            self.observation.geoprivacy = @"obscured";
+            self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
             break;
         case 2:
-            self.observation.geoprivacy = @"private";
+            self.observation.geoprivacy = NSLocalizedString(@"private",nil);
             break;
         default:
             break;

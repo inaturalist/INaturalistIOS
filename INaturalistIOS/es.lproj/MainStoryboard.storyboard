@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--Observation Detail View Controller - Edit-->
+        <!--Observation Detail View Controller - Editar-->
         <scene sceneID="efM-m4-d4c">
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
@@ -19,7 +19,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <sections>
-                            <tableViewSection headerTitle="What did you see?" id="9br-9C-J7v">
+                            <tableViewSection headerTitle="¿Qué viste?" id="9br-9C-J7v">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationWidth="0.0" rowHeight="44" id="3ch-Or-igR">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -33,7 +33,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
-                                                <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Species name" minimumFontSize="17" clearButtonMode="whileEditing" id="pmm-Vg-XgJ">
+                                                <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Nombre de la especie" minimumFontSize="17" clearButtonMode="whileEditing" id="pmm-Vg-XgJ">
                                                     <rect key="frame" x="44" y="0.0" width="220" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -64,7 +64,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Notes" id="qJK-jT-EPE">
+                            <tableViewSection headerTitle="Notas" id="qJK-jT-EPE">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="72" id="a9A-Ps-CU9">
                                         <rect key="frame" x="0.0" y="137" width="320" height="73"/>
@@ -90,7 +90,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Location" id="Q0S-qE-f4O">
+                            <tableViewSection headerTitle="Ubicación" id="Q0S-qE-f4O">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="51" id="PIn-6t-1ba">
                                         <rect key="frame" x="0.0" y="256" width="320" height="52"/>
@@ -127,7 +127,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Acc." lineBreakMode="tailTruncation" minimumFontSize="10" id="eMN-g3-ANY">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="C.ta" lineBreakMode="tailTruncation" minimumFontSize="10" id="eMN-g3-ANY">
                                                     <rect key="frame" x="223" y="24" width="24" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -148,7 +148,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Unknown place" adjustsFontSizeToFit="NO" minimumFontSize="17" id="1bw-oa-ona">
+                                                <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Lugar desconocido" adjustsFontSizeToFit="NO" minimumFontSize="17" id="1bw-oa-ona">
                                                     <rect key="frame" x="40" y="0.0" width="250" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -172,7 +172,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Date / Time" id="Z4l-tt-zMs">
+                            <tableViewSection headerTitle="Fecha / Hora" id="Z4l-tt-zMs">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="e0j-MT-hzk" imageView="SFP-c8-Ej8" style="IBUITableViewCellStyleDefault" id="Hxh-Sg-hf4">
                                         <rect key="frame" x="0.0" y="354" width="320" height="45"/>
@@ -181,7 +181,7 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Unknown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e0j-MT-hzk">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Desconocido" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e0j-MT-hzk">
                                                     <rect key="frame" x="42" y="0.0" width="248" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -199,7 +199,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="More" id="cQc-hZ-KcA">
+                            <tableViewSection headerTitle="Más" id="cQc-hZ-KcA">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="wy4-k0-V87">
                                         <rect key="frame" x="0.0" y="445" width="320" height="45"/>
@@ -208,7 +208,7 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Need ID help?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="¿ID necesitas ayuda?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
                                                     <rect key="frame" x="10" y="11" width="195" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -231,14 +231,14 @@
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Geoprivacy" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrY-as-UVn">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Geoprivacidad" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrY-as-UVn">
                                                     <rect key="frame" x="10" y="11" width="93" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="open" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JkM-AH-Zal">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="abrir" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JkM-AH-Zal">
                                                     <rect key="frame" x="252" y="11" width="38" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -251,7 +251,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Projects" id="ZOk-5a-K6O">
+                            <tableViewSection headerTitle="Proyectos" id="ZOk-5a-K6O">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="J9i-XA-tlL" style="IBUITableViewCellStyleDefault" id="BHb-6Q-TqB">
                                         <rect key="frame" x="0.0" y="580" width="320" height="45"/>
@@ -260,7 +260,7 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Choose projects" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J9i-XA-tlL">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Elegir proyectos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J9i-XA-tlL">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -282,8 +282,8 @@
                             <outlet property="delegate" destination="x2g-xK-zHb" id="w1R-eP-pX0"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Edit" id="Vmt-AE-W0j">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="jaz-9S-FvT">
+                    <navigationItem key="navigationItem" title="Editar" id="Vmt-AE-W0j">
+                        <barButtonItem key="leftBarButtonItem" title="Cancelar" id="jaz-9S-FvT">
                             <connections>
                                 <action selector="clickedCancel:" destination="x2g-xK-zHb" id="SHm-wC-L5I"/>
                             </connections>
@@ -314,11 +314,11 @@
             </objects>
             <point key="canvasLocation" x="774" y="419"/>
         </scene>
-        <!--Navigation Controller - Observations-->
+        <!--Navigation Controller - Observaciones-->
         <scene sceneID="Q6O-Cb-vaZ">
             <objects>
                 <navigationController definesPresentationContext="YES" id="cnB-zK-8oP" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Observations" image="notebook-tab.png" id="s0d-iz-ydn"/>
+                    <tabBarItem key="tabBarItem" title="Observaciones" image="notebook-tab.png" id="s0d-iz-ydn"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="Pyp-ZA-ogu">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -330,7 +330,7 @@
             </objects>
             <point key="canvasLocation" x="-776" y="419"/>
         </scene>
-        <!--Observations View Controller - Observations-->
+        <!--Observations View Controller - Observaciones-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="ObservationsViewController" sceneMemberID="viewController">
@@ -350,14 +350,14 @@
                                             <rect key="frame" x="5" y="5" width="44" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="bTy-8i-NnF">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Etiqueta" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="bTy-8i-NnF">
                                             <rect key="frame" x="57" y="5" width="209" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="Be1-xj-miA">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Etiqueta" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="Be1-xj-miA">
                                             <rect key="frame" x="57" y="28" width="209" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -388,13 +388,13 @@
                             <outlet property="delegate" destination="2" id="H1f-PQ-aEK"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf">
-                        <barButtonItem key="leftBarButtonItem" title="Edit" id="0Fk-rY-9h1">
+                    <navigationItem key="navigationItem" title="Observaciones" id="uR8-0q-Vnf">
+                        <barButtonItem key="leftBarButtonItem" title="Editar" id="0Fk-rY-9h1">
                             <connections>
                                 <action selector="edit:" destination="2" id="uXk-xm-Qpf"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="31c-qh-A6S">
+                        <barButtonItem key="rightBarButtonItem" title="Añadir" style="done" id="31c-qh-A6S">
                             <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <segue destination="x2g-xK-zHb" kind="push" identifier="AddObservationSegue" id="nqN-gg-ATR"/>
@@ -408,7 +408,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
-                <barButtonItem title="Sync" style="done" id="r7b-jc-Kqj">
+                <barButtonItem title="Sincronizar" style="done" id="r7b-jc-Kqj">
                     <connections>
                         <action selector="sync:" destination="2" id="taN-EH-nC5"/>
                     </connections>
@@ -468,11 +468,11 @@
             </objects>
             <point key="canvasLocation" x="-292" y="1836"/>
         </scene>
-        <!--Navigation Controller - Projects-->
+        <!--Navigation Controller - Proyectos-->
         <scene sceneID="B1T-ab-195">
             <objects>
                 <navigationController definesPresentationContext="YES" id="t06-UC-YUc" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="ZUi-2S-ebn"/>
+                    <tabBarItem key="tabBarItem" title="Proyectos" image="projects-tab.png" id="ZUi-2S-ebn"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="ADj-Zy-Z0u">
                         <autoresizingMask key="autoresizingMask"/>
@@ -489,7 +489,7 @@
             </objects>
             <point key="canvasLocation" x="-776" y="2496"/>
         </scene>
-        <!--Settings View Controller - Settings-->
+        <!--Settings View Controller - Ajustes-->
         <scene sceneID="D7K-6M-lYV">
             <objects>
                 <tableViewController id="ydS-en-xrb" customClass="SettingsViewController" sceneMemberID="viewController">
@@ -498,7 +498,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Your iNaturalist Account" id="oWq-bA-sYY">
+                            <tableViewSection headerTitle="Tu cuenta de iNaturalist" id="oWq-bA-sYY">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="718-d6-pVr" detailTextLabel="GC7-gQ-cDA" style="IBUITableViewCellStyleValue2" id="qWt-eC-M2o">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -507,15 +507,15 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Username" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="718-d6-pVr">
-                                                    <rect key="frame" x="10" y="15" width="67" height="15"/>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Nombre de usuario" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="718-d6-pVr">
+                                                    <rect key="frame" x="10" y="8" width="67" height="30"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                                     <color key="textColor" red="0.32156862745098042" green="0.40000000000000002" blue="0.56862745098039214" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Unknown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GC7-gQ-cDA">
-                                                    <rect key="frame" x="83" y="12" width="68" height="19"/>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Desconocido" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GC7-gQ-cDA">
+                                                    <rect key="frame" x="83" y="5" width="95" height="19"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -533,7 +533,7 @@
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Sign in" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hfA-vB-13u">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Iniciar sesión" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hfA-vB-13u">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -547,7 +547,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Help" id="pL9-Nd-0JB">
+                            <tableViewSection headerTitle="Ayuda" id="pL9-Nd-0JB">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="0Q2-fy-dMQ" style="IBUITableViewCellStyleDefault" id="Rkq-pc-fWg">
                                         <rect key="frame" x="0.0" y="182" width="320" height="45"/>
@@ -556,7 +556,7 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Launch tutorial" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0Q2-fy-dMQ">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Iniciar tutorial" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0Q2-fy-dMQ">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -575,7 +575,7 @@
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Contact support" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IvC-UJ-yev">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Contactar con soporte" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IvC-UJ-yev">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -589,7 +589,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Credits" id="wVj-s3-ngo">
+                            <tableViewSection headerTitle="Créditos" id="wVj-s3-ngo">
                                 <cells>
                                     <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Qrv-G3-6nh" rowHeight="138" style="IBUITableViewCellStyleDefault" id="FZh-GR-7cJ">
                                         <rect key="frame" x="0.0" y="318" width="320" height="140"/>
@@ -601,9 +601,9 @@
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qrv-G3-6nh">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="137"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <string key="text">Designed and built by iNaturalist LLC, with support from the Encyclopedia of Life.
+                                                    <string key="text">Diseñado y creado por iNaturalist LLC, con la ayuda de la Enciclopedia de la vida.
 
-This app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! </string>
+Esta aplicación utiliza numerosos recursos abiertos y materiales con licencia creativa común, entre los que se incluye Three20, Restkit, TapkuLibrary de Devin Ross, DejalActivityView de David Sinclair y Glyphish icons de Joseph Wain. ¡Muchas gracias a todos estos artistas e ingenieros tan generosos y con tanto talento!</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -617,7 +617,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Version" id="I43-iz-miT">
+                            <tableViewSection headerTitle="Versión" id="I43-iz-miT">
                                 <cells>
                                     <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Sr1-uD-ljI" rowHeight="11" style="IBUITableViewCellStyleDefault" id="tcn-O1-DkG">
                                         <rect key="frame" x="0.0" y="504" width="320" height="13"/>
@@ -626,7 +626,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="10"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="2.1.1, build 2.1.12" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Sr1-uD-ljI">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="2.1.1, creada 2.1.12" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Sr1-uD-ljI">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="10"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -648,7 +648,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="ydS-en-xrb" id="Jf6-O3-TI2"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Settings" image="settings-tab.png" id="l3n-dl-Zr0"/>
+                    <tabBarItem key="tabBarItem" title="Ajustes" image="settings-tab.png" id="l3n-dl-Zr0"/>
                     <connections>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="SignInFromSettingsSegue" id="sKu-Sy-oMc"/>
                     </connections>
@@ -672,11 +672,11 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1314" y="1153"/>
         </scene>
-        <!--Navigation Controller - Map-->
+        <!--Navigation Controller - Mapa-->
         <scene sceneID="zbl-Uk-Ap2">
             <objects>
                 <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="l2X-u6-R0s" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Map" image="map-tab.png" id="x9r-Ta-0Z8"/>
+                    <tabBarItem key="tabBarItem" title="Mapa" image="map-tab.png" id="x9r-Ta-0Z8"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="ACi-xc-RFn">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -692,7 +692,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-776" y="1836"/>
         </scene>
-        <!--Projects View Controller - Projects-->
+        <!--Projects View Controller - Proyectos-->
         <scene sceneID="OSJ-NK-jjp">
             <objects>
                 <tableViewController id="Kvl-LX-MOH" customClass="ProjectsViewController" sceneMemberID="viewController">
@@ -716,7 +716,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project name" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="r3N-gL-j8R">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Nombre del proyecto" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="r3N-gL-j8R">
                                             <rect key="frame" x="56" y="18" width="237" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -738,8 +738,8 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="Kvl-LX-MOH" id="K6o-jt-ohH"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="GmQ-fX-MuU"/>
-                    <navigationItem key="navigationItem" title="Projects" id="6UX-BL-9DW">
+                    <tabBarItem key="tabBarItem" title="Proyectos" image="projects-tab.png" id="GmQ-fX-MuU"/>
+                    <navigationItem key="navigationItem" title="Proyectos" id="6UX-BL-9DW">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="dgx-of-NYR">
                             <connections>
                                 <action selector="clickedSync:" destination="Kvl-LX-MOH" id="gly-Tm-Vs3"/>
@@ -766,7 +766,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-292" y="2496"/>
         </scene>
-        <!--Project List View Controller - Project-->
+        <!--Project List View Controller - Proyecto-->
         <scene sceneID="nrG-r2-jeJ">
             <objects>
                 <tableViewController id="g3g-03-X0K" customClass="ProjectListViewController" sceneMemberID="viewController">
@@ -783,7 +783,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Project title is way too long brother" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="bKM-7Q-aRA">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="El título del proyecto es demasiado largo" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="bKM-7Q-aRA">
                                     <rect key="frame" x="85" y="5" width="226" height="40"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
@@ -796,7 +796,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="83" y="46" width="42" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
-                                    <state key="normal" title="Details">
+                                    <state key="normal" title="Datos">
                                         <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
@@ -819,7 +819,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Add observation" lineBreakMode="tailTruncation" minimumFontSize="10" id="dYu-ti-1gC">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Añadir observación" lineBreakMode="tailTruncation" minimumFontSize="10" id="dYu-ti-1gC">
                                             <rect key="frame" x="56" y="11" width="215" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
@@ -845,7 +845,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" minimumFontSize="10" id="1hu-IK-XsQ">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Nombre científico" lineBreakMode="tailTruncation" minimumFontSize="10" id="1hu-IK-XsQ">
                                             <rect key="frame" x="56" y="11" width="196" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica-BoldOblique" family="Helvetica" pointSize="17"/>
@@ -871,7 +871,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Common name" lineBreakMode="tailTruncation" minimumFontSize="10" id="ju8-if-UDh">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Nombre común" lineBreakMode="tailTruncation" minimumFontSize="10" id="ju8-if-UDh">
                                             <rect key="frame" x="56" y="2" width="196" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
@@ -883,7 +883,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                         </view>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" minimumFontSize="10" id="bW0-Pb-mB9">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="Nombre científico" lineBreakMode="tailTruncation" minimumFontSize="10" id="bW0-Pb-mB9">
                                             <rect key="frame" x="56" y="27" width="196" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
@@ -904,7 +904,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="g3g-03-X0K" id="2zO-v2-yjU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Project" id="Pc6-ER-pVU">
+                    <navigationItem key="navigationItem" title="Proyecto" id="Pc6-ER-pVU">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="YpC-0K-6eW">
                             <connections>
                                 <action selector="clickedSync:" destination="g3g-03-X0K" id="czn-4z-SxR"/>
@@ -922,7 +922,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="424" y="2496"/>
         </scene>
-        <!--Taxon Detail View Controller - Taxon-->
+        <!--Taxon Detail View Controller - Taxón-->
         <scene sceneID="PP3-HD-gqT">
             <objects>
                 <tableViewController storyboardIdentifier="TaxonDetailViewController" id="dfk-gc-ShG" customClass="TaxonDetailViewController" sceneMemberID="viewController">
@@ -944,21 +944,21 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Species default name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="EcO-h2-uOF">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Nombre predeterminado de la especie" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="EcO-h2-uOF">
                                             <rect key="frame" x="20" y="5" width="280" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Species name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ohz-Dw-0wM">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Nombre de la especie" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ohz-Dw-0wM">
                                             <rect key="frame" x="20" y="29" width="280" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="4" contentMode="left" text="Attribution" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="AWa-0U-YdH">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="4" contentMode="left" text="Atribución" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="AWa-0U-YdH">
                                             <rect key="frame" x="20" y="47" width="280" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -972,7 +972,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <sections>
-                            <tableViewSection headerTitle="Wikipedia Description" id="Df8-ua-w8x">
+                            <tableViewSection headerTitle="Descripción de Wikipedia" id="Df8-ua-w8x">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="mwy-XY-Qq0">
                                         <rect key="frame" x="0.0" y="92" width="320" height="44"/>
@@ -1002,7 +1002,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                    <state key="normal" title="View more...">
+                                                    <state key="normal" title="Ver más...">
                                                         <color key="titleColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -1019,7 +1019,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Conservation Status" id="RVt-Kj-7RQ">
+                            <tableViewSection headerTitle="Estado de conservación" id="RVt-Kj-7RQ">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="e5O-gd-tPk">
                                         <rect key="frame" x="0.0" y="202" width="320" height="44"/>
@@ -1028,14 +1028,14 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Unknown" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Gq1-rm-ccJ">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Desconocido" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Gq1-rm-ccJ">
                                                     <rect key="frame" x="20" y="3" width="280" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="IUCN Red List" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ypi-aU-Rf4">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Lista roja de la UICN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ypi-aU-Rf4">
                                                     <rect key="frame" x="20" y="21" width="280" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -1054,8 +1054,8 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="dfk-gc-ShG" id="OHn-He-Jm7"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Taxon" id="F6V-RD-Yrx">
-                        <barButtonItem key="rightBarButtonItem" title="Add" id="cSZ-cD-dfS">
+                    <navigationItem key="navigationItem" title="Taxón" id="F6V-RD-Yrx">
+                        <barButtonItem key="rightBarButtonItem" title="Añadir" id="cSZ-cD-dfS">
                             <color key="tintColor" red="0.60784316059999999" green="0.76862752440000004" blue="0.18823531269999999" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="clickedActionButton:" destination="dfk-gc-ShG" id="ssF-pK-4Fu"/>
@@ -1093,7 +1093,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="256" y="-209"/>
         </scene>
-        <!--Taxa Search View Controller - Search species-->
+        <!--Taxa Search View Controller - Buscar especie-->
         <scene sceneID="I5Z-zr-hIl">
             <objects>
                 <tableViewController storyboardIdentifier="TaxaSearchViewController" id="5Je-4G-7Bd" customClass="TaxaSearchViewController" sceneMemberID="viewController">
@@ -1114,8 +1114,8 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="5Je-4G-7Bd" id="FvA-cW-GxT"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Search species" id="Kfy-Up-oCb">
-                        <barButtonItem key="rightBarButtonItem" title="Done" id="JRR-T4-jKQ">
+                    <navigationItem key="navigationItem" title="Buscar especie" id="Kfy-Up-oCb">
+                        <barButtonItem key="rightBarButtonItem" title="Hecho" id="JRR-T4-jKQ">
                             <connections>
                                 <action selector="clickedCancel:" destination="5Je-4G-7Bd" id="peU-1b-nKk"/>
                             </connections>
@@ -1151,15 +1151,15 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                 <rect key="frame" x="20" y="356" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <segments>
-                                    <segment title="Standard"/>
-                                    <segment title="Satellite"/>
-                                    <segment title="Hybrid"/>
+                                    <segment title="Estándar"/>
+                                    <segment title="Satélite"/>
+                                    <segment title="Híbrido"/>
                                 </segments>
                                 <connections>
                                     <action selector="choseMapType:" destination="aOM-Gu-XVb" eventType="valueChanged" id="YWR-0K-Avo"/>
                                 </connections>
                             </segmentedControl>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Choose a map type" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="lol-PH-r6p">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Escoge un tipo de mapa" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="lol-PH-r6p">
                                 <rect key="frame" x="86" y="317" width="149" height="21"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -1178,7 +1178,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="2289" y="1836"/>
         </scene>
-        <!--Login View Controller - Log in-->
+        <!--Login View Controller - Iniciar sesión-->
         <scene sceneID="vz0-xH-bUj">
             <objects>
                 <tableViewController id="wse-tJ-yO9" customClass="LoginViewController" sceneMemberID="viewController">
@@ -1187,7 +1187,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Log in to iNaturalist.org" id="tW8-NR-sj7">
+                            <tableViewSection headerTitle="Iniciar sesión en iNaturalist.org" id="tW8-NR-sj7">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="za1-hN-c0c">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -1196,14 +1196,14 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="SQG-h4-rqM">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Nombre de usuario" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="SQG-h4-rqM">
                                                     <rect key="frame" x="20" y="0.0" width="80" height="42.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your iNat username" minimumFontSize="17" id="7ua-fh-uvU">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Tu nombre de usuario iNat" minimumFontSize="17" id="7ua-fh-uvU">
                                                     <rect key="frame" x="108" y="0.0" width="172" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1224,14 +1224,14 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Password" lineBreakMode="tailTruncation" minimumFontSize="10" id="ZzY-Yv-hhu">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Contraseña" lineBreakMode="tailTruncation" minimumFontSize="10" id="ZzY-Yv-hhu">
                                                     <rect key="frame" x="20" y="0.0" width="80" height="42"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your iNat password" minimumFontSize="17" id="AeG-t0-DTD">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Tu contraseña iNat" minimumFontSize="17" id="AeG-t0-DTD">
                                                     <rect key="frame" x="108" y="0.0" width="172" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1247,7 +1247,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Don't have an account?" id="3DS-CL-NMe">
+                            <tableViewSection headerTitle="¿No tienes una cuenta?" id="3DS-CL-NMe">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hsp-PZ-83S" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
                                         <rect key="frame" x="0.0" y="182" width="320" height="46"/>
@@ -1256,7 +1256,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Sign up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hsp-PZ-83S">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Registrarse" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hsp-PZ-83S">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -1275,13 +1275,13 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="wse-tJ-yO9" id="os3-So-cWg"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Log in" id="1yP-Oa-9Kj">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="Obm-wO-wio">
+                    <navigationItem key="navigationItem" title="Iniciar sesión" id="1yP-Oa-9Kj">
+                        <barButtonItem key="leftBarButtonItem" title="Cancelar" id="Obm-wO-wio">
                             <connections>
                                 <action selector="cancel:" destination="wse-tJ-yO9" id="uld-UK-5C7"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Log in" style="done" id="tiA-DP-jEV">
+                        <barButtonItem key="rightBarButtonItem" title="Iniciar sesión" style="done" id="tiA-DP-jEV">
                             <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="signIn:" destination="wse-tJ-yO9" id="e39-xP-L1c"/>
@@ -1314,7 +1314,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1323" y="-157"/>
         </scene>
-        <!--Project Chooser View Controller - Choose projects-->
+        <!--Project Chooser View Controller - Elegir proyectos-->
         <scene sceneID="R9u-gg-yJG">
             <objects>
                 <tableViewController id="qKT-rx-ger" customClass="ProjectChooserViewController" sceneMemberID="viewController">
@@ -1330,7 +1330,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="qsE-wG-WNP">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Título del proyecto" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="qsE-wG-WNP">
                                             <rect key="frame" x="57" y="16" width="243" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -1352,13 +1352,13 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="qKT-rx-ger" id="LaZ-7Q-rH0"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Choose projects" id="Nsa-pu-mCD">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="hKK-sS-qAN">
+                    <navigationItem key="navigationItem" title="Elegir proyectos" id="Nsa-pu-mCD">
+                        <barButtonItem key="leftBarButtonItem" title="Cancelar" id="hKK-sS-qAN">
                             <connections>
                                 <action selector="clickedCancel:" destination="qKT-rx-ger" id="fTi-zx-Dst"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="mgd-CX-pVK">
+                        <barButtonItem key="rightBarButtonItem" title="Hecho" style="done" id="mgd-CX-pVK">
                             <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="clickedDone:" destination="qKT-rx-ger" id="28j-ah-uhf"/>
@@ -1388,7 +1388,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1323" y="419"/>
         </scene>
-        <!--Edit Location View Controller - Edit Location-->
+        <!--Edit Location View Controller - Editar ubicación-->
         <scene sceneID="Fhq-My-k45">
             <objects>
                 <viewController id="Rzg-af-Bgj" customClass="EditLocationViewController" sceneMemberID="viewController">
@@ -1418,8 +1418,8 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Edit Location" id="zpr-b5-V8G">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="qfi-HT-h2C">
+                    <navigationItem key="navigationItem" title="Editar ubicación" id="zpr-b5-V8G">
+                        <barButtonItem key="leftBarButtonItem" title="Cancelar" id="qfi-HT-h2C">
                             <connections>
                                 <action selector="clickedCancel:" destination="Rzg-af-Bgj" id="njm-tX-LeN"/>
                             </connections>
@@ -1460,7 +1460,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="594" y="3304"/>
         </scene>
-        <!--Project Detail View Controller - Project Details-->
+        <!--Project Detail View Controller - Datos del proyecto-->
         <scene sceneID="RFm-v0-efa">
             <objects>
                 <tableViewController id="wOO-15-L7q" customClass="ProjectDetailViewController" sceneMemberID="viewController">
@@ -1478,7 +1478,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
-                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Project title is way too long brother" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="X8Y-bf-fBQ">
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="El título del proyecto es demasiado largo" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="X8Y-bf-fBQ">
                                     <rect key="frame" x="83" y="0.0" width="227" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
@@ -1491,7 +1491,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
                         <sections>
-                            <tableViewSection headerTitle="Description" id="kaD-3n-Xuk">
+                            <tableViewSection headerTitle="Descripción" id="kaD-3n-Xuk">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="SfM-ln-aLN">
                                         <rect key="frame" x="0.0" y="92" width="320" height="44"/>
@@ -1512,7 +1512,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Terms" id="tnA-n3-DOC">
+                            <tableViewSection headerTitle="Condiciones" id="tnA-n3-DOC">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="f1U-r7-UNl">
                                         <rect key="frame" x="0.0" y="158" width="320" height="44"/>
@@ -1532,7 +1532,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Observation Rules" id="gDe-P6-41D">
+                            <tableViewSection headerTitle="Reglas de observación" id="gDe-P6-41D">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="3Vc-Gc-bVJ">
                                         <rect key="frame" x="0.0" y="224" width="320" height="44"/>
@@ -1561,7 +1561,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                    <state key="normal" title="View on iNaturalist">
+                                                    <state key="normal" title="Ver en iNaturalist">
                                                         <color key="titleColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -1584,13 +1584,13 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="wOO-15-L7q" id="5CP-Af-mXc"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Project Details" id="XXq-bW-vbF">
-                        <barButtonItem key="leftBarButtonItem" title="Close" id="HB8-Oo-jRB">
+                    <navigationItem key="navigationItem" title="Datos del proyecto" id="XXq-bW-vbF">
+                        <barButtonItem key="leftBarButtonItem" title="Cerrar" id="HB8-Oo-jRB">
                             <connections>
                                 <action selector="clickedClose:" destination="wOO-15-L7q" id="GZ9-hu-N3k"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Join" id="wCV-Z1-3g6">
+                        <barButtonItem key="rightBarButtonItem" title="Unirse" id="wCV-Z1-3g6">
                             <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="clickedJoin:" destination="wOO-15-L7q" id="NXP-UM-wSQ"/>
@@ -1621,16 +1621,151 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <image name="projects-tab.png" width="30" height="22"/>
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
+    <classes>
+        <class className="AccuracyCircleView" superclassName="EditLocationAnnoView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AccuracyCircleView.h"/>
+        </class>
+        <class className="CrossHairView" superclassName="EditLocationAnnoView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
+        </class>
+        <class className="DCRoundSwitch" superclassName="UIControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DCRoundSwitch.h"/>
+        </class>
+        <class className="EditLocationAnnoView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationAnnoView.h"/>
+        </class>
+        <class className="EditLocationViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedDone:"/>
+                <relationship kind="outlet" name="accuracyCircleView" candidateClass="AccuracyCircleView"/>
+                <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
+            </relationships>
+        </class>
+        <class className="INatUITabBarController" superclassName="UITabBarController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
+        </class>
+        <class className="LoginViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancel:"/>
+                <relationship kind="action" name="signIn:"/>
+                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="usernameField" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="MapTypeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapTypeViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="choseMapType:"/>
+                <relationship kind="outlet" name="mapTypeControl" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="MapViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
+            </relationships>
+        </class>
+        <class className="ObservationDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedAddPhoto:"/>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedSpeciesButton:"/>
+                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="geoprivacyCell" candidateClass="UITableViewCell"/>
+                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="DCRoundSwitch"/>
+                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="placeGuessField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="ObservationsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="edit:"/>
+                <relationship kind="action" name="sync:"/>
+                <relationship kind="outlet" name="editButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ProjectChooserViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectChooserViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedDone:"/>
+            </relationships>
+        </class>
+        <class className="ProjectDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedClose:"/>
+                <relationship kind="action" name="clickedJoin:"/>
+                <relationship kind="action" name="clickedViewButton:"/>
+                <relationship kind="outlet" name="joinButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
+                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="ProjectListViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectListViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
+                <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
+                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ProjectsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="SettingsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
+        </class>
+        <class className="TTImageView" superclassName="TTView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTImageView.h"/>
+        </class>
+        <class className="TTStyledTextLabel" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTStyledTextLabel.h"/>
+        </class>
+        <class className="TTView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTView.h"/>
+        </class>
+        <class className="TaxaSearchViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxaSearchViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+            </relationships>
+        </class>
+        <class className="TaxonDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxonDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedActionButton:"/>
+                <relationship kind="action" name="clickedViewMore:"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="m7M-nd-sFM"/>
-        <segue reference="Qwd-7p-HHF"/>
         <segue reference="8j7-c4-5Sv"/>
+        <segue reference="m7M-nd-sFM"/>
         <segue reference="9nq-dq-fjy"/>
+        <segue reference="i4O-ab-ts2"/>
         <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>
