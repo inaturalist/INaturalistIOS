@@ -1196,7 +1196,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" minimumFontSize="10" id="SQG-h4-rqM">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Username" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="SQG-h4-rqM">
                                                     <rect key="frame" x="20" y="0.0" width="80" height="42.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
@@ -1627,7 +1627,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="m7M-nd-sFM"/>
         <segue reference="Qwd-7p-HHF"/>
         <segue reference="8j7-c4-5Sv"/>
         <segue reference="9nq-dq-fjy"/>
