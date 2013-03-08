@@ -26,6 +26,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // adujst the title font for Spanish
+    NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([currentLanguage compare:@"es"] == NSOrderedSame){
+        [self.navigationController.navigationBar setTitleTextAttributes:
+         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
+    }
 }
 
 - (void)viewDidUnload

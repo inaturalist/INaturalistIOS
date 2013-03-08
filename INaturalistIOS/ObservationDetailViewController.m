@@ -310,6 +310,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [[self navigationItem] setTitle:NSLocalizedString(@"Edit observation",nil)];
     }
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
+    NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([currentLanguage compare:@"es"] == NSOrderedSame){
+        [self.navigationController.navigationBar setTitleTextAttributes:
+         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated

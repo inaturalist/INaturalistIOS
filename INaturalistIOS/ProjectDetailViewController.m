@@ -154,6 +154,12 @@ static const int LeaveProjectAlertViewTag = 1;
     [self.tableView.tableHeaderView.layer insertSublayer:lyr atIndex:0];
     
     [self setupJoinButton];
+    NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([currentLanguage compare:@"es"] == NSOrderedSame){
+        [self.navigationController.navigationBar setTitleTextAttributes:
+         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:17] forKey:UITextAttributeFont]];
+    }
+
     [super viewDidLoad];
 }
 
