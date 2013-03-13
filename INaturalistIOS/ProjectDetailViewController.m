@@ -38,10 +38,10 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)setupJoinButton
 {
     if (self.projectUser && ![self.projectUser isNew]) {
-        self.joinButton.title = @"Leave";
+        self.joinButton.title = NSLocalizedString(@"Leave",nil);
         self.joinButton.tintColor = [UIColor blackColor];
     } else {
-        self.joinButton.title = @"Join";
+        self.joinButton.title = NSLocalizedString(@"Join",nil);
         self.joinButton.tintColor = [UIColor colorWithRed:155/255.0 
                                                     green:196/255.0 
                                                      blue:48/255.0 
@@ -57,20 +57,20 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (IBAction)clickedJoin:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet required" 
-                                                     message:@"You must be connected to the Internet to do this."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet required",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to do this.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
     }
     if (self.projectUser && self.projectUser.syncedAt) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to leave this project?" 
-                                                     message:@"This will also remove your observations from this project."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?",nil)
+                                                     message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"Cancel"
-                                           otherButtonTitles:@"Leave", nil];
+                                           cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                           otherButtonTitles:NSLocalizedString(@"Leave",nil), nil];
         av.tag = LeaveProjectAlertViewTag;
         [av show];
     } else {
@@ -89,7 +89,7 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)join
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                      withLabel:@"Joining..."];
+                                      withLabel:NSLocalizedString(@"Joining...",nil)];
     if (!self.projectUser) {
         self.projectUser = [ProjectUser object];
         self.projectUser.project = self.project;
@@ -105,7 +105,7 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)leave
 {
     [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                      withLabel:@"Leaving..."];
+                                      withLabel:NSLocalizedString(@"Leaving...",nil)];
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
@@ -154,6 +154,12 @@ static const int LeaveProjectAlertViewTag = 1;
     [self.tableView.tableHeaderView.layer insertSublayer:lyr atIndex:0];
     
     [self setupJoinButton];
+    NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([currentLanguage compare:@"es"] == NSOrderedSame){
+        [self.navigationController.navigationBar setTitleTextAttributes:
+         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:17] forKey:UITextAttributeFont]];
+    }
+
     [super viewDidLoad];
 }
 
@@ -196,7 +202,7 @@ static const int LeaveProjectAlertViewTag = 1;
         if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
             first = [terms objectAtIndex:0];
         } else {
-            first = [NSString stringWithString:@"No observation rules"];
+            first = [NSString stringWithString:NSLocalizedString(@"No observation rules",nil)];
         }
         CGSize s = [first sizeWithFont:[UIFont systemFontOfSize:15] 
                      constrainedToSize:CGSizeMake(320, 1000) 
@@ -228,13 +234,13 @@ static const int LeaveProjectAlertViewTag = 1;
     label.textColor = [UIColor darkGrayColor];
     switch (section) {
         case 0:
-            label.text = @"Description";
+            label.text = NSLocalizedString(@"Description",nil);
             break;
         case 1:
-            label.text = @"Terms";
+            label.text = NSLocalizedString(@"Terms",nil);
             break;
         case 2:
-            label.text = @"Observation Rules";
+            label.text = NSLocalizedString(@"Observation Rules",nil);
             break;
         default:
             break;
@@ -322,10 +328,10 @@ static const int LeaveProjectAlertViewTag = 1;
     if (objectLoader.response.statusCode == 401) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", error.localizedDescription]
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
     }

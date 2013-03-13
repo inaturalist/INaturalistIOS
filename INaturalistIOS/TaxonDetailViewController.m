@@ -50,11 +50,12 @@ static const int TaxonDescTag = 1;
 }
 
 - (IBAction)clickedViewMore:(id)sender {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"View more about this species on..."
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"View more about this species on...",nil)
                                                              delegate:self 
-                                                    cancelButtonTitle:@"Cancel" 
+                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"iNaturalist", @"EOL", @"Wikipedia", nil];
+                                                    otherButtonTitles:NSLocalizedString(@"iNaturalist",nil),
+                                  NSLocalizedString(@"EOL",nil), NSLocalizedString(@"Wikipedia",nil), nil];
     if (self.tabBarController) {
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
     } else {
@@ -104,7 +105,7 @@ static const int TaxonDescTag = 1;
         TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
         taxonImage.urlPath = tp.mediumURL;
         taxonImage.delegate = self;
-        attributionLabel.text = [NSString stringWithFormat:@"Photo %@", tp.attribution];
+        attributionLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Photo %@",nil), tp.attribution];
         if ([taxonImage isLoaded]) {
             [self scaleHeaderView:NO];
         }
@@ -153,10 +154,10 @@ static const int TaxonDescTag = 1;
     label.textColor = [UIColor darkGrayColor];
     switch (section) {
         case 0:
-            label.text = @"Description";
+            label.text = NSLocalizedString(@"Description",nil);
             break;
         case 1:
-            label.text = @"Conservation Status";
+            label.text = NSLocalizedString(@"Conservation Status",nil);
             break;
         default:
             break;

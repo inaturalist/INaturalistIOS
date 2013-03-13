@@ -43,8 +43,8 @@
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
-                                                    cancelButtonTitle:@"Cancel" 
-                                               destructiveButtonTitle:@"Delete photo" 
+                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                               destructiveButtonTitle:NSLocalizedString(@"Delete photo",nil)
                                                     otherButtonTitles:nil];
     [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
