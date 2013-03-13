@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         self.observation = observation;
-        self.title = observation.speciesGuess && observation.speciesGuess.length > 0 ? observation.speciesGuess : @"Something...";
+        self.title = observation.speciesGuess && observation.speciesGuess.length > 0 ? observation.speciesGuess : NSLocalizedString(@"Something...",nil);
         self.subtitle = observation.observedOnPrettyString;
         self.coordinate = CLLocationCoordinate2DMake([observation.latitude doubleValue], [observation.longitude doubleValue]);
     }

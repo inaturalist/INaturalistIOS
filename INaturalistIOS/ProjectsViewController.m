@@ -96,10 +96,10 @@ static const int ListControlIndexNearby = 2;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Network unreachable" 
-                                                     message:@"You must be connected to the Internet to sync."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         return;
@@ -121,11 +121,11 @@ static const int ListControlIndexNearby = 2;
         }
         
         if (self.listControl.selectedSegmentIndex == ListControlIndexFeatured) {
-            self.noContentLabel.text = @"No featured projects.";
+            self.noContentLabel.text = NSLocalizedString(@"No featured projects.", nil);
         } else if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
-            self.noContentLabel.text = @"No nearby projects.";
+            self.noContentLabel.text = NSLocalizedString(@"No nearby projects.",nil);
         } else {
-            self.noContentLabel.text = @"You haven't joined any projects yet.";
+            self.noContentLabel.text = NSLocalizedString(@"You haven't joined any projects yet.",nil);
         }
         self.noContentLabel.numberOfLines = 0;
         [self.noContentLabel sizeToFit];
@@ -168,10 +168,10 @@ static const int ListControlIndexNearby = 2;
 {
     self.nearbyProjectsSyncedAt = [NSDate date];
     if (!self.lastLocation) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Couldn't determine your location" 
-                                                     message:@"Make sure iNat has permission to access your location or give the GPS some time to fetch it."
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
+                                                     message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
         [self stopSync];
@@ -216,7 +216,7 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Joined", @"Featured", @"Nearby", nil]];
+        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"Joined",nil), NSLocalizedString(@"Featured",nil), NSLocalizedString(@"Nearby",nil), nil]];
         _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -384,7 +384,7 @@ static const int ListControlIndexNearby = 2;
             authFailure = true;
         // UNPROCESSABLE ENTITY
         case 422:
-            errorMsg = @"Unprocessable entity";
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
             break;
         default:
             // KLUDGE!! RestKit doesn't seem to handle failed auth very well
@@ -396,10 +396,10 @@ static const int ListControlIndexNearby = 2;
     if (jsonParsingError || authFailure) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Whoops!" 
-                                                     message:[NSString stringWithFormat:@"Looks like there was an error: %@", errorMsg]
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                     delegate:self 
-                                           cancelButtonTitle:@"OK" 
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
     }

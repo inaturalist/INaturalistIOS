@@ -42,14 +42,14 @@ static const int VersionCellTag = 4;
     
     if ([defaults objectForKey:INatUsernamePrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        accountActionCell.textLabel.text = @"Sign out";
+        accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
-        usernameCell.detailTextLabel.text = @"Unknown";
-        accountActionCell.textLabel.text = @"Sign in";
+        usernameCell.detailTextLabel.text = NSLocalizedString(@"Unknown",nil);
+        accountActionCell.textLabel.text = NSLocalizedString(@"Sign in",nil);
     }
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:@"Version %@, build %@",
+    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"Version %@, build %@",nil),
                         [info objectForKey:@"CFBundleShortVersionString"],
                         [info objectForKey:@"CFBundleVersion"]];
     
@@ -66,17 +66,17 @@ static const int VersionCellTag = 4;
 
 - (void)clickedSignOut
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Are you sure?" 
-                                                 message:@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
+                                                 message:NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"Cancel" 
-                                       otherButtonTitles:@"Sign out", nil];
+                                       cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                       otherButtonTitles:NSLocalizedString(@"Sign out",nil), nil];
     [av show];
 }
 
 - (void)signOut
 {
-    [DejalBezelActivityView activityViewForView:self.view withLabel:@"Signing out..."];
+    [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing out...",nil)];
     for (UIViewController *vc in self.tabBarController.viewControllers) {
         if ([vc isKindOfClass:UINavigationController.class]) {
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
@@ -125,10 +125,10 @@ static const int VersionCellTag = 4;
 
 - (void)networkUnreachableAlert
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Internet connection required" 
-                                                 message:@"Try again next time you're connected to the Internet." 
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                 message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
                                                 delegate:self 
-                                       cancelButtonTitle:@"OK" 
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                        otherButtonTitles:nil];
     [av show];
 }

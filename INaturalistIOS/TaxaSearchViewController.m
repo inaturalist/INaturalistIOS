@@ -69,7 +69,7 @@ static const int TaxonCellSubtitleTag = 3;
     }
     BOOL modal = self.taxa.count == 0;
     if (modal) {
-        [DejalBezelActivityView activityViewForView:self.tableView withLabel:@"Loading..."];
+        [DejalBezelActivityView activityViewForView:self.tableView withLabel:NSLocalizedString(@"Loading...",nil)];
     }
     
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
@@ -140,8 +140,8 @@ static const int TaxonCellSubtitleTag = 3;
                          forState:UIControlStateNormal];
     [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
                          forState:UIControlStateHighlighted];
-    [addButton setTitle:@"Add" forState:UIControlStateNormal];
-    [addButton setTitle:@"Add" forState:UIControlStateHighlighted];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
     addButton.titleLabel.textColor = [UIColor whiteColor];
     addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
     [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];

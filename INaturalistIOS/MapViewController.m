@@ -111,7 +111,7 @@
                                                                            action:@selector(clickedMapTypeButton)];
     }
     if (!self.addObservationButton) {
-        self.addObservationButton = [[UIBarButtonItem alloc] initWithTitle:@"Add observation" 
+        self.addObservationButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add observation",nil)
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
                                                           action:@selector(clickedAddObservationButton)];
