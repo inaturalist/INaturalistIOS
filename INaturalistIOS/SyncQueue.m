@@ -46,7 +46,8 @@
 
 - (void)start
 {
-    RKObjectManager.sharedManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    [RKObjectManager.sharedManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
+//RKRequestAuthenticationTypeHTTPBasic;
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     if (self.queue.count == 0) {
         [self finish];

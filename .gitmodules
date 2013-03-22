@@ -13,3 +13,9 @@
 [submodule "Vendor/ActionSheetPicker"]
 	path = Vendor/ActionSheetPicker
 	url = git://github.com/kueda/ActionSheetPicker.git
+[submodule "Vendor/Facebook"]
+	path = Vendor/Facebook
+	url = git://github.com/facebook/facebook-ios-sdk.git
+[submodule "Vendor/OAuth2Client"]
+	path = Vendor/OAuth2Client
+	url = git://github.com/nxtbgthng/OAuth2Client.git
