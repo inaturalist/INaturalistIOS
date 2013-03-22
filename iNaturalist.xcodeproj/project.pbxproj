@@ -194,13 +194,18 @@
 		6098FDA516F3F6890053987E /* GTMObjC2Runtime.m in Sources */ = {isa = PBXBuildFile; fileRef = 6098FD7916F3F6880053987E /* GTMObjC2Runtime.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		6098FDA616F3F6890053987E /* OpenInChromeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6098FD7B16F3F6880053987E /* OpenInChromeController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		60A0E22916F7D1E3003621FA /* libOAuth2Client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60A0E21416F7D17D003621FA /* libOAuth2Client.a */; };
-		60A0E23516F96B5A003621FA /* tutorial1.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E23016F96B5A003621FA /* tutorial1.png */; };
-		60A0E23616F96B5A003621FA /* tutorial2.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E23116F96B5A003621FA /* tutorial2.png */; };
-		60A0E23716F96B5A003621FA /* tutorial3.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E23216F96B5A003621FA /* tutorial3.png */; };
-		60A0E23816F96B5A003621FA /* tutorial4.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E23316F96B5A003621FA /* tutorial4.png */; };
-		60A0E23916F96B5A003621FA /* tutorial5.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E23416F96B5A003621FA /* tutorial5.png */; };
 		60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24216FC0B23003621FA /* GoogleIcon.png */; };
 		60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24616FCBE54003621FA /* FacebookIcon.png */; };
+		60A0E24B16FD06C1003621FA /* tutorial1en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24816FD06C1003621FA /* tutorial1en.png */; };
+		60A0E24C16FD06C1003621FA /* tutorial2en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24916FD06C1003621FA /* tutorial2en.png */; };
+		60A0E24D16FD06C1003621FA /* tutorial3en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24A16FD06C1003621FA /* tutorial3en.png */; };
+		60A0E25516FD090B003621FA /* tutorial1es.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24E16FD0909003621FA /* tutorial1es.png */; };
+		60A0E25616FD090B003621FA /* tutorial2es.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24F16FD0909003621FA /* tutorial2es.png */; };
+		60A0E25716FD090B003621FA /* tutorial3es.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E25016FD0909003621FA /* tutorial3es.png */; };
+		60A0E25816FD090B003621FA /* tutorial4en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E25116FD0909003621FA /* tutorial4en.png */; };
+		60A0E25916FD090B003621FA /* tutorial4es.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E25216FD090A003621FA /* tutorial4es.png */; };
+		60A0E25A16FD090B003621FA /* tutorial5en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E25316FD090A003621FA /* tutorial5en.png */; };
+		60A0E25B16FD090B003621FA /* tutorial5es.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E25416FD090A003621FA /* tutorial5es.png */; };
 		60E5B3EE16E9887600253A5C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 60E5B3F016E9887700253A5C /* Default.png */; };
 		60E5B40316E9888100253A5C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 60E5B40516E9888100253A5C /* Default@2x.png */; };
 		60E5B40816E9889100253A5C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 60E5B40A16E9889100253A5C /* Default-568h@2x.png */; };
@@ -706,13 +711,18 @@
 		6098FD7A16F3F6880053987E /* OpenInChromeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenInChromeController.h; sourceTree = "<group>"; };
 		6098FD7B16F3F6880053987E /* OpenInChromeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenInChromeController.m; sourceTree = "<group>"; };
 		60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OAuth2Client.xcodeproj; path = Vendor/OAuth2Client/OAuth2Client.xcodeproj; sourceTree = "<group>"; };
-		60A0E23016F96B5A003621FA /* tutorial1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1.png; sourceTree = "<group>"; };
-		60A0E23116F96B5A003621FA /* tutorial2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial2.png; sourceTree = "<group>"; };
-		60A0E23216F96B5A003621FA /* tutorial3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial3.png; sourceTree = "<group>"; };
-		60A0E23316F96B5A003621FA /* tutorial4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial4.png; sourceTree = "<group>"; };
-		60A0E23416F96B5A003621FA /* tutorial5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial5.png; sourceTree = "<group>"; };
 		60A0E24216FC0B23003621FA /* GoogleIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoogleIcon.png; sourceTree = "<group>"; };
 		60A0E24616FCBE54003621FA /* FacebookIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FacebookIcon.png; sourceTree = "<group>"; };
+		60A0E24816FD06C1003621FA /* tutorial1en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1en.png; sourceTree = "<group>"; };
+		60A0E24916FD06C1003621FA /* tutorial2en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial2en.png; sourceTree = "<group>"; };
+		60A0E24A16FD06C1003621FA /* tutorial3en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial3en.png; sourceTree = "<group>"; };
+		60A0E24E16FD0909003621FA /* tutorial1es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1es.png; sourceTree = "<group>"; };
+		60A0E24F16FD0909003621FA /* tutorial2es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial2es.png; sourceTree = "<group>"; };
+		60A0E25016FD0909003621FA /* tutorial3es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial3es.png; sourceTree = "<group>"; };
+		60A0E25116FD0909003621FA /* tutorial4en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial4en.png; sourceTree = "<group>"; };
+		60A0E25216FD090A003621FA /* tutorial4es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial4es.png; sourceTree = "<group>"; };
+		60A0E25316FD090A003621FA /* tutorial5en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial5en.png; sourceTree = "<group>"; };
+		60A0E25416FD090A003621FA /* tutorial5es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial5es.png; sourceTree = "<group>"; };
 		60E5B3EF16E9887700253A5C /* es */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = es; path = es.lproj/Default.png; sourceTree = "<group>"; };
 		60E5B40416E9888100253A5C /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = "en.lproj/Default@2x.png"; sourceTree = "<group>"; };
 		60E5B40616E9888600253A5C /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/Default.png; sourceTree = "<group>"; };
@@ -907,11 +917,16 @@
 				60A0E24616FCBE54003621FA /* FacebookIcon.png */,
 				60A0E24216FC0B23003621FA /* GoogleIcon.png */,
 				1912DA9215059C0E005555B8 /* glyphish */,
-				60A0E23016F96B5A003621FA /* tutorial1.png */,
-				60A0E23116F96B5A003621FA /* tutorial2.png */,
-				60A0E23216F96B5A003621FA /* tutorial3.png */,
-				60A0E23316F96B5A003621FA /* tutorial4.png */,
-				60A0E23416F96B5A003621FA /* tutorial5.png */,
+				60A0E24816FD06C1003621FA /* tutorial1en.png */,
+				60A0E24916FD06C1003621FA /* tutorial2en.png */,
+				60A0E24A16FD06C1003621FA /* tutorial3en.png */,
+				60A0E25116FD0909003621FA /* tutorial4en.png */,
+				60A0E25316FD090A003621FA /* tutorial5en.png */,
+				60A0E24E16FD0909003621FA /* tutorial1es.png */,
+				60A0E24F16FD0909003621FA /* tutorial2es.png */,
+				60A0E25016FD0909003621FA /* tutorial3es.png */,
+				60A0E25216FD090A003621FA /* tutorial4es.png */,
+				60A0E25416FD090A003621FA /* tutorial5es.png */,
 				19A5F63C14FB61E600757636 /* header-logo.png */,
 				19A5F63E14FB622200757636 /* header-logo@2x.png */,
 				1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */,
@@ -1671,13 +1686,18 @@
 				6098FD1116F3BD980053987E /* FacebookSDKResources.bundle in Resources */,
 				6098FD1316F3BDC80053987E /* FBUserSettingsViewResources.bundle in Resources */,
 				6098FDA416F3F6890053987E /* GTMOAuth2ViewTouch.xib in Resources */,
-				60A0E23516F96B5A003621FA /* tutorial1.png in Resources */,
-				60A0E23616F96B5A003621FA /* tutorial2.png in Resources */,
-				60A0E23716F96B5A003621FA /* tutorial3.png in Resources */,
-				60A0E23816F96B5A003621FA /* tutorial4.png in Resources */,
-				60A0E23916F96B5A003621FA /* tutorial5.png in Resources */,
 				60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */,
 				60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */,
+				60A0E24B16FD06C1003621FA /* tutorial1en.png in Resources */,
+				60A0E24C16FD06C1003621FA /* tutorial2en.png in Resources */,
+				60A0E24D16FD06C1003621FA /* tutorial3en.png in Resources */,
+				60A0E25516FD090B003621FA /* tutorial1es.png in Resources */,
+				60A0E25616FD090B003621FA /* tutorial2es.png in Resources */,
+				60A0E25716FD090B003621FA /* tutorial3es.png in Resources */,
+				60A0E25816FD090B003621FA /* tutorial4en.png in Resources */,
+				60A0E25916FD090B003621FA /* tutorial4es.png in Resources */,
+				60A0E25A16FD090B003621FA /* tutorial5en.png in Resources */,
+				60A0E25B16FD090B003621FA /* tutorial5es.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
