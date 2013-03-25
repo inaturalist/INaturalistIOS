@@ -288,6 +288,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     googleSignIn.clientID = kGoogleClientId;
     googleSignIn.scopes = [NSArray arrayWithObjects:
                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
+                           kGTLAuthScopePlusMe,
+                           @"https://www.googleapis.com/auth/userinfo.email",es
                            nil];
     googleSignIn.delegate = self;
 }
