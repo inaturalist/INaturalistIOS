@@ -21,6 +21,7 @@
     NSString    *ExternalAccessToken;
     NSString    *INatAccessToken;
     NSString    *AccountType;
+    UIAlertView *av;
 }
 
 @end
@@ -53,6 +54,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
     [self initGoogleLogin];
     [self initOAuth2Service];
     AccountType = kINatAuthService;
+    av = nil;
 
 }
 
@@ -120,8 +122,8 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
     bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
     if (jsonParsingError || authFailure) {
         [self failedLogin];
-    } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+    } else if (!av){
+        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]
                                        delegate:self 
                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
@@ -148,12 +150,14 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
         [self.delegate loginViewControllerFailedToLogIn:self];
     }
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log in failed",nil)
+    if (!av){
+        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log in failed",nil)
                                     message:NSLocalizedString(@"Username or password were invalid.", nil)
                                    delegate:self 
                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                           otherButtonTitles:nil];
-    [av show];
+        [av show];
+    }
     [DejalBezelActivityView removeView];
 }
 
@@ -173,12 +177,14 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+        if (!av){
+            av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                      message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                     delegate:self
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
-        [av show];
+            [av show];
+        }
         return;
     }
     if (indexPath.section == 1) { //Facebook
@@ -204,6 +210,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
 #pragma mark UIAlertViewDelegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    av = nil;
     if (buttonIndex == 0) return;
     NSURL *url = [NSURL URLWithString:
                   [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
@@ -220,7 +227,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return YES;
     }
     [self.navigationController popViewControllerAnimated:YES];
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Welcome to iNaturalist!", nil)
+    if (av) [av dismissWithClickedButtonIndex:0 animated:YES];
+    av = nil;
+    av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Welcome to iNaturalist!", nil)
                                                  message:NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil)
                                                 delegate:self 
                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
@@ -259,10 +268,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     if (error) {
         UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Error"
+                                  initWithTitle:NSLocalizedString(@"Log in failed",nil)
                                   message:error.localizedDescription
                                   delegate:nil
-                                  cancelButtonTitle:@"OK"
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                   otherButtonTitles:nil];
         [alertView show];
         [self failedLogin];
@@ -289,8 +298,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     googleSignIn.scopes = [NSArray arrayWithObjects:
                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
                            kGTLAuthScopePlusMe,
-                           @"https://www.googleapis.com/auth/userinfo.email",es
-                           nil];
+                           @"https://www.googleapis.com/auth/userinfo.email", nil];
     googleSignIn.delegate = self;
 }
 
@@ -300,13 +308,16 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
      
     NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
     if (error || ![auth accessToken]){
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Error"
-                                  message:error.localizedDescription
-                                  delegate:nil
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-        [alertView show];
+        if (!av){
+            av = nil;
+            av = [[UIAlertView alloc]
+                                      initWithTitle:NSLocalizedString(@"Log in failed",nil)
+                                      message:error.localizedDescription
+                                      delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                      otherButtonTitles:nil];
+            [av show];
+        }
         [self failedLogin];
     }
     else {
@@ -360,14 +371,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         NSLog(@"account %@  INatAccessToken %@",account, INatAccessToken);
     }
     if (loginSuccessed){
-        /*
-        [[NSUserDefaults standardUserDefaults]
-         setValue:UserName
-         forKey:INatUsernamePrefKey];
-        [[NSUserDefaults standardUserDefaults]
-         setValue:Passwd
-         forKey:INatPasswordPrefKey];
-         */
         [[NSUserDefaults standardUserDefaults]
          setValue:INatAccessToken
          forKey:INatTokenPrefKey];
