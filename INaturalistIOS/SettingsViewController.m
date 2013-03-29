@@ -59,7 +59,8 @@ static const int VersionCellTag = 4;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if (segue.identifier == @"SignInFromSettingsSegue") {
+    NSLog(@"%@ %@ %@",segue, segue.identifier , [segue identifier]);
+    if ([segue.identifier compare: @"SignInFromSettingsSegue"] == NSOrderedSame) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
     }
@@ -200,6 +201,16 @@ static const int VersionCellTag = 4;
         [self signOut];
     } else {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+    }
+}
+
+#pragma mark - loginViewController Delegate
+- (void)loginViewControllerDidLogIn:(LoginViewController *)controlle{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
+        UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
+        [self.tableView reloadData];
     }
 }
 

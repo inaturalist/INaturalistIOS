@@ -1182,7 +1182,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <scene sceneID="vz0-xH-bUj">
             <objects>
                 <tableViewController id="wse-tJ-yO9" customClass="LoginViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="8" sectionFooterHeight="8" id="mQU-A0-CdL">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" rowHeight="44" sectionHeaderHeight="8" sectionFooterHeight="8" id="mQU-A0-CdL">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -1218,7 +1218,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="yVL-ib-H72">
-                                        <rect key="frame" x="0.0" y="91" width="320" height="45"/>
+                                        <rect key="frame" x="0.0" y="91" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
@@ -1249,21 +1249,21 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             </tableViewSection>
                             <tableViewSection headerTitle="Login with Facebook" id="3DS-CL-NMe">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hsp-PZ-83S" imageView="Ecr-Vt-DpB" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
-                                        <rect key="frame" x="0.0" y="180" width="320" height="46"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="TJg-mX-i6C" imageView="VFG-Dn-em2" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
+                                        <rect key="frame" x="0.0" y="179" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Login with Facebook" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hsp-PZ-83S">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Login with Facebook" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TJg-mX-i6C">
                                                     <rect key="frame" x="53" y="0.0" width="237" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <color key="textColor" red="0.022585960630236632" green="0.1748237179216571" blue="0.63153698979591844" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" red="0.022585960629999999" green="0.17482371790000001" blue="0.63153698979999995" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="FacebookIcon.png" id="Ecr-Vt-DpB">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="FacebookIcon.png" id="VFG-Dn-em2">
                                                     <rect key="frame" x="0.0" y="0.0" width="43" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -1276,7 +1276,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <tableViewSection headerTitle="Login with Google+" id="h2K-Kg-3dh">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ohk-ES-lZM" imageView="one-H2-7w3" style="IBUITableViewCellStyleDefault" id="sDJ-ut-xqR">
-                                        <rect key="frame" x="0.0" y="270" width="320" height="46"/>
+                                        <rect key="frame" x="0.0" y="268" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
@@ -1303,7 +1303,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <tableViewSection headerTitle="Don't have an account?" id="ljj-kr-K3I">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Kp6-B4-NJv" style="IBUITableViewCellStyleDefault" id="9Sg-zw-Muv">
-                                        <rect key="frame" x="0.0" y="360" width="320" height="46"/>
+                                        <rect key="frame" x="0.0" y="357" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
@@ -1667,7 +1667,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <image name="01-refresh.png" width="24" height="26"/>
         <image name="06-magnify.png" width="24" height="24"/>
         <image name="83-calendar.png" width="23" height="25"/>
-        <image name="FacebookIcon.png" width="128" height="128"/>
+        <image name="FacebookIcon.png" width="234" height="234"/>
         <image name="GoogleIcon.png" width="44" height="44"/>
         <image name="current_location.png" width="14" height="14"/>
         <image name="iconic_taxon_unknown.png" width="75" height="75"/>

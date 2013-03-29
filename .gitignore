@@ -1,7 +1,10 @@
 *.DS_Store
 INaturalist.xcodeproj/project.xcworkspace
 INaturalist.xcodeproj/xcuserdata
+INaturalistIOS/config.h
 
 Vendor/three20
 
 Vendor/RestKit
+
+INaturalistIOS/config.h

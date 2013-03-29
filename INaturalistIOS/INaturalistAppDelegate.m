@@ -24,6 +24,7 @@
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
 #import "constants.h"
+#import "config.h"
 
 
 @implementation INaturalistAppDelegate
@@ -203,11 +204,12 @@
         // Do something with the account
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     };
-    // gilia
-    [[NXOAuth2AccountStore sharedStore] setClientID:@"f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184"
-                                             secret:@"6c9ce086e38cf9fb5d13de8ad86bf359ad88eb745285591d385290bfe7ba24a0"
-                                   authorizationURL:[NSURL URLWithString:@"http://www.inaturalist.org/oauth/authorize?client_id=f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code"]
-                                           tokenURL:[NSURL URLWithString:@"http://www.inaturalist.org/oauth/token"]
+    //
+    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code",INatBaseURL,INatClientID ]];
+    [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                             secret:INatClientSecret
+                                   authorizationURL:authorizationURL
+                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/token", INatBaseURL]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthService];
     
@@ -215,13 +217,14 @@
         // Do something with the account
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     };
-    [[NXOAuth2AccountStore sharedStore] setClientID:@"f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184"
-                                             secret:@"6c9ce086e38cf9fb5d13de8ad86bf359ad88eb745285591d385290bfe7ba24a0"
-                                   authorizationURL:[NSURL URLWithString:@"http://www.inaturalist.org/oauth/authorize?client_id=f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code"]
-                                           tokenURL:[NSURL URLWithString:@"http://www.inaturalist.org/oauth/assertion_token.json"]
+    [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                             secret:INatClientSecret
+                                   authorizationURL:authorizationURL
+                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/assertion_token.json", INatBaseURL]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthServiceExtToken];
 }
+//@"http://www.inaturalist.org/oauth/authorize?client_id=f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code"
 
 - (BOOL)loggedIn
 {

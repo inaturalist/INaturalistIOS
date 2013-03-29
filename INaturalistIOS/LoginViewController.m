@@ -22,6 +22,7 @@
     NSString    *INatAccessToken;
     NSString    *AccountType;
     UIAlertView *av;
+    BOOL        isLoginCompleted;
 }
 
 @end
@@ -55,7 +56,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
     [self initOAuth2Service];
     AccountType = kINatAuthService;
     av = nil;
-
+    isLoginCompleted = NO;
 }
 
 - (void)viewDidUnload
@@ -77,6 +78,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
     [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
     AccountType = nil;
     AccountType = kINatAuthService;
+    isLoginCompleted = NO;
     [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:AccountType
                                                               username:[usernameField text]
                                                               password:[passwordField text]];
@@ -85,7 +87,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
 #pragma mark RKRequestDelegate methods
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 304) {
         [DejalBezelActivityView removeView];
         NSString *jsonString = [[NSString alloc] initWithData:response.body
                                                      encoding:NSUTF8StringEncoding];
@@ -188,10 +190,12 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
         return;
     }
     if (indexPath.section == 1) { //Facebook
+        isLoginCompleted = NO;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [self openFacebookSession];
     }
     else if (indexPath.section == 2) {// Google+
+        isLoginCompleted = NO;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [[GPPSignIn sharedInstance] authenticate];
     }
@@ -246,7 +250,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 {
     switch (state) {
         case FBSessionStateOpen:
-            NSLog(@"session %@ session.accessTokenData.accessToken %@", session, session.accessTokenData.accessToken);
+            //NSLog(@"session %@ session.accessTokenData.accessToken %@", session, session.accessTokenData.accessToken);
             ExternalAccessToken = [session.accessTokenData.accessToken copy];
             AccountType = nil;
             AccountType = kINatAuthServiceExtToken;
@@ -306,7 +310,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                    error: (NSError *) error
 {
      
-    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
+    //NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
     if (error || ![auth accessToken]){
         if (!av){
             av = nil;
@@ -339,10 +343,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-                                                      // Update your UI
-                                                      NSDictionary *userInfo = aNotification.userInfo;
-                                                      NSLog(@" userInfo  %@",userInfo);
-                                                      [self finishWithAuth2Loging];
+                                                      //NSDictionary *userInfo = aNotification.userInfo;
+                                                      //NSLog(@" userInfo  %@",userInfo);
+                                                      if (!isLoginCompleted)[self finishWithAuth2Loging];
                                                   }];
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
                                                       object:[NXOAuth2AccountStore sharedStore]
@@ -368,9 +371,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
             INatAccessToken = [NSString stringWithFormat:@"Bearer %@", accessT ];
             loginSuccessed = YES;
         }
-        NSLog(@"account %@  INatAccessToken %@",account, INatAccessToken);
+        //NSLog(@"account %@  INatAccessToken %@",account, INatAccessToken);
     }
     if (loginSuccessed){
+        isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults]
          setValue:INatAccessToken
          forKey:INatTokenPrefKey];
