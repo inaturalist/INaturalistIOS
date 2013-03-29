@@ -1,0 +1,17 @@
+//
+//  config.h
+//  iNaturalist
+//
+//  Created by Zeev Vax on 3/28/13.
+//  Copyright (c) 2013 iNaturalist. All rights reserved.
+//
+
+
+#ifndef iNaturalist_config_h
+#define iNaturalist_config_h
+
+#define INatClientID        @"INat Client ID here"
+#define INatClientSecret    @"INat Client Secret here"
+
+#endif
+

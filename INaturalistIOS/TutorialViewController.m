@@ -17,12 +17,19 @@
 
 - (id)initWithDefaultTutorial
 {
-    PhotoSource *photoSouce = [[PhotoSource alloc] initWithPhotos:[NSArray arrayWithObjects:
-                                                                   [[PhotoStub alloc] initWithURL:@"bundle://tutorial1.png"],
-                                                                   [[PhotoStub alloc] initWithURL:@"bundle://tutorial2.png"],
-                                                                   [[PhotoStub alloc] initWithURL:@"bundle://tutorial3.png"],
-                                                                   [[PhotoStub alloc] initWithURL:@"bundle://tutorial4.png"],
-                                                                   [[PhotoStub alloc] initWithURL:@"bundle://tutorial5.png"],
+    NSString *curLang = [[NSLocale preferredLanguages] objectAtIndex:0];
+    PhotoSource *photoSouce = [[PhotoSource alloc]
+                               initWithPhotos:[NSArray arrayWithObjects:
+                                               [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                               @"bundle://tutorial1%@.png", curLang]],
+                                               [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                               @"bundle://tutorial2%@.png", curLang]],
+                                               [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                               @"bundle://tutorial3%@.png", curLang]],
+                                                [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                                @"bundle://tutorial4%@.png", curLang]],
+                                                [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                                @"bundle://tutorial5%@.png", curLang]],
                                                                    nil] 
                                                             title:@"Welcome to iNaturalist!"];
     self = [super initWithPhotoSource:photoSouce];

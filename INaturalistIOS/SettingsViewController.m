@@ -15,6 +15,7 @@
 #import "DeletedRecord.h"
 #import "TutorialViewController.h"
 #import "INatUITabBarController.h"
+#import "GTMOAuth2Authentication.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -40,7 +41,7 @@ static const int VersionCellTag = 4;
     contactActionCell.tag = ContactActionCellTag;
     creditsCell.backgroundView = nil;
     
-    if ([defaults objectForKey:INatUsernamePrefKey]) {
+    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
@@ -58,7 +59,8 @@ static const int VersionCellTag = 4;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if (segue.identifier == @"SignInFromSettingsSegue") {
+    NSLog(@"%@ %@ %@",segue, segue.identifier , [segue identifier]);
+    if ([segue.identifier compare: @"SignInFromSettingsSegue"] == NSOrderedSame) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
     }
@@ -97,8 +99,10 @@ static const int VersionCellTag = 4;
 - (void)localSignOut
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
+    [defaults removeObjectForKey:INatTokenPrefKey];
     [defaults synchronize];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [RKClient.sharedClient setUsername:nil];
@@ -157,7 +161,7 @@ static const int VersionCellTag = 4;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (cell.tag) {
         case UsernameCellTag:
-            if ([defaults objectForKey:INatUsernamePrefKey]) {
+            if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -168,7 +172,7 @@ static const int VersionCellTag = 4;
             }
             break;
         case AccountActionCellTag:
-            if ([defaults objectForKey:INatUsernamePrefKey]) {
+            if ([defaults objectForKey:INatUsernamePrefKey]|| [defaults objectForKey:INatTokenPrefKey]) {
                 [self clickedSignOut];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -197,6 +201,16 @@ static const int VersionCellTag = 4;
         [self signOut];
     } else {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+    }
+}
+
+#pragma mark - loginViewController Delegate
+- (void)loginViewControllerDidLogIn:(LoginViewController *)controlle{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
+        UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
+        [self.tableView reloadData];
     }
 }
 
