@@ -6,8 +6,9 @@ Titanium-based app, and is still under development.
 
 Setup
 -----
-We're using RestKit as a submodule so there's a little more than cloning.
+We're using a number of submodules so there's a little more than cloning:
 
     git clone git@github.com:inaturalist/INaturalistIOS.git
     git submodule init
     git submodule update
+    cd Vendor/Facebook && ./scripts/build_framework.sh

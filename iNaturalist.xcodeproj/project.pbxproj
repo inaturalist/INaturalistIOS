@@ -1950,7 +1950,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				HEADER_SEARCH_PATHS = (
 					"\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\"",
 					"\"$(BUILT_PRODUCTS_DIR)/../../Headers\"",
