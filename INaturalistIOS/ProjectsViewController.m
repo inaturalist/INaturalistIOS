@@ -189,7 +189,9 @@ static const int ListControlIndexNearby = 2;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username]
+    //NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+    //if (inatToken && inatToken.length > 0) {
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username] //zeev TODO
                                                      objectMapping:[ProjectUser mapping] 
                                                           delegate:self];
     } else {
@@ -220,8 +222,9 @@ static const int ListControlIndexNearby = 2;
         _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        _listControl.selectedSegmentIndex = (username && username.length > 0) ? 0 : 1;
+        //NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+        NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+        _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
         
         [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
     }

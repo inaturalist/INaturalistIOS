@@ -20,17 +20,34 @@
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import <Three20/Three20.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import "GPPURLHandler.h"
+#import "NXOAuth2.h"
+#import "constants.h"
+#import "config.h"
+
 
 @implementation INaturalistAppDelegate
 
 @synthesize window = _window;
 @synthesize photoObjectManager = _photoObjectManager;
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return ([FBSession.activeSession handleOpenURL:url] || [GPPURLHandler handleURL:url
+                                                                 sourceApplication:sourceApplication
+                                                                        annotation:annotation]);
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     [self configureRestKit];
     [self configureThree20];
+    [self configureOAuth2Client];
     
     return YES;
 }
@@ -45,8 +62,10 @@
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    [RKClient.sharedClient setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    //[RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
+    //[RKClient.sharedClient setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    [RKClient.sharedClient setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
+    [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
     
     // User Agent
     UIDevice *d = [UIDevice currentDevice];
@@ -100,6 +119,9 @@
     
     [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
+    RKLogConfigureByName("RestKit", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // DEBUG
 //        RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
 //        RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
@@ -122,9 +144,10 @@
                                                             forClass:ObservationPhoto.class];
     self.photoObjectManager.client.requestQueue.showsNetworkActivityIndicatorWhenBusy = YES;
     [self.photoObjectManager.client setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-    [self.photoObjectManager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    [self.photoObjectManager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
-    self.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    //[self.photoObjectManager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
+    //[self.photoObjectManager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    [self.photoObjectManager.client setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
+    [self.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
     self.photoObjectManager.client.timeoutInterval = 180.0;
     self.photoObjectManager.requestQueue.concurrentRequestsLimit = 2;
 }
@@ -175,11 +198,41 @@
     navigator.window = self.window;
 }
 
+-(void) configureOAuth2Client{
+    NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
+    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {
+        // Do something with the account
+        [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+    };
+    //
+    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code",INatBaseURL,INatClientID ]];
+    [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                             secret:INatClientSecret
+                                   authorizationURL:authorizationURL
+                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/token", INatBaseURL]]
+                                        redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
+                                     forAccountType:kINatAuthService];
+    
+    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthServiceExtToken]) {
+        // Do something with the account
+        [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+    };
+    [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                             secret:INatClientSecret
+                                   authorizationURL:authorizationURL
+                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/assertion_token.json", INatBaseURL]]
+                                        redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
+                                     forAccountType:kINatAuthServiceExtToken];
+}
+//@"http://www.inaturalist.org/oauth/authorize?client_id=f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code"
+
 - (BOOL)loggedIn
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    return (username && username.length > 0);
+    //return (username && username.length > 0);
+    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
 }
 
 @end

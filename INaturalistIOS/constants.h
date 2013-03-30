@@ -11,6 +11,11 @@
 
 #define INatUsernamePrefKey @"INatUsernamePrefKey"
 #define INatPasswordPrefKey @"INatPasswordPrefKey"
+#define INatTokenPrefKey    @"INatTokenPrefKey"
+#define kINatAuthServiceExtToken @"INatAuthServiceExtToken"
+#define kINatAuthService @"INatAuthService"
+
+
 #ifdef DEBUG
     #define INatBaseURL @"http://localhost:3000"
     #define INatMediaBaseURL @"http://127.0.0.1:3000"

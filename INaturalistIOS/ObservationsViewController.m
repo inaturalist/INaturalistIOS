@@ -57,7 +57,8 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults objectForKey:INatUsernamePrefKey]) {
+    //if (![defaults objectForKey:INatUsernamePrefKey]) {
+    if (![defaults objectForKey:INatTokenPrefKey]) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
         return;
     }
@@ -119,7 +120,7 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)syncObservationPhoto:(ObservationPhoto *)op
 {
     INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    app.photoObjectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
     void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
         loader.delegate = self.syncQueue;
         RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 

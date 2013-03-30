@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
+#import "GPPSignIn.h"
+
 
 @class LoginViewController;
 
@@ -18,7 +20,7 @@
 - (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
 @end
 
-@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, TTWebControllerDelegate>
+@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, TTWebControllerDelegate,GPPSignInDelegate>
 
 @property (nonatomic, weak) id <LoginViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
