@@ -15,5 +15,6 @@
 
 #import <RestKit/RestKit.h>
 #import "constants.h"
+#import "config.h"
 #import "NSString+Inflections.h"
 #import "UIView+UIViewHelpers.h"

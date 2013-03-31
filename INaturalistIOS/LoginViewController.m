@@ -16,7 +16,6 @@
 #import "NXOAuth2.h"
 
 
-
 @interface LoginViewController(){
     NSString    *ExternalAccessToken;
     NSString    *INatAccessToken;
@@ -29,8 +28,6 @@
 
 @implementation LoginViewController
 @synthesize usernameField, passwordField, delegate;
-
-static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68qljivfptn.apps.googleusercontent.com";
 
 
 
@@ -153,7 +150,7 @@ static NSString * const kGoogleClientId = @"796686868523-tmpdvng95lo48ljhcrmmj68
     }
     
     if (!av){
-        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log in failed",nil)
+        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sign in failed",nil)
                                     message:NSLocalizedString(@"Username or password were invalid.", nil)
                                    delegate:self 
                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
@@ -272,7 +269,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     if (error) {
         UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:NSLocalizedString(@"Log in failed",nil)
+                                  initWithTitle:NSLocalizedString(@"Sign in failed",nil)
                                   message:error.localizedDescription
                                   delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK",nil)
@@ -298,7 +295,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 -(void) initGoogleLogin{
     // Google+ init
     GPPSignIn   *googleSignIn = [GPPSignIn sharedInstance];
-    googleSignIn.clientID = kGoogleClientId;
+    googleSignIn.clientID = GoogleClientId;
     googleSignIn.scopes = [NSArray arrayWithObjects:
                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
                            kGTLAuthScopePlusMe,
@@ -315,7 +312,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         if (!av){
             av = nil;
             av = [[UIAlertView alloc]
-                                      initWithTitle:NSLocalizedString(@"Log in failed",nil)
+                                      initWithTitle:NSLocalizedString(@"Sign in failed",nil)
                                       message:error.localizedDescription
                                       delegate:nil
                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)

@@ -1178,7 +1178,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="2289" y="1836"/>
         </scene>
-        <!--Login View Controller - Log in-->
+        <!--Login View Controller - Sign in-->
         <scene sceneID="vz0-xH-bUj">
             <objects>
                 <tableViewController id="wse-tJ-yO9" customClass="LoginViewController" sceneMemberID="viewController">
@@ -1187,7 +1187,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Log in to iNaturalist.org" id="tW8-NR-sj7">
+                            <tableViewSection headerTitle="Sign in to iNaturalist.org" id="tW8-NR-sj7">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="za1-hN-c0c">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -1247,7 +1247,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Login with Facebook" id="3DS-CL-NMe">
+                            <tableViewSection headerTitle="Sign in with Facebook" id="3DS-CL-NMe">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="TJg-mX-i6C" imageView="VFG-Dn-em2" style="IBUITableViewCellStyleDefault" id="3o8-91-O7y">
                                         <rect key="frame" x="0.0" y="179" width="320" height="45"/>
@@ -1256,7 +1256,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Login with Facebook" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TJg-mX-i6C">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Sign in with Facebook" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TJg-mX-i6C">
                                                     <rect key="frame" x="53" y="0.0" width="237" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -1273,7 +1273,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Login with Google+" id="h2K-Kg-3dh">
+                            <tableViewSection headerTitle="Sign in with Google+" id="h2K-Kg-3dh">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ohk-ES-lZM" imageView="one-H2-7w3" style="IBUITableViewCellStyleDefault" id="sDJ-ut-xqR">
                                         <rect key="frame" x="0.0" y="268" width="320" height="45"/>
@@ -1282,7 +1282,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Login with Google" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ohk-ES-lZM">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Sign in with Google" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ohk-ES-lZM">
                                                     <rect key="frame" x="53" y="0.0" width="237" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -1328,7 +1328,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <outlet property="delegate" destination="wse-tJ-yO9" id="os3-So-cWg"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Log in" id="1yP-Oa-9Kj">
+                    <navigationItem key="navigationItem" title="Sign in" id="1yP-Oa-9Kj">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="Obm-wO-wio">
                             <connections>
                                 <action selector="cancel:" destination="wse-tJ-yO9" id="uld-UK-5C7"/>

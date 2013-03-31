@@ -23,8 +23,6 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
-#import "constants.h"
-#import "config.h"
 
 
 @implementation INaturalistAppDelegate
@@ -119,10 +117,8 @@
     
     [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
-    RKLogConfigureByName("RestKit", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     // DEBUG
+//        RKLogConfigureByName("RestKit", RKLogLevelWarning);
 //        RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
 //        RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
     // END DEBUG
@@ -144,10 +140,8 @@
                                                             forClass:ObservationPhoto.class];
     self.photoObjectManager.client.requestQueue.showsNetworkActivityIndicatorWhenBusy = YES;
     [self.photoObjectManager.client setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-    //[self.photoObjectManager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    //[self.photoObjectManager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
     [self.photoObjectManager.client setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
-    [self.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
+    [self.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
     self.photoObjectManager.client.timeoutInterval = 180.0;
     self.photoObjectManager.requestQueue.concurrentRequestsLimit = 2;
 }
@@ -224,7 +218,6 @@
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthServiceExtToken];
 }
-//@"http://www.inaturalist.org/oauth/authorize?client_id=f135939fce83d1bbb4112a1040855ed5789c6674f24cddb6792368a04041d184&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code"
 
 - (BOOL)loggedIn
 {

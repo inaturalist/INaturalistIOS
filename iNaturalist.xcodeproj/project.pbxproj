@@ -150,7 +150,6 @@
 		6098FD1516F3BE280053987E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1416F3BE270053987E /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		6098FD7C16F3F6880053987E /* libGooglePlus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD2116F3F6880053987E /* libGooglePlus.a */; };
 		6098FD7D16F3F6890053987E /* libGooglePlusUniversal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD2216F3F6880053987E /* libGooglePlusUniversal.a */; };
 		6098FD7E16F3F6890053987E /* GTLBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 6098FD2616F3F6880053987E /* GTLBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		6098FD7F16F3F6890053987E /* GTLBatchQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 6098FD2816F3F6880053987E /* GTLBatchQuery.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -539,6 +538,7 @@
 		198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UINavigator.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UINavigator.a"; sourceTree = "<group>"; };
 		1997410F15194E89006FBEA0 /* SyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncQueue.h; sourceTree = "<group>"; };
 		1997411015194E89006FBEA0 /* SyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncQueue.m; sourceTree = "<group>"; };
+		19A219F11707B8A50042A889 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
 		19A5F60814FB289B00757636 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		19A5F61014FB486000757636 /* appicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appicon.png; path = ../appicon.png; sourceTree = "<group>"; };
 		19A5F61214FB486200757636 /* appicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "appicon@2x.png"; path = "../appicon@2x.png"; sourceTree = "<group>"; };
@@ -611,7 +611,6 @@
 		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
 		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
-		6050488E1704F493002BFABE /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		6098FD0E16F3BD550053987E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = Vendor/Facebook/build/FacebookSDK.framework; sourceTree = "<group>"; };
 		6098FD1016F3BD980053987E /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = Vendor/Facebook/build/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		6098FD1216F3BDC80053987E /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBUserSettingsViewResources.bundle; path = Vendor/Facebook/build/FacebookSDK.framework/Versions/A/Resources/FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -774,7 +773,6 @@
 				1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
 				1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
 				6098FD0F16F3BD560053987E /* FacebookSDK.framework in Frameworks */,
-				6098FD7C16F3F6880053987E /* libGooglePlus.a in Frameworks */,
 				6098FD7D16F3F6890053987E /* libGooglePlusUniversal.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -888,7 +886,7 @@
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
-				6050488E1704F493002BFABE /* config.h */,
+				19A219F11707B8A50042A889 /* config.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

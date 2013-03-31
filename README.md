@@ -11,4 +11,5 @@ We're using a number of submodules so there's a little more than cloning:
     git clone git@github.com:inaturalist/INaturalistIOS.git
     git submodule init
     git submodule update
+    cp config.h.example cp.config # and edit to configure for your project
     cd Vendor/Facebook && ./scripts/build_framework.sh
