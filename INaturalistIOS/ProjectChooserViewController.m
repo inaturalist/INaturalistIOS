@@ -23,7 +23,9 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)loadData
 {
-    self.projectUsers = [ProjectUser all];
+    self.projectUsers = [[ProjectUser all] sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
+        return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
+    }];
 }
 
 - (IBAction)clickedCancel:(id)sender {

@@ -189,9 +189,7 @@ static const int ListControlIndexNearby = 2;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
     if (username && username.length > 0) {
-    //NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
-    //if (inatToken && inatToken.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username] //zeev TODO
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@", username]
                                                      objectMapping:[ProjectUser mapping] 
                                                           delegate:self];
     } else {
