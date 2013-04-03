@@ -134,6 +134,11 @@
 
 - (void)failedLogin
 {
+    [self failedLogin:nil];
+}
+
+- (void)failedLogin:(NSString *)msg
+{
     //[[RKClient sharedClient] setUsername:nil];
     //[[RKClient sharedClient] setPassword:nil];
     if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
@@ -150,8 +155,11 @@
     }
     
     if (!av){
+        if (!msg) {
+            msg = NSLocalizedString(@"Username or password were invalid.", nil);
+        }
         av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sign in failed",nil)
-                                    message:NSLocalizedString(@"Username or password were invalid.", nil)
+                                    message:msg
                                    delegate:self 
                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
                           otherButtonTitles:nil];
@@ -268,20 +276,13 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     }
     
     if (error) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:NSLocalizedString(@"Sign in failed",nil)
-                                  message:error.localizedDescription
-                                  delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                  otherButtonTitles:nil];
-        [alertView show];
-        [self failedLogin];
+        [self failedLogin:error.localizedDescription];
     }
 }
 
 - (void)openFacebookSession
 {
-    [FBSession openActiveSessionWithReadPermissions:nil
+    [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups", nil]
                                        allowLoginUI:YES
                                   completionHandler:
      ^(FBSession *session,
@@ -351,7 +352,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                       NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       // Do something with the error
                                                       NSDictionary *userInfo = aNotification.userInfo;
-                                                      NSLog(@"Error userInfo  %@ error %@",userInfo, error);
                                                       [self failedLogin];
                                                   }];
 }

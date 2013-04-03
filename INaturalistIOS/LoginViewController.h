@@ -29,4 +29,5 @@
 - (IBAction)signIn:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (void)failedLogin;
+- (void)failedLogin:(NSString *)msg;
 @end
