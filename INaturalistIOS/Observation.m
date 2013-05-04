@@ -278,4 +278,22 @@ static NSDateFormatter *jsDateFormatter = nil;
     return [self primitiveIconicTaxonName];
 }
 
+// TODO when we start storing public observations this needs to check whether the obs belongs
+// to the signed in user
+- (NSNumber *)visibleLatitude
+{
+    if (self.privateLatitude) {
+        return self.privateLatitude;
+    }
+    return self.latitude;
+}
+
+- (NSNumber *)visibleLongitude
+{
+    if (self.privateLongitude) {
+        return self.privateLongitude;
+    }
+    return self.longitude;
+}
+
 @end

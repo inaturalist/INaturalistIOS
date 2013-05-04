@@ -49,7 +49,8 @@
         region.center.latitude = lat;
         region.center.longitude = lon;
         if (self.currentLocation.accuracy) {
-            double accuracyInDegrees = [self metersToDegrees:[self.currentLocation.accuracy longValue]];
+            double meters = MAX([self.currentLocation.accuracy longValue], 20);
+            double accuracyInDegrees = [self metersToDegrees:meters];
             region.span.latitudeDelta = accuracyInDegrees * 5;
             region.span.longitudeDelta = accuracyInDegrees * 5;
         } else {

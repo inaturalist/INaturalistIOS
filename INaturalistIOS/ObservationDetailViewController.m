@@ -100,13 +100,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.speciesGuessTextField setText:self.observation.speciesGuess];
     [self.observedAtLabel setText:self.observation.observedOnPrettyString];
     [self.placeGuessField setText:self.observation.placeGuess];
-    if (self.observation.latitude) {
-        [self.latitudeLabel setText:self.observation.latitude.description];
+    NSNumber *lat = self.observation.visibleLatitude;
+    NSNumber *lon = self.observation.visibleLongitude;
+    
+    if (lat) {
+        [self.latitudeLabel setText:lat.description];
     } else {
         self.latitudeLabel.text = nil;
     }
-    if (self.observation.longitude) {
-        [self.longitudeLabel setText:self.observation.longitude.description];
+    if (lon) {
+        [self.longitudeLabel setText:lon.description];
     } else {
         self.longitudeLabel.text = nil;
     }
@@ -169,11 +172,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     NSNumber *newLat = [numberFormatter numberFromString:self.latitudeLabel.text];
     NSNumber *newLon = [numberFormatter numberFromString:self.longitudeLabel.text];
     NSNumber *newAcc = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
-    if (![self.observation.latitude isEqualToNumber:newLat]) {
+    if (![self.observation.visibleLatitude isEqualToNumber:newLat]) {
         self.observation.latitude = newLat;
+        self.observation.privateLatitude = nil;
     }
-    if (![self.observation.longitude isEqualToNumber:newLon]) {
+    if (![self.observation.visibleLongitude isEqualToNumber:newLon]) {
         self.observation.longitude = newLon;
+        self.observation.privateLongitude = nil;
     }
     if (![self.observation.positionalAccuracy isEqualToNumber:newAcc]) {
         self.observation.positionalAccuracy = newAcc;
@@ -442,8 +447,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [av show];
     } else {
         ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue]
-                                                     longitude:[self.observation.longitude doubleValue]];
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                     longitude:[self.observation.visibleLongitude doubleValue]];
         
         NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
         [meta setValue:[self getGPSDictionaryForLocation:loc]
@@ -731,7 +736,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (!self.locationUpdatesOn) return;
     
     self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
-    self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude]; 
+    self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
+    self.observation.privateLatitude = nil;
+    self.observation.privateLongitude = nil;
     self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
     self.observation.positioningMethod = @"gps";
     
@@ -1398,9 +1405,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if ([segue.identifier isEqualToString:@"EditLocationSegue"]) {
         EditLocationViewController *vc = (EditLocationViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
-        if (self.observation.latitude) {
-            INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.latitude
-                                                             longitude:self.observation.longitude
+        if (self.observation.visibleLatitude) {
+            INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
+                                                             longitude:self.observation.visibleLongitude
                                                               accuracy:self.observation.positionalAccuracy];
             loc.positioningMethod = self.observation.positioningMethod;
             [vc setCurrentLocation:loc];
@@ -1491,8 +1498,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return;
     }
     
-    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.latitude doubleValue] 
-                                                 longitude:[self.observation.longitude doubleValue]];
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                 longitude:[self.observation.visibleLongitude doubleValue]];
     if (!self.geocoder) {
         self.geocoder = [[CLGeocoder alloc] init];
     }

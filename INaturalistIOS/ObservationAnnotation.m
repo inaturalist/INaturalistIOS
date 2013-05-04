@@ -22,7 +22,7 @@
         self.observation = observation;
         self.title = observation.speciesGuess && observation.speciesGuess.length > 0 ? observation.speciesGuess : NSLocalizedString(@"Something...",nil);
         self.subtitle = observation.observedOnPrettyString;
-        self.coordinate = CLLocationCoordinate2DMake([observation.latitude doubleValue], [observation.longitude doubleValue]);
+        self.coordinate = CLLocationCoordinate2DMake([observation.visibleLatitude doubleValue], [observation.visibleLongitude doubleValue]);
     }
     return self;
 }

@@ -54,6 +54,8 @@
 - (UIColor *)iconicTaxonColor;
 - (NSArray *)sortedObservationPhotos;
 - (NSArray *)sortedProjectObservations;
+- (NSNumber *)visibleLatitude;
+- (NSNumber *)visibleLongitude;
 
 @end
 
