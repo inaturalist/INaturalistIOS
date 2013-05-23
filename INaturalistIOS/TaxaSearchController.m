@@ -22,7 +22,9 @@ static const int TaxonCellSubtitleTag = 3;
     self = [super initWithSearchDisplayController:searchDisplayController];
     if (self) {
         self.model = Taxon.class;
-        self.searchURL = @"/taxa/search?q=%@";
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        self.searchURL = [NSString stringWithFormat:@"/taxa/search?locale=%@-%@&q=%%@", language, countryCode];
     }
     return self;
 }
