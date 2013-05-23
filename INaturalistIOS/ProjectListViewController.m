@@ -84,8 +84,10 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.tableView.scrollEnabled = NO;
     [DejalBezelActivityView activityViewForView:self.tableView
                                       withLabel:NSLocalizedString(@"Syncing list...",nil)];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/lists/%d.json", self.project.listID.intValue] 
-                                                      delegate:self];
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
 }
 
 - (void)stopSync
