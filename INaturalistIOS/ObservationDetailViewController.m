@@ -297,8 +297,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                         nil]];
     }
     
-    self.idPleaseSwitch.onText = @"YES";
-    self.idPleaseSwitch.offText = @"NO";
+    self.idPleaseSwitch.onText = NSLocalizedString(@"YES", nil);
+    self.idPleaseSwitch.offText = NSLocalizedString(@"NO", nil);
     
     [self refreshCoverflowView];
     [self observationToUI];
@@ -705,7 +705,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self uiToObservation];
     switch (buttonIndex) {
         case 0:
-            self.observation.geoprivacy = NSLocalizedString( @"open",nil);
+            self.observation.geoprivacy = NSLocalizedString( @"open_adj",nil);
             break;
         case 1:
             self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
@@ -914,8 +914,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                  delegate:self 
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Open",nil),
-                                      NSLocalizedString(@"Obscured",nil), NSLocalizedString(@"Private",nil), nil];
+                                                        otherButtonTitles:NSLocalizedString(@"Open_adj",nil),
+                                                                            NSLocalizedString(@"Obscured",nil),
+                                                                            NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
         [actionSheet showFromTabBar:self.tabBarController.tabBar];

@@ -230,13 +230,19 @@ static const int ObservationCellLowerRightTag = 4;
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
     NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Sync ",nil)];
     if (self.observationsToSyncCount > 0) {
-        [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observation",nil), self.observationsToSyncCount]];
-        if (self.observationsToSyncCount > 1) [msg appendString:@"s"];
-        if (self.observationPhotosToSyncCount > 0) [msg appendString:@", "];
+        if (self.observationsToSyncCount == 1) {
+            [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observation",nil), self.observationsToSyncCount]];
+        } else {
+            [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observations",nil), self.observationsToSyncCount]];
+        }
     }
     if (self.observationPhotosToSyncCount > 0) {
-        [msg appendString:[NSString stringWithFormat: NSLocalizedString(@"%d photo",nil), self.observationPhotosToSyncCount]];
-        if (self.observationPhotosToSyncCount > 1) [msg appendString:@"s"];
+        [msg appendString:@", "];
+        if (self.observationPhotosToSyncCount == 1) {
+            [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d photo",nil), self.observationPhotosToSyncCount]];
+        } else {
+            [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d photos",nil), self.observationPhotosToSyncCount]];
+        }
     }
     [self.syncButton setTitle:msg];
     if (self.itemsToSyncCount > 0) {
@@ -481,7 +487,8 @@ static const int ObservationCellLowerRightTag = 4;
     if (model == ObservationPhoto.class) {
         activityMsg = NSLocalizedString(@"Syncing photos...",nil);
     } else {
-        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSStringFromClass(model).humanize.pluralize];
+        NSString *modelName = NSStringFromClass(model).humanize.pluralize;
+        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
     }
     if (syncActivityView) {
         [[syncActivityView activityLabel] setText:activityMsg];

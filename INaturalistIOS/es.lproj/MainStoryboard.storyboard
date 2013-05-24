@@ -208,10 +208,10 @@
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="¿ID necesitas ayuda?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="¿Necesitas identificación?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QYT-BR-dNq">
                                                     <rect key="frame" x="10" y="11" width="195" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
@@ -232,14 +232,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Geoprivacidad" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrY-as-UVn">
-                                                    <rect key="frame" x="10" y="11" width="93" height="21"/>
+                                                    <rect key="frame" x="10" y="11" width="119" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="abrir" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JkM-AH-Zal">
-                                                    <rect key="frame" x="252" y="11" width="38" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="abierta" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JkM-AH-Zal">
+                                                    <rect key="frame" x="238" y="11" width="52" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.2196078431372549" green="0.32941176470588235" blue="0.52941176470588236" alpha="1" colorSpace="calibratedRGB"/>
@@ -575,7 +575,7 @@
                                             <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Contactar con soporte" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IvC-UJ-yev">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Contactar soporte" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IvC-UJ-yev">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -591,17 +591,17 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Créditos" id="wVj-s3-ngo">
                                 <cells>
-                                    <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Qrv-G3-6nh" rowHeight="138" style="IBUITableViewCellStyleDefault" id="FZh-GR-7cJ">
-                                        <rect key="frame" x="0.0" y="318" width="320" height="140"/>
+                                    <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Qrv-G3-6nh" rowHeight="164" style="IBUITableViewCellStyleDefault" id="FZh-GR-7cJ">
+                                        <rect key="frame" x="0.0" y="318" width="320" height="166"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="10" y="1" width="300" height="137"/>
+                                            <rect key="frame" x="10" y="1" width="300" height="163"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qrv-G3-6nh">
-                                                    <rect key="frame" x="10" y="0.0" width="280" height="137"/>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qrv-G3-6nh">
+                                                    <rect key="frame" x="10" y="0.0" width="280" height="163"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <string key="text">Diseñado y creado por iNaturalist LLC, con la ayuda de la Enciclopedia de la vida.
+                                                    <string key="text">Diseñado y creado por iNaturalist LLC, con la ayuda de la Enciclopedia de la Vida.
 
 Esta aplicación utiliza numerosos recursos abiertos y materiales con licencia creativa común, entre los que se incluye Three20, Restkit, TapkuLibrary de Devin Ross, DejalActivityView de David Sinclair y Glyphish icons de Joseph Wain. ¡Muchas gracias a todos estos artistas e ingenieros tan generosos y con tanto talento!</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -620,7 +620,7 @@ Esta aplicación utiliza numerosos recursos abiertos y materiales con licencia c
                             <tableViewSection headerTitle="Versión" id="I43-iz-miT">
                                 <cells>
                                     <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Sr1-uD-ljI" rowHeight="11" style="IBUITableViewCellStyleDefault" id="tcn-O1-DkG">
-                                        <rect key="frame" x="0.0" y="504" width="320" height="13"/>
+                                        <rect key="frame" x="0.0" y="530" width="320" height="13"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="10"/>
@@ -1681,10 +1681,10 @@ Esta aplicación utiliza numerosos recursos abiertos y materiales con licencia c
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="sKu-Sy-oMc"/>
         <segue reference="nqN-gg-ATR"/>
-        <segue reference="Iwt-4E-pF9"/>
         <segue reference="9nq-dq-fjy"/>
-        <segue reference="i4O-ab-ts2"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="i4O-ab-ts2"/>
     </inferredMetricsTieBreakers>
 </document>
