@@ -77,7 +77,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 - (void)prepareForDeletion
 {
-    if (self.syncedAt) {
+    if (self.syncedAt && self.observation) {
         DeletedRecord *dr = [DeletedRecord object];
         dr.recordID = self.recordID;
         dr.modelName = NSStringFromClass(self.class);
