@@ -343,7 +343,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                   usingBlock:^(NSNotification *aNotification){
                                                       //NSDictionary *userInfo = aNotification.userInfo;
                                                       //NSLog(@" userInfo  %@",userInfo);
-                                                      if (!isLoginCompleted)[self finishWithAuth2Loging];
+                                                      if (!isLoginCompleted)[self finishWithAuth2Login];
                                                   }];
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
                                                       object:[NXOAuth2AccountStore sharedStore]
@@ -357,7 +357,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 
--(void) finishWithAuth2Loging{
+-(void) finishWithAuth2Login{
     [DejalBezelActivityView removeView];
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSuccessed = NO;
@@ -380,10 +380,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
         [app.photoObjectManager.client setValue:INatAccessToken forHTTPHeaderField:@"Authorization"];
         [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
-            [self.delegate loginViewControllerDidLogIn:self];
-        }
-        [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
         [self removeOAuth2Observers];
         [[RKClient sharedClient] get:@"/users/edit.json" delegate:self];
     }
