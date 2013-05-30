@@ -180,12 +180,22 @@
     self.loader = objectLoader;
     bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
     bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    bool recordDeletedFromServer = (objectLoader.response.statusCode == 404 || objectLoader.response.statusCode == 410) &&
+        objectLoader.method == RKRequestMethodPUT &&
+        [objectLoader.sourceObject respondsToSelector:@selector(recordID)] &&
+        [objectLoader.sourceObject performSelector:@selector(recordID)] != nil;
     
     if (jsonParsingError || authFailure) {
         [self stop];
         if ([self.delegate respondsToSelector:@selector(syncQueueAuthRequired)]) {
             [self.delegate performSelector:@selector(syncQueueAuthRequired)];
         }
+    } else if (recordDeletedFromServer) {
+        // if it was in the sync queue there were local changes, so post it again
+        INatModel *record = (INatModel *)objectLoader.sourceObject;
+        [record setSyncedAt:nil];
+        [record setRecordID:nil];
+        [record save];
     } else if ([self.delegate respondsToSelector:@selector(syncQueue:objectLoader:didFailWithError:)]) {
         NSMethodSignature *sig = [[self.delegate class]
                                   instanceMethodSignatureForSelector:@selector(syncQueue:objectLoader:didFailWithError:)];
@@ -203,10 +213,15 @@
     
     // even if it was an error the object was still handled, so update the 
     // counter and move the queue forward if necessary
+    [self next];
+}
+
+- (void)next
+{
     NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
     NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
-    [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1] 
+    [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1]
                forKey:@"syncedCount"];
     if (self.isRunning && [[current objectForKey:@"syncedCount"] intValue] >= needingSyncCount.intValue) {
         [self start];

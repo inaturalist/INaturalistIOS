@@ -46,6 +46,7 @@
  */
 - (void)addModel:(id)model syncSelector:(SEL)syncSelector;
 - (void)start;
+- (void)next;
 - (void)startDelete;
 - (void)stop;
 - (void)finish;
