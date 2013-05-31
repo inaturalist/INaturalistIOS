@@ -184,7 +184,7 @@ static const int TaxonDescTag = 1;
         UILabel *title = (UILabel *)[cell viewWithTag:1];
 //        UILabel *subtitle = (UILabel *)[cell viewWithTag:2];
         if (self.taxon.conservationStatusName) {
-            title.text = self.taxon.conservationStatusName.humanize;
+            title.text = NSLocalizedString(self.taxon.conservationStatusName.humanize, nil);
             if ([self.taxon.conservationStatusName isEqualToString:@"vulnerable"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"endangered"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"critically_endangered"]) {
