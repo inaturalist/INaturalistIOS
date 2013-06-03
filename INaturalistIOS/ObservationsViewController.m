@@ -354,6 +354,7 @@ static const int ObservationCellLowerRightTag = 4;
         [self.observations removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         [o destroy];
+        [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
         if (!self.isEditing) {
             [self checkSyncStatus];
         }
