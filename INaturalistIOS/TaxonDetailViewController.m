@@ -227,15 +227,17 @@ static const int TaxonDescTag = 1;
     NSString *wikipediaTitle = self.taxon.wikipediaTitle;
     NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
     NSString *url;
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
-        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile", INatBaseURL, self.taxon.recordID.intValue];
+        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatBaseURL, self.taxon.recordID.intValue, language, countryCode];
     } else if (buttonIndex == 1) {
         url = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
     } else if (buttonIndex == 2) {
         if (!wikipediaTitle) {
             wikipediaTitle = escapedName;
         }
-        url = [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", wikipediaTitle];
+        url = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
     } else {
         return;
     }
