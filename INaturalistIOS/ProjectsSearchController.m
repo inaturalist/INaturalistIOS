@@ -21,7 +21,9 @@ static NSString *CellIdentifier = @"ProjectCell";
     self = [super initWithSearchDisplayController:searchDisplayController];
     if (self) {
         self.model = Project.class;
-        self.searchURL = @"/projects/search?q=%@";
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        self.searchURL = [NSString stringWithFormat:@"/projects/search?locale=%@-%@&q=%%@", language, countryCode];
     }
     return self;
 }

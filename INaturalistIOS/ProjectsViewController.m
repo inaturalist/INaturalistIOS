@@ -158,7 +158,10 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncFeaturedProjects
 {
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/projects.json?featured=true"
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *url = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                  objectMapping:[Project mapping] 
                                                       delegate:self];
     self.featuredProjectsSyncedAt = [NSDate date];
@@ -177,9 +180,14 @@ static const int ListControlIndexNearby = 2;
         [self stopSync];
         return;
     }
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f", 
-                                                                self.lastLocation.coordinate.latitude, 
-                                                                self.lastLocation.coordinate.longitude]
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *url =[NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
+                    self.lastLocation.coordinate.latitude,
+                    self.lastLocation.coordinate.longitude,
+                    language,
+                    countryCode];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                  objectMapping:[Project mapping] 
                                                       delegate:self];
 }
@@ -188,9 +196,15 @@ static const int ListControlIndexNearby = 2;
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                    username,
+                    language,
+                    countryCode];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/projects/user/%@.json", username]
-                                                     objectMapping:[ProjectUser mapping] 
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+                                                     objectMapping:[ProjectUser mapping]
                                                           delegate:self];
     } else {
         [self stopSync];

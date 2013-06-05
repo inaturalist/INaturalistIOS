@@ -128,7 +128,7 @@ static const int LeaveProjectAlertViewTag = 1;
     if (self.project && self.project.desc && self.project.desc.length != 0) {
         return [self.project.desc stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
     } else {
-        return @"No description.";
+        return NSLocalizedString(@"No description.", nil);
     }
 }
 
@@ -137,7 +137,7 @@ static const int LeaveProjectAlertViewTag = 1;
     if (self.project && self.project.terms && self.project.terms.length != 0) {
         return [self.project.terms stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
     } else {
-        return @"No terms.";
+        return NSLocalizedString(@"No terms.", nil);
     }
 }
 
@@ -284,11 +284,11 @@ static const int LeaveProjectAlertViewTag = 1;
             if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
                 termsString = [NSMutableString stringWithString:@"<div><ul>"];
                 for (NSString *term in terms) {
-                    [termsString appendString:[NSString stringWithFormat:@"<li>- %@</li>", term]];
+                    [termsString appendString:[NSString stringWithFormat:@"\n<li>- %@</li>", term]];
                 }
                 [termsString appendString:@"</ul></div>"];
             } else {
-                termsString = [NSMutableString stringWithString:@"<div>No observation rules.</div>"];
+                termsString = [NSMutableString stringWithFormat:@"<div>%@.</div>", NSLocalizedString(@"No observation rules", nil)];
             }
             rowContent.text = [TTStyledText textFromXHTML:termsString
                                                lineBreaks:YES
