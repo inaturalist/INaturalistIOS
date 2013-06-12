@@ -23,8 +23,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self updateCrossHair];
-    [self updateAccuracyCircle];
     [self.navigationController setToolbarHidden:NO];
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -61,9 +59,14 @@
         [self updateCrossHair];
         [self updateAccuracyCircle];
     } else {
-        MKCoordinateRegion region = MKCoordinateRegionMake(self.mapView.centerCoordinate, MKCoordinateSpanMake(180, 360));
+        MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
+        self.currentLocation = [[INatLocation alloc] initWithLatitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude]
+                                                            longitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.longitude]
+                                                             accuracy:nil];
     }
+    [self updateCrossHair];
+    [self updateAccuracyCircle];
 }
 
 - (void)viewDidUnload {
@@ -78,16 +81,6 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (INatLocation *)currentLocation
-{
-    if (!_currentLocation) {
-        _currentLocation = [[INatLocation alloc] initWithLatitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude]
-                                                        longitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.longitude]
-                                                         accuracy:nil];
-    }
-    return _currentLocation;
 }
 
 - (void)setCurrentLocation:(INatLocation *)currentLocation
@@ -212,13 +205,9 @@
 
 - (void)updateAccuracyCircle
 {
-    if (!self.currentLocation || !self.currentLocation.accuracy) {
-        [self.accuracyCircleView setHidden:YES];
-    } else {
-        [self.accuracyCircleView setHidden:NO];
-        self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
-        self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
-    }
+    [self.accuracyCircleView setHidden:NO];
+    self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
+    self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
