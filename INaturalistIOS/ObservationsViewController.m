@@ -237,7 +237,9 @@ static const int ObservationCellLowerRightTag = 4;
         }
     }
     if (self.observationPhotosToSyncCount > 0) {
-        [msg appendString:@", "];
+        if (self.observationsToSyncCount > 0) {
+            [msg appendString:@", "];
+        }
         if (self.observationPhotosToSyncCount == 1) {
             [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d photo",nil), self.observationPhotosToSyncCount]];
         } else {
