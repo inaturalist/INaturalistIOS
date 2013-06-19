@@ -19,9 +19,16 @@
 #ifdef DEBUG
     #define INatBaseURL @"http://localhost:3000"
     #define INatMediaBaseURL @"http://127.0.0.1:3000"
+    #define INatWebBaseURL @"http://127.0.0.1:3000"
 #else
+    // base URL for all API requests
     #define INatBaseURL @"https://www.inaturalist.org"
+
+    // base URL for all media upload API requests
     #define INatMediaBaseURL @"https://www.inaturalist.org"
+
+    // base URL for all website requests
+    #define INatWebBaseURL @"http://www.inaturalist.org"
 #endif
 
 #endif

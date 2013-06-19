@@ -230,7 +230,7 @@ static const int TaxonDescTag = 1;
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
-        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatBaseURL, self.taxon.recordID.intValue, language, countryCode];
+        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
     } else if (buttonIndex == 1) {
         url = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
     } else if (buttonIndex == 2) {

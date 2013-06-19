@@ -53,7 +53,7 @@ static const int LeaveProjectAlertViewTag = 1;
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"%@/projects/%@?locale=%@-%@",
-                    INatBaseURL, self.project.cachedSlug, language, countryCode];
+                    INatWebBaseURL, self.project.cachedSlug, language, countryCode];
     TTNavigator* navigator = [TTNavigator navigator];
     [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
 }

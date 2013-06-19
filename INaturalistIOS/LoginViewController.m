@@ -208,7 +208,7 @@
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
+                      [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
         [webController openURL:url];
         webController.delegate = self;
         [nc pushViewController:webController animated:YES];
@@ -222,7 +222,7 @@
     av = nil;
     if (buttonIndex == 0) return;
     NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"%@/users/new.mobile", INatBaseURL]];
+                  [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
     [[UIApplication sharedApplication] openURL:url];
 }
 

@@ -695,7 +695,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     if (buttonIndex == 0) {
         NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/observations/%d", INatBaseURL, [self.observation.recordID intValue]]];
+                      [NSString stringWithFormat:@"%@/observations/%d", INatWebBaseURL, [self.observation.recordID intValue]]];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
