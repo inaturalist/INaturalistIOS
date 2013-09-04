@@ -31,6 +31,9 @@
 		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
 		191B0B4A150197BC00F2508E /* current_location.png in Resources */ = {isa = PBXBuildFile; fileRef = 191B0B48150197BC00F2508E /* current_location.png */; };
 		191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 191B0B49150197BC00F2508E /* current_location@2x.png */; };
+		191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C6917D3F5660086DBEB /* GuidesViewController.m */; };
+		191C5C8417D3FACC0086DBEB /* Guide.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8317D3FACC0086DBEB /* Guide.m */; };
+		191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8617D3FF650086DBEB /* GuidesSearchController.m */; };
 		191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CC16014A6700C1F5DE /* ObservationField.m */; };
 		191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */; };
 		191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4D21601501A00C1F5DE /* ProjectObservationField.m */; };
@@ -57,6 +60,10 @@
 		19530672150592DC004951D8 /* iconic_taxon_protozoa.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530665150592DB004951D8 /* iconic_taxon_protozoa.png */; };
 		19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530666150592DB004951D8 /* iconic_taxon_reptilia.png */; };
 		19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530667150592DB004951D8 /* iconic_taxon_unknown.png */; };
+		19542F4217D65CB800B7CEE5 /* guides-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */; };
+		19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4117D65CB800B7CEE5 /* guides-tab.png */; };
+		19542F4A17D6624900B7CEE5 /* guides.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4817D6624900B7CEE5 /* guides.png */; };
+		19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4917D6624900B7CEE5 /* guides@2x.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
 		195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
 		195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
@@ -447,6 +454,13 @@
 		191B0B341500A8D900F2508E /* EditLocationAnnoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationAnnoView.m; sourceTree = "<group>"; };
 		191B0B48150197BC00F2508E /* current_location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = current_location.png; sourceTree = "<group>"; };
 		191B0B49150197BC00F2508E /* current_location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "current_location@2x.png"; sourceTree = "<group>"; };
+		191C5C6817D3F5660086DBEB /* GuidesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidesViewController.h; sourceTree = "<group>"; };
+		191C5C6917D3F5660086DBEB /* GuidesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidesViewController.m; sourceTree = "<group>"; };
+		191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.3.xcdatamodel; sourceTree = "<group>"; };
+		191C5C8217D3FACC0086DBEB /* Guide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Guide.h; sourceTree = "<group>"; };
+		191C5C8317D3FACC0086DBEB /* Guide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Guide.m; sourceTree = "<group>"; };
+		191C5C8517D3FF650086DBEB /* GuidesSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidesSearchController.h; sourceTree = "<group>"; };
+		191C5C8617D3FF650086DBEB /* GuidesSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidesSearchController.m; sourceTree = "<group>"; };
 		191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.2.xcdatamodel; sourceTree = "<group>"; };
 		191FB4CB16014A6700C1F5DE /* ObservationField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationField.h; sourceTree = "<group>"; };
 		191FB4CC16014A6700C1F5DE /* ObservationField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationField.m; sourceTree = "<group>"; };
@@ -482,6 +496,10 @@
 		19530665150592DB004951D8 /* iconic_taxon_protozoa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_protozoa.png; sourceTree = "<group>"; };
 		19530666150592DB004951D8 /* iconic_taxon_reptilia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_reptilia.png; sourceTree = "<group>"; };
 		19530667150592DB004951D8 /* iconic_taxon_unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_unknown.png; sourceTree = "<group>"; };
+		19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab@2x.png"; sourceTree = "<group>"; };
+		19542F4117D65CB800B7CEE5 /* guides-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab.png"; sourceTree = "<group>"; };
+		19542F4817D6624900B7CEE5 /* guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guides.png; sourceTree = "<group>"; };
+		19542F4917D6624900B7CEE5 /* guides@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides@2x.png"; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
 		195F3247151A8AB60019CB85 /* Taxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Taxon.m; sourceTree = "<group>"; };
@@ -915,6 +933,10 @@
 				60E5B40516E9888100253A5C /* Default@2x.png */,
 				60E5B40A16E9889100253A5C /* Default-568h@2x.png */,
 				60A0E24616FCBE54003621FA /* FacebookIcon.png */,
+				19542F4817D6624900B7CEE5 /* guides.png */,
+				19542F4917D6624900B7CEE5 /* guides@2x.png */,
+				19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */,
+				19542F4117D65CB800B7CEE5 /* guides-tab.png */,
 				60A0E24216FC0B23003621FA /* GoogleIcon.png */,
 				1912DA9215059C0E005555B8 /* glyphish */,
 				60A0E24816FD06C1003621FA /* tutorial1en.png */,
@@ -1098,6 +1120,8 @@
 			children = (
 				190687C5151BF71F00D5B6E4 /* DeletedRecord.h */,
 				190687C6151BF71F00D5B6E4 /* DeletedRecord.m */,
+				191C5C8217D3FACC0086DBEB /* Guide.h */,
+				191C5C8317D3FACC0086DBEB /* Guide.m */,
 				1902812614F315F2005AC8D2 /* INatModel.h */,
 				1902812714F315F2005AC8D2 /* INatModel.m */,
 				19F62191150ECBEE00C58F28 /* List.h */,
@@ -1157,8 +1181,12 @@
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
 				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
 				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
+				191C5C8517D3FF650086DBEB /* GuidesSearchController.h */,
+				191C5C8617D3FF650086DBEB /* GuidesSearchController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
+				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
+				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
 				19F87491152670B000A65F9A /* RecordSearchController.h */,
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
@@ -1698,6 +1726,10 @@
 				60A0E25916FD090B003621FA /* tutorial4es.png in Resources */,
 				60A0E25A16FD090B003621FA /* tutorial5en.png in Resources */,
 				60A0E25B16FD090B003621FA /* tutorial5es.png in Resources */,
+				19542F4217D65CB800B7CEE5 /* guides-tab@2x.png in Resources */,
+				19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */,
+				19542F4A17D6624900B7CEE5 /* guides.png in Resources */,
+				19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1807,6 +1839,9 @@
 				6098FDA316F3F6890053987E /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				6098FDA516F3F6890053987E /* GTMObjC2Runtime.m in Sources */,
 				6098FDA616F3F6890053987E /* OpenInChromeController.m in Sources */,
+				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
+				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
+				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2035,11 +2070,12 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */,
 				190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */,
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = 191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */;
+			currentVersion = 191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

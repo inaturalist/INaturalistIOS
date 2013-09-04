@@ -4,6 +4,23 @@
         <attribute name="modelName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
+    <entity name="Guide" representedClassName="Guide" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localUpdatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taxonID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userLogin" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="taxon" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Taxon" inverseName="guides" inverseEntity="Taxon" syncable="YES"/>
+    </entity>
     <entity name="List" representedClassName="List" syncable="YES">
         <attribute name="comprehensive" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -222,6 +239,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="wikipediaSummary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wikipediaTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="guides" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Guide" inverseName="taxon" inverseEntity="Guide" syncable="YES"/>
         <relationship name="listedTaxa" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ListedTaxon" inverseName="taxon" inverseEntity="ListedTaxon" syncable="YES"/>
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Observation" inverseName="taxon" inverseEntity="Observation" syncable="YES"/>
         <relationship name="taxonPhotos" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TaxonPhoto" inverseName="taxon" inverseEntity="TaxonPhoto" syncable="YES"/>
@@ -250,6 +268,7 @@
     </entity>
     <elements>
         <element name="DeletedRecord" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="Guide" positionX="160" positionY="192" width="128" height="270"/>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="540"/>
@@ -260,7 +279,7 @@
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ProjectObservationField" positionX="160" positionY="192" width="128" height="225"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="225"/>
-        <element name="Taxon" positionX="160" positionY="192" width="128" height="435"/>
+        <element name="Taxon" positionX="160" positionY="192" width="128" height="450"/>
         <element name="TaxonPhoto" positionX="160" positionY="192" width="128" height="345"/>
     </elements>
 </model>
