@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -312,7 +312,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdD-iS-mtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="774" y="419"/>
+            <point key="canvasLocation" x="698" y="419"/>
         </scene>
         <!--Navigation Controller - Observations-->
         <scene sceneID="Q6O-Cb-vaZ">
@@ -820,6 +820,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <outlet property="searchDisplayController" destination="F7h-xq-WDc" id="e75-JW-bGs"/>
                         <outlet property="syncButton" destination="zV4-vn-5vJ" id="LGC-ls-oLV"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="IDb-ci-Uhl"/>
+                        <segue destination="2LB-6A-M1H" kind="push" identifier="GuideDetailSegue" id="nsA-hV-0u2"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lFF-Jk-Ag5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -833,7 +834,132 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-290" y="3200"/>
+            <point key="canvasLocation" x="-292" y="3832"/>
+        </scene>
+        <!--Guide Detail View Controller - Guide Title-->
+        <scene sceneID="Dqk-6u-5Pp">
+            <objects>
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="2LB-6A-M1H" customClass="GuideDetailViewController" sceneMemberID="viewController">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="emC-j4-824">
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="AlV-UU-EBL">
+                            <size key="itemSize" width="100" height="100"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="5"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GuideTaxonCell" id="vBY-Se-PTP">
+                                <rect key="frame" x="5" y="5" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view tag="100" contentMode="scaleToFill" id="88M-Tk-DhX" customClass="TTImageView">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="2LB-6A-M1H" id="dvY-zm-5HB"/>
+                            <outlet property="delegate" destination="2LB-6A-M1H" id="kN5-Jg-ab0"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Guide Title" id="cTI-n2-vmb"/>
+                    <connections>
+                        <segue destination="oEW-05-bkp" kind="modal" identifier="GuideInfoSegue" id="zuU-8P-3X4"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9Un-PQ-txa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="3764"/>
+        </scene>
+        <!--Table View Controller - Guide Info-->
+        <scene sceneID="h6N-9G-XeZ">
+            <objects>
+                <tableViewController id="Egd-Yq-X6g" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="5Lb-we-Mem">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="jN1-dH-MEO">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" id="rqM-1F-oHY" customClass="TTImageView">
+                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                </view>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Guide title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Z8t-ni-f9A">
+                                    <rect key="frame" x="83" y="0.0" width="227" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        </view>
+                        <sections>
+                            <tableViewSection headerTitle="Description" id="ApF-NM-sAI">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="TCS-g8-CRY">
+                                        <rect key="frame" x="0.0" y="92" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="License" id="XGT-fB-beI">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="CVT-We-zSJ">
+                                        <rect key="frame" x="0.0" y="158" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Guide Info" id="9Hg-VJ-NgT">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="mbU-FR-Fwk"/>
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="D5v-w5-jyE"/>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Po6-rE-lNA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1538" y="3764"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="aJB-lL-cfy">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="oEW-05-bkp" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="mdH-fI-ZHD">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Egd-Yq-X6g" kind="relationship" relationship="rootViewController" id="3C1-DI-A9N"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yrM-sZ-7cM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1004" y="3764"/>
         </scene>
         <!--Navigation Controller - Guides-->
         <scene sceneID="C9d-bu-RZU">
@@ -856,7 +982,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o8R-bn-tpg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-822" y="3200"/>
+            <point key="canvasLocation" x="-824" y="3832"/>
         </scene>
         <!--Project List View Controller - Project-->
         <scene sceneID="nrG-r2-jeJ">
@@ -1012,7 +1138,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y5P-nk-vUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="424" y="2496"/>
+            <point key="canvasLocation" x="480" y="2496"/>
         </scene>
         <!--Taxon Detail View Controller - Taxon-->
         <scene sceneID="PP3-HD-gqT">
@@ -1161,7 +1287,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pjz-Rg-LO0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1082" y="2496"/>
+            <point key="canvasLocation" x="1090" y="2160"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Sxu-2D-qPj">
@@ -1183,7 +1309,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c67-ae-NL2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="256" y="-209"/>
+            <point key="canvasLocation" x="256" y="-297"/>
         </scene>
         <!--Taxa Search View Controller - Search species-->
         <scene sceneID="I5Z-zr-hIl">
@@ -1229,7 +1355,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="698" y="-209"/>
+            <point key="canvasLocation" x="698" y="-297"/>
         </scene>
         <!--Map Type View Controller-->
         <scene sceneID="aIU-HC-7Q0">
@@ -1457,7 +1583,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bqE-Eu-ph3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1323" y="-157"/>
+            <point key="canvasLocation" x="1323" y="-297"/>
         </scene>
         <!--Project Chooser View Controller - Choose projects-->
         <scene sceneID="R9u-gg-yJG">
@@ -1513,7 +1639,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P33-Yu-EhD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1751" y="-157"/>
+            <point key="canvasLocation" x="1751" y="-297"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="FJe-lg-0bS">
@@ -1603,7 +1729,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LKE-w0-yP5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="594" y="3304"/>
+            <point key="canvasLocation" x="1082" y="2940"/>
         </scene>
         <!--Project Detail View Controller - Project Details-->
         <scene sceneID="RFm-v0-efa">
@@ -1752,7 +1878,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8ae-eE-fs7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1323" y="3114"/>
+            <point key="canvasLocation" x="1543" y="2940"/>
         </scene>
         <!--Navigation Controller - Projects-->
         <scene sceneID="7Ly-o9-srR">
@@ -1793,10 +1919,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="IDb-ci-Uhl"/>
-        <segue reference="nqN-gg-ATR"/>
-        <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="Qwd-7p-HHF"/>
+        <segue reference="m7M-nd-sFM"/>
+        <segue reference="9nq-dq-fjy"/>
     </inferredMetricsTieBreakers>
 </document>

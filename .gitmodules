@@ -19,3 +19,6 @@
 [submodule "Vendor/OAuth2Client"]
 	path = Vendor/OAuth2Client
 	url = git://github.com/nxtbgthng/OAuth2Client.git
+[submodule "Vendor/RaptureXML"]
+	path = Vendor/RaptureXML
+	url = https://github.com/ZaBlanc/RaptureXML.git

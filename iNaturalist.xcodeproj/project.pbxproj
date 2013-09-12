@@ -75,6 +75,7 @@
 		195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3255151AE5C40019CB85 /* 103-map@2x.png */; };
 		195F325A151AE6140019CB85 /* 298-circlex.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3258151AE6140019CB85 /* 298-circlex.png */; };
 		195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 195F3259151AE6140019CB85 /* 298-circlex@2x.png */; };
+		1963DF6517D7E8830073DC68 /* GuideDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1963DF6417D7E8830073DC68 /* GuideDetailViewController.m */; };
 		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
 		19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DEB150835A5003BF888 /* ObservationAnnotation.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
@@ -133,6 +134,8 @@
 		19E4CC23162407CE00694E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC00162407CE00694E5D /* README.md */; };
 		19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */; };
 		19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */; };
+		19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F3AC7517E138A9005706E8 /* libz.dylib */; };
+		19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F3AC7917E13946005706E8 /* RXMLElement.m */; };
 		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
 		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
 		19F62190150ECA8300C58F28 /* projects-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218E150ECA8300C58F28 /* projects-tab.png */; };
@@ -513,6 +516,8 @@
 		195F3255151AE5C40019CB85 /* 103-map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "103-map@2x.png"; sourceTree = "<group>"; };
 		195F3258151AE6140019CB85 /* 298-circlex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "298-circlex.png"; sourceTree = "<group>"; };
 		195F3259151AE6140019CB85 /* 298-circlex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "298-circlex@2x.png"; sourceTree = "<group>"; };
+		1963DF6317D7E8830073DC68 /* GuideDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideDetailViewController.h; sourceTree = "<group>"; };
+		1963DF6417D7E8830073DC68 /* GuideDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideDetailViewController.m; sourceTree = "<group>"; };
 		19640DE41508100A003BF888 /* MapTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTypeViewController.h; sourceTree = "<group>"; };
 		19640DE51508100A003BF888 /* MapTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTypeViewController.m; sourceTree = "<group>"; };
 		19640DEA150835A5003BF888 /* ObservationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAnnotation.h; sourceTree = "<group>"; };
@@ -598,6 +603,9 @@
 		19E4CC00162407CE00694E5D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ObservationFieldValueStaticCell.xib; sourceTree = "<group>"; };
 		19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ObservationFieldValueDefaultCell.xib; sourceTree = "<group>"; };
+		19F3AC7517E138A9005706E8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		19F3AC7817E13946005706E8 /* RXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXMLElement.h; sourceTree = "<group>"; };
+		19F3AC7917E13946005706E8 /* RXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RXMLElement.m; sourceTree = "<group>"; };
 		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
 		19F62187150EC6B700C58F28 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
 		19F6218D150ECA8300C58F28 /* projects-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab@2x.png"; sourceTree = "<group>"; };
@@ -763,6 +771,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */,
 				60A0E22916F7D1E3003621FA /* libOAuth2Client.a in Frameworks */,
 				6098FD1916F3BE690053987E /* Social.framework in Frameworks */,
 				6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */,
@@ -863,6 +872,7 @@
 				19A5F60814FB289B00757636 /* CoreLocation.framework */,
 				CAF65CB214F5CAC9003D63BB /* MapKit.framework */,
 				198551FD14EC93B900DB55C5 /* libxml2.dylib */,
+				19F3AC7517E138A9005706E8 /* libz.dylib */,
 				193BD56F14F41FEA005209CA /* MapKit.framework */,
 				198551F314EC938700DB55C5 /* CFNetwork.framework */,
 				198551F514EC939100DB55C5 /* CoreData.framework */,
@@ -1018,6 +1028,7 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				19F3AC7717E13946005706E8 /* RaptureXML */,
 				60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */,
 				6098FD1A16F3F6880053987E /* googleplus */,
 				19E4CBED162407CE00694E5D /* ActionSheetPicker */,
@@ -1115,6 +1126,16 @@
 			path = Pickers;
 			sourceTree = "<group>";
 		};
+		19F3AC7717E13946005706E8 /* RaptureXML */ = {
+			isa = PBXGroup;
+			children = (
+				19F3AC7817E13946005706E8 /* RXMLElement.h */,
+				19F3AC7917E13946005706E8 /* RXMLElement.m */,
+			);
+			name = RaptureXML;
+			path = Vendor/RaptureXML/RaptureXML;
+			sourceTree = "<group>";
+		};
 		19F621A1150ECD0100C58F28 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,6 +1178,12 @@
 			children = (
 				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
 				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
+				1963DF6317D7E8830073DC68 /* GuideDetailViewController.h */,
+				1963DF6417D7E8830073DC68 /* GuideDetailViewController.m */,
+				191C5C8517D3FF650086DBEB /* GuidesSearchController.h */,
+				191C5C8617D3FF650086DBEB /* GuidesSearchController.m */,
+				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
+				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
 				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
 				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
 				19F874821522E58E00A65F9A /* INatWebController.h */,
@@ -1181,12 +1208,8 @@
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
 				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
 				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
-				191C5C8517D3FF650086DBEB /* GuidesSearchController.h */,
-				191C5C8617D3FF650086DBEB /* GuidesSearchController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
-				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
-				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
 				19F87491152670B000A65F9A /* RecordSearchController.h */,
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
@@ -1842,6 +1865,8 @@
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
+				1963DF6517D7E8830073DC68 /* GuideDetailViewController.m in Sources */,
+				19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1990,6 +2015,7 @@
 					"\"$(BUILT_PRODUCTS_DIR)/../three20\"",
 					"\"$(BUILT_PRODUCTS_DIR)/../../three20\"",
 					"$(SRCROOT)/Vendor/OAuth2Client/**",
+					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -2024,6 +2050,7 @@
 					"\"$(BUILT_PRODUCTS_DIR)/../three20\"",
 					"\"$(BUILT_PRODUCTS_DIR)/../../three20\"",
 					"$(SRCROOT)/Vendor/OAuth2Client/**",
+					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (

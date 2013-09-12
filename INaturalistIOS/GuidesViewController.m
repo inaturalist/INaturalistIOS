@@ -9,6 +9,7 @@
 #import <Three20/Three20.h>
 #import "GuidesViewController.h"
 #import "Guide.h"
+#import "GuideDetailViewController.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -67,7 +68,6 @@ static const int ListControlIndexNearby = 2;
 
 - (void)loadUserGuides
 {
-    NSLog(@"loading user guides");
 //    NSArray *guideUsers = [GuideUser.all sortedArrayUsingComparator:^NSComparisonResult(GuideUser *obj1, GuideUser *obj2) {
 //        return [obj1.guide.title.lowercaseString compare:obj2.guide.title.lowercaseString];
 //    }];
@@ -117,7 +117,7 @@ static const int ListControlIndexNearby = 2;
         [av show];
         return;
     }
-    [self sync];
+    [self sync:YES];
 }
 
 - (void)checkEmpty
@@ -153,13 +153,18 @@ static const int ListControlIndexNearby = 2;
 
 - (void)sync
 {
+    [self sync:NO];
+}
+
+- (void)sync:(BOOL)explicit
+{
     self.navigationItem.rightBarButtonItem = self.syncActivityItem;
     switch (self.listControl.selectedSegmentIndex) {
         case ListControlIndexAll:
             [self syncAllGuides];
             break;
         case ListControlIndexNearby:
-            [self syncNearbyGuides];
+            [self syncNearbyGuides:explicit];
             break;
         default:
             [self syncUserGuides];
@@ -182,17 +187,24 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncNearbyGuides
 {
-    self.nearbyGuidesSyncedAt = [NSDate date];
+    [self syncNearbyGuides:NO];
+}
+
+- (void)syncNearbyGuides:(BOOL)explicit
+{
     if (!self.lastLocation) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
-                                                     message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        if (explicit) {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
+                                                         message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
+                                                        delegate:self
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                               otherButtonTitles:nil];
+            [av show];
+        }
         [self stopSync];
         return;
     }
+    self.nearbyGuidesSyncedAt = [NSDate date];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/guides.json?latitude=%f&longitude=%f&locale=%@-%@",
@@ -200,7 +212,6 @@ static const int ListControlIndexNearby = 2;
                     self.lastLocation.coordinate.longitude,
                     language,
                     countryCode];
-    NSLog(@"loading guides at %@", url);
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                  objectMapping:[Guide mapping]
                                                       delegate:self];
@@ -273,15 +284,15 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
-//        GuideDetailViewController *vc = [segue destinationViewController];
-//        if ([sender isKindOfClass:Guide.class]) {
-//            [vc setGuide:sender];
-//        } else {
-//            Guide *p = [self.guides
-//                          objectAtIndex:[[self.tableView
-//                                          indexPathForSelectedRow] row]];
-//            [vc setGuide:p];
-//        }
+        GuideDetailViewController *vc = [segue destinationViewController];
+        if ([sender isKindOfClass:Guide.class]) {
+            [vc setGuide:sender];
+        } else {
+            Guide *p = [self.guides
+                          objectAtIndex:[[self.tableView
+                                          indexPathForSelectedRow] row]];
+            [vc setGuide:p];
+        }
     } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         vc.delegate = self;
@@ -375,7 +386,6 @@ static const int ListControlIndexNearby = 2;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         Guide *g = (Guide *)o;
-        NSLog(@"g.latitude: %@", g.latitude);
         [o setSyncedAt:now];
     }
     
@@ -439,6 +449,9 @@ static const int ListControlIndexNearby = 2;
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     self.lastLocation = newLocation;
+    if (!self.nearbyGuidesSyncedAt) {
+        [self syncNearbyGuides];
+    }
 }
 
 - (void)viewDidUnload {
