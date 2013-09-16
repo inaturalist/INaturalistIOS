@@ -21,10 +21,12 @@
 @property (nonatomic, strong) NSString *guideXMLPath;
 @property (nonatomic, strong) RXMLElement *xml;
 @property (nonatomic) CGFloat scale;
+@property (nonatomic, strong) NSString *sort;
 
 - (void)loadXML:(NSString *)path;
 - (void)downloadXML:(NSString *)url;
 - (void)downloadNGZ:(NSString *)url;
+- (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @interface XMLDownloadDelegate : NSObject <NSURLConnectionDelegate>

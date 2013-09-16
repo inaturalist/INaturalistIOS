@@ -20,6 +20,7 @@
 @synthesize guideXMLPath = _guideXMLPath;
 @synthesize xml = _xml;
 @synthesize scale = _scale;
+@synthesize sort = _sort;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -74,7 +75,6 @@
     if (modalActivityView) {
         [[modalActivityView activityLabel] setText:activityMsg];
     } else {
-        self.collectionView.scrollEnabled = NO;
         modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
                                                              withLabel:activityMsg];
     }
@@ -121,20 +121,44 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     TTImageView *img = (TTImageView *)[cell viewWithTag:100];
     [img unsetImage];
-    RXMLElement *gt = [[self.xml childrenWithRootXPath:@"//GuideTaxon"] objectAtIndex:indexPath.row];
-    RXMLElement *localHref = [[gt childrenWithRootXPath:
-                          [NSString stringWithFormat:@"(//GuidePhoto[1]/href[@type='local' and @size='medium'])[%d]", indexPath.row + 1]] objectAtIndex:0];
-    NSString *imgPath = [self.guideDirPath stringByAppendingPathComponent:[localHref text]];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
-        [img setDefaultImage:[UIImage imageWithContentsOfFile:imgPath]];
-    } else {
-        [img setDefaultImage:[UIImage imageNamed:@"guides.png"]];
-        RXMLElement *remoteHref = [[gt childrenWithRootXPath:
-                                   [NSString stringWithFormat:@"(//GuidePhoto[1]/href[@type='remote' and @size='medium'])[%d]", indexPath.row + 1]] objectAtIndex:0];
-        img.urlPath = [remoteHref text];
-        img.contentMode = UIViewContentModeScaleAspectFill;
+    img.urlPath = nil;
+    [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
+    img.contentMode = UIViewContentModeCenter;
+    NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
+    NSArray *localHrefs = [self.xml childrenWithRootXPath:
+                           [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='local' and @size='medium']", gtPosition]];
+    BOOL imgSet = false;
+    if (localHrefs.count > 0) {
+        RXMLElement *localHref = [localHrefs objectAtIndex:0];
+        NSString *imgPath = [self.guideDirPath stringByAppendingPathComponent:[localHref text]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
+            [img setDefaultImage:[UIImage imageWithContentsOfFile:imgPath]];
+            imgSet = true;
+            img.contentMode = UIViewContentModeScaleAspectFill;
+        }
+    }
+
+    if (!imgSet) {
+        NSString *xpath = [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='remote' and @size='medium']", gtPosition];
+        NSArray *remoteHrefs = [self.xml childrenWithRootXPath:xpath];
+        if (remoteHrefs.count > 0) {
+            RXMLElement *remoteHref = [remoteHrefs objectAtIndex:0];
+            img.urlPath = [remoteHref text];
+            img.contentMode = UIViewContentModeScaleAspectFill;
+            imgSet = true;
+        }
     }
     return cell;
+}
+
+- (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.sort) {
+        // TODO load guideTaxa into an array, sort by the current sort, return physical position of matching GuideTaxon element
+        return indexPath.row + 1;
+    } else {
+        return indexPath.row + 1;
+    }
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout
