@@ -7,6 +7,8 @@
 //
 
 #import "GuideDetailViewController.h"
+#import "GuideTaxonViewController.h"
+#import "RXMLElement+Helpers.h"
 #import <Three20/Three20.h>
 
 @interface GuideDetailViewController ()
@@ -35,7 +37,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [self.navigationController setToolbarHidden:YES];
     self.title = self.guide.title;
     
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -56,11 +57,16 @@
         NSString *guideXMLURL = [NSString stringWithFormat:@"%@/guides/%@.xml", INatBaseURL, self.guide.recordID];
         [self downloadXML:guideXMLURL];
     }
-    
+
     self.scale = 1.0;
     UIPinchGestureRecognizer *gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(didReceivePinchGesture:)];
     [self.collectionView addGestureRecognizer:gesture];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:YES animated:animated];
 }
 
 - (void)loadXML:(NSString *)path
@@ -125,11 +131,10 @@
     [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
     img.contentMode = UIViewContentModeCenter;
     NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
-    NSArray *localHrefs = [self.xml childrenWithRootXPath:
-                           [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='local' and @size='medium']", gtPosition]];
+    RXMLElement *localHref = [self.xml atXPath:
+                           [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='local' and @size='small']", gtPosition]];
     BOOL imgSet = false;
-    if (localHrefs.count > 0) {
-        RXMLElement *localHref = [localHrefs objectAtIndex:0];
+    if (localHref) {
         NSString *imgPath = [self.guideDirPath stringByAppendingPathComponent:[localHref text]];
         if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
             [img setDefaultImage:[UIImage imageWithContentsOfFile:imgPath]];
@@ -139,16 +144,20 @@
     }
 
     if (!imgSet) {
-        NSString *xpath = [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='remote' and @size='medium']", gtPosition];
-        NSArray *remoteHrefs = [self.xml childrenWithRootXPath:xpath];
-        if (remoteHrefs.count > 0) {
-            RXMLElement *remoteHref = [remoteHrefs objectAtIndex:0];
+        NSString *xpath = [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='remote' and @size='small']", gtPosition];
+        RXMLElement *remoteHref = [self.xml atXPath:xpath];
+        if (remoteHref) {
             img.urlPath = [remoteHref text];
             img.contentMode = UIViewContentModeScaleAspectFill;
             imgSet = true;
         }
     }
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self performSegueWithIdentifier:@"GuideTaxonSegue" sender:self];
 }
 
 - (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath
@@ -158,6 +167,19 @@
         return indexPath.row + 1;
     } else {
         return indexPath.row + 1;
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"GuideTaxonSegue"]) {
+        GuideTaxonViewController *vc = [segue destinationViewController];
+        NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
+        RXMLElement *gt = [self.xml atXPath:
+                           [NSString stringWithFormat:@"//GuideTaxon[%d]", gtPosition]];
+        if (gt) {
+            vc.xmlString = gt.xmlString;
+        }
     }
 }
 

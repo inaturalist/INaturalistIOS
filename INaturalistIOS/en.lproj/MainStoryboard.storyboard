@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -875,11 +875,44 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <navigationItem key="navigationItem" title="Guide Title" id="cTI-n2-vmb"/>
                     <connections>
                         <segue destination="oEW-05-bkp" kind="modal" identifier="GuideInfoSegue" id="zuU-8P-3X4"/>
+                        <segue destination="zk1-NX-zZ7" kind="push" identifier="GuideTaxonSegue" id="Agu-vx-4wr"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Un-PQ-txa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="516" y="3764"/>
+            <point key="canvasLocation" x="497" y="3742"/>
+        </scene>
+        <!--Guide Taxon View Controller - GuideTaxon-->
+        <scene sceneID="ow7-ce-Fy1">
+            <objects>
+                <viewController id="zk1-NX-zZ7" customClass="GuideTaxonViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ytH-xx-M8U">
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <webView tag="1" contentMode="scaleToFill" id="OnP-3c-EVT">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="455"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="GuideTaxon" id="SaM-EA-Ovq">
+                        <barButtonItem key="rightBarButtonItem" title="Observe" id="GKo-Sv-g5X">
+                            <connections>
+                                <action selector="clickedObserve:" destination="zk1-NX-zZ7" id="J0S-Ll-XO1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="webView" destination="OnP-3c-EVT" id="yRf-07-oNR"/>
+                        <segue destination="x2g-xK-zHb" kind="push" identifier="GuideTaxonObserveSegue" id="cuG-ho-aNz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NmU-c6-JKX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2502" y="3854"/>
         </scene>
         <!--Table View Controller - Guide Info-->
         <scene sceneID="h6N-9G-XeZ">
@@ -1919,10 +1952,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="951-R5-gTN"/>
         <segue reference="Qwd-7p-HHF"/>
         <segue reference="m7M-nd-sFM"/>
+        <segue reference="cuG-ho-aNz"/>
         <segue reference="9nq-dq-fjy"/>
+        <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>
 </document>
