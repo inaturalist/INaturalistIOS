@@ -54,7 +54,7 @@ static NSString *CellIdentifier = @"GuideCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Guide *p = [self.searchResults objectAtIndex:indexPath.row];
-    [self.searchDisplayController.searchContentsController performSegueWithIdentifier:@"GuideListSegue" sender:p];
+    [self.searchDisplayController.searchContentsController performSegueWithIdentifier:@"GuideDetailSegue" sender:p];
 }
 
 #pragma mark - UISearchDisplayControllerDelegate

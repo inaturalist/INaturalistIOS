@@ -15,6 +15,8 @@
 
 @end
 
+static const int CellLabelTag = 200;
+
 @implementation GuideDetailViewController
 @synthesize guide = _guide;
 @synthesize ngzData = _ngzData;
@@ -71,6 +73,7 @@
     self.searchBar.tintColor = [UIColor blackColor];
     self.searchBar.placeholder = NSLocalizedString(@"Search", nil);
     self.searchBar.showsCancelButton = NO;
+    [self.searchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.view addSubview:self.searchBar];
     [self.collectionView setContentOffset:CGPointMake(0, 44)];
 }
@@ -169,10 +172,24 @@
         NSString *xpath = [NSString stringWithFormat:@"(%@)[%d]/GuidePhoto[1]/href[@type='remote' and @size='small']", [self currentXPath], gtPosition];
         RXMLElement *remoteHref = [self.xml atXPath:xpath];
         if (remoteHref) {
+            [img setDefaultImage:nil];
             img.urlPath = [remoteHref text];
             img.contentMode = UIViewContentModeScaleAspectFill;
             imgSet = true;
         }
+    }
+    
+    UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
+    RXMLElement *displayNameElt = [self.xml atXPath:[NSString stringWithFormat:@"(%@)[%d]/displayName", [self currentXPath], gtPosition]];
+    RXMLElement *nameElt = [self.xml atXPath:[NSString stringWithFormat:@"(%@)[%d]/name", [self currentXPath], gtPosition]];
+    NSString *displayName = displayNameElt.text;
+    NSString *name = nameElt.text;
+    if ([displayName isEqualToString:name]) {
+        label.font = [UIFont italicSystemFontOfSize:12.0];
+        label.text = name;
+    } else {
+        label.font = [UIFont systemFontOfSize:12.0];
+        label.text = displayName;
     }
     return cell;
 }
