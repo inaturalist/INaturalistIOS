@@ -460,9 +460,9 @@
 		191B0B341500A8D900F2508E /* EditLocationAnnoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationAnnoView.m; sourceTree = "<group>"; };
 		191B0B48150197BC00F2508E /* current_location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = current_location.png; sourceTree = "<group>"; };
 		191B0B49150197BC00F2508E /* current_location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "current_location@2x.png"; sourceTree = "<group>"; };
-		191B434817E927A300AF000E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		191B434A17E927A700AF000E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		191B434C17E927AA00AF000E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		191B434817E927A300AF000E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
+		191B434A17E927A700AF000E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
+		191B434C17E927AA00AF000E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		191C5C6817D3F5660086DBEB /* GuidesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidesViewController.h; sourceTree = "<group>"; };
 		191C5C6917D3F5660086DBEB /* GuidesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidesViewController.m; sourceTree = "<group>"; };
 		191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.3.xcdatamodel; sourceTree = "<group>"; };
@@ -848,9 +848,6 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
-				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
-				191B434A17E927A700AF000E /* Default@2x.png */,
-				191B434817E927A300AF000E /* Default.png */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				198CF8E014F5B0F40064DF05 /* Vendor */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
@@ -940,6 +937,9 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
+				191B434A17E927A700AF000E /* Default@2x.png */,
+				191B434817E927A300AF000E /* Default.png */,
 				19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */,
 				19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,

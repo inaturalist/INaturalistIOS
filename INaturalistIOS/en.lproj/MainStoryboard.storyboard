@@ -843,6 +843,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="emC-j4-824">
                         <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <inset key="contentInset" minX="0.0" minY="44" maxX="0.0" maxY="0.0"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="AlV-UU-EBL">
                             <size key="itemSize" width="100" height="100"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -1952,10 +1953,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Qwd-7p-HHF"/>
-        <segue reference="m7M-nd-sFM"/>
+        <segue reference="IDb-ci-Uhl"/>
         <segue reference="cuG-ho-aNz"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="Qwd-7p-HHF"/>
     </inferredMetricsTieBreakers>
 </document>

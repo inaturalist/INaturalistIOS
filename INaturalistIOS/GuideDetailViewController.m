@@ -23,6 +23,8 @@
 @synthesize xml = _xml;
 @synthesize scale = _scale;
 @synthesize sort = _sort;
+@synthesize searchBar = _searchBar;
+@synthesize search = _search;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -62,6 +64,15 @@
     UIPinchGestureRecognizer *gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(didReceivePinchGesture:)];
     [self.collectionView addGestureRecognizer:gesture];
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.collectionView.frame), 44)];
+    self.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.searchBar.delegate = self;
+    self.searchBar.tintColor = [UIColor blackColor];
+    self.searchBar.placeholder = NSLocalizedString(@"Search", nil);
+    self.searchBar.showsCancelButton = NO;
+    [self.view addSubview:self.searchBar];
+    [self.collectionView setContentOffset:CGPointMake(0, 44)];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -112,13 +123,24 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString *)currentXPath
+{
+    NSString *xpath;
+    if (self.search && self.search.length != 0) {
+        xpath = [NSString stringWithFormat:@"//GuideTaxon/*/text()[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'%@')]/ancestor::*[self::GuideTaxon]", [self.search lowercaseString]];
+    } else {
+        xpath = @"//GuideTaxon";
+    }
+    return xpath;
+}
+
 #pragma mark UICollectionViewDelegate
  -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     if (!self.xml) {
         return 0;
     }
-    return [self.xml childrenWithRootXPath:@"//GuideTaxon"].count;
+    return [self.xml childrenWithRootXPath:[self currentXPath]].count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -132,7 +154,7 @@
     img.contentMode = UIViewContentModeCenter;
     NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
     RXMLElement *localHref = [self.xml atXPath:
-                           [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='local' and @size='small']", gtPosition]];
+                           [NSString stringWithFormat:@"%@[%d]/GuidePhoto[1]/href[@type='local' and @size='small']", [self currentXPath], gtPosition]];
     BOOL imgSet = false;
     if (localHref) {
         NSString *imgPath = [self.guideDirPath stringByAppendingPathComponent:[localHref text]];
@@ -144,7 +166,7 @@
     }
 
     if (!imgSet) {
-        NSString *xpath = [NSString stringWithFormat:@"//GuideTaxon[%d]/GuidePhoto[1]/href[@type='remote' and @size='small']", gtPosition];
+        NSString *xpath = [NSString stringWithFormat:@"(%@)[%d]/GuidePhoto[1]/href[@type='remote' and @size='small']", [self currentXPath], gtPosition];
         RXMLElement *remoteHref = [self.xml atXPath:xpath];
         if (remoteHref) {
             img.urlPath = [remoteHref text];
@@ -176,7 +198,7 @@
         GuideTaxonViewController *vc = [segue destinationViewController];
         NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
         RXMLElement *gt = [self.xml atXPath:
-                           [NSString stringWithFormat:@"//GuideTaxon[%d]", gtPosition]];
+                           [NSString stringWithFormat:@"%@[%d]", [self currentXPath], gtPosition]];
         if (gt) {
             vc.xmlString = gt.xmlString;
         }
@@ -249,6 +271,35 @@
     } else {
         _scale = scale;
     }
+}
+
+#pragma UISearchBarDelegate
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    self.search = searchText;
+    
+    // this is exessively slow, but works. A better approach might involve nstimer to wait a bit before reloading the data
+    [self.collectionView reloadData];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    self.searchBar.showsCancelButton = YES;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    self.searchBar.showsCancelButton = NO;
+    [self.navigationController setNavigationBarHidden:NO
+                                             animated:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    self.searchBar.text = nil;
+    [self searchBar:searchBar textDidChange:nil];
+    [self.searchBar endEditing:YES];
 }
 
 @end

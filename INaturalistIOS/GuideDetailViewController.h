@@ -11,7 +11,7 @@
 #import "DejalActivityView.h"
 #import "RXMLElement.h"
 
-@interface GuideDetailViewController : UICollectionViewController
+@interface GuideDetailViewController : UICollectionViewController <UISearchBarDelegate>
 {
     DejalActivityView *modalActivityView;
 }
@@ -22,6 +22,8 @@
 @property (nonatomic, strong) RXMLElement *xml;
 @property (nonatomic) CGFloat scale;
 @property (nonatomic, strong) NSString *sort;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) NSString *search;
 
 - (void)loadXML:(NSString *)path;
 - (void)downloadXML:(NSString *)url;
