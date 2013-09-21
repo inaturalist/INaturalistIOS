@@ -866,7 +866,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <scene sceneID="qPH-8K-ds5">
             <objects>
                 <tableViewController id="Ius-Qv-7ca" customClass="GuideMenuViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="right" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Gkh-Sx-nca">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="right" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Gkh-Sx-nca">
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -2082,10 +2082,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Qwd-7p-HHF"/>
-        <segue reference="IDb-ci-Uhl"/>
-        <segue reference="722-c8-iwO"/>
-        <segue reference="cuG-ho-aNz"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="722-c8-iwO"/>
+        <segue reference="Iwt-4E-pF9"/>
     </inferredMetricsTieBreakers>
 </document>

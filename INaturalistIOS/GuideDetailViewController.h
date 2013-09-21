@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSString *sort;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSString *search;
+@property (nonatomic, strong) NSMutableArray *tags;
 
 - (void)loadXML:(NSString *)path;
 - (void)downloadXML:(NSString *)url;

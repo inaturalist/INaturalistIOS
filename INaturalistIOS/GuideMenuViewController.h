@@ -13,7 +13,8 @@
 
 @protocol GuideMenuControllerDelegate <NSObject>
 @optional
-- (void)guideMenuControllerDidFilterByTag:(NSString *)tag;
+- (void)guideMenuControllerAddedFilterByTag:(NSString *)tag;
+- (void)guideMenuControllerRemovedFilterByTag:(NSString *)tag;
 - (RXMLElement *)guideMenuControllerXML;
 @end
 
@@ -21,8 +22,9 @@
 @property (nonatomic, strong) Guide *guide;
 @property (nonatomic, weak) id <GuideMenuControllerDelegate> delegate;
 @property (nonatomic, strong) RXMLElement *xml;
-@property (nonatomic, strong) NSArray *tagNames;
-@property (nonatomic, strong) NSDictionary *tagsByTagName;
+@property (nonatomic, strong) NSArray *tagPredicates;
+@property (nonatomic, strong) NSDictionary *tagsByPredicate;
+@property (nonatomic, strong) NSDictionary *tagCounts;
 @property (nonatomic, strong) NSString *guideDescription;
 @property (nonatomic, strong) NSString *compiler;
 @property (nonatomic, strong) NSString *license;

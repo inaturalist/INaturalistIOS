@@ -28,15 +28,7 @@ static const int CellLabelTag = 200;
 @synthesize sort = _sort;
 @synthesize searchBar = _searchBar;
 @synthesize search = _search;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+@synthesize tags = _tags;
 
 - (void)viewDidLoad
 {
@@ -75,6 +67,10 @@ static const int CellLabelTag = 200;
     
     SWRevealViewController *revealController = [self revealViewController];
     [self.view addGestureRecognizer:revealController.panGestureRecognizer];
+    
+    if (!self.tags) {
+        self.tags = [[NSMutableArray alloc] init];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -132,6 +128,13 @@ static const int CellLabelTag = 200;
         xpath = [NSString stringWithFormat:@"//GuideTaxon/*/text()[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'%@')]/ancestor::*[self::GuideTaxon]", [self.search lowercaseString]];
     } else {
         xpath = @"//GuideTaxon";
+    }
+    if (self.tags.count > 0) {
+        NSMutableArray *expressions = [[NSMutableArray alloc] init];
+        for (NSString *tag in self.tags) {
+            [expressions addObject:[NSString stringWithFormat:@"descendant::tag[text() = '%@']", tag]];
+        }
+        xpath = [xpath stringByAppendingFormat:@"[%@]", [expressions componentsJoinedByString:@" and "]];
     }
     return xpath;
 }
@@ -214,7 +217,7 @@ static const int CellLabelTag = 200;
         GuideTaxonViewController *vc = [segue destinationViewController];
         NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
         RXMLElement *gt = [self.xml atXPath:
-                           [NSString stringWithFormat:@"%@[%d]", [self currentXPath], gtPosition]];
+                           [NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
         if (gt) {
             vc.xmlString = gt.xmlString;
         }
@@ -324,9 +327,28 @@ static const int CellLabelTag = 200;
     return self.xml;
 }
 
-- (void)guideMenuControllerDidFilterByTag:(NSString *)tag
+- (void)guideMenuControllerAddedFilterByTag:(NSString *)tag
 {
-    NSLog(@"guideMenuControllerDidFilterByTag: %@", tag);
+    [self.tags addObject:tag];
+    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
+    if (button) {
+        [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
+    }
+    [self.collectionView reloadData];
+}
+
+- (void)guideMenuControllerRemovedFilterByTag:(NSString *)tag
+{
+    [self.tags removeObject:tag];
+    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
+    if (button) {
+        if (self.tags.count > 0) {
+            [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
+        } else {
+            [button setTintColor:[UIColor clearColor]];
+        }
+    }
+    [self.collectionView reloadData];
 }
 
 @end
