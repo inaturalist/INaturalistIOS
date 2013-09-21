@@ -10,6 +10,7 @@
 #import "GuideTaxonViewController.h"
 #import "RXMLElement+Helpers.h"
 #import <Three20/Three20.h>
+#import "SWRevealViewController.h"
 
 @interface GuideDetailViewController ()
 
@@ -44,23 +45,18 @@ static const int CellLabelTag = 200;
     self.title = self.guide.title;
     
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docDir = [docDirs objectAtIndex:0];
-    NSString *guidesDirPath = [docDir stringByAppendingPathComponent:@"guides"];
-    self.guideDirPath = [guidesDirPath stringByAppendingPathComponent:self.guide.recordID.stringValue];
+    self.guideDirPath = self.guide.dirPath;
+//    NSString *guideNGZPath = [guideDirPath stringByAppendingPathComponent:
+//                              [NSString stringWithFormat:@"%@.ngz", self.guide.recordID]];
     if (![fm fileExistsAtPath:self.guideDirPath]) {
         [fm createDirectoryAtPath:self.guideDirPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-//    NSString *guideNGZPath = [guideDirPath stringByAppendingPathComponent:
-//                              [NSString stringWithFormat:@"%@.ngz", self.guide.recordID]];
-    self.guideXMLPath = [self.guideDirPath stringByAppendingPathComponent:
-                              [NSString stringWithFormat:@"%@.xml", self.guide.recordID]];
-    if ([fm fileExistsAtPath:self.guideXMLPath]) {
-        [self loadXML:self.guideXMLPath];
-    } else {
-        NSString *guideXMLURL = [NSString stringWithFormat:@"%@/guides/%@.xml", INatBaseURL, self.guide.recordID];
-        [self downloadXML:guideXMLURL];
-    }
+    self.guideXMLPath = self.guide.xmlPath;
+//    if ([fm fileExistsAtPath:self.guideXMLPath]) {
+//        [self loadXML:self.guideXMLPath];
+//    } else {
+        [self downloadXML:self.guide.xmlURL];
+//    }
 
     self.scale = 1.0;
     UIPinchGestureRecognizer *gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
@@ -76,6 +72,9 @@ static const int CellLabelTag = 200;
     [self.searchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.view addSubview:self.searchBar];
     [self.collectionView setContentOffset:CGPointMake(0, 44)];
+    
+    SWRevealViewController *revealController = [self revealViewController];
+    [self.view addGestureRecognizer:revealController.panGestureRecognizer];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -319,6 +318,17 @@ static const int CellLabelTag = 200;
     [self.searchBar endEditing:YES];
 }
 
+#pragma GuideMenuControllerDelegate
+- (RXMLElement *)guideMenuControllerXML
+{
+    return self.xml;
+}
+
+- (void)guideMenuControllerDidFilterByTag:(NSString *)tag
+{
+    NSLog(@"guideMenuControllerDidFilterByTag: %@", tag);
+}
+
 @end
 
 @implementation XMLDownloadDelegate
@@ -417,4 +427,5 @@ static const int CellLabelTag = 200;
         [av show];
     }
 }
+
 @end

@@ -11,4 +11,5 @@
 @interface RXMLElement (Helpers)
 - (NSString *)xmlString;
 - (RXMLElement *)atXPath:(NSString *)xpath;
+- (NSDictionary *)namespaces;
 @end

@@ -39,11 +39,76 @@
  */
 - (RXMLElement *)atXPath:(NSString *)xpath
 {
-    NSArray *nodes = [self childrenWithRootXPath:xpath];
+    NSArray *nodes = [self childrenWithRootXPath2:xpath];
     if (nodes.count > 0) {
         return [nodes objectAtIndex:0];
     } else {
         return nil;
     }
+}
+
+- (NSArray *)childrenWithRootXPath2:(NSString *)xpath {
+    // check for a query
+    if (!xpath) {
+        return [NSArray array];
+    }
+    
+    xmlXPathContextPtr context = xmlXPathNewContext([self.xmlDoc doc]);
+    
+    if (context == NULL) {
+		return nil;
+    }
+    
+    NSDictionary *namespaces = self.namespaces;
+    for (id key in namespaces) {
+        xmlXPathRegisterNs(context,
+                           (const xmlChar *)[key cStringUsingEncoding:NSUTF8StringEncoding],
+                           (const xmlChar *)[[namespaces objectForKey:key] cStringUsingEncoding:NSUTF8StringEncoding]
+                           );
+    }
+    
+    xmlXPathObjectPtr object = xmlXPathEvalExpression((xmlChar *)[xpath cStringUsingEncoding:NSUTF8StringEncoding], context);
+    if(object == NULL) {
+		return nil;
+    }
+    
+	xmlNodeSetPtr nodes = object->nodesetval;
+	if (nodes == NULL) {
+		return nil;
+	}
+    
+	NSMutableArray *resultNodes = [NSMutableArray array];
+    
+    for (NSInteger i = 0; i < nodes->nodeNr; i++) {
+		RXMLElement *element = [RXMLElement elementFromXMLDoc:self.xmlDoc node:nodes->nodeTab[i]];
+        
+		if (element != NULL) {
+			[resultNodes addObject:element];
+		}
+	}
+    
+    xmlXPathFreeObject(object);
+    xmlXPathFreeContext(context);
+    
+    return resultNodes;
+}
+
+/**
+ Return namespaces applying to the current node as an NSDictionary. Dictionary keys are the prefixes, values are the hrefs. Basic implementation derived from Nokogiri.
+ TODO: this should really be a property, since there's no need to recalculate these with every query.
+ */
+- (NSDictionary *)namespaces
+{
+    xmlNsPtr *ns_list = xmlGetNsList(node_->doc, node_);
+    NSMutableDictionary *namespaces = [[NSMutableDictionary alloc] init];
+    if (!ns_list) return namespaces;
+    for (int j = 0 ; ns_list[j] != NULL ; ++j) {
+        if (ns_list[j]->href) {
+            [namespaces setObject:[NSString stringWithUTF8String:(const char *)ns_list[j]->href]
+                           forKey:[NSString stringWithUTF8String:(const char *)ns_list[j]->prefix]];
+        }
+    }
+    xmlFree(ns_list);
+    return namespaces;
 }
 @end

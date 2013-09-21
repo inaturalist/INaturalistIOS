@@ -27,4 +27,8 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 
+
+- (NSString *)dirPath;
+- (NSString *)xmlPath;
+- (NSString *)xmlURL;
 @end

@@ -10,8 +10,9 @@
 #import "Guide.h"
 #import "DejalActivityView.h"
 #import "RXMLElement.h"
+#import "GuideMenuViewController.h"
 
-@interface GuideDetailViewController : UICollectionViewController <UISearchBarDelegate>
+@interface GuideDetailViewController : UICollectionViewController <UISearchBarDelegate, GuideMenuControllerDelegate>
 {
     DejalActivityView *modalActivityView;
 }

@@ -31,6 +31,15 @@
     if (toInterfaceOrientation == UIDeviceOrientationPortrait) return YES;
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
+- (NSUInteger)supportedInterfaceOrientations
+{
+    if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
+        UINavigationController *nc = (UINavigationController *)self.selectedViewController;
+        return [nc.visibleViewController supportedInterfaceOrientations];
+    } else {
+        return [self.selectedViewController supportedInterfaceOrientations];
+    }
+}
 
 - (void)handleUserSavedObservationNotification:(NSNotification *)notification
 {

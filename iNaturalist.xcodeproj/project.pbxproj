@@ -67,6 +67,11 @@
 		19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4117D65CB800B7CEE5 /* guides-tab.png */; };
 		19542F4A17D6624900B7CEE5 /* guides.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4817D6624900B7CEE5 /* guides.png */; };
 		19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4917D6624900B7CEE5 /* guides@2x.png */; };
+		19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CAD17EB8D10000C800A /* SWRevealViewController.m */; };
+		19570CC417EB92D8000C800A /* GuideContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideContainerViewController.m */; };
+		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
+		19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 19570CCC17ECD0B0000C800A /* guides-menu.png */; };
+		19570CCF17ECD0B0000C800A /* guides-menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19570CCD17ECD0B0000C800A /* guides-menu@2x.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
 		195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
 		195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
@@ -509,6 +514,14 @@
 		19542F4117D65CB800B7CEE5 /* guides-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab.png"; sourceTree = "<group>"; };
 		19542F4817D6624900B7CEE5 /* guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guides.png; sourceTree = "<group>"; };
 		19542F4917D6624900B7CEE5 /* guides@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides@2x.png"; sourceTree = "<group>"; };
+		19570CAC17EB8D10000C800A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		19570CAD17EB8D10000C800A /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		19570CC217EB92D8000C800A /* GuideContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideContainerViewController.h; sourceTree = "<group>"; };
+		19570CC317EB92D8000C800A /* GuideContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideContainerViewController.m; sourceTree = "<group>"; };
+		19570CC517EBB624000C800A /* GuideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideMenuViewController.h; sourceTree = "<group>"; };
+		19570CC617EBB624000C800A /* GuideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideMenuViewController.m; sourceTree = "<group>"; };
+		19570CCC17ECD0B0000C800A /* guides-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu.png"; sourceTree = "<group>"; };
+		19570CCD17ECD0B0000C800A /* guides-menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu@2x.png"; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
 		195F3247151A8AB60019CB85 /* Taxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Taxon.m; sourceTree = "<group>"; };
@@ -937,6 +950,8 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				19570CCC17ECD0B0000C800A /* guides-menu.png */,
+				19570CCD17ECD0B0000C800A /* guides-menu@2x.png */,
 				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
 				191B434A17E927A700AF000E /* Default@2x.png */,
 				191B434817E927A300AF000E /* Default.png */,
@@ -995,6 +1010,16 @@
 			name = images;
 			sourceTree = "<group>";
 		};
+		19570CAB17EB8D10000C800A /* SWRevealViewController */ = {
+			isa = PBXGroup;
+			children = (
+				19570CAC17EB8D10000C800A /* SWRevealViewController.h */,
+				19570CAD17EB8D10000C800A /* SWRevealViewController.m */,
+			);
+			name = SWRevealViewController;
+			path = Vendor/SWRevealViewController/SWRevealViewController;
+			sourceTree = "<group>";
+		};
 		198CF87014F5AC420064DF05 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1034,6 +1059,7 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				19570CAB17EB8D10000C800A /* SWRevealViewController */,
 				19F3AC7717E13946005706E8 /* RaptureXML */,
 				60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */,
 				6098FD1A16F3F6880053987E /* googleplus */,
@@ -1192,6 +1218,10 @@
 				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
 				19D8342B17E7BBDC000A5C35 /* GuideTaxonViewController.h */,
 				19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */,
+				19570CC217EB92D8000C800A /* GuideContainerViewController.h */,
+				19570CC317EB92D8000C800A /* GuideContainerViewController.m */,
+				19570CC517EBB624000C800A /* GuideMenuViewController.h */,
+				19570CC617EBB624000C800A /* GuideMenuViewController.m */,
 				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
 				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
 				19F874821522E58E00A65F9A /* INatWebController.h */,
@@ -1764,6 +1794,8 @@
 				191B434917E927A300AF000E /* Default.png in Resources */,
 				191B434B17E927A700AF000E /* Default@2x.png in Resources */,
 				191B434D17E927AA00AF000E /* Default-568h@2x.png in Resources */,
+				19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */,
+				19570CCF17ECD0B0000C800A /* guides-menu@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1880,6 +1912,9 @@
 				19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
+				19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */,
+				19570CC417EB92D8000C800A /* GuideContainerViewController.m in Sources */,
+				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

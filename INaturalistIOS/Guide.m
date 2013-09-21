@@ -53,4 +53,23 @@ static RKManagedObjectMapping *defaultMapping = nil;
     return defaultMapping;
 }
 
+- (NSString *)dirPath
+{
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *guidesDirPath = [docDir stringByAppendingPathComponent:@"guides"];
+    return [guidesDirPath stringByAppendingPathComponent:self.recordID.stringValue];
+}
+
+- (NSString *)xmlPath
+{
+    return [self.dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.xml", self.recordID]];
+}
+
+- (NSString *)xmlURL
+{
+    return [NSString stringWithFormat:@"%@/guides/%@.xml", INatBaseURL, self.recordID];
+}
+
+// TODO when guide deleted, remove associated data
 @end

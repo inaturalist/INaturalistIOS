@@ -10,6 +10,7 @@
 #import "GuidesViewController.h"
 #import "Guide.h"
 #import "GuideDetailViewController.h"
+#import "GuideContainerViewController.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -284,14 +285,14 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
-        GuideDetailViewController *vc = [segue destinationViewController];
+        GuideContainerViewController *vc = [segue destinationViewController];
         if ([sender isKindOfClass:Guide.class]) {
             [vc setGuide:sender];
         } else {
-            Guide *p = [self.guides
+            Guide *g = [self.guides
                           objectAtIndex:[[self.tableView
                                           indexPathForSelectedRow] row]];
-            [vc setGuide:p];
+            [vc setGuide:g];
         }
     } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
