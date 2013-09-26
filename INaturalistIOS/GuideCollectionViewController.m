@@ -48,7 +48,7 @@ static const int CellLabelTag = 200;
             self.title = self.guide.title;
             NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
             NSDateComponents *offset = [[NSDateComponents alloc] init];
-            [offset setDay:-7];
+            [offset setDay:-1];
             NSDate *pastDate = [gregorian dateByAddingComponents:offset toDate:[NSDate date] options:0];
             if (self.guide.xmlURL && [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending) {
                 [self downloadXML:self.guide.xmlURL];

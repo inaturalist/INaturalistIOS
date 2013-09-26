@@ -113,8 +113,10 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             return 1;
         }
         // About
-        else {
+        else if (self.guide.ngzURL) {
             return 3;
+        } else {
+            return 2;
         }
     }
 }
@@ -322,7 +324,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void)downloadNGZ
 {
     self.ngzFilePath = self.guide.ngzPath;
-    NSString *ngzURL = [NSString stringWithFormat:@"%@/guides/%@.ngz", INatBaseURL, self.guide.identifier];
+    NSString *ngzURL = self.guide.ngzURL;
     NSURL *url = [NSURL URLWithString:ngzURL];
     NSURLRequest *theRequest = [NSURLRequest requestWithURL:url
                                                 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData

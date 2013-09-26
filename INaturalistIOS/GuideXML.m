@@ -32,6 +32,9 @@
 {
     GuideXML *g = [[GuideXML alloc] initFromXMLFilePath:path];
     g.identifier = [self.identifier copy];
+    if (self.xmlURL) {
+        g.xmlURL = [self.xmlURL copy];
+    }
     return g;
 }
 
@@ -181,6 +184,14 @@
 - (NSString *)nameForTaxonAtPosition:(NSInteger)position fromXpath:(NSString *)xpath
 {
     return [[self atXPath:[NSString stringWithFormat:@"(%@)[%d]/name", xpath, position]] text];
+}
+
+- (NSString *)ngzURL
+{
+    if (!_ngzURL) {
+        _ngzURL = [[self atXPath:@"//ngz/href"] text];
+    }
+    return _ngzURL;
 }
 
 - (NSString *)ngzFileSize
