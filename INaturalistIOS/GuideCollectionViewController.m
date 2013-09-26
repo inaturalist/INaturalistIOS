@@ -6,49 +6,57 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import "GuideDetailViewController.h"
+#import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
+#import "GuideViewController.h"
 #import "RXMLElement+Helpers.h"
 #import <Three20/Three20.h>
 #import "SWRevealViewController.h"
 
-@interface GuideDetailViewController ()
-
-@end
-
 static const int CellLabelTag = 200;
 
-@implementation GuideDetailViewController
+@implementation GuideCollectionViewController
 @synthesize guide = _guide;
-@synthesize ngzData = _ngzData;
-@synthesize guideDirPath = _guideDirPath;
 @synthesize guideXMLPath = _guideXMLPath;
-@synthesize xml = _xml;
+@synthesize guideXMLURL = _guideXMLURL;
 @synthesize scale = _scale;
 @synthesize sort = _sort;
 @synthesize searchBar = _searchBar;
 @synthesize search = _search;
 @synthesize tags = _tags;
 
+#pragma mark - UIViewController
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    self.title = self.guide.title;
-    
-    NSFileManager *fm = [NSFileManager defaultManager];
-    self.guideDirPath = self.guide.dirPath;
-//    NSString *guideNGZPath = [guideDirPath stringByAppendingPathComponent:
-//                              [NSString stringWithFormat:@"%@.ngz", self.guide.recordID]];
-    if (![fm fileExistsAtPath:self.guideDirPath]) {
-        [fm createDirectoryAtPath:self.guideDirPath withIntermediateDirectories:YES attributes:nil error:nil];
+    if (!self.guide) {
+        if (self.guideXMLPath) {
+            self.guide = [[GuideXML alloc] initFromXMLFile:self.guideXMLPath];
+        } else if (self.guideXMLURL) {
+            [self downloadXML:self.guideXMLURL];
+        }
     }
-    self.guideXMLPath = self.guide.xmlPath;
-//    if ([fm fileExistsAtPath:self.guideXMLPath]) {
-//        [self loadXML:self.guideXMLPath];
-//    } else {
-        [self downloadXML:self.guide.xmlURL];
-//    }
+    if (self.guide) {
+        self.guideXMLPath = self.guide.xmlPath;
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if (![fm fileExistsAtPath:self.guide.dirPath]) {
+            [fm createDirectoryAtPath:self.guide.dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        
+        if ([fm fileExistsAtPath:self.guide.xmlPath]) {
+            [self loadXML:self.guideXMLPath];
+            self.title = self.guide.title;
+            NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+            NSDateComponents *offset = [[NSDateComponents alloc] init];
+            [offset setDay:-7];
+            NSDate *pastDate = [gregorian dateByAddingComponents:offset toDate:[NSDate date] options:0];
+            if (self.guide.xmlURL && [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending) {
+                [self downloadXML:self.guide.xmlURL];
+            }
+        } else if (self.guide.xmlURL) {
+            [self downloadXML:self.guide.xmlURL];
+        }
+    }
 
     self.scale = 1.0;
     UIPinchGestureRecognizer *gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
@@ -78,41 +86,18 @@ static const int CellLabelTag = 200;
     [self.navigationController setToolbarHidden:YES animated:animated];
 }
 
-- (void)loadXML:(NSString *)path
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    self.xml = [RXMLElement elementFromXMLFilePath:path];
-    [self.collectionView reloadData];
-}
-
-- (void)downloadXML:(NSString *)url
-{
-    NSString *activityMsg = NSLocalizedString(@"Loading...",nil);
-    if (modalActivityView) {
-        [[modalActivityView activityLabel] setText:activityMsg];
-    } else {
-        modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
-                                                             withLabel:activityMsg];
+    if ([segue.identifier isEqualToString:@"GuideTaxonSegue"]) {
+        GuideTaxonViewController *vc = [segue destinationViewController];
+        NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
+        RXMLElement *gt = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
+        if (gt) {
+            vc.xmlString = gt.xmlString;
+            vc.basePath = self.guide.dirPath;
+            vc.local = (self.guide.ngzDownloadedAt != nil);
+        }
     }
-    NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                                            timeoutInterval:60];
-    XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:theRequest
-                                                                   delegate:d
-                                                           startImmediately:YES];
-}
-
-- (void)downloadNGZ:(NSString *)path
-{
-//    NSString *ngzURL = [NSString stringWithFormat:@"%@/guides/%d.ngz", INatBaseURL, self.guide.recordID.integerValue];
-//    NSURL *url = [NSURL URLWithString:ngzURL];
-//    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url
-//                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-//                                            timeoutInterval:60];
-//    self.ngzData = [[NSMutableData alloc] initWithLength:0];
-//    NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:theRequest
-//                                                                   delegate:self
-//                                                           startImmediately:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -121,31 +106,18 @@ static const int CellLabelTag = 200;
     // Dispose of any resources that can be recreated.
 }
 
-- (NSString *)currentXPath
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    NSString *xpath;
-    if (self.search && self.search.length != 0) {
-        xpath = [NSString stringWithFormat:@"//GuideTaxon/*/text()[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'%@')]/ancestor::*[self::GuideTaxon]", [self.search lowercaseString]];
-    } else {
-        xpath = @"//GuideTaxon";
-    }
-    if (self.tags.count > 0) {
-        NSMutableArray *expressions = [[NSMutableArray alloc] init];
-        for (NSString *tag in self.tags) {
-            [expressions addObject:[NSString stringWithFormat:@"descendant::tag[text() = '%@']", tag]];
-        }
-        xpath = [xpath stringByAppendingFormat:@"[%@]", [expressions componentsJoinedByString:@" and "]];
-    }
-    return xpath;
+    [self fitScale];
 }
 
-#pragma mark UICollectionViewDelegate
+#pragma mark - UICollectionViewDelegate
  -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (!self.xml) {
+    if (!self.guide) {
         return 0;
     }
-    return [self.xml childrenWithRootXPath:[self currentXPath]].count;
+    return [self.guide childrenWithRootXPath:[self currentXPath]].count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -158,34 +130,22 @@ static const int CellLabelTag = 200;
     [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
     img.contentMode = UIViewContentModeCenter;
     NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
-    RXMLElement *localHref = [self.xml atXPath:
-                           [NSString stringWithFormat:@"%@[%d]/GuidePhoto[1]/href[@type='local' and @size='small']", [self currentXPath], gtPosition]];
-    BOOL imgSet = false;
-    if (localHref) {
-        NSString *imgPath = [self.guideDirPath stringByAppendingPathComponent:[localHref text]];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
-            [img setDefaultImage:[UIImage imageWithContentsOfFile:imgPath]];
-            imgSet = true;
-            img.contentMode = UIViewContentModeScaleAspectFill;
-        }
-    }
-
-    if (!imgSet) {
-        NSString *xpath = [NSString stringWithFormat:@"(%@)[%d]/GuidePhoto[1]/href[@type='remote' and @size='small']", [self currentXPath], gtPosition];
-        RXMLElement *remoteHref = [self.xml atXPath:xpath];
-        if (remoteHref) {
+    NSString *localImagePath = [self.guide imagePathForTaxonAtPosition:gtPosition size:@"small" fromXPath:[self currentXPath]];
+    if (localImagePath) {
+        [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
+        img.contentMode = UIViewContentModeScaleAspectFill;
+    } else {
+        NSString *remoteImageURL = [self.guide imageURLForTaxonAtPosition:gtPosition size:@"small" fromXPath:[self currentXPath]];
+        if (remoteImageURL) {
             [img setDefaultImage:nil];
-            img.urlPath = [remoteHref text];
+            img.urlPath = remoteImageURL;
             img.contentMode = UIViewContentModeScaleAspectFill;
-            imgSet = true;
         }
     }
     
     UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
-    RXMLElement *displayNameElt = [self.xml atXPath:[NSString stringWithFormat:@"(%@)[%d]/displayName", [self currentXPath], gtPosition]];
-    RXMLElement *nameElt = [self.xml atXPath:[NSString stringWithFormat:@"(%@)[%d]/name", [self currentXPath], gtPosition]];
-    NSString *displayName = displayNameElt.text;
-    NSString *name = nameElt.text;
+    NSString *displayName = [self.guide displayNameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
+    NSString *name = [self.guide nameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
     if ([displayName isEqualToString:name]) {
         label.font = [UIFont italicSystemFontOfSize:12.0];
         label.text = name;
@@ -201,30 +161,6 @@ static const int CellLabelTag = 200;
     [self performSegueWithIdentifier:@"GuideTaxonSegue" sender:self];
 }
 
-- (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.sort) {
-        // TODO load guideTaxa into an array, sort by the current sort, return physical position of matching GuideTaxon element
-        return indexPath.row + 1;
-    } else {
-        return indexPath.row + 1;
-    }
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"GuideTaxonSegue"]) {
-        GuideTaxonViewController *vc = [segue destinationViewController];
-        NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
-        RXMLElement *gt = [self.xml atXPath:
-                           [NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
-        if (gt) {
-            vc.xmlString = gt.xmlString;
-        }
-    }
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Main use of the scale property
@@ -255,44 +191,7 @@ static const int CellLabelTag = 200;
     }
 }
 
-// http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
-- (void)fitScale
-{
-    CGFloat w = self.view.frame.size.width;
-    CGFloat gutter = 5.0;
-    CGFloat scale1 = (w - (1+1)*gutter) / 100.0;
-    CGFloat scale2 = (w - (2+1)*gutter) / 200.0; // 1.525;
-    CGFloat scale3 = (w - (3+1)*gutter) / 300.0; // 1.0;
-    CGFloat scale4 = (w - (4+1)*gutter) / 400.0; //0.7375;
-    CGFloat scale5 = (w - (5+1)*gutter) / 500.0; //0.58;
-    CGFloat scale6 = (w - (6+1)*gutter) / 600.0; //0.475;
-    if (self.scale > scale2) self.scale = scale1;
-    else if (self.scale > scale3 && self.scale <= scale2) self.scale = scale2;
-    else if (self.scale > scale4 && self.scale <= scale3) self.scale = scale3;
-    else if (self.scale > scale5 && self.scale <= scale4) self.scale = scale4;
-    else if (self.scale > scale6 && self.scale <= scale5) self.scale = scale5;
-    else self.scale = scale6;
-    [self.collectionView performBatchUpdates:nil completion:nil];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [self fitScale];
-}
-
-- (void)setScale:(CGFloat)scale
-{
-    // Make sure it doesn't go out of bounds
-    if (scale < 0.475) {
-        _scale = 0.475;
-    } else if (scale > 3.1) {
-        _scale = 3.1;
-    } else {
-        _scale = scale;
-    }
-}
-
-#pragma UISearchBarDelegate
+#pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     self.search = searchText;
@@ -321,10 +220,10 @@ static const int CellLabelTag = 200;
     [self.searchBar endEditing:YES];
 }
 
-#pragma GuideMenuControllerDelegate
-- (RXMLElement *)guideMenuControllerXML
+#pragma mark - GuideMenuControllerDelegate
+- (GuideXML *)guideMenuControllerGuide
 {
-    return self.xml;
+    return self.guide;
 }
 
 - (void)guideMenuControllerAddedFilterByTag:(NSString *)tag
@@ -351,6 +250,97 @@ static const int CellLabelTag = 200;
     [self.collectionView reloadData];
 }
 
+- (void)guideMenuControllerGuideDownloadedNGZForGuide:(GuideXML *)guide
+{
+    [self loadXML:self.guide.xmlPath];
+}
+
+#pragma mark - GuideDetailViewController
+- (void)loadXML:(NSString *)path
+{
+    self.guide = [self.guide cloneWithXMLFilePath:path];
+    self.navigationItem.title = self.guide.title;
+    [self.collectionView reloadData];
+}
+
+- (void)downloadXML:(NSString *)url
+{
+    NSString *activityMsg = NSLocalizedString(@"Loading...",nil);
+    if (modalActivityView) {
+        [[modalActivityView activityLabel] setText:activityMsg];
+    } else {
+        modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
+                                                              withLabel:activityMsg];
+    }
+    NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                            timeoutInterval:60];
+    XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:theRequest
+                                                                  delegate:d
+                                                          startImmediately:YES];
+}
+
+- (NSString *)currentXPath
+{
+    NSString *xpath;
+    if (self.search && self.search.length != 0) {
+        xpath = [NSString stringWithFormat:@"//GuideTaxon/*/text()[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'%@')]/ancestor::*[self::GuideTaxon]", [self.search lowercaseString]];
+    } else {
+        xpath = @"//GuideTaxon";
+    }
+    if (self.tags.count > 0) {
+        NSMutableArray *expressions = [[NSMutableArray alloc] init];
+        for (NSString *tag in self.tags) {
+            [expressions addObject:[NSString stringWithFormat:@"descendant::tag[text() = '%@']", tag]];
+        }
+        xpath = [xpath stringByAppendingFormat:@"[%@]", [expressions componentsJoinedByString:@" and "]];
+    }
+    return xpath;
+}
+
+- (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.sort) {
+        // TODO load guideTaxa into an array, sort by the current sort, return physical position of matching GuideTaxon element
+        return indexPath.row + 1;
+    } else {
+        return indexPath.row + 1;
+    }
+}
+
+// http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
+- (void)fitScale
+{
+    CGFloat w = self.view.frame.size.width;
+    CGFloat gutter = 5.0;
+    CGFloat scale1 = (w - (1+1)*gutter) / 100.0;
+    CGFloat scale2 = (w - (2+1)*gutter) / 200.0; // 1.525;
+    CGFloat scale3 = (w - (3+1)*gutter) / 300.0; // 1.0;
+    CGFloat scale4 = (w - (4+1)*gutter) / 400.0; //0.7375;
+    CGFloat scale5 = (w - (5+1)*gutter) / 500.0; //0.58;
+    CGFloat scale6 = (w - (6+1)*gutter) / 600.0; //0.475;
+    if (self.scale > scale2) self.scale = scale1;
+    else if (self.scale > scale3 && self.scale <= scale2) self.scale = scale2;
+    else if (self.scale > scale4 && self.scale <= scale3) self.scale = scale3;
+    else if (self.scale > scale5 && self.scale <= scale4) self.scale = scale4;
+    else if (self.scale > scale6 && self.scale <= scale5) self.scale = scale5;
+    else self.scale = scale6;
+    [self.collectionView performBatchUpdates:nil completion:nil];
+}
+
+- (void)setScale:(CGFloat)scale
+{
+    // Make sure it doesn't go out of bounds
+    if (scale < 0.475) {
+        _scale = 0.475;
+    } else if (scale > 3.1) {
+        _scale = 3.1;
+    } else {
+        _scale = scale;
+    }
+}
+
 @end
 
 @implementation XMLDownloadDelegate
@@ -371,7 +361,7 @@ static const int CellLabelTag = 200;
     return self;
 }
 
-- (id)initWithController:(GuideDetailViewController *)controller
+- (id)initWithController:(GuideCollectionViewController *)controller
 {
     self = [self init];
     if (self) {
@@ -420,6 +410,13 @@ static const int CellLabelTag = 200;
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+                                                 message:error.localizedDescription
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                       otherButtonTitles:nil];
+    [av show];
+    [DejalBezelActivityView removeView];
 }
 
 - (NSCachedURLResponse *) connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {

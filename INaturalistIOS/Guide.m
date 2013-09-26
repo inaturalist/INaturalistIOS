@@ -21,6 +21,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic localCreatedAt;
 @dynamic localUpdatedAt;
 @dynamic syncedAt;
+@dynamic ngzDownloadedAt;
 @dynamic recordID;
 @dynamic taxonID;
 @dynamic latitude;

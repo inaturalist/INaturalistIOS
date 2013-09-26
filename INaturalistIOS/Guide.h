@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * iconURL;
 @property (nonatomic, retain) NSDate * localCreatedAt;
 @property (nonatomic, retain) NSDate * localUpdatedAt;
+@property (nonatomic, retain) NSDate * ngzDownloadedAt;
 @property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) Taxon *taxon;
@@ -27,8 +28,4 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 
-
-- (NSString *)dirPath;
-- (NSString *)xmlPath;
-- (NSString *)xmlURL;
 @end

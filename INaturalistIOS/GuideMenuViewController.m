@@ -7,26 +7,38 @@
 //
 
 #import "GuideMenuViewController.h"
+#import "GuideViewController.h"
+#import "Observation.h"
+#import "SSZipArchive.h"
 
 @implementation GuideMenuViewController
 
 @synthesize guide = _guide;
 @synthesize delegate = _delegate;
-@synthesize xml = _xml;
 @synthesize tagPredicates = _tagNames;
 @synthesize tagsByPredicate = _tagsByPredicate;
 @synthesize tagCounts = _tagCounts;
-@synthesize guideDescription = _guideDescription;
-@synthesize compiler = _compiler;
-@synthesize license = _license;
+
+@synthesize ngzDownloadConnection = _ngzDownloadConnection;
+@synthesize lastStatusCode = _lastStatusCode;
+@synthesize progress = _progress;
+@synthesize expectedBytes = _expectedBytes;
+@synthesize receivedData = _receivedData;
+@synthesize ngzFilePath = _ngzFilePath;
 
 static int TextCellTextViewTag = 101;
+static int ConfirmDownloadAlertViewTag = 100;
+static int ProgressViewTag = 102;
+static int ProgressLabelTag = 103;
+static int AboutSection = 1;
+static int DownloadRow = 2;
+static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (self.delegate && !self.xml) {
-        self.xml = self.delegate.guideMenuControllerXML;
+    if (self.delegate && !self.guide) {
+        self.guide = self.delegate.guideMenuControllerGuide;
         if (!self.tagsByPredicate) {
             self.tagsByPredicate = [[NSMutableDictionary alloc] init];
         }
@@ -35,7 +47,7 @@ static int TextCellTextViewTag = 101;
         }
         NSMutableDictionary *tagsByPredicate = [[NSMutableDictionary alloc] init];
         NSMutableSet *predicates = [[NSMutableSet alloc] init];
-        [self.xml iterateWithRootXPath:@"//GuideTaxon/tag" usingBlock:^(RXMLElement *tag) {
+        [self.guide iterateWithRootXPath:@"//GuideTaxon/tag" usingBlock:^(RXMLElement *tag) {
             NSString *predicate = [tag attribute:@"predicate"];
             if (!predicate || predicate.length == 0) {
                 predicate = NSLocalizedString(@"TAGS", nil);
@@ -102,7 +114,7 @@ static int TextCellTextViewTag = 101;
         }
         // About
         else {
-            return 2;
+            return 3;
         }
     }
 }
@@ -110,54 +122,75 @@ static int TextCellTextViewTag = 101;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     static NSString *TextCellIdentifier = @"TextCell";
+    static NSString *SubtitleCellIdentifier = @"SubtitleCell";
+    static NSString *ProgressCellIdentifier = @"ProgressCell";
     NSString *tag = [self tagForIndexPath:indexPath];
     if (tag) {
-        cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
+//        cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
+        cell = [self cellForTag:tag atIndexPath:indexPath];
     } else {
         NSInteger i = indexPath.section - self.tagPredicates.count;
         if (i == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:TextCellIdentifier forIndexPath:indexPath];
-        } else {
-            cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
-        }
-    }
-    
-    if (tag) {
-        NSArray *pieces = [tag componentsSeparatedByString:@"="];
-        if (pieces.count == 1) {
-            cell.textLabel.text = pieces[0];
-        } else {
-            cell.textLabel.text = pieces[1];
-        }
-        cell.detailTextLabel.text = [[self.tagCounts objectForKey:tag] stringValue];
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-        cell.userInteractionEnabled = YES;
-        UIView *bgv = [[UIView alloc] initWithFrame:cell.frame];
-        bgv.backgroundColor = [UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1];
-        cell.selectedBackgroundView = bgv;
-    } else {
-        NSInteger i = indexPath.section - self.tagPredicates.count;
-        // Description
-        if (i == 0) {
             UITextView *textView = (UITextView *)[cell viewWithTag:TextCellTextViewTag];
-            textView.text = self.guideDescription;
-        }
-        // About
-        else {
+            textView.text = self.guide.desc;
+        } else {
+            if (indexPath.row < 2) {
+                cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.userInteractionEnabled = NO;
+            }
             if (indexPath.row == 0) {
-                cell.textLabel.text = NSLocalizedString(@"Author", nil);
-                cell.detailTextLabel.text = self.compiler;
-            } else {
+                cell.textLabel.text = NSLocalizedString(@"Editor", nil);
+                cell.detailTextLabel.text = self.guide.compiler;
+            } else if (indexPath.row == 1) {
                 cell.textLabel.text = NSLocalizedString(@"License", nil);
-                cell.detailTextLabel.text = self.license;
+                cell.detailTextLabel.text = self.guide.license;
+            } else {
+                if (self.isDownloading) {
+                    cell = [tableView dequeueReusableCellWithIdentifier:ProgressCellIdentifier forIndexPath:indexPath];
+                    self.progress = (UIProgressView *)[cell viewWithTag:ProgressViewTag];
+                    UILabel *label = (UILabel *)[cell viewWithTag:ProgressLabelTag];
+                    label.text = NSLocalizedString(@"Downloading...", nil);
+                } else {
+                    cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
+                    if (self.guide.ngzDownloadedAt) {
+                        cell.textLabel.text = NSLocalizedString(@"Downloaded", nil);
+                        NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+                        [fmt setTimeZone:[NSTimeZone localTimeZone]];
+                        [fmt setDateStyle:NSDateFormatterMediumStyle];
+                        [fmt setTimeStyle:NSDateFormatterMediumStyle];
+                        cell.detailTextLabel.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
+                        cell.imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
+                    } else {
+                        cell.textLabel.text = NSLocalizedString(@"Download for offline use", nil);
+                        cell.detailTextLabel.text = self.guide.ngzFileSize;
+                        cell.imageView.image = [UIImage imageNamed:@"265-download.png"];
+                    }
+                }
             }
         }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.userInteractionEnabled = NO;
     }
     [cell setIndentationWidth:60.0];
+    return cell;
+}
+
+- (UITableViewCell *)cellForTag:(NSString *)tag atIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
+    NSArray *pieces = [tag componentsSeparatedByString:@"="];
+    if (pieces.count == 1) {
+        cell.textLabel.text = pieces[0];
+    } else {
+        cell.textLabel.text = pieces[1];
+    }
+    cell.detailTextLabel.text = [[self.tagCounts objectForKey:tag] stringValue];
+    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+    cell.userInteractionEnabled = YES;
+    UIView *bgv = [[UIView alloc] initWithFrame:cell.frame];
+    bgv.backgroundColor = [UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1];
+    cell.selectedBackgroundView = bgv;
     return cell;
 }
 
@@ -170,9 +203,9 @@ static int TextCellTextViewTag = 101;
     NSInteger i = indexPath.section - self.tagPredicates.count;
     if (i != 0) return 44.0;
     CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
-    CGSize labelSize = [self.guideDescription sizeWithFont:[UIFont systemFontOfSize:15.0]
-                                         constrainedToSize:constraintSize
-                                             lineBreakMode:UILineBreakModeWordWrap];
+    CGSize labelSize = [self.guide.desc sizeWithFont:[UIFont systemFontOfSize:15.0]
+                                   constrainedToSize:constraintSize
+                                       lineBreakMode:UILineBreakModeWordWrap];
     return labelSize.height + 20;
 }
 
@@ -209,70 +242,33 @@ static int TextCellTextViewTag = 101;
     return [tags objectAtIndex:indexPath.row];
 }
 
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//{
-//    NSString *tagName = [self.tagNames objectAtIndex:section];
-//    if (tagName) {
-//        return NSLocalizedString(tagName, nil);
-//    }
-//    NSInteger i = section - self.tagNames.count;
-//    // Description
-//    if (i == 0) {
-//        return NSLocalizedString(@"Description", nil);
-//    }
-//    // About
-//    else {
-//        return NSLocalizedString(@"About", nil);
-//    }
-//}
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *tag = [self tagForIndexPath:indexPath];
-    if (!tag) return;
-    if (self.delegate) {
+    if (tag && self.delegate) {
         [self.delegate guideMenuControllerAddedFilterByTag:tag];
+        return;
+    }
+    NSInteger i = indexPath.section - self.tagPredicates.count;
+    if (i == AboutSection && indexPath.row == DownloadRow) {
+        if (self.guide.ngzDownloadedAt) {
+            UIActionSheet *as = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Manage download", nil)
+                                                            delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                              destructiveButtonTitle:NSLocalizedString(@"Delete download", nil)
+                                                   otherButtonTitles:NSLocalizedString(@"Re-download", nil), nil];
+            [as showFromTabBar:self.tabBarController.tabBar];
+        } else {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
+                                                         message:[NSString stringWithFormat:NSLocalizedString(@"This will download %@ of data so you can use this guide even when you don't have Internet access.", nil), self.guide.ngzFileSize]
+                                                        delegate:self
+                                               cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
+                                               otherButtonTitles:NSLocalizedString(@"Download",nil), nil];
+            av.tag = ConfirmDownloadAlertViewTag;
+            [av show];
+        }
     }
 }
 
@@ -285,42 +281,146 @@ static int TextCellTextViewTag = 101;
     }
 }
 
-- (NSString *)guideDescription
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (!_guideDescription) {
-        _guideDescription = [[self.xml atXPath:@"//INatGuide/dc:description"] text];
-    }
-    if (!_guideDescription || _guideDescription.length == 0) _guideDescription = NSLocalizedString(@"No description", nil);
-    return _guideDescription;
-}
-
-- (NSString *)compiler
-{
-    if (!_compiler) {
-        _compiler = [[self.xml atXPath:@"//INatGuide/eol:agent[@role='compiler']"] text];
-    }
-    if (!_compiler) {
-        NSLocalizedString(@"Unknown", nil);
-    }
-    return _compiler;
-}
-
-- (NSString *)license
-{
-    if (!_license) {
-        NSString *licenseURL = [[self.xml atXPath:@"//INatGuide/dc:license"] text];
-        if (licenseURL) {
-            NSArray *pieces = [licenseURL componentsSeparatedByString:@"/"];
-            if (pieces.count > 2) {
-                _license = [[NSString stringWithFormat:@"CC %@", [pieces objectAtIndex:pieces.count - 3]] uppercaseString];
-                
-            }
+    if (alertView.tag == ConfirmDownloadAlertViewTag) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:self.tagPredicates.count+1];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (buttonIndex == 1) {
+            [self downloadNGZ];
         }
     }
-    if (!_license) {
-        NSLocalizedString(@"None, all rights reserved", nil);
+}
+
+#pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [self.guide deleteNGZ];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDeletedNGZForGuide:)]) {
+            [self.delegate guideMenuControllerGuideDeletedNGZForGuide:self.guide];
+        }
+        GuideViewController *gvc = (GuideViewController *)self.revealViewController;
+        if (gvc && gvc.guideDelegate && [gvc.guideDelegate respondsToSelector:@selector(guideViewControllerDeletedNGZForGuide:)]) {
+            [gvc.guideDelegate guideViewControllerDeletedNGZForGuide:self.guide];
+        }
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2
+                                                     inSection:self.tagPredicates.count+1];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    } else if (buttonIndex == 1) {
+        [self downloadNGZ];
     }
-    return _license;
+    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
+- (BOOL)isDownloading
+{
+    return self.ngzDownloadConnection != nil;
+}
+
+- (void)downloadNGZ
+{
+    self.ngzFilePath = self.guide.ngzPath;
+    NSString *ngzURL = [NSString stringWithFormat:@"%@/guides/%@.ngz", INatBaseURL, self.guide.identifier];
+    NSURL *url = [NSURL URLWithString:ngzURL];
+    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url
+                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                            timeoutInterval:60];
+    self.receivedData = [[NSMutableData alloc] initWithLength:0];
+    self.ngzDownloadConnection = [[NSURLConnection alloc] initWithRequest:theRequest
+                                                                   delegate:self];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:self.tagPredicates.count+1];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)stopDownloadNGZ
+{
+    [self.ngzDownloadConnection cancel];
+    self.ngzDownloadConnection = nil;
+    self.receivedData = nil;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2
+                                                 inSection:self.tagPredicates.count+1];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+
+- (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    self.lastStatusCode = httpResponse.statusCode;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    if (self.progress) {
+        self.progress.hidden = NO;
+    }
+    [self.receivedData setLength:0];
+    self.expectedBytes = [response expectedContentLength];
+}
+
+- (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.receivedData appendData:data];
+    float progressive = (float)[self.receivedData length] / (float)self.expectedBytes;
+    if (self.progress) {
+        [self.progress setProgress:progressive];
+    }
+}
+
+- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+                                                 message:error.localizedDescription
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                       otherButtonTitles:nil];
+    [av show];
+    [self stopDownloadNGZ];
+}
+
+- (NSCachedURLResponse *) connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+{
+    return nil;
+}
+
+- (void) connectionDidFinishLoading:(NSURLConnection *)connection {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    NSError *error;
+    if ([self.receivedData writeToFile:self.ngzFilePath options:NSDataWritingAtomic error:&error]) {
+        NSLog(@"wrote to file: %@", self.ngzFilePath);
+    } else {
+        NSLog(@"failed to write to %@, error: %@", self.ngzFilePath, error);
+    }
+    if (self.progress) {
+        self.progress.hidden = YES;
+    }
+    if (self.lastStatusCode == 200) {
+        [self extractNGZ];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+                                                     message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+        [self stopDownloadNGZ];
+    }
+}
+
+- (void)extractNGZ
+{
+    // TODO unzip the archive
+    [SSZipArchive unzipFileAtPath:self.guide.ngzPath toDestination:self.guide.dirPath];
+    // reload data in collectionview
+    if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDownloadedNGZForGuide:)]) {
+        [self.delegate guideMenuControllerGuideDownloadedNGZForGuide:self.guide];
+    }
+    GuideViewController *gvc = (GuideViewController *)self.revealViewController;
+    if (gvc && gvc.guideDelegate && [gvc.guideDelegate respondsToSelector:@selector(guideViewControllerDownloadedNGZForGuide:)]) {
+        [gvc.guideDelegate guideViewControllerDownloadedNGZForGuide:self.guide];
+    }
+    // reload data in menu
+    [self.tableView reloadData];
+    [self stopDownloadNGZ];
 }
 
 @end
+                                    
+

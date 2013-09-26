@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import "GuideContainerViewController.h"
-#import "GuideDetailViewController.h"
+#import "GuideViewController.h"
+#import "GuideCollectionViewController.h"
 
-@implementation GuideContainerViewController
+@implementation GuideViewController
 
 @synthesize guide = _guide;
 
@@ -17,7 +17,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.title = self.guide.title;
+    if (self.guide.title) {
+        self.title = self.guide.title;
+    }
 }
 
 static NSString * const SWSegueRearIdentifier = @"sw_rear";
@@ -40,7 +42,7 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
         {
             segue.performBlock = ^(SWRevealViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
             {
-                GuideDetailViewController *vc = (GuideDetailViewController *)dvc;
+                GuideCollectionViewController *vc = (GuideCollectionViewController *)dvc;
                 vc.guide = self.guide;
                 [self setFrontViewController:vc];
             };
@@ -50,7 +52,7 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
             segue.performBlock = ^(SWRevealViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
             {
                 GuideMenuViewController *vc = (GuideMenuViewController *)dvc;
-                vc.delegate = (GuideDetailViewController *)self.frontViewController;
+                vc.delegate = (GuideCollectionViewController *)self.frontViewController;
                 [self setRightViewController:dvc];
             };
         }

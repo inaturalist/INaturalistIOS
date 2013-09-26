@@ -13,6 +13,8 @@
 @interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (strong, nonatomic) RXMLElement *xml;
+@property (strong, nonatomic) NSString *basePath;
 - (IBAction)clickedObserve:(id)sender;
 @property (strong, nonatomic) NSString *xmlString;
+@property (nonatomic) BOOL local;
 @end

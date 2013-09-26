@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Guide.h"
+#import "GuideXML.h"
 #import "RXMLElement.h"
 #import "RXMLElement+Helpers.h"
 
@@ -15,17 +15,24 @@
 @optional
 - (void)guideMenuControllerAddedFilterByTag:(NSString *)tag;
 - (void)guideMenuControllerRemovedFilterByTag:(NSString *)tag;
-- (RXMLElement *)guideMenuControllerXML;
+- (GuideXML *)guideMenuControllerGuide;
+- (void)guideMenuControllerGuideDownloadedNGZForGuide:(GuideXML *)guide;
+- (void)guideMenuControllerGuideDeletedNGZForGuide:(GuideXML *)guide;
 @end
 
-@interface GuideMenuViewController : UITableViewController
-@property (nonatomic, strong) Guide *guide;
+@interface GuideMenuViewController : UITableViewController <UIAlertViewDelegate, UIActionSheetDelegate>
+@property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, weak) id <GuideMenuControllerDelegate> delegate;
-@property (nonatomic, strong) RXMLElement *xml;
 @property (nonatomic, strong) NSArray *tagPredicates;
 @property (nonatomic, strong) NSDictionary *tagsByPredicate;
 @property (nonatomic, strong) NSDictionary *tagCounts;
-@property (nonatomic, strong) NSString *guideDescription;
-@property (nonatomic, strong) NSString *compiler;
-@property (nonatomic, strong) NSString *license;
+
+@property (nonatomic, strong) NSURLConnection *ngzDownloadConnection;
+@property (nonatomic, strong) NSString *ngzFilePath;
+@property (nonatomic, strong) UIProgressView *progress;
+@property (nonatomic, strong) NSMutableData *receivedData;
+@property (nonatomic) long expectedBytes;
+@property (nonatomic) NSInteger lastStatusCode;
+
+- (BOOL)isDownloading;
 @end

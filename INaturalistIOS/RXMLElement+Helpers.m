@@ -99,8 +99,11 @@
  */
 - (NSDictionary *)namespaces
 {
-    xmlNsPtr *ns_list = xmlGetNsList(node_->doc, node_);
     NSMutableDictionary *namespaces = [[NSMutableDictionary alloc] init];
+    if (!node_) {
+        return namespaces;
+    }
+    xmlNsPtr *ns_list = xmlGetNsList(node_->doc, node_);
     if (!ns_list) return namespaces;
     for (int j = 0 ; ns_list[j] != NULL ; ++j) {
         if (ns_list[j]->href) {

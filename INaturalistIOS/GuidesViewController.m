@@ -9,8 +9,9 @@
 #import <Three20/Three20.h>
 #import "GuidesViewController.h"
 #import "Guide.h"
-#import "GuideDetailViewController.h"
-#import "GuideContainerViewController.h"
+#import "GuideXML.h"
+#import "GuideCollectionViewController.h"
+#import "GuideViewController.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -55,8 +56,8 @@ static const int ListControlIndexNearby = 2;
     [self checkEmpty];
     [self.tableView reloadData];
     
-    if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [self sync];
+    if (syncNeeded && RKClient.sharedClient.reachabilityObserver.isNetworkReachable) {
+        [self sync:NO];
     } else {
         [self stopSync];
     }
@@ -69,15 +70,9 @@ static const int ListControlIndexNearby = 2;
 
 - (void)loadUserGuides
 {
-//    NSArray *guideUsers = [GuideUser.all sortedArrayUsingComparator:^NSComparisonResult(GuideUser *obj1, GuideUser *obj2) {
-//        return [obj1.guide.title.lowercaseString compare:obj2.guide.title.lowercaseString];
-//    }];
-//    self.guides = [NSMutableArray arrayWithArray:[guideUsers valueForKey:@"guide"]];
-    self.guides = [NSMutableArray arrayWithArray:Guide.all];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-//    self.guides = [NSMutableArray arrayWithArray:[Guide findByAttribute:@"userLogin" withValue:username]];
-    self.guides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@", username]]];
+    self.guides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", username]]];
 }
 
 - (void)loadFeaturedGuides
@@ -137,7 +132,7 @@ static const int ListControlIndexNearby = 2;
         if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
             self.noContentLabel.text = NSLocalizedString(@"No nearby guides.",nil);
         } else {
-            self.noContentLabel.text = NSLocalizedString(@"You haven't joined any guides yet.",nil);
+            self.noContentLabel.text = NSLocalizedString(@"You haven't created or downloaded any guides yet.",nil);
         }
         self.noContentLabel.numberOfLines = 0;
         [self.noContentLabel sizeToFit];
@@ -229,15 +224,11 @@ static const int ListControlIndexNearby = 2;
                     language,
                     countryCode];
     if (username && username.length > 0) {
-//        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-//                                                     objectMapping:[GuideUser mapping]
-//                                                          delegate:self];
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                      objectMapping:[Guide mapping]
                                                           delegate:self];
     } else {
         [self stopSync];
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     }
     self.guideUsersSyncedAt = [NSDate date];
 }
@@ -263,7 +254,6 @@ static const int ListControlIndexNearby = 2;
         _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        //NSString *username = [defaults objectForKey:INatUsernamePrefKey];
         NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
         
@@ -285,15 +275,23 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
-        GuideContainerViewController *vc = [segue destinationViewController];
+        GuideViewController *vc = [segue destinationViewController];
         if ([sender isKindOfClass:Guide.class]) {
-            [vc setGuide:sender];
+            Guide *g = (Guide *)sender;
+            GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
+            [vc setGuide:gx];
+            vc.guide = gx;
+            vc.title = g.title;
         } else {
             Guide *g = [self.guides
                           objectAtIndex:[[self.tableView
                                           indexPathForSelectedRow] row]];
-            [vc setGuide:g];
+            GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
+            gx.xmlURL = [INatBaseURL stringByAppendingFormat:@"/guides/%@.xml", g.recordID];
+            vc.guide = gx;
+            vc.title = g.title;
         }
+        vc.guideDelegate = self;
     } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         vc.delegate = self;
@@ -387,7 +385,7 @@ static const int ListControlIndexNearby = 2;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         Guide *g = (Guide *)o;
-        [o setSyncedAt:now];
+        [g setSyncedAt:now];
     }
     
 //    if ([objectLoader.resourcePath rangeOfString:@"guides/user"].location != NSNotFound) {
@@ -459,5 +457,24 @@ static const int ListControlIndexNearby = 2;
     [self setSyncButton:nil];
     [self setSyncActivityItem:nil];
     [super viewDidUnload];
+}
+
+#pragma mark - GuideViewControllerDelegate
+- (void)guideViewControllerDownloadedNGZForGuide:(GuideXML *)guide
+{
+    Guide *g = [Guide objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", guide.identifier]];
+    if (g) {
+        g.ngzDownloadedAt = guide.ngzDownloadedAt;
+        [g save];
+    }
+}
+
+- (void)guideViewControllerDeletedNGZForGuide:(GuideXML *)guide
+{
+    Guide *g = [Guide objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", guide.identifier]];
+    if (g) {
+        g.ngzDownloadedAt = nil;
+        [g save];
+    }
 }
 @end

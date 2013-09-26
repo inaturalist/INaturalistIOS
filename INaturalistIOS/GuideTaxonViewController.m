@@ -21,6 +21,8 @@ static const int WebViewTag = 1;
 @synthesize webView = _webView;
 @synthesize xml = _xml;
 @synthesize xmlString = _xmlString;
+@synthesize basePath = _basePath;
+@synthesize local = _local;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -38,14 +40,19 @@ static const int WebViewTag = 1;
         self.webView = (UIWebView *)[self.view viewWithTag:WebViewTag];
     }
     if (self.xmlString && [self.xmlString rangeOfString:@"xsl"].location == NSNotFound) {
-        NSString *header = @"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"guide_taxon.xsl\"?>\n<INatGuide xmlns:dc=\"http://purl.org/dc/elements/1.1/\">";
+        NSString *xslPath;
+        if (self.local) {
+            xslPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"guide_taxon-local.xsl"];
+        } else {
+            xslPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"guide_taxon-remote.xsl"];
+        }
+        NSString *header = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"%@\"?>\n<INatGuide xmlns:dc=\"http://purl.org/dc/elements/1.1/\">", xslPath];
         self.xmlString = [[header stringByAppendingString:self.xmlString] stringByAppendingString:@"</INatGuide>"];
     }
     if (!self.xml) {
         self.xml = [[RXMLElement alloc] initFromXMLString:self.xmlString encoding:NSUTF8StringEncoding];
     }
-    NSString *path = [[NSBundle mainBundle] bundlePath];
-    NSURL *baseURL = [NSURL fileURLWithPath:path];
+    NSURL *baseURL = [NSURL fileURLWithPath:self.basePath];
     [self.webView loadData:[self.xmlString dataUsingEncoding:NSUTF8StringEncoding]
                   MIMEType:@"text/xml"
           textEncodingName:@"utf-8"
