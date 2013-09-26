@@ -388,12 +388,10 @@ static const int ListControlIndexNearby = 2;
         [g setSyncedAt:now];
     }
     
-//    if ([objectLoader.resourcePath rangeOfString:@"guides/user"].location != NSNotFound) {
-//        NSArray *rejects = [GuideUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-//        for (GuideUser *pu in rejects) {
-//            [pu deleteEntity];
-//        }
-//    }
+    NSArray *rejects = [Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil", now]];
+    for (Guide *g in rejects) {
+        [g deleteEntity];
+    }
     
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
