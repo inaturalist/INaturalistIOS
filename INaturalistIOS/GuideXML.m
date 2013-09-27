@@ -196,7 +196,7 @@
 
 - (NSString *)ngzFileSize
 {
-    return @"50.9 MB";
+    return [[self atXPath:@"//ngz/size"] text];
 }
 
 - (void)deleteNGZ

@@ -50,7 +50,9 @@ static const int CellLabelTag = 200;
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
             NSDate *pastDate = [gregorian dateByAddingComponents:offset toDate:[NSDate date] options:0];
-            if (self.guide.xmlURL && [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending) {
+            if (self.guide.xmlURL &&
+                RKClient.sharedClient.reachabilityObserver.isNetworkReachable &&
+                [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending) {
                 [self downloadXML:self.guide.xmlURL];
             }
         } else if (self.guide.xmlURL) {
@@ -130,12 +132,13 @@ static const int CellLabelTag = 200;
     [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
     img.contentMode = UIViewContentModeCenter;
     NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
-    NSString *localImagePath = [self.guide imagePathForTaxonAtPosition:gtPosition size:@"small" fromXPath:[self currentXPath]];
+    NSString *size = self.scale > 3 ? @"medium" : @"small";
+    NSString *localImagePath = [self.guide imagePathForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
     if (localImagePath) {
         [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
         img.contentMode = UIViewContentModeScaleAspectFill;
     } else {
-        NSString *remoteImageURL = [self.guide imageURLForTaxonAtPosition:gtPosition size:@"small" fromXPath:[self currentXPath]];
+        NSString *remoteImageURL = [self.guide imageURLForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
         if (remoteImageURL) {
             [img setDefaultImage:nil];
             img.urlPath = remoteImageURL;
@@ -146,7 +149,7 @@ static const int CellLabelTag = 200;
     UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
     NSString *displayName = [self.guide displayNameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
     NSString *name = [self.guide nameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
-    if ([displayName isEqualToString:name]) {
+    if (!displayName || [displayName isEqualToString:name]) {
         label.font = [UIFont italicSystemFontOfSize:12.0];
         label.text = name;
     } else {
@@ -252,6 +255,7 @@ static const int CellLabelTag = 200;
 
 - (void)guideMenuControllerGuideDownloadedNGZForGuide:(GuideXML *)guide
 {
+    [self.tags removeAllObjects];
     [self loadXML:self.guide.xmlPath];
 }
 
@@ -425,17 +429,17 @@ static const int CellLabelTag = 200;
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    NSError *error;
-    if ([self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
-        NSLog(@"wrote to file: %@", self.filePath);
-    } else {
-        NSLog(@"failed to write to %@, error: %@", self.filePath, error);
-    }
     if (self.progress) {
         self.progress.hidden = YES;
     }
     [DejalBezelActivityView removeView];
     if (self.lastStatusCode == 200) {
+        NSError *error;
+        if ([self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
+            NSLog(@"wrote to file: %@", self.filePath);
+        } else {
+            NSLog(@"failed to write to %@, error: %@", self.filePath, error);
+        }
         [self.controller loadXML:self.filePath];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)

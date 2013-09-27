@@ -113,10 +113,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             return 1;
         }
         // About
-        else if (self.guide.ngzURL) {
+        else {
             return 3;
-        } else {
-            return 2;
         }
     }
 }
@@ -129,7 +127,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     static NSString *ProgressCellIdentifier = @"ProgressCell";
     NSString *tag = [self tagForIndexPath:indexPath];
     if (tag) {
-//        cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
         cell = [self cellForTag:tag atIndexPath:indexPath];
     } else {
         NSInteger i = indexPath.section - self.tagPredicates.count;
@@ -158,6 +155,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                 } else {
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
                     if (self.guide.ngzDownloadedAt) {
+                        cell.textLabel.textColor = [UIColor whiteColor];
                         cell.textLabel.text = NSLocalizedString(@"Downloaded", nil);
                         NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                         [fmt setTimeZone:[NSTimeZone localTimeZone]];
@@ -165,10 +163,16 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         [fmt setTimeStyle:NSDateFormatterMediumStyle];
                         cell.detailTextLabel.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
                         cell.imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
-                    } else {
+                    } else if (self.guide.ngzURL) {
+                        cell.textLabel.textColor = [UIColor whiteColor];
                         cell.textLabel.text = NSLocalizedString(@"Download for offline use", nil);
                         cell.detailTextLabel.text = self.guide.ngzFileSize;
                         cell.imageView.image = [UIImage imageNamed:@"265-download.png"];
+                    } else {
+                        cell.textLabel.textColor = [UIColor darkGrayColor];
+                        cell.textLabel.text = NSLocalizedString(@"Download not available", nil);
+                        cell.detailTextLabel.text = NSLocalizedString(@"Guide editor must enable this feature.", nil);
+                        cell.imageView.image = [UIImage imageNamed:@"265-download-gray.png"];
                     }
                 }
             }
@@ -216,7 +220,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSString *title;
     NSInteger i = section - self.tagPredicates.count;
     if (section < self.tagPredicates.count) {
-        title = [NSLocalizedString([self.tagPredicates objectAtIndex:section], nil) uppercaseString];
+        NSString *humanTitle = [[[[self.tagPredicates objectAtIndex:section] componentsSeparatedByString:@":"] lastObject] humanize];
+        title = [NSLocalizedString(humanTitle, nil) uppercaseString];
     } else if (i == 0) {
         title = NSLocalizedString(@"DESCRIPTION", nil);
     } else {
@@ -224,7 +229,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     }
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    view.backgroundColor = [UIColor darkGrayColor];
+    view.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(68, 0, 252, 22)];
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
@@ -262,7 +267,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                                               destructiveButtonTitle:NSLocalizedString(@"Delete download", nil)
                                                    otherButtonTitles:NSLocalizedString(@"Re-download", nil), nil];
             [as showFromTabBar:self.tabBarController.tabBar];
-        } else {
+        } else if (self.guide.ngzURL) {
             UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
                                                          message:[NSString stringWithFormat:NSLocalizedString(@"This will download %@ of data so you can use this guide even when you don't have Internet access.", nil), self.guide.ngzFileSize]
                                                         delegate:self
@@ -270,6 +275,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                                                otherButtonTitles:NSLocalizedString(@"Download",nil), nil];
             av.tag = ConfirmDownloadAlertViewTag;
             [av show];
+        } else {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
     }
 }
@@ -408,7 +415,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)extractNGZ
 {
-    // TODO unzip the archive
+    // unzip the archive
     [SSZipArchive unzipFileAtPath:self.guide.ngzPath toDestination:self.guide.dirPath];
     // reload data in collectionview
     if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDownloadedNGZForGuide:)]) {

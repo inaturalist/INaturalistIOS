@@ -81,7 +81,7 @@
                                                               password:[passwordField text]];
 }
 
-#pragma mark RKRequestDelegate methods
+#pragma mark - RKRequestDelegate methods
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
     if (response.statusCode == 200 || response.statusCode == 304) {
