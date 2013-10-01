@@ -50,10 +50,11 @@ static const int CellLabelTag = 200;
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
             NSDate *pastDate = [gregorian dateByAddingComponents:offset toDate:[NSDate date] options:0];
-            if (self.guide.xmlURL &&
-                RKClient.sharedClient.reachabilityObserver.isNetworkReachable &&
-                [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending) {
-                [self downloadXML:self.guide.xmlURL];
+            if (self.guide.xmlURL
+                && RKClient.sharedClient.reachabilityObserver.isNetworkReachable
+                && [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending
+                ) {
+                [self downloadXML:self.guide.xmlURL quietly:YES];
             }
         } else if (self.guide.xmlURL) {
             [self downloadXML:self.guide.xmlURL];
@@ -269,15 +270,22 @@ static const int CellLabelTag = 200;
 
 - (void)downloadXML:(NSString *)url
 {
-    NSString *activityMsg = NSLocalizedString(@"Loading...",nil);
-    if (modalActivityView) {
-        [[modalActivityView activityLabel] setText:activityMsg];
-    } else {
-        modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
-                                                              withLabel:activityMsg];
+    [self downloadXML:url qiuietly:NO];
+}
+
+- (void)downloadXML:(NSString *)url quietly:(BOOL)quietly
+{
+    if (!quietly) {
+        NSString *activityMsg = NSLocalizedString(@"Loading...",nil);
+        if (modalActivityView) {
+            [[modalActivityView activityLabel] setText:activityMsg];
+        } else {
+            modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
+                                                                  withLabel:activityMsg];
+        }
     }
     NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:60];
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:theRequest
