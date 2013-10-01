@@ -260,7 +260,7 @@ static const int CellLabelTag = 200;
     [self loadXML:self.guide.xmlPath];
 }
 
-#pragma mark - GuideDetailViewController
+#pragma mark - GuideCollectionViewController
 - (void)loadXML:(NSString *)path
 {
     self.guide = [self.guide cloneWithXMLFilePath:path];

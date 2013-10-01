@@ -12,6 +12,7 @@
 #import "GuideXML.h"
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
+#import "INaturalistAppDelegate.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -23,7 +24,6 @@ static const int ListControlIndexNearby = 2;
 @synthesize guides = _guides;
 @synthesize loader = _loader;
 @synthesize guideUsersSyncedAt = _lastSyncedAt;
-//@synthesize featuredGuidesSyncedAt = _featuredGuidesSyncedAt;
 @synthesize allGuidesSyncedAt = _allGuidesSyncedAt;
 @synthesize nearbyGuidesSyncedAt = _nearbyGuidesSyncedAt;
 @synthesize noContentLabel = _noContentLabel;
@@ -163,7 +163,11 @@ static const int ListControlIndexNearby = 2;
             [self syncNearbyGuides:explicit];
             break;
         default:
-            [self syncUserGuides];
+            if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
+                [self syncUserGuides];
+            } else {
+                self.navigationItem.rightBarButtonItem = self.syncButton;
+            }
             break;
     }
 }
