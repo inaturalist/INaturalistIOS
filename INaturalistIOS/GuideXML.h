@@ -21,6 +21,8 @@
 @property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, strong) NSString *identifier;
 
++ (NSString *)dirPath;
++ (void)setupFilesystem;
 - (id)initWithIdentifier:(NSString *)identifier;
 - (GuideXML *)cloneWithXMLFilePath:(NSString *)path;
 - (NSDate *)xmlDownloadedAt;

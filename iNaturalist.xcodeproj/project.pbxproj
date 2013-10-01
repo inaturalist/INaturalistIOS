@@ -10,6 +10,7 @@
 		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
+		1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 1904E5F217FB814A00725804 /* bootstrap.min.css */; };
 		1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
 		190619B8152A363E0001A307 /* DCRoundSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B1152A363E0001A307 /* DCRoundSwitch.m */; };
 		190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 190619B3152A363E0001A307 /* DCRoundSwitchKnobLayer.m */; };
@@ -443,6 +444,7 @@
 		1902812714F315F2005AC8D2 /* INatModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatModel.m; sourceTree = "<group>"; };
 		1902813B14F36B44005AC8D2 /* ObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPhoto.h; sourceTree = "<group>"; };
 		1902813C14F36B44005AC8D2 /* ObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPhoto.m; sourceTree = "<group>"; };
+		1904E5F217FB814A00725804 /* bootstrap.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = bootstrap.min.css; sourceTree = "<group>"; };
 		1905715E14FDFF49007FBE30 /* EditLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationViewController.h; sourceTree = "<group>"; };
 		1905715F14FDFF49007FBE30 /* EditLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditLocationViewController.m; sourceTree = "<group>"; };
 		190619B0152A363E0001A307 /* DCRoundSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRoundSwitch.h; sourceTree = "<group>"; };
@@ -858,6 +860,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1904E5F117FB7DAC00725804 /* guides */ = {
+			isa = PBXGroup;
+			children = (
+				19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */,
+				19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */,
+				1904E5F217FB814A00725804 /* bootstrap.min.css */,
+			);
+			name = guides;
+			sourceTree = "<group>";
+		};
 		190619AF152A363E0001A307 /* DCRoundSwitch */ = {
 			isa = PBXGroup;
 			children = (
@@ -964,6 +976,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
 				1953065A150592AC004951D8 /* images */,
@@ -972,8 +985,6 @@
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
 				19A219F11707B8A50042A889 /* config.h */,
-				19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */,
-				19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1873,6 +1884,7 @@
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
 				19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */,
+				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

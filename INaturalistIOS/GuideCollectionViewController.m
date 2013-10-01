@@ -29,6 +29,7 @@ static const int CellLabelTag = 200;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [GuideXML setupFilesystem];
     if (!self.guide) {
         if (self.guideXMLPath) {
             self.guide = [[GuideXML alloc] initFromXMLFile:self.guideXMLPath];

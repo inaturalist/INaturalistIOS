@@ -27,6 +27,32 @@
     return [[GuideXML alloc] initFromXMLFilePath:fullPath];
 }
 
++ (NSString *)dirPath
+{
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    return [docDir stringByAppendingPathComponent:@"guides"];
+}
+
++ (void)setupFilesystem
+{
+    NSString *dirPath = GuideXML.dirPath;
+    NSDictionary *staticResourcePathMappings = [NSDictionary dictionaryWithKeysAndObjects:
+                                             [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"bootstrap.min.css"],
+                                             [dirPath stringByAppendingPathComponent:@"bootstrap.min.css"],
+                                             nil];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:GuideXML.dirPath]) {
+        [fm createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    for (NSString *bundlePath in staticResourcePathMappings) {
+        NSString *docsPath = [staticResourcePathMappings objectForKey:bundlePath];
+        if ([fm fileExistsAtPath:bundlePath] && ![fm fileExistsAtPath:docsPath]) {
+            [fm copyItemAtPath:bundlePath toPath:docsPath error:nil];
+        }
+    }
+}
+
 // clone with new xml data but preserve the identifier
 - (GuideXML *)cloneWithXMLFilePath:(NSString *)path
 {
@@ -67,10 +93,7 @@
 - (NSString *)dirPath
 {
     if (!_dirPath) {
-        NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *docDir = [docDirs objectAtIndex:0];
-        NSString *guidesDirPath = [docDir stringByAppendingPathComponent:@"guides"];
-        _dirPath = [guidesDirPath stringByAppendingPathComponent:self.identifier];
+        _dirPath = [GuideXML.dirPath stringByAppendingPathComponent:self.identifier];
     }
     return _dirPath;
 }
