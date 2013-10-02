@@ -271,7 +271,7 @@ static const int CellLabelTag = 200;
 
 - (void)downloadXML:(NSString *)url
 {
-    [self downloadXML:url qiuietly:NO];
+    [self downloadXML:url quietly:NO];
 }
 
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly

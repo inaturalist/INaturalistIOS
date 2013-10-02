@@ -27,7 +27,7 @@
 
 - (void)loadXML:(NSString *)path;
 - (void)downloadXML:(NSString *)url;
-- (void)downloadXML:(NSString *)url qiuietly:(BOOL)quietly;
+- (void)downloadXML:(NSString *)url quietly:(BOOL)quietly;
 - (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
