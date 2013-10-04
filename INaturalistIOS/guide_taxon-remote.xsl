@@ -9,7 +9,7 @@
           <![CDATA[
             .images {white-space: nowrap; overflow-x:auto; overflow-y:hidden;-webkit-overflow-scrolling: touch;}
             .images .image {display:inline-block; margin-left:1em; max-width:100%;}
-            .images img.thumb {max-width:100%; max-height:200px;}
+            .images img.thumb {max-width:100%; max-height:250px;}
             .images .image:first-child {margin-left:0;}
             .container {padding-top: 1em;padding-bottom: 2em;}
           ]]>
@@ -23,16 +23,16 @@
                 <xsl:choose>
                   <xsl:when test="href[@type='remote' and @size='large']">
                     <a href="{href[@type='remote' and @size='large']}">
-                      <img src="{href[@type='remote' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                      <img src="{href[@type='remote' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
                     </a>
                   </xsl:when>
                   <xsl:when test="href[@type='remote' and @size='medium']">
                     <a href="{href[@type='remote' and @size='medium']}">
-                      <img src="{href[@type='remote' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                      <img src="{href[@type='remote' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
                     </a>
                   </xsl:when>
                   <xsl:otherwise>
-                    <img src="{href[@type='remote' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>  
+                    <img src="{href[@type='remote' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>  
                   </xsl:otherwise>
                 </xsl:choose>
                 <div class="text-muted text-center">
