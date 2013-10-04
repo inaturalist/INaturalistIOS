@@ -1,5 +1,5 @@
 //
-//  NSString+Inflections.h
+//  NSString+Helpers.h
 //  iNaturalist
 //
 //  Created by Ken-ichi Ueda on 3/13/12.
@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (Inflections)
+@interface NSString (Helpers)
 
 - (NSString *)underscore;
 - (NSString *)pluralize;
 - (NSString *)humanize;
+-(NSString *) stringByStrippingHTML;
 @end

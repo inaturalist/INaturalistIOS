@@ -93,41 +93,47 @@
 
           <div class="text-muted">
             <h2>Sources and Attribution</h2>
-            <p>
-              <small>
-                <strong>Photos:</strong>
-                <xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
-                <xsl:call-template name="join">
-                  <xsl:with-param name="list" select="//GuidePhoto/attribution[text()]" />
-                  <xsl:with-param name="separator" select="', '" />
-                </xsl:call-template>
-              </small>
-            </p>
-            <p>
-              <small>
-                <strong>Maps:</strong>
-                <xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
-                <xsl:call-template name="join">
-                  <xsl:with-param name="list" select="//GuideRange/attribution[text()]" />
-                  <xsl:with-param name="separator" select="', '" />
-                </xsl:call-template>
-              </small>
-            </p>
-            <p>
-              <small>
-                <strong>Text: </strong>
-                <xsl:for-each select="//GuideSection">
-                  <xsl:text disable-output-escaping="yes"><![CDATA[&ldquo;]]></xsl:text>
-                  <xsl:value-of select="dc:title"/>
-                  <xsl:text disable-output-escaping="yes"><![CDATA[&rdquo;]]></xsl:text>
+            <xsl:if test="//GuidePhoto">
+              <p>
+                <small>
+                  <strong>Photos:</strong>
                   <xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
-                  <xsl:value-of select="attribution[text()]"/>
-                  <xsl:if test="position() != last()">
-                    <xsl:value-of select="', '" />
-                  </xsl:if>
-                </xsl:for-each>
-              </small>
-            </p>
+                  <xsl:call-template name="join">
+                    <xsl:with-param name="list" select="//GuidePhoto/attribution[text()]" />
+                    <xsl:with-param name="separator" select="', '" />
+                  </xsl:call-template>
+                </small>
+              </p>
+            </xsl:if>
+            <xsl:if test="//GuideRange">
+              <p>
+                <small>
+                  <strong>Maps:</strong>
+                  <xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
+                  <xsl:call-template name="join">
+                    <xsl:with-param name="list" select="//GuideRange/attribution[text()]" />
+                    <xsl:with-param name="separator" select="', '" />
+                  </xsl:call-template>
+                </small>
+              </p>
+            </xsl:if>
+            <xsl:if test="//GuideSection">
+              <p>
+                <small>
+                  <strong>Text: </strong>
+                  <xsl:for-each select="//GuideSection">
+                    <xsl:text disable-output-escaping="yes"><![CDATA[&ldquo;]]></xsl:text>
+                    <xsl:value-of select="dc:title"/>
+                    <xsl:text disable-output-escaping="yes"><![CDATA[&rdquo;]]></xsl:text>
+                    <xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
+                    <xsl:value-of select="attribution[text()]"/>
+                    <xsl:if test="position() != last()">
+                      <xsl:value-of select="', '" />
+                    </xsl:if>
+                  </xsl:for-each>
+                </small>
+              </p>
+            </xsl:if>
           </div>
         </div>
       </body>

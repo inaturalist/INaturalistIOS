@@ -133,7 +133,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         if (i == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:TextCellIdentifier forIndexPath:indexPath];
             UITextView *textView = (UITextView *)[cell viewWithTag:TextCellTextViewTag];
-            textView.text = self.guide.desc;
+            textView.text = [self.guide.desc stringByStrippingHTML];
         } else {
             if (indexPath.row < 2) {
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
@@ -209,9 +209,9 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSInteger i = indexPath.section - self.tagPredicates.count;
     if (i != 0) return 44.0;
     CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
-    CGSize labelSize = [self.guide.desc sizeWithFont:[UIFont systemFontOfSize:15.0]
-                                   constrainedToSize:constraintSize
-                                       lineBreakMode:UILineBreakModeWordWrap];
+    CGSize labelSize = [self.guide.desc.stringByStrippingHTML sizeWithFont:[UIFont systemFontOfSize:15.0]
+                                                         constrainedToSize:constraintSize
+                                                             lineBreakMode:UILineBreakModeWordWrap];
     return labelSize.height + 20;
 }
 

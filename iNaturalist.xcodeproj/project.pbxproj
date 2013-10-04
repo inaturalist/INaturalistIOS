@@ -137,7 +137,7 @@
 		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
 		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
 		19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */; };
-		19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */; };
+		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
 		19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
 		19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
 		19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */; };
@@ -639,8 +639,8 @@
 		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
 		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
 		19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_chromista.png; sourceTree = "<group>"; };
-		19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Inflections.h"; sourceTree = "<group>"; };
-		19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Inflections.m"; sourceTree = "<group>"; };
+		19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Helpers.h"; sourceTree = "<group>"; };
+		19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Helpers.m"; sourceTree = "<group>"; };
 		19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RXMLElement+Helpers.h"; sourceTree = "<group>"; };
 		19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RXMLElement+Helpers.m"; sourceTree = "<group>"; };
 		19D8342B17E7BBDC000A5C35 /* GuideTaxonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideTaxonViewController.h; sourceTree = "<group>"; };
@@ -1386,8 +1386,8 @@
 				19F8748F152665B100A65F9A /* DejalOutsideKeyboardActivityView.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
-				19D04792150FFDAE00BB5DBC /* NSString+Inflections.h */,
-				19D04793150FFDAE00BB5DBC /* NSString+Inflections.m */,
+				19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */,
+				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
 				19640DEA150835A5003BF888 /* ObservationAnnotation.h */,
 				19640DEB150835A5003BF888 /* ObservationAnnotation.m */,
 				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
@@ -1938,7 +1938,7 @@
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
-				19D04794150FFDAE00BB5DBC /* NSString+Inflections.m in Sources */,
+				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
 				197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				1997411115194E89006FBEA0 /* SyncQueue.m in Sources */,

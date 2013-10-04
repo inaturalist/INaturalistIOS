@@ -187,7 +187,6 @@
     if (href) {
         NSString *imgPath = [self.dirPath stringByAppendingPathComponent:href.text];
         if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
-            NSLog(@"imgPath: %@", imgPath);
             return imgPath;
         }
     }

@@ -1,14 +1,14 @@
 //
-//  NSString+Inflections.m
+//  NSString+Helpers.m
 //  iNaturalist
 //
 //  Created by Ken-ichi Ueda on 3/13/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import "NSString+Inflections.h"
+#import "NSString+Helpers.h"
 
-@implementation NSString (Inflections)
+@implementation NSString (Helpers)
 
 // Derived from code by Mathieu Godart, http://stackoverflow.com/a/4299110/720268
 - (NSString *)underscore {
@@ -65,5 +65,14 @@
 - (NSString *)humanize
 {
     return [self.underscore stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+}
+
+// http://stackoverflow.com/a/4886998/720268
+-(NSString *) stringByStrippingHTML {
+    NSRange r;
+    NSString *s = [self copy];
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+        s = [s stringByReplacingCharactersInRange:r withString:@""];
+    return s;
 }
 @end

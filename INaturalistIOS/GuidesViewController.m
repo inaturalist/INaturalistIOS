@@ -280,21 +280,18 @@ static const int ListControlIndexNearby = 2;
 {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
         GuideViewController *vc = [segue destinationViewController];
+        Guide *g;
         if ([sender isKindOfClass:Guide.class]) {
-            Guide *g = (Guide *)sender;
-            GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
-            [vc setGuide:gx];
-            vc.guide = gx;
-            vc.title = g.title;
+            g = (Guide *)sender;
         } else {
-            Guide *g = [self.guides
+            g = [self.guides
                           objectAtIndex:[[self.tableView
                                           indexPathForSelectedRow] row]];
-            GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
-            gx.xmlURL = [INatBaseURL stringByAppendingFormat:@"/guides/%@.xml", g.recordID];
-            vc.guide = gx;
-            vc.title = g.title;
         }
+        GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
+        gx.xmlURL = [INatBaseURL stringByAppendingFormat:@"/guides/%@.xml", g.recordID];
+        vc.guide = gx;
+        vc.title = g.title;
         vc.guideDelegate = self;
     } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
