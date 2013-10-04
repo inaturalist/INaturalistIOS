@@ -9,12 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "RXMLElement.h"
 #import "ObservationDetailViewController.h"
+#import "GuideTaxonXML.h"
 
-@interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate>
+@interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate, UIWebViewDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
-@property (strong, nonatomic) RXMLElement *xml;
-@property (strong, nonatomic) NSString *basePath;
+@property (strong, nonatomic) GuideTaxonXML *guideTaxon;
 - (IBAction)clickedObserve:(id)sender;
-@property (strong, nonatomic) NSString *xmlString;
-@property (nonatomic) BOOL local;
+- (void)showAssetByURL:(NSString *)url;
 @end

@@ -39,7 +39,7 @@
  */
 - (RXMLElement *)atXPath:(NSString *)xpath
 {
-    NSArray *nodes = [self childrenWithRootXPath2:xpath];
+    NSArray *nodes = [self childrenWithXPath:xpath];
     if (nodes.count > 0) {
         return [nodes objectAtIndex:0];
     } else {
@@ -47,13 +47,14 @@
     }
 }
 
-- (NSArray *)childrenWithRootXPath2:(NSString *)xpath {
+- (NSArray *)childrenWithXPath:(NSString *)xpath {
     // check for a query
     if (!xpath) {
         return [NSArray array];
     }
     
     xmlXPathContextPtr context = xmlXPathNewContext([self.xmlDoc doc]);
+    context->node = node_;
     
     if (context == NULL) {
 		return nil;
@@ -113,5 +114,11 @@
     }
     xmlFree(ns_list);
     return namespaces;
+}
+
+- (void)iterateWithXPath:(NSString *)xpath usingBlock:(void (^)(RXMLElement *))blk
+{
+    NSArray *children = [self childrenWithXPath:xpath];
+    [self iterateElements:children usingBlock:blk];
 }
 @end

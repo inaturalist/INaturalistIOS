@@ -17,6 +17,7 @@
 
 @interface GuideViewController : SWRevealViewController
 @property (nonatomic, strong) GuideXML *guide;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *guideMenuButton;
 @property (nonatomic, weak) id <GuideViewControllerDelegate> guideDelegate;
 - (IBAction)clickedGuideMenuButton:(id)sender;
 @end

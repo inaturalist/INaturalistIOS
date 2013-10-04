@@ -20,7 +20,21 @@
           <div id="photos" class="images">
             <xsl:for-each select="//GuidePhoto">
               <div class="image">
-                <img src="{href[@type='local' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                <xsl:choose>
+                  <xsl:when test="href[@type='local' and @size='large']">
+                    <a href="{href[@type='local' and @size='large']}">
+                      <img src="{href[@type='local' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                    </a>
+                  </xsl:when>
+                  <xsl:when test="href[@type='local' and @size='medium']">
+                    <a href="{href[@type='local' and @size='medium']}">
+                      <img src="{href[@type='local' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                    </a>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <img src="{href[@type='local' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>  
+                  </xsl:otherwise>
+                </xsl:choose>
                 <div class="text-muted text-center">
                   <small>
                     <xsl:text disable-output-escaping="yes"><![CDATA[&copy;]]></xsl:text>
@@ -47,7 +61,21 @@
           <div id="ranges" class="images">
             <xsl:for-each select="//GuideRange">
               <div class="image">
-                <img src="{href[@type='local' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
+                <xsl:choose>
+                  <xsl:when test="href[@type='local' and @size='large']">
+                    <a href="{href[@type='local' and @size='large']}">
+                      <img src="{href[@type='local' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
+                    </a>
+                  </xsl:when>
+                  <xsl:when test="href[@type='local' and @size='medium']">
+                    <a href="{href[@type='local' and @size='medium']}">
+                      <img src="{href[@type='local' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
+                    </a>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <img src="{href[@type='local' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>  
+                  </xsl:otherwise>
+                </xsl:choose>
                 <div class="text-muted text-center">
                   <small>
                     <xsl:text disable-output-escaping="yes"><![CDATA[&copy;]]></xsl:text>

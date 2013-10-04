@@ -95,11 +95,10 @@ static const int CellLabelTag = 200;
     if ([segue.identifier isEqualToString:@"GuideTaxonSegue"]) {
         GuideTaxonViewController *vc = [segue destinationViewController];
         NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
-        RXMLElement *gt = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
+        RXMLElement *rx = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
+        GuideTaxonXML *gt = [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:rx];
         if (gt) {
-            vc.xmlString = gt.xmlString;
-            vc.basePath = self.guide.dirPath;
-            vc.local = (self.guide.ngzDownloadedAt != nil);
+            vc.guideTaxon = gt;
         }
     }
 }
