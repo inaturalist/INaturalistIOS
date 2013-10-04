@@ -15,6 +15,7 @@
 @interface GuideCollectionViewController : UICollectionViewController <UISearchBarDelegate, GuideMenuControllerDelegate>
 {
     DejalActivityView *modalActivityView;
+    NSTimer *searchTimer;
 }
 @property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, strong) NSString *guideXMLPath;
@@ -39,6 +40,7 @@
 @property (nonatomic) NSInteger lastStatusCode;
 @property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, strong) GuideCollectionViewController *controller;
+@property (nonatomic) BOOL quiet;
 
 - (id)initWithController:(GuideCollectionViewController *)controller;
 

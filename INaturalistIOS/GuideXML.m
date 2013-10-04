@@ -182,11 +182,12 @@
 
 - (NSString *)imagePathForTaxonAtPosition:(NSInteger)position size:(NSString *)size fromXPath:(NSString *)xpath
 {
-    NSString *imgXPath = [NSString stringWithFormat:@"%@[%d]/GuidePhoto[1]/href[@type='local' and @size='%@']", xpath, position, size];
+    NSString *imgXPath = [NSString stringWithFormat:@"(%@)[%d]/GuidePhoto[1]/href[@type='local' and @size='%@']", xpath, position, size];
     RXMLElement *href = [self atXPath:imgXPath];
     if (href) {
         NSString *imgPath = [self.dirPath stringByAppendingPathComponent:href.text];
         if ([[NSFileManager defaultManager] fileExistsAtPath:imgPath]) {
+            NSLog(@"imgPath: %@", imgPath);
             return imgPath;
         }
     }

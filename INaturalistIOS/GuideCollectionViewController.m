@@ -137,6 +137,7 @@ static const int CellLabelTag = 200;
     NSString *localImagePath = [self.guide imagePathForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
     if (localImagePath) {
         [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
+        img.urlPath = localImagePath;
         img.contentMode = UIViewContentModeScaleAspectFill;
     } else {
         NSString *remoteImageURL = [self.guide imageURLForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
@@ -199,9 +200,19 @@ static const int CellLabelTag = 200;
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     self.search = searchText;
-    
-    // this is exessively slow, but works. A better approach might involve nstimer to wait a bit before reloading the data
+    [searchTimer invalidate];
+    searchTimer = nil;
+    searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
+                                                   target:self
+                                                 selector:@selector(performSearch)
+                                                 userInfo:searchText
+                                                  repeats:NO];
+}
+
+- (void)performSearch
+{
     [self.collectionView reloadData];
+    searchTimer = nil;
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
@@ -288,6 +299,7 @@ static const int CellLabelTag = 200;
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:60];
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
+    d.quiet = quietly;
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:theRequest
                                                                   delegate:d
                                                           startImmediately:YES];
@@ -363,6 +375,7 @@ static const int CellLabelTag = 200;
 @synthesize lastStatusCode = _lastStatusCode;
 @synthesize filePath = _filePath;
 @synthesize controller = _controller;
+@synthesize quiet = _quiet;
 
 - (id)init
 {
@@ -422,12 +435,14 @@ static const int CellLabelTag = 200;
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
-                                                 message:error.localizedDescription
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    if (!self.quiet) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+                                                     message:error.localizedDescription
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
     [DejalBezelActivityView removeView];
 }
 
@@ -449,7 +464,7 @@ static const int CellLabelTag = 200;
             NSLog(@"failed to write to %@, error: %@", self.filePath, error);
         }
         [self.controller loadXML:self.filePath];
-    } else {
+    } else if (!self.quiet) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
                                                      message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
                                                     delegate:self
