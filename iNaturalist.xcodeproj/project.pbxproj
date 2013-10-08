@@ -555,6 +555,7 @@
 		19570CC617EBB624000C800A /* GuideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideMenuViewController.m; sourceTree = "<group>"; };
 		19570CCC17ECD0B0000C800A /* guides-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu.png"; sourceTree = "<group>"; };
 		19570CCD17ECD0B0000C800A /* guides-menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu@2x.png"; sourceTree = "<group>"; };
+		1958892A1804BB0500294EB3 /* SystemVersionMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemVersionMacros.h; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
 		195F3247151A8AB60019CB85 /* Taxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Taxon.m; sourceTree = "<group>"; };
@@ -1400,6 +1401,7 @@
 				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
 				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
 				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
+				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";

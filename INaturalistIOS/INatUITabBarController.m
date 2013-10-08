@@ -23,6 +23,20 @@
     
     TTNavigator* navigator = [TTNavigator navigator];
     navigator.delegate = self;
+    
+    // make sure tabs fit OS version
+    if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
+        NSMutableArray * vcs = [NSMutableArray
+                                arrayWithArray:[self viewControllers]];
+        [vcs removeObjectAtIndex:3]; // remove guides tab
+        [self setViewControllers:vcs];
+    }
+    [super viewDidLoad];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 // make sure view controllers in the tabs can autorotate
