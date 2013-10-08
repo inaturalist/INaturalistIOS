@@ -31,7 +31,16 @@
 {
     NSString *relativePath = [self.xml atXPath:xpath].text;
     if (relativePath) {
-        return [NSString stringWithFormat:@"file://%@", [self.guideTaxon.guide.dirPath stringByAppendingPathComponent:relativePath]];
+        return [NSString stringWithFormat:@"documents://guides/%@/%@", self.guideTaxon.guide.identifier, relativePath];
+    }
+    return nil;
+}
+
+- (NSString *)pathForTextAtXPath:(NSString *)xpath
+{
+    NSString *relativePath = [self.xml atXPath:xpath].text;
+    if (relativePath) {
+        return [self.guideTaxon.guide.dirPath stringByAppendingPathComponent:relativePath];
     }
     return nil;
 }
@@ -51,6 +60,23 @@
 - (NSString *)localLargeURL
 {
     return [self urlForTextAtXPath:@"descendant::href[@type='local' and @size='large']"];
+}
+
+- (NSString *)localThumbPath
+{
+    return [self pathForTextAtXPath:@"descendant::href[@type='local' and @size='thumb']"];
+}
+- (NSString *)localSmallPath
+{
+    return [self pathForTextAtXPath:@"descendant::href[@type='local' and @size='small']"];
+}
+- (NSString *)localMediumPath
+{
+    return [self pathForTextAtXPath:@"descendant::href[@type='local' and @size='medium']"];
+}
+- (NSString *)localLargePath
+{
+    return [self pathForTextAtXPath:@"descendant::href[@type='local' and @size='large']"];
 }
 
 - (NSString *)remoteThumbURL
@@ -74,7 +100,7 @@
 - (NSString *)URLForVersion:(TTPhotoVersion)version
 {
     NSString *url;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.localMediumURL]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.localMediumPath]) {
         switch (version) {
             case TTPhotoVersionThumbnail:
                 url = self.localThumbURL;
@@ -154,7 +180,7 @@
         NSString *attribution = [self.xml atXPath:@"attribution"].text;
         if (desc) {
             if (attribution) {
-                _caption = [NSString stringWithFormat:@"%@\n%@", _caption, attribution];
+                _caption = [NSString stringWithFormat:@"%@\n%@", desc, attribution];
             } else {
                 _caption = desc;
             }

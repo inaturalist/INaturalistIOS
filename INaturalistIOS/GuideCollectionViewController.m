@@ -50,10 +50,8 @@ static const int CellLabelTag = 200;
             NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
-            NSDate *pastDate = [gregorian dateByAddingComponents:offset toDate:[NSDate date] options:0];
             if (self.guide.xmlURL
                 && RKClient.sharedClient.reachabilityObserver.isNetworkReachable
-                && [self.guide.xmlDownloadedAt compare:pastDate] == NSOrderedAscending
                 ) {
                 [self downloadXML:self.guide.xmlURL quietly:YES];
             }

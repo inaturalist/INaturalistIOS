@@ -30,4 +30,7 @@
 - (NSString *)remoteSmallURL;
 - (NSString *)remoteMediumURL;
 - (NSString *)remoteLargeURL;
+
+- (NSString *)urlForTextAtXPath:(NSString *)xpath;
+- (NSString *)pathForTextAtXPath:(NSString *)xpath;
 @end
