@@ -84,8 +84,15 @@ static const int GutterWidth  = 5;
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self tintMenuButton];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
     [self.navigationController setToolbarHidden:YES animated:animated];
 }
 
@@ -243,24 +250,14 @@ static const int GutterWidth  = 5;
 - (void)guideMenuControllerAddedFilterByTag:(NSString *)tag
 {
     [self.tags addObject:tag];
-    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
-    if (button) {
-        [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
-    }
+    [self tintMenuButton];
     [self.collectionView reloadData];
 }
 
 - (void)guideMenuControllerRemovedFilterByTag:(NSString *)tag
 {
     [self.tags removeObject:tag];
-    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
-    if (button) {
-        if (self.tags.count > 0) {
-            [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
-        } else {
-            [button setTintColor:[UIColor clearColor]];
-        }
-    }
+    [self tintMenuButton];
     [self.collectionView reloadData];
 }
 
@@ -368,6 +365,18 @@ static const int GutterWidth  = 5;
         _scale = 3.1;
     } else {
         _scale = scale;
+    }
+}
+
+- (void)tintMenuButton
+{
+    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
+    if (button) {
+        if (self.tags.count > 0) {
+            [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
+        } else {
+            [button setTintColor:[UIColor clearColor]];
+        }
     }
 }
 

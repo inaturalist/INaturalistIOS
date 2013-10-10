@@ -30,6 +30,7 @@
 - (void)downloadXML:(NSString *)url;
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly;
 - (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tintMenuButton;
 @end
 
 @interface XMLDownloadDelegate : NSObject <NSURLConnectionDelegate>
