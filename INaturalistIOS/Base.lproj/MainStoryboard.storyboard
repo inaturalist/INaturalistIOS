@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -2055,193 +2055,16 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <image name="projects-tab.png" width="30" height="22"/>
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
-    <classes>
-        <class className="AccuracyCircleView" superclassName="EditLocationAnnoView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AccuracyCircleView.h"/>
-        </class>
-        <class className="CrossHairView" superclassName="EditLocationAnnoView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
-        </class>
-        <class className="DCRoundSwitch" superclassName="UIControl">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DCRoundSwitch.h"/>
-        </class>
-        <class className="EditLocationAnnoView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationAnnoView.h"/>
-        </class>
-        <class className="EditLocationViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedDone:"/>
-                <relationship kind="outlet" name="accuracyCircleView" candidateClass="AccuracyCircleView"/>
-                <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
-                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
-            </relationships>
-        </class>
-        <class className="GuideCollectionViewController" superclassName="UICollectionViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideCollectionViewController.h"/>
-        </class>
-        <class className="GuideMenuViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideMenuViewController.h"/>
-        </class>
-        <class className="GuideTaxonViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideTaxonViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedObserve:"/>
-                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="GuideViewController" superclassName="SWRevealViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedGuideMenuButton:"/>
-                <relationship kind="outlet" name="guideMenuButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="GuidesViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuidesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedSync:"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="INatUITabBarController" superclassName="UITabBarController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
-        </class>
-        <class className="LoginViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancel:"/>
-                <relationship kind="action" name="signIn:"/>
-                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="usernameField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="MapTypeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapTypeViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="choseMapType:"/>
-                <relationship kind="outlet" name="mapTypeControl" candidateClass="UISegmentedControl"/>
-            </relationships>
-        </class>
-        <class className="MapViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
-            </relationships>
-        </class>
-        <class className="ObservationDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedAddPhoto:"/>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedSpeciesButton:"/>
-                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="geoprivacyCell" candidateClass="UITableViewCell"/>
-                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="DCRoundSwitch"/>
-                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="placeGuessField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="ObservationsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="edit:"/>
-                <relationship kind="action" name="sync:"/>
-                <relationship kind="outlet" name="editButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="ProjectChooserViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectChooserViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedCancel:"/>
-                <relationship kind="action" name="clickedDone:"/>
-            </relationships>
-        </class>
-        <class className="ProjectDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedClose:"/>
-                <relationship kind="action" name="clickedJoin:"/>
-                <relationship kind="action" name="clickedViewButton:"/>
-                <relationship kind="outlet" name="joinButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
-                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="ProjectListViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectListViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedSync:"/>
-                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
-                <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
-                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="ProjectsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedSync:"/>
-                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="SWRevealViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SWRevealViewController.h"/>
-        </class>
-        <class className="SettingsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-        </class>
-        <class className="TTImageView" superclassName="TTView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTImageView.h"/>
-        </class>
-        <class className="TTStyledTextLabel" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTStyledTextLabel.h"/>
-        </class>
-        <class className="TTView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTView.h"/>
-        </class>
-        <class className="TaxaSearchViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxaSearchViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedCancel:"/>
-            </relationships>
-        </class>
-        <class className="TaxonDetailViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxonDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clickedActionButton:"/>
-                <relationship kind="action" name="clickedViewMore:"/>
-            </relationships>
-        </class>
-        <class className="UICollectionReusableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
-        </class>
-        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
-        </class>
-        <class className="UICollectionViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewController.h"/>
-        </class>
-        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="cuG-ho-aNz"/>
+        <segue reference="nqN-gg-ATR"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="IDb-ci-Uhl"/>
         <segue reference="Qwd-7p-HHF"/>
     </inferredMetricsTieBreakers>
 </document>
