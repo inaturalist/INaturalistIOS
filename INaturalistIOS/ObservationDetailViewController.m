@@ -53,7 +53,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
 {
-    [self.controller dismissModalViewControllerAnimated:YES];
+    [self.controller dismissViewControllerAnimated:YES completion:nil];
     ObservationFieldValue *ofv = [self.controller observationFieldValueForIndexPath:self.indexPath];
     [self.controller.ofvCells removeObjectForKey:ofv.observationField.name];
     ofv.value = [taxon.recordID stringValue];
@@ -93,6 +93,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize lastImageReferenceURL = _lastImageReferenceURL;
 @synthesize ofvCells = _ofvCells;
 @synthesize ofvTaxaSearchControllerDelegate = _ofvTaxaSearchControllerDelegate;
+@synthesize taxonID = _taxonID;
+@synthesize taxonLoader = _taxonLoader;
 
 - (void)observationToUI
 {
@@ -138,7 +140,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         }
         self.speciesGuessTextField.enabled = NO;
         rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
-        self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.iconicTaxonName];
+        self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.taxon.iconicTaxonName];
     } else {
         rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
         self.speciesGuessTextField.enabled = YES;
@@ -301,6 +303,20 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     self.idPleaseSwitch.offText = NSLocalizedString(@"NO", nil);
     
     [self refreshCoverflowView];
+    if (self.observation && self.taxonID && self.taxonID.length > 0 && !self.observation.taxon) {
+        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", self.taxonID.intValue]];
+        if (t) {
+            self.observation.taxon = t;
+        } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxonID];
+            if (!self.taxonLoader) {
+                self.taxonLoader = [[TaxonLoader alloc] initWithViewController:self];
+            }
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+                                                         objectMapping:[Taxon mapping]
+                                                              delegate:self.taxonLoader];
+        }
+    }
     [self observationToUI];
 }
 
@@ -1575,8 +1591,37 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                               withRowAnimation:UITableViewRowAnimationNone];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
+@end
+
+@implementation TaxonLoader
+
+@synthesize viewController = _viewController;
+
+- (id)initWithViewController:(ObservationDetailViewController *)viewController
+{
+    self = [super init];
+    if (self) {
+        _viewController = viewController;
+    }
+    return self;
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
+{
+    [object save];
+    if (self.viewController.observation) {
+        self.viewController.observation.taxon = (Taxon *)object;
+        [self.viewController observationToUI];
+    }
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
+{
+    // if something went wrong, just ignore it
 }
 
 @end

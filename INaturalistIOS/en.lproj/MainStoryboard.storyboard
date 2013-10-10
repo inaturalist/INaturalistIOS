@@ -1086,6 +1086,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     </view>
                     <navigationItem key="navigationItem" title="GuideTaxon" id="SaM-EA-Ovq">
                         <barButtonItem key="rightBarButtonItem" title="Observe" id="GKo-Sv-g5X">
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <action selector="clickedObserve:" destination="zk1-NX-zZ7" id="J0S-Ll-XO1"/>
                             </connections>
@@ -2237,10 +2238,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="sKu-Sy-oMc"/>
-        <segue reference="Qwd-7p-HHF"/>
-        <segue reference="951-R5-gTN"/>
+        <segue reference="cuG-ho-aNz"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
+        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Qwd-7p-HHF"/>
     </inferredMetricsTieBreakers>
 </document>

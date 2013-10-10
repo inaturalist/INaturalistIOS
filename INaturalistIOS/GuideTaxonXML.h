@@ -16,6 +16,7 @@
 @property (strong, nonatomic) NSArray *guidePhotos;
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *displayName;
+@property (strong, nonatomic) NSString *taxonID;
 - (id)initWithGuide:(GuideXML *)guide andXML:(RXMLElement *)xml;
 - (NSString *)localImagePathForSize:(NSString *)size;
 - (NSString *)remoteImageURLForSize:(NSString *)size;

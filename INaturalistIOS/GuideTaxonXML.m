@@ -15,6 +15,7 @@
 @synthesize guidePhotos = _guidePhotos;
 @synthesize name = _name;
 @synthesize displayName = _displayName;
+@synthesize taxonID = _taxonID;
 
 - (id)initWithGuide:(GuideXML *)guide andXML:(RXMLElement *)xml
 {
@@ -70,5 +71,13 @@
         _displayName = [[self.xml atXPath:@"descendant::displayName"] text];
     }
     return _displayName;
+}
+
+- (NSString *)taxonID
+{
+    if (!_taxonID) {
+        _taxonID = [[self.xml atXPath:@"descendant::taxonID"] text];
+    }
+    return _taxonID;
 }
 @end

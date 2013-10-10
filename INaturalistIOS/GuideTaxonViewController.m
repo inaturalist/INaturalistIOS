@@ -42,6 +42,11 @@ static const int WebViewTag = 1;
         self.webView = (UIWebView *)[self.view viewWithTag:WebViewTag];
     }
     self.webView.delegate = self;
+    if (self.guideTaxon.displayName) {
+        self.title = self.guideTaxon.displayName;
+    } else {
+        self.title = self.guideTaxon.name;
+    }
     NSString *xmlString = [self.guideTaxon.xml xmlString];
     BOOL local = [[NSFileManager defaultManager] fileExistsAtPath:[self.guideTaxon.guide.dirPath stringByAppendingPathComponent:@"files"]];
     if (xmlString && [xmlString rangeOfString:@"xsl"].location == NSNotFound) {
@@ -86,7 +91,13 @@ static const int WebViewTag = 1;
         [vc setDelegate:self];
         Observation *o = [Observation object];
         o.localObservedOn = [NSDate date];
-        o.speciesGuess = [[self.guideTaxon.xml atXPath:@"name"] text];
+        if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
+            vc.taxonID = self.guideTaxon.taxonID;
+            o.speciesGuess = self.guideTaxon.displayName;
+        }
+        if (!o.speciesGuess || o.speciesGuess.length == 0) {
+            o.speciesGuess = self.guideTaxon.name;
+        }
         [vc setObservation:o];
     }
 }
