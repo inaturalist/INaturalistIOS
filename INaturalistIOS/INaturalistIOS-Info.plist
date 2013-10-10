@@ -12,6 +12,8 @@
 	<array>
 		<string>appicon.png</string>
 		<string>appicon@2x.png</string>
+		<string>appicon@72.png</string>
+		<string>appicon@144.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -21,6 +23,8 @@
 			<array>
 				<string>appicon.png</string>
 				<string>appicon@2x.png</string>
+				<string>appicon@72.png</string>
+				<string>appicon@144.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>
@@ -58,7 +62,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>22</string>
+	<string>23</string>
 	<key>FacebookAppID</key>
 	<string>26558815027</string>
 	<key>LSRequiresIPhoneOS</key>

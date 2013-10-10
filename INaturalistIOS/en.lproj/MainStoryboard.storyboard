@@ -9,14 +9,14 @@
         <scene sceneID="efM-m4-d4c">
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <sections>
                             <tableViewSection headerTitle="What did you see?" id="9br-9C-J7v">
@@ -352,28 +352,28 @@
                                         </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="bTy-8i-NnF">
                                             <rect key="frame" x="57" y="5" width="209" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="Be1-xj-miA">
                                             <rect key="frame" x="57" y="28" width="209" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="00:00 AM" textAlignment="right" lineBreakMode="clip" minimumFontSize="10" adjustsFontSizeToFit="NO" id="P1E-WK-OB4">
                                             <rect key="frame" x="272" y="5" width="43" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" alpha="0.20000000000000015" tag="4" contentMode="scaleToFill" image="01-refresh.png" id="TR3-ef-hqW">
                                             <rect key="frame" x="295" y="31" width="16" height="16"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                         </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -719,7 +719,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project name" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="r3N-gL-j8R">
                                             <rect key="frame" x="56" y="18" width="237" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -793,7 +793,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Guide name" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="xdk-Tu-cps">
                                             <rect key="frame" x="56" y="18" width="237" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -1132,25 +1132,25 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="t52-RB-yyt">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view contentMode="scaleAspectFit" id="Ylj-cd-RUn" customClass="TTImageView">
-                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                    <rect key="frame" x="5" y="5" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Project title is way too long brother" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="bKM-7Q-aRA">
-                                    <rect key="frame" x="85" y="5" width="226" height="40"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <rect key="frame" x="83" y="5" width="228" height="49"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <nil key="highlightedColor"/>
                                     <color key="shadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <size key="shadowOffset" width="0.0" height="1"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tp5-5y-3mX">
-                                    <rect key="frame" x="83" y="46" width="42" height="20"/>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tp5-5y-3mX">
+                                    <rect key="frame" x="83" y="55" width="42" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                     <state key="normal" title="Details">
@@ -1170,7 +1170,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddObservationCell" rowHeight="54" id="tO6-P3-aIO">
-                                <rect key="frame" x="0.0" y="92" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="102" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
@@ -1196,7 +1196,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonOneNameCell" rowHeight="54" id="2mR-jt-faC">
-                                <rect key="frame" x="0.0" y="146" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="156" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
@@ -1222,7 +1222,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonTwoNamesCell" rowHeight="54" id="CgW-Ad-4uh">
-                                <rect key="frame" x="0.0" y="200" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="210" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
@@ -1290,34 +1290,34 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="hGi-LL-g5q">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view tag="3" contentMode="scaleAspectFit" id="pW2-GN-tGi" customClass="TTImageView">
                                     <rect key="frame" x="250" y="0.0" width="70" height="70"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <view contentMode="scaleToFill" id="dG0-HE-yIC">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Species default name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="EcO-h2-uOF">
                                             <rect key="frame" x="20" y="5" width="280" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Species name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ohz-Dw-0wM">
                                             <rect key="frame" x="20" y="29" width="280" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="4" contentMode="left" text="Attribution" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="AWa-0U-YdH">
                                             <rect key="frame" x="20" y="47" width="280" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <color key="textColor" red="0.90196079015731812" green="0.90196079015731812" blue="0.90196079015731812" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1340,7 +1340,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <view tag="1" contentMode="scaleToFill" id="cbR-bK-HpK" customClass="TTStyledTextLabel">
                                                     <rect key="frame" x="10" y="10" width="301" height="22"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -1357,7 +1357,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ME2-ai-L2I">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="View more...">
                                                         <color key="titleColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
@@ -1387,14 +1387,14 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Unknown" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Gq1-rm-ccJ">
                                                     <rect key="frame" x="20" y="3" width="280" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="IUCN Red List" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Ypi-aU-Rf4">
                                                     <rect key="frame" x="20" y="21" width="280" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1562,7 +1562,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your iNat username" minimumFontSize="17" id="7ua-fh-uvU">
                                                     <rect key="frame" x="108" y="0.0" width="172" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" returnKeyType="next"/>
                                                     <connections>
@@ -1590,7 +1590,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your iNat password" minimumFontSize="17" id="AeG-t0-DTD">
                                                     <rect key="frame" x="108" y="0.0" width="172" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES"/>
                                                     <connections>
@@ -1742,7 +1742,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Project title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="qsE-wG-WNP">
                                             <rect key="frame" x="57" y="16" width="243" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1880,17 +1880,17 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="44d-eu-Zh4">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view contentMode="scaleAspectFit" id="xXG-M1-ixv" customClass="TTImageView">
-                                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                    <rect key="frame" x="5" y="5" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Project title is way too long brother" lineBreakMode="tailTruncation" numberOfLines="0" minimumFontSize="10" id="X8Y-bf-fBQ">
-                                    <rect key="frame" x="83" y="0.0" width="227" height="70"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <rect key="frame" x="83" y="5" width="227" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <nil key="highlightedColor"/>
@@ -1904,7 +1904,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <tableViewSection headerTitle="Description" id="kaD-3n-Xuk">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="SfM-ln-aLN">
-                                        <rect key="frame" x="0.0" y="92" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="102" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1912,7 +1912,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <view tag="1" contentMode="scaleToFill" id="NBh-eZ-iBc" customClass="TTStyledTextLabel">
                                                     <rect key="frame" x="10" y="10" width="300" height="22"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -1925,7 +1925,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <tableViewSection headerTitle="Terms" id="tnA-n3-DOC">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="f1U-r7-UNl">
-                                        <rect key="frame" x="0.0" y="158" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="168" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1933,7 +1933,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <view tag="1" contentMode="scaleToFill" id="ob5-D6-0gp" customClass="TTStyledTextLabel">
                                                     <rect key="frame" x="10" y="10" width="300" height="22"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -1945,7 +1945,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <tableViewSection headerTitle="Observation Rules" id="gDe-P6-41D">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="3Vc-Gc-bVJ">
-                                        <rect key="frame" x="0.0" y="224" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="234" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1953,7 +1953,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <view tag="2" contentMode="scaleToFill" id="agU-W9-X5t" customClass="TTStyledTextLabel">
                                                     <rect key="frame" x="10" y="10" width="300" height="22"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -1961,7 +1961,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                         </view>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="cKy-N6-Cts">
-                                        <rect key="frame" x="0.0" y="268" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="278" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1969,7 +1969,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="hX2-Qg-qfb">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="View on iNaturalist">
                                                         <color key="titleColor" red="0.21568629149999999" green="0.43529415129999999" blue="0.87843143940000001" alpha="1" colorSpace="deviceRGB"/>
@@ -2054,16 +2054,193 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <image name="projects-tab.png" width="30" height="22"/>
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
+    <classes>
+        <class className="AccuracyCircleView" superclassName="EditLocationAnnoView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AccuracyCircleView.h"/>
+        </class>
+        <class className="CrossHairView" superclassName="EditLocationAnnoView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CrossHairView.h"/>
+        </class>
+        <class className="DCRoundSwitch" superclassName="UIControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DCRoundSwitch.h"/>
+        </class>
+        <class className="EditLocationAnnoView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationAnnoView.h"/>
+        </class>
+        <class className="EditLocationViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EditLocationViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedDone:"/>
+                <relationship kind="outlet" name="accuracyCircleView" candidateClass="AccuracyCircleView"/>
+                <relationship kind="outlet" name="crossHairView" candidateClass="CrossHairView"/>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
+            </relationships>
+        </class>
+        <class className="GuideCollectionViewController" superclassName="UICollectionViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideCollectionViewController.h"/>
+        </class>
+        <class className="GuideMenuViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideMenuViewController.h"/>
+        </class>
+        <class className="GuideTaxonViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideTaxonViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedObserve:"/>
+                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
+            </relationships>
+        </class>
+        <class className="GuideViewController" superclassName="SWRevealViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuideViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedGuideMenuButton:"/>
+                <relationship kind="outlet" name="guideMenuButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="GuidesViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GuidesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="INatUITabBarController" superclassName="UITabBarController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/INatUITabBarController.h"/>
+        </class>
+        <class className="LoginViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancel:"/>
+                <relationship kind="action" name="signIn:"/>
+                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="usernameField" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="MapTypeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapTypeViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="choseMapType:"/>
+                <relationship kind="outlet" name="mapTypeControl" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="MapViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MapViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
+            </relationships>
+        </class>
+        <class className="ObservationDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedAddPhoto:"/>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedSpeciesButton:"/>
+                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="geoprivacyCell" candidateClass="UITableViewCell"/>
+                <relationship kind="outlet" name="idPleaseSwitch" candidateClass="DCRoundSwitch"/>
+                <relationship kind="outlet" name="latitudeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="longitudeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="observedAtLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="placeGuessField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="positionalAccuracyLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="speciesGuessTextField" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="ObservationsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ObservationsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="edit:"/>
+                <relationship kind="action" name="sync:"/>
+                <relationship kind="outlet" name="editButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ProjectChooserViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectChooserViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+                <relationship kind="action" name="clickedDone:"/>
+            </relationships>
+        </class>
+        <class className="ProjectDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedClose:"/>
+                <relationship kind="action" name="clickedJoin:"/>
+                <relationship kind="action" name="clickedViewButton:"/>
+                <relationship kind="outlet" name="joinButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
+                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="ProjectListViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectListViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="projectIcon" candidateClass="TTImageView"/>
+                <relationship kind="outlet" name="projectSubtitle" candidateClass="TTStyledTextLabel"/>
+                <relationship kind="outlet" name="projectTitle" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ProjectsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ProjectsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedSync:"/>
+                <relationship kind="outlet" name="syncButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="SWRevealViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SWRevealViewController.h"/>
+        </class>
+        <class className="SettingsViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
+        </class>
+        <class className="TTImageView" superclassName="TTView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTImageView.h"/>
+        </class>
+        <class className="TTStyledTextLabel" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTStyledTextLabel.h"/>
+        </class>
+        <class className="TTView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TTView.h"/>
+        </class>
+        <class className="TaxaSearchViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxaSearchViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedCancel:"/>
+            </relationships>
+        </class>
+        <class className="TaxonDetailViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TaxonDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="clickedActionButton:"/>
+                <relationship kind="action" name="clickedViewMore:"/>
+            </relationships>
+        </class>
+        <class className="UICollectionReusableView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
+        </class>
+        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
+        </class>
+        <class className="UICollectionViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewController.h"/>
+        </class>
+        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="IDb-ci-Uhl"/>
-        <segue reference="cuG-ho-aNz"/>
+        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Qwd-7p-HHF"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="Qwd-7p-HHF"/>
     </inferredMetricsTieBreakers>
 </document>

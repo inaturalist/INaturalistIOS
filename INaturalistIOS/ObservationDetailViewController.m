@@ -534,7 +534,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	self.coverflowView.coverflowDelegate = self;
 	self.coverflowView.dataSource = self;
     self.coverflowView.coverSize = CGSizeMake(coverWidth, coverHeight);
-    [self.coverflowView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [self.coverflowView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
     [self.tableView.tableHeaderView addSubview:self.coverflowView];
 }
 
@@ -651,13 +651,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [ipc setSourceType:sourceType];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
-        [popover presentPopoverFromRect:CGRectMake(0.0, 0.0, 0.0, 0.0)
-                                 inView:self.view
-               permittedArrowDirections:UIPopoverArrowDirectionAny
-                               animated:YES];
+        [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+                        permittedArrowDirections:UIPopoverArrowDirectionAny
+                                        animated:YES];
         self.popOver = popover;
     } else {
-        [self presentModalViewController:ipc animated:YES];
+        [self presentViewController:ipc animated:YES completion:nil];
     }
 }
 
@@ -1228,7 +1227,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                destructiveButtonTitle:NSLocalizedString(@"Delete observation",nil)
                                                     otherButtonTitles:nil];
     actionSheet.tag = DeleteActionSheetTag;
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
+    } else {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    }
 }
 
 - (void)clickedView
@@ -1239,7 +1242,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
     actionSheet.tag = ViewActionSheetTag;
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        [actionSheet showFromBarButtonItem:self.viewButton animated:YES];
+    } else {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    }
 }
 
 - (void)save
@@ -1281,7 +1288,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [photoChoice setCancelButtonIndex:1];
     }
-    [photoChoice showFromTabBar:self.tabBarController.tabBar];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        [photoChoice showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+    } else {
+        [photoChoice showFromTabBar:self.tabBarController.tabBar];
+    }
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {

@@ -82,6 +82,12 @@
 		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
 		19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 19570CCC17ECD0B0000C800A /* guides-menu.png */; };
 		19570CCF17ECD0B0000C800A /* guides-menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19570CCD17ECD0B0000C800A /* guides-menu@2x.png */; };
+		1958893F1806896600294EB3 /* appicon@72.png in Resources */ = {isa = PBXBuildFile; fileRef = 1958893E1806896600294EB3 /* appicon@72.png */; };
+		195889411806898800294EB3 /* appicon@144.png in Resources */ = {isa = PBXBuildFile; fileRef = 195889401806898700294EB3 /* appicon@144.png */; };
+		1958894318068BD700294EB3 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 1958894218068BD700294EB3 /* Default-Portrait~ipad.png */; };
+		1958894518068BE700294EB3 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 1958894418068BE700294EB3 /* Default-Portrait@2x~ipad.png */; };
+		1958894718068BF100294EB3 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 1958894618068BF100294EB3 /* Default-Landscape~ipad.png */; };
+		1958894918068BF300294EB3 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 1958894818068BF300294EB3 /* Default-Landscape@2x~ipad.png */; };
 		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
 		195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
 		195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
@@ -556,6 +562,12 @@
 		19570CCC17ECD0B0000C800A /* guides-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu.png"; sourceTree = "<group>"; };
 		19570CCD17ECD0B0000C800A /* guides-menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-menu@2x.png"; sourceTree = "<group>"; };
 		1958892A1804BB0500294EB3 /* SystemVersionMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemVersionMacros.h; sourceTree = "<group>"; };
+		1958893E1806896600294EB3 /* appicon@72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appicon@72.png"; sourceTree = "<group>"; };
+		195889401806898700294EB3 /* appicon@144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appicon@144.png"; sourceTree = "<group>"; };
+		1958894218068BD700294EB3 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		1958894418068BE700294EB3 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
+		1958894618068BF100294EB3 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		1958894818068BF300294EB3 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
 		195F3247151A8AB60019CB85 /* Taxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Taxon.m; sourceTree = "<group>"; };
@@ -922,6 +934,12 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
+				1958894818068BF300294EB3 /* Default-Landscape@2x~ipad.png */,
+				1958894618068BF100294EB3 /* Default-Landscape~ipad.png */,
+				1958894418068BE700294EB3 /* Default-Portrait@2x~ipad.png */,
+				1958894218068BD700294EB3 /* Default-Portrait~ipad.png */,
+				195889401806898700294EB3 /* appicon@144.png */,
+				1958893E1806896600294EB3 /* appicon@72.png */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				198CF8E014F5B0F40064DF05 /* Vendor */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
@@ -1902,6 +1920,12 @@
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
 				19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
+				1958893F1806896600294EB3 /* appicon@72.png in Resources */,
+				195889411806898800294EB3 /* appicon@144.png in Resources */,
+				1958894318068BD700294EB3 /* Default-Portrait~ipad.png in Resources */,
+				1958894518068BE700294EB3 /* Default-Portrait@2x~ipad.png in Resources */,
+				1958894718068BF100294EB3 /* Default-Landscape~ipad.png in Resources */,
+				1958894918068BF300294EB3 /* Default-Landscape@2x~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2151,6 +2175,7 @@
 					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos\"",
@@ -2163,6 +2188,7 @@
 				);
 				PRODUCT_NAME = iNaturalist;
 				SDKROOT = iphoneos6.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -2189,6 +2215,7 @@
 					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos\"",
@@ -2203,6 +2230,7 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos6.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

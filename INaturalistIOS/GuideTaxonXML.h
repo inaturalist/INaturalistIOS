@@ -14,5 +14,9 @@
 @property (strong, nonatomic) GuideXML *guide;
 @property (strong, nonatomic) RXMLElement *xml;
 @property (strong, nonatomic) NSArray *guidePhotos;
+@property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *displayName;
 - (id)initWithGuide:(GuideXML *)guide andXML:(RXMLElement *)xml;
+- (NSString *)localImagePathForSize:(NSString *)size;
+- (NSString *)remoteImageURLForSize:(NSString *)size;
 @end

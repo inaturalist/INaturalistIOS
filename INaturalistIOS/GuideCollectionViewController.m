@@ -14,6 +14,7 @@
 #import "SWRevealViewController.h"
 
 static const int CellLabelTag = 200;
+static const int GutterWidth  = 5;
 
 @implementation GuideCollectionViewController
 @synthesize guide = _guide;
@@ -130,15 +131,15 @@ static const int CellLabelTag = 200;
     img.urlPath = nil;
     [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
     img.contentMode = UIViewContentModeCenter;
-    NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:indexPath];
+    GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     NSString *size = self.scale > 3 ? @"medium" : @"small";
-    NSString *localImagePath = [self.guide imagePathForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
+    NSString *localImagePath = [guideTaxon localImagePathForSize:size];
     if (localImagePath) {
         [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
         img.urlPath = localImagePath;
         img.contentMode = UIViewContentModeScaleAspectFill;
     } else {
-        NSString *remoteImageURL = [self.guide imageURLForTaxonAtPosition:gtPosition size:size fromXPath:[self currentXPath]];
+        NSString *remoteImageURL = [guideTaxon remoteImageURLForSize:size];
         if (remoteImageURL) {
             [img setDefaultImage:nil];
             img.urlPath = remoteImageURL;
@@ -147,14 +148,12 @@ static const int CellLabelTag = 200;
     }
     
     UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
-    NSString *displayName = [self.guide displayNameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
-    NSString *name = [self.guide nameForTaxonAtPosition:gtPosition fromXpath:[self currentXPath]];
-    if (!displayName || [displayName isEqualToString:name]) {
+    if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
         label.font = [UIFont italicSystemFontOfSize:12.0];
-        label.text = name;
+        label.text = guideTaxon.name;
     } else {
         label.font = [UIFont systemFontOfSize:12.0];
-        label.text = displayName;
+        label.text = guideTaxon.displayName;
     }
     return cell;
 }
@@ -167,7 +166,9 @@ static const int CellLabelTag = 200;
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Main use of the scale property
-    return CGSizeMake(100*self.scale, 100*self.scale);
+    int numCols = 3;
+    CGFloat cellWidth = (self.view.frame.size.width - (numCols+1)*GutterWidth) / numCols;
+    return CGSizeMake(floor(cellWidth*self.scale), floor(cellWidth*self.scale));
 }
 
 
@@ -331,17 +332,24 @@ static const int CellLabelTag = 200;
     }
 }
 
+- (GuideTaxonXML *)guideTaxonAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger pos = [self guideTaxonPositionAtIndexPath:indexPath];
+    RXMLElement *elt = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", self.currentXPath, pos]];
+    return [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:elt];
+}
+
 // http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
 - (void)fitScale
 {
     CGFloat w = self.view.frame.size.width;
-    CGFloat gutter = 5.0;
-    CGFloat scale1 = (w - (1+1)*gutter) / 100.0;
-    CGFloat scale2 = (w - (2+1)*gutter) / 200.0; // 1.525;
-    CGFloat scale3 = (w - (3+1)*gutter) / 300.0; // 1.0;
-    CGFloat scale4 = (w - (4+1)*gutter) / 400.0; //0.7375;
-    CGFloat scale5 = (w - (5+1)*gutter) / 500.0; //0.58;
-    CGFloat scale6 = (w - (6+1)*gutter) / 600.0; //0.475;
+    CGFloat cellWidth = (w - (3+1)*GutterWidth) / 3.0; // default cell width should be 3 cols
+    CGFloat scale1 = (w - (1+1)*GutterWidth) / (1 * cellWidth);
+    CGFloat scale2 = (w - (2+1)*GutterWidth) / (2 * cellWidth); // 1.525;
+    CGFloat scale3 = (w - (3+1)*GutterWidth) / (3 * cellWidth); // 1.0;
+    CGFloat scale4 = (w - (4+1)*GutterWidth) / (4 * cellWidth); //0.7375;
+    CGFloat scale5 = (w - (5+1)*GutterWidth) / (5 * cellWidth); //0.58;
+    CGFloat scale6 = (w - (6+1)*GutterWidth) / (6 * cellWidth); //0.475;
     if (self.scale > scale2) self.scale = scale1;
     else if (self.scale > scale3 && self.scale <= scale2) self.scale = scale2;
     else if (self.scale > scale4 && self.scale <= scale3) self.scale = scale3;

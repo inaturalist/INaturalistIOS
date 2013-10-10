@@ -34,15 +34,16 @@ static const int TaxonDescTag = 1;
 - (void)scaleHeaderView:(BOOL)animated
 {
     TTImageView *taxonImage = (TTImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
-    float height = fminf(320 * taxonImage.image.size.height / taxonImage.image.size.width, 320);
+    float width = [UIScreen mainScreen].bounds.size.width;
+    float height = fminf(width * taxonImage.image.size.height / taxonImage.image.size.width, width);
     [self.tableView beginUpdates];
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:1.0f];
     }
-    [self.tableView.tableHeaderView setFrame:CGRectMake(0, 0, 320, height)];
+    [self.tableView.tableHeaderView setFrame:CGRectMake(0, 0, width, height)];
     [self.tableView setTableHeaderView:self.tableView.tableHeaderView];
-    [taxonImage setFrame:CGRectMake(0, 0, 320, height)];
+    [taxonImage setFrame:CGRectMake(0, 0, width, height)];
     if (animated) {
         [UIView commitAnimations];
     }

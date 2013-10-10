@@ -329,7 +329,7 @@ static const int ObservationCellLowerRightTag = 4;
         img = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
     [imageView setImage:img];
-    if (o.speciesGuess) {
+    if (o.speciesGuess && o.speciesGuess.length > 0) {
         [title setText:o.speciesGuess];
     } else {
         [title setText:NSLocalizedString(@"Something...",nil)];
