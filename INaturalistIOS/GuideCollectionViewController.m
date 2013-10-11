@@ -139,14 +139,14 @@ static const int GutterWidth  = 5;
     [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
     img.contentMode = UIViewContentModeCenter;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
-    NSString *size = self.scale > 3 ? @"medium" : @"small";
-    NSString *localImagePath = [guideTaxon localImagePathForSize:size];
+    NSString *size = [self currentImageSize];
+    NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
     if (localImagePath) {
         [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
         img.urlPath = localImagePath;
         img.contentMode = UIViewContentModeScaleAspectFill;
     } else {
-        NSString *remoteImageURL = [guideTaxon remoteImageURLForSize:size];
+        NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
         if (remoteImageURL) {
             [img setDefaultImage:nil];
             img.urlPath = remoteImageURL;
@@ -173,9 +173,8 @@ static const int GutterWidth  = 5;
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Main use of the scale property
-    int numCols = 3;
-    CGFloat cellWidth = (self.view.frame.size.width - (numCols+1)*GutterWidth) / numCols;
-    return CGSizeMake(floor(cellWidth*self.scale), floor(cellWidth*self.scale));
+    CGFloat width = [self currentImageWidth];
+    return CGSizeMake(width, width);
 }
 
 
@@ -380,6 +379,24 @@ static const int GutterWidth  = 5;
     }
 }
 
+- (NSString *)currentImageSize
+{
+    CGFloat w = self.currentImageWidth;
+    if (w > 500) {
+        return @"large";
+    } else if (w > 240) {
+        return @"medium";
+    } else {
+        return @"small";
+    }
+}
+
+- (CGFloat)currentImageWidth
+{
+    int numCols = 3;
+    CGFloat cellWidth = (self.view.frame.size.width - (numCols+1)*GutterWidth) / numCols;
+    return floor(cellWidth*self.scale);
+}
 @end
 
 @implementation XMLDownloadDelegate

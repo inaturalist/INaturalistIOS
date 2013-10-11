@@ -13,7 +13,7 @@
 #import "GuideViewController.h"
 
 @interface GuidesViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate, GuideViewControllerDelegate>
-@property (nonatomic, strong) NSMutableArray *guides;
+@property (nonatomic, strong) NSArray *guides;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *guideUsersSyncedAt;
 //@property (nonatomic, strong) NSDate *featuredGuidesSyncedAt;

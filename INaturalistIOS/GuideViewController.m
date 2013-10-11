@@ -63,7 +63,6 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
     [self rightRevealToggleAnimated:YES];
 }
 - (void)viewDidUnload {
-    [self setGuideMenuButton:nil];
     [super viewDidUnload];
 }
 @end

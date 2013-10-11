@@ -61,7 +61,7 @@
 							</object>
 							<object class="IBUILabel" id="324970925">
 								<reference key="NSNextResponder" ref="523143024"/>
-								<int key="NSvFlags">1316</int>
+								<int key="NSvFlags">1318</int>
 								<object class="NSPSMatrix" key="NSFrameMatrix"/>
 								<string key="NSFrame">{{56, 18}, {237, 18}}</string>
 								<reference key="NSSuperview" ref="523143024"/>

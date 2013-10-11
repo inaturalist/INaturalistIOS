@@ -20,4 +20,6 @@
 - (id)initWithGuide:(GuideXML *)guide andXML:(RXMLElement *)xml;
 - (NSString *)localImagePathForSize:(NSString *)size;
 - (NSString *)remoteImageURLForSize:(NSString *)size;
+- (NSString *)bestLocalImagePathForSize:(NSString *)size;
+- (NSString *)bestRemoteImageURLForSize:(NSString *)size;
 @end

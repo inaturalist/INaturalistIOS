@@ -65,14 +65,19 @@ static const int ListControlIndexNearby = 2;
 
 - (void)loadAllGuides
 {
-    self.guides = [NSMutableArray arrayWithArray:Guide.all];
+    self.guides = [Guide.all sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
+        return [g1.title.lowercaseString compare:g2.title.lowercaseString];
+    }];
 }
 
 - (void)loadUserGuides
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    self.guides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", username]]];
+    NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", username]]];
+    self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
+        return [g1.title.lowercaseString compare:g2.title.lowercaseString];
+    }];
 }
 
 - (void)loadFeaturedGuides
@@ -85,8 +90,8 @@ static const int ListControlIndexNearby = 2;
     NSFetchRequest *request = [Guide fetchRequest];
     request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
     request.fetchLimit = 500;
-    NSArray *guides = [Guide objectsWithFetchRequest:request];
-    self.guides = [NSMutableArray arrayWithArray:[guides sortedArrayUsingComparator:^NSComparisonResult(Guide *p1, Guide *p2) {
+    NSArray *unsortedGuides = [Guide objectsWithFetchRequest:request];
+    NSMutableArray *guides = [NSMutableArray arrayWithArray:[unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *p1, Guide *p2) {
         CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
                                                             longitude:p1.longitude.doubleValue];
         CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
@@ -95,12 +100,13 @@ static const int ListControlIndexNearby = 2;
         NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
         return [p1Distance compare:p2Distance];
     }]];
-    [self.guides filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Guide *p, NSDictionary *bindings) {
+    [guides filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Guide *p, NSDictionary *bindings) {
         CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
                                                      longitude:p.longitude.doubleValue];
         NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
         return d.doubleValue < 500000; // meters
     }]];
+    self.guides = [NSArray arrayWithArray:guides];
 }
 
 - (IBAction)clickedSync:(id)sender {

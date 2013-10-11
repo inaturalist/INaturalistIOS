@@ -57,6 +57,35 @@
     return [self.xml atXPath:[NSString stringWithFormat:@"descendant::GuidePhoto/href[@type='remote' and @size='%@']", size]].text;
 }
 
+- (NSString *)bestLocalImagePathForSize:(NSString *)size
+{
+    NSString *p = [self localImagePathForSize:size];
+    if (!p && [size isEqualToString:@"large"]) {
+        p = [self localImagePathForSize:@"medium"];
+    }
+    if (!p && [size isEqualToString:@"medium"]) {
+        p = [self localImagePathForSize:@"small"];
+    }
+    if (!p && [size isEqualToString:@"small"]) {
+        p = [self localImagePathForSize:@"thumb"];
+    }
+    return p;
+}
+- (NSString *)bestRemoteImageURLForSize:(NSString *)size
+{
+    NSString *p = [self remoteImageURLForSize:size];
+    if (!p && [size isEqualToString:@"large"]) {
+        p = [self remoteImageURLForSize:@"medium"];
+    }
+    if (!p && [size isEqualToString:@"medium"]) {
+        p = [self remoteImageURLForSize:@"small"];
+    }
+    if (!p && [size isEqualToString:@"small"]) {
+        p = [self remoteImageURLForSize:@"thumb"];
+    }
+    return p;
+}
+
 - (NSString *)name
 {
     if (!_name) {
