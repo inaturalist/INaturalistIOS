@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -1061,7 +1061,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     </collectionView>
                     <navigationItem key="navigationItem" title="Guide Title" id="cTI-n2-vmb"/>
                     <connections>
-                        <segue destination="zk1-NX-zZ7" kind="push" identifier="GuideTaxonSegue" id="Agu-vx-4wr"/>
+                        <segue destination="nfo-vR-5nO" kind="push" identifier="GuidePageSegue" id="3ln-Hq-xjf"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Un-PQ-txa" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1071,7 +1071,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <!--Guide Taxon View Controller - GuideTaxon-->
         <scene sceneID="ow7-ce-Fy1">
             <objects>
-                <viewController id="zk1-NX-zZ7" customClass="GuideTaxonViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GuideTaxonViewController" id="zk1-NX-zZ7" customClass="GuideTaxonViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ytH-xx-M8U">
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1099,7 +1099,24 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NmU-c6-JKX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1756" y="4074"/>
+            <point key="canvasLocation" x="2148" y="4066"/>
+        </scene>
+        <!--Guide Page View Controller-->
+        <scene sceneID="dts-Ml-zfr">
+            <objects>
+                <pageViewController storyboardIdentifier="GuidePageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="nfo-vR-5nO" customClass="GuidePageViewController" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="awV-Jc-xTI">
+                        <barButtonItem key="rightBarButtonItem" title="Observe" id="sit-XC-ixQ">
+                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
+                            <connections>
+                                <action selector="clickedObserve:" destination="nfo-vR-5nO" id="fIi-y0-ZfQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jbp-RV-9ev" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1700" y="4074"/>
         </scene>
         <!--Navigation Controller - Guides-->
         <scene sceneID="C9d-bu-RZU">
@@ -2061,10 +2078,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="nqN-gg-ATR"/>
+        <segue reference="cuG-ho-aNz"/>
+        <segue reference="Qwd-7p-HHF"/>
+        <segue reference="IDb-ci-Uhl"/>
         <segue reference="9nq-dq-fjy"/>
         <segue reference="dQ0-Mt-8Uk"/>
-        <segue reference="IDb-ci-Uhl"/>
-        <segue reference="Qwd-7p-HHF"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -27,6 +27,7 @@
 		19122E411512D3F4009BD3D0 /* add_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3D1512D3F4009BD3D0 /* add_button.png */; };
 		19122E421512D3F4009BD3D0 /* add_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3E1512D3F4009BD3D0 /* add_button@2x.png */; };
 		1912DA9115059C08005555B8 /* 01-refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 1912DA9015059C08005555B8 /* 01-refresh.png */; };
+		191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191426EA180DC20F005165D8 /* GuidePageViewController.m */; };
 		191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191490A31513C7C300231C80 /* ProjectChooserViewController.m */; };
 		191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
 		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
@@ -481,6 +482,8 @@
 		19122E3D1512D3F4009BD3D0 /* add_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button.png; sourceTree = "<group>"; };
 		19122E3E1512D3F4009BD3D0 /* add_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_button@2x.png"; sourceTree = "<group>"; };
 		1912DA9015059C08005555B8 /* 01-refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01-refresh.png"; sourceTree = "<group>"; };
+		191426E9180DC20F005165D8 /* GuidePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidePageViewController.h; sourceTree = "<group>"; };
+		191426EA180DC20F005165D8 /* GuidePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidePageViewController.m; sourceTree = "<group>"; };
 		191490A21513C7C300231C80 /* ProjectChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectChooserViewController.h; sourceTree = "<group>"; };
 		191490A31513C7C300231C80 /* ProjectChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectChooserViewController.m; sourceTree = "<group>"; };
 		191B0B30150015EA00F2508E /* AccuracyCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccuracyCircleView.h; sourceTree = "<group>"; };
@@ -1376,6 +1379,8 @@
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				1909EA1215AB752800A6EF6E /* TutorialViewController.h */,
 				1909EA1315AB752800A6EF6E /* TutorialViewController.m */,
+				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
+				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2055,6 +2060,7 @@
 				197FD41317FD29B30099BDE6 /* GuidePhotoViewController.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
+				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

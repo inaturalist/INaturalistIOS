@@ -12,6 +12,7 @@
 #import "RXMLElement+Helpers.h"
 #import <Three20/Three20.h>
 #import "SWRevealViewController.h"
+#import "GuidePageViewController.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -48,7 +49,6 @@ static const int GutterWidth  = 5;
         if ([fm fileExistsAtPath:self.guide.xmlPath]) {
             [self loadXML:self.guideXMLPath];
             self.title = self.guide.title;
-            NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
             if (self.guide.xmlURL
@@ -98,14 +98,12 @@ static const int GutterWidth  = 5;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"GuideTaxonSegue"]) {
-        GuideTaxonViewController *vc = [segue destinationViewController];
+    if ([segue.identifier isEqualToString:@"GuidePageSegue"]) {
+        GuidePageViewController *vc = [segue destinationViewController];
         NSInteger gtPosition = [self guideTaxonPositionAtIndexPath:[self.collectionView.indexPathsForSelectedItems objectAtIndex:0]];
-        RXMLElement *rx = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", [self currentXPath], gtPosition]];
-        GuideTaxonXML *gt = [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:rx];
-        if (gt) {
-            vc.guideTaxon = gt;
-        }
+        vc.guide = self.guide;
+        vc.currentXPath = [self currentXPath];
+        vc.currentPosition = gtPosition;
     }
 }
 
@@ -167,7 +165,7 @@ static const int GutterWidth  = 5;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self performSegueWithIdentifier:@"GuideTaxonSegue" sender:self];
+    [self performSegueWithIdentifier:@"GuidePageSegue" sender:self];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
