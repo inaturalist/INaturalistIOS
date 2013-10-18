@@ -237,10 +237,10 @@ static const int ListControlIndexNearby = 2;
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                      objectMapping:[Guide mapping]
                                                           delegate:self];
+        self.guideUsersSyncedAt = [NSDate date];
     } else {
         [self stopSync];
     }
-    self.guideUsersSyncedAt = [NSDate date];
 }
 
 - (void)stopSync
