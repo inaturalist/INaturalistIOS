@@ -13,6 +13,7 @@
 #import <Three20/Three20.h>
 #import "SWRevealViewController.h"
 #import "GuidePageViewController.h"
+#import "INaturalistAppDelegate.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -288,12 +289,16 @@ static const int GutterWidth  = 5;
                                                                   withLabel:activityMsg];
         }
     }
-    NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                            timeoutInterval:60];
+    NSMutableURLRequest *r = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                     cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                 timeoutInterval:60];
+    if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [r setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
+    }
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
     d.quiet = quietly;
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:theRequest
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:r
                                                                   delegate:d
                                                           startImmediately:YES];
 }

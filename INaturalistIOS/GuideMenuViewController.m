@@ -323,6 +323,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
+#pragma mark - GuideMenuViewController
+
 - (BOOL)isDownloading
 {
     return self.ngzDownloadConnection != nil;
@@ -335,7 +337,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSURL *url = [NSURL URLWithString:ngzURL];
     NSURLRequest *theRequest = [NSURLRequest requestWithURL:url
                                                 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                                            timeoutInterval:60];
+                                            timeoutInterval:10*60];
     self.receivedData = [[NSMutableData alloc] initWithLength:0];
     self.ngzDownloadConnection = [[NSURLConnection alloc] initWithRequest:theRequest
                                                                    delegate:self];
@@ -392,15 +394,15 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     NSError *error;
-    if ([self.receivedData writeToFile:self.ngzFilePath options:NSDataWritingAtomic error:&error]) {
-        NSLog(@"wrote to file: %@", self.ngzFilePath);
-    } else {
-        NSLog(@"failed to write to %@, error: %@", self.ngzFilePath, error);
-    }
     if (self.progress) {
         self.progress.hidden = YES;
     }
     if (self.lastStatusCode == 200) {
+        if ([self.receivedData writeToFile:self.ngzFilePath options:NSDataWritingAtomic error:&error]) {
+            NSLog(@"wrote to file: %@", self.ngzFilePath);
+        } else {
+            NSLog(@"failed to write to %@, error: %@", self.ngzFilePath, error);
+        }
         [self extractNGZ];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
