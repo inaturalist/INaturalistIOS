@@ -16,6 +16,7 @@
 {
     DejalActivityView *modalActivityView;
     NSTimer *searchTimer;
+    NSMutableArray *items;
 }
 @property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, strong) NSString *guideXMLPath;
@@ -44,5 +45,4 @@
 @property (nonatomic) BOOL quiet;
 
 - (id)initWithController:(GuideCollectionViewController *)controller;
-
 @end

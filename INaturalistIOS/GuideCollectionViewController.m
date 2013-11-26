@@ -177,6 +177,12 @@ static const int GutterWidth  = 5;
 }
 
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self.searchBar endEditing:YES];
+}
+
+
 #pragma mark - Gesture Recognizers
 // http://stackoverflow.com/questions/16406254/zoom-entire-uicollectionview
 - (void)didReceivePinchGesture:(UIPinchGestureRecognizer*)gesture
@@ -215,7 +221,39 @@ static const int GutterWidth  = 5;
 
 - (void)performSearch
 {
-    [self.collectionView reloadData];
+    UITextField *searchField = nil;
+    for (UIView *subview in self.searchBar.subviews) {
+        if ([subview isKindOfClass:[UITextField class]]) {
+            searchField = (UITextField *)subview;
+            break;
+        }
+    }
+    UIView *oldRightView;
+    if (searchField) {
+        // this entire strategy seems excessive, and doesn't seem to work in iOS 7
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        CGRect f = searchField.rightView.frame;
+        [spinner setFrame:CGRectMake(10, 0, f.size.height, f.size.height)];
+        [spinner setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin];
+        UIView *wrapper = [[UIView alloc] initWithFrame:f];
+        oldRightView = searchField.rightView;
+        [wrapper addSubview:spinner];
+        [spinner startAnimating];
+        searchField.rightView = wrapper;
+        searchField.rightViewMode = UITextFieldViewModeAlways;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        sleep(2); // uncomment to test device-like response time
+        [self loadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionView reloadData];
+            if (searchField) {
+                searchField.rightView = oldRightView;
+                searchField.rightViewMode = UITextFieldViewModeNever;
+            }
+        });
+    });
     searchTimer = nil;
 }
 
@@ -239,6 +277,11 @@ static const int GutterWidth  = 5;
     [self.searchBar endEditing:YES];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [self.searchBar endEditing:YES];
+}
+
 #pragma mark - GuideMenuControllerDelegate
 - (GuideXML *)guideMenuControllerGuide
 {
@@ -249,6 +292,7 @@ static const int GutterWidth  = 5;
 {
     [self.tags addObject:tag];
     [self tintMenuButton];
+    [self loadData];
     [self.collectionView reloadData];
 }
 
@@ -256,6 +300,7 @@ static const int GutterWidth  = 5;
 {
     [self.tags removeObject:tag];
     [self tintMenuButton];
+    [self loadData];
     [self.collectionView reloadData];
 }
 
@@ -270,7 +315,20 @@ static const int GutterWidth  = 5;
 {
     self.guide = [self.guide cloneWithXMLFilePath:path];
     self.navigationItem.title = self.guide.title;
+    [self loadData];
     [self.collectionView reloadData];
+}
+
+- (void)loadData
+{
+    if (items) {
+        [items removeAllObjects];
+    } else {
+        items = [[NSMutableArray alloc] init];
+    }
+    [self.guide iterateWithXPath:self.currentXPath usingBlock:^(RXMLElement *e) {
+        [items addObject:[[GuideTaxonXML alloc] initWithGuide:self.guide andXML:e]];
+    }];
 }
 
 - (void)downloadXML:(NSString *)url
@@ -333,9 +391,7 @@ static const int GutterWidth  = 5;
 
 - (GuideTaxonXML *)guideTaxonAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger pos = [self guideTaxonPositionAtIndexPath:indexPath];
-    RXMLElement *elt = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%d]", self.currentXPath, pos]];
-    return [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:elt];
+    return [items objectAtIndex:indexPath.row];
 }
 
 // http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
