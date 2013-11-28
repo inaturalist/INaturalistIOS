@@ -69,6 +69,7 @@
 		19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4117D65CB800B7CEE5 /* guides-tab.png */; };
 		19542F4A17D6624900B7CEE5 /* guides.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4817D6624900B7CEE5 /* guides.png */; };
 		19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4917D6624900B7CEE5 /* guides@2x.png */; };
+		195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 195515F018470F1300FEE783 /* ObservationPageViewController.m */; };
 		1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FCFC17F102FA004F57F2 /* GuideXML.m */; };
 		1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0217F21602004F57F2 /* 258-checkmark.png */; };
 		1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */; };
@@ -540,6 +541,8 @@
 		19542F4117D65CB800B7CEE5 /* guides-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab.png"; sourceTree = "<group>"; };
 		19542F4817D6624900B7CEE5 /* guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guides.png; sourceTree = "<group>"; };
 		19542F4917D6624900B7CEE5 /* guides@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides@2x.png"; sourceTree = "<group>"; };
+		195515EF18470F1300FEE783 /* ObservationPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPageViewController.h; sourceTree = "<group>"; };
+		195515F018470F1300FEE783 /* ObservationPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPageViewController.m; sourceTree = "<group>"; };
 		1955FCFB17F102FA004F57F2 /* GuideXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideXML.h; sourceTree = "<group>"; };
 		1955FCFC17F102FA004F57F2 /* GuideXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideXML.m; sourceTree = "<group>"; };
 		1955FD0217F21602004F57F2 /* 258-checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "258-checkmark.png"; sourceTree = "<group>"; };
@@ -1336,6 +1339,10 @@
 				19570CC617EBB624000C800A /* GuideMenuViewController.m */,
 				19D8342B17E7BBDC000A5C35 /* GuideTaxonViewController.h */,
 				19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */,
+				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
+				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
+				195515EF18470F1300FEE783 /* ObservationPageViewController.h */,
+				195515F018470F1300FEE783 /* ObservationPageViewController.m */,
 				197FD41117FD29B30099BDE6 /* GuidePhotoViewController.h */,
 				197FD41217FD29B30099BDE6 /* GuidePhotoViewController.m */,
 				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
@@ -1376,8 +1383,6 @@
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				1909EA1215AB752800A6EF6E /* TutorialViewController.h */,
 				1909EA1315AB752800A6EF6E /* TutorialViewController.m */,
-				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
-				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2055,6 +2060,7 @@
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
+				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -81,5 +81,7 @@
 - (void)removeObservationFieldValuesObject:(NSManagedObject *)value;
 - (void)addObservationFieldValues:(NSSet *)values;
 - (void)removeObservationFieldValues:(NSSet *)values;
+- (Observation *)prevObservation;
+- (Observation *)nextObservation;
 @end
 

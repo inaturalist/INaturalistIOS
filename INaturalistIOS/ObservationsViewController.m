@@ -10,6 +10,7 @@
 #import "LoginViewController.h"
 #import "Observation.h"
 #import "ObservationFieldValue.h"
+#import "ObservationPageViewController.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
@@ -429,7 +430,6 @@ static const int ObservationCellLowerRightTag = 4;
     [self stopSync];
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
-    [self.navigationController setToolbarHidden:YES animated:YES];
 	[super viewWillDisappear:animated];
 }
 
@@ -453,12 +453,17 @@ static const int ObservationCellLowerRightTag = 4;
         o.localObservedOn = [NSDate date];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
+        ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+        ObservationPageViewController *pvc = [segue destinationViewController];
+        [ovc setDelegate:self];
         Observation *o = [self.observations 
                           objectAtIndex:[[self.tableView 
                                           indexPathForSelectedRow] row]];
-        [vc setObservation:o];
+        [ovc setObservation:o];
+        [pvc setViewControllers:[NSArray arrayWithObject:ovc]
+                       direction:UIPageViewControllerNavigationDirectionForward
+                        animated:YES
+                      completion:nil];
     } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];

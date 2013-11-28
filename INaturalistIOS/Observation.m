@@ -296,4 +296,22 @@ static NSDateFormatter *jsDateFormatter = nil;
     return self.longitude;
 }
 
+- (Observation *)prevObservation
+{
+    NSFetchRequest *request = [Observation fetchRequest];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"localObservedOn < %@", self.localObservedOn]];
+    return [Observation objectWithFetchRequest:request];
+}
+
+- (Observation *)nextObservation
+{
+    NSFetchRequest *request = [Observation fetchRequest];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"localObservedOn > %@", self.localObservedOn]];
+    return [Observation objectWithFetchRequest:request];
+}
+
 @end

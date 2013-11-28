@@ -63,12 +63,6 @@ static const int WebViewTag = 1;
     [self.navigationController setToolbarHidden:YES animated:animated];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)viewDidUnload {
     [self setWebView:nil];
     [super viewDidUnload];

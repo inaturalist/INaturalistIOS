@@ -14,6 +14,7 @@
 #import "ImageStore.h"
 #import "ObservationField.h"
 #import "ObservationFieldValue.h"
+#import "ObservationPageViewController.h"
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
 #import "Project.h"
@@ -226,6 +227,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)initUI
 {
+    UINavigationItem *navItem;
+    if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
+        self.parentViewController.navigationItem.leftBarButtonItem = self.navigationItem.leftBarButtonItem;
+        self.parentViewController.navigationItem.rightBarButtonItem = self.navigationItem.rightBarButtonItem;
+        navItem = self.parentViewController.navigationItem;
+    } else {
+        navItem = self.navigationItem;
+    }
+    navItem.title = [self.observation isNew] ? NSLocalizedString(@"Add observation",nil) : NSLocalizedString(@"Edit observation",nil);
+    
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] 
                              initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
                              target:nil 
@@ -257,7 +268,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         }
     }
     
-    [self setToolbarItems:[NSArray arrayWithObjects:
+    UIViewController *toolbarViewControler;
+    if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
+        toolbarViewControler = self.parentViewController;
+    } else {
+        toolbarViewControler = self;
+    }
+    [toolbarViewControler setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
                            flex, 
                            self.saveButton, 
@@ -265,7 +282,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                            self.viewButton,
                            nil]
                  animated:NO];
-    [self.navigationController setToolbarHidden:NO animated:YES];
+    [toolbarViewControler.navigationController setToolbarHidden:NO animated:YES];
     
     if (!self.keyboardToolbar) {
         self.keyboardToolbar = [[UIToolbar alloc] init];
@@ -325,11 +342,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if ([self.observation isNew]) {
-        [[self navigationItem] setTitle:NSLocalizedString(@"Add observation",nil)];
-    } else {
-        [[self navigationItem] setTitle:NSLocalizedString(@"Edit observation",nil)];
-    }
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([currentLanguage compare:@"es"] == NSOrderedSame){
