@@ -108,13 +108,33 @@ static const int WebViewTag = 1;
         }
     } else if ([urlString hasPrefix:@"file:"] && [urlString rangeOfString:@"files/"].location != NSNotFound) {
         [self showAssetByURL:urlString];
-    } else if (([urlString hasPrefix:@"http:"] || [urlString hasPrefix:@"https:"]) &&
-               [self.guideTaxon.xml atXPath:[NSString stringWithFormat:@"descendant::*[text()='%@']", urlString]]) {
-        [self showAssetByURL:urlString];
+    } else if ([urlString hasPrefix:@"http:"] || [urlString hasPrefix:@"https:"]) {
+        if ([self.guideTaxon.xml atXPath:[NSString stringWithFormat:@"descendant::*[text()='%@']", urlString]]) {
+            [self showAssetByURL:urlString];
+        } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+            if (!linkActionSheet) {
+                linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                              delegate:self
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                destructiveButtonTitle:nil
+                                                     otherButtonTitles:NSLocalizedString(@"Open link in Safari", nil), nil];
+            }
+            lastURL = request.URL;
+            [linkActionSheet showFromTabBar:self.tabBarController.tabBar];
+        }
     } else if ([urlString hasPrefix:@"file:"]) {
         return YES;
     }
     return NO;
+}
+
+# pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0 && lastURL) {
+        [[UIApplication sharedApplication] openURL:lastURL];
+    }
+    lastURL = nil;
 }
 
 # pragma mark - GuideTaxonViewController

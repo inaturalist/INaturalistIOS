@@ -36,6 +36,11 @@
                       <img src="{href[@type='remote' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>
                     </a>
                   </xsl:when>
+                  <xsl:when test="href[@type='remote' and @size='small']">
+                    <a href="{href[@type='remote' and @size='small']}">
+                      <img src="{href[@type='remote' and @size='small']}" class="thumb img-rounded" data-toggle="modal"/>
+                    </a>
+                  </xsl:when>
                   <xsl:otherwise>
                     <img src="{href[@type='remote' and @size='medium']}" class="thumb img-rounded" data-toggle="modal"/>  
                   </xsl:otherwise>
