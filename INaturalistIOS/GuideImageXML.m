@@ -31,7 +31,9 @@
 {
     NSString *relativePath = [self.xml atXPath:xpath].text;
     if (relativePath) {
-        return [NSString stringWithFormat:@"documents://guides/%@/%@", self.guideTaxon.guide.identifier, relativePath];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[self pathForTextAtXPath:xpath]]) {
+            return [NSString stringWithFormat:@"documents://guides/%@/%@", self.guideTaxon.guide.identifier, relativePath];
+        }
     }
     return nil;
 }

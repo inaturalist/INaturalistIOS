@@ -332,6 +332,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)downloadNGZ
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     self.ngzFilePath = self.guide.ngzPath;
     NSString *ngzURL = self.guide.ngzURL;
     NSURL *url = [NSURL URLWithString:ngzURL];
@@ -347,6 +348,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)stopDownloadNGZ
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     [self.ngzDownloadConnection cancel];
     self.ngzDownloadConnection = nil;
     self.receivedData = nil;
