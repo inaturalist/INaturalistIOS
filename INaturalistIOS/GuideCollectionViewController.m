@@ -83,6 +83,17 @@ static const int GutterWidth  = 5;
     if (!self.tags) {
         self.tags = [[NSMutableArray alloc] init];
     }
+    
+    noContent = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.collectionView.frame) / 2, CGRectGetWidth(self.collectionView.frame), 44)];
+    noContent.text = NSLocalizedString(@"No matching taxa", nil);
+    noContent.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    noContent.backgroundColor = [UIColor clearColor];
+    noContent.textColor = [UIColor lightGrayColor];
+    noContent.textAlignment = NSTextAlignmentCenter;
+    [noContent setHidden:YES];
+    [self.view addSubview:noContent];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -116,6 +127,7 @@ static const int GutterWidth  = 5;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    [self toggleNoContent];
     [self fitScale];
 }
 
@@ -252,6 +264,7 @@ static const int GutterWidth  = 5;
                 searchField.rightView = oldRightView;
                 searchField.rightViewMode = UITextFieldViewModeNever;
             }
+            [self toggleNoContent];
         });
     });
     searchTimer = nil;
@@ -294,6 +307,7 @@ static const int GutterWidth  = 5;
     [self tintMenuButton];
     [self loadData];
     [self.collectionView reloadData];
+    [self toggleNoContent];
 }
 
 - (void)guideMenuControllerRemovedFilterByTag:(NSString *)tag
@@ -302,6 +316,7 @@ static const int GutterWidth  = 5;
     [self tintMenuButton];
     [self loadData];
     [self.collectionView reloadData];
+    [self toggleNoContent];
 }
 
 - (void)guideMenuControllerGuideDownloadedNGZForGuide:(GuideXML *)guide
@@ -455,6 +470,33 @@ static const int GutterWidth  = 5;
     int numCols = 3;
     CGFloat cellWidth = (self.view.frame.size.width - (numCols+1)*GutterWidth) / numCols;
     return floor(cellWidth*self.scale);
+}
+
+- (void)keyboardDidShow:(NSNotification *)notification
+{
+    NSValue *v = [notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect kbRect = [self.view convertRect:v.CGRectValue toView:nil];
+    keyboardHeight = kbRect.size.height;
+    [self toggleNoContent];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification
+{
+    keyboardHeight = 0;
+    [self toggleNoContent];
+}
+
+- (void)toggleNoContent
+{
+    CGFloat h = (CGRectGetHeight(self.collectionView.frame) - keyboardHeight) / 2;
+    if (keyboardHeight > 0) {
+        h = h + 22;
+    }
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5f];
+    noContent.frame = CGRectMake(0, h, CGRectGetWidth(self.collectionView.frame), 44);
+    [noContent setHidden:(items.count != 0)];
+    [UIView commitAnimations];
 }
 @end
 

@@ -17,6 +17,8 @@
     DejalActivityView *modalActivityView;
     NSTimer *searchTimer;
     NSMutableArray *items;
+    UILabel *noContent;
+    CGFloat keyboardHeight;
 }
 @property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, strong) NSString *guideXMLPath;
@@ -32,6 +34,9 @@
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly;
 - (NSInteger)guideTaxonPositionAtIndexPath:(NSIndexPath *)indexPath;
 - (void)tintMenuButton;
+- (void)keyboardDidShow:(NSNotification *)notification;
+- (void)keyboardDidHide:(NSNotification *)notification;
+- (void)toggleNoContent;
 @end
 
 @interface XMLDownloadDelegate : NSObject <NSURLConnectionDelegate>
