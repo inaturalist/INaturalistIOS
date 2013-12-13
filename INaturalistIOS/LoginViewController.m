@@ -15,6 +15,8 @@
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
 
+static const NSInteger FacebookAssertionType = 1;
+static const NSInteger GoogleAssertionType = 2;
 
 @interface LoginViewController(){
     NSString    *ExternalAccessToken;
@@ -22,6 +24,8 @@
     NSString    *AccountType;
     UIAlertView *av;
     BOOL        isLoginCompleted;
+    NSInteger   lastAssertionType;
+    BOOL        tryingGoogleReauth;
 }
 
 @end
@@ -165,6 +169,7 @@
                           otherButtonTitles:nil];
         [av show];
     }
+    isLoginCompleted = YES;
     [DejalBezelActivityView removeView];
 }
 
@@ -195,16 +200,19 @@
         return;
     }
     if (indexPath.section == 1) { //Facebook
+        lastAssertionType = FacebookAssertionType;
         isLoginCompleted = NO;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [self openFacebookSession];
     }
     else if (indexPath.section == 2) {// Google+
+        lastAssertionType = GoogleAssertionType;
         isLoginCompleted = NO;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [[GPPSignIn sharedInstance] authenticate];
     }
     else if (indexPath.section == 3) {
+        lastAssertionType = 0;
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
@@ -255,7 +263,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 {
     switch (state) {
         case FBSessionStateOpen:
-            //NSLog(@"session %@ session.accessTokenData.accessToken %@", session, session.accessTokenData.accessToken);
+//            NSLog(@"session.accessTokenData.accessToken %@", session.accessTokenData.accessToken);
             ExternalAccessToken = [session.accessTokenData.accessToken copy];
             AccountType = nil;
             AccountType = kINatAuthServiceExtToken;
@@ -265,7 +273,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
              assertion:ExternalAccessToken];
             break;
         case FBSessionStateClosed:
+//            NSLog(@"session FBSessionStateClosed");
         case FBSessionStateClosedLoginFailed:
+//            NSLog(@"session FBSessionStateClosedLoginFailed");
             // Once the user has logged in, we want them to
             // be looking at the root view.
             [FBSession.activeSession closeAndClearTokenInformation];
@@ -276,17 +286,25 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     }
     
     if (error) {
-        [self failedLogin:error.localizedDescription];
+        if (error.code == 2) {
+            [self failedLogin:NSLocalizedString(@"Either you didn't grant access to your Facebook account, or the request timed out. Try again if you want to sign in using your Facebook account, and make sure to grant access.", nil)];
+        } else {
+            [self failedLogin:error.localizedDescription];
+        }
     }
 }
 
 - (void)openFacebookSession
 {
-    [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups", nil]
-                                       allowLoginUI:YES
-                                  completionHandler:
-     ^(FBSession *session,
-       FBSessionState state, NSError *error) {
+    NSArray *permissions = [NSArray arrayWithObjects:@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups", nil];
+    FBSession *session = [[FBSession alloc] initWithAppID:nil
+                                              permissions:permissions
+                                          urlSchemeSuffix:@"inat"
+                                       tokenCacheStrategy:nil];
+    [FBSession setActiveSession:session];
+    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
+            completionHandler:
+     ^(FBSession *session, FBSessionState state, NSError *error) {
          [self sessionStateChanged:session state:state error:error];
      }];
 }
@@ -302,27 +320,26 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                            kGTLAuthScopePlusMe,
                            @"https://www.googleapis.com/auth/userinfo.email", nil];
     googleSignIn.delegate = self;
+    [googleSignIn trySilentAuthentication];
 }
 
 - (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
                    error: (NSError *) error
 {
-     
-    //NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
-    if (error || ![auth accessToken]){
-        if (!av){
-            av = nil;
-            av = [[UIAlertView alloc]
-                                      initWithTitle:NSLocalizedString(@"Sign in failed",nil)
-                                      message:error.localizedDescription
-                                      delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                      otherButtonTitles:nil];
-            [av show];
+    
+//    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
+    if (error || (!auth.accessToken && tryingGoogleReauth)) {
+        NSString *msg = error.localizedDescription;
+        if (!msg) {
+            msg = NSLocalizedString(@"Google sign in failed", nil);
         }
-        [self failedLogin];
-    }
-    else {
+        [self failedLogin:msg];
+        tryingGoogleReauth = NO;
+    } else if (!auth.accessToken && !tryingGoogleReauth) {
+        tryingGoogleReauth = YES;
+        [[GPPSignIn sharedInstance] signOut];
+        [self initGoogleLogin];
+    } else {
         ExternalAccessToken = [[auth accessToken] copy];
         AccountType = nil;
         AccountType = kINatAuthServiceExtToken;
@@ -330,6 +347,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
          requestAccessToAccountWithType:AccountType
          assertionType:[NSURL URLWithString:@"http://google.com"]
          assertion:ExternalAccessToken];
+        tryingGoogleReauth = NO;
     }
 }
 
@@ -341,18 +359,22 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-                                                      //NSDictionary *userInfo = aNotification.userInfo;
-                                                      //NSLog(@" userInfo  %@",userInfo);
-                                                      if (!isLoginCompleted)[self finishWithAuth2Login];
+                                                      if (!isLoginCompleted) {
+                                                          [self finishWithAuth2Login];
+                                                      }
                                                   }];
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-                                                      NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       // Do something with the error
-                                                      NSDictionary *userInfo = aNotification.userInfo;
-                                                      [self failedLogin];
+                                                      if (!isLoginCompleted) {
+                                                          if (lastAssertionType != 0) {
+                                                              [self failedLogin:NSLocalizedString(@"Authentication credentials were invalid. This can happen if you recently disconnected your acount from the 3rd party provider (e.g. Facebook). Please try again in a few minutes.", nil)];
+                                                          } else {
+                                                              [self failedLogin];
+                                                          }
+                                                      }
                                                   }];
 }
 
