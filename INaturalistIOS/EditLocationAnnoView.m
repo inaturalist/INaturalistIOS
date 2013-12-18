@@ -44,19 +44,23 @@
 {
     UIView *wrapper = [[UIView alloc] initWithFrame:rect];
     wrapper.backgroundColor = self.color;
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:wrapper.bounds 
-                                                   byRoundingCorners:corner
-                                                         cornerRadii:CGSizeMake(5.0, 5.0)];
-    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-    maskLayer.frame = wrapper.bounds;
-    maskLayer.path = maskPath.CGPath;
-    wrapper.layer.mask = maskLayer;
+//    I can't figure out how to resize the mask layer when the wrapper gets resized. Ugh.
+//    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:wrapper.bounds
+//                                                   byRoundingCorners:corner
+//                                                         cornerRadii:CGSizeMake(5.0, 5.0)];
+//    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+//    maskLayer.frame = wrapper.bounds;
+//    maskLayer.path = maskPath.CGPath;
+//    wrapper.layer.mask = maskLayer;
     
     label.frame = CGRectMake(5, 5, wrapper.frame.size.width - 10, wrapper.frame.size.height - 10);
     label.backgroundColor = [UIColor clearColor];
     label.textColor = self.textColor;
     label.font = [UIFont systemFontOfSize:10.0];
     [wrapper addSubview:label];
+    label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    wrapper.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleWidth;
+    [wrapper setAutoresizesSubviews:YES];
     return wrapper;
 }
 

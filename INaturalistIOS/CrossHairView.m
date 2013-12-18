@@ -51,7 +51,11 @@
 
 - (void)layoutSubviews
 {
-    self.yLabel.superview.frame = CGRectMake(self.bounds.size.width / 4.0 * 3, 
+    self.xLabel.superview.frame = CGRectMake(self.bounds.size.width / 2.0,
+                                             0,
+                                             self.bounds.size.width / 4.0,
+                                             20);
+    self.yLabel.superview.frame = CGRectMake(self.bounds.size.width / 4.0 * 3,
                                               self.bounds.size.height / 2.0, 
                                               self.bounds.size.width / 4.0, 
                                               20);

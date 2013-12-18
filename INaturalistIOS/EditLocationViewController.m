@@ -20,9 +20,9 @@
 @synthesize accuracyCircleView = _accuracyCircleView;
 
 #pragma mark - View lifecycle
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLoad
 {
-    [super viewWillAppear:animated];
+    [super viewDidLoad];
     [self.navigationController setToolbarHidden:NO];
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -46,18 +46,17 @@
         MKCoordinateRegion region;
         region.center.latitude = lat;
         region.center.longitude = lon;
+        double meters;
         if (self.currentLocation.accuracy) {
-            double meters = MAX([self.currentLocation.accuracy longValue], 20);
-            double accuracyInDegrees = [self metersToDegrees:meters];
-            region.span.latitudeDelta = accuracyInDegrees * 5;
-            region.span.longitudeDelta = accuracyInDegrees * 5;
+            meters = MAX([self.currentLocation.accuracy longValue], 20);
         } else {
-            region.span.latitudeDelta = 5;
-            region.span.longitudeDelta = 5;
+            meters = 500;
+            self.currentLocation.accuracy = [NSNumber numberWithInt:meters];
         }
+        double accuracyInDegrees = [self metersToDegrees:meters];
+        region.span.latitudeDelta = accuracyInDegrees * 5;
+        region.span.longitudeDelta = accuracyInDegrees * 5;
         [self.mapView setRegion:[self.mapView regionThatFits:region]];
-        [self updateCrossHair];
-        [self updateAccuracyCircle];
     } else {
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
@@ -67,6 +66,7 @@
     }
     [self updateCrossHair];
     [self updateAccuracyCircle];
+    readyToChangeLocation = YES;
 }
 
 - (void)viewDidUnload {
@@ -81,6 +81,12 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self resetAccuracy];
+    [self updateAccuracyCircle];
 }
 
 - (void)setCurrentLocation:(INatLocation *)currentLocation
@@ -107,15 +113,20 @@
 
 - (double)metersToPixels:(double)meters
 {
-    MKCoordinateRegion r = MKCoordinateRegionMakeWithDistance(self.mapView.centerCoordinate, meters, meters);
-    return [self.mapView convertRegion:r toRectToView:nil].size.width;
+    double degrees = [self metersToDegrees:meters];
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.mapView.centerCoordinate.latitude, self.mapView.centerCoordinate.longitude + degrees);
+    CGPoint newPt = [self.mapView convertCoordinate:coord toPointToView:self.mapView];
+    return fabs(self.mapView.center.x - newPt.x);
 }
 
 - (double)pixelsToMeters:(double)pixels
 {
-    CLLocationCoordinate2D coord = [self.mapView convertPoint:CGPointMake(self.mapView.center.x + pixels, self.mapView.center.y) 
-                                         toCoordinateFromView:nil];
-    return [self degreesToMeters:fabs(coord.latitude - self.mapView.centerCoordinate.latitude)];
+    CLLocationCoordinate2D coord;
+    coord = [self.mapView convertPoint:CGPointMake(self.mapView.center.x + pixels, self.mapView.center.y)
+                  toCoordinateFromView:self.mapView];
+    double distanceInDegrees = fabs(coord.longitude - self.mapView.centerCoordinate.longitude);
+    double distanceInMeters = [self degreesToMeters:distanceInDegrees];
+    return distanceInMeters;
 
 }
 
@@ -156,11 +167,16 @@
 # pragma mark - MKMapViewDelegate
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    if (self.currentLocation && [self.currentLocation.updatedAt timeIntervalSinceNow] < -1) {
+    if (!readyToChangeLocation) {
+        return;
+    }
+    BOOL locationDoneChanging = self.currentLocation && [self.currentLocation.updatedAt timeIntervalSinceNow] < -1;
+    BOOL isManuallyEditing = self.mapView.userTrackingMode == MKUserTrackingModeNone;
+    if (locationDoneChanging) {
         self.currentLocation.latitude = [NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude];
         self.currentLocation.longitude = [NSNumber numberWithDouble:self.mapView.centerCoordinate.longitude];
-        if (!self.accuracyCircleView.hidden && self.mapView.userTrackingMode == MKUserTrackingModeNone) {
-            self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:self.accuracyCircleView.radius]];
+        if (!self.accuracyCircleView.hidden && isManuallyEditing) {
+            [self resetAccuracy];
         }
         [self updateAccuracyCircle];
         [self updateCrossHair];
@@ -179,7 +195,8 @@
         self.currentLocation.positioningMethod = @"gps";
     } else {
         self.currentLocationButton.style = UIBarButtonItemStyleBordered;
-        self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:self.view.bounds.size.width / 8.0]];
+        [self resetAccuracy];
+        [self updateAccuracyCircle];
         self.currentLocation.positioningMethod = @"manual";
     }
     [self updateAccuracyCircle];
@@ -189,18 +206,25 @@
 {
     if (mapView.userTrackingMode == MKUserTrackingModeFollow) {
         self.currentLocation.accuracy = [NSNumber numberWithLong:userLocation.location.horizontalAccuracy];
-        [self updateAccuracyCircle];
         self.currentLocation.positioningMethod = @"gps";
     } else {
-        self.currentLocation.accuracy = nil;
+        [self resetAccuracy];
         self.currentLocation.positioningMethod = @"manual";
     }
+    [self updateAccuracyCircle];
 }
 
 # pragma mark MapTypeViewControllerDelegate
 - (void)mapTypeControllerDidChange:(MapTypeViewController *)controller mapType:(NSNumber *)mapType
 {
     self.mapView.mapType = mapType.intValue;
+}
+
+- (void)resetAccuracy
+{
+    CGRect r = self.view.frame;
+    double pixelAcc = MIN(r.size.width, r.size.height) / 5;
+    self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:pixelAcc]];
 }
 
 - (void)updateAccuracyCircle

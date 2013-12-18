@@ -22,6 +22,9 @@
 @end
 
 @interface EditLocationViewController : UIViewController <MKMapViewDelegate, MapTypeViewControllerDelegate>
+{
+    BOOL readyToChangeLocation;
+}
 @property (weak, nonatomic) UIViewController *delegate;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) INatLocation *currentLocation;
