@@ -13,7 +13,10 @@
 		<string>appicon.png</string>
 		<string>appicon@2x.png</string>
 		<string>appicon@72.png</string>
+		<string>appicon@76.png</string>
+		<string>appicon@120.png</string>
 		<string>appicon@144.png</string>
+		<string>appicon@152.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>

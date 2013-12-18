@@ -127,6 +127,9 @@
 		198CF8EC14F5C03C0064DF05 /* libThree20UI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8E914F5C03B0064DF05 /* libThree20UI.a */; };
 		198CF8ED14F5C03C0064DF05 /* libThree20UICommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */; };
 		198CF8EE14F5C03C0064DF05 /* libThree20UINavigator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */; };
+		19905D21186275C800E63C00 /* appicon@76.png in Resources */ = {isa = PBXBuildFile; fileRef = 19905D1E186275C800E63C00 /* appicon@76.png */; };
+		19905D22186275C800E63C00 /* appicon@120.png in Resources */ = {isa = PBXBuildFile; fileRef = 19905D1F186275C800E63C00 /* appicon@120.png */; };
+		19905D23186275C800E63C00 /* appicon@152.png in Resources */ = {isa = PBXBuildFile; fileRef = 19905D20186275C800E63C00 /* appicon@152.png */; };
 		1997411115194E89006FBEA0 /* SyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* SyncQueue.m */; };
 		19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
 		19A5F61114FB486000757636 /* appicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F61014FB486000757636 /* appicon.png */; };
@@ -638,6 +641,9 @@
 		198CF8E914F5C03B0064DF05 /* libThree20UI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UI.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UI.a"; sourceTree = "<group>"; };
 		198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UICommon.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UICommon.a"; sourceTree = "<group>"; };
 		198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libThree20UINavigator.a; path = "../../Library/Developer/Xcode/DerivedData/INaturalistIOS-faavjtwrneezwhgiszwzgjvyyrcu/Build/Products/Debug-iphoneos/libThree20UINavigator.a"; sourceTree = "<group>"; };
+		19905D1E186275C800E63C00 /* appicon@76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appicon@76.png"; sourceTree = "<group>"; };
+		19905D1F186275C800E63C00 /* appicon@120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appicon@120.png"; sourceTree = "<group>"; };
+		19905D20186275C800E63C00 /* appicon@152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appicon@152.png"; sourceTree = "<group>"; };
 		1997410F15194E89006FBEA0 /* SyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncQueue.h; sourceTree = "<group>"; };
 		1997411015194E89006FBEA0 /* SyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncQueue.m; sourceTree = "<group>"; };
 		19A219F11707B8A50042A889 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
@@ -1035,6 +1041,9 @@
 				195889401806898700294EB3 /* appicon@144.png */,
 				19A5F61214FB486200757636 /* appicon@2x.png */,
 				1958893E1806896600294EB3 /* appicon@72.png */,
+				19905D1E186275C800E63C00 /* appicon@76.png */,
+				19905D1F186275C800E63C00 /* appicon@120.png */,
+				19905D20186275C800E63C00 /* appicon@152.png */,
 				191B0B48150197BC00F2508E /* current_location.png */,
 				191B0B49150197BC00F2508E /* current_location@2x.png */,
 				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
@@ -1932,6 +1941,9 @@
 				1958894518068BE700294EB3 /* Default-Portrait@2x~ipad.png in Resources */,
 				1958894718068BF100294EB3 /* Default-Landscape~ipad.png in Resources */,
 				1958894918068BF300294EB3 /* Default-Landscape@2x~ipad.png in Resources */,
+				19905D21186275C800E63C00 /* appicon@76.png in Resources */,
+				19905D22186275C800E63C00 /* appicon@120.png in Resources */,
+				19905D23186275C800E63C00 /* appicon@152.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
