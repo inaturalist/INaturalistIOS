@@ -298,11 +298,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                         style:UIBarButtonItemStyleBordered
                                         target:self
                                         action:@selector(focusOnNextField)];
-        UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] 
-                                        initWithTitle:NSLocalizedString(@"Clear",nil)
-                                        style:UIBarButtonItemStyleBordered
-                                        target:self
-                                        action:@selector(clickedClear)];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] 
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
                                        target:self 
@@ -310,7 +305,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self.keyboardToolbar setItems:[NSArray arrayWithObjects:
                                         prevButton, 
                                         nextButton,
-                                        clearButton, 
                                         flex, 
                                         doneButton, 
                                         nil]];
@@ -1190,15 +1184,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return YES;
     }
     return NO;
-}
-
-- (void)clickedClear {
-    UIView *field = [self.view findFirstResponder];
-    if ([field isKindOfClass:UITextField.class]) {
-        [(UITextField *)field setText:nil];
-    } else {
-        [(UITextView *)field setText:nil];
-    }
 }
 
 - (void)keyboardDone {
