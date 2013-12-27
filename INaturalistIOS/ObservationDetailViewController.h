@@ -96,6 +96,7 @@
 - (void)save;
 - (void)observationToUI;
 - (void)uiToObservation;
+- (UIViewController *)getToolbarViewController;
 
 - (void)addPhoto:(ObservationPhoto *)op;
 - (void)removePhoto:(ObservationPhoto *)op;

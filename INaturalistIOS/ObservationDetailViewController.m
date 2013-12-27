@@ -268,21 +268,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         }
     }
     
-    UIViewController *toolbarViewControler;
-    if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
-        toolbarViewControler = self.parentViewController;
-    } else {
-        toolbarViewControler = self;
-    }
-    [toolbarViewControler setToolbarItems:[NSArray arrayWithObjects:
+    UIViewController *tbvc = [self getToolbarViewController];
+    [tbvc setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
-                           flex, 
-                           self.saveButton, 
-                           flex, 
+                           flex,
+                           self.saveButton,
+                           flex,
                            self.viewButton,
                            nil]
                  animated:NO];
-    [toolbarViewControler.navigationController setToolbarHidden:NO animated:YES];
+    [tbvc.navigationController setToolbarHidden:NO animated:YES];
     
     if (!self.keyboardToolbar) {
         self.keyboardToolbar = [[UIToolbar alloc] init];
@@ -331,6 +326,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self observationToUI];
 }
 
+- (UIViewController *)getToolbarViewController
+{
+    if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
+        return self.parentViewController;
+    } else {
+        return self;
+    }
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
@@ -361,8 +365,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
          )) {
         [self startUpdatingLocation];
     }
-    [self.navigationController setToolbarHidden:NO animated:animated];
     [super viewDidAppear:animated];
+    [self.getToolbarViewController.navigationController setToolbarHidden:NO
+                                                                animated:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -612,8 +617,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
     vc.delegate = self;
     vc.photoSource = photoSource;
-    [self.navigationController setToolbarHidden:YES];
-    [self.navigationController pushViewController:vc animated:YES];
+    UIViewController *tbvc = self.getToolbarViewController;
+    [tbvc.navigationController setToolbarHidden:YES];
+    [tbvc.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark UIViewController
