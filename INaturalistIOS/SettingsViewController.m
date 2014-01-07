@@ -12,6 +12,9 @@
 #import "Observation.h"
 #import "ProjectUser.h"
 #import "ProjectObservation.h"
+#import "Comment.h"
+#import "Identification.h"
+#import "User.h"
 #import "DeletedRecord.h"
 #import "TutorialViewController.h"
 #import "INatUITabBarController.h"
@@ -84,6 +87,9 @@ static const int VersionCellTag = 4;
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
         }
     }
+	[Comment deleteAll];
+	[Identification deleteAll];
+	[User deleteAll];
     [Observation deleteAll];
     [ProjectUser deleteAll];
     [ProjectObservation deleteAll]; 

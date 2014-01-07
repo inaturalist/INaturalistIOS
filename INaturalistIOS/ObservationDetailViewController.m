@@ -23,6 +23,7 @@
 #import "TaxonPhoto.h"
 #import "EditLocationViewController.h"
 #import "ActionSheetPicker.h"
+#import "ObservationActivityViewController.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -224,8 +225,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)initUI
 {
+	UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                             target:nil
+                             action:nil];
+	fixed.width = 72;
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] 
-                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                              target:nil 
                              action:nil];
     if (!self.saveButton) {
@@ -245,6 +251,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                           target:self
                                                           action:@selector(clickedDelete)];
     }
+	
     
     if (!self.viewButton) {
         self.viewButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
@@ -254,13 +261,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [self.viewButton setEnabled:NO];
         }
     }
+	
+	if (!self.activityButton) {
+        self.activityButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+																		  target:self
+																		  action:@selector(clickedActivity)];
+    }
     
     [self setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
-                           flex, 
+                           fixed,
                            self.saveButton, 
-                           flex, 
-                           self.viewButton,
+                           flex,
+						   self.activityButton,
+                           flex,
+						   self.viewButton,
                            nil]
                  animated:NO];
     [self.navigationController setToolbarHidden:NO animated:YES];
@@ -1240,6 +1255,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                     otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
     actionSheet.tag = ViewActionSheetTag;
     [actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (void)clickedActivity
+{
+	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+									  instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
+	vc.observation = self.observation;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)save

@@ -188,7 +188,7 @@ static const int LeaveProjectAlertViewTag = 1;
     s = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
     CGSize size = [s sizeWithFont:[UIFont systemFontOfSize:15] 
                     constrainedToSize:CGSizeMake(320, 1000) 
-                    lineBreakMode:UILineBreakModeWordWrap];
+                    lineBreakMode:NSLineBreakByWordWrapping];
     return size.height;
 }
 
@@ -209,7 +209,7 @@ static const int LeaveProjectAlertViewTag = 1;
         }
         CGSize s = [first sizeWithFont:[UIFont systemFontOfSize:15] 
                      constrainedToSize:CGSizeMake(320, 1000) 
-                         lineBreakMode:UILineBreakModeWordWrap];
+                         lineBreakMode:NSLineBreakByWordWrapping];
         return s.height * terms.count + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];

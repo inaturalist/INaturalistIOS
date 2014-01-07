@@ -9,6 +9,8 @@
 #import "Observation.h"
 #import "ObservationFieldValue.h"
 #import "Taxon.h"
+#import "Comment.h"
+#import "Identification.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -47,6 +49,11 @@ static NSDateFormatter *jsDateFormatter = nil;
 @dynamic observationFieldValues;
 @dynamic projectObservations;
 @dynamic taxon;
+@dynamic commentsCount;
+@dynamic identificationsCount;
+@dynamic hasUnviewedActivity;
+@dynamic comments;
+@dynamic identifications;
 
 + (NSArray *)all
 {
@@ -103,10 +110,21 @@ static NSDateFormatter *jsDateFormatter = nil;
          @"taxon_id", @"taxonID",
          @"iconic_taxon_id", @"iconicTaxonID",
          @"iconic_taxon_name", @"iconicTaxonName",
+		 @"comments_count", @"commentsCount",
+		 @"identifications_count", @"identificationsCount",
+		 @"last_activity_at_utc", @"lastActivityAt",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
                        withMapping:[Taxon mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"comments"
+                    toRelationship:@"comments"
+                       withMapping:[Comment mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"identifications"
+                    toRelationship:@"identifications"
+                       withMapping:[Identification mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -294,6 +312,10 @@ static NSDateFormatter *jsDateFormatter = nil;
         return self.privateLongitude;
     }
     return self.longitude;
+}
+
+- (NSInteger)activityCount {
+	return self.commentsCount.integerValue + self.identificationsCount.integerValue;
 }
 
 @end

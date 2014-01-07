@@ -349,9 +349,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-                                                      NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
+                                                      //NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       // Do something with the error
-                                                      NSDictionary *userInfo = aNotification.userInfo;
+                                                      //NSDictionary *userInfo = aNotification.userInfo;
                                                       [self failedLogin];
                                                   }];
 }

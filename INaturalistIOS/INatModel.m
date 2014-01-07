@@ -23,7 +23,7 @@
     NSFetchRequest *request = [self fetchRequest];
     NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO];
     NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:NO];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+    [request setSortDescriptors:@[sortDescriptor1, sortDescriptor2]];
     return [self objectsWithFetchRequest:request];
 }
 
@@ -39,7 +39,7 @@
     [request setPredicate:[NSPredicate predicateWithFormat:
                            @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    [request setSortDescriptors:@[sortDescriptor]];
     return request;
 }
 

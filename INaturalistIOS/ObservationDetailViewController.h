@@ -64,6 +64,7 @@
 @property (strong, nonatomic) UIBarButtonItem *saveButton;
 @property (strong, nonatomic) UIBarButtonItem *deleteButton;
 @property (strong, nonatomic) UIBarButtonItem *viewButton;
+@property (strong, nonatomic) UIBarButtonItem *activityButton;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
@@ -83,6 +84,7 @@
 - (void)clickedSave;
 - (void)clickedDelete;
 - (void)clickedView;
+- (void)clickedActivity;
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedAddPhoto:(id)sender;
 - (IBAction)clickedSpeciesButton:(id)sender;
