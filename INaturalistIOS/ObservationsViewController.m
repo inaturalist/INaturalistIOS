@@ -19,6 +19,7 @@
 #import "INaturalistAppDelegate.h"
 #import "TutorialViewController.h"
 #import "RefreshControl.h"
+#import "ObservationActivityViewController.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -26,8 +27,7 @@ static const int ObservationCellTitleTag = 1;
 static const int ObservationCellSubTitleTag = 2;
 static const int ObservationCellUpperRightTag = 3;
 static const int ObservationCellLowerRightTag = 4;
-static const int ObservationCellActivityImageTag = 6;
-static const int ObservationCellActivityLabelTag = 7;
+static const int ObservationCellActivityButtonTag = 6;
 
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
@@ -320,6 +320,18 @@ static const int ObservationCellActivityLabelTag = 7;
 	[alert show];
 }
 
+- (void)viewActivity:(UIButton *)sender {
+	
+	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
+	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+	Observation *observation = self.observations[indexPath.row];
+	
+	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
+	vc.observation = observation;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -335,8 +347,7 @@ static const int ObservationCellActivityLabelTag = 7;
     UILabel *subtitle = (UILabel *)[cell viewWithTag:ObservationCellSubTitleTag];
     UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
     UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
-	UIImageView *activityImage = (UIImageView *)[cell viewWithTag:ObservationCellActivityImageTag];
-	UILabel *activityLabel = (UILabel *)[cell viewWithTag:ObservationCellActivityLabelTag];
+	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
     UIImage *img;
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
@@ -361,15 +372,25 @@ static const int ObservationCellActivityLabelTag = 7;
     
 	if (o.hasUnviewedActivity) {
 		// make bubble red
-		activityLabel.textColor = [UIColor whiteColor];
-		activityImage.backgroundColor = [UIColor redColor];
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
 	} else {
 		// make bubble grey
-		activityLabel.textColor = [UIColor darkGrayColor];
-		activityImage.backgroundColor = [UIColor whiteColor];
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
 	}
 	
-	activityLabel.text = [NSString stringWithFormat:@"%d", o.activityCount];
+	[activityButton setTitle:[NSString stringWithFormat:@"%d", o.activityCount] forState:UIControlStateNormal];
+	
+	if (o.activityCount > 0) {
+		activityButton.hidden = NO;
+		CGRect frame = syncImage.frame;
+		frame.origin.x = 267;
+		syncImage.frame = frame;
+	} else {
+		activityButton.hidden = YES;
+		CGRect frame = syncImage.frame;
+		frame.origin.x = 292;
+		syncImage.frame = frame;
+	}
 	
     upperRight.text = o.observedOnShortString;
     syncImage.hidden = !o.needsSync;

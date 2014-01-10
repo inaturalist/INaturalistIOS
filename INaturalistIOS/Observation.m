@@ -11,6 +11,7 @@
 #import "Taxon.h"
 #import "Comment.h"
 #import "Identification.h"
+#import "ObservationPhoto.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -58,7 +59,7 @@ static NSDateFormatter *jsDateFormatter = nil;
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
     return [self objectsWithFetchRequest:request];
 }
@@ -125,6 +126,10 @@ static NSDateFormatter *jsDateFormatter = nil;
 		[defaultMapping mapKeyPath:@"identifications"
                     toRelationship:@"identifications"
                        withMapping:[Identification mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"observation_photos"
+                    toRelationship:@"observationPhotos"
+                       withMapping:[ObservationPhoto mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }

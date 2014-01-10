@@ -366,21 +366,22 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" alpha="0.20000000000000015" tag="4" contentMode="scaleToFill" image="01-refresh.png" id="TR3-ef-hqW">
-                                            <rect key="frame" x="271" y="31" width="16" height="16"/>
+                                            <rect key="frame" x="267" y="28" width="16" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" tag="6" contentMode="scaleToFill" id="bGh-aP-NbK">
-                                            <rect key="frame" x="295" y="31" width="16" height="16"/>
+                                        <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cgI-Jb-s08">
+                                            <rect key="frame" x="291" y="27" width="24" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" red="0.71764705880000002" green="0.25098039220000001" blue="0.086274509799999996" alpha="1" colorSpace="calibratedRGB"/>
-                                        </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="7" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="22" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dJM-D4-jks">
-                                            <rect key="frame" x="295" y="31" width="16" height="16"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <inset key="titleEdgeInsets" minX="1" minY="-5" maxX="0.0" maxY="0.0"/>
+                                            <state key="normal" title="22" backgroundImage="08-chat-red.png">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="viewActivity:" destination="2" eventType="touchUpInside" id="j0c-X1-yuS"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
@@ -1825,6 +1826,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
     <resources>
         <image name="01-refresh.png" width="24" height="26"/>
         <image name="06-magnify.png" width="24" height="24"/>
+        <image name="08-chat-red.png" width="24" height="22"/>
         <image name="83-calendar.png" width="23" height="25"/>
         <image name="FacebookIcon.png" width="234" height="234"/>
         <image name="GoogleIcon.png" width="44" height="44"/>
@@ -1841,9 +1843,9 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Iwt-4E-pF9"/>
         <segue reference="hvR-ND-N81"/>
-        <segue reference="8j7-c4-5Sv"/>
+        <segue reference="nqN-gg-ATR"/>
+        <segue reference="Iwt-4E-pF9"/>
         <segue reference="LoM-53-PTP"/>
         <segue reference="dQ0-Mt-8Uk"/>
     </inferredMetricsTieBreakers>

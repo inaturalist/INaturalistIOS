@@ -133,7 +133,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 	self.comments = self.observation.comments.allObjects;
 	self.identifications = self.observation.identifications.allObjects;
 	
-	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
 	NSArray *allActivities = [self.comments arrayByAddingObjectsFromArray:self.identifications];
 	self.activities = [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
 }

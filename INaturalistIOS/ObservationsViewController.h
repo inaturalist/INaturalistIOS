@@ -37,6 +37,7 @@
 @property (nonatomic, strong) NSMutableArray *syncErrors;
 
 - (IBAction)sync:(id)sender;
+- (IBAction)viewActivity:(id)sender;
 - (void)stopSync;
 - (IBAction)edit:(id)sender;
 - (void)stopEditing;

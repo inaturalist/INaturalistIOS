@@ -263,9 +263,22 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 	
 	if (!self.activityButton) {
-        self.activityButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-																		  target:self
-																		  action:@selector(clickedActivity)];
+		self.activityButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		self.activityButton.frame = CGRectMake(0, 0, 24, 22);
+		self.activityButton.titleEdgeInsets = UIEdgeInsetsMake(-5, 1, 0, 0);
+		[self.activityButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		self.activityButton.titleLabel.font = [UIFont systemFontOfSize:11.0];
+		[self.activityButton addTarget:self action:@selector(clickedActivity:) forControlEvents:UIControlEventTouchUpInside];
+	}
+	if (self.observation.hasUnviewedActivity) {
+		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+	} else {
+		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+	}
+	[self.activityButton setTitle:[NSString stringWithFormat:@"%d", self.observation.activityCount] forState:UIControlStateNormal];
+	
+	if (!self.activityBarButton) {
+        self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
     }
     
     [self setToolbarItems:[NSArray arrayWithObjects:
@@ -273,7 +286,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                            fixed,
                            self.saveButton, 
                            flex,
-						   self.activityButton,
+						   self.activityBarButton,
                            flex,
 						   self.viewButton,
                            nil]
@@ -1257,7 +1270,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
-- (void)clickedActivity
+- (void)clickedActivity:(id)sender
 {
 	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 									  instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
