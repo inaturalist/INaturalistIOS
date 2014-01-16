@@ -190,7 +190,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 
 - (void)markAsRead
 {
-	if (self.observation.recordID && self.observation.hasUnviewedActivity) {
+	if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
 		[[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID] params:nil delegate:self];
 		self.observation.hasUnviewedActivity = @NO;
 		NSError *error = nil;
@@ -233,8 +233,26 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
+		
+		
 		if ([o isKindOfClass:[Observation class]]) {
-			((Observation *)o).hasUnviewedActivity = @NO;
+			Observation *observation = (Observation *)o;
+			
+			// if there are pending local changes, don't override the sync timestamp
+			if (!observation.needsSync) {
+				[o setSyncedAt:now];
+			}
+			
+			// we're on the activity screen, so mark this as viewed
+			observation.hasUnviewedActivity = @NO;
+			
+			// mark any photos as being synced as well...
+			NSArray *photos = [observation.observationPhotos allObjects];
+			for (ObservationPhoto *photo in photos) {
+				photo.syncedAt = now;
+			}
+		} else {
+			[o setSyncedAt:now];
 		}
     }
     

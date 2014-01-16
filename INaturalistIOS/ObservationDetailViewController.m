@@ -270,7 +270,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 		self.activityButton.titleLabel.font = [UIFont systemFontOfSize:11.0];
 		[self.activityButton addTarget:self action:@selector(clickedActivity:) forControlEvents:UIControlEventTouchUpInside];
 	}
-	if (self.observation.hasUnviewedActivity) {
+	if (self.observation.hasUnviewedActivity.boolValue) {
 		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
 	} else {
 		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];

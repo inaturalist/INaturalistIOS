@@ -370,7 +370,7 @@ static const int ObservationCellActivityButtonTag = 6;
         subtitle.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
-	if (o.hasUnviewedActivity) {
+	if (o.hasUnviewedActivity.boolValue) {
 		// make bubble red
 		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
 	} else {
@@ -555,7 +555,14 @@ static const int ObservationCellActivityButtonTag = 6;
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
-        [o setSyncedAt:now];
+		if ([o isKindOfClass:[Observation class]]) {
+			Observation *observation = (Observation *)o;
+			if (!observation.needsSync) {
+				[o setSyncedAt:now];
+			}
+		} else {
+			[o setSyncedAt:now];
+		}
     }
     
 	/*

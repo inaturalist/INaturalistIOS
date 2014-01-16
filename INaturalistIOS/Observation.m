@@ -323,4 +323,14 @@ static NSDateFormatter *jsDateFormatter = nil;
 	return self.commentsCount.integerValue + self.identificationsCount.integerValue;
 }
 
+- (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
+	
+	// for observations which are due to be synced, only update the value if the local value is empty
+	if (self.needsSync) {
+		return ([self valueForKeyPath:inKeyPath] == nil);
+	}
+	
+	return [super validateValue:ioValue forKeyPath:inKeyPath error:outError];
+}
+
 @end
