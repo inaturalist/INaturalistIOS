@@ -8,6 +8,8 @@
 
 #import "INatModel.h"
 #import "DeletedRecord.h"
+#import "Observation.h"
+#import "ObservationPhoto.h"
 
 @implementation INatModel
 
@@ -94,26 +96,15 @@
 
 - (void)willSave
 {
-    NSDictionary *relats = self.class.entityDescription.relationshipsByName;
-    NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
-    for (NSString *relatName in relats.keyEnumerator) {
-        [changes removeObjectForKey:relatName];
-    }
-    if (changes.count > 0) {
-        NSDate *now;
-        if ([changes objectForKey:@"syncedAt"]) {
-            now = self.syncedAt;
-        } else {
-            now = [NSDate date];
-        }
-        NSDate *stamp = self.localUpdatedAt;
-        if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
-            [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
-            if (![self primitiveValueForKey:@"localCreatedAt"]) {
-                [self setPrimitiveValue:now forKey:@"localCreatedAt"];
-            }
-        }
-    }
+	if (![self isKindOfClass:[Observation class]] && ![self isKindOfClass:[ObservationPhoto class]]) {
+		[self updateLocalTimestamps];
+	}
+	
+	// no object should have a nil syncedAt date...
+	if ([self respondsToSelector:@selector(syncedAt)] && self.syncedAt == nil) {
+		self.syncedAt = [NSDate date];
+	}
+
     [super willSave];
 }
 
@@ -129,5 +120,27 @@
     return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.localUpdatedAt] < 0;
 }
 
+- (void)updateLocalTimestamps {
+	NSDictionary *relats = self.class.entityDescription.relationshipsByName;
+	NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
+	for (NSString *relatName in relats.keyEnumerator) {
+		[changes removeObjectForKey:relatName];
+	}
+	if (changes.count > 0) {
+		NSDate *now;
+		if ([changes objectForKey:@"syncedAt"]) {
+			now = self.syncedAt;
+		} else {
+			now = [NSDate date];
+		}
+		NSDate *stamp = self.localUpdatedAt;
+		if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
+			[self setPrimitiveValue:now forKey:@"localUpdatedAt"];
+			if (![self primitiveValueForKey:@"localCreatedAt"]) {
+				[self setPrimitiveValue:now forKey:@"localCreatedAt"];
+			}
+		}
+	}
+}
 
 @end

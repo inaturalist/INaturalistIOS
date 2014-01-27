@@ -24,6 +24,7 @@
 #import "EditLocationViewController.h"
 #import "ActionSheetPicker.h"
 #import "ObservationActivityViewController.h"
+#import "UIImageView+WebCache.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -464,6 +465,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [ImageStore.sharedImageStore store:image forKey:op.photoKey];
     [self addPhoto:op];
     op.localCreatedAt = [NSDate date];
+	op.localUpdatedAt = [NSDate date];
     
     if (referenceURL) {
         self.lastImageReferenceURL = referenceURL;
@@ -594,9 +596,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         cover.baseline = coverflowView.frame.size.height - 20;
     }
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
-    UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-    if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
-    if (img) cover.image = img;
+	
+	if (op.photoKey == nil) {
+		[cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]];
+	} else {
+		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
+		if (img) cover.image = img;
+	}
+	
     return cover;
 }
 
@@ -1286,6 +1294,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [ofv deleteEntity]; 
         }
     }
+	self.observation.localUpdatedAt = [NSDate date];
     [self.observation save];
 }
 

@@ -20,6 +20,7 @@
 #import "TutorialViewController.h"
 #import "RefreshControl.h"
 #import "ObservationActivityViewController.h"
+#import "UIImageView+WebCache.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -206,7 +207,7 @@ static const int ObservationCellActivityButtonTag = 6;
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
-		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", username]
+		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
 	}
@@ -348,14 +349,19 @@ static const int ObservationCellActivityButtonTag = 6;
     UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
     UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
 	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
-    UIImage *img;
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-        img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+		
+		if (op.photoKey == nil) {
+			[imageView setImageWithURL:[NSURL URLWithString:op.squareURL]];
+		} else {
+			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+		}
+        
     } else {
-        img = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+        imageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
-    [imageView setImage:img];
+    
     if (o.speciesGuess) {
         [title setText:o.speciesGuess];
     } else {
@@ -548,6 +554,25 @@ static const int ObservationCellActivityButtonTag = 6;
 }
 
 #pragma mark - RKObjectLoaderDelegate
+
+/*
+- (void)objectMapperWillBeginMapping:(RKObjectMapper *)objectMapper {
+	NSLog(@"target object: %@", objectMapper.targetObject);
+	objectMapper.targetObject = nil;
+}
+
+- (void)objectMapper:(RKObjectMapper *)objectMapper willMapFromObject:(id)sourceObject toObject:(id)destinationObject atKeyPath:(NSString *)keyPath usingMapping:(RKObjectMappingDefinition *)objectMapping {
+	NSLog(@"destination object: %@", destinationObject);
+	
+}
+
+- (void)objectLoader:(RKObjectLoader *)loader willMapData:(inout __autoreleasing id *)mappableData {
+	for (NSDictionary *object in (NSArray *)mappableData) {
+		
+	}
+}
+*/
+
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
@@ -555,13 +580,14 @@ static const int ObservationCellActivityButtonTag = 6;
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
+		NSLog(@"obj class: %@", o.class);
+		NSLog(@"obj needs sync: %@", o.needsSync ? @"YES" : @"NO");
+
 		if ([o isKindOfClass:[Observation class]]) {
 			Observation *observation = (Observation *)o;
 			if (!observation.needsSync) {
 				[o setSyncedAt:now];
 			}
-		} else {
-			[o setSyncedAt:now];
 		}
     }
     

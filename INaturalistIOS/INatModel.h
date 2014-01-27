@@ -30,4 +30,5 @@
 - (void)save;
 - (void)destroy;
 - (BOOL)needsSync;
+- (void)updateLocalTimestamps;
 @end

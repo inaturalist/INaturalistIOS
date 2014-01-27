@@ -209,7 +209,11 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 
 - (void)agreeWithIdentification:(Identification *)identification
 {
-	[[RKClient sharedClient] post:@"/identifications/agree" params:@{@"id":identification.recordID} delegate:self];
+	NSDictionary *params = @{
+							 @"identification[observation_id]": self.observation.recordID,
+							 @"identification[taxon_id]":self.observation.taxonID
+							 };
+	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 #pragma mark - RKRequestDelegate
@@ -232,6 +236,8 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
+		
+		/*
         [o setSyncedAt:now];
 		
 		
@@ -242,10 +248,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 			if (!observation.needsSync) {
 				[o setSyncedAt:now];
 			}
-			
-			// we're on the activity screen, so mark this as viewed
-			observation.hasUnviewedActivity = @NO;
-			
+						
 			// mark any photos as being synced as well...
 			NSArray *photos = [observation.observationPhotos allObjects];
 			for (ObservationPhoto *photo in photos) {
@@ -254,6 +257,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 		} else {
 			[o setSyncedAt:now];
 		}
+		*/
     }
     
     NSError *error = nil;
