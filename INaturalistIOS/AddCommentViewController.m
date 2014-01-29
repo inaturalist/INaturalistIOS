@@ -8,6 +8,7 @@
 
 #import "AddCommentViewController.h"
 #import "Observation.h"
+#import "DejalActivityView.h"
 
 @interface AddCommentViewController () <RKRequestDelegate>
 
@@ -36,6 +37,7 @@
 }
 
 - (IBAction)clickedSave:(id)sender {
+	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"comment[body]": self.textView.text,
 							 @"comment[parent_id]": self.observation.recordID,
@@ -46,6 +48,7 @@
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
+	[DejalBezelActivityView removeView];
 	NSLog(@"Response: %@", response);
 	if (response.statusCode == 200) {
 		[self dismissViewControllerAnimated:YES completion:nil];
@@ -56,6 +59,7 @@
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
+	[DejalBezelActivityView removeView];
 	NSLog(@"Request Error: %@", error.localizedDescription);
 	[self showError:error.localizedDescription];
 }

@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TaxaSearchViewController.h"
 
 @class Observation;
 
-@interface AddIdentificationViewController : UIViewController
+@interface AddIdentificationViewController : UITableViewController <TaxaSearchViewControllerDelegate>
 
 @property (nonatomic, strong) Observation *observation;
+@property (nonatomic, strong) Taxon *taxon;
 
 @end

@@ -72,5 +72,16 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return defaultSerializationMapping;
 }
 
+- (NSString *)createdAtPrettyString
+{
+    if (!self.createdAt) return @"Unknown";
+    return [Identification.prettyDateFormatter stringFromDate:self.createdAt];
+}
+
+- (NSString *)createdAtShortString
+{
+    if (!self.createdAt) return @"Unknown";
+    return [Identification.shortDateFormatter stringFromDate:self.createdAt];
+}
 
 @end

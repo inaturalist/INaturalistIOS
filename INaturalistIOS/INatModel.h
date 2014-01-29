@@ -17,6 +17,10 @@
 @property (nonatomic, retain) NSDate * localUpdatedAt;
 @property (nonatomic, retain) NSDate * syncedAt;
 
++ (NSDateFormatter *)prettyDateFormatter;
++ (NSDateFormatter *)shortDateFormatter;
++ (NSDateFormatter *)isoDateFormatter;
++ (NSDateFormatter *)jsDateFormatter;
 + (NSArray *)all;
 + (NSArray *)needingSync;
 + (NSFetchRequest *)needingSyncRequest;

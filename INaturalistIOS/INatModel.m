@@ -11,6 +11,11 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 
+static NSDateFormatter *prettyDateFormatter = nil;
+static NSDateFormatter *shortDateFormatter = nil;
+static NSDateFormatter *isoDateFormatter = nil;
+static NSDateFormatter *jsDateFormatter = nil;
+
 @implementation INatModel
 
 @dynamic recordID;
@@ -19,6 +24,48 @@
 @dynamic localCreatedAt;
 @dynamic localUpdatedAt;
 @dynamic syncedAt;
+
++ (NSDateFormatter *)prettyDateFormatter
+{
+    if (!prettyDateFormatter) {
+        prettyDateFormatter = [[NSDateFormatter alloc] init];
+        [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    }
+    return prettyDateFormatter;
+}
+
++ (NSDateFormatter *)shortDateFormatter
+{
+    if (!shortDateFormatter) {
+        shortDateFormatter = [[NSDateFormatter alloc] init];
+        shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    return shortDateFormatter;
+}
+
++ (NSDateFormatter *)isoDateFormatter
+{
+    if (!isoDateFormatter) {
+        isoDateFormatter = [[NSDateFormatter alloc] init];
+        [isoDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [isoDateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
+    }
+    return isoDateFormatter;
+}
+
+// Javascript-like date format, e.g. @"Sun Mar 18 2012 17:07:20 GMT-0700 (PDT)"
++ (NSDateFormatter *)jsDateFormatter
+{
+    if (!jsDateFormatter) {
+        jsDateFormatter = [[NSDateFormatter alloc] init];
+        [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
+    }
+    return jsDateFormatter;
+}
 
 + (NSArray *)all
 {

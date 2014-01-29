@@ -24,4 +24,7 @@
 @property (nonatomic, retain) Observation *observation;
 @property (nonatomic, retain) User *user;
 
+- (NSString *)createdAtPrettyString;
+- (NSString *)createdAtShortString;
+
 @end

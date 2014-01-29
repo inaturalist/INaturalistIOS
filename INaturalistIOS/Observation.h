@@ -50,10 +50,6 @@
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *identifications;
 
-+ (NSDateFormatter *)prettyDateFormatter;
-+ (NSDateFormatter *)shortDateFormatter;
-+ (NSDateFormatter *)isoDateFormatter;
-+ (NSDateFormatter *)jsDateFormatter;
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;

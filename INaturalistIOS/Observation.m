@@ -15,10 +15,6 @@
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
-static NSDateFormatter *prettyDateFormatter = nil;
-static NSDateFormatter *shortDateFormatter = nil;
-static NSDateFormatter *isoDateFormatter = nil;
-static NSDateFormatter *jsDateFormatter = nil;
 
 @implementation Observation
 
@@ -156,48 +152,6 @@ static NSDateFormatter *jsDateFormatter = nil;
          nil];
     }
     return defaultSerializationMapping;
-}
-
-+ (NSDateFormatter *)prettyDateFormatter
-{
-    if (!prettyDateFormatter) {
-        prettyDateFormatter = [[NSDateFormatter alloc] init];
-        [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-    }
-    return prettyDateFormatter;
-}
-
-+ (NSDateFormatter *)shortDateFormatter
-{
-    if (!shortDateFormatter) {
-        shortDateFormatter = [[NSDateFormatter alloc] init];
-        shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
-        shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
-    }
-    return shortDateFormatter;
-}
-
-+ (NSDateFormatter *)isoDateFormatter
-{
-    if (!isoDateFormatter) {
-        isoDateFormatter = [[NSDateFormatter alloc] init];
-        [isoDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [isoDateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
-    }
-    return isoDateFormatter;
-}
-
-// Javascript-like date format, e.g. @"Sun Mar 18 2012 17:07:20 GMT-0700 (PDT)"
-+ (NSDateFormatter *)jsDateFormatter
-{
-    if (!jsDateFormatter) {
-        jsDateFormatter = [[NSDateFormatter alloc] init];
-        [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
-    }
-    return jsDateFormatter;
 }
 
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context

@@ -27,4 +27,7 @@
 @property (nonatomic, retain) Taxon *taxon;
 @property (nonatomic, retain) User *user;
 
+- (NSString *)createdAtPrettyString;
+- (NSString *)createdAtShortString;
+
 @end

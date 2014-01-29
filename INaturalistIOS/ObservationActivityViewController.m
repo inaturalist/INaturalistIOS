@@ -17,7 +17,7 @@
 #import "Taxon.h"
 #import "AddCommentViewController.h"
 #import "AddIdentificationViewController.h"
-
+#import "DejalActivityView.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
 #import "PhotoViewController.h"
@@ -34,6 +34,7 @@ static const int IdentificationCellTaxonNameTag = 7;
 static const int IdentificationCellBylineTag = 8;
 static const int IdentificationCellAgreeTag = 9;
 static const int IdentificationCellTaxonScientificNameTag = 10;
+static const int IdentificationCellBodyTag = 11;
 
 @interface ObservationActivityViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -42,6 +43,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 @property (strong, nonatomic) NSArray *comments;
 @property (strong, nonatomic) NSArray *identifications;
 @property (strong, nonatomic) NSArray *activities;
+@property (strong, nonatomic) NSMutableArray *rowHeights;
 
 - (void)initUI;
 - (void)clickedAddComment;
@@ -78,6 +80,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 	[self refreshData];
 	[self markAsRead];
 	[self loadData];
+	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Refreshing...",nil)];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -85,6 +88,11 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 	[super viewDidAppear:animated];
     [self initUI];
     [self.navigationController setToolbarHidden:NO animated:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[self.navigationController setToolbarHidden:YES animated:animated];
 }
 
 - (void)initUI
@@ -136,6 +144,11 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
 	NSArray *allActivities = [self.comments arrayByAddingObjectsFromArray:self.identifications];
 	self.activities = [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
+	
+	self.rowHeights = [NSMutableArray arrayWithCapacity:self.activities.count];
+	for (int x = 0; x < self.activities.count; x++) {
+		[self.rowHeights addObject:[NSNull null]];
+	}
 }
 
 - (void)reload
@@ -158,7 +171,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 		vc.observation = self.observation;
 	} else if ([segue.identifier isEqualToString:@"AddIdentificationSegue"]){
 		AddIdentificationViewController *vc = segue.destinationViewController;
-		//vc.observation = self.observation;
+		vc.observation = self.observation;
 	}
 }
 
@@ -209,8 +222,9 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 
 - (void)agreeWithIdentification:(Identification *)identification
 {
+	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
 	NSDictionary *params = @{
-							 @"identification[observation_id]": self.observation.recordID,
+							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":self.observation.taxonID
 							 };
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
@@ -219,12 +233,17 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 #pragma mark - RKRequestDelegate
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-	NSLog(@"Response: %@", response);
+	NSLog(@"Did load response status code: %d for URL: %@", response.statusCode, response.URL);
+	if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound && response.statusCode == 200) {
+		[self refreshData];
+	} else {
+		[DejalBezelActivityView removeView];
+	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
-	NSLog(@"Request Error: %@", error.localizedDescription);
+	NSLog(@"Did fail with error: %@ for URL: %@", error.localizedDescription, request.URL);
 }
 
 #pragma mark - RKObjectLoaderDelegate
@@ -232,6 +251,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
+	[DejalBezelActivityView removeView];
 	
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
@@ -305,6 +325,32 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if (self.rowHeights[indexPath.row] == [NSNull null]) {
+		INatModel *activity = self.activities[indexPath.row];
+		
+		NSString *body;
+		float margin;
+		if ([activity isKindOfClass:[Identification class]]) {
+			body = ((Identification *)activity).body;
+			margin = 88;
+		} else {
+			body = ((Comment *)activity).body;
+			margin = 33;
+		}
+		
+		if (body.length == 0) {
+			self.rowHeights[indexPath.row] = @(80);
+			return 80;
+		} else {
+			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:13.0] constrainedToSize:CGSizeMake(252.0, 10000.0) lineBreakMode:NSLineBreakByWordWrapping];
+			float height = MAX(80, size.height + margin);
+			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
+			return height;
+		}
+	} else {
+		NSNumber *height = self.rowHeights[indexPath.row];
+		return height.floatValue;
+	}
 	return 80;
 }
 
@@ -329,7 +375,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 		imageView.urlPath = comment.user.userIconURL;
 	
 		body.text = comment.body;
-		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", comment.user.login, comment.createdAt];
+		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", comment.user.login, comment.createdAtShortString];
 
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
@@ -341,6 +387,7 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 		UILabel *taxonScientificName = (UILabel *)[cell viewWithTag:IdentificationCellTaxonScientificNameTag];
 		UILabel *byline = (UILabel *)[cell viewWithTag:IdentificationCellBylineTag];
 		UIButton *agreeButton = (UIButton *)[cell viewWithTag:IdentificationCellAgreeTag];
+		UILabel *body = (UILabel *)[cell viewWithTag:IdentificationCellBodyTag];
 		
 		Identification *identification = (Identification *)activity;
 		
@@ -360,7 +407,8 @@ static const int IdentificationCellTaxonScientificNameTag = 10;
 		title.text = [NSString stringWithFormat:@"%@'s ID", identification.user.login];
 		taxonName.text = identification.taxon.name;
 		taxonScientificName.text = identification.taxon.name;
-		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", identification.user.login, identification.createdAt];
+		body.text = identification.body;
+		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", identification.user.login, identification.createdAtShortString];
 		
 		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 		if ([username isEqualToString:identification.user.login]) {
