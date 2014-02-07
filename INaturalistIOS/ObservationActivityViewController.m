@@ -114,7 +114,7 @@ static const int IdentificationCellBodyTag = 11;
     }
     
     if (!self.addIdentificationButton) {
-        self.addIdentificationButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Identification",nil)
+        self.addIdentificationButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add ID",nil)
 																		style:UIBarButtonItemStyleDone
 																	   target:self
 																	   action:@selector(clickedAddIdentification)];
@@ -225,7 +225,7 @@ static const int IdentificationCellBodyTag = 11;
 	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
 	NSDictionary *params = @{
 							 @"identification[observation_id]":self.observation.recordID,
-							 @"identification[taxon_id]":self.observation.taxonID
+							 @"identification[taxon_id]":identification.taxonID
 							 };
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }

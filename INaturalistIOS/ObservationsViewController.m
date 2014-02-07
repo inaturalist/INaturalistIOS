@@ -227,6 +227,7 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)reload
 {
     [self loadData];
+	[self checkEmpty];
     [[self tableView] reloadData];
 }
 
@@ -477,7 +478,6 @@ static const int ObservationCellActivityButtonTag = 6;
 	[self refreshData];
 	[self checkNewActivity];
     [self reload];
-    [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -669,7 +669,6 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
 	NSLog(@"Request Error: %@", error.localizedDescription);
-	[self showError:error.localizedDescription];
 }
 
 #pragma mark - SyncQueueDelegate
