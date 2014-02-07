@@ -598,6 +598,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
 	
 	if (op.photoKey == nil) {
+		cover.imageView.contentMode = UIViewContentModeScaleAspectFill;
 		[cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
