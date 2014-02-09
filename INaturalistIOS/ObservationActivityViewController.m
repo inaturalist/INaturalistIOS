@@ -79,7 +79,7 @@ static const int IdentificationCellBodyTag = 11;
 	[super viewWillAppear:animated];
 	[self refreshData];
 	[self markAsRead];
-	[self loadData];
+	[self reload];
 	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Refreshing...",nil)];
 }
 
@@ -193,10 +193,21 @@ static const int IdentificationCellBodyTag = 11;
 
 - (void)clickedAgree:(UIButton *)sender
 {
-	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
-	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+	UIView *contentView = sender.superview;
+	CGPoint center = [self.tableView convertPoint:sender.center fromView:contentView];
+    NSIndexPath *indexPath = [[self tableView] indexPathForRowAtPoint:center];
 	Identification *identification = (Identification *)self.activities[indexPath.row];
 	[self agreeWithIdentification:identification];
+}
+
+- (void)agreeWithIdentification:(Identification *)identification
+{
+	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
+	NSDictionary *params = @{
+							 @"identification[observation_id]":self.observation.recordID,
+							 @"identification[taxon_id]":identification.taxonID
+							 };
+	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 #pragma mark - API
@@ -218,16 +229,6 @@ static const int IdentificationCellBodyTag = 11;
 													 objectMapping:[Observation mapping]
 														  delegate:self];
 	}
-}
-
-- (void)agreeWithIdentification:(Identification *)identification
-{
-	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
-	NSDictionary *params = @{
-							 @"identification[observation_id]":self.observation.recordID,
-							 @"identification[taxon_id]":identification.taxonID
-							 };
-	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 #pragma mark - RKRequestDelegate
