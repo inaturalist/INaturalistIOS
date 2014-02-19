@@ -145,11 +145,11 @@ static NSDateFormatter *jsDateFormatter = nil;
 {
 	if (![self isKindOfClass:[Observation class]] && ![self isKindOfClass:[ObservationPhoto class]]) {
 		[self updateLocalTimestamps];
-	}
-	
-	// no object should have a nil syncedAt date...
-	if ([self respondsToSelector:@selector(syncedAt)] && self.syncedAt == nil) {
-		self.syncedAt = [NSDate date];
+		
+		// no object should have a nil syncedAt date...
+		if ([self respondsToSelector:@selector(syncedAt)] && self.syncedAt == nil) {
+			self.syncedAt = [NSDate date];
+		}
 	}
 
     [super willSave];
