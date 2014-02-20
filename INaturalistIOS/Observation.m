@@ -280,7 +280,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
 	
 	// for observations which are due to be synced, only update the value if the local value is empty
-	if (self.needsSync) {
+	if (self.needsSync && self.localUpdatedAt != nil) {
 		return ([self valueForKeyPath:inKeyPath] == nil);
 	}
 	
