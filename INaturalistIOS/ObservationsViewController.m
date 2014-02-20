@@ -578,28 +578,21 @@ static const int ObservationCellActivityButtonTag = 6;
 	[self.refreshControl endRefreshing];
 	
     if (objects.count == 0) return;
-    NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
-		NSLog(@"obj class: %@", o.class);
-		NSLog(@"obj needs sync: %@", o.needsSync ? @"YES" : @"NO");
-
 		if ([o isKindOfClass:[Observation class]]) {
 			Observation *observation = (Observation *)o;
-			if (!observation.needsSync) {
-				[o setSyncedAt:now];
+			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
+				[observation setSyncedAt:[NSDate date]];
+			}
+			NSArray *sortedObservationPhotos = observation.sortedObservationPhotos;
+			for (ObservationPhoto *photo in sortedObservationPhotos) {
+				if (photo.localUpdatedAt == nil || !photo.needsSync) { // this only occurs for downloaded items, not locally updated items
+					[photo setSyncedAt:[NSDate date]];
+				}
 			}
 		}
     }
     
-	/*
-    NSArray *rejects = [ListedTaxon objectsWithPredicate:
-                        [NSPredicate predicateWithFormat:@"listID = %d AND syncedAt < %@",
-                         self.project.listID.intValue, now]];
-    for (ListedTaxon *lt in rejects) {
-        [lt deleteEntity];
-    }
-    */
-	
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
 	

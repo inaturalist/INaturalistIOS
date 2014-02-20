@@ -10,6 +10,7 @@
 #import "LoginViewController.h"
 #import "DejalActivityView.h"
 #import "Observation.h"
+#import "ObservationPhoto.h"
 #import "ProjectUser.h"
 #import "ProjectObservation.h"
 #import "Comment.h"
@@ -91,6 +92,7 @@ static const int VersionCellTag = 4;
 	[Identification deleteAll];
 	[User deleteAll];
     [Observation deleteAll];
+	[ObservationPhoto deleteAll];
     [ProjectUser deleteAll];
     [ProjectObservation deleteAll]; 
     for (DeletedRecord *dr in [DeletedRecord allObjects]) {

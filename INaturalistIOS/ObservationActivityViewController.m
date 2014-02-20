@@ -258,27 +258,7 @@ static const int IdentificationCellBodyTag = 11;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
 		
-		/*
-        [o setSyncedAt:now];
-		
-		
-		if ([o isKindOfClass:[Observation class]]) {
-			Observation *observation = (Observation *)o;
-			
-			// if there are pending local changes, don't override the sync timestamp
-			if (!observation.needsSync) {
-				[o setSyncedAt:now];
-			}
-						
-			// mark any photos as being synced as well...
-			NSArray *photos = [observation.observationPhotos allObjects];
-			for (ObservationPhoto *photo in photos) {
-				photo.syncedAt = now;
-			}
-		} else {
-			[o setSyncedAt:now];
-		}
-		*/
+
     }
     
     NSError *error = nil;
