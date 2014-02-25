@@ -276,11 +276,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (NSInteger)activityCount {
 	return self.commentsCount.integerValue + self.identificationsCount.integerValue;
 }
-
+// TODO: try forKey: instead of forKeyPath:
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
 	
 	// for observations which are due to be synced, only update the value if the local value is empty
-	if (self.needsSync && self.localUpdatedAt != nil) {
+	if (self.needsSync && self.localUpdatedAt != nil && ![inKeyPath isEqualToString:@"recordID"]) {
 		return ([self valueForKeyPath:inKeyPath] == nil);
 	}
 	

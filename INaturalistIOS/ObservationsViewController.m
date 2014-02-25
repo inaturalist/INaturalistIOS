@@ -61,7 +61,6 @@ static const int ObservationCellActivityButtonTag = 6;
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //if (![defaults objectForKey:INatUsernamePrefKey]) {
     if (![defaults objectForKey:INatTokenPrefKey]) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
         return;
@@ -91,12 +90,12 @@ static const int ObservationCellActivityButtonTag = 6;
     if (!self.syncQueue) {
         self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
     }
-    [self.syncQueue.queue removeAllObjects];
-    [self.syncQueue addModel:Observation.class];
-    [self.syncQueue addModel:ObservationFieldValue.class];
-    [self.syncQueue addModel:ProjectObservation.class];
-    [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
-    [self.syncQueue start];
+	[self.syncQueue.queue removeAllObjects];
+	[self.syncQueue addModel:Observation.class];
+	[self.syncQueue addModel:ObservationFieldValue.class];
+	[self.syncQueue addModel:ProjectObservation.class];
+	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
+	[self.syncQueue start];
 }
 
 - (void)stopSync
