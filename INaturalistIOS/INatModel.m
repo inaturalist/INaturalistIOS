@@ -67,6 +67,13 @@ static NSDateFormatter *jsDateFormatter = nil;
     return jsDateFormatter;
 }
 
++ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs
+{
+	NSFetchRequest *request = [self fetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"recordID in %@", recordIDs]];
+    return [self objectsWithFetchRequest:request];
+}
+
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];

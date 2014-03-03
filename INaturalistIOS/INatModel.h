@@ -21,6 +21,7 @@
 + (NSDateFormatter *)shortDateFormatter;
 + (NSDateFormatter *)isoDateFormatter;
 + (NSDateFormatter *)jsDateFormatter;
++ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs;
 + (NSArray *)all;
 + (NSArray *)needingSync;
 + (NSFetchRequest *)needingSyncRequest;

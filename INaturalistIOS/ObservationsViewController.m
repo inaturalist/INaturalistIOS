@@ -212,6 +212,27 @@ static const int ObservationCellActivityButtonTag = 6;
 	}
 }
 
+- (void)checkForDeleted {
+	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+	if (username.length) {
+		
+		NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
+		if (!lastSyncDate) {
+			// have never synced; use unix timestamp date of 0
+			lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
+		}
+		
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+		[dateFormatter setLocale:enUSPOSIXLocale];
+		[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+
+		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
+		
+		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", username, iso8601String] delegate:self];
+	}
+}
+
 - (void)checkNewActivity
 {
 	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types[]=Identification&notifier_types[]=Comment&skip_view=true&resource_type=Observation" delegate:self];
@@ -475,6 +496,7 @@ static const int ObservationCellActivityButtonTag = 6;
 		self.refreshControl = nil;
 	}
 	[self refreshData];
+	[self checkForDeleted];
 	[self checkNewActivity];
     [self reload];
 }
@@ -633,6 +655,20 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
+	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
+		
+		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
+		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
+		NSArray *records = [Observation matchingRecordIDs:recordIDs];
+		for (INatModel *model in records) {
+			[model destroy];
+			NSLog(@"model class:%@ and id: %@", model.class, model.recordID);
+		}
+		
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
+	
 	if (response.statusCode == 200 || response.statusCode == 304) {
 		NSString *jsonString = [[NSString alloc] initWithData:response.body
                                                      encoding:NSUTF8StringEncoding];
