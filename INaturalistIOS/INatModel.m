@@ -8,6 +8,13 @@
 
 #import "INatModel.h"
 #import "DeletedRecord.h"
+#import "Observation.h"
+#import "ObservationPhoto.h"
+
+static NSDateFormatter *prettyDateFormatter = nil;
+static NSDateFormatter *shortDateFormatter = nil;
+static NSDateFormatter *isoDateFormatter = nil;
+static NSDateFormatter *jsDateFormatter = nil;
 
 @implementation INatModel
 
@@ -18,12 +25,61 @@
 @dynamic localUpdatedAt;
 @dynamic syncedAt;
 
++ (NSDateFormatter *)prettyDateFormatter
+{
+    if (!prettyDateFormatter) {
+        prettyDateFormatter = [[NSDateFormatter alloc] init];
+        [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    }
+    return prettyDateFormatter;
+}
+
++ (NSDateFormatter *)shortDateFormatter
+{
+    if (!shortDateFormatter) {
+        shortDateFormatter = [[NSDateFormatter alloc] init];
+        shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    return shortDateFormatter;
+}
+
++ (NSDateFormatter *)isoDateFormatter
+{
+    if (!isoDateFormatter) {
+        isoDateFormatter = [[NSDateFormatter alloc] init];
+        [isoDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [isoDateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
+    }
+    return isoDateFormatter;
+}
+
+// Javascript-like date format, e.g. @"Sun Mar 18 2012 17:07:20 GMT-0700 (PDT)"
++ (NSDateFormatter *)jsDateFormatter
+{
+    if (!jsDateFormatter) {
+        jsDateFormatter = [[NSDateFormatter alloc] init];
+        [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
+    }
+    return jsDateFormatter;
+}
+
++ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs
+{
+	NSFetchRequest *request = [self fetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"recordID in %@", recordIDs]];
+    return [self objectsWithFetchRequest:request];
+}
+
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
     NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO];
     NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:NO];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+    [request setSortDescriptors:@[sortDescriptor1, sortDescriptor2]];
     return [self objectsWithFetchRequest:request];
 }
 
@@ -39,7 +95,7 @@
     [request setPredicate:[NSPredicate predicateWithFormat:
                            @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    [request setSortDescriptors:@[sortDescriptor]];
     return request;
 }
 
@@ -94,26 +150,17 @@
 
 - (void)willSave
 {
-    NSDictionary *relats = self.class.entityDescription.relationshipsByName;
-    NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
-    for (NSString *relatName in relats.keyEnumerator) {
-        [changes removeObjectForKey:relatName];
-    }
-    if (changes.count > 0) {
-        NSDate *now;
-        if ([changes objectForKey:@"syncedAt"]) {
-            now = self.syncedAt;
-        } else {
-            now = [NSDate date];
-        }
-        NSDate *stamp = self.localUpdatedAt;
-        if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
-            [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
-            if (![self primitiveValueForKey:@"localCreatedAt"]) {
-                [self setPrimitiveValue:now forKey:@"localCreatedAt"];
-            }
-        }
-    }
+	if (![self isKindOfClass:[Observation class]] && ![self isKindOfClass:[ObservationPhoto class]]) {
+		[self updateLocalTimestamps];
+		
+		/*
+		// no object should have a nil syncedAt date...
+		if ([self respondsToSelector:@selector(syncedAt)] && self.syncedAt == nil) {
+			self.syncedAt = [NSDate date];
+		}
+		*/
+	}
+
     [super willSave];
 }
 
@@ -129,5 +176,27 @@
     return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.localUpdatedAt] < 0;
 }
 
+- (void)updateLocalTimestamps {
+	NSDictionary *relats = self.class.entityDescription.relationshipsByName;
+	NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
+	for (NSString *relatName in relats.keyEnumerator) {
+		[changes removeObjectForKey:relatName];
+	}
+	if (changes.count > 0) {
+		NSDate *now;
+		if ([changes objectForKey:@"syncedAt"]) {
+			now = self.syncedAt;
+		} else {
+			now = [NSDate date];
+		}
+		NSDate *stamp = self.localUpdatedAt;
+		if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
+			[self setPrimitiveValue:now forKey:@"localUpdatedAt"];
+			if (![self primitiveValueForKey:@"localCreatedAt"]) {
+				[self setPrimitiveValue:now forKey:@"localCreatedAt"];
+			}
+		}
+	}
+}
 
 @end

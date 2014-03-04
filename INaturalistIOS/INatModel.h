@@ -17,6 +17,11 @@
 @property (nonatomic, retain) NSDate * localUpdatedAt;
 @property (nonatomic, retain) NSDate * syncedAt;
 
++ (NSDateFormatter *)prettyDateFormatter;
++ (NSDateFormatter *)shortDateFormatter;
++ (NSDateFormatter *)isoDateFormatter;
++ (NSDateFormatter *)jsDateFormatter;
++ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs;
 + (NSArray *)all;
 + (NSArray *)needingSync;
 + (NSFetchRequest *)needingSyncRequest;
@@ -30,4 +35,5 @@
 - (void)save;
 - (void)destroy;
 - (BOOL)needsSync;
+- (void)updateLocalTimestamps;
 @end

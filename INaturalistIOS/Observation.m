@@ -9,13 +9,12 @@
 #import "Observation.h"
 #import "ObservationFieldValue.h"
 #import "Taxon.h"
+#import "Comment.h"
+#import "Identification.h"
+#import "ObservationPhoto.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
-static NSDateFormatter *prettyDateFormatter = nil;
-static NSDateFormatter *shortDateFormatter = nil;
-static NSDateFormatter *isoDateFormatter = nil;
-static NSDateFormatter *jsDateFormatter = nil;
 
 @implementation Observation
 
@@ -47,11 +46,16 @@ static NSDateFormatter *jsDateFormatter = nil;
 @dynamic observationFieldValues;
 @dynamic projectObservations;
 @dynamic taxon;
+@dynamic commentsCount;
+@dynamic identificationsCount;
+@dynamic hasUnviewedActivity;
+@dynamic comments;
+@dynamic identifications;
 
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
     return [self objectsWithFetchRequest:request];
 }
@@ -103,10 +107,25 @@ static NSDateFormatter *jsDateFormatter = nil;
          @"taxon_id", @"taxonID",
          @"iconic_taxon_id", @"iconicTaxonID",
          @"iconic_taxon_name", @"iconicTaxonName",
+		 @"comments_count", @"commentsCount",
+		 @"identifications_count", @"identificationsCount",
+		 @"last_activity_at_utc", @"lastActivityAt",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
                        withMapping:[Taxon mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"comments"
+                    toRelationship:@"comments"
+                       withMapping:[Comment mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"identifications"
+                    toRelationship:@"identifications"
+                       withMapping:[Identification mapping]
+                         serialize:NO];
+		[defaultMapping mapKeyPath:@"observation_photos"
+                    toRelationship:@"observationPhotos"
+                       withMapping:[ObservationPhoto mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -133,48 +152,6 @@ static NSDateFormatter *jsDateFormatter = nil;
          nil];
     }
     return defaultSerializationMapping;
-}
-
-+ (NSDateFormatter *)prettyDateFormatter
-{
-    if (!prettyDateFormatter) {
-        prettyDateFormatter = [[NSDateFormatter alloc] init];
-        [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-    }
-    return prettyDateFormatter;
-}
-
-+ (NSDateFormatter *)shortDateFormatter
-{
-    if (!shortDateFormatter) {
-        shortDateFormatter = [[NSDateFormatter alloc] init];
-        shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
-        shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
-    }
-    return shortDateFormatter;
-}
-
-+ (NSDateFormatter *)isoDateFormatter
-{
-    if (!isoDateFormatter) {
-        isoDateFormatter = [[NSDateFormatter alloc] init];
-        [isoDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [isoDateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ssZ"];
-    }
-    return isoDateFormatter;
-}
-
-// Javascript-like date format, e.g. @"Sun Mar 18 2012 17:07:20 GMT-0700 (PDT)"
-+ (NSDateFormatter *)jsDateFormatter
-{
-    if (!jsDateFormatter) {
-        jsDateFormatter = [[NSDateFormatter alloc] init];
-        [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-        [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
-    }
-    return jsDateFormatter;
 }
 
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
@@ -294,6 +271,20 @@ static NSDateFormatter *jsDateFormatter = nil;
         return self.privateLongitude;
     }
     return self.longitude;
+}
+
+- (NSInteger)activityCount {
+	return self.commentsCount.integerValue + self.identificationsCount.integerValue;
+}
+// TODO: try forKey: instead of forKeyPath:
+- (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
+	
+	// for observations which are due to be synced, only update the value if the local value is empty
+	if (self.needsSync && self.localUpdatedAt != nil && ![inKeyPath isEqualToString:@"recordID"]) {
+		return ([self valueForKeyPath:inKeyPath] == nil);
+	}
+	
+	return [super validateValue:ioValue forKeyPath:inKeyPath error:outError];
 }
 
 @end

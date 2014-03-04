@@ -18,6 +18,9 @@
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
 #import "TutorialViewController.h"
+#import "RefreshControl.h"
+#import "ObservationActivityViewController.h"
+#import "UIImageView+WebCache.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -25,6 +28,7 @@ static const int ObservationCellTitleTag = 1;
 static const int ObservationCellSubTitleTag = 2;
 static const int ObservationCellUpperRightTag = 3;
 static const int ObservationCellLowerRightTag = 4;
+static const int ObservationCellActivityButtonTag = 6;
 
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
@@ -57,7 +61,6 @@ static const int ObservationCellLowerRightTag = 4;
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //if (![defaults objectForKey:INatUsernamePrefKey]) {
     if (![defaults objectForKey:INatTokenPrefKey]) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
         return;
@@ -87,12 +90,12 @@ static const int ObservationCellLowerRightTag = 4;
     if (!self.syncQueue) {
         self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
     }
-    [self.syncQueue.queue removeAllObjects];
-    [self.syncQueue addModel:Observation.class];
-    [self.syncQueue addModel:ObservationFieldValue.class];
-    [self.syncQueue addModel:ProjectObservation.class];
-    [self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
-    [self.syncQueue start];
+	[self.syncQueue.queue removeAllObjects];
+	[self.syncQueue addModel:Observation.class];
+	[self.syncQueue addModel:ObservationFieldValue.class];
+	[self.syncQueue addModel:ProjectObservation.class];
+	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
+	[self.syncQueue start];
 }
 
 - (void)stopSync
@@ -187,6 +190,9 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)deleteAll
 {
+	// RWTODO: delete from server
+	
+	
     // note: you'll probably want to empty self.observations and reload the 
     // tableView's data, otherwise the tableView's references to the observation 
     // objects is going to cause a problem when Core Data deletes them
@@ -196,27 +202,52 @@ static const int ObservationCellLowerRightTag = 4;
     [self stopEditing];
 }
 
+- (void)refreshData
+{
+	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+	if (username.length) {
+		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos", username]
+													 objectMapping:[Observation mapping]
+														  delegate:self];
+	}
+}
+
+- (void)checkForDeleted {
+	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+	if (username.length) {
+		
+		NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
+		if (!lastSyncDate) {
+			// have never synced; use unix timestamp date of 0
+			lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
+		}
+		
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+		[dateFormatter setLocale:enUSPOSIXLocale];
+		[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+
+		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
+		
+		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", username, iso8601String] delegate:self];
+	}
+}
+
+- (void)checkNewActivity
+{
+	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types[]=Identification&notifier_types[]=Comment&skip_view=true&resource_type=Observation" delegate:self];
+}
+
 - (void)loadData
 {
     [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
     [self setObservationsToSyncCount:0];
-    // if/when you want to bring back loading existing data, it's pretty easy
-//    if (!self.observations || [self.observations count] == 0) {
-//        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/observations/kueda" 
-//                                                     objectMapping:[Observation mapping] 
-//                                                          delegate:self];
-//    }
-//    if (self.observations.count == 0) {
-//        for (int i = 0; i < 500; i++) {
-//            [self.observations addObject:[Observation stub]];
-//        }
-//        [[[RKObjectManager sharedManager] objectStore] save];
-//    }
 }
 
 - (void)reload
 {
     [self loadData];
+	[self checkEmpty];
     [[self tableView] reloadData];
 }
 
@@ -267,7 +298,7 @@ static const int ObservationCellLowerRightTag = 4;
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;
             [self.noContentLabel sizeToFit];
-            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
             self.noContentLabel.center = CGPointMake(self.view.center.x, 
                                                      self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -306,6 +337,23 @@ static const int ObservationCellLowerRightTag = 4;
     [settings synchronize];
 }
 
+- (void)showError:(NSString *)errorMessage{
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alert show];
+}
+
+- (void)viewActivity:(UIButton *)sender {
+	
+	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
+	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+	Observation *observation = self.observations[indexPath.row];
+	
+	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
+	vc.observation = observation;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -321,14 +369,20 @@ static const int ObservationCellLowerRightTag = 4;
     UILabel *subtitle = (UILabel *)[cell viewWithTag:ObservationCellSubTitleTag];
     UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
     UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
-    UIImage *img;
+	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-        img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+		
+		if (op.photoKey == nil) {
+			[imageView setImageWithURL:[NSURL URLWithString:op.squareURL]];
+		} else {
+			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+		}
+        
     } else {
-        img = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+        imageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
-    [imageView setImage:img];
+    
     if (o.speciesGuess) {
         [title setText:o.speciesGuess];
     } else {
@@ -343,6 +397,28 @@ static const int ObservationCellLowerRightTag = 4;
         subtitle.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
+	if (o.hasUnviewedActivity.boolValue) {
+		// make bubble red
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+	} else {
+		// make bubble grey
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+	}
+	
+	[activityButton setTitle:[NSString stringWithFormat:@"%d", o.activityCount] forState:UIControlStateNormal];
+	
+	if (o.activityCount > 0) {
+		activityButton.hidden = NO;
+		CGRect frame = syncImage.frame;
+		frame.origin.x = 267;
+		syncImage.frame = frame;
+	} else {
+		activityButton.hidden = YES;
+		CGRect frame = syncImage.frame;
+		frame.origin.x = 292;
+		syncImage.frame = frame;
+	}
+	
     upperRight.text = o.observedOnShortString;
     syncImage.hidden = !o.needsSync;
     
@@ -352,6 +428,9 @@ static const int ObservationCellLowerRightTag = 4;
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+		
+		// RWTODO: delete from server
+		
         Observation *o = [self.observations objectAtIndex:indexPath.row];
         [self.observations removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
@@ -406,8 +485,20 @@ static const int ObservationCellLowerRightTag = 4;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+	[super viewWillAppear:animated];
+	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+	if (username.length) {
+		RefreshControl *refresh = [[RefreshControl alloc] init];
+		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to Refresh"];
+		[refresh addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
+		self.refreshControl = refresh;
+	} else {
+		self.refreshControl = nil;
+	}
+	[self refreshData];
+	[self checkForDeleted];
+	[self checkNewActivity];
     [self reload];
-    [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -481,6 +572,131 @@ static const int ObservationCellLowerRightTag = 4;
         [self.tableView reloadData];
         [self performSelectorInBackground:@selector(deleteAll) withObject:nil];
     }
+}
+
+#pragma mark - RKObjectLoaderDelegate
+
+/*
+- (void)objectMapperWillBeginMapping:(RKObjectMapper *)objectMapper {
+	NSLog(@"target object: %@", objectMapper.targetObject);
+	objectMapper.targetObject = nil;
+}
+
+- (void)objectMapper:(RKObjectMapper *)objectMapper willMapFromObject:(id)sourceObject toObject:(id)destinationObject atKeyPath:(NSString *)keyPath usingMapping:(RKObjectMappingDefinition *)objectMapping {
+	NSLog(@"destination object: %@", destinationObject);
+	
+}
+
+- (void)objectLoader:(RKObjectLoader *)loader willMapData:(inout __autoreleasing id *)mappableData {
+	for (NSDictionary *object in (NSArray *)mappableData) {
+		
+	}
+}
+*/
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
+{
+	[self.refreshControl endRefreshing];
+	
+    if (objects.count == 0) return;
+    for (INatModel *o in objects) {
+		if ([o isKindOfClass:[Observation class]]) {
+			Observation *observation = (Observation *)o;
+			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
+				[observation setSyncedAt:[NSDate date]];
+			}
+			NSArray *sortedObservationPhotos = observation.sortedObservationPhotos;
+			for (ObservationPhoto *photo in sortedObservationPhotos) {
+				if (photo.localUpdatedAt == nil || !photo.needsSync) { // this only occurs for downloaded items, not locally updated items
+					[photo setSyncedAt:[NSDate date]];
+				}
+			}
+		}
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+	
+	// check for new activity
+	[self checkNewActivity];
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // was running into a bug in release build config where the object loader was
+    // getting deallocated after handling an error.  This is a kludge.
+    //self.loader = objectLoader;
+    
+	[self.refreshControl endRefreshing];
+	
+    NSString *errorMsg;
+    bool jsonParsingError = false, authFailure = false;
+    switch (objectLoader.response.statusCode) {
+            // UNPROCESSABLE ENTITY
+        case 422:
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+            break;
+            
+        default:
+            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+            errorMsg = error.localizedDescription;
+    }
+    
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                 message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                       otherButtonTitles:nil];
+    [av show];
+}
+
+#pragma mark - RKRequestDelegate
+
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
+{
+	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
+		
+		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
+		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
+		NSArray *records = [Observation matchingRecordIDs:recordIDs];
+		for (INatModel *model in records) {
+			[model destroy];
+			NSLog(@"model class:%@ and id: %@", model.class, model.recordID);
+		}
+		
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
+	
+	if ([request.resourcePath rangeOfString:@"new_updates.json"].location != NSNotFound && (response.statusCode == 200 || response.statusCode == 304)) {
+		NSString *jsonString = [[NSString alloc] initWithData:response.body
+                                                     encoding:NSUTF8StringEncoding];
+        NSError* error = nil;
+        id<RKParser> parser = [[RKParserRegistry sharedRegistry] parserForMIMEType:@"application/json"];
+        id parsedData = [parser objectFromString:jsonString error:&error];
+		
+		if (parsedData && [parsedData isKindOfClass:[NSDictionary class]] && !error) {
+			NSNumber *recordID = ((NSDictionary *)parsedData)[@"id"];
+			Observation *observation = [Observation objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %@", recordID]];
+			observation.hasUnviewedActivity = @YES;
+			[[[RKObjectManager sharedManager] objectStore] save:&error];
+		} else if (parsedData && [parsedData isKindOfClass:[NSArray class]] && !error) {
+			for (NSDictionary *notification in (NSArray *)parsedData) {
+				NSNumber *recordID = notification[@"resource_id"];
+				Observation *observation = [Observation objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %@", recordID]];
+				observation.hasUnviewedActivity = @YES;
+			}
+			[[[RKObjectManager sharedManager] objectStore] save:&error];
+		}
+	} else {
+		NSLog(@"Received status code %d for check activity", response.statusCode);
+	}
+}
+
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
+{
+	NSLog(@"Request Error: %@", error.localizedDescription);
 }
 
 #pragma mark - SyncQueueDelegate

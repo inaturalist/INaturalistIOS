@@ -64,7 +64,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"photo.native_photo_id", @"nativePhotoID",
          @"photo.native_username", @"nativeUsername",
          @"photo.native_realname", @"nativeRealName",
-         @"photo.license_code", @"license_code",
+         @"photo.license_code", @"licenseCode",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
