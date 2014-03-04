@@ -669,7 +669,7 @@ static const int ObservationCellActivityButtonTag = 6;
 		[[NSUserDefaults standardUserDefaults] synchronize];
 	}
 	
-	if (response.statusCode == 200 || response.statusCode == 304) {
+	if ([request.resourcePath rangeOfString:@"new_updates.json"].location != NSNotFound && (response.statusCode == 200 || response.statusCode == 304)) {
 		NSString *jsonString = [[NSString alloc] initWithData:response.body
                                                      encoding:NSUTF8StringEncoding];
         NSError* error = nil;
