@@ -193,6 +193,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         NSUInteger ofvIndex = [self.observationFieldValues indexOfObjectPassingTest:^BOOL(ObservationFieldValue *obj, NSUInteger idx, BOOL *stop) {
             return [obj.observationField.name isEqualToString:key];
         }];
+        if (ofvIndex == NSNotFound) {
+            continue;
+        }
         ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:ofvIndex];
         if ([cell.reuseIdentifier isEqualToString:ObservationFieldValueSwitchCell]) {
             DCRoundSwitch *roundSwitch = (DCRoundSwitch *)[cell viewWithTag:2];
@@ -1271,11 +1274,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)save
 {
     [self uiToObservation];
-    for (ObservationFieldValue *ofv in self.observation.observationFieldValues) {
-        if (ofv.value == nil || ofv.value.length == 0) {
-            [ofv deleteEntity]; 
-        }
-    }
     [self.observation save];
 }
 

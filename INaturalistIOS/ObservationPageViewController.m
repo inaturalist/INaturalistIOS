@@ -34,6 +34,7 @@
         ObservationDetailViewController *nvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         nvc.observation = nextObservation;
         nvc.delegate = vc.delegate;
+        [vc save];
         return nvc;
     }
     return nil;
@@ -48,6 +49,7 @@
         ObservationDetailViewController *pvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         pvc.observation = prevObservation;
         pvc.delegate = vc.delegate;
+        [vc save];
         return pvc;
     }
     return nil;

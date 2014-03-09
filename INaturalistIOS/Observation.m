@@ -314,4 +314,14 @@ static NSDateFormatter *jsDateFormatter = nil;
     return [Observation objectWithFetchRequest:request];
 }
 
+- (void)willSave
+{
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.value == nil || ofv.value.length == 0) {
+            [ofv deleteEntity];
+        }
+    }
+    [super willSave];
+}
+
 @end
