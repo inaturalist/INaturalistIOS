@@ -1,8 +1,7 @@
 INaturalistIOS
 ==============
 
-INaturalistIOS is an iOS app for iNaturalist.org. It's a re-write of the old
-Titanium-based app, and is still under development.
+INaturalistIOS is the official iOS app for submitting data to [iNaturalist.org](http://www.inaturalist.org).
 
 Setup
 -----
