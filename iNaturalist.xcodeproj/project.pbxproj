@@ -106,6 +106,7 @@
 		19640DEC150835A5003BF888 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DEB150835A5003BF888 /* ObservationAnnotation.m */; };
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
 		1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1964A99F1581DBB1005F2E0B /* ImageIO.framework */; };
+		196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */; };
 		197A60531511298D0061B83B /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60511511298D0061B83B /* projects.png */; };
 		197A60541511298D0061B83B /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60521511298D0061B83B /* projects@2x.png */; };
 		197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectListViewController.m */; };
@@ -600,6 +601,8 @@
 		19640DEB150835A5003BF888 /* ObservationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAnnotation.m; sourceTree = "<group>"; };
 		196420B21506C0E6005ACB6E /* 83-calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "83-calendar.png"; sourceTree = "<group>"; };
 		1964A99F1581DBB1005F2E0B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+INaturalist.h"; sourceTree = "<group>"; };
+		196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+INaturalist.m"; sourceTree = "<group>"; };
 		197A60511511298D0061B83B /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
 		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		197A6055151155DE0061B83B /* ProjectListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectListViewController.h; sourceTree = "<group>"; };
@@ -1435,6 +1438,8 @@
 				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
 				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
 				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
+				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
+				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2050,6 +2055,7 @@
 				6098FDA116F3F6890053987E /* GTMOAuth2Authentication.m in Sources */,
 				6098FDA216F3F6890053987E /* GTMOAuth2SignIn.m in Sources */,
 				6098FDA316F3F6890053987E /* GTMOAuth2ViewControllerTouch.m in Sources */,
+				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				6098FDA516F3F6890053987E /* GTMObjC2Runtime.m in Sources */,
 				6098FDA616F3F6890053987E /* OpenInChromeController.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,

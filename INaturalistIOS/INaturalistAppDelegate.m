@@ -23,7 +23,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
-
+#import "UIColor+INaturalist.h"
 
 @implementation INaturalistAppDelegate
 
@@ -46,6 +46,17 @@
     [self configureRestKit];
     [self configureThree20];
     [self configureOAuth2Client];
+    
+    // set global styles
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        [[UITabBar appearance] setBarStyle:UIBarStyleBlack];
+        [[UITabBar appearance] setBackgroundColor:[UIColor blackColor]];
+        [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
+        [[UISearchBar appearance] setBarStyle:UIBarStyleBlack];
+        [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
+        [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
+    }
     
     return YES;
 }

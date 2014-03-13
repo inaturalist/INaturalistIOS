@@ -67,6 +67,7 @@ static const int GutterWidth  = 5;
                                                                                   action:@selector(didReceivePinchGesture:)];
     [self.collectionView addGestureRecognizer:gesture];
     
+    // TODO this does not add the view correctly in iOS 7
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.collectionView.frame), 44)];
     self.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.searchBar.delegate = self;
