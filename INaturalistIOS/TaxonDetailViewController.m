@@ -127,7 +127,7 @@ static const int TaxonDescTag = 1;
     if (indexPath.section == 0 && indexPath.row == 0) {
         CGSize s = [[self.taxon.wikipediaSummary stringByRemovingHTML] sizeWithFont:[UIFont systemFontOfSize:15] 
                                                                   constrainedToSize:CGSizeMake(320, 320) 
-                                                                      lineBreakMode:UILineBreakModeWordWrap];
+                                                                      lineBreakMode:NSLineBreakByWordWrapping];
         return s.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];

@@ -24,6 +24,8 @@
 #import "TaxonPhoto.h"
 #import "EditLocationViewController.h"
 #import "ActionSheetPicker.h"
+#import "ObservationActivityViewController.h"
+#import "UIImageView+WebCache.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -230,6 +232,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)initUI
 {
+	UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                             target:nil
+                             action:nil];
+	fixed.width = 72;
     UINavigationItem *navItem;
     if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
         self.parentViewController.navigationItem.leftBarButtonItem = self.navigationItem.leftBarButtonItem;
@@ -241,7 +248,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     navItem.title = [self.observation isNew] ? NSLocalizedString(@"Add observation",nil) : NSLocalizedString(@"Edit observation",nil);
     
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] 
-                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                              target:nil 
                              action:nil];
     if (!self.saveButton) {
@@ -261,6 +268,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                           target:self
                                                           action:@selector(clickedDelete)];
     }
+	
     
     if (!self.viewButton) {
         self.viewButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
@@ -270,14 +278,35 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [self.viewButton setEnabled:NO];
         }
     }
+	
+	if (!self.activityButton) {
+		self.activityButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		self.activityButton.frame = CGRectMake(0, 0, 24, 22);
+		self.activityButton.titleEdgeInsets = UIEdgeInsetsMake(-5, 1, 0, 0);
+		[self.activityButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		self.activityButton.titleLabel.font = [UIFont systemFontOfSize:11.0];
+		[self.activityButton addTarget:self action:@selector(clickedActivity:) forControlEvents:UIControlEventTouchUpInside];
+	}
+	if (self.observation.hasUnviewedActivity.boolValue) {
+		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+	} else {
+		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+	}
+	[self.activityButton setTitle:[NSString stringWithFormat:@"%d", self.observation.activityCount] forState:UIControlStateNormal];
+	
+	if (!self.activityBarButton) {
+        self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
+    }
     
     UIViewController *tbvc = [self getToolbarViewController];
     [tbvc setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
+                           fixed,
+                           self.saveButton, 
                            flex,
-                           self.saveButton,
+						   self.activityBarButton,
                            flex,
-                           self.viewButton,
+						   self.viewButton,
                            nil]
                  animated:NO];
     [tbvc.navigationController setToolbarHidden:NO animated:YES];
@@ -466,6 +495,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [ImageStore.sharedImageStore store:image forKey:op.photoKey];
     [self addPhoto:op];
     op.localCreatedAt = [NSDate date];
+	op.localUpdatedAt = [NSDate date];
     
     if (referenceURL) {
         self.lastImageReferenceURL = referenceURL;
@@ -596,9 +626,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         cover.baseline = coverflowView.frame.size.height - 20;
     }
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
-    UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-    if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
-    if (img) cover.image = img;
+	
+	if (op.photoKey == nil) {
+		cover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+		[cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]];
+	} else {
+		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
+		if (img) cover.image = img;
+	}
+	
     return cover;
 }
 
@@ -1271,10 +1308,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
+- (void)clickedActivity:(id)sender
+{
+	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+									  instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
+	vc.observation = self.observation;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)save
 {
     [self uiToObservation];
-    [self.observation save];
+    self.observation.localUpdatedAt = [NSDate date];
+	[self.observation save];
 }
 
 - (IBAction)clickedCancel:(id)sender {

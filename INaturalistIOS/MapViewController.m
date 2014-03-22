@@ -210,6 +210,7 @@
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
+		o.localCreatedAt = [NSDate date];
         o.localObservedOn = [NSDate date];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {

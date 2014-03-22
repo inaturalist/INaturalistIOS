@@ -12,7 +12,7 @@
 
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
-@class Taxon;
+@class Taxon, Comment, Identification;
 
 @interface Observation : INatModel
 
@@ -43,12 +43,13 @@
 @property (nonatomic, retain) NSSet * observationPhotos;
 @property (nonatomic, retain) NSSet * observationFieldValues;
 @property (nonatomic, retain) NSSet * projectObservations;
+@property (nonatomic, retain) NSNumber * commentsCount;
+@property (nonatomic, retain) NSNumber * identificationsCount;
+@property (nonatomic, retain) NSNumber * hasUnviewedActivity;
 @property (nonatomic, retain) Taxon *taxon;
+@property (nonatomic, retain) NSSet *comments;
+@property (nonatomic, retain) NSSet *identifications;
 
-+ (NSDateFormatter *)prettyDateFormatter;
-+ (NSDateFormatter *)shortDateFormatter;
-+ (NSDateFormatter *)isoDateFormatter;
-+ (NSDateFormatter *)jsDateFormatter;
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;
@@ -56,6 +57,7 @@
 - (NSArray *)sortedProjectObservations;
 - (NSNumber *)visibleLatitude;
 - (NSNumber *)visibleLongitude;
+- (NSInteger)activityCount;
 
 @end
 

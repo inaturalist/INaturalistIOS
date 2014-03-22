@@ -36,9 +36,9 @@
 {
     if (!_searchURL) {
         if (self.model) {
-            _searchURL = [NSString stringWithFormat:@"/%@/search?q=%@", NSStringFromClass(self.model).underscore.pluralize];
+            _searchURL = [NSString stringWithFormat:@"/%@/search?q=%%@", NSStringFromClass(self.model).underscore.pluralize];
         } else {
-            _searchURL = [NSString stringWithFormat:@"/search?q=%@"];
+            _searchURL = [NSString stringWithFormat:@"/search?q=%%@"];
         }
     }
     return _searchURL;
@@ -86,7 +86,7 @@
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;
             [self.noContentLabel sizeToFit];
-            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
             self.noContentLabel.center = CGPointMake(tableView.center.x, 
                                                      tableView.rowHeight * 2 + (tableView.rowHeight / 2));
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;

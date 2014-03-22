@@ -18,7 +18,7 @@
 @class DejalActivityView;
 
 
-@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate>
+@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
 {
     DejalActivityView *syncActivityView;
 }
@@ -37,6 +37,7 @@
 @property (nonatomic, strong) NSMutableArray *syncErrors;
 
 - (IBAction)sync:(id)sender;
+- (IBAction)viewActivity:(id)sender;
 - (void)stopSync;
 - (IBAction)edit:(id)sender;
 - (void)stopEditing;

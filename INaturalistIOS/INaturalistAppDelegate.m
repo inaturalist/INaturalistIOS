@@ -19,6 +19,9 @@
 #import "ProjectUser.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
+#import "Comment.h"
+#import "Identification.h"
+#import "User.h"
 #import <Three20/Three20.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
@@ -101,6 +104,9 @@
                        ProjectUser.class, 
                        Taxon.class,
                        TaxonPhoto.class,
+					   Comment.class,
+					   Identification.class,
+					   User.class,
                        nil];
     NSString *underscored;
     NSString *pluralized;
@@ -180,16 +186,15 @@
     NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
     
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+	NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @YES,
+							  NSInferMappingModelAutomaticallyOption : @YES};
     
     if (![psc addPersistentStoreWithType:NSSQLiteStoreType
                            configuration:nil 
                                      URL:storeURL
                                  options:options 
                                    error:&error]) {
-        [NSException raise:@"Failed to open database" format:error.localizedDescription];
+        [NSException raise:@"Failed to open database" format:@"%@", error.localizedDescription];
     }
     
     managedObjectModel = psc.managedObjectModel;

@@ -28,3 +28,6 @@
 [submodule "Vendor/ssziparchive"]
 	path = Vendor/ssziparchive
 	url = https://github.com/soffes/ssziparchive.git
+[submodule "Vendor/SDWebImage"]
+	path = Vendor/SDWebImage
+	url = git@github.com:rs/SDWebImage.git

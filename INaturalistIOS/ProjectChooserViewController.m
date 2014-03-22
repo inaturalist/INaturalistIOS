@@ -60,7 +60,7 @@ static const int ProjectCellTitleTag = 2;
             self.noContentLabel.textColor = [UIColor grayColor];
             self.noContentLabel.numberOfLines = 0;
             [self.noContentLabel sizeToFit];
-            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
             self.noContentLabel.center = CGPointMake(self.view.center.x, 
                                                      self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
