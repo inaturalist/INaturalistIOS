@@ -126,6 +126,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
         po.observation = o;
         po.project = self.project;
         o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         if ([sender isKindOfClass:ListedTaxon.class]) {
             ListedTaxon *lt = sender;
             o.taxon = lt.taxon;

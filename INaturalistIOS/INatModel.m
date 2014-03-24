@@ -69,6 +69,15 @@ static NSDateFormatter *jsDateFormatter = nil;
 
 + (NSArray *)matchingRecordIDs:(NSArray *)recordIDs
 {
+    // if recordIDs is blank or contains one blank string this will return local records where recordID is blank, which is not really what we want, particularly when deleting records
+    if (recordIDs.count == 0) {
+        return [NSArray array];
+    }
+    for (NSString *check in recordIDs) {
+        if (check.length == 0) {
+            return [NSArray array];
+        }
+    }
 	NSFetchRequest *request = [self fetchRequest];
     [request setPredicate:[NSPredicate predicateWithFormat:@"recordID in %@", recordIDs]];
     return [self objectsWithFetchRequest:request];
@@ -146,21 +155,14 @@ static NSDateFormatter *jsDateFormatter = nil;
 {
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        NSLog(@"error saving record: %@", error);
+    }
 }
 
 - (void)willSave
 {
-	if (![self isKindOfClass:[Observation class]] && ![self isKindOfClass:[ObservationPhoto class]]) {
-		[self updateLocalTimestamps];
-		
-		/*
-		// no object should have a nil syncedAt date...
-		if ([self respondsToSelector:@selector(syncedAt)] && self.syncedAt == nil) {
-			self.syncedAt = [NSDate date];
-		}
-		*/
-	}
-
+    [self updateLocalTimestamps];
     [super willSave];
 }
 
@@ -182,6 +184,16 @@ static NSDateFormatter *jsDateFormatter = nil;
 	for (NSString *relatName in relats.keyEnumerator) {
 		[changes removeObjectForKey:relatName];
 	}
+    // if there's a recordID but no localUpdatedAt, assume this came fresh from the website and should be considered synced.
+    if (self.recordID && !self.localUpdatedAt) {
+        NSDate *now = [NSDate date];
+        [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
+        [self setPrimitiveValue:now forKey:@"syncedAt"];
+        if (![self primitiveValueForKey:@"localCreatedAt"]) {
+            [self setPrimitiveValue:now forKey:@"localCreatedAt"];
+        }
+        return;
+    }
 	if (changes.count > 0) {
 		NSDate *now;
 		if ([changes objectForKey:@"syncedAt"]) {

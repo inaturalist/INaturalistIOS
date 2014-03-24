@@ -45,6 +45,7 @@ static const int ObservationCellActivityButtonTag = 6;
 @synthesize noContentLabel = _noContentLabel;
 @synthesize syncQueue = _syncQueue;
 @synthesize syncErrors = _syncErrors;
+@synthesize lastRefreshAt = _lastRefreshAt;
 
 - (IBAction)sync:(id)sender {
     if (self.isSyncing) {
@@ -210,6 +211,7 @@ static const int ObservationCellActivityButtonTag = 6;
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
+        self.lastRefreshAt = [NSDate date];
 	}
 }
 
@@ -411,12 +413,12 @@ static const int ObservationCellActivityButtonTag = 6;
 	if (o.activityCount > 0) {
 		activityButton.hidden = NO;
 		CGRect frame = syncImage.frame;
-		frame.origin.x = 267;
+		frame.origin.x = cell.frame.size.width - 10 - activityButton.frame.size.width - frame.size.width;
 		syncImage.frame = frame;
 	} else {
 		activityButton.hidden = YES;
 		CGRect frame = syncImage.frame;
-		frame.origin.x = 292;
+		frame.origin.x = cell.frame.size.width - 10 - frame.size.width;
 		syncImage.frame = frame;
 	}
 	
@@ -496,9 +498,16 @@ static const int ObservationCellActivityButtonTag = 6;
 	} else {
 		self.refreshControl = nil;
 	}
-	[self refreshData];
-	[self checkForDeleted];
-	[self checkNewActivity];
+    
+    // automatically sync if there's network and we haven't synced in the last hour
+    CGFloat minutes = 60, seconds = minutes * 60;
+    if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
+        [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
+        (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
+        [self refreshData];
+        [self checkForDeleted];
+        [self checkNewActivity];
+    }
     [self reload];
 }
 
@@ -542,6 +551,7 @@ static const int ObservationCellActivityButtonTag = 6;
         [vc setDelegate:self];
         Observation *o = [Observation object];
         o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
         ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
@@ -580,25 +590,6 @@ static const int ObservationCellActivityButtonTag = 6;
 }
 
 #pragma mark - RKObjectLoaderDelegate
-
-/*
-- (void)objectMapperWillBeginMapping:(RKObjectMapper *)objectMapper {
-	NSLog(@"target object: %@", objectMapper.targetObject);
-	objectMapper.targetObject = nil;
-}
-
-- (void)objectMapper:(RKObjectMapper *)objectMapper willMapFromObject:(id)sourceObject toObject:(id)destinationObject atKeyPath:(NSString *)keyPath usingMapping:(RKObjectMappingDefinition *)objectMapping {
-	NSLog(@"destination object: %@", destinationObject);
-	
-}
-
-- (void)objectLoader:(RKObjectLoader *)loader willMapData:(inout __autoreleasing id *)mappableData {
-	for (NSDictionary *object in (NSArray *)mappableData) {
-		
-	}
-}
-*/
-
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
@@ -636,7 +627,7 @@ static const int ObservationCellActivityButtonTag = 6;
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
     switch (objectLoader.response.statusCode) {
-            // UNPROCESSABLE ENTITY
+        // UNPROCESSABLE ENTITY
         case 422:
             errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
             break;
@@ -648,6 +639,10 @@ static const int ObservationCellActivityButtonTag = 6;
             errorMsg = error.localizedDescription;
     }
     
+    // ignore errors about no connection
+    if (error.code == -1004) {
+        return;
+    }
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                  message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                 delegate:self
@@ -661,13 +656,11 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
 	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
-		
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
 		NSArray *records = [Observation matchingRecordIDs:recordIDs];
-		for (INatModel *model in records) {
-			[model destroy];
-			NSLog(@"model class:%@ and id: %@", model.class, model.recordID);
+		for (INatModel *record in records) {
+			[record destroy];
 		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];

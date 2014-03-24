@@ -101,7 +101,6 @@ static const NSInteger GoogleAssertionType = 2;
             return;
         }
         NSString *userName = [parsedData objectForKey:@"login"];
-        
         [[NSUserDefaults standardUserDefaults] setValue:userName
                                                  forKey:INatUsernamePrefKey];
         [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] 
@@ -382,17 +381,16 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 -(void) finishWithAuth2Login{
     [DejalBezelActivityView removeView];
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
-    BOOL loginSuccessed = NO;
+    BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:AccountType]) {
         NSString *accessT = [[account accessToken] accessToken];
-        if (accessT && [accessT length]>0){
+        if (accessT && [accessT length] > 0){
             INatAccessToken = nil;
             INatAccessToken = [NSString stringWithFormat:@"Bearer %@", accessT ];
-            loginSuccessed = YES;
+            loginSucceeded = YES;
         }
-        //NSLog(@"account %@  INatAccessToken %@",account, INatAccessToken);
     }
-    if (loginSuccessed){
+    if (loginSucceeded){
         isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults]
          setValue:INatAccessToken

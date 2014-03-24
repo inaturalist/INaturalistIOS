@@ -152,7 +152,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         if (img) {
             [self setSize:img.size];
         } else {
-            [self setSize:UIScreen.mainScreen.bounds.size];
+            // it'll just figure it out when the image loads
         }
     }
     return _size;

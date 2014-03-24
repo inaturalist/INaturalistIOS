@@ -163,13 +163,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)uiToObservation
 {
     if (!self.speciesGuessTextField) return;
-    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]) {
+    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]
+        && self.observation.speciesGuess.length != self.speciesGuessTextField.text.length) {
         [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     }
-    if (![self.observation.speciesGuess isEqualToString:self.descriptionTextView.text]) {
+    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text]
+        && self.observation.inatDescription.length != self.descriptionTextView.text.length) {
         [self.observation setInatDescription:[descriptionTextView text]];
     }
-    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]) {
+    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]
+        && self.observation.placeGuess.length != self.placeGuessField.text.length) {
         [self.observation setPlaceGuess:[self.placeGuessField text]];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -232,11 +235,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)initUI
 {
-	UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
-                             initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                             target:nil
-                             action:nil];
-	fixed.width = 72;
     UINavigationItem *navItem;
     if ([self.parentViewController isKindOfClass:ObservationPageViewController.class]) {
         self.parentViewController.navigationItem.leftBarButtonItem = self.navigationItem.leftBarButtonItem;
@@ -268,7 +266,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                           target:self
                                                           action:@selector(clickedDelete)];
     }
-	
+    UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
+                              initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                              target:nil
+                              action:nil];
+	fixed.width = self.deleteButton.width;
     
     if (!self.viewButton) {
         self.viewButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
@@ -283,8 +285,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 		self.activityButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		self.activityButton.frame = CGRectMake(0, 0, 24, 22);
 		self.activityButton.titleEdgeInsets = UIEdgeInsetsMake(-5, 1, 0, 0);
-		[self.activityButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		self.activityButton.titleLabel.font = [UIFont systemFontOfSize:11.0];
+        [self.activityButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[self.activityButton addTarget:self action:@selector(clickedActivity:) forControlEvents:UIControlEventTouchUpInside];
 	}
 	if (self.observation.hasUnviewedActivity.boolValue) {
@@ -302,10 +304,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [tbvc setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
                            fixed,
+                           flex,
                            self.saveButton, 
                            flex,
 						   self.activityBarButton,
-                           flex,
 						   self.viewButton,
                            nil]
                  animated:NO];
@@ -378,12 +380,20 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self.navigationController.navigationBar setTitleTextAttributes:
          [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
     }
+    
+    // add a black view to the top so pulling won't show whitespace
+    CGRect frame = self.view.bounds;
+    frame.origin.y = -frame.size.height;
+    UIView * bgview = [[UIView alloc] initWithFrame:frame];
+    bgview.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:bgview];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
     [super viewWillAppear:animated];
 }
 
@@ -628,8 +638,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
 	
 	if (op.photoKey == nil) {
-		cover.imageView.contentMode = UIViewContentModeScaleAspectFill;
-		[cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]];
+        TKCoverflowCoverView *boundCover = cover;
+        cover.imageView.contentMode = UIViewContentModeCenter;
+        [cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]
+                        placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
+                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                   if (error) {
+                                       NSLog(@"error loading image: %@", error);
+                                       boundCover.image = [UIImage imageNamed:@"184-warning.png"];
+                                   } else {
+                                       boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+                                       boundCover.image = image;
+                                   }
+                               }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
 		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
@@ -1117,6 +1138,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             NSDate *imageDate = [asset valueForProperty:ALAssetPropertyDate];
             if (imageDate) {
                 self.observation.localObservedOn = imageDate;
+                self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:imageDate];
             }
             CLLocation *imageLoc = [asset valueForProperty:ALAssetPropertyLocation];
             if (imageLoc) {
@@ -1319,7 +1341,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)save
 {
     [self uiToObservation];
-    self.observation.localUpdatedAt = [NSDate date];
 	[self.observation save];
 }
 
@@ -1606,6 +1627,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)doneDatePicker:(NSDate *)selectedDate element:(id)element
 {
     self.observation.localObservedOn = selectedDate;
+    self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
     self.observedAtLabel.text = [self.observation observedOnPrettyString];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }

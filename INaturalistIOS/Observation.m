@@ -51,11 +51,12 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic hasUnviewedActivity;
 @dynamic comments;
 @dynamic identifications;
+@dynamic sortableCreatedAt;
 
 + (NSArray *)all
 {
     NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
     return [self objectsWithFetchRequest:request];
 }
@@ -75,6 +76,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     Observation *o = [Observation object];
     o.speciesGuess = [speciesGuesses objectAtIndex:rand() % speciesGuesses.count];
     o.localObservedOn = [NSDate date];
+    o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
     o.placeGuess = [placeGuesses objectAtIndex:rand() % [placeGuesses count]];
     o.latitude = [NSNumber numberWithInt:rand() % 89];
     o.longitude = [NSNumber numberWithInt:rand() % 179];
@@ -180,14 +182,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
             [NSArray arrayWithObjects:titleSort, nil]];
 }
 
-- (void)setLocalObservedOn:(NSDate *)newDate
-{
-    [self willChangeValueForKey:@"localObservedOn"];
-    [self setPrimitiveValue:newDate forKey:@"localObservedOn"];
-    [self didChangeValueForKey:@"localObservedOn"];
-    self.observedOnString = [Observation.jsDateFormatter stringFromDate:self.localObservedOn];
-}
-
 - (NSString *)observedOnPrettyString
 {
     if (!self.localObservedOn) return @"Unknown";
@@ -196,7 +190,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (NSString *)observedOnShortString
 {
-    if (!self.localObservedOn) return @"?";
+    if (!self.localObservedOn) return @"";
     NSDateFormatter *fmt = Observation.shortDateFormatter;
     NSDate *now = [NSDate date];
     NSCalendar *cal = [NSCalendar currentCalendar];
@@ -290,18 +284,18 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (Observation *)prevObservation
 {
     NSFetchRequest *request = [Observation fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"localObservedOn < %@", self.localObservedOn]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortableCreatedAt < %@", self.sortableCreatedAt]];
     return [Observation objectWithFetchRequest:request];
 }
 
 - (Observation *)nextObservation
 {
     NSFetchRequest *request = [Observation fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localObservedOn" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"localObservedOn > %@", self.localObservedOn]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortableCreatedAt > %@", self.sortableCreatedAt]];
     return [Observation objectWithFetchRequest:request];
 }
 
@@ -313,6 +307,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         }
     }
     [super willSave];
+    [self setPrimitiveValue:(self.createdAt ? self.createdAt : self.localCreatedAt)
+                     forKey:@"sortableCreatedAt"];
 }
 
 @end

@@ -35,6 +35,7 @@
 @property (nonatomic, strong) UILabel *noContentLabel;
 @property (nonatomic, strong) SyncQueue *syncQueue;
 @property (nonatomic, strong) NSMutableArray *syncErrors;
+@property (nonatomic, strong) NSDate *lastRefreshAt;
 
 - (IBAction)sync:(id)sender;
 - (IBAction)viewActivity:(id)sender;

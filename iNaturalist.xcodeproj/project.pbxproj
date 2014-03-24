@@ -52,6 +52,10 @@
 		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
 		193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD57B14F42351005209CA /* libTapkuLibrary.a */; };
+		194D8E0618DE58850098E28C /* 121-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0418DE58850098E28C /* 121-landscape.png */; };
+		194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0518DE58850098E28C /* 121-landscape@2x.png */; };
+		194D8E1D18DFEC9E0098E28C /* 184-warning.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1B18DFEC9E0098E28C /* 184-warning.png */; };
+		194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */; };
 		19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */; };
 		19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */; };
 		1953066A150592DC004951D8 /* iconic_taxon_animalia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065D150592DB004951D8 /* iconic_taxon_animalia.png */; };
@@ -553,6 +557,10 @@
 		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TapkuLibrary.xcodeproj; path = Vendor/tapkulibrary/src/TapkuLibrary.xcodeproj; sourceTree = "<group>"; };
+		194D8E0418DE58850098E28C /* 121-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape.png"; sourceTree = "<group>"; };
+		194D8E0518DE58850098E28C /* 121-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape@2x.png"; sourceTree = "<group>"; };
+		194D8E1B18DFEC9E0098E28C /* 184-warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning.png"; sourceTree = "<group>"; };
+		194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning@2x.png"; sourceTree = "<group>"; };
 		1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_actinopterygii.png; sourceTree = "<group>"; };
 		1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_amphibia.png; sourceTree = "<group>"; };
 		1953065D150592DB004951D8 /* iconic_taxon_animalia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_animalia.png; sourceTree = "<group>"; };
@@ -1007,6 +1015,10 @@
 				19AE89B818DD0EA900505918 /* 08-chat@2x.png */,
 				195F3254151AE5C40019CB85 /* 103-map.png */,
 				195F3255151AE5C40019CB85 /* 103-map@2x.png */,
+				194D8E0418DE58850098E28C /* 121-landscape.png */,
+				194D8E0518DE58850098E28C /* 121-landscape@2x.png */,
+				194D8E1B18DFEC9E0098E28C /* 184-warning.png */,
+				194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */,
 				1955FD0217F21602004F57F2 /* 258-checkmark.png */,
 				1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */,
 				19AC33C917EEC46B00B663BD /* 265-download.png */,
@@ -1552,23 +1564,23 @@
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */,
 				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
+				19AE898318DD0B2300505918 /* ObservationAnnotation.h */,
+				19AE898418DD0B2300505918 /* ObservationAnnotation.m */,
 				198CF8E414F5B86B0064DF05 /* PhotoSource.h */,
 				198CF8E514F5B86B0064DF05 /* PhotoSource.m */,
 				1909EA1515AB75BB00A6EF6E /* PhotoStub.h */,
 				1909EA1615AB75BB00A6EF6E /* PhotoStub.m */,
-				1997410F15194E89006FBEA0 /* SyncQueue.h */,
-				1997411015194E89006FBEA0 /* SyncQueue.m */,
-				19AE898318DD0B2300505918 /* ObservationAnnotation.h */,
-				19AE898418DD0B2300505918 /* ObservationAnnotation.m */,
 				19AE898618DD0B9600505918 /* RefreshControl.h */,
 				19AE898718DD0B9600505918 /* RefreshControl.m */,
-				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
-				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
 				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
 				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
+				1997410F15194E89006FBEA0 /* SyncQueue.h */,
+				1997411015194E89006FBEA0 /* SyncQueue.m */,
 				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
 				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
 				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
+				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
+				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1987,6 +1999,7 @@
 				19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */,
 				19A5F64114FB644A00757636 /* notebook-tab.png in Resources */,
 				19A5F64314FB64B100757636 /* notebook-tab@2x.png in Resources */,
+				194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */,
 				19A5F64614FB655200757636 /* map-tab.png in Resources */,
 				19A5F64714FB655200757636 /* map-tab@2x.png in Resources */,
 				19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */,
@@ -2025,6 +2038,7 @@
 				195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */,
 				19AE89BA18DD0EA900505918 /* 08-chat-red@2x.png in Resources */,
 				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
+				194D8E0618DE58850098E28C /* 121-landscape.png in Resources */,
 				195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */,
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
@@ -2071,8 +2085,10 @@
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
 				19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */,
+				194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 				1958893F1806896600294EB3 /* appicon@72.png in Resources */,
+				194D8E1D18DFEC9E0098E28C /* 184-warning.png in Resources */,
 				195889411806898800294EB3 /* appicon@144.png in Resources */,
 				19AE89BB18DD0EA900505918 /* 08-chat.png in Resources */,
 				1958894318068BD700294EB3 /* Default-Portrait~ipad.png in Resources */,

@@ -77,6 +77,7 @@ static const int WebViewTag = 1;
         [vc setDelegate:self];
         Observation *o = [Observation object];
         o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
             vc.taxonID = self.guideTaxon.taxonID;
             o.speciesGuess = self.guideTaxon.displayName;

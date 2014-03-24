@@ -49,6 +49,7 @@
 @property (nonatomic, retain) Taxon *taxon;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *identifications;
+@property (nonatomic, retain) NSDate *sortableCreatedAt;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;

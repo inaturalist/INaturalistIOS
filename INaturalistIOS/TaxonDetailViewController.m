@@ -79,6 +79,7 @@ static const int TaxonDescTag = 1;
         ObservationDetailViewController *vc = [segue destinationViewController];
         Observation *o = [Observation object];
         o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         o.taxon = self.taxon;
         o.speciesGuess = self.taxon.defaultName;
         [vc setObservation:o];

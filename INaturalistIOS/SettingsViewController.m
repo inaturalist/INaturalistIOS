@@ -20,6 +20,7 @@
 #import "TutorialViewController.h"
 #import "INatUITabBarController.h"
 #import "GTMOAuth2Authentication.h"
+#import "NXOAuth2.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -115,6 +116,10 @@ static const int VersionCellTag = 4;
     [[NSUserDefaults standardUserDefaults] synchronize];
     [RKClient.sharedClient setUsername:nil];
     [RKClient.sharedClient setPassword:nil];
+    NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
+    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {
+        [sharedStore removeAccount:account];
+    }
     [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
     [self initUI];
 }

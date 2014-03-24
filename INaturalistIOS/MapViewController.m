@@ -212,6 +212,7 @@
         Observation *o = [Observation object];
 		o.localCreatedAt = [NSDate date];
         o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         [vc setObservation:o];
     } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
         [self.navigationController.navigationBar setHidden:NO];
