@@ -169,4 +169,9 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return _caption;
 }
 
+- (NSArray *)remoteOnlyAttributes
+{
+    return [NSArray arrayWithObjects:@"licenseCode", nil];
+}
+
 @end

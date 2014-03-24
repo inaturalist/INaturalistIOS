@@ -184,6 +184,13 @@ static NSDateFormatter *jsDateFormatter = nil;
 	for (NSString *relatName in relats.keyEnumerator) {
 		[changes removeObjectForKey:relatName];
 	}
+    // filter out attributes that only change on the server and shouldn't trigger changes to localUpdatedAt
+    if ([self respondsToSelector:@selector(remoteOnlyAttributes)]) {
+        NSArray *attrs = [self performSelector:@selector(remoteOnlyAttributes)];
+        for (NSString *attr in attrs) {
+            [changes removeObjectForKey:attr];
+        }
+    }
     // if there's a recordID but no localUpdatedAt, assume this came fresh from the website and should be considered synced.
     if (self.recordID && !self.localUpdatedAt) {
         NSDate *now = [NSDate date];

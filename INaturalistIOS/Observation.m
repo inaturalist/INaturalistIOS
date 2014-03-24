@@ -268,8 +268,13 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (NSInteger)activityCount {
-	return self.commentsCount.integerValue + self.identificationsCount.integerValue;
+    if (self.taxonID) {
+        return self.commentsCount.integerValue + self.identificationsCount.integerValue - 1;
+    } else {
+        return self.commentsCount.integerValue + self.identificationsCount.integerValue;
+    }
 }
+
 // TODO: try forKey: instead of forKeyPath:
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
 	
