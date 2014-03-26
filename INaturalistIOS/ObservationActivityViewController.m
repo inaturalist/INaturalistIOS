@@ -326,7 +326,8 @@ static const int IdentificationCellBodyTag = 11;
 			return defaultHeight;
 		} else {
 			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:13.0] constrainedToSize:CGSizeMake(252.0, 10000.0) lineBreakMode:NSLineBreakByWordWrapping];
-			float height = MAX(defaultHeight, size.height + margin);
+            float calculatedRowHeight = size.height + margin;
+			float height = MAX(defaultHeight, calculatedRowHeight);
 			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
 			return height;
 		}

@@ -72,7 +72,7 @@ static const int GutterWidth  = 5;
     self.searchBar.backgroundColor = [UIColor redColor];
     self.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.searchBar.delegate = self;
-    self.searchBar.tintColor = [UIColor inatTint];
+    self.searchBar.tintColor = [UIColor blackColor];
     self.searchBar.placeholder = NSLocalizedString(@"Search", nil);
     self.searchBar.showsCancelButton = NO;
     [self.searchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];

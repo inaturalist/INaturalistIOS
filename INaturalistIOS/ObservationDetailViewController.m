@@ -392,8 +392,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillAppear:(BOOL)animated
 {
     // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    self.navigationController.navigationBar.translucent = NO;
+    self.getToolbarViewController.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.getToolbarViewController.navigationController.navigationBar.translucent = NO;
+    self.getToolbarViewController.navigationController.toolbar.barStyle = UIBarStyleBlack;
+    self.getToolbarViewController.navigationController.toolbar.translucent = NO;
     [super viewWillAppear:animated];
 }
 

@@ -288,9 +288,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 // TODO: try forKey: instead of forKeyPath:
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
 	// for observations which are due to be synced, only update the value if the local value is empty
-    NSLog(@"validateValue, inKeyPath: %@", inKeyPath);
 	if (self.needsSync && self.localUpdatedAt != nil && ![inKeyPath isEqualToString:@"recordID"]) {
-        NSLog(@"trying to avoid clobbering local value for %@", inKeyPath);
 		return ([self valueForKeyPath:inKeyPath] == nil);
 	}
 	return [super validateValue:ioValue forKeyPath:inKeyPath error:outError];

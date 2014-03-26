@@ -489,6 +489,7 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];

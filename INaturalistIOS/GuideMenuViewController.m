@@ -10,6 +10,7 @@
 #import "GuideViewController.h"
 #import "Observation.h"
 #import "SSZipArchive.h"
+#import "UIColor+INaturalist.h"
 
 @implementation GuideMenuViewController
 
@@ -137,6 +138,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         } else {
             if (indexPath.row < 2) {
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
+                cell.backgroundColor = [UIColor clearColor];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.userInteractionEnabled = NO;
             }
@@ -178,6 +180,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             }
         }
     }
+    cell.backgroundColor = [UIColor clearColor];
     [cell setIndentationWidth:60.0];
     return cell;
 }
@@ -195,7 +198,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     cell.userInteractionEnabled = YES;
     UIView *bgv = [[UIView alloc] initWithFrame:cell.frame];
-    bgv.backgroundColor = [UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1];
+    bgv.backgroundColor = [UIColor inatTint];
     cell.selectedBackgroundView = bgv;
     return cell;
 }
