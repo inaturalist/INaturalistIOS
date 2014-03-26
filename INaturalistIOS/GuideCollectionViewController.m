@@ -14,6 +14,7 @@
 #import "SWRevealViewController.h"
 #import "GuidePageViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "UIColor+INaturalist.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -67,15 +68,17 @@ static const int GutterWidth  = 5;
                                                                                   action:@selector(didReceivePinchGesture:)];
     [self.collectionView addGestureRecognizer:gesture];
     
-    // TODO this does not add the view correctly in iOS 7
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.collectionView.frame), 44)];
+    self.searchBar.backgroundColor = [UIColor redColor];
     self.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.searchBar.delegate = self;
-    self.searchBar.tintColor = [UIColor blackColor];
+    self.searchBar.tintColor = [UIColor inatTint];
     self.searchBar.placeholder = NSLocalizedString(@"Search", nil);
     self.searchBar.showsCancelButton = NO;
     [self.searchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    self.searchBar.translucent = NO;
     [self.view addSubview:self.searchBar];
+    
     [self.collectionView setContentOffset:CGPointMake(0, 44)];
     
     SWRevealViewController *revealController = [self revealViewController];
@@ -100,6 +103,8 @@ static const int GutterWidth  = 5;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
     [self tintMenuButton];
 }
 
@@ -447,9 +452,9 @@ static const int GutterWidth  = 5;
     UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
     if (button) {
         if (self.tags.count > 0) {
-            [button setTintColor:[UIColor colorWithRed:115.0/255.0 green:172.0/255.0 blue:19.0/255.0 alpha:1]];
+            [button setTintColor:[UIColor inatTint]];
         } else {
-            [button setTintColor:[UIColor clearColor]];
+            [button setTintColor:[UIColor whiteColor]];
         }
     }
 }
