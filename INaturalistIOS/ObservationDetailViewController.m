@@ -772,7 +772,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
-        NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification 
+        NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification
                                                                          object:self.observation];
         [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
         [self.navigationController popViewControllerAnimated:YES];
@@ -1042,6 +1042,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
         [self performSegueWithIdentifier:@"OFVTaxonSegue" sender:self];
     } else {
+        if (!ofv.observationField.desc) {
+            [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+            return;
+        }
         NSMutableString *msg = [NSMutableString stringWithString:ofv.observationField.desc];
         NSArray *projects = [self projectsRequireField:ofv.observationField];
         if (projects.count > 0) {
@@ -1341,6 +1345,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)save
 {
     [self uiToObservation];
+    NSDictionary *changes = self.observation.attributeChanges;
+    NSDate *now = [NSDate date];
+    for (ObservationFieldValue *ofv in self.observation.observationFieldValues) {
+        if (ofv.attributeChanges.count > 0) {
+            ofv.localUpdatedAt = now;
+        }
+    }
+    for (ProjectObservation *po in self.observation.projectObservations) {
+        if (po.attributeChanges.count > 0) {
+            po.localUpdatedAt = now;
+        }
+    }
+    if (changes.count > 0) {
+        self.observation.localUpdatedAt = now;
+    }
 	[self.observation save];
 }
 

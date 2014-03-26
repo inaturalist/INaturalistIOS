@@ -13,5 +13,5 @@
 @interface ObservationActivityViewController : UITableViewController
 
 @property (strong, nonatomic) Observation *observation;
-
+- (BOOL)checkForNetworkAndWarn;
 @end

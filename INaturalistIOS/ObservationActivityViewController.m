@@ -75,19 +75,14 @@ static const int IdentificationCellBodyTag = 11;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	[self refreshData];
-	[self markAsRead];
-	[self reload];
-	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Refreshing...",nil)];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
     [self initUI];
     [self.navigationController setToolbarHidden:NO animated:animated];
+    [self refreshData];
+	[self markAsRead];
+	[self reload];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -178,11 +173,17 @@ static const int IdentificationCellBodyTag = 11;
 #pragma mark - Actions
 - (void)clickedAddComment
 {
+    if (![self checkForNetworkAndWarn]) {
+        return;
+    }
 	[self performSegueWithIdentifier:@"AddCommentSegue" sender:self];
 }
 
 - (void)clickedAddIdentification
 {
+    if (![self checkForNetworkAndWarn]) {
+        return;
+    }
 	[self performSegueWithIdentifier:@"AddIdentificationSegue" sender:self];
 }
 
@@ -193,6 +194,9 @@ static const int IdentificationCellBodyTag = 11;
 
 - (void)clickedAgree:(UIButton *)sender
 {
+    if (![self checkForNetworkAndWarn]) {
+        return;
+    }
 	UIView *contentView = sender.superview;
 	CGPoint center = [self.tableView convertPoint:sender.center fromView:contentView];
     NSIndexPath *indexPath = [[self tableView] indexPathForRowAtPoint:center];
@@ -202,7 +206,7 @@ static const int IdentificationCellBodyTag = 11;
 
 - (void)agreeWithIdentification:(Identification *)identification
 {
-	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
+	[DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
 	NSDictionary *params = @{
 							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":identification.taxonID
@@ -216,7 +220,7 @@ static const int IdentificationCellBodyTag = 11;
 {
 	if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
 		[[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID] params:nil delegate:self];
-		self.observation.hasUnviewedActivity = @NO;
+		self.observation.hasUnviewedActivity = [NSNumber numberWithBool:NO];
 		NSError *error = nil;
 		[[[RKObjectManager sharedManager] objectStore] save:&error];
 	}
@@ -224,7 +228,10 @@ static const int IdentificationCellBodyTag = 11;
 
 - (void)refreshData
 {
-	if (self.observation.recordID) {
+	if (self.observation.recordID
+            && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
+            && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Refreshing...",nil)];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
@@ -234,7 +241,7 @@ static const int IdentificationCellBodyTag = 11;
 #pragma mark - RKRequestDelegate
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-	NSLog(@"Did load response status code: %d for URL: %@", response.statusCode, response.URL);
+//	NSLog(@"Did load response status code: %d for URL: %@", response.statusCode, response.URL);
 	if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound && response.statusCode == 200) {
 		[self refreshData];
 	} else {
@@ -255,11 +262,6 @@ static const int IdentificationCellBodyTag = 11;
 	[DejalBezelActivityView removeView];
 	
     if (objects.count == 0) return;
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-		
-
-    }
     
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -306,25 +308,25 @@ static const int IdentificationCellBodyTag = 11;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    INatModel *activity = self.activities[indexPath.row];
+    int defaultHeight = [activity isKindOfClass:[Identification class]] ? 80 : 60;
 	if (self.rowHeights[indexPath.row] == [NSNull null]) {
-		INatModel *activity = self.activities[indexPath.row];
-		
 		NSString *body;
 		float margin;
 		if ([activity isKindOfClass:[Identification class]]) {
 			body = ((Identification *)activity).body;
-			margin = 88;
+			margin = defaultHeight + 8;
 		} else {
 			body = ((Comment *)activity).body;
-			margin = 33;
+			margin = defaultHeight - 47;
 		}
 		
 		if (body.length == 0) {
-			self.rowHeights[indexPath.row] = @(80);
-			return 80;
+			self.rowHeights[indexPath.row] = @(defaultHeight);
+			return defaultHeight;
 		} else {
 			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:13.0] constrainedToSize:CGSizeMake(252.0, 10000.0) lineBreakMode:NSLineBreakByWordWrapping];
-			float height = MAX(80, size.height + margin);
+			float height = MAX(defaultHeight, size.height + margin);
 			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
 			return height;
 		}
@@ -332,7 +334,7 @@ static const int IdentificationCellBodyTag = 11;
 		NSNumber *height = self.rowHeights[indexPath.row];
 		return height.floatValue;
 	}
-	return 80;
+	return defaultHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -352,11 +354,11 @@ static const int IdentificationCellBodyTag = 11;
 		Comment *comment = (Comment *)activity;
 		
 		[imageView unsetImage];
-		imageView.defaultImage = [UIImage imageNamed:@"thumb.png"];
+		imageView.defaultImage = [UIImage imageNamed:@"usericon.png"];
 		imageView.urlPath = comment.user.userIconURL;
-	
-		body.text = comment.body;
-		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", comment.user.login, comment.createdAtShortString];
+		body.text = [comment.body stringByStrippingHTML];
+        
+		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
 
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
@@ -373,7 +375,7 @@ static const int IdentificationCellBodyTag = 11;
 		Identification *identification = (Identification *)activity;
 		
 		[imageView unsetImage];
-		imageView.defaultImage = [UIImage imageNamed:@"thumb.png"];
+		imageView.defaultImage = [UIImage imageNamed:@"usericon.png"];
 		imageView.urlPath = identification.user.userIconURL;
 		
 		[taxonImageView unsetImage];
@@ -384,12 +386,13 @@ static const int IdentificationCellBodyTag = 11;
 				taxonImageView.urlPath = tp.squareURL;
 			}
 		}
+        cell.contentView.alpha = identification.current.boolValue ? 1 : 0.5;
 		
 		title.text = [NSString stringWithFormat:@"%@'s ID", identification.user.login];
 		taxonName.text = identification.taxon.name;
 		taxonScientificName.text = identification.taxon.name;
-		body.text = identification.body;
-		byline.text = [NSString stringWithFormat:@"posted by %@ on %@", identification.user.login, identification.createdAtShortString];
+        body.text = [identification.body stringByStrippingHTML];
+		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];
 		
 		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 		if ([username isEqualToString:identification.user.login]) {
@@ -400,6 +403,22 @@ static const int IdentificationCellBodyTag = 11;
 	}
 	
     return cell;
+}
+
+- (BOOL)checkForNetworkAndWarn
+{
+    if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
+        && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return YES;
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be connected to the Internet to do this.",nil)
+                                                     message:nil
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+        return NO;
+    }
 }
 
 @end

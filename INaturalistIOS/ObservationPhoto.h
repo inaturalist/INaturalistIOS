@@ -44,5 +44,4 @@
 @interface ObservationPhoto (PrimitiveAccessors)
 - (NSNumber *)primitiveObservationID;
 - (void)setPrimitiveObservationID:(NSNumber *)newObservationId;
-- (NSArray *)remoteOnlyAttributes;
 @end

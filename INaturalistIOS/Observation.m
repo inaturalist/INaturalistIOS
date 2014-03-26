@@ -12,6 +12,8 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "ObservationPhoto.h"
+#import "DeletedRecord.h"
+#import "ProjectObservation.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -125,9 +127,17 @@ static RKObjectMapping *defaultSerializationMapping = nil;
                     toRelationship:@"identifications"
                        withMapping:[Identification mapping]
                          serialize:NO];
+        [defaultMapping mapKeyPath:@"observation_field_values"
+                    toRelationship:@"observationFieldValues"
+                       withMapping:[ObservationFieldValue mapping]
+                         serialize:NO];
 		[defaultMapping mapKeyPath:@"observation_photos"
                     toRelationship:@"observationPhotos"
                        withMapping:[ObservationPhoto mapping]
+                         serialize:NO];
+        [defaultMapping mapKeyPath:@"project_observations"
+                    toRelationship:@"projectObservations"
+                       withMapping:[ProjectObservation mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -277,12 +287,12 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 // TODO: try forKey: instead of forKeyPath:
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKeyPath:(NSString *)inKeyPath error:(out NSError *__autoreleasing *)outError {
-	
 	// for observations which are due to be synced, only update the value if the local value is empty
+    NSLog(@"validateValue, inKeyPath: %@", inKeyPath);
 	if (self.needsSync && self.localUpdatedAt != nil && ![inKeyPath isEqualToString:@"recordID"]) {
+        NSLog(@"trying to avoid clobbering local value for %@", inKeyPath);
 		return ([self valueForKeyPath:inKeyPath] == nil);
 	}
-	
 	return [super validateValue:ioValue forKeyPath:inKeyPath error:outError];
 }
 
@@ -314,6 +324,15 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super willSave];
     [self setPrimitiveValue:(self.createdAt ? self.createdAt : self.localCreatedAt)
                      forKey:@"sortableCreatedAt"];
+}
+
+- (void)prepareForDeletion
+{
+    if (self.syncedAt) {
+        DeletedRecord *dr = [DeletedRecord object];
+        dr.recordID = self.recordID;
+        dr.modelName = NSStringFromClass(self.class);
+    }
 }
 
 @end

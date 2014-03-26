@@ -28,6 +28,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
 	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
 }
@@ -68,5 +70,7 @@
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 }
+
+-(BOOL)prefersStatusBarHidden { return YES; }
 
 @end

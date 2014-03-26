@@ -36,4 +36,5 @@
 - (void)destroy;
 - (BOOL)needsSync;
 - (void)updateLocalTimestamps;
+- (NSDictionary *)attributeChanges;
 @end

@@ -178,44 +178,31 @@ static NSDateFormatter *jsDateFormatter = nil;
     return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.localUpdatedAt] < 0;
 }
 
-- (void)updateLocalTimestamps {
-	NSDictionary *relats = self.class.entityDescription.relationshipsByName;
+- (NSDictionary *)attributeChanges
+{
+    NSDictionary *relats = self.class.entityDescription.relationshipsByName;
 	NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
 	for (NSString *relatName in relats.keyEnumerator) {
 		[changes removeObjectForKey:relatName];
 	}
-    // filter out attributes that only change on the server and shouldn't trigger changes to localUpdatedAt
-    if ([self respondsToSelector:@selector(remoteOnlyAttributes)]) {
-        NSArray *attrs = [self performSelector:@selector(remoteOnlyAttributes)];
-        for (NSString *attr in attrs) {
-            [changes removeObjectForKey:attr];
-        }
-    }
+    return changes;
+}
+
+// Note: controllers are responsible for setting localUpdatedAt and syncedAt
+- (void)updateLocalTimestamps {
     // if there's a recordID but no localUpdatedAt, assume this came fresh from the website and should be considered synced.
+    NSDate *now = [NSDate date];
     if (self.recordID && !self.localUpdatedAt) {
-        NSDate *now = [NSDate date];
         [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
         [self setPrimitiveValue:now forKey:@"syncedAt"];
         if (![self primitiveValueForKey:@"localCreatedAt"]) {
             [self setPrimitiveValue:now forKey:@"localCreatedAt"];
         }
         return;
+    } else if (!self.localCreatedAt) {
+        [self setPrimitiveValue:now forKey:@"localCreatedAt"];
+        [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
     }
-	if (changes.count > 0) {
-		NSDate *now;
-		if ([changes objectForKey:@"syncedAt"]) {
-			now = self.syncedAt;
-		} else {
-			now = [NSDate date];
-		}
-		NSDate *stamp = self.localUpdatedAt;
-		if (!stamp || [stamp timeIntervalSinceDate:now] < -1) {
-			[self setPrimitiveValue:now forKey:@"localUpdatedAt"];
-			if (![self primitiveValueForKey:@"localCreatedAt"]) {
-				[self setPrimitiveValue:now forKey:@"localCreatedAt"];
-			}
-		}
-	}
 }
 
 @end

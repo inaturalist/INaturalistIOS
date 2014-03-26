@@ -182,7 +182,7 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)clickedDeleteAll
 {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure",nil)
-                                                 message:NSLocalizedString(@"This will delete all the observations on this device, but you need to go to iNaturalist.org to delete them from the website.",nil)
+                                                 message:NSLocalizedString(@"This will delete all the observations on this device, and it will delete them from the website the next time you sync your observations.",nil)
                                                 delegate:self 
                                        cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                        otherButtonTitles:NSLocalizedString(@"Delete all",nil), nil];
@@ -208,7 +208,7 @@ static const int ObservationCellActivityButtonTag = 6;
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
-		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos", username]
+		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
         self.lastRefreshAt = [NSDate date];
@@ -238,7 +238,7 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)checkNewActivity
 {
-	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types[]=Identification&notifier_types[]=Comment&skip_view=true&resource_type=Observation" delegate:self];
+	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
 }
 
 - (void)loadData
@@ -593,21 +593,33 @@ static const int ObservationCellActivityButtonTag = 6;
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
-	
     if (objects.count == 0) return;
+    NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
 			Observation *observation = (Observation *)o;
 			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
-				[observation setSyncedAt:[NSDate date]];
+				[observation setSyncedAt:now];
 			}
 			NSArray *sortedObservationPhotos = observation.sortedObservationPhotos;
 			for (ObservationPhoto *photo in sortedObservationPhotos) {
 				if (photo.localUpdatedAt == nil || !photo.needsSync) { // this only occurs for downloaded items, not locally updated items
-					[photo setSyncedAt:[NSDate date]];
+					[photo setSyncedAt:now];
 				}
 			}
+            for (ObservationFieldValue *ofv in observation.observationFieldValues) {
+                if (ofv.needsSync) {
+                    [[INatModel managedObjectContext] refreshObject:ofv mergeChanges:NO];
+                } else {
+                    ofv.syncedAt = now;
+                }
+			}
 		}
+        
+        // don't update records that need to be synced
+        if (o.needsSync) {
+            [[INatModel managedObjectContext] refreshObject:o mergeChanges:NO];
+        }
     }
     
     NSError *error = nil;
@@ -673,22 +685,24 @@ static const int ObservationCellActivityButtonTag = 6;
         NSError* error = nil;
         id<RKParser> parser = [[RKParserRegistry sharedRegistry] parserForMIMEType:@"application/json"];
         id parsedData = [parser objectFromString:jsonString error:&error];
-		
+		NSDate *now = [NSDate date];
 		if (parsedData && [parsedData isKindOfClass:[NSDictionary class]] && !error) {
 			NSNumber *recordID = ((NSDictionary *)parsedData)[@"id"];
 			Observation *observation = [Observation objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %@", recordID]];
-			observation.hasUnviewedActivity = @YES;
+			observation.hasUnviewedActivity = [NSNumber numberWithBool:YES];
+            observation.syncedAt = now;
 			[[[RKObjectManager sharedManager] objectStore] save:&error];
 		} else if (parsedData && [parsedData isKindOfClass:[NSArray class]] && !error) {
 			for (NSDictionary *notification in (NSArray *)parsedData) {
 				NSNumber *recordID = notification[@"resource_id"];
 				Observation *observation = [Observation objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %@", recordID]];
-				observation.hasUnviewedActivity = @YES;
+				observation.hasUnviewedActivity = [NSNumber numberWithBool:YES];
+                observation.syncedAt = now;
 			}
 			[[[RKObjectManager sharedManager] objectStore] save:&error];
 		}
 	} else {
-		NSLog(@"Received status code %d for check activity", response.statusCode);
+		NSLog(@"Received status code %d for %@", response.statusCode, request.resourcePath);
 	}
 }
 

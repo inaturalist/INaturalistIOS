@@ -56,6 +56,7 @@
 		194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0518DE58850098E28C /* 121-landscape@2x.png */; };
 		194D8E1D18DFEC9E0098E28C /* 184-warning.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1B18DFEC9E0098E28C /* 184-warning.png */; };
 		194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */; };
+		194D8E4E18E227C80098E28C /* usericon.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E4D18E227C80098E28C /* usericon.png */; };
 		19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */; };
 		19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */; };
 		1953066A150592DC004951D8 /* iconic_taxon_animalia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065D150592DB004951D8 /* iconic_taxon_animalia.png */; };
@@ -561,6 +562,7 @@
 		194D8E0518DE58850098E28C /* 121-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape@2x.png"; sourceTree = "<group>"; };
 		194D8E1B18DFEC9E0098E28C /* 184-warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning.png"; sourceTree = "<group>"; };
 		194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning@2x.png"; sourceTree = "<group>"; };
+		194D8E4D18E227C80098E28C /* usericon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = usericon.png; sourceTree = "<group>"; };
 		1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_actinopterygii.png; sourceTree = "<group>"; };
 		1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_amphibia.png; sourceTree = "<group>"; };
 		1953065D150592DB004951D8 /* iconic_taxon_animalia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_animalia.png; sourceTree = "<group>"; };
@@ -1130,12 +1132,12 @@
 				19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */,
 				19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */,
 				19A5F61014FB486000757636 /* appicon.png */,
+				19905D1F186275C800E63C00 /* appicon@120.png */,
 				195889401806898700294EB3 /* appicon@144.png */,
+				19905D20186275C800E63C00 /* appicon@152.png */,
 				19A5F61214FB486200757636 /* appicon@2x.png */,
 				1958893E1806896600294EB3 /* appicon@72.png */,
 				19905D1E186275C800E63C00 /* appicon@76.png */,
-				19905D1F186275C800E63C00 /* appicon@120.png */,
-				19905D20186275C800E63C00 /* appicon@152.png */,
 				191B0B48150197BC00F2508E /* current_location.png */,
 				191B0B49150197BC00F2508E /* current_location@2x.png */,
 				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
@@ -1190,6 +1192,7 @@
 				60A0E25216FD090A003621FA /* tutorial4es.png */,
 				60A0E25316FD090A003621FA /* tutorial5en.png */,
 				60A0E25416FD090A003621FA /* tutorial5es.png */,
+				194D8E4D18E227C80098E28C /* usericon.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -2084,6 +2087,7 @@
 				1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
+				194D8E4E18E227C80098E28C /* usericon.png in Resources */,
 				19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */,
 				194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,

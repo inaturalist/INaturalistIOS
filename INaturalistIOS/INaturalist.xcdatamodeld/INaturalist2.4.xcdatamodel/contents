@@ -97,7 +97,7 @@
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="hasUnviewedActivity" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="hasUnviewedActivity" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="iconicTaxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="iconicTaxonName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identificationsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -324,7 +324,7 @@
         <element name="Identification" positionX="234" positionY="387" width="128" height="268"/>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="643"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="645"/>
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
         <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="373"/>

@@ -38,6 +38,10 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"observation_id", @"observationID",
          @"curator_identification_id", @"curatorIdentificationID",
          nil];
+        [defaultMapping mapKeyPath:@"project"
+                    toRelationship:@"project"
+                       withMapping:[Project mapping]
+                         serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
     return defaultMapping;

@@ -41,7 +41,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"observation_field_id",   @"observationFieldID",
          nil];
         [defaultMapping mapKeyPath:@"observation_field" 
-                    toRelationship:@"observaionField" 
+                    toRelationship:@"observationField" 
                        withMapping:[ObservationField mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
