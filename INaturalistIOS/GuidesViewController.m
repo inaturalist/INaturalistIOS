@@ -326,6 +326,7 @@ static const int ListControlIndexNearby = 2;
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [self setToolbarItems:[NSArray arrayWithObjects:

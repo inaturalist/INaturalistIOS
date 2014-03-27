@@ -36,6 +36,7 @@
 @property (nonatomic, retain) NSDate * featuredAt;
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
+@property (nonatomic, retain) NSString *group;
 
 - (BOOL)observationsRestrictedToList;
 - (NSArray *)sortedProjectObservationFields;

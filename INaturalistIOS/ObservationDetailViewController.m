@@ -26,6 +26,7 @@
 #import "ActionSheetPicker.h"
 #import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
+#import "UIColor+INaturalist.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -255,10 +256,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                           target:self
                                                           action:@selector(clickedSave)];
         [self.saveButton setWidth:100.0];
-        [self.saveButton setTintColor:[UIColor colorWithRed:168.0/255 
-                                                      green:204.0/255 
-                                                       blue:50.0/255 
-                                                      alpha:1.0]];
+        [self.saveButton setTintColor:[UIColor inatTint]];
     }
     
     if (!self.deleteButton) {

@@ -23,6 +23,7 @@
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
 #import "TaxonPhoto.h"
+#import "UIColor+INaturalist.h"
 
 static const int CommentCellImageTag = 1;
 static const int CommentCellBodyTag = 2;
@@ -102,10 +103,7 @@ static const int IdentificationCellBodyTag = 11;
 																target:self
 																action:@selector(clickedAddComment)];
         [self.addCommentButton setWidth:120.0];
-        [self.addCommentButton setTintColor:[UIColor colorWithRed:168.0/255
-															green:204.0/255
-															 blue:50.0/255
-															alpha:1.0]];
+        [self.addCommentButton setTintColor:[UIColor inatTint]];
     }
     
     if (!self.addIdentificationButton) {
@@ -114,10 +112,7 @@ static const int IdentificationCellBodyTag = 11;
 																	   target:self
 																	   action:@selector(clickedAddIdentification)];
         [self.addIdentificationButton setWidth:120.0];
-        [self.addIdentificationButton setTintColor:[UIColor colorWithRed:168.0/255
-																   green:204.0/255
-																	blue:50.0/255
-																   alpha:1.0]];
+        [self.addIdentificationButton setTintColor:[UIColor inatTint]];
     }
     
     [self setToolbarItems:[NSArray arrayWithObjects:

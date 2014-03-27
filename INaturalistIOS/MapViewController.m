@@ -12,6 +12,7 @@
 #import "ImageStore.h"
 #import "ObservationAnnotation.h"
 #import "ObservationDetailViewController.h"
+#import "UIColor+INaturalist.h"
 #import <MapKit/MapKit.h>
 
 @interface MapViewController()
@@ -115,10 +116,7 @@
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
                                                           action:@selector(clickedAddObservationButton)];
-        [self.addObservationButton setTintColor:[UIColor colorWithRed:168.0/255 
-                                                      green:204.0/255 
-                                                       blue:50.0/255 
-                                                      alpha:1.0]];
+        [self.addObservationButton setTintColor:[UIColor inatTint]];
     }
     [self setToolbarItems:[NSArray arrayWithObjects:
                            self.currentLocationButton, 

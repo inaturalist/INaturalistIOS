@@ -192,6 +192,7 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="featuredAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="group" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="iconURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="listID" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -328,7 +329,7 @@
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
         <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="373"/>
-        <element name="Project" positionX="160" positionY="192" width="128" height="375"/>
+        <element name="Project" positionX="160" positionY="192" width="128" height="390"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ProjectObservationField" positionX="160" positionY="192" width="128" height="225"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="240"/>

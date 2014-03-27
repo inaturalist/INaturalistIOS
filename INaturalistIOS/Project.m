@@ -39,6 +39,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic featuredAt;
 @dynamic latitude;
 @dynamic longitude;
+@dynamic group;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -59,6 +60,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"featured_at_utc", @"featuredAt",
          @"rule_place.latitude", @"latitude",
          @"rule_place.longitude", @"longitude",
+         @"group", @"group",
          nil];
         [defaultMapping mapKeyPath:@"project_list" 
                     toRelationship:@"projectList" 

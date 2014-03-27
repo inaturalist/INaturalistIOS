@@ -490,10 +490,11 @@ static const int ObservationCellActivityButtonTag = 6;
 {
 	[super viewWillAppear:animated];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
-		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to Refresh"];
+		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)];
 		[refresh addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl = refresh;
 	} else {
