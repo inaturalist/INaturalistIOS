@@ -156,25 +156,28 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                     label.text = NSLocalizedString(@"Downloading...", nil);
                 } else {
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
+                    UILabel *title = (UILabel *)[cell viewWithTag:202];
+                    UILabel *subtitle = (UILabel *)[cell viewWithTag:203];
+                    UIImageView *imageView = (UIImageView *)[cell viewWithTag:201];
                     if (self.guide.ngzDownloadedAt) {
-                        cell.textLabel.textColor = [UIColor whiteColor];
-                        cell.textLabel.text = NSLocalizedString(@"Downloaded", nil);
+                        title.textColor = [UIColor whiteColor];
+                        title.text = NSLocalizedString(@"Downloaded", nil);
                         NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                         [fmt setTimeZone:[NSTimeZone localTimeZone]];
                         [fmt setDateStyle:NSDateFormatterMediumStyle];
                         [fmt setTimeStyle:NSDateFormatterMediumStyle];
-                        cell.detailTextLabel.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
-                        cell.imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
+                        subtitle.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
+                        imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
                     } else if (self.guide.ngzURL) {
-                        cell.textLabel.textColor = [UIColor whiteColor];
-                        cell.textLabel.text = NSLocalizedString(@"Download for offline use", nil);
-                        cell.detailTextLabel.text = self.guide.ngzFileSize;
-                        cell.imageView.image = [UIImage imageNamed:@"265-download.png"];
+                        title.textColor = [UIColor whiteColor];
+                        title.text = NSLocalizedString(@"Download for offline use", nil);
+                        subtitle.text = self.guide.ngzFileSize;
+                        imageView.image = [UIImage imageNamed:@"265-download.png"];
                     } else {
-                        cell.textLabel.textColor = [UIColor darkGrayColor];
-                        cell.textLabel.text = NSLocalizedString(@"Download not available", nil);
-                        cell.detailTextLabel.text = NSLocalizedString(@"Guide editor must enable this feature.", nil);
-                        cell.imageView.image = [UIImage imageNamed:@"265-download-gray.png"];
+                        title.textColor = [UIColor darkGrayColor];
+                        title.text = NSLocalizedString(@"Download not available", nil);
+                        subtitle.text = NSLocalizedString(@"Guide editor must enable this feature.", nil);
+                        imageView.image = [UIImage imageNamed:@"265-download-gray.png"];
                     }
                 }
             }

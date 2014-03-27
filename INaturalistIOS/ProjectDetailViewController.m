@@ -10,6 +10,7 @@
 #import "ProjectDetailViewController.h"
 #import "DejalActivityView.h"
 #import "INaturalistAppDelegate.h"
+#import "UIColor+INaturalist.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -169,6 +170,9 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES animated:animated];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 }
 
 - (void)viewDidUnload {

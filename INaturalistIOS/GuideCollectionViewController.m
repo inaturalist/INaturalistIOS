@@ -454,7 +454,11 @@ static const int GutterWidth  = 5;
         if (self.tags.count > 0) {
             [button setTintColor:[UIColor inatTint]];
         } else {
-            [button setTintColor:[UIColor whiteColor]];
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                [button setTintColor:[UIColor whiteColor]];
+            } else {
+                [button setTintColor:[UIColor clearColor]];
+            }
         }
     }
 }

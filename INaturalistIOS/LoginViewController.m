@@ -14,6 +14,7 @@
 #import "GTLPlusConstants.h"
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
+#import "UIColor+INaturalist.h"
 
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
@@ -32,8 +33,6 @@ static const NSInteger GoogleAssertionType = 2;
 
 @implementation LoginViewController
 @synthesize usernameField, passwordField, delegate;
-
-
 
 - (IBAction)cancel:(id)sender {
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
@@ -58,6 +57,14 @@ static const NSInteger GoogleAssertionType = 2;
     AccountType = kINatAuthService;
     av = nil;
     isLoginCompleted = NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 }
 
 - (void)viewDidUnload

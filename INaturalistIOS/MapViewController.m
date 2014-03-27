@@ -107,9 +107,10 @@
         [self.currentLocationButton setWidth:30];
     }
     if (!self.mapTypeButton) {
-        self.mapTypeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl 
-                                                                           target:self 
-                                                                           action:@selector(clickedMapTypeButton)];
+        self.mapTypeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Type",nil)
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:self
+                                                                    action:@selector(clickedMapTypeButton)];
     }
     if (!self.addObservationButton) {
         self.addObservationButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add observation",nil)

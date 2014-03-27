@@ -13,6 +13,7 @@
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "ObservationDetailViewController.h"
+#import "UIColor+INaturalist.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
@@ -119,6 +120,9 @@ static const int TaxonDescTag = 1;
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     [super viewWillAppear:animated];
 }
 

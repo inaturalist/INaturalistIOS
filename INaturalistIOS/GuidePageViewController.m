@@ -9,6 +9,7 @@
 #import "GuidePageViewController.h"
 #import "GuideTaxonViewController.h"
 #import "Observation.h"
+#import "UIColor+INaturalist.h"
 
 @implementation GuidePageViewController
 @synthesize guide = _guide;
@@ -30,6 +31,13 @@
     }
     self.dataSource = self;
     self.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 }
 
 #pragma mark - UIPageViewControllerDelegate

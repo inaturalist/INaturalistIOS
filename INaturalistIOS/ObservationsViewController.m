@@ -22,6 +22,7 @@
 #import "RefreshControl.h"
 #import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
+#import "UIColor+INaturalist.h"
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -491,6 +492,7 @@ static const int ObservationCellActivityButtonTag = 6;
 	[super viewWillAppear:animated];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
