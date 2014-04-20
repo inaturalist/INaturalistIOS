@@ -27,6 +27,7 @@
 #import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
+#import "TKCoverflowCoverView+INaturalist.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -181,15 +182,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     NSNumber *newLat = [numberFormatter numberFromString:self.latitudeLabel.text];
     NSNumber *newLon = [numberFormatter numberFromString:self.longitudeLabel.text];
     NSNumber *newAcc = [numberFormatter numberFromString:self.positionalAccuracyLabel.text];
-    if (![self.observation.visibleLatitude isEqualToNumber:newLat]) {
+    if (newLat && ![self.observation.visibleLatitude isEqualToNumber:newLat]) {
         self.observation.latitude = newLat;
         self.observation.privateLatitude = nil;
     }
-    if (![self.observation.visibleLongitude isEqualToNumber:newLon]) {
+    if (newLon && ![self.observation.visibleLongitude isEqualToNumber:newLon]) {
         self.observation.longitude = newLon;
         self.observation.privateLongitude = nil;
     }
-    if (![self.observation.positionalAccuracy isEqualToNumber:newAcc]) {
+    if (newAcc && ![self.observation.positionalAccuracy isEqualToNumber:newAcc]) {
         self.observation.positionalAccuracy = newAcc;
     }
     self.observation.idPlease = [NSNumber numberWithBool:self.idPleaseSwitch.on];
@@ -213,7 +214,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
             Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
             UILabel *label = (UILabel *)[cell viewWithTag:2];
-            
             if ([label.text isEqualToString:@"unknown"]) {
                 ofv.value = nil;
             
@@ -246,12 +246,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     navItem.title = [self.observation isNew] ? NSLocalizedString(@"Add observation",nil) : NSLocalizedString(@"Edit observation",nil);
     
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] 
-                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                             target:nil 
-                             action:nil];
     if (!self.saveButton) {
-        self.saveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString( @"Save",nil)
+        self.saveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save",nil)
                                                            style:UIBarButtonItemStyleDone 
                                                           target:self
                                                           action:@selector(clickedSave)];
@@ -264,11 +260,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                           target:self
                                                           action:@selector(clickedDelete)];
     }
-    UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
-                              initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                              target:nil
-                              action:nil];
-	fixed.width = self.deleteButton.width;
     
     if (!self.viewButton) {
         self.viewButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
@@ -298,14 +289,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
     }
     
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc]
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                             target:nil
+                             action:nil];
+    UIBarButtonItem *fixed = [[UIBarButtonItem alloc]
+                              initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                              target:nil
+                              action:nil];
+	fixed.width = self.activityButton.frame.size.width;
+    
     UIViewController *tbvc = [self getToolbarViewController];
     [tbvc setToolbarItems:[NSArray arrayWithObjects:
                            self.deleteButton,
+                           flex,
                            fixed,
                            flex,
                            self.saveButton, 
                            flex,
 						   self.activityBarButton,
+                           flex,
 						   self.viewButton,
                            nil]
                  animated:NO];
@@ -422,10 +425,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     self.saveButton = nil;
     self.deleteButton = nil;
     self.viewButton = nil;
+    self.coverflowView = nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    if (!self.observation.isDeleted && !self.didClickCancel) {
+        [self save];
+    }
     [self keyboardDone];
     [super viewWillDisappear:animated];
 }
@@ -630,33 +637,33 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverAtIndex:(int)index
 {
     TKCoverflowCoverView *cover = [coverflowView dequeueReusableCoverView];
-    if (!cover) {
-        CGRect r = CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height); 
+    CGRect r = CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height);
+    if (cover) {
+        cover.frame = r;
+    } else {
         cover = [[TKCoverflowCoverView alloc] initWithFrame:r];
-        cover.baseline = coverflowView.frame.size.height - 20;
     }
+    cover.baseline = coverflowView.frame.size.height - 20;
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
-	
 	if (op.photoKey == nil) {
         TKCoverflowCoverView *boundCover = cover;
         cover.imageView.contentMode = UIViewContentModeCenter;
-        [cover.imageView setImageWithURL:[NSURL URLWithString:op.smallURL]
-                        placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
-                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                                   if (error) {
-                                       NSLog(@"error loading image: %@", error);
-                                       boundCover.image = [UIImage imageNamed:@"184-warning.png"];
-                                   } else {
-                                       boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
-                                       boundCover.image = image;
-                                   }
-                               }];
+        NSString *imageURL;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            imageURL = op.mediumURL ? op.mediumURL : op.smallURL;
+        } else {
+            imageURL = op.smallURL;
+        }
+        [cover setImageWithURL:[NSURL URLWithString:imageURL]
+              placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
+                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                         boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+                     }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
 		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
 		if (img) cover.image = img;
 	}
-	
     return cover;
 }
 
@@ -1364,6 +1371,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 - (IBAction)clickedCancel:(id)sender {
+    self.didClickCancel = YES;
     [self stopUpdatingLocation];
     if (self.observationWasNew) {
         [self.observation deleteEntity];

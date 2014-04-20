@@ -671,6 +671,8 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
+    NSLog(@"request.resourcePath: %@", request.resourcePath);
+    NSLog(@"response.body: %@", [[NSString alloc] initWithData:response.body encoding:NSUTF8StringEncoding]);
 	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];

@@ -259,6 +259,7 @@ static const int IdentificationCellBodyTag = 11;
     if (objects.count == 0) return;
     
     NSError *error = nil;
+    [self.rowHeights removeAllObjects];
     [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
@@ -307,22 +308,29 @@ static const int IdentificationCellBodyTag = 11;
     int defaultHeight = [activity isKindOfClass:[Identification class]] ? 80 : 60;
 	if (self.rowHeights[indexPath.row] == [NSNull null]) {
 		NSString *body;
-		float margin;
+		float margin = 31.0; // sort of a buffer to capture metadata line height and some uncertainty with text height calc
 		if ([activity isKindOfClass:[Identification class]]) {
-			body = ((Identification *)activity).body;
-			margin = defaultHeight + 8;
+			body = [((Identification *)activity).body stringByStrippingHTML];
+            margin = defaultHeight + 20;
 		} else {
-			body = ((Comment *)activity).body;
-			margin = defaultHeight - 47;
+			body = [((Comment *)activity).body stringByStrippingHTML];
+            margin = 31;
 		}
 		
 		if (body.length == 0) {
 			self.rowHeights[indexPath.row] = @(defaultHeight);
 			return defaultHeight;
 		} else {
-			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:13.0] constrainedToSize:CGSizeMake(252.0, 10000.0) lineBreakMode:NSLineBreakByWordWrapping];
-            float calculatedRowHeight = size.height + margin;
-			float height = MAX(defaultHeight, calculatedRowHeight);
+            float fontSize;
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                fontSize = 9;
+            } else {
+                fontSize = 13;
+            }
+			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:fontSize]
+                           constrainedToSize:CGSizeMake(252.0, 10000.0)
+                               lineBreakMode:NSLineBreakByWordWrapping];
+			float height = MAX(defaultHeight, size.height+margin);
 			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
 			return height;
 		}
@@ -346,19 +354,14 @@ static const int IdentificationCellBodyTag = 11;
 		TTImageView *imageView = (TTImageView *)[cell viewWithTag:CommentCellImageTag];
 		UILabel *body = (UILabel *)[cell viewWithTag:CommentCellBodyTag];
 		UILabel *byline = (UILabel *)[cell viewWithTag:CommentCellBylineTag];
-		
 		Comment *comment = (Comment *)activity;
-		
 		[imageView unsetImage];
 		imageView.defaultImage = [UIImage imageNamed:@"usericon.png"];
 		imageView.urlPath = comment.user.userIconURL;
 		body.text = [comment.body stringByStrippingHTML];
-        
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
-
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
-		
 		TTImageView *imageView = (TTImageView *)[cell viewWithTag:IdentificationCellImageTag];
 		TTImageView *taxonImageView = (TTImageView *)[cell viewWithTag:IdentificationCellTaxonImageTag];
 		UILabel *title = (UILabel *)[cell viewWithTag:IdentificationCellTitleTag];
@@ -385,7 +388,10 @@ static const int IdentificationCellBodyTag = 11;
         cell.contentView.alpha = identification.current.boolValue ? 1 : 0.5;
 		
 		title.text = [NSString stringWithFormat:@"%@'s ID", identification.user.login];
-		taxonName.text = identification.taxon.name;
+		taxonName.text = identification.taxon.defaultName;
+        if (taxonName.text.length == 0) {
+            taxonName.text = identification.taxon.name;
+        }
 		taxonScientificName.text = identification.taxon.name;
         body.text = [identification.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];

@@ -22,6 +22,7 @@
 		1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1315AB752800A6EF6E /* TutorialViewController.m */; };
 		1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1615AB75BB00A6EF6E /* PhotoStub.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
+		191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */; };
 		19122E3F1512D3F4009BD3D0 /* add_button_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */; };
 		19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */; };
 		19122E411512D3F4009BD3D0 /* add_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 19122E3D1512D3F4009BD3D0 /* add_button.png */; };
@@ -511,6 +512,8 @@
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		190AF2D614FC258F00F73F2B /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.1.xcdatamodel; sourceTree = "<group>"; };
+		191059DC18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TKCoverflowCoverView+INaturalist.h"; sourceTree = "<group>"; };
+		191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TKCoverflowCoverView+INaturalist.m"; sourceTree = "<group>"; };
 		19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button_highlight.png; sourceTree = "<group>"; };
 		19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_button_highlight@2x.png"; sourceTree = "<group>"; };
 		19122E3D1512D3F4009BD3D0 /* add_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_button.png; sourceTree = "<group>"; };
@@ -1584,6 +1587,8 @@
 				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
 				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
 				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
+				191059DC18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.h */,
+				191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2194,6 +2199,7 @@
 				6098FD8416F3F6890053987E /* GTLJSONParser.m in Sources */,
 				19AE89AD18DD0C7300505918 /* SDWebImageDownloaderOperation.m in Sources */,
 				6098FD8516F3F6890053987E /* GTLObject.m in Sources */,
+				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
 				6098FD8616F3F6890053987E /* GTLPlusAcl.m in Sources */,
 				6098FD8716F3F6890053987E /* GTLPlusAclentryResource.m in Sources */,
 				6098FD8816F3F6890053987E /* GTLPlusActivity.m in Sources */,

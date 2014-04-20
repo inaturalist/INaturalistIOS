@@ -53,14 +53,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic hasUnviewedActivity;
 @dynamic comments;
 @dynamic identifications;
-@dynamic sortableCreatedAt;
+@dynamic sortable;
 
 + (NSArray *)all
 {
-    NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:NO];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
-    return [self objectsWithFetchRequest:request];
+    return [self objectsWithFetchRequest:self.defaultDescendingSortedFetchRequest];
 }
 
 + (Observation *)stub
@@ -279,9 +276,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (NSInteger)activityCount {
     if (self.taxonID) {
-        return self.commentsCount.integerValue + self.identificationsCount.integerValue - 1;
+        return MAX(0, self.commentsCount.integerValue + self.identificationsCount.integerValue - 1);
     } else {
-        return self.commentsCount.integerValue + self.identificationsCount.integerValue;
+        return MAX(0, self.commentsCount.integerValue + self.identificationsCount.integerValue);
     }
 }
 
@@ -294,21 +291,35 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 	return [super validateValue:ioValue forKeyPath:inKeyPath error:outError];
 }
 
++ (NSFetchRequest *)defaultDescendingSortedFetchRequest
+{
+    NSFetchRequest *request = [self fetchRequest];
+    NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO];
+    NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, sd2, nil]];
+    return request;
+}
+
++ (NSFetchRequest *)defaultAscendingSortedFetchRequest
+{
+    NSFetchRequest *request = [self fetchRequest];
+    NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:YES];
+    NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, sd2, nil]];
+    return request;
+}
+
 - (Observation *)prevObservation
 {
-    NSFetchRequest *request = [Observation fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:NO];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortableCreatedAt < %@", self.sortableCreatedAt]];
+    NSFetchRequest *request = [Observation defaultDescendingSortedFetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable <= %@ && recordID != %@", self.sortable, self.recordID]];
     return [Observation objectWithFetchRequest:request];
 }
 
 - (Observation *)nextObservation
 {
-    NSFetchRequest *request = [Observation fetchRequest];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortableCreatedAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortableCreatedAt > %@", self.sortableCreatedAt]];
+    NSFetchRequest *request = [Observation defaultAscendingSortedFetchRequest];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable >= %@ && recordID != %@", self.sortable, self.recordID]];
     return [Observation objectWithFetchRequest:request];
 }
 
@@ -320,8 +331,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         }
     }
     [super willSave];
-    [self setPrimitiveValue:(self.createdAt ? self.createdAt : self.localCreatedAt)
-                     forKey:@"sortableCreatedAt"];
+    NSDate *sortableDate = self.createdAt ? self.createdAt : self.localCreatedAt;
+    NSString *sortable = [NSString stringWithFormat:@"%f-%d", sortableDate.timeIntervalSinceReferenceDate, self.recordID.intValue];
+    [self setPrimitiveValue:sortable forKey:@"sortable"];
 }
 
 - (void)prepareForDeletion

@@ -121,7 +121,7 @@
         <attribute name="privatePositionalAccuracy" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="qualityGrade" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="sortableCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sortable" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="speciesGuess" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="taxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>

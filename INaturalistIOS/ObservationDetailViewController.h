@@ -83,6 +83,7 @@
 @property (nonatomic, strong) OFVTaxaSearchControllerDelegate *ofvTaxaSearchControllerDelegate;
 @property (nonatomic, strong) NSString *taxonID;
 @property (nonatomic, strong) TaxonLoader *taxonLoader;
+@property (nonatomic, assign) BOOL didClickCancel;
 
 - (void)focusOnPrevField;
 - (void)focusOnNextField;

@@ -49,7 +49,7 @@
 @property (nonatomic, retain) Taxon *taxon;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *identifications;
-@property (nonatomic, retain) NSDate *sortableCreatedAt;
+@property (nonatomic, retain) NSString *sortable;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
@@ -59,6 +59,8 @@
 - (NSNumber *)visibleLatitude;
 - (NSNumber *)visibleLongitude;
 - (NSInteger)activityCount;
++ (NSFetchRequest *)defaultAscendingSortedFetchRequest;
++ (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
 @end
 
