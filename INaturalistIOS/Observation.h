@@ -59,6 +59,8 @@
 - (NSNumber *)visibleLatitude;
 - (NSNumber *)visibleLongitude;
 - (NSInteger)activityCount;
+- (Observation *)prevObservation;
+- (Observation *)nextObservation;
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
@@ -74,6 +76,7 @@
 @interface Observation (CoreDataGeneratedAccessors)
 - (void)insertObject:(NSManagedObject *)value inProjectObservationsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromProjectObservationsAtIndex:(NSUInteger)idx;
+
 - (void)insertProjectObservations:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
 - (void)removeProjectObservationsAtIndexes:(NSIndexSet *)indexes;
 - (void)replaceObjectInProjectObservationsAtIndex:(NSUInteger)idx withObject:(NSManagedObject *)value;
@@ -82,11 +85,14 @@
 - (void)removeProjectObservationsObject:(NSManagedObject *)value;
 - (void)addProjectObservations:(NSSet *)values;
 - (void)removeProjectObservations:(NSSet *)values;
+
+- (void)insertObservationFieldValues:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeObservationFieldValuesAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInObservationFieldValuesAtIndex:(NSUInteger)idx withObject:(NSManagedObject *)value;
+- (void)replaceObservationFieldValuesAtIndexes:(NSIndexSet *)indexes withProjectObservations:(NSArray *)values;
 - (void)addObservationFieldValuesObject:(NSManagedObject *)value;
 - (void)removeObservationFieldValuesObject:(NSManagedObject *)value;
-- (void)addObservationFieldValues:(NSSet *)values;
-- (void)removeObservationFieldValues:(NSSet *)values;
-- (Observation *)prevObservation;
-- (Observation *)nextObservation;
+- (void)addObservationFieldValue:(NSSet *)values;
+- (void)removeObservationFieldValue:(NSSet *)values;
 @end
 

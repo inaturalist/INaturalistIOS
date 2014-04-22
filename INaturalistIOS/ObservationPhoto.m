@@ -88,7 +88,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (NSNumber *)observationID
 {
     [self willAccessValueForKey:@"observationID"];
-    if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
+    if (self.observation && self.observation.recordID && (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0)) {
         [self setPrimitiveObservationID:self.observation.recordID];
     }
     [self didAccessValueForKey:@"observationID"];

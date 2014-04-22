@@ -63,7 +63,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (NSNumber *)observationID
 {
     [self willAccessValueForKey:@"observationID"];
-    if (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0) {
+    if (self.observation && self.observation.recordID && (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0)) {
         [self setPrimitiveObservationID:self.observation.recordID];
     }
     [self didAccessValueForKey:@"observationID"];
@@ -72,7 +72,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 - (NSNumber *)projectID
 {
     [self willAccessValueForKey:@"projectID"];
-    if (!self.primitiveProjectID || [self.primitiveProjectID intValue] == 0) {
+    if (self.project && self.project.recordID && (!self.primitiveProjectID || [self.primitiveProjectID intValue] == 0)) {
         [self setPrimitiveProjectID:self.project.recordID];
     }
     [self didAccessValueForKey:@"projectID"];
