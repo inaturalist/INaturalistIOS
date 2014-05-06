@@ -15,7 +15,9 @@
     [imageView setImageWithURL:url
                     placeholderImage:placeholder
                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                               [boundCover setRemotelyLoadedImage:image];
+                               if (!error) {
+                                   [boundCover setRemotelyLoadedImage:image];
+                               }
                                completedBlock(image, error, cacheType);
                            }];
 }
@@ -36,5 +38,10 @@
 	gradientLayer.frame = CGRectMake(x, y + h, w, h);
 	reflected.frame = CGRectMake(x, y + h, w, h);
 	reflected.image = image;
+}
+
+- (void)setIsReflected:(bool)isReflected
+{
+    [reflected setHidden:!isReflected];
 }
 @end

@@ -657,7 +657,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [cover setImageWithURL:[NSURL URLWithString:imageURL]
               placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                         boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+                         if (error) {
+                             boundCover.image = [UIImage imageNamed:@"184-warning.png"];
+                             [boundCover setIsReflected:NO];
+                         } else {
+                             boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+                         }
                      }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];

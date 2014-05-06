@@ -97,6 +97,16 @@ static const int ObservationCellActivityButtonTag = 6;
 	[self.syncQueue addModel:Observation.class];
 	[self.syncQueue addModel:ObservationFieldValue.class];
 	[self.syncQueue addModel:ProjectObservation.class];
+    if ([ObservationPhoto needingSyncCount] > 0) {
+        for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+            // check to see if for some reason a LocalPhoto was created without files. If so, destroy it and move on.
+            NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey forSize:ImageStoreSmallSize];
+            if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                [op destroy];
+            }
+        }
+        [[[RKObjectManager sharedManager] objectStore] save:nil];
+    }
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
 	[self.syncQueue start];
 }
@@ -136,8 +146,9 @@ static const int ObservationCellActivityButtonTag = 6;
                                     serializedObject:&error];
         RKParams* params = [RKParams paramsWithDictionary:dictionary];
         NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
+        
         [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                          forSize:imageSize] 
+                                                          forSize:imageSize]
                forParam:@"file"];
         loader.params = params;
         loader.objectMapping = [ObservationPhoto mapping];
@@ -671,8 +682,6 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-    NSLog(@"request.resourcePath: %@", request.resourcePath);
-    NSLog(@"response.body: %@", [[NSString alloc] initWithData:response.body encoding:NSUTF8StringEncoding]);
 	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];

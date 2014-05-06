@@ -194,6 +194,11 @@ static ImageStore *sharedImageStore = nil;
              [self keyForKey:key forSize:size]]];
 }
 
+- (BOOL)fileExistsForKey:(NSString *)key andSize:(int)size
+{
+    return [[NSFileManager defaultManager] fileExistsAtPath:[ self pathForKey:key forSize:size]];
+}
+
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size
 {
     NSString *str;

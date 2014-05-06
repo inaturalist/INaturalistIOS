@@ -295,8 +295,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     NSFetchRequest *request = [self fetchRequest];
     NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO];
-    NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, sd2, nil]];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, nil]];
     return request;
 }
 
@@ -304,23 +303,24 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     NSFetchRequest *request = [self fetchRequest];
     NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:YES];
-    NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, sd2, nil]];
+    [request setSortDescriptors:[NSArray arrayWithObjects:sd1, nil]];
     return request;
 }
 
 - (Observation *)prevObservation
 {
     NSFetchRequest *request = [Observation defaultDescendingSortedFetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable <= %@ && recordID != %@", self.sortable, self.recordID]];
-    return [Observation objectWithFetchRequest:request];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable < %@", self.sortable]];
+    Observation *prev = [Observation objectWithFetchRequest:request];
+    return prev;
 }
 
 - (Observation *)nextObservation
 {
     NSFetchRequest *request = [Observation defaultAscendingSortedFetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable >= %@ && recordID != %@", self.sortable, self.recordID]];
-    return [Observation objectWithFetchRequest:request];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable > %@", self.sortable]];
+    Observation *next = [Observation objectWithFetchRequest:request];
+    return next;
 }
 
 - (void)willSave
