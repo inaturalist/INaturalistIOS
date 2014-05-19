@@ -51,6 +51,8 @@
 		1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */; };
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
 		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
+		1938920E191D4C5A00CF62D3 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 1938920D191D4C5A00CF62D3 /* www */; };
+		19389224191D5D5000CF62D3 /* CustomIOS7AlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */; };
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
 		193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD57B14F42351005209CA /* libTapkuLibrary.a */; };
 		194D8E0618DE58850098E28C /* 121-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0418DE58850098E28C /* 121-landscape.png */; };
@@ -559,6 +561,9 @@
 		1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INaturalistAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObservationsViewController.h; sourceTree = "<group>"; };
 		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
+		1938920D191D4C5A00CF62D3 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomIOS7AlertView.h; sourceTree = "<group>"; };
+		19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomIOS7AlertView.m; sourceTree = "<group>"; };
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TapkuLibrary.xcodeproj; path = Vendor/tapkulibrary/src/TapkuLibrary.xcodeproj; sourceTree = "<group>"; };
 		194D8E0418DE58850098E28C /* 121-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape.png"; sourceTree = "<group>"; };
@@ -616,7 +621,6 @@
 		1958894618068BF100294EB3 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape~ipad.png"; path = "../Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		1958894818068BF300294EB3 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "../Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		1958894A18074F2300294EB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		1958894B18074FD500294EB3 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		1958894F180750B700294EB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		1959CDB214EA30280036F363 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		195F3246151A8AB60019CB85 /* Taxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Taxon.h; sourceTree = "<group>"; };
@@ -819,6 +823,7 @@
 		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
 		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
+		19FFA16F191D82CE000A6EBA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		6098FD0E16F3BD550053987E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = Vendor/Facebook/build/FacebookSDK.framework; sourceTree = "<group>"; };
 		6098FD1016F3BD980053987E /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = Vendor/Facebook/build/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		6098FD1216F3BDC80053987E /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBUserSettingsViewResources.bundle; path = Vendor/Facebook/build/FacebookSDK.framework/Versions/A/Resources/FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -1105,6 +1110,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1938920D191D4C5A00CF62D3 /* www */,
 				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
@@ -1276,6 +1282,8 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */,
+				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
 				19AE898918DD0C7300505918 /* SDWebImage */,
 				1955FDB317F2415F004F57F2 /* SSZipArchive */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
@@ -2006,6 +2014,7 @@
 				19A5F63D14FB61E600757636 /* header-logo.png in Resources */,
 				19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */,
 				19A5F64114FB644A00757636 /* notebook-tab.png in Resources */,
+				1938920E191D4C5A00CF62D3 /* www in Resources */,
 				19A5F64314FB64B100757636 /* notebook-tab@2x.png in Resources */,
 				194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */,
 				19A5F64614FB655200757636 /* map-tab.png in Resources */,
@@ -2247,6 +2256,7 @@
 				19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
+				19389224191D5D5000CF62D3 /* CustomIOS7AlertView.m in Sources */,
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
 				1955FDC017F2415F004F57F2 /* ioapi.c in Sources */,
 				1955FDC117F2415F004F57F2 /* mztools.c in Sources */,
@@ -2292,8 +2302,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				1958894A18074F2300294EB3 /* Base */,
-				1958894B18074FD500294EB3 /* es */,
 				1958894F180750B700294EB3 /* en */,
+				19FFA16F191D82CE000A6EBA /* es */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";

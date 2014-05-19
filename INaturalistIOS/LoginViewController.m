@@ -227,6 +227,15 @@ static const NSInteger GoogleAssertionType = 2;
         webController.delegate = self;
         [nc pushViewController:webController animated:YES];
      }
+    else if (indexPath.section == 4) {
+        UINavigationController *nc = self.navigationController;
+        INatWebController *webController = [[INatWebController alloc] init];
+        NSURL *url = [NSURL URLWithString:
+                      [NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
+        [webController openURL:url];
+        webController.delegate = self;
+        [nc pushViewController:webController animated:YES];
+    }
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
@@ -246,17 +255,25 @@ static const NSInteger GoogleAssertionType = 2;
 shouldStartLoadWithRequest:(NSURLRequest *)request 
        navigationType:(UIWebViewNavigationType)navigationType
 {
-    if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"]) {
+    if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"] || [request.URL.path hasPrefix:@"/forgot_password"]) {
         return YES;
     }
     [self.navigationController popViewControllerAnimated:YES];
     if (av) [av dismissWithClickedButtonIndex:0 animated:YES];
     av = nil;
-    av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Welcome to iNaturalist!", nil)
-                                                 message:NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil)
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                       otherButtonTitles:nil];
+    NSString *title, *message;
+    if ([controller.URL.path hasPrefix:@"/forgot_password"]) {
+        title = @"Check Your Email";
+        message = @"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.";
+    } else {
+        title = NSLocalizedString(@"Welcome to iNaturalist!", nil);
+        message = NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil);
+    }
+    av = [[UIAlertView alloc] initWithTitle:title
+                                    message:message
+                                   delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil];
     [av show];
     return NO;
 }

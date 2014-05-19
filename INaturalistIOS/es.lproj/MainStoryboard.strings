@@ -26,9 +26,6 @@
 /* Class = "IBUINavigationItem"; title = "Proyectos"; ObjectID = "6UX-BL-9DW"; */
 "6UX-BL-9DW.title" = "Proyectos";
 
-/* Class = "IBUITableViewSection"; headerTitle = "Iniciar con Google+"; ObjectID = "6UX-z7-QZl"; */
-"6UX-z7-QZl.headerTitle" = "Iniciar con Google+";
-
 /* Class = "IBUILabel"; text = "Nombre de usuario"; ObjectID = "718-d6-pVr"; */
 "718-d6-pVr.text" = "Nombre de usuario";
 
@@ -50,14 +47,8 @@
 /* Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV"; */
 "CFS-AV-ZYV.text" = "Lon:";
 
-/* Class = "IBUILabel"; text = "Registrarse"; ObjectID = "CXb-qQ-fbW"; */
-"CXb-qQ-fbW.text" = "Registrarse";
-
 /* Class = "IBUILabel"; text = "Geoprivacidad"; ObjectID = "CrY-as-UVn"; */
 "CrY-as-UVn.text" = "Geoprivacidad";
-
-/* Class = "IBUILabel"; text = "Iniciar con Google"; ObjectID = "DRw-O3-9rD"; */
-"DRw-O3-9rD.text" = "Iniciar con Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Descripción de Wikipedia"; ObjectID = "Df8-ua-w8x"; */
 "Df8-ua-w8x.headerTitle" = "Descripción de Wikipedia";
@@ -158,9 +149,6 @@
 /* Class = "IBUILabel"; text = "El título del proyecto es demasiado largo"; ObjectID = "X8Y-bf-fBQ"; */
 "X8Y-bf-fBQ.text" = "El título del proyecto es demasiado largo";
 
-/* Class = "IBUITableViewSection"; headerTitle = "¿No tienes una cuenta?"; ObjectID = "XSN-l0-X0v"; */
-"XSN-l0-X0v.headerTitle" = "¿No tienes una cuenta?";
-
 /* Class = "IBUINavigationItem"; title = "Datos del proyecto"; ObjectID = "XXq-bW-vbF"; */
 "XXq-bW-vbF.title" = "Datos del proyecto";
 
@@ -218,8 +206,8 @@
 /* Class = "IBUILabel"; text = "Iniciar sesión"; ObjectID = "hfA-vB-13u"; */
 "hfA-vB-13u.text" = "Iniciar sesión";
 
-/* Class = "IBUILabel"; text = "Iniciar con Facebook"; ObjectID = "hsp-PZ-83S"; */
-"hsp-PZ-83S.text" = "Iniciar con Facebook";
+///* Class = "IBUILabel"; text = "Iniciar con Facebook"; ObjectID = "hsp-PZ-83S"; */
+//"hsp-PZ-83S.text" = "Iniciar con Facebook";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancelar"; ObjectID = "jaz-9S-FvT"; */
 "jaz-9S-FvT.title" = "Cancelar";
@@ -298,3 +286,22 @@
 
 /* Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8"; */
 "EGB-Ac-Dg8.title" = "Guías";
+
+"h2K-Kg-3dh.headerTitle" = "Iniciar con Google+";
+"ohk-ES-lZM.text" = "Iniciar con Google";
+"ljj-kr-K3I.headerTitle" = "¿No tienes una cuenta?";
+"Kp6-B4-NJv.text" = "Regístrate";
+"6Eu-N7-evS.text" = "Título";
+"AiV-F7-sFl.text" = "Detalles";
+"D22-7s-3ca.text" = "Marbete";
+"Edp-cg-PsD.text" = "Título";
+"GKo-Sv-g5X.title" = "Observar";
+"H2L-mX-7uS.text" = "Subtítulo";
+"TJg-mX-i6C.text" = "Iniciar con Facebook";
+"cTI-n2-vmb.title" = "Guía Título";
+"exb-m5-Kht.text" = "Nombre del taxón";
+"lPu-9O-6Ku.title" = "Proyectos";
+"rwB-lT-a3J.text" = "Título";
+"xdk-Tu-cps.text" = "Nombre de Guía";
+"HlT-S5-GXK.headerTitle" = "¿Olvidaste tu contraseña?";
+"HbM-xV-k9r.text" = "Cambia tu contraseña";

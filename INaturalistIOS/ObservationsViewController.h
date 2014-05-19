@@ -52,5 +52,5 @@
 - (void)deleteAll;
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 - (BOOL)isSyncing;
-- (void)autoLaunchTutorial;
+- (BOOL)autoLaunchTutorial;
 @end

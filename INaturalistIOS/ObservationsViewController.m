@@ -23,6 +23,8 @@
 #import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
+#import "CustomIOS7AlertView.h"
+
 
 static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
@@ -338,11 +340,11 @@ static const int ObservationCellActivityButtonTag = 6;
     }
 }
 
-- (void)autoLaunchTutorial
+- (BOOL)autoLaunchTutorial
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
     if ([settings objectForKey:@"tutorialSeen"]) {
-        return;
+        return NO;
     }
     TutorialViewController *vc = [[TutorialViewController alloc] initWithDefaultTutorial];
     UINavigationController *modalNavController = [[UINavigationController alloc]
@@ -350,6 +352,69 @@ static const int ObservationCellActivityButtonTag = 6;
     [self presentViewController:modalNavController animated:YES completion:nil];
     [settings setObject:[NSNumber numberWithBool:YES] forKey:@"tutorialSeen"];
     [settings synchronize];
+    return YES;
+}
+
+- (BOOL)autoLaunchSignIn
+{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    if ([settings objectForKey:@"firstSignInSeen"]) {
+        return NO;
+    }
+    LoginViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]
+                               instantiateViewControllerWithIdentifier:@"LoginViewController"];
+    UINavigationController *modalNavController = [[UINavigationController alloc]
+                                                  initWithRootViewController:vc];
+    [self presentViewController:modalNavController animated:YES completion:nil];
+    [settings setObject:[NSNumber numberWithBool:YES] forKey:@"firstSignInSeen"];
+    [settings synchronize];
+    return YES;
+}
+
+- (BOOL)autoLaunchNewFeatures
+{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
+    NSString *lastVersionString = [settings objectForKey:@"lastVersion"];
+    if ([lastVersionString isEqualToString:versionString]) {
+        return NO;
+    }
+    [[NSUserDefaults standardUserDefaults] setValue:versionString forKey:@"lastVersion"];
+    CustomIOS7AlertView *alertView = [[CustomIOS7AlertView alloc] init];
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        CGFloat tmp = screenWidth;
+        screenWidth = screenHeight;
+        screenHeight = tmp;
+    }
+    CGFloat widthFraction = 0.9;
+    CGFloat heightFraction = 0.6;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        widthFraction = 0.7;
+        heightFraction = 0.4;
+    }
+    UIView *popup = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth*widthFraction, screenHeight*heightFraction)];
+    popup.backgroundColor = [UIColor clearColor];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(10,10, popup.bounds.size.width-20, popup.bounds.size.height-20)];
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"changes.%@", language]
+                                                                        ofType:@"html"
+                                                                   inDirectory:@"www"]];
+    [webView loadRequest:[NSURLRequest requestWithURL:url]];
+    [popup addSubview:webView];
+    [alertView setContainerView:popup];
+    [alertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"OK",nil), nil]];
+    [alertView setOnButtonTouchUpInside:^(CustomIOS7AlertView *alertView, int buttonIndex) {
+        [alertView close];
+    }];
+    [alertView setUseMotionEffects:true];
+    [alertView show];
+    [settings setObject:versionString forKey:@"lastVersion"];
+    [settings synchronize];
+    return YES;
 }
 
 - (void)showError:(NSString *)errorMessage{
@@ -489,7 +554,7 @@ static const int ObservationCellActivityButtonTag = 6;
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
-    [self autoLaunchTutorial];
+//    [self autoLaunchTutorial];
 }
 
 - (void)viewDidUnload
@@ -528,6 +593,7 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
@@ -537,6 +603,11 @@ static const int ObservationCellActivityButtonTag = 6;
                                nil]];
     if (!self.isSyncing) {
         [self checkSyncStatus];
+    }
+    if ([self autoLaunchTutorial]) {
+        // rad
+    } else if (![self autoLaunchSignIn]) {
+        [self autoLaunchNewFeatures];
     }
 }
 
@@ -610,8 +681,10 @@ static const int ObservationCellActivityButtonTag = 6;
 	[self.refreshControl endRefreshing];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
+    NSLog(@"objectLoader didLoadObjects, loaded %d objects", objects.count);
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
+            NSLog(@"loaded observation %@", o.recordID);
 			Observation *observation = (Observation *)o;
 			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
 				[observation setSyncedAt:now];
@@ -645,9 +718,10 @@ static const int ObservationCellActivityButtonTag = 6;
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    NSLog(@"objectLoader didFailWithError, error: %@", error);
     // was running into a bug in release build config where the object loader was
     // getting deallocated after handling an error.  This is a kludge.
-    //self.loader = objectLoader;
+//    self.loader = objectLoader;
     
 	[self.refreshControl endRefreshing];
 	
@@ -682,6 +756,7 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
+    NSLog(@"request didLoadResponse, response: %@", response);
 	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
