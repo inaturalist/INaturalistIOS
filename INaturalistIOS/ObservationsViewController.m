@@ -33,6 +33,7 @@ static const int ObservationCellSubTitleTag = 2;
 static const int ObservationCellUpperRightTag = 3;
 static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
+static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
@@ -417,6 +418,17 @@ static const int ObservationCellActivityButtonTag = 6;
     return YES;
 }
 
+- (void)clickedActivity:(id)sender event:(UIEvent *)event {
+    CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+    Observation *o = [self.observations
+                      objectAtIndex:indexPath.row];
+    ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
+	vc.observation = o;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)showError:(NSString *)errorMessage{
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
@@ -450,6 +462,7 @@ static const int ObservationCellActivityButtonTag = 6;
     UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
     UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
 	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
+    UIButton *interactiveActivityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityInteractiveButtonTag];
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
 		
@@ -489,15 +502,20 @@ static const int ObservationCellActivityButtonTag = 6;
 	
 	if (o.activityCount > 0) {
 		activityButton.hidden = NO;
+        interactiveActivityButton.hidden = NO;
 		CGRect frame = syncImage.frame;
 		frame.origin.x = cell.frame.size.width - 10 - activityButton.frame.size.width - frame.size.width;
 		syncImage.frame = frame;
 	} else {
 		activityButton.hidden = YES;
+        interactiveActivityButton.hidden = YES;
 		CGRect frame = syncImage.frame;
 		frame.origin.x = cell.frame.size.width - 10 - frame.size.width;
 		syncImage.frame = frame;
 	}
+    [interactiveActivityButton addTarget:self
+                                  action:@selector(clickedActivity:event:)
+                        forControlEvents:UIControlEventTouchUpInside];
 	
     upperRight.text = o.observedOnShortString;
     syncImage.hidden = !o.needsSync;
@@ -581,7 +599,8 @@ static const int ObservationCellActivityButtonTag = 6;
     
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60, seconds = minutes * 60;
-    if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
+    if (username.length &&
+        [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
         [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
         [self refreshData];
@@ -593,7 +612,6 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
     [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
@@ -681,10 +699,8 @@ static const int ObservationCellActivityButtonTag = 6;
 	[self.refreshControl endRefreshing];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
-    NSLog(@"objectLoader didLoadObjects, loaded %d objects", objects.count);
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
-            NSLog(@"loaded observation %@", o.recordID);
 			Observation *observation = (Observation *)o;
 			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
 				[observation setSyncedAt:now];
@@ -718,7 +734,7 @@ static const int ObservationCellActivityButtonTag = 6;
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    NSLog(@"objectLoader didFailWithError, error: %@", error);
+//    NSLog(@"objectLoader didFailWithError, error: %@", error);
     // was running into a bug in release build config where the object loader was
     // getting deallocated after handling an error.  This is a kludge.
 //    self.loader = objectLoader;
@@ -756,7 +772,6 @@ static const int ObservationCellActivityButtonTag = 6;
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-    NSLog(@"request didLoadResponse, response: %@", response);
 	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];

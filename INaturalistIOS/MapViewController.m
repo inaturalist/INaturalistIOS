@@ -13,6 +13,7 @@
 #import "ObservationAnnotation.h"
 #import "ObservationDetailViewController.h"
 #import "UIColor+INaturalist.h"
+#import "UIImageView+WebCache.h"
 #import <MapKit/MapKit.h>
 
 @interface MapViewController()
@@ -183,11 +184,17 @@
     Observation *o = anno.observation;
     UIImageView *iv = (UIImageView *)av.leftCalloutAccessoryView;
     if (o && o.observationPhotos.count > 0) {
-        ObservationPhoto *op = [o.observationPhotos anyObject];
-        iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
+        if (op.photoKey == nil) {
+            [iv setImageWithURL:[NSURL URLWithString:op.squareURL]
+               placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName]];
+        } else {
+            iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        }
     } else {
         iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
+    
     return av;
 }
 

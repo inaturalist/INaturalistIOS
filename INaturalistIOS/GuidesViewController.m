@@ -33,6 +33,7 @@ static const int ListControlIndexNearby = 2;
 @synthesize locationManager = _locationManager;
 @synthesize lastLocation = _lastLocation;
 @synthesize syncButton = _syncButton;
+@synthesize searchBar = _searchBar;
 @synthesize syncActivityItem = _syncActivityItem;
 
 - (void)loadData

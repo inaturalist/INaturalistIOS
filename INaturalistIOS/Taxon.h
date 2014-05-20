@@ -55,4 +55,5 @@
 - (NSArray *)children;
 - (BOOL)isSpeciesOrLower;
 - (BOOL)isGenusOrLower;
+- (NSArray *)sortedTaxonPhotos;
 @end

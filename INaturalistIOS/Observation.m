@@ -176,10 +176,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (NSArray *)sortedObservationPhotos
 {
     NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
-    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
+    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES];
+    NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:YES];
     return [self.observationPhotos 
             sortedArrayUsingDescriptors:
-            [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+            [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
 }
 
 - (NSArray *)sortedProjectObservations

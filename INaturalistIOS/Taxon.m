@@ -147,4 +147,13 @@ static RKManagedObjectMapping *defaultMapping = nil;
     return (self.rankLevel.intValue > 0 && self.rankLevel.intValue <= 20);
 }
 
+- (NSArray *)sortedTaxonPhotos
+{
+    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"position" ascending:YES];
+    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    return [self.taxonPhotos
+            sortedArrayUsingDescriptors:
+            [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
+}
+
 @end

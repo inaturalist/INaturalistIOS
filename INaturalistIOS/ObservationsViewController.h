@@ -49,6 +49,7 @@
 - (void)checkSyncStatus;
 - (int)itemsToSyncCount;
 - (void)clickedDeleteAll;
+- (void)clickedActivity:(id)sender event:(UIEvent *)event;
 - (void)deleteAll;
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 - (BOOL)isSyncing;

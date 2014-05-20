@@ -31,11 +31,11 @@ static NSString *CellIdentifier = @"GuideCell";
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    Guide *g = [self.searchResults objectAtIndex:indexPath.row];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    Guide *g = [self.searchResults objectAtIndex:indexPath.row];
     TTImageView *imageView = (TTImageView *)[cell viewWithTag:GuideCellImageTag];
     [imageView unsetImage];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
@@ -60,8 +60,7 @@ static NSString *CellIdentifier = @"GuideCell";
 #pragma mark - UISearchDisplayControllerDelegate
 - (void)searchDisplayController:(UISearchDisplayController *)controller willShowSearchResultsTableView:(UITableView *)tableView
 {
-    [tableView registerNib:[UINib nibWithNibName:@"ProjectTableViewCell" bundle:nil]
-    forCellReuseIdentifier:CellIdentifier];
+    [tableView registerNib:[UINib nibWithNibName:@"ProjectTableViewCell" bundle:nil] forCellReuseIdentifier:CellIdentifier];
 }
 
 @end

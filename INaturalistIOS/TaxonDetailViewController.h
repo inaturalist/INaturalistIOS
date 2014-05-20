@@ -16,11 +16,12 @@
 - (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
 @end
 
-@interface TaxonDetailViewController : UITableViewController <TTImageViewDelegate, UIActionSheetDelegate>
+@interface TaxonDetailViewController : UITableViewController <TTImageViewDelegate, UIActionSheetDelegate, RKObjectLoaderDelegate>
 @property (nonatomic, strong) Taxon *taxon;
 @property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;
 @property (nonatomic, strong) UIViewController *delegate;
 - (void)scaleHeaderView:(BOOL)animated;
 - (IBAction)clickedViewMore:(id)sender;
 - (IBAction)clickedActionButton:(id)sender;
+- (void)initUI;
 @end

@@ -28,6 +28,7 @@
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "TKCoverflowCoverView+INaturalist.h"
+#import "TaxonDetailViewController.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -35,6 +36,7 @@ static const int ObservedOnActionSheetTag = 2;
 static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
 static const int GeoprivacyActionSheetTag = 5;
+static const int TaxonTableViewSection = 0;
 static const int LocationTableViewSection = 2;
 static const int ObservedOnTableViewSection = 3;
 static const int MoreSection = 4;
@@ -289,6 +291,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
     }
     
+    if (!self.observation.recordID) {
+        [self.activityButton setHidden:YES];
+    }
+    
     UIBarButtonItem *flex = [[UIBarButtonItem alloc]
                              initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                              target:nil
@@ -344,12 +350,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     self.idPleaseSwitch.offText = NSLocalizedString(@"NO", nil);
     
     [self refreshCoverflowView];
-    if (self.observation && self.taxonID && self.taxonID.length > 0 && !self.observation.taxon) {
-        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", self.taxonID.intValue]];
-        if (t) {
+    
+    BOOL taxonIDSetExplicitly = self.taxonID && self.taxonID.length > 0;
+    BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.wikipediaSummary.length > 0;
+    if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
+        NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
+        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", taxonID]];
+        if (t && t.wikipediaSummary.length != 0) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-            NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxonID];
+            NSString *url = [NSString stringWithFormat:@"%@/taxa/%d.json", INatBaseURL, taxonID];
             if (!self.taxonLoader) {
                 self.taxonLoader = [[TaxonLoader alloc] initWithViewController:self];
             }
@@ -992,7 +1002,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == LocationTableViewSection) {
+    if (indexPath.section == TaxonTableViewSection && self.observation.taxon) {
+        TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+        tdvc.taxon = self.observation.taxon;
+        [self.navigationController pushViewController:tdvc animated:YES];
+    } else if (indexPath.section == LocationTableViewSection) {
         UIActionSheet *locationActionSheet = [[UIActionSheet alloc] init];
         locationActionSheet.delegate = self;
         locationActionSheet.tag = LocationActionSheetTag;
@@ -1432,6 +1446,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     if (observation && [observation.observationPhotos count] > 0) {
         for (ObservationPhoto *op in observation.sortedObservationPhotos) {
+            NSLog(@"op.position: %@, op.createdAt: %@, op.localCreatedAt: %@", op.position, op.createdAt, op.localCreatedAt);
             [self.observationPhotos addObject:op];
         }
         [self refreshCoverflowView];

@@ -381,7 +381,7 @@ static const int IdentificationCellBodyTag = 11;
 		taxonImageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
 		if (identification.taxon) {
 			if (identification.taxon.taxonPhotos.count > 0) {
-				TaxonPhoto *tp = (TaxonPhoto *)identification.taxon.taxonPhotos.firstObject;
+                TaxonPhoto *tp = [identification.taxon.sortedTaxonPhotos objectAtIndex:0];
 				taxonImageView.urlPath = tp.squareURL;
 			}
 		}
@@ -405,6 +405,19 @@ static const int IdentificationCellBodyTag = 11;
 	}
 	
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    INatModel *activity = self.activities[indexPath.row];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    if (![activity isKindOfClass:[Identification class]]) {
+        return;
+    }
+    Identification *ident = (Identification *)activity;
+    TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+    tdvc.taxon = ident.taxon;
+    [self.navigationController pushViewController:tdvc animated:YES];
 }
 
 - (BOOL)checkForNetworkAndWarn

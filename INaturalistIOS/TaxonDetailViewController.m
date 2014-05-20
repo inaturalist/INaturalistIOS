@@ -87,10 +87,8 @@ static const int TaxonDescTag = 1;
     }
 }
 
-#pragma mark - lifecycle
-- (void)viewDidLoad
+- (void)initUI
 {
-    self.clearsSelectionOnViewWillAppear = YES;
     UILabel *defaultNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:DefaultNameTag];
     UILabel *taxonNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonNameTag];
     UILabel *attributionLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonImageAttributionTag];
@@ -117,12 +115,27 @@ static const int TaxonDescTag = 1;
     }
 }
 
+#pragma mark - lifecycle
+- (void)viewDidLoad
+{
+    self.clearsSelectionOnViewWillAppear = YES;
+    [self initUI];
+    if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxon.recordID];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+                                                     objectMapping:[Taxon mapping]
+                                                          delegate:self];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
+    [self.navigationItem.leftBarButtonItem setEnabled:YES];
     [super viewWillAppear:animated];
 }
 
@@ -179,16 +192,14 @@ static const int TaxonDescTag = 1;
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.section == 0 && indexPath.row == 0) {
         TTStyledTextLabel *descLabel = (TTStyledTextLabel *)[cell viewWithTag:TaxonDescTag];
-        if (!descLabel.text) {
-            descLabel.text = [TTStyledText textFromXHTML:self.taxon.wikipediaSummary
-                                              lineBreaks:NO 
-                                                    URLs:YES];
-            [descLabel sizeToFit];
-            descLabel.backgroundColor = [UIColor whiteColor];
-        }
+        descLabel.text = [TTStyledText textFromXHTML:self.taxon.wikipediaSummary
+                                          lineBreaks:NO 
+                                                URLs:YES];
+        [descLabel sizeToFit];
+        descLabel.textColor = [UIColor blackColor];
+        descLabel.backgroundColor = [UIColor whiteColor];
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         UILabel *title = (UILabel *)[cell viewWithTag:1];
-//        UILabel *subtitle = (UILabel *)[cell viewWithTag:2];
         if (self.taxon.conservationStatusName) {
             title.text = NSLocalizedString(self.taxon.conservationStatusName.humanize, nil);
             if ([self.taxon.conservationStatusName isEqualToString:@"vulnerable"] ||
@@ -249,6 +260,20 @@ static const int TaxonDescTag = 1;
     }
     TTNavigator* navigator = [TTNavigator navigator];
     [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
+}
+
+#pragma - RKObjectLoaderDelegate
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
+{
+    [object save];
+    self.taxon = (Taxon *)object;
+    [self initUI];
+    [self.tableView reloadData];
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
+{
+    // If something went wrong, just ignore it. Because, you know, that's always a good idea.
 }
 
 @end
