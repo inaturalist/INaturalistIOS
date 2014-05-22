@@ -114,15 +114,20 @@ static const int TaxonCellSubtitleTag = 3;
         self.navigationItem.title = self.taxon.defaultName;
     }
     
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
+    [self loadData];
+    
+    // This is a weird way to trick the underlying table view NOT to show any
+    // rows when there's no data. Without this you will sometimes see overlapping
+    // cell borders on top of the search results
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
+    self.tableView.tableFooterView = view;
+    
     if (self.query && self.query.length > 0) {
         [self.searchDisplayController setActive:YES];
         self.searchDisplayController.searchBar.text = self.query;
     }
-    
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
-    
-    [self loadData];
 }
 
 #pragma mark - UITableViewDelegate

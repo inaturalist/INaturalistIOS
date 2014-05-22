@@ -412,6 +412,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (self.observation) {
+        [self reloadObservationFieldValues];
+    }
     [self initUI];
     if (self.observation.isNew && 
         (
@@ -1453,7 +1456,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         [self.observationPhotos removeAllObjects];
     }
-    [self reloadObservationFieldValues];
     self.observationWasNew = [observation isNew];
 }
 

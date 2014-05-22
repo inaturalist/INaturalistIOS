@@ -179,7 +179,6 @@
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
 {
-    //    NSLog(@"objectLoader didFailWithError: %@", error);
     //    just assume no results
     self.isLoading = NO;
     [self checkRemoteLoading];
