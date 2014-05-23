@@ -84,4 +84,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return [Identification.shortDateFormatter stringFromDate:self.createdAt];
 }
 
+- (BOOL)isCurrent
+{
+    return self.current.boolValue;
+}
+
 @end

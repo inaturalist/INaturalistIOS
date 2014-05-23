@@ -397,8 +397,8 @@ static const int IdentificationCellBodyTag = 11;
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];
 		
 		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-		if ([username isEqualToString:identification.user.login]) {
-			//agreeButton.hidden = YES;
+		if ([username isEqualToString:identification.user.login] && identification.isCurrent) {
+			agreeButton.hidden = YES;
 		} else {
 			agreeButton.hidden = NO;
 		}

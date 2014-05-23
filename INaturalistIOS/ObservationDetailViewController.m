@@ -37,6 +37,7 @@ static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
 static const int GeoprivacyActionSheetTag = 5;
 static const int TaxonTableViewSection = 0;
+static const int NotesTableViewSection = 1;
 static const int LocationTableViewSection = 2;
 static const int ObservedOnTableViewSection = 3;
 static const int MoreSection = 4;
@@ -146,6 +147,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             img.urlPath = tp.squareURL;
         }
         self.speciesGuessTextField.enabled = NO;
+        if (self.speciesGuessTextField.text.length == 0 && self.observation.speciesGuess.length == 0) {
+            self.speciesGuessTextField.text = self.observation.taxon.defaultName;
+        }
         rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
         self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.taxon.iconicTaxonName];
     } else {
@@ -352,11 +356,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self refreshCoverflowView];
     
     BOOL taxonIDSetExplicitly = self.taxonID && self.taxonID.length > 0;
-    BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.wikipediaSummary.length > 0;
+    BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.fullyLoaded;
     if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
         NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
         Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", taxonID]];
-        if (t && t.wikipediaSummary.length != 0) {
+        if (t && t.fullyLoaded) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             NSString *url = [NSString stringWithFormat:@"%@/taxa/%d.json", INatBaseURL, taxonID];
@@ -1096,6 +1100,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     if (indexPath.section == ProjectsSection || indexPath.section == MoreSection) {
         return 44;
+    } else if (indexPath.section == NotesTableViewSection && self.observation.inatDescription.length > 0) {
+        NSString *txt = self.observation.inatDescription;
+        CGFloat defaultHeight = [super tableView:tableView heightForRowAtIndexPath:indexPath];
+        float fontSize;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            fontSize = 12;
+        } else {
+            fontSize = 17;
+        }
+        CGSize size = [txt sizeWithFont:[UIFont systemFontOfSize:fontSize]
+                      constrainedToSize:CGSizeMake(320.0, 10000.0)
+                          lineBreakMode:NSLineBreakByWordWrapping];
+        return MAX(defaultHeight, size.height);
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     }

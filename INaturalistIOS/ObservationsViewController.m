@@ -26,7 +26,6 @@
 #import "CustomIOS7AlertView.h"
 
 
-static int DeleteAllAlertViewTag = 0;
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
 static const int ObservationCellSubTitleTag = 2;
@@ -43,7 +42,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize syncToolbarItems = _syncToolbarItems;
 @synthesize syncedObservationsCount = _syncedObservationsCount;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
-@synthesize deleteAllButton = _deleteAllButton;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize noContentLabel = _noContentLabel;
@@ -173,16 +171,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [sender setTitle:NSLocalizedString(@"Done",nil)];
         [(UIBarButtonItem *)sender setStyle:UIBarButtonItemStyleDone];
         [self setEditing:YES animated:YES];
-        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        if (!self.deleteAllButton) {
-            self.deleteAllButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Delete all",nil)
-                                                                    style:UIBarButtonItemStyleDone 
-                                                                   target:self 
-                                                                   action:@selector(clickedDeleteAll)];
-            self.deleteAllButton.tintColor = [UIColor redColor];
-        }
-        [self setToolbarItems:[NSArray arrayWithObjects:flex, self.deleteAllButton, flex, nil] animated:YES];
-        [self.navigationController setToolbarHidden:NO animated:YES];
     }
 }
 
@@ -192,31 +180,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.editButton setStyle:UIBarButtonItemStyleBordered];
     [self setEditing:NO animated:YES];
     [self checkSyncStatus];
-}
-
-- (void)clickedDeleteAll
-{
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure",nil)
-                                                 message:NSLocalizedString(@"This will delete all the observations on this device, and it will delete them from the website the next time you sync your observations.",nil)
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                       otherButtonTitles:NSLocalizedString(@"Delete all",nil), nil];
-    av.tag = DeleteAllAlertViewTag;
-    [av show];
-}
-
-- (void)deleteAll
-{
-	// RWTODO: delete from server
-	
-	
-    // note: you'll probably want to empty self.observations and reload the 
-    // tableView's data, otherwise the tableView's references to the observation 
-    // objects is going to cause a problem when Core Data deletes them
-    [Observation deleteAll];
-    [DejalBezelActivityView removeView];
-    [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
-    [self stopEditing];
 }
 
 - (void)refreshData
@@ -679,18 +642,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
     [self sync:nil];
-}
-
-#pragma mark UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == DeleteAllAlertViewTag && buttonIndex == 1) {
-        [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                          withLabel:NSLocalizedString(@"Deleting observations...",nil)];
-        [self.observations removeAllObjects];
-        [self.tableView reloadData];
-        [self performSelectorInBackground:@selector(deleteAll) withObject:nil];
-    }
 }
 
 #pragma mark - RKObjectLoaderDelegate

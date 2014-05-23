@@ -29,5 +29,6 @@
 
 - (NSString *)createdAtPrettyString;
 - (NSString *)createdAtShortString;
+- (BOOL)isCurrent;
 
 @end

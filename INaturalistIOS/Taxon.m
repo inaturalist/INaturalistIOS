@@ -156,4 +156,9 @@ static RKManagedObjectMapping *defaultMapping = nil;
             [NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, nil]];
 }
 
+- (BOOL)fullyLoaded
+{
+    return self.defaultName.length > 0 && self.rank.length > 0;
+}
+
 @end
