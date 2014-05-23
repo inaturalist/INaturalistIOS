@@ -17,11 +17,12 @@
                        choseProjects:(NSArray *)projects;
 @end
 
-@interface ProjectChooserViewController : UITableViewController
+@interface ProjectChooserViewController : UITableViewController <RKObjectLoaderDelegate>
 @property (weak, nonatomic) UIViewController *delegate;
 @property (nonatomic, strong) NSArray *projectUsers;
 @property (nonatomic, strong) NSMutableArray *chosenProjects;
 @property (nonatomic, strong) UILabel *noContentLabel;
+@property (nonatomic, strong) RKObjectLoader *loader;
 
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedDone:(id)sender;

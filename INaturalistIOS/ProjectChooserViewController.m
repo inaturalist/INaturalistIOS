@@ -10,6 +10,7 @@
 #import "ProjectChooserViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
+#import "DejalActivityView.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -20,6 +21,7 @@ static const int ProjectCellTitleTag = 2;
 @synthesize projectUsers = _projectUsers;
 @synthesize chosenProjects = _chosenProjects;
 @synthesize noContentLabel = _noContentLabel;
+@synthesize loader = _loader;
 
 - (void)loadData
 {
@@ -71,11 +73,29 @@ static const int ProjectCellTitleTag = 2;
     }
 }
 
+
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
+    
+    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                        username,
+                        language,
+                        countryCode];
+        if (username && username.length > 0) {
+            [DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Loading...",nil)];
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+                                                         objectMapping:[ProjectUser mapping]
+                                                              delegate:self];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -140,6 +160,65 @@ static const int ProjectCellTitleTag = 2;
     cell.accessoryType = UITableViewCellAccessoryNone;
     ProjectUser *pu = [self.projectUsers objectAtIndex:indexPath.row];
     [self.chosenProjects removeObject:pu.project];
+}
+
+#pragma mark - RKObjectLoaderDelegate
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
+{
+    [DejalBezelActivityView removeView];
+    NSDate *now = [NSDate date];
+    for (INatModel *o in objects) {
+        [o setSyncedAt:now];
+    }
+    
+    if ([objectLoader.resourcePath rangeOfString:@"projects/user"].location != NSNotFound) {
+        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
+        for (ProjectUser *pu in rejects) {
+            [pu deleteEntity];
+        }
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    [self loadData];
+    [self.tableView reloadData];
+    [self checkEmpty];
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // was running into a bug in release build config where the object loader was
+    // getting deallocated after handling an error.  This is a kludge.
+    self.loader = objectLoader;
+    
+    [DejalBezelActivityView removeView];
+    
+    NSString *errorMsg;
+    bool jsonParsingError = false, authFailure = false;
+    switch (objectLoader.response.statusCode) {
+            // Unauthorized
+        case 401:
+            authFailure = true;
+            // UNPROCESSABLE ENTITY
+        case 422:
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+            break;
+        default:
+            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+            errorMsg = error.localizedDescription;
+    }
+    
+    if (jsonParsingError || authFailure) {
+        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
 }
 
 @end
