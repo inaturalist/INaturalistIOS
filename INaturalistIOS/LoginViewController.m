@@ -393,7 +393,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                       // Do something with the error
                                                       if (!isLoginCompleted) {
                                                           if (lastAssertionType != 0) {
-                                                              [self failedLogin:NSLocalizedString(@"Authentication credentials were invalid. This can happen if you recently disconnected your acount from the 3rd party provider (e.g. Facebook). Please try again in a few minutes.", nil)];
+                                                              [self failedLogin:NSLocalizedString(@"Authentication credentials were invalid. This can happen if you recently disconnected your acount from the 3rd party provider (e.g. Facebook). Please try again in a few minutes. You can also check the Settings app, where there may be additional 3rd party permissions to review.", nil)];
                                                           } else {
                                                               [self failedLogin];
                                                           }

@@ -366,6 +366,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                          objectMapping:[Taxon mapping]
                                                               delegate:self.taxonLoader];
+        } else {
+            NSLog(@"no network, ignore");
         }
     }
     [self observationToUI];
@@ -1449,7 +1451,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     if (observation && [observation.observationPhotos count] > 0) {
         for (ObservationPhoto *op in observation.sortedObservationPhotos) {
-            NSLog(@"op.position: %@, op.createdAt: %@, op.localCreatedAt: %@", op.position, op.createdAt, op.localCreatedAt);
             [self.observationPhotos addObject:op];
         }
         [self refreshCoverflowView];

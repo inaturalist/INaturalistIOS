@@ -702,6 +702,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
 			Observation *observation = (Observation *)o;
+            DeletedRecord *dr = [DeletedRecord objectWithPredicate:[NSPredicate predicateWithFormat:@"modelName == 'Observation' AND recordID = %@", o.recordID]];
+            if (dr) {
+                [o destroy];
+                continue;
+            }
 			if (observation.localUpdatedAt == nil || !observation.needsSync) { // this only occurs for downloaded items, not locally updated items
 				[observation setSyncedAt:now];
 			}

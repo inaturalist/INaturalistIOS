@@ -318,16 +318,4 @@ static const int ListedTaxonCellSubtitleTag = 3;
     [av show];
 }
 
-#pragma mark - ObservationDetailViewControllerDelegate
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[self navigationController] popToViewController:self animated:YES];
-}
 @end
