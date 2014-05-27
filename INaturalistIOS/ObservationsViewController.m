@@ -118,14 +118,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [DejalBezelActivityView removeView];
         syncActivityView = nil;
     }
-    
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
     [[self tableView] reloadData];
-    
     self.tableView.scrollEnabled = YES;
-    
     [self checkSyncStatus];
 }
 
@@ -535,7 +532,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
-//    [self autoLaunchTutorial];
 }
 
 - (void)viewDidUnload
@@ -559,17 +555,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	} else {
 		self.refreshControl = nil;
 	}
-    
-    // automatically sync if there's network and we haven't synced in the last hour
-    CGFloat minutes = 60, seconds = minutes * 60;
-    if (username.length &&
-        [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
-        [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
-        (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
-        [self refreshData];
-        [self checkForDeleted];
-        [self checkNewActivity];
-    }
     [self reload];
 }
 
@@ -589,6 +574,18 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         // rad
     } else if (![self autoLaunchSignIn]) {
         [self autoLaunchNewFeatures];
+    }
+    // automatically sync if there's network and we haven't synced in the last hour
+    CGFloat minutes = 60,
+    seconds = minutes * 60;
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+    if (username.length &&
+        [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
+        [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
+        (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
+        [self refreshData];
+        [self checkForDeleted];
+        [self checkNewActivity];
     }
 }
 
@@ -695,7 +692,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     // getting deallocated after handling an error.  This is a kludge.
 //    self.loader = objectLoader;
     
-	[self.refreshControl endRefreshing];
 	
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
@@ -716,12 +712,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (error.code == -1004) {
         return;
     }
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                 message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    
+    if (self.isSyncing || self.refreshControl.isRefreshing) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+    [self.refreshControl endRefreshing];
 }
 
 #pragma mark - RKRequestDelegate
