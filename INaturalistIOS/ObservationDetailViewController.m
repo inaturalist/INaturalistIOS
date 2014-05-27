@@ -413,14 +413,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     self.getToolbarViewController.navigationController.navigationBar.translucent = NO;
     self.getToolbarViewController.navigationController.toolbar.barStyle = UIBarStyleBlack;
     self.getToolbarViewController.navigationController.toolbar.translucent = NO;
+    if (self.observation) {
+        [self reloadObservationFieldValues];
+    }
     [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (self.observation) {
-        [self reloadObservationFieldValues];
-    }
     [self initUI];
     if (self.observation.isNew && 
         (
