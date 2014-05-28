@@ -54,7 +54,7 @@ static const int TaxonCellSubtitleTag = 3;
         [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
         [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES]]];
         self.taxa = [NSMutableArray arrayWithArray:[Taxon objectsWithFetchRequest:request]];
-        if (self.taxa.count == 0 && !self.lastRequestAt) {
+        if (self.taxa.count < 10 && !self.lastRequestAt) {
             [self performSelector:@selector(loadRemoteTaxaWithURL:) 
                        withObject:@"/taxa"
                        afterDelay:0.5];
