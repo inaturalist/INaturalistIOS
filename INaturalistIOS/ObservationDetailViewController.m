@@ -278,17 +278,20 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	
 	if (!self.activityButton) {
 		self.activityButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		self.activityButton.frame = CGRectMake(0, 0, 24, 22);
+		self.activityButton.frame = CGRectMake(0, 0, 50, 50);
 		self.activityButton.titleEdgeInsets = UIEdgeInsetsMake(-5, 1, 0, 0);
 		self.activityButton.titleLabel.font = [UIFont systemFontOfSize:11.0];
         [self.activityButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[self.activityButton addTarget:self action:@selector(clickedActivity:) forControlEvents:UIControlEventTouchUpInside];
 	}
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.activityButton.frame];
+    imageView.contentMode = UIViewContentModeCenter;
 	if (self.observation.hasUnviewedActivity.boolValue) {
-		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+        imageView.image = [UIImage imageNamed:@"08-chat-red.png"];
 	} else {
-		[self.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+        imageView.image = [UIImage imageNamed:@"08-chat.png"];
 	}
+    [self.activityButton insertSubview:imageView atIndex:0];
 	[self.activityButton setTitle:[NSString stringWithFormat:@"%d", self.observation.activityCount] forState:UIControlStateNormal];
 	
 	if (!self.activityBarButton) {
