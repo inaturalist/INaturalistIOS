@@ -135,6 +135,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
     [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
+    // in theory no observation photo should be without an observation, but...
+    if (!op.observation) {
+        [op destroy];
+        return;
+    }
     void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
         loader.delegate = self.syncQueue;
         RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 

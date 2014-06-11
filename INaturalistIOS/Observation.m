@@ -54,6 +54,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic comments;
 @dynamic identifications;
 @dynamic sortable;
+@dynamic uuid;
 
 + (NSArray *)all
 {
@@ -111,6 +112,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 		 @"comments_count", @"commentsCount",
 		 @"identifications_count", @"identificationsCount",
 		 @"last_activity_at_utc", @"lastActivityAt",
+         @"uuid", @"uuid",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
@@ -158,6 +160,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"iconicTaxonID", @"observation[iconic_taxon_id]",
          @"idPlease", @"observation[id_please]",
          @"geoprivacy", @"observation[geoprivacy]",
+         @"uuid", @"observation[uuid]",
          nil];
     }
     return defaultSerializationMapping;
@@ -335,6 +338,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     NSDate *sortableDate = self.createdAt ? self.createdAt : self.localCreatedAt;
     NSString *sortable = [NSString stringWithFormat:@"%f-%d", sortableDate.timeIntervalSinceReferenceDate, self.recordID.intValue];
     [self setPrimitiveValue:sortable forKey:@"sortable"];
+    if (!self.uuid && !self.recordID) {
+        [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+    }
 }
 
 - (void)prepareForDeletion

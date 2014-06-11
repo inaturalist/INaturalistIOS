@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="2.4" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="2.4" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -128,6 +128,7 @@
         <attribute name="timeObservedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="observation" inverseEntity="Comment" syncable="YES"/>
         <relationship name="identifications" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Identification" inverseName="observation" inverseEntity="Identification" syncable="YES"/>
         <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationFieldValue" inverseName="observation" inverseEntity="ObservationFieldValue" syncable="YES"/>
@@ -325,7 +326,7 @@
         <element name="Identification" positionX="234" positionY="387" width="128" height="268"/>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="645"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="660"/>
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
         <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="373"/>

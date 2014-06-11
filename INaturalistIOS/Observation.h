@@ -50,6 +50,7 @@
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *identifications;
 @property (nonatomic, retain) NSString *sortable;
+@property (nonatomic, retain) NSString *uuid;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;

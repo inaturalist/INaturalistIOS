@@ -246,6 +246,7 @@
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
     if (request.method != RKRequestMethodDELETE) return;
+    if (!self.started) return;
     
     NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
     id model = [current objectForKey:@"model"];
