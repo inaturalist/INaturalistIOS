@@ -8,6 +8,7 @@
 
 #import "Observation.h"
 #import "ObservationFieldValue.h"
+#import "ObservationField.h"
 #import "Taxon.h"
 #import "Comment.h"
 #import "Identification.h"
@@ -330,7 +331,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)willSave
 {
     for (ObservationFieldValue *ofv in self.observationFieldValues) {
-        if (ofv.value == nil || ofv.value.length == 0) {
+        if (self.recordID && (ofv.value == nil || ofv.value.length == 0)) {
             [ofv deleteEntity];
         }
     }
