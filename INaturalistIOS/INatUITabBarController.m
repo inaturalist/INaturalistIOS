@@ -60,7 +60,7 @@
 
 - (void)setObservationsTabBadge
 {
-    NSInteger obsSyncCount = [Observation needingSyncCount];
+    NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
     UITabBarItem *item = [self.tabBar.items objectAtIndex:0];

@@ -330,11 +330,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (void)willSave
 {
-    for (ObservationFieldValue *ofv in self.observationFieldValues) {
-        if (self.recordID && (ofv.value == nil || ofv.value.length == 0)) {
-            [ofv deleteEntity];
-        }
-    }
     [super willSave];
     NSDate *sortableDate = self.createdAt ? self.createdAt : self.localCreatedAt;
     NSString *sortable = [NSString stringWithFormat:@"%f-%d", sortableDate.timeIntervalSinceReferenceDate, self.recordID.intValue];

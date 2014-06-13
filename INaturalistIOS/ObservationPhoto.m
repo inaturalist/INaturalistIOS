@@ -9,6 +9,7 @@
 #import "ObservationPhoto.h"
 #import "Observation.h"
 #import "ImageStore.h"
+#import "DeletedRecord.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -41,6 +42,11 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 {
     [super prepareForDeletion];
     [[ImageStore sharedImageStore] destroy:self.photoKey];
+    if (self.syncedAt) {
+        DeletedRecord *dr = [DeletedRecord object];
+        dr.recordID = self.recordID;
+        dr.modelName = NSStringFromClass(self.class);
+    }
 }
 
 + (RKManagedObjectMapping *)mapping

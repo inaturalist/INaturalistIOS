@@ -69,7 +69,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     if (self.observationField.allowedValuesArray.count > 0) {
         return [self.observationField.allowedValuesArray objectAtIndex:0];
     } else {
-        return nil;
+        return @"";
     }
 }
 
@@ -88,7 +88,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (NSNumber *)observationID
 {
     // NOTE: you absolutely have to check to make sure the value you're about to set is nil or not.
-    // If you try to set nil on a primitive attribute, you may through Restkit into an infinite loop
+    // If you try to set nil on a primitive attribute, you may throw Restkit into an infinite loop
     if (self.observation && self.observation.recordID && (!self.primitiveObservationID || [self.primitiveObservationID intValue] == 0)) {
         [self willChangeValueForKey:@"observationID"];
         [self setPrimitiveObservationID:self.observation.recordID];
@@ -102,7 +102,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [self willAccessValueForKey:@"value"];
     NSString *v = [self primitiveValueForKey:@"value"];
     [self didAccessValueForKey:@"value"];
-    if (!v || v.length == 0) {
+    if (!v) {
         v = [self defaultValue];
         [self willChangeValueForKey:@"value"];
         [self setPrimitiveValue:v forKey:@"value"];

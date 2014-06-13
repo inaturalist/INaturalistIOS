@@ -236,12 +236,12 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)checkSyncStatus
 {
-    self.observationsToSyncCount = [Observation needingSyncCount];
+    self.observationsToSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     if (self.observationsToSyncCount == 0) {
         self.observationsToSyncCount = [[NSSet setWithArray:[[ObservationFieldValue needingSync] valueForKey:@"observationID"]] count];
         
     }
-    self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount];
+    self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount] + [ObservationPhoto deletedRecordCount];
     NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Sync ",nil)];
     if (self.observationsToSyncCount > 0) {
         if (self.observationsToSyncCount == 1) {
