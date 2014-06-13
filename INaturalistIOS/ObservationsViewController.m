@@ -713,14 +713,17 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             errorMsg = error.localizedDescription;
     }
     
-    // ignore errors about no connection
-    if (error.code == -1004) {
-        return;
-    }
-    
     if (self.isSyncing || self.refreshControl.isRefreshing) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+        NSString *msg, *title;
+        if (error.code == -1004 || ([error.domain isEqualToString:@"org.restkit.RestKit.ErrorDomain"] && error.code == 2)) {
+            title = NSLocalizedString(@"Internet connection required", nil);
+            msg = NSLocalizedString(@"You must be connected to the Internet to do this.", nil);
+        } else {
+            title = NSLocalizedString(@"Whoops!",nil);
+            msg = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg];
+        }
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:title
+                                                     message:msg
                                                     delegate:self
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
