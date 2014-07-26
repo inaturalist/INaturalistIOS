@@ -114,6 +114,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 		 @"identifications_count", @"identificationsCount",
 		 @"last_activity_at_utc", @"lastActivityAt",
          @"uuid", @"uuid",
+         @"id_please", @"idPlease",
+         @"geoprivacy", @"geoprivacy",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
