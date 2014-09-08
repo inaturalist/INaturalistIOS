@@ -1,33 +1,3 @@
-[submodule "Vendor/RestKit"]
-	path = Vendor/RestKit
-	url = git://github.com/RestKit/RestKit.git
-[submodule "Vendor/tapkulibrary"]
-	path = Vendor/tapkulibrary
-	url = git://github.com/kueda/tapkulibrary.git
 [submodule "Vendor/three20"]
 	path = Vendor/three20
 	url = git://github.com/facebook/three20.git
-[submodule "Vendor/DCRoundSwitch"]
-	path = Vendor/DCRoundSwitch
-	url = git://github.com/computerlogicx/DCRoundSwitch.git
-[submodule "Vendor/ActionSheetPicker"]
-	path = Vendor/ActionSheetPicker
-	url = git://github.com/kueda/ActionSheetPicker.git
-[submodule "Vendor/Facebook"]
-	path = Vendor/Facebook
-	url = git://github.com/facebook/facebook-ios-sdk.git
-[submodule "Vendor/OAuth2Client"]
-	path = Vendor/OAuth2Client
-	url = git://github.com/nxtbgthng/OAuth2Client.git
-[submodule "Vendor/RaptureXML"]
-	path = Vendor/RaptureXML
-	url = https://github.com/ZaBlanc/RaptureXML.git
-[submodule "Vendor/SWRevealViewController"]
-	path = Vendor/SWRevealViewController
-	url = https://github.com/John-Lluch/SWRevealViewController.git
-[submodule "Vendor/ssziparchive"]
-	path = Vendor/ssziparchive
-	url = https://github.com/soffes/ssziparchive.git
-[submodule "Vendor/SDWebImage"]
-	path = Vendor/SDWebImage
-	url = git@github.com:rs/SDWebImage.git
