@@ -3,7 +3,7 @@ INaturalist.xcodeproj/project.xcworkspace
 INaturalist.xcodeproj/xcuserdata
 INaturalistIOS/config.h
 
-Pods
+# from https://github.com/github/gitignore/blob/master/Objective-C.gitignore
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -13,9 +13,11 @@ Pods
 *.perspectivev3
 !default.perspectivev3
 xcuserdata
-profile
+*.xccheckout
 *.moved-aside
 DerivedData
-.idea/
 *.hmap
-*.xccheckout
+*.ipa
+*.xcuserstate
+
+Pods/
