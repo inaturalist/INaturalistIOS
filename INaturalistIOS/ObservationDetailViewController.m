@@ -774,9 +774,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [ipc setSourceType:sourceType];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
-        [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-                        permittedArrowDirections:UIPopoverArrowDirectionAny
-                                        animated:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+                                permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                animated:YES];
+            });
+        });
         self.popOver = popover;
     } else {
         [self presentViewController:ipc animated:YES completion:nil];
@@ -1619,6 +1623,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     img.hidden = YES;
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
         self.locationManager.delegate = self;
     }
     if (!self.locationTimer) {

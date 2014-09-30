@@ -22,6 +22,7 @@
 
 @implementation MapViewController
 @synthesize mapView = _mapView;
+@synthesize locationManager = _locationManager;
 @synthesize currentLocationButton = _currentLocationButton;
 @synthesize mapTypeButton = _mapTypeButton;
 @synthesize addObservationButton = _addObservationButton;
@@ -84,6 +85,10 @@
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        [self.locationManager requestWhenInUseAuthorization];
+    }
     self.mapView.mapType = MKMapTypeHybrid;
     [self loadObservations];
     [self zoomToObservations];

@@ -318,6 +318,9 @@ static const int ListControlIndexNearby = 2;
     }
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
         self.locationManager.delegate = self;
         self.locationManager.distanceFilter = 1000;
     }

@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIBarButtonItem *currentLocationButton;
 @property (nonatomic, strong) UIBarButtonItem *mapTypeButton;
 @property (nonatomic, strong) UIBarButtonItem *addObservationButton;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 - (void)clickedCurrentLocationButton;
 - (void)clickedMapTypeButton;
 - (void)clickedAddObservationButton;
