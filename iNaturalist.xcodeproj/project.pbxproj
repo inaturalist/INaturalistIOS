@@ -195,7 +195,6 @@
 		19DA9F4F161D40A400DCCB5B /* libThree20Style.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8C014F5AE180064DF05 /* libThree20Style.a */; };
 		19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
 		19E4CC1A162407CE00694E5D /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CBEE162407CE00694E5D /* .gitignore */; };
-		19E4CC1B162407CE00694E5D /* AUTHORS in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CBF0162407CE00694E5D /* AUTHORS */; };
 		19E4CC1C162407CE00694E5D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CBF1162407CE00694E5D /* LICENSE */; };
 		19E4CC1D162407CE00694E5D /* AbstractActionSheetPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */; };
 		19E4CC1E162407CE00694E5D /* ActionSheetCustomPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBF6162407CE00694E5D /* ActionSheetCustomPicker.m */; };
@@ -292,6 +291,8 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
+		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
+		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -775,8 +776,6 @@
 		19D9B54414F62B840017B70A /* INatUITabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatUITabBarController.h; sourceTree = "<group>"; };
 		19D9B54514F62B850017B70A /* INatUITabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatUITabBarController.m; sourceTree = "<group>"; };
 		19E4CBEE162407CE00694E5D /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		19E4CBEF162407CE00694E5D /* ActionSheetPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetPicker.h; sourceTree = "<group>"; };
-		19E4CBF0162407CE00694E5D /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
 		19E4CBF1162407CE00694E5D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		19E4CBF3162407CE00694E5D /* AbstractActionSheetPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractActionSheetPicker.h; sourceTree = "<group>"; };
 		19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractActionSheetPicker.m; sourceTree = "<group>"; };
@@ -949,6 +948,10 @@
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetLocalePicker.h; sourceTree = "<group>"; };
+		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
+		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
+		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1402,8 +1405,6 @@
 			isa = PBXGroup;
 			children = (
 				19E4CBEE162407CE00694E5D /* .gitignore */,
-				19E4CBEF162407CE00694E5D /* ActionSheetPicker.h */,
-				19E4CBF0162407CE00694E5D /* AUTHORS */,
 				19E4CBF1162407CE00694E5D /* LICENSE */,
 				19E4CBF2162407CE00694E5D /* Pickers */,
 				19E4CC00162407CE00694E5D /* README.md */,
@@ -1415,6 +1416,10 @@
 		19E4CBF2162407CE00694E5D /* Pickers */ = {
 			isa = PBXGroup;
 			children = (
+				FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */,
+				FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */,
+				FA2FEE5619DCA76400370426 /* SWActionSheet.h */,
+				FA2FEE5719DCA76400370426 /* SWActionSheet.m */,
 				19E4CBF3162407CE00694E5D /* AbstractActionSheetPicker.h */,
 				19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */,
 				19E4CBF5162407CE00694E5D /* ActionSheetCustomPicker.h */,
@@ -2073,7 +2078,6 @@
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC1A162407CE00694E5D /* .gitignore in Resources */,
-				19E4CC1B162407CE00694E5D /* AUTHORS in Resources */,
 				19E4CC1C162407CE00694E5D /* LICENSE in Resources */,
 				19E4CC23162407CE00694E5D /* README.md in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
@@ -2153,6 +2157,7 @@
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				198CF8E314F5B1350064DF05 /* PhotoViewController.m in Sources */,
+				FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */,
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,
@@ -2254,6 +2259,7 @@
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				192071B819CFDABD00CCEC1F /* UIImageView+HighlightedWebCache.m in Sources */,
+				FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
 				19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */,
