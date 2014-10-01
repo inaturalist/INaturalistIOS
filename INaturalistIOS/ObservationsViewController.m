@@ -430,9 +430,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     UIButton *interactiveActivityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityInteractiveButtonTag];
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-		
 		if (op.photoKey == nil) {
-			[imageView setImageWithURL:[NSURL URLWithString:op.squareURL]];
+            [imageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
 		} else {
 			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
 		}
