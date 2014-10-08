@@ -1,0 +1,15 @@
+PODS:
+  - CrashlyticsFramework (2.2.4)
+  - FlurrySDK (5.4.0):
+    - FlurrySDK/FlurrySDK
+  - FlurrySDK/FlurrySDK (5.4.0)
+
+DEPENDENCIES:
+  - CrashlyticsFramework (= 2.2.4)
+  - FlurrySDK (= 5.4.0)
+
+SPEC CHECKSUMS:
+  CrashlyticsFramework: 0c28a2c07a51b7691e6668b83824b0b0be77f307
+  FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
+
+COCOAPODS: 0.34.1
