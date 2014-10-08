@@ -294,6 +294,7 @@
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
+		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -956,6 +957,8 @@
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
 		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1619,6 +1622,8 @@
 				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
 				191059DC18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.h */,
 				191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */,
+				FA63FA1319E4CE65007306F9 /* Analytics.h */,
+				FA63FA1419E4CE65007306F9 /* Analytics.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1786,6 +1791,7 @@
 				1927513014E9CCC9000ABAC4 /* Frameworks */,
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */,
+				FA63FA2919E4D40F007306F9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2184,6 +2190,20 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		FA63FA2919E4D40F007306F9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Crashlytics.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2209,6 +2229,7 @@
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				198CF8E314F5B1350064DF05 /* PhotoViewController.m in Sources */,
 				FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */,
+				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,

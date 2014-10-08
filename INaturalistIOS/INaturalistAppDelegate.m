@@ -27,6 +27,7 @@
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 @implementation INaturalistAppDelegate
 
@@ -45,6 +46,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // setup analytics
+    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];
+    
+    // log all page views for the tab bar controller
+    [[Analytics sharedClient] logAllPageViewForTarget:self.window.rootViewController];
+
     // Override point for customization after application launch.
     [self configureRestKit];
     [self configureThree20];
