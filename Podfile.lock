@@ -1,15 +1,21 @@
 PODS:
+  - Bolts (1.1.2)
   - CrashlyticsFramework (2.2.4)
+  - Facebook-iOS-SDK (3.19.0):
+    - Bolts (~> 1.0)
   - FlurrySDK (5.4.0):
     - FlurrySDK/FlurrySDK
   - FlurrySDK/FlurrySDK (5.4.0)
 
 DEPENDENCIES:
   - CrashlyticsFramework (= 2.2.4)
+  - Facebook-iOS-SDK (= 3.19.0)
   - FlurrySDK (= 5.4.0)
 
 SPEC CHECKSUMS:
+  Bolts: 2635e8698a630774689441047f3465d78c48d485
   CrashlyticsFramework: 0c28a2c07a51b7691e6668b83824b0b0be77f307
+  Facebook-iOS-SDK: cb7d74759d0b1ba546e6e6f1dde407b0d4e448d6
   FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
 
 COCOAPODS: 0.34.1
