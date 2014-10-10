@@ -30,7 +30,9 @@
                                                                                 @"bundle://tutorial4%@.png", curLang]],
                                                 [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
                                                                                 @"bundle://tutorial5%@.png", curLang]],
-                                                                   nil] 
+                                               [[PhotoStub alloc] initWithURL:[NSString stringWithFormat:
+                                                                               @"bundle://tutorial6%@.png", curLang]],
+                                                                   nil]
                                                             title:@"Welcome to iNaturalist!"];
     self = [super initWithPhotoSource:photoSouce];
     return self;

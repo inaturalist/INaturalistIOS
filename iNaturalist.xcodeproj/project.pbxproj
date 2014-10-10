@@ -290,6 +290,8 @@
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
+		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
+		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 /* End PBXBuildFile section */
 
@@ -950,6 +952,8 @@
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
 		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
+		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1249,6 +1253,8 @@
 				60A0E25216FD090A003621FA /* tutorial4es.png */,
 				60A0E25316FD090A003621FA /* tutorial5en.png */,
 				60A0E25416FD090A003621FA /* tutorial5es.png */,
+				FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */,
+				FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */,
 				194D8E4D18E227C80098E28C /* usericon.png */,
 			);
 			name = images;
@@ -2048,6 +2054,7 @@
 				19A5F64714FB655200757636 /* map-tab@2x.png in Resources */,
 				19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */,
 				191B0B4A150197BC00F2508E /* current_location.png in Resources */,
+				FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */,
 				191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */,
 				19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */,
 				19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */,
@@ -2080,6 +2087,7 @@
 				195F3253151AE5760019CB85 /* 83-calendar@2x.png in Resources */,
 				195F3256151AE5C40019CB85 /* 103-map.png in Resources */,
 				195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */,
+				FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */,
 				19AE89BA18DD0EA900505918 /* 08-chat-red@2x.png in Resources */,
 				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
 				194D8E0618DE58850098E28C /* 121-landscape.png in Resources */,
