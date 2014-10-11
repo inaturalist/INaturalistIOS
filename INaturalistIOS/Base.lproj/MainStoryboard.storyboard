@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
-        <!--Observation Detail View Controller - Edit-->
+        <!--Edit-->
         <scene sceneID="efM-m4-d4c">
             <objects>
                 <tableViewController storyboardIdentifier="ObservationDetailViewController" id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
@@ -14,7 +13,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
@@ -309,7 +307,7 @@
             </objects>
             <point key="canvasLocation" x="698" y="419"/>
         </scene>
-        <!--Navigation Controller - Observations-->
+        <!--Observations-->
         <scene sceneID="Q6O-Cb-vaZ">
             <objects>
                 <navigationController definesPresentationContext="YES" id="cnB-zK-8oP" sceneMemberID="viewController">
@@ -325,7 +323,7 @@
             </objects>
             <point key="canvasLocation" x="-776" y="419"/>
         </scene>
-        <!--Observations View Controller - Observations-->
+        <!--Observations-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="ObservationsViewController" sceneMemberID="viewController">
@@ -490,7 +488,7 @@
             </objects>
             <point key="canvasLocation" x="-292" y="1836"/>
         </scene>
-        <!--Navigation Controller - Projects-->
+        <!--Projects-->
         <scene sceneID="B1T-ab-195">
             <objects>
                 <navigationController definesPresentationContext="YES" id="t06-UC-YUc" sceneMemberID="viewController">
@@ -511,7 +509,7 @@
             </objects>
             <point key="canvasLocation" x="-776" y="2496"/>
         </scene>
-        <!--Settings View Controller - Settings-->
+        <!--Settings-->
         <scene sceneID="D7K-6M-lYV">
             <objects>
                 <tableViewController id="ydS-en-xrb" customClass="SettingsViewController" sceneMemberID="viewController">
@@ -688,7 +686,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="2438" y="1153"/>
         </scene>
-        <!--Navigation Controller - Map-->
+        <!--Map-->
         <scene sceneID="zbl-Uk-Ap2">
             <objects>
                 <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="l2X-u6-R0s" sceneMemberID="viewController">
@@ -708,7 +706,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-776" y="1836"/>
         </scene>
-        <!--Projects View Controller - Projects-->
+        <!--Projects-->
         <scene sceneID="OSJ-NK-jjp">
             <objects>
                 <tableViewController id="Kvl-LX-MOH" customClass="ProjectsViewController" sceneMemberID="viewController">
@@ -781,7 +779,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-292" y="2496"/>
         </scene>
-        <!--Guides View Controller - Guides-->
+        <!--Guides-->
         <scene sceneID="0Dy-j9-Deg">
             <objects>
                 <tableViewController id="3yj-dQ-gUZ" customClass="GuidesViewController" sceneMemberID="viewController">
@@ -1021,7 +1019,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1193" y="4934"/>
         </scene>
-        <!--Guide Collection View Controller - Guide Title-->
+        <!--Guide Title-->
         <scene sceneID="Dqk-6u-5Pp">
             <objects>
                 <collectionViewController autoresizesArchivedViewToFullSize="NO" id="2LB-6A-M1H" customClass="GuideCollectionViewController" sceneMemberID="viewController">
@@ -1079,7 +1077,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1193" y="4074"/>
         </scene>
-        <!--Guide Taxon View Controller - GuideTaxon-->
+        <!--GuideTaxon-->
         <scene sceneID="ow7-ce-Fy1">
             <objects>
                 <viewController storyboardIdentifier="GuideTaxonViewController" id="zk1-NX-zZ7" customClass="GuideTaxonViewController" sceneMemberID="viewController">
@@ -1129,7 +1127,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1700" y="4074"/>
         </scene>
-        <!--Navigation Controller - Guides-->
+        <!--Guides-->
         <scene sceneID="C9d-bu-RZU">
             <objects>
                 <navigationController definesPresentationContext="YES" id="2Xz-Sc-ScK" sceneMemberID="viewController">
@@ -1137,7 +1135,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="RIn-Wl-KhJ">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="SJE-3a-2X1">
@@ -1152,7 +1149,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-824" y="3832"/>
         </scene>
-        <!--Project List View Controller - Project-->
+        <!--Project-->
         <scene sceneID="nrG-r2-jeJ">
             <objects>
                 <tableViewController id="g3g-03-X0K" customClass="ProjectListViewController" sceneMemberID="viewController">
@@ -1305,7 +1302,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="480" y="2496"/>
         </scene>
-        <!--Taxon Detail View Controller - Taxon-->
+        <!--Taxon-->
         <scene sceneID="PP3-HD-gqT">
             <objects>
                 <tableViewController storyboardIdentifier="TaxonDetailViewController" id="dfk-gc-ShG" customClass="TaxonDetailViewController" sceneMemberID="viewController">
@@ -1458,7 +1455,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="black" id="IiT-HW-DhC">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" barStyle="black" id="N5h-9W-1U9">
@@ -1473,7 +1469,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="2412" y="-289"/>
         </scene>
-        <!--Taxa Search View Controller - Search species-->
+        <!--Search species-->
         <scene sceneID="I5Z-zr-hIl">
             <objects>
                 <tableViewController storyboardIdentifier="TaxaSearchViewController" id="5Je-4G-7Bd" customClass="TaxaSearchViewController" sceneMemberID="viewController">
@@ -1558,7 +1554,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="3413" y="1836"/>
         </scene>
-        <!--Login View Controller - Sign in-->
+        <!--Sign in-->
         <scene sceneID="vz0-xH-bUj">
             <objects>
                 <tableViewController storyboardIdentifier="LoginViewController" id="wse-tJ-yO9" customClass="LoginViewController" sceneMemberID="viewController">
@@ -1650,32 +1646,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Sign in with Google+" id="h2K-Kg-3dh">
-                                <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ohk-ES-lZM" imageView="one-H2-7w3" style="IBUITableViewCellStyleDefault" id="sDJ-ut-xqR">
-                                        <rect key="frame" x="0.0" y="343" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sDJ-ut-xqR" id="oGq-l8-ZSb">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Sign in with Google" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ohk-ES-lZM">
-                                                    <rect key="frame" x="73" y="0.0" width="232" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <color key="textColor" red="0.7894810267857143" green="0.0" blue="0.12028585850290077" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="GoogleIcon.png" id="one-H2-7w3">
-                                                    <rect key="frame" x="15" y="0.0" width="43" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                </imageView>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="Don't have an account?" id="ljj-kr-K3I">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Kp6-B4-NJv" style="IBUITableViewCellStyleDefault" id="9Sg-zw-Muv">
@@ -1752,7 +1722,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                 <navigationController definesPresentationContext="YES" id="OkY-L0-NP4" sceneMemberID="viewController">
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="black" id="bNa-Oh-4hz">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -1763,7 +1732,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="3479" y="-289"/>
         </scene>
-        <!--Project Chooser View Controller - Choose projects-->
+        <!--Choose projects-->
         <scene sceneID="R9u-gg-yJG">
             <objects>
                 <tableViewController id="qKT-rx-ger" customClass="ProjectChooserViewController" sceneMemberID="viewController">
@@ -1825,7 +1794,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <navigationItem key="navigationItem" id="Ixx-vq-ex3"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="black" id="hAe-3W-FKC">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -1836,7 +1804,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="2447" y="419"/>
         </scene>
-        <!--Edit Location View Controller - Edit Location-->
+        <!--Edit Location-->
         <scene sceneID="Fhq-My-k45">
             <objects>
                 <viewController id="Rzg-af-Bgj" customClass="EditLocationViewController" sceneMemberID="viewController">
@@ -1895,7 +1863,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="black" id="P1d-tN-epc">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -1906,7 +1873,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1082" y="2940"/>
         </scene>
-        <!--Project Detail View Controller - Project Details-->
+        <!--Project Details-->
         <scene sceneID="RFm-v0-efa">
             <objects>
                 <tableViewController id="wOO-15-L7q" customClass="ProjectDetailViewController" sceneMemberID="viewController">
@@ -2051,7 +2018,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1543" y="2940"/>
         </scene>
-        <!--Navigation Controller - Projects-->
+        <!--Projects-->
         <scene sceneID="7Ly-o9-srR">
             <objects>
                 <navigationController definesPresentationContext="YES" id="lcg-CX-Ype" sceneMemberID="viewController">
@@ -2069,7 +2036,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="-776" y="2496"/>
         </scene>
-        <!--Observation Activity View Controller - Observation Activity-->
+        <!--Observation Activity-->
         <scene sceneID="QpR-o3-di0">
             <objects>
                 <tableViewController storyboardIdentifier="ObservationActivityViewController" id="Q1A-IA-Nql" customClass="ObservationActivityViewController" sceneMemberID="viewController">
@@ -2240,7 +2207,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
             </objects>
             <point key="canvasLocation" x="1847" y="-1333"/>
         </scene>
-        <!--Add Identification View Controller - Add Identification-->
+        <!--Add Identification-->
         <scene sceneID="c0p-nL-5rh">
             <objects>
                 <tableViewController id="vKh-hk-EA0" customClass="AddIdentificationViewController" sceneMemberID="viewController">
@@ -2348,7 +2315,6 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <image name="265-download.png" width="24" height="22"/>
         <image name="83-calendar.png" width="23" height="25"/>
         <image name="FacebookIcon.png" width="234" height="234"/>
-        <image name="GoogleIcon.png" width="44" height="44"/>
         <image name="current_location.png" width="14" height="14"/>
         <image name="guides-menu.png" width="22" height="16"/>
         <image name="guides-tab.png" width="20" height="28"/>

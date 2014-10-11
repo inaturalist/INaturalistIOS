@@ -211,13 +211,15 @@ static const NSInteger GoogleAssertionType = 2;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [self openFacebookSession];
     }
+    /*
     else if (indexPath.section == 2) {// Google+
         lastAssertionType = GoogleAssertionType;
         isLoginCompleted = NO;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [[GPPSignIn sharedInstance] authenticate];
     }
-    else if (indexPath.section == 3) {
+     */
+    else if (indexPath.section == 2) {
         lastAssertionType = 0;
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
@@ -227,7 +229,7 @@ static const NSInteger GoogleAssertionType = 2;
         webController.delegate = self;
         [nc pushViewController:webController animated:YES];
      }
-    else if (indexPath.section == 4) {
+    else if (indexPath.section == 3) {
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
