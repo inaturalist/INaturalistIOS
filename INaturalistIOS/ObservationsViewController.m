@@ -366,21 +366,37 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     popup.backgroundColor = [UIColor clearColor];
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(10,10, popup.bounds.size.width-20, popup.bounds.size.height-20)];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"changes.%@", language]
-                                                                        ofType:@"html"
-                                                                   inDirectory:@"www"]];
-    [webView loadRequest:[NSURLRequest requestWithURL:url]];
-    [popup addSubview:webView];
-    [alertView setContainerView:popup];
-    [alertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"OK",nil), nil]];
-    [alertView setOnButtonTouchUpInside:^(CustomIOS7AlertView *alertView, int buttonIndex) {
-        [alertView close];
-    }];
-    [alertView setUseMotionEffects:true];
-    [alertView show];
-    [settings setObject:versionString forKey:@"lastVersion"];
-    [settings synchronize];
-    return YES;
+    NSString *changesFilePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"changes.%@", language]
+                                                                ofType:@"html"
+                                                           inDirectory:@"www"];
+    if (!changesFilePath) {
+        // if we don't have changes files for this user's preferred language,
+        // default to english
+        changesFilePath = [[NSBundle mainBundle] pathForResource:@"changes.en"
+                                                          ofType:@"html"
+                                                     inDirectory:@"www"];
+    }
+    
+    // be defensive
+    if (changesFilePath) {
+        NSURL *url = [NSURL fileURLWithPath:changesFilePath];
+        [webView loadRequest:[NSURLRequest requestWithURL:url]];
+        [popup addSubview:webView];
+        [alertView setContainerView:popup];
+        [alertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"OK",nil), nil]];
+        [alertView setOnButtonTouchUpInside:^(CustomIOS7AlertView *alertView, int buttonIndex) {
+            [alertView close];
+        }];
+        [alertView setUseMotionEffects:true];
+        [alertView show];
+        [settings setObject:versionString forKey:@"lastVersion"];
+        [settings synchronize];
+        
+        return YES;
+    } else {
+        return NO;
+    }
+
 }
 
 - (void)clickedActivity:(id)sender event:(UIEvent *)event {
