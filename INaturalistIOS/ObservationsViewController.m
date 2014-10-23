@@ -546,7 +546,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (!self.observations) {
         [self loadData];
     }
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
