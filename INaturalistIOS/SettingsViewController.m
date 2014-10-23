@@ -34,7 +34,6 @@ static const int VersionCellTag = 4;
 
 - (void)initUI
 {
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];

@@ -563,7 +563,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
@@ -581,7 +580,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
+    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                self.syncButton, 
