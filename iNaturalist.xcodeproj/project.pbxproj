@@ -1168,7 +1168,6 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
@@ -1177,6 +1176,7 @@
 				19F621A3150ECD8000C58F28 /* Views */,
 				19F621A2150ECD3000C58F28 /* Controllers */,
 				19F621A4150ECDC700C58F28 /* Helpers */,
+				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
 			name = INaturalist;
