@@ -297,6 +297,8 @@
 		FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
 		FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */; };
 		FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
+		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
+		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -958,6 +960,10 @@
 		FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreMappingProvider.m; sourceTree = "<group>"; };
 		FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhoto.h; sourceTree = "<group>"; };
 		FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhoto.m; sourceTree = "<group>"; };
+		FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ExploreColors.h"; sourceTree = "<group>"; };
+		FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ExploreColors.m"; sourceTree = "<group>"; };
+		FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ExploreIconicTaxaImages.h"; sourceTree = "<group>"; };
+		FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ExploreIconicTaxaImages.m"; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
@@ -1763,6 +1769,7 @@
 		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				FA4E72CD19FACDF100A9AB5D /* Extensions */,
 				FA4E72C619FAC94A00A9AB5D /* Mappings */,
 				FA4E72C519FAC93600A9AB5D /* Model */,
 			);
@@ -1799,6 +1806,17 @@
 				FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */,
 			);
 			name = Mappings;
+			sourceTree = "<group>";
+		};
+		FA4E72CD19FACDF100A9AB5D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */,
+				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
+				FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */,
+				FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2336,6 +2354,7 @@
 				6098FD8D16F3F6890053987E /* GTLPlusItemScope.m in Sources */,
 				6098FD8E16F3F6890053987E /* GTLPlusMoment.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
+				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				6098FD8F16F3F6890053987E /* GTLPlusMomentsFeed.m in Sources */,
 				6098FD9016F3F6890053987E /* GTLPlusPeopleFeed.m in Sources */,
 				6098FD9116F3F6890053987E /* GTLPlusPerson.m in Sources */,
@@ -2379,6 +2398,7 @@
 				1955FDC117F2415F004F57F2 /* mztools.c in Sources */,
 				1955FDC217F2415F004F57F2 /* unzip.c in Sources */,
 				1955FDC317F2415F004F57F2 /* zip.c in Sources */,
+				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
 				19AE897618DD08B600505918 /* Identification.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
