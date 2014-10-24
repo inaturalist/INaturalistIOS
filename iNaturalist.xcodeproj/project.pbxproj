@@ -288,6 +288,15 @@
 		FA4E72AB19FAC8A000A9AB5D /* protozoa-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729D19FAC8A000A9AB5D /* protozoa-200px.png */; };
 		FA4E72AC19FAC8A000A9AB5D /* reptilia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729E19FAC8A000A9AB5D /* reptilia-200px.png */; };
 		FA4E72AD19FAC8A000A9AB5D /* unknown-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729F19FAC8A000A9AB5D /* unknown-200px.png */; };
+		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
+		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
+		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
+		FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */; };
+		FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */; };
+		FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */; };
+		FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
+		FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */; };
+		FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -931,6 +940,24 @@
 		FA4E729D19FAC8A000A9AB5D /* protozoa-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "protozoa-200px.png"; sourceTree = "<group>"; };
 		FA4E729E19FAC8A000A9AB5D /* reptilia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reptilia-200px.png"; sourceTree = "<group>"; };
 		FA4E729F19FAC8A000A9AB5D /* unknown-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unknown-200px.png"; sourceTree = "<group>"; };
+		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
+		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
+		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
+		FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreIdentification.m; sourceTree = "<group>"; };
+		FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLocation.h; sourceTree = "<group>"; };
+		FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLocation.m; sourceTree = "<group>"; };
+		FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservation.h; sourceTree = "<group>"; };
+		FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservation.m; sourceTree = "<group>"; };
+		FA4E72B819FAC93400A9AB5D /* ExplorePerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplorePerson.h; sourceTree = "<group>"; };
+		FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplorePerson.m; sourceTree = "<group>"; };
+		FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreProject.h; sourceTree = "<group>"; };
+		FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreProject.m; sourceTree = "<group>"; };
+		FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxon.h; sourceTree = "<group>"; };
+		FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxon.m; sourceTree = "<group>"; };
+		FA4E72C719FAC95600A9AB5D /* ExploreMappingProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreMappingProvider.h; sourceTree = "<group>"; };
+		FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreMappingProvider.m; sourceTree = "<group>"; };
+		FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhoto.h; sourceTree = "<group>"; };
+		FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhoto.m; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
@@ -1083,6 +1110,7 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
+				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
@@ -1732,6 +1760,47 @@
 			name = "iconic taxa";
 			sourceTree = "<group>";
 		};
+		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72C619FAC94A00A9AB5D /* Mappings */,
+				FA4E72C519FAC93600A9AB5D /* Model */,
+			);
+			name = Explore;
+			sourceTree = "<group>";
+		};
+		FA4E72C519FAC93600A9AB5D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
+				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
+				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
+				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
+				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
+				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
+				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
+				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
+				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
+				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
+				FA4E72B819FAC93400A9AB5D /* ExplorePerson.h */,
+				FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */,
+				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
+				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
+				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		FA4E72C619FAC94A00A9AB5D /* Mappings */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72C719FAC95600A9AB5D /* ExploreMappingProvider.h */,
+				FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */,
+			);
+			name = Mappings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2188,6 +2257,7 @@
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
+				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
@@ -2225,6 +2295,7 @@
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
 				190619B8152A363E0001A307 /* DCRoundSwitch.m in Sources */,
 				190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */,
 				190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */,
@@ -2236,9 +2307,11 @@
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
+				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
 				19E4CC1D162407CE00694E5D /* AbstractActionSheetPicker.m in Sources */,
 				19E4CC1E162407CE00694E5D /* ActionSheetCustomPicker.m in Sources */,
+				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
 				19E4CC1F162407CE00694E5D /* ActionSheetDatePicker.m in Sources */,
 				19E4CC20162407CE00694E5D /* ActionSheetDistancePicker.m in Sources */,
 				19E4CC21162407CE00694E5D /* ActionSheetStringPicker.m in Sources */,
@@ -2262,6 +2335,7 @@
 				6098FD8C16F3F6890053987E /* GTLPlusConstants.m in Sources */,
 				6098FD8D16F3F6890053987E /* GTLPlusItemScope.m in Sources */,
 				6098FD8E16F3F6890053987E /* GTLPlusMoment.m in Sources */,
+				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				6098FD8F16F3F6890053987E /* GTLPlusMomentsFeed.m in Sources */,
 				6098FD9016F3F6890053987E /* GTLPlusPeopleFeed.m in Sources */,
 				6098FD9116F3F6890053987E /* GTLPlusPerson.m in Sources */,
@@ -2270,6 +2344,7 @@
 				6098FD9416F3F6890053987E /* GTLQuery.m in Sources */,
 				6098FD9516F3F6890053987E /* GTLRuntimeCommon.m in Sources */,
 				6098FD9616F3F6890053987E /* GTLService.m in Sources */,
+				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				6098FD9716F3F6890053987E /* GTLUploadParameters.m in Sources */,
 				6098FD9816F3F6890053987E /* GTLUtilities.m in Sources */,
 				6098FD9916F3F6890053987E /* GTMHTTPFetcher.m in Sources */,
@@ -2286,6 +2361,7 @@
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				6098FDA516F3F6890053987E /* GTMObjC2Runtime.m in Sources */,
 				6098FDA616F3F6890053987E /* OpenInChromeController.m in Sources */,
+				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */,
@@ -2304,6 +2380,8 @@
 				1955FDC217F2415F004F57F2 /* unzip.c in Sources */,
 				1955FDC317F2415F004F57F2 /* zip.c in Sources */,
 				19AE897618DD08B600505918 /* Identification.m in Sources */,
+				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
+				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
 				1955FDC417F2415F004F57F2 /* SSZipArchive.m in Sources */,
 				197FD41317FD29B30099BDE6 /* GuidePhotoViewController.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
