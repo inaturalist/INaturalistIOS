@@ -291,44 +291,27 @@ static UIImage *userIconPlaceholder;
 #pragma mark - iNat API Calls
 
 - (void)searchForPeople:(NSString *)text {
-    /*
-     RESTKIT 0.20
-
     [SVProgressHUD showWithStatus:@"Searching for people..." maskType:SVProgressHUDMaskTypeGradient];
     
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider personMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider personMapping];
     
     NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
-    NSString *baseURL = @"http://www.inaturalist.org/people/search.json";
     NSString *pathPattern = @"/people/search.json";
     NSString *queryBase = @"?per_page=50&q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, safeText];
-    NSString *urlString = [baseURL stringByAppendingString:query];
     
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
-    
-    NSURL *url = [NSURL URLWithString:urlString];
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    // inat people search requires authorization
-    AFOAuthCredential *credential = [AFOAuthCredential retrieveCredentialWithIdentifier:@"inaturalist.org"];
-    [request addValue:[NSString stringWithFormat:@"Bearer %@", credential.accessToken] forHTTPHeaderField:@"Authorization"];
-
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        NSArray *results = [mappingResult.array copy];
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
         
         [Flurry logEvent:@"Search - People Search"
           withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
-
+        
         if (results.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD showErrorWithStatus:@"No such people found. :("];
@@ -365,23 +348,25 @@ static UIImage *userIconPlaceholder;
                                                            otherButtonTitles:nil];
             CGRect peopleSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             peopleSearchHelperTableView = [[UITableView alloc] initWithFrame:peopleSearchTableViewRect
-                                                                      style:UITableViewStylePlain];
+                                                                       style:UITableViewStylePlain];
             [peopleSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
             peopleSearchHelperTableView.delegate = self;
             peopleSearchHelperTableView.dataSource = self;
             [peopleSearchHelperAlertView setValue:peopleSearchHelperTableView
-                                          forKey:@"accessoryView"];
+                                           forKey:@"accessoryView"];
             [peopleSearchHelperAlertView show];
         }
-        
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-        });
-    }];
+    };
     
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
 }
 
 - (void)searchForPlace:(NSString *)text {
