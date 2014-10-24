@@ -274,6 +274,20 @@
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
+		FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */; };
+		FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */; };
+		FA4E72A219FAC8A000A9AB5D /* animalia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729419FAC8A000A9AB5D /* animalia-200px.png */; };
+		FA4E72A319FAC8A000A9AB5D /* arachnida-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729519FAC8A000A9AB5D /* arachnida-200px.png */; };
+		FA4E72A419FAC8A000A9AB5D /* aves-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729619FAC8A000A9AB5D /* aves-200px.png */; };
+		FA4E72A519FAC8A000A9AB5D /* chromista-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729719FAC8A000A9AB5D /* chromista-200px.png */; };
+		FA4E72A619FAC8A000A9AB5D /* fungi-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729819FAC8A000A9AB5D /* fungi-200px.png */; };
+		FA4E72A719FAC8A000A9AB5D /* insecta-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729919FAC8A000A9AB5D /* insecta-200px.png */; };
+		FA4E72A819FAC8A000A9AB5D /* mammalia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729A19FAC8A000A9AB5D /* mammalia-200px.png */; };
+		FA4E72A919FAC8A000A9AB5D /* mollusca-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729B19FAC8A000A9AB5D /* mollusca-200px.png */; };
+		FA4E72AA19FAC8A000A9AB5D /* plantae-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729C19FAC8A000A9AB5D /* plantae-200px.png */; };
+		FA4E72AB19FAC8A000A9AB5D /* protozoa-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729D19FAC8A000A9AB5D /* protozoa-200px.png */; };
+		FA4E72AC19FAC8A000A9AB5D /* reptilia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729E19FAC8A000A9AB5D /* reptilia-200px.png */; };
+		FA4E72AD19FAC8A000A9AB5D /* unknown-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729F19FAC8A000A9AB5D /* unknown-200px.png */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -903,6 +917,20 @@
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
 		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "actinopterygii-200px.png"; sourceTree = "<group>"; };
+		FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "amphibia-200px.png"; sourceTree = "<group>"; };
+		FA4E729419FAC8A000A9AB5D /* animalia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "animalia-200px.png"; sourceTree = "<group>"; };
+		FA4E729519FAC8A000A9AB5D /* arachnida-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arachnida-200px.png"; sourceTree = "<group>"; };
+		FA4E729619FAC8A000A9AB5D /* aves-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "aves-200px.png"; sourceTree = "<group>"; };
+		FA4E729719FAC8A000A9AB5D /* chromista-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chromista-200px.png"; sourceTree = "<group>"; };
+		FA4E729819FAC8A000A9AB5D /* fungi-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fungi-200px.png"; sourceTree = "<group>"; };
+		FA4E729919FAC8A000A9AB5D /* insecta-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "insecta-200px.png"; sourceTree = "<group>"; };
+		FA4E729A19FAC8A000A9AB5D /* mammalia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mammalia-200px.png"; sourceTree = "<group>"; };
+		FA4E729B19FAC8A000A9AB5D /* mollusca-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mollusca-200px.png"; sourceTree = "<group>"; };
+		FA4E729C19FAC8A000A9AB5D /* plantae-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plantae-200px.png"; sourceTree = "<group>"; };
+		FA4E729D19FAC8A000A9AB5D /* protozoa-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "protozoa-200px.png"; sourceTree = "<group>"; };
+		FA4E729E19FAC8A000A9AB5D /* reptilia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reptilia-200px.png"; sourceTree = "<group>"; };
+		FA4E729F19FAC8A000A9AB5D /* unknown-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unknown-200px.png"; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
@@ -1098,6 +1126,7 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FA4E72AE19FAC8A900A9AB5D /* iconic taxa */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,
 				19122E3E1512D3F4009BD3D0 /* add_button@2x.png */,
 				19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */,
@@ -1682,6 +1711,27 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FA4E72AE19FAC8A900A9AB5D /* iconic taxa */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */,
+				FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */,
+				FA4E729419FAC8A000A9AB5D /* animalia-200px.png */,
+				FA4E729519FAC8A000A9AB5D /* arachnida-200px.png */,
+				FA4E729619FAC8A000A9AB5D /* aves-200px.png */,
+				FA4E729719FAC8A000A9AB5D /* chromista-200px.png */,
+				FA4E729819FAC8A000A9AB5D /* fungi-200px.png */,
+				FA4E729919FAC8A000A9AB5D /* insecta-200px.png */,
+				FA4E729A19FAC8A000A9AB5D /* mammalia-200px.png */,
+				FA4E729B19FAC8A000A9AB5D /* mollusca-200px.png */,
+				FA4E729C19FAC8A000A9AB5D /* plantae-200px.png */,
+				FA4E729D19FAC8A000A9AB5D /* protozoa-200px.png */,
+				FA4E729E19FAC8A000A9AB5D /* reptilia-200px.png */,
+				FA4E729F19FAC8A000A9AB5D /* unknown-200px.png */,
+			);
+			name = "iconic taxa";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1954,6 +2004,7 @@
 				19A5F61314FB486200757636 /* appicon@2x.png in Resources */,
 				19A5F62D14FB5B9300757636 /* settings-tab.png in Resources */,
 				19A5F63D14FB61E600757636 /* header-logo.png in Resources */,
+				FA4E72AC19FAC8A000A9AB5D /* reptilia-200px.png in Resources */,
 				19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */,
 				19A5F64114FB644A00757636 /* notebook-tab.png in Resources */,
 				1938920E191D4C5A00CF62D3 /* www in Resources */,
@@ -1963,6 +2014,7 @@
 				19A5F64714FB655200757636 /* map-tab@2x.png in Resources */,
 				19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */,
 				191B0B4A150197BC00F2508E /* current_location.png in Resources */,
+				FA4E72AD19FAC8A000A9AB5D /* unknown-200px.png in Resources */,
 				FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */,
 				191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */,
 				19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */,
@@ -1972,6 +2024,7 @@
 				1953066C150592DC004951D8 /* iconic_taxon_aves.png in Resources */,
 				1953066D150592DC004951D8 /* iconic_taxon_fungi.png in Resources */,
 				1953066E150592DC004951D8 /* iconic_taxon_insecta.png in Resources */,
+				FA4E72A219FAC8A000A9AB5D /* animalia-200px.png in Resources */,
 				1953066F150592DC004951D8 /* iconic_taxon_mammalia.png in Resources */,
 				19530670150592DC004951D8 /* iconic_taxon_mollusca.png in Resources */,
 				19530671150592DC004951D8 /* iconic_taxon_plantae.png in Resources */,
@@ -1979,8 +2032,11 @@
 				19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */,
 				19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */,
 				1912DA9115059C08005555B8 /* 01-refresh.png in Resources */,
+				FA4E72A919FAC8A000A9AB5D /* mollusca-200px.png in Resources */,
 				196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */,
 				19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */,
+				FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */,
+				FA4E72A719FAC8A000A9AB5D /* insecta-200px.png in Resources */,
 				19F62190150ECA8300C58F28 /* projects-tab.png in Resources */,
 				19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */,
 				19AE89BC18DD0EA900505918 /* 08-chat@2x.png in Resources */,
@@ -1989,15 +2045,20 @@
 				19122E3F1512D3F4009BD3D0 /* add_button_highlight.png in Resources */,
 				19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */,
 				19122E411512D3F4009BD3D0 /* add_button.png in Resources */,
+				FA4E72A519FAC8A000A9AB5D /* chromista-200px.png in Resources */,
 				19122E421512D3F4009BD3D0 /* add_button@2x.png in Resources */,
 				195F324D151AC3BA0019CB85 /* 06-magnify.png in Resources */,
+				FA4E72A319FAC8A000A9AB5D /* arachnida-200px.png in Resources */,
 				195F324F151AE55A0019CB85 /* 06-magnify@2x.png in Resources */,
+				FA4E72A819FAC8A000A9AB5D /* mammalia-200px.png in Resources */,
+				FA4E72AB19FAC8A000A9AB5D /* protozoa-200px.png in Resources */,
 				195F3251151AE56A0019CB85 /* 01-refresh@2x.png in Resources */,
 				195F3253151AE5760019CB85 /* 83-calendar@2x.png in Resources */,
 				195F3256151AE5C40019CB85 /* 103-map.png in Resources */,
 				195F3257151AE5C40019CB85 /* 103-map@2x.png in Resources */,
 				FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */,
 				19AE89BA18DD0EA900505918 /* 08-chat-red@2x.png in Resources */,
+				FA4E72A419FAC8A000A9AB5D /* aves-200px.png in Resources */,
 				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
 				194D8E0618DE58850098E28C /* 121-landscape.png in Resources */,
 				195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */,
@@ -2028,6 +2089,7 @@
 				60A0E25B16FD090B003621FA /* tutorial5es.png in Resources */,
 				19542F4217D65CB800B7CEE5 /* guides-tab@2x.png in Resources */,
 				19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */,
+				FA4E72AA19FAC8A000A9AB5D /* plantae-200px.png in Resources */,
 				19542F4A17D6624900B7CEE5 /* guides.png in Resources */,
 				19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
@@ -2035,6 +2097,7 @@
 				191B434B17E927A700AF000E /* Default@2x.png in Resources */,
 				191B434D17E927AA00AF000E /* Default-568h@2x.png in Resources */,
 				19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */,
+				FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */,
 				19570CCF17ECD0B0000C800A /* guides-menu@2x.png in Resources */,
 				19AC33CB17EEC46B00B663BD /* 265-download.png in Resources */,
 				19AC33CC17EEC46B00B663BD /* 265-download@2x.png in Resources */,
@@ -2052,6 +2115,7 @@
 				19AE89BB18DD0EA900505918 /* 08-chat.png in Resources */,
 				1958894318068BD700294EB3 /* Default-Portrait~ipad.png in Resources */,
 				1958894518068BE700294EB3 /* Default-Portrait@2x~ipad.png in Resources */,
+				FA4E72A619FAC8A000A9AB5D /* fungi-200px.png in Resources */,
 				1958894718068BF100294EB3 /* Default-Landscape~ipad.png in Resources */,
 				1958894918068BF300294EB3 /* Default-Landscape@2x~ipad.png in Resources */,
 				19905D21186275C800E63C00 /* appicon@76.png in Resources */,
