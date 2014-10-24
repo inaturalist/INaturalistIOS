@@ -101,7 +101,7 @@
         [SVProgressHUD showWithStatus:@"Fetching all recent observations..." maskType:SVProgressHUDMaskTypeGradient];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
     
