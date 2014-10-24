@@ -302,7 +302,7 @@ static UIImage *userIconPlaceholder;
     NSString *query = [NSString stringWithFormat:queryBase, safeText];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
     
@@ -370,35 +370,23 @@ static UIImage *userIconPlaceholder;
 }
 
 - (void)searchForPlace:(NSString *)text {
-    /*
-     RESTKIT 0.20
-     
     [SVProgressHUD showWithStatus:@"Searching for place..." maskType:SVProgressHUDMaskTypeGradient];
 
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider locationMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
     
     NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
-    NSString *baseURL = @"http://www.inaturalist.org/places/search.json";
     NSString *pathPattern = @"/places/search.json";
     NSString *queryBase = @"?per_page=50&q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, safeText];
-    NSString *urlString = [baseURL stringByAppendingString:query];
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        NSArray *results = [mappingResult.array copy];
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
         
         [Flurry logEvent:@"Search - Place Search"
           withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
@@ -435,13 +423,13 @@ static UIImage *userIconPlaceholder;
             searchedPlaces = results;
             
             placeSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which place?"
-                                                                  message:nil
-                                                                 delegate:self
-                                                        cancelButtonTitle:@"Cancel"
-                                                        otherButtonTitles:nil];
+                                                                    message:nil
+                                                                   delegate:self
+                                                          cancelButtonTitle:@"Cancel"
+                                                          otherButtonTitles:nil];
             CGRect placeSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             placeSearchHelperTableView = [[UITableView alloc] initWithFrame:placeSearchTableViewRect
-                                                                    style:UITableViewStylePlain];
+                                                                      style:UITableViewStylePlain];
             [placeSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
             placeSearchHelperTableView.delegate = self;
             placeSearchHelperTableView.dataSource = self;
@@ -449,15 +437,19 @@ static UIImage *userIconPlaceholder;
                                           forKey:@"accessoryView"];
             [placeSearchHelperAlertView show];
         }
-        
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-        });
-    }];
+    };
     
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
+
+    
     /*
      // unused reverse geocoding (unused for now)
     // searched for place, special case this
@@ -494,38 +486,27 @@ static UIImage *userIconPlaceholder;
 }
 
 - (void)searchForProject:(NSString *)text {
-    /*
-     RESTKIT 0.20
-     
     [SVProgressHUD showWithStatus:@"Searching for project..." maskType:SVProgressHUDMaskTypeGradient];
     
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider projectMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider projectMapping];
     
     NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
-    NSString *baseURL = @"http://www.inaturalist.org/projects/search.json";
     NSString *pathPattern = @"/projects/search.json";
     NSString *queryBase = @"?per_page=50&q=%@";        // place_type=County|Open+Space
     NSString *query = [NSString stringWithFormat:queryBase, safeText];
-    NSString *urlString = [baseURL stringByAppendingString:query];
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        NSArray *results = [mappingResult.array copy];
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
         
         [Flurry logEvent:@"Search - Project Search"
           withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
-
+        
         if (results.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD showErrorWithStatus:@"No such project found."];
@@ -540,7 +521,7 @@ static UIImage *userIconPlaceholder;
             ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
             predicate.type = ExploreSearchPredicateTypeProject;
             predicate.searchProject = results.firstObject;
-
+            
             // observations controller will fetch observations using this predicate
             [observationsController addSearchPredicate:predicate];
             
@@ -551,7 +532,7 @@ static UIImage *userIconPlaceholder;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD dismiss];
             });
-
+            
             // show the user a list of projects
             searchedProjects = results;
             
@@ -569,44 +550,33 @@ static UIImage *userIconPlaceholder;
             [projectSearchHelperAlertView setValue:projectSearchHelperTableView forKey:@"accessoryView"];
             [projectSearchHelperAlertView show];
         }
-        
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-        });
-    }];
+    };
     
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
 }
 
 - (void)searchForCoordinate:(CLLocationCoordinate2D)coord {
-    /*
-     RESTKIT 0.02
-     
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider locationMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
     
-    NSString *baseURL = @"http://www.inaturalist.org/places.json";
     NSString *pathPattern = @"/places.json";
-    NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";        // place_type=County|Open+Space
+    NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";
     NSString *query = [NSString stringWithFormat:queryBase, coord.latitude, coord.longitude];
-    NSString *urlString = [baseURL stringByAppendingString:query];
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        
-        NSArray *results = [mappingResult.array copy];
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
         
         [Flurry logEvent:@"Search - Location Search"
           withParameters:@{ @"results": @(results.count) }];
@@ -627,9 +597,9 @@ static UIImage *userIconPlaceholder;
             // don't do any anything else if we can't get a location
             if (!location) {
                 [[[UIAlertView alloc] initWithTitle:@"No iNat Location"
-                                           message:@"No iNat Location Found"
-                                          delegate:nil
-                                 cancelButtonTitle:@"OK"
+                                            message:@"No iNat Location Found"
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
                                   otherButtonTitles:nil] show];
             } else {
                 ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
@@ -645,13 +615,17 @@ static UIImage *userIconPlaceholder;
                 activeSearchFilterView.hidden = NO;
             }
         });
-        
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    }];
+    };
     
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
@@ -667,35 +641,23 @@ static UIImage *userIconPlaceholder;
     if (!hasFulfilledLocationFetch) {
         hasFulfilledLocationFetch = YES;
         [SVProgressHUD showSuccessWithStatus:@"Found you!"];
-
-        /*
-         RESTKIT 0.20
-         
-        // fetch iNat place for this location
-        NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-        RKMapping *mapping = [ExploreMappingProvider locationMapping];
         
-        NSString *baseURL = @"http://www.inaturalist.org/places.json";
+        // fetch iNat place for this location
+        RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
+        
         NSString *pathPattern = @"/places.json";
         NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";        // place_type=County|Open+Space
         NSString *query = [NSString stringWithFormat:queryBase,
                            location.coordinate.latitude,
                            location.coordinate.longitude];
-        NSString *urlString = [baseURL stringByAppendingString:query];
         
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                                method:RKRequestMethodGET
-                                                                                           pathPattern:pathPattern
-                                                                                               keyPath:@""
-                                                                                           statusCodes:statusCodeSet];
+        NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+        RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+        objectLoader.method = RKRequestMethodGET;
+        objectLoader.objectMapping = mapping;
         
-        NSURL *url = [NSURL URLWithString:urlString];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-        RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                            responseDescriptors:@[responseDescriptor]];
-        [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-            
-            NSArray *results = [mappingResult.array copy];
+        objectLoader.onDidLoadObjects = ^(NSArray *array) {
+            NSArray *results = [array copy];
             
             NSArray *openSpaces = [results bk_select:^BOOL(ExploreLocation *location) {
                 return (location.type == 100);
@@ -732,14 +694,17 @@ static UIImage *userIconPlaceholder;
                 activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
                 activeSearchFilterView.hidden = NO;
             });
-            
-        } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-        }];
+        };
         
-        [operation start];
-         */
+        objectLoader.onDidFailWithError = ^(NSError *err) {
+            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
         
+        objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
+        
+        [objectLoader send];        
     }
 }
 
