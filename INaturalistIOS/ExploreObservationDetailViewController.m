@@ -386,52 +386,41 @@ static NSDateFormatter *shortTimeFormatter;
 
 - (void)fetchObservationCommentsAndIds {
     
-    /*
-     RESTKIT 0.20
-     
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider observationMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
     
-    NSString *baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%ld.json",
-                         (long)self.observation.observationId];
-    NSString *pathPattern = [NSString stringWithFormat:@"/observations/%ld.json", (long)self.observation.observationId];
+    NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)self.observation.observationId];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    objectLoader.onDidLoadObject = ^(id object) {
+        ExploreObservation *observation = (ExploreObservation *)object;
+        
+        NSMutableArray *array = [NSMutableArray array];
+        [array addObjectsFromArray:observation.comments];
+        [array addObjectsFromArray:observation.identifications];
+        
+        [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return [[obj1 performSelector:@selector(date)] compare:[obj2 performSelector:@selector(date)]];
+        }];
+        
+        commentsAndIds = [NSArray arrayWithArray:array];
+        
+        //self.observation = observation;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    };
     
-    NSURL *url = [NSURL URLWithString:baseURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if (mappingResult.count == 1) {
-            ExploreObservation *observation = (ExploreObservation *)mappingResult.firstObject;
-            
-            NSMutableArray *array = [NSMutableArray array];
-            [array addObjectsFromArray:observation.comments];
-            [array addObjectsFromArray:observation.identifications];
-            
-            [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                return [[obj1 performSelector:@selector(date)] compare:[obj2 performSelector:@selector(date)]];
-            }];
-            
-            commentsAndIds = [NSArray arrayWithArray:array];
-            
-            //self.observation = observation;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"error: %@", error.localizedDescription);
-    }];
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
     
-    [operation start];
-     */
-
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
 }
 
 @end
