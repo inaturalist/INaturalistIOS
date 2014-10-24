@@ -92,4 +92,9 @@
     return [UIColor colorWithHexString:@"#e74c3c"];
 }
 
++ (UIColor *)mapOverlayColor {
+    return [UIColor colorWithHexString:@"#daa520"];
+}
+
+
 @end

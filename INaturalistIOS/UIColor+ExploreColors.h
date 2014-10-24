@@ -25,4 +25,6 @@
 + (UIColor *)inatGray;
 + (UIColor *)inatRed;
 
++ (UIColor *)mapOverlayColor;
+
 @end
