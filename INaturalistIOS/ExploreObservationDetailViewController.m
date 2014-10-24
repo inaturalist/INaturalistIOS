@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <CoreLocation/CoreLocation.h>
 #import <RestKit/RestKit.h>
-#import <AFOAuth2Client/AFOAuth2Client.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -18,6 +17,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import <FlurrySDK/Flurry.h>
+#import <AFNetworking/AFNetworking.h>
 
 #import "ExploreObservationDetailViewController.h"
 #import "ExploreObservation.h"
@@ -139,7 +139,15 @@ static NSDateFormatter *shortTimeFormatter;
                 break;
             case 1:
                 // agree
-                [self agreeWithIdentification:selectedIdentification];
+                if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
+                    [self agreeWithIdentification:selectedIdentification];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
+                                                message:@"No anonymous identifications!"
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
                 break;
             default:
                 break;
@@ -305,12 +313,20 @@ static NSDateFormatter *shortTimeFormatter;
 {
     // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
     
-    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
-    [self.textView refreshFirstResponder];
-    [self.textView resignFirstResponder];
-    
-    NSString *message = [self.textView.text copy];
-    [self addComment:message];
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
+        // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+        [self.textView refreshFirstResponder];
+        [self.textView resignFirstResponder];
+        
+        NSString *message = [self.textView.text copy];
+        [self addComment:message];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
+                                    message:@"No anonymous comments!"
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
     
     [super didPressRightButton:sender];
 }
@@ -318,9 +334,6 @@ static NSDateFormatter *shortTimeFormatter;
 #pragma mark - iNat API Calls
 
 - (void)addIdentification:(NSInteger)taxonId {
-    /*
-     RESTKIT 0.20
-     
     [SVProgressHUD showWithStatus:@"Adding Identification..." maskType:SVProgressHUDMaskTypeGradient];
     
     // doing this with AFNetworking because RESTKit/OAuth is hurting my brain right now
@@ -330,8 +343,8 @@ static NSDateFormatter *shortTimeFormatter;
                                                       parameters:@{@"identification[observation_id]": @(self.observation.observationId),
                                                                    @"identification[taxon_id]": @(taxonId)}];
     
-    AFOAuthCredential *credential = [AFOAuthCredential retrieveCredentialWithIdentifier:@"inaturalist.org"];
-    [request addValue:[NSString stringWithFormat:@"Bearer %@", credential.accessToken] forHTTPHeaderField:@"Authorization"];
+    // token is preformatted, in user defaults
+    [request addValue:[[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
                                                                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -347,15 +360,11 @@ static NSDateFormatter *shortTimeFormatter;
                                                                                             });
                                                                                         }];
     [operation start];
-     */
 }
 
 - (void)addComment:(NSString *)comment {
-    /*
-     
-     RESTKIT 0.20
     [SVProgressHUD showWithStatus:@"Adding Comment..." maskType:SVProgressHUDMaskTypeGradient];
-
+    
     // doing this with AFNetworking because RESTKit/OAuth is hurting my brain right now
     AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://inaturalist.org"]];
     NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
@@ -363,9 +372,8 @@ static NSDateFormatter *shortTimeFormatter;
                                                       parameters:@{@"comment[parent_type]": @"Observation",
                                                                    @"comment[parent_id]": @(self.observation.observationId),
                                                                    @"comment[body]": comment}];
-    
-    AFOAuthCredential *credential = [AFOAuthCredential retrieveCredentialWithIdentifier:@"inaturalist.org"];
-    [request addValue:[NSString stringWithFormat:@"Bearer %@", credential.accessToken] forHTTPHeaderField:@"Authorization"];
+    // token is preformatted, in user defaults
+    [request addValue:[[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
                                                                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -381,7 +389,6 @@ static NSDateFormatter *shortTimeFormatter;
                                                                                             });
                                                                                         }];
     [operation start];
-     */
 }
 
 - (void)fetchObservationCommentsAndIds {
@@ -389,7 +396,7 @@ static NSDateFormatter *shortTimeFormatter;
     RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
     
     NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)self.observation.observationId];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
     
