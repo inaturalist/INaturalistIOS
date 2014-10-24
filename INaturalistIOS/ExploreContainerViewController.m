@@ -444,42 +444,7 @@ static UIImage *userIconPlaceholder;
         [SVProgressHUD showErrorWithStatus:err.localizedDescription];
     };
     
-    [objectLoader send];
-
-    
-    /*
-     // unused reverse geocoding (unused for now)
-    // searched for place, special case this
-    // reverse geocode place, then move map there
-    [geocoder geocodeAddressString:searchBar.text
-                 completionHandler:^(NSArray* placemarks, NSError* error){
-                     if (placemarks.count == 0) {
-                         [[[UIAlertView alloc] initWithTitle:@"Not Found"
-                                                     message:@"No such place found. :("
-                                                    delegate:nil
-                                           cancelButtonTitle:@"OK"
-                                           otherButtonTitles:nil] show];
-                     } else if (placemarks.count == 1) {
-                         NSLog(@"got one placemark");
-                         // get lat & long from the placemark, get the corresponding place from inat, and use it
-                         CLPlacemark *place = placemarks.firstObject;
-                         [self searchForCoordinate:place.location.coordinate];
-                     } else {
-                         geocodedPlaces = [placemarks copy];
-                         geocoderHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Choose"
-                                                                              message:@"Which location did you mean?"
-                                                                             delegate:self
-                                                                    cancelButtonTitle:@"None"
-                                                                    otherButtonTitles:nil];
-                         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-                         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
-                         tv.delegate = self;
-                         tv.dataSource = self;
-                         [geocoderHelperAlertView setValue:tv forKey:@"accessoryView"];
-                         [geocoderHelperAlertView show];
-                     }
-                 }];
-     */
+    [objectLoader send];    
 }
 
 - (void)searchForProject:(NSString *)text {
