@@ -14,7 +14,6 @@
 @property (nonatomic, assign) NSInteger locationId;
 @property (nonatomic, assign) NSInteger type;
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) NSInteger woeid;
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
 

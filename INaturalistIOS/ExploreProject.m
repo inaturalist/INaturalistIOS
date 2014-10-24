@@ -10,4 +10,41 @@
 
 @implementation ExploreProject
 
+- (BOOL)validateProjectId:(id *)ioValue error:(NSError **)outError {
+    // Reject a project ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateLocationId:(id *)ioValue error:(NSError **)outError {
+    // Reject a location ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateLatitude:(id *)ioValue error:(NSError **)outError {
+    // Reject a latitude ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateLongitude:(id *)ioValue error:(NSError **)outError {
+    // Reject a longitude ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
 @end

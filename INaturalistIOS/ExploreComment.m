@@ -14,4 +14,24 @@
     return self.commentedDate;
 }
 
+- (BOOL)validateCommentId:(id *)ioValue error:(NSError **)outError {
+    // Reject a comment ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateCommenterId:(id *)ioValue error:(NSError **)outError {
+    // Reject a commenter ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+
 @end

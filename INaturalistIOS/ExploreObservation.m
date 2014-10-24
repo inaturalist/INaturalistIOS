@@ -45,13 +45,72 @@
     return YES;
 }
 
-- (BOOL)validatePublicPositionalAccuracy:(id *)ioValue error:(NSError **)outError {
-    // Reject an accuracy value of zero. By returning NO, we refused the assignment and the value will not be set
+
+- (BOOL)validateObservationId:(id *)ioValue error:(NSError **)outError {
+    // Reject a observation id of zero. By returning NO, we refused the assignment and the value will not be set
     if ([(NSNumber*)*ioValue intValue] == 0) {
         return NO;
     }
     
     return YES;
 }
+
+- (BOOL)validateLatitude:(id *)ioValue error:(NSError **)outError {
+    // Reject a latitude of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateLongitude:(id *)ioValue error:(NSError **)outError {
+    // Reject a longitude of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)validateObserverId:(id *)ioValue error:(NSError **)outError {
+    // Reject a observer id of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+- (BOOL)validateIdentificationsCount:(id *)ioValue error:(NSError **)outError {
+    // Reject a identifications count of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+- (BOOL)validateCommentsCount:(id *)ioValue error:(NSError **)outError {
+    // Reject a comments count of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+- (BOOL)validatePublicPositionalAccuracy:(id *)ioValue error:(NSError **)outError {
+    // Reject a accuracy of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 
 @end

@@ -117,7 +117,6 @@
     [mapping mapKeyPath:@"id" toAttribute:@"locationId"];
     [mapping mapKeyPath:@"place_type" toAttribute:@"type"];
     [mapping mapKeyPath:@"display_name" toAttribute:@"name"];
-    [mapping mapKeyPath:@"woeid" toAttribute:@"woeid"];
     [mapping mapKeyPath:@"longitude" toAttribute:@"longitude"];
     [mapping mapKeyPath:@"latitude" toAttribute:@"latitude"];
 

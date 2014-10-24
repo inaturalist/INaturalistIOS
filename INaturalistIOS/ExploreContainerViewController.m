@@ -375,7 +375,7 @@ static UIImage *userIconPlaceholder;
     NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     
     NSString *pathPattern = @"/places/search.json";
-    NSString *queryBase = @"?per_page=50&q=%@";
+    NSString *queryBase = @"?q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, safeText];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
@@ -386,19 +386,27 @@ static UIImage *userIconPlaceholder;
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
         NSArray *results = [array copy];
         
+        // filter out garbage locations
+        NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
+            return (location.type == 100 ||         // open spaces
+                    location.type == 9   ||         // counties
+                    location.type == 12  ||         // countries
+                    location.type == 8);            // states
+        }];
+
         [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
         
-        if (results.count == 0) {
+        if (validPlaces.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD showErrorWithStatus:@"No such place found. :("];
             });
-        } else if (results.count == 1) {
+        } else if (validPlaces.count == 1) {
             // dismiss the HUD
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD showSuccessWithStatus:@"Found one!"];
             });
             
-            ExploreLocation *place = (ExploreLocation *)results.firstObject;
+            ExploreLocation *place = (ExploreLocation *)validPlaces.firstObject;
             
             // configure the predicate for the place that was found
             ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
@@ -415,9 +423,9 @@ static UIImage *userIconPlaceholder;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [SVProgressHUD dismiss];
             });
-            
+
             // show the user a list of places
-            searchedPlaces = results;
+            searchedPlaces = validPlaces;
             
             placeSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which place?"
                                                                     message:nil
@@ -444,7 +452,7 @@ static UIImage *userIconPlaceholder;
         [SVProgressHUD showErrorWithStatus:err.localizedDescription];
     };
     
-    [objectLoader send];    
+    [objectLoader send];
 }
 
 - (void)searchForProject:(NSString *)text {
