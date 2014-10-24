@@ -32,8 +32,8 @@
     RKObjectMapping *mapping = [RKObjectMapping mappingForClass:[ExploreTaxon class]];
     
     [mapping mapKeyPath:@"id" toAttribute:@"taxonId"];
-    [mapping mapKeyPath:@"default_photo.medium_url" toAttribute:@"taxaPhotoUrl"];
-    [mapping mapKeyPath:@"wikipedia_summary" toAttribute:@"taxaWebContent"];
+    [mapping mapKeyPath:@"default_photo.medium_url" toAttribute:@"taxonPhotoUrl"];
+    [mapping mapKeyPath:@"wikipedia_summary" toAttribute:@"taxonWebContent"];
     
     return mapping;
 }
