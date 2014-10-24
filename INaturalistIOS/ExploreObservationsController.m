@@ -100,40 +100,31 @@
     } else
         [SVProgressHUD showWithStatus:@"Fetching all recent observations..." maskType:SVProgressHUDMaskTypeGradient];
     
-    NSString *urlString = [baseURL stringByAppendingString:query];
-
-    RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURLString:@"http://inaturalist.org"];
-    [manager loadObjectsAtResourcePath:[NSString stringWithFormat:@"%@%@", pathPattern, query]
-                          objectMapping:mapping
-                               delegate:self];
-
-    /*
-     RESTKIT 0.20
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        self.observations = [mappingResult.array copy];
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        self.observations = [array copy];
         
-        if (mappingResult.array.count > 0)
+        if (array.count > 0)
             [SVProgressHUD showSuccessWithStatus:@"Yay!"];
         else
             [SVProgressHUD showErrorWithStatus:@"No observations found."];
-        
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-    }];
+    };
     
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
 }
      
 
@@ -161,14 +152,5 @@
         return !observation.coordinatesObscured;
     }];
 }
-
-#pragma mark - RestKit Object Loader Delegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    NSLog(@"object loader failed");
-}
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    NSLog(@"object loader success");
-}
-
 
 @end
