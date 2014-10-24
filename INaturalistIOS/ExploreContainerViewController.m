@@ -11,7 +11,6 @@
 #import <BlocksKit/BlocksKit.h>
 #import <RestKit/RestKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <AFOAuth2Client/AFOAuth2Client.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <FlurrySDK/Flurry.h>
 
@@ -571,7 +570,7 @@ static UIImage *userIconPlaceholder;
     NSString *query = [NSString stringWithFormat:queryBase, coord.latitude, coord.longitude];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
     
@@ -652,7 +651,7 @@ static UIImage *userIconPlaceholder;
                            location.coordinate.longitude];
         
         NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-        RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:self];
+        RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
         objectLoader.method = RKRequestMethodGET;
         objectLoader.objectMapping = mapping;
         
