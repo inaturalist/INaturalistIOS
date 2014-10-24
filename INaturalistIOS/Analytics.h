@@ -16,8 +16,33 @@
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties;
 - (void)logAllPageViewForTarget:(UIViewController *)target;
 
+- (void)timedEvent:(NSString *)name;
+- (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
+- (void)endTimedEvent:(NSString *)name;
+- (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
+
 @end
 
 #pragma mark Event Names For Analytics
 
 extern NSString *kAnalyticsEventAppLaunch;
+
+// navigation
+extern NSString *kAnalyticsEventNavigateExploreGrid;
+extern NSString *kAnalyticsEventNavigateExploreMap;
+extern NSString *kAnalyticsEventNavigateExploreList;
+extern NSString *kAnalyticsEventNavigateExploreObsDetails;
+extern NSString *kAnalyticsEventNavigateExploreTaxonDetails;
+
+// search in explore
+extern NSString *kAnalyticsEventExploreSearchPeople;
+extern NSString *kAnalyticsEventExploreSearchProjects;
+extern NSString *kAnalyticsEventExploreSearchPlaces;
+extern NSString *kAnalyticsEventExploreSearchCritters;
+
+extern NSString *kAnalyticsEventExploreSearchNearMe;
+
+// add comments & ids in explore
+extern NSString *kAnalyticsEventExploreAddComment;
+extern NSString *kAnalyticsEventExploreAddIdentification;
+

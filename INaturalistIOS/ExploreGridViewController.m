@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <FlurrySDK/Flurry.h>
 
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"
@@ -18,6 +17,7 @@
 #import "ExploreObservationDetailViewController.h"
 #import "ExploreGridCell.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 @interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate> {
     UICollectionView *observationsCollectionView;
@@ -86,13 +86,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [Flurry logEvent:@"Navigate - Explore Grid" timed:YES];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreGrid];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [Flurry endTimedEvent:@"Navigate - Explore Grid" withParameters:nil];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreGrid];
 }
 
 #pragma mark - UI Helper

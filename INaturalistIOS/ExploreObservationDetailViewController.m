@@ -16,7 +16,6 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <FlurrySDK/Flurry.h>
 #import <AFNetworking/AFNetworking.h>
 
 #import "ExploreObservationDetailViewController.h"
@@ -30,6 +29,7 @@
 #import "ExploreObservationDetailHeader.h"
 #import "ExploreTaxonDetailsViewController.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 static NSDateFormatter *shortDateFormatter;
 static NSDateFormatter *shortTimeFormatter;
@@ -96,13 +96,13 @@ static NSDateFormatter *shortTimeFormatter;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [Flurry logEvent:@"Navigate - Explore Observation Details" timed:YES];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreObsDetails];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [Flurry endTimedEvent:@"Navigate - Explore Observation Details" withParameters:nil];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreObsDetails];
 }
 
 - (void)action {
@@ -348,6 +348,7 @@ static NSDateFormatter *shortTimeFormatter;
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
                                                                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                                                                            [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification];
                                                                                             // update the UI
                                                                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                 [SVProgressHUD showSuccessWithStatus:@"Added!"];
@@ -377,6 +378,7 @@ static NSDateFormatter *shortTimeFormatter;
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
                                                                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                                                                            [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
                                                                                              // update the UI
                                                                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                                                                 [SVProgressHUD showSuccessWithStatus:@"Added!"];

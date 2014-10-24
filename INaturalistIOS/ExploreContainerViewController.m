@@ -12,7 +12,6 @@
 #import <RestKit/RestKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <FlurrySDK/Flurry.h>
 
 #import "ExploreContainerViewController.h"
 
@@ -27,6 +26,7 @@
 #import "ExplorePerson.h"
 #import "ExploreSearchCompleteCell.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 #define SEARCH_RESULTS_CELL_ID @"SearchResultsCell"
 
@@ -308,8 +308,7 @@ static UIImage *userIconPlaceholder;
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
         NSArray *results = [array copy];
         
-        [Flurry logEvent:@"Search - People Search"
-          withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
+        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
         
         if (results.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -387,8 +386,7 @@ static UIImage *userIconPlaceholder;
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
         NSArray *results = [array copy];
         
-        [Flurry logEvent:@"Search - Place Search"
-          withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
+        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
         
         if (results.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -503,8 +501,7 @@ static UIImage *userIconPlaceholder;
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
         NSArray *results = [array copy];
         
-        [Flurry logEvent:@"Search - Project Search"
-          withParameters:@{ @"resultsToDisambiguate": @(results.count) }];
+        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
         
         if (results.count == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -576,9 +573,6 @@ static UIImage *userIconPlaceholder;
     
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
         NSArray *results = [array copy];
-        
-        [Flurry logEvent:@"Search - Location Search"
-          withParameters:@{ @"results": @(results.count) }];
         
         NSArray *openSpaces = [results bk_select:^BOOL(ExploreLocation *location) {
             return (location.type == 100);
@@ -774,8 +768,7 @@ static UIImage *userIconPlaceholder;
         if (indexPath.section == 1) {
             hasFulfilledLocationFetch = NO;
             
-            [Flurry logEvent:@"Search - Near Me"
-              withParameters:nil];
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchNearMe];
 
             // reset and hide the search UI
             searchBar.text = @"";
@@ -812,7 +805,6 @@ static UIImage *userIconPlaceholder;
                                                delegate:nil
                                       cancelButtonTitle:@"OK"
                                       otherButtonTitles:nil] show];
-                    [Flurry logEvent:@"Location Permission Denied"];
                 default:
                     break;
             }
@@ -830,8 +822,7 @@ static UIImage *userIconPlaceholder;
                 [self searchForPeople:searchBar.text];
             } else {
                 
-                [Flurry logEvent:@"Search - Critters" withParameters:nil];
-
+                [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
                 
                 ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
                 predicate.type = (ExploreSearchPredicateType)indexPath.row;

@@ -8,12 +8,12 @@
 
 #import <RestKit/RestKit.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <FlurrySDK/Flurry.h>
 
 #import "ExploreTaxonDetailsViewController.h"
 #import "ExploreMappingProvider.h"
 #import "ExploreTaxon.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 @interface ExploreTaxonDetailsViewController () {
     NSInteger _taxonId;
@@ -78,13 +78,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [Flurry logEvent:@"Navigate - Explore Taxon Details" timed:YES];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreTaxonDetails];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [Flurry endTimedEvent:@"Navigate - Explore Taxon Details" withParameters:nil];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreTaxonDetails];
 }
 
 - (NSInteger)taxonId {

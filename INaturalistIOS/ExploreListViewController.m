@@ -10,7 +10,6 @@
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
-#import <FlurrySDK/Flurry.h>
 
 #import "ExploreListViewController.h"
 #import "ExploreObservation.h"
@@ -18,6 +17,7 @@
 #import "ExploreListTableViewCell.h"
 #import "ExploreObservationDetailViewController.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 @interface ExploreListViewController () <UITableViewDataSource,UITableViewDelegate> {
     UITableView *observationsTableView;
@@ -78,13 +78,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [Flurry logEvent:@"Navigate - Explore List" timed:YES];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreList];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [Flurry endTimedEvent:@"Navigate - Explore List" withParameters:nil];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreList];
 }
 
 #pragma mark - UI Helper

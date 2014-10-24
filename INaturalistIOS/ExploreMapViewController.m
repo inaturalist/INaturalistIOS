@@ -14,7 +14,6 @@
 #import <BlocksKit/UIBarButtonItem+BlocksKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <GeoJSONSerialization/GeoJSONSerialization.h>
-#import <FlurrySDK/Flurry.h>
 
 #import "ExploreMapViewController.h"
 #import "ExploreMappingProvider.h"
@@ -22,6 +21,7 @@
 #import "ExploreObservationDetailViewController.h"
 #import "ExploreProject.h"
 #import "UIColor+ExploreColors.h"
+#import "Analytics.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -50,13 +50,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [Flurry logEvent:@"Navigate - Explore Map" timed:YES];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreMap];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [Flurry endTimedEvent:@"Navigate - Explore Map" withParameters:nil];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreMap];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -154,8 +154,8 @@
     MKPolygonRenderer *renderer = [[MKPolygonRenderer alloc] initWithOverlay:overlay];
     renderer.alpha = 1.0f;
     renderer.lineWidth = 2.0f;
-    renderer.strokeColor = [[UIColor inatGreen] colorWithAlphaComponent:1.0f];
-    renderer.fillColor = [[UIColor inatGreen] colorWithAlphaComponent:0.2f];
+    renderer.strokeColor = [[UIColor mapOverlayColor] colorWithAlphaComponent:1.0f];
+    renderer.fillColor = [[UIColor mapOverlayColor] colorWithAlphaComponent:0.2f];
     return renderer;
 }
 
