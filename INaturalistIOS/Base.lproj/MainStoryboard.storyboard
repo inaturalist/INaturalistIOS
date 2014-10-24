@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
@@ -448,15 +447,15 @@
                     </tabBar>
                     <connections>
                         <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
-                        <segue destination="l2X-u6-R0s" kind="relationship" relationship="viewControllers" id="A9X-Gm-TJz"/>
                         <segue destination="t06-UC-YUc" kind="relationship" relationship="viewControllers" id="i8C-Km-UsP"/>
                         <segue destination="2Xz-Sc-ScK" kind="relationship" relationship="viewControllers" id="Fw8-Wc-oOq"/>
                         <segue destination="ydS-en-xrb" kind="relationship" relationship="viewControllers" id="ILD-eE-B2s"/>
+                        <segue destination="2go-53-3Kx" kind="relationship" relationship="viewControllers" id="V7G-f9-DCP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9h-gt-HSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1727" y="1261"/>
+            <point key="canvasLocation" x="-2047" y="1201"/>
         </scene>
         <!--Map View Controller-->
         <scene sceneID="AT5-vs-Vn6">
@@ -488,6 +487,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SPI-fQ-tke" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-292" y="1836"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="gc6-uK-FOl">
+            <objects>
+                <navigationController id="2go-53-3Kx" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="6cS-83-3B7"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2Ih-nZ-tvp">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Jhn-uK-6Tn" kind="relationship" relationship="rootViewController" id="kvS-wT-xvh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rgw-UT-lST" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1867" y="3161"/>
+        </scene>
+        <!--Explore Container View Controller-->
+        <scene sceneID="zO9-SS-TeB">
+            <objects>
+                <viewController id="Jhn-uK-6Tn" customClass="ExploreContainerViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="YyB-7q-zmy">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6Nn-t9-YXj" customClass="I"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v7p-Tr-6FS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1383" y="3173"/>
         </scene>
         <!--Projects-->
         <scene sceneID="B1T-ab-195">
