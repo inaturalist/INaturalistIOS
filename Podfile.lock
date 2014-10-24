@@ -1,7 +1,5 @@
 PODS:
   - AFNetworking (1.3.4)
-  - AFOAuth2Client (0.1.2):
-    - AFNetworking (~> 1.3)
   - BlocksKit (2.2.5):
     - BlocksKit/All
   - BlocksKit/All (2.2.5):
@@ -56,7 +54,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (= 1.3.4)
-  - AFOAuth2Client (= 0.1.2)
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
   - CrashlyticsFramework (= 2.2.4)
@@ -72,7 +69,6 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
-  AFOAuth2Client: 4f05d29e0a26c7ddf529dd7c4480af6ee1e982c6
   BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
   CrashlyticsFramework: 0c28a2c07a51b7691e6668b83824b0b0be77f307
