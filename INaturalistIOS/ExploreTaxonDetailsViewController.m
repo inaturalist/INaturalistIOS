@@ -100,48 +100,39 @@
 - (void)updateUIForTaxaId:(NSInteger)taxaId {
     // fetch taxa via restkit
     
-    /*
-     RESTKIT 0.20
-     
-    NSIndexSet *statusCodeSet = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
-    RKMapping *mapping = [ExploreMappingProvider taxaMapping];
+    RKObjectMapping *mapping = [ExploreMappingProvider taxonMapping];
     
-    NSString *baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/taxa/%ld.json", (long)taxaId];
-    NSString *pathPattern = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxaId];
+    NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxaId];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
     
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:mapping
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:pathPattern
-                                                                                           keyPath:@""
-                                                                                       statusCodes:statusCodeSet];
+    objectLoader.onDidLoadObject = ^(id object) {
+        ExploreTaxon *taxa = (ExploreTaxon *)object;
+        
+        [taxaImageView sd_setImageWithURL:[NSURL URLWithString:taxa.taxonPhotoUrl]
+                         placeholderImage:nil
+                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                    [taxaImageView setNeedsDisplay];
+                                }];
+        
+        [taxaWebView loadHTMLString:taxa.taxonWebContent
+                            baseURL:[NSURL URLWithString:path relativeToURL:[[RKObjectManager sharedManager] baseURL]]];
+        [taxaWebView setNeedsLayout];
+        [taxaWebView setNeedsDisplay];
+        
+        [self.view setNeedsLayout];
+    };
     
-    NSURL *url = [NSURL URLWithString:baseURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    RKObjectRequestOperation *operation = [[RKObjectRequestOperation alloc] initWithRequest:request
-                                                                        responseDescriptors:@[responseDescriptor]];
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if (mappingResult.count == 1) {
-            ExploreTaxa *taxa = (ExploreTaxa *)mappingResult.firstObject;
-            
-            [taxaImageView sd_setImageWithURL:[NSURL URLWithString:taxa.taxaPhotoUrl]
-                             placeholderImage:nil
-                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                        [taxaImageView setNeedsDisplay];
-                                    }];
-            
-            [taxaWebView loadHTMLString:taxa.taxaWebContent baseURL:url];
-            [taxaWebView setNeedsLayout];
-            [taxaWebView setNeedsDisplay];
-            
-            [self.view setNeedsLayout];
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"error: %@", error.localizedDescription);
-    }];
-    
-    [operation start];
-     */
+    objectLoader.onDidFailWithError = ^(NSError *err) {
 
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+
+    };
+    
+    [objectLoader send];
 }
 
 @end
