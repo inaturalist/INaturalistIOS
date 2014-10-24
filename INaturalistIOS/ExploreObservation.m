@@ -45,4 +45,14 @@
     return YES;
 }
 
+- (BOOL)validatePublicPositionalAccuracy:(id *)ioValue error:(NSError **)outError {
+    // Reject an article ID of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+
+}
+
 @end
