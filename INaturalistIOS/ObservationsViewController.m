@@ -547,6 +547,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [self loadData];
     }
     
+    self.title = NSLocalizedString(@"My Observations", nil);
+    
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
