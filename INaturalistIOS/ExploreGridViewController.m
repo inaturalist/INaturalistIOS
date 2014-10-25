@@ -38,7 +38,8 @@
         if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
             numberOfCellsPerRow = 5;
         }
-        float itemWidth = (self.view.frame.size.width / numberOfCellsPerRow) - 2.0f;
+        float shortestSide = MIN(self.view.frame.size.width, self.view.frame.size.height);
+        float itemWidth = (shortestSide / numberOfCellsPerRow) - 2.0f;
         flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
         flowLayout.minimumInteritemSpacing = 2.0f;
         flowLayout.minimumLineSpacing = 2.0f;
