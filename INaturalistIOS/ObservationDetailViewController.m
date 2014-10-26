@@ -523,6 +523,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
 {
     NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
