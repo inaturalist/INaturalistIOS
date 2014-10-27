@@ -8,31 +8,10 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>appicon.png</string>
-		<string>appicon@2x.png</string>
-		<string>appicon@72.png</string>
-		<string>appicon@76.png</string>
-		<string>appicon@120.png</string>
-		<string>appicon@144.png</string>
-		<string>appicon@152.png</string>
-	</array>
 	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>appicon.png</string>
-				<string>appicon@2x.png</string>
-				<string>appicon@72.png</string>
-				<string>appicon@144.png</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
+	<key>CFBundleIcons~ipad</key>
+	<dict/>
 	<key>CFBundleIdentifier</key>
 	<string>org.inaturalist.inaturalist</string>
 	<key>CFBundleInfoDictionaryVersion</key>
