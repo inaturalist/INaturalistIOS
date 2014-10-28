@@ -145,7 +145,11 @@
     
     detail.navigationItem.leftBarButtonItem = close;
     
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:nav animated:YES completion:^{
+        // presenting from this collection view is screwing up the content inset
+        // reset it here
+        observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    }];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
