@@ -81,7 +81,7 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-3-[observationNameLabel]-3-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[observationNameLabel]-5-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
