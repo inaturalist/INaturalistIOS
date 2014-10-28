@@ -294,11 +294,9 @@ static UIImage *userIconPlaceholder;
     
     RKObjectMapping *mapping = [ExploreMappingProvider personMapping];
     
-    NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    
     NSString *pathPattern = @"/people/search.json";
     NSString *queryBase = @"?per_page=50&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, safeText];
+    NSString *query = [NSString stringWithFormat:queryBase, text];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
     RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
@@ -372,11 +370,9 @@ static UIImage *userIconPlaceholder;
 
     RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
     
-    NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    
     NSString *pathPattern = @"/places/search.json";
     NSString *queryBase = @"?q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, safeText];
+    NSString *query = [NSString stringWithFormat:queryBase, text];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
     RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
@@ -460,11 +456,9 @@ static UIImage *userIconPlaceholder;
     
     RKObjectMapping *mapping = [ExploreMappingProvider projectMapping];
     
-    NSString *safeText = [text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    
     NSString *pathPattern = @"/projects/search.json";
     NSString *queryBase = @"?per_page=50&q=%@";        // place_type=County|Open+Space
-    NSString *query = [NSString stringWithFormat:queryBase, safeText];
+    NSString *query = [NSString stringWithFormat:queryBase, text];
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
     RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
