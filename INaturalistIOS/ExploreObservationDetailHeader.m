@@ -256,19 +256,22 @@ static UIImage *userIconPlaceholder;
                                                                      metrics:0
                                                                        views:views]];
         
-        // there's got to be a better way to do this, but timing...
-        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[commonNameLabel]-3-[scientificNameLabel]-[photoImageView(>=150)]-[observerAvatarImageView(==30)]"
-                                                                         options:0
-                                                                         metrics:0
-                                                                           views:views]];
-        } else {
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[commonNameLabel]-0-[scientificNameLabel]-5-[photoImageView(==180)]-[observerAvatarImageView(==30)]"
-                                                                         options:0
-                                                                         metrics:0
-                                                                           views:views]];
-        }
+        float photoImageHeight = 180.0f;
+        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+            photoImageHeight = 360.0f;
         
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.photoImageView
+                                                         attribute:NSLayoutAttributeHeight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1.0f
+                                                          constant:photoImageHeight]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[commonNameLabel]-0-[scientificNameLabel]-5-[photoImageView]-[observerAvatarImageView(==30)]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];        
         
         
         // observer name is top aligned with observer avatar image (-2px)
@@ -463,7 +466,7 @@ static UIImage *userIconPlaceholder;
 
 + (CGFloat)heightForObservation:(ExploreObservation *)observation {
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-        return 600;
+        return 460;
     else
         return 280;
 }
