@@ -80,15 +80,13 @@
         [SVProgressHUD showWithStatus:@"Searching for observations..." maskType:SVProgressHUDMaskTypeGradient];
         
         for (ExploreSearchPredicate *predicate in _activeSearchPredicates) {
-            // TODO: not TOTALLY URL safe but it's a start...
-            NSString *urlSafeSearchTerm = [predicate.searchTerm stringByReplacingOccurrencesOfString:@" " withString:@"+"];
             if (![predicate.searchTerm isEqualToString:@""]) {
                 if (predicate.type == ExploreSearchPredicateTypePeople) {
                     // people search requires a differnt baseurl and thus different path pattern
                     baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
                     pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
                 } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
-                    query = [query stringByAppendingString:[NSString stringWithFormat:@"&q=%@", urlSafeSearchTerm]];
+                    query = [query stringByAppendingString:[NSString stringWithFormat:@"&q=%@", predicate.searchTerm]];
                 } else if (predicate.type == ExploreSearchPredicateTypePlace) {
                     query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
                 } else if (predicate.type == ExploreSearchPredicateTypeProject) {
