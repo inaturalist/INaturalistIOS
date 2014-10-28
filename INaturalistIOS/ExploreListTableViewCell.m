@@ -334,6 +334,7 @@ static NSDateFormatter *shortFormatter;
 
 - (void)prepareForReuse {
     observationImageView.image = nil;
+    [observationImageView sd_cancelCurrentImageLoad];
     observationImageView.layer.borderColor = [UIColor clearColor].CGColor;
     observationImageView.layer.borderWidth = 0.0f;
     commonNameLabel.text = nil;

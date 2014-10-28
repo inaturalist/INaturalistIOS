@@ -101,6 +101,7 @@
 
 - (void)prepareForReuse {
     observationImageView.image = nil;
+    [observationImageView sd_cancelCurrentImageLoad];
     observationNameLabel.text = @"";
 }
 
@@ -125,7 +126,8 @@
         
         [observationImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                           [observationImageView setNeedsDisplay];
+                                           if ([_observation isEqual:observation])
+                                               [observationImageView setNeedsDisplay];
                                        }];
     }
     
