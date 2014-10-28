@@ -22,6 +22,7 @@
 #import "ExploreProject.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
+#import "ExploreObservation.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -149,6 +150,33 @@
     [self.observationDataSource fetchObservations];
      */
 }
+
+- (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MKUserLocation class]])
+        return nil;
+    
+    static NSString *const AnnotationViewReuseID = @"ObservationAnnotationMarkerReuseID";
+    
+    MKAnnotationView *annotationView = [map dequeueReusableAnnotationViewWithIdentifier:AnnotationViewReuseID];
+    if (!annotationView) {
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
+                                                       reuseIdentifier:AnnotationViewReuseID];
+        annotationView.canShowCallout = NO;
+    }
+    
+    // style for iconic taxon of the observation
+    FAKIcon *mapMarker = [FAKIonIcons ios7LocationIconWithSize:25.0f];
+    ExploreObservation *observation = (ExploreObservation *)annotation;
+    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
+    FAKIcon *mapOutline = [FAKIonIcons ios7LocationOutlineIconWithSize:25.0f];
+    [mapOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
+    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 25.0f)];
+    
+    
+    return annotationView;
+}
+
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
     MKPolygonRenderer *renderer = [[MKPolygonRenderer alloc] initWithOverlay:overlay];
