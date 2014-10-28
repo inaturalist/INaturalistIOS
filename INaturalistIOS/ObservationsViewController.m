@@ -24,6 +24,7 @@
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "CustomIOS7AlertView.h"
+#import "Analytics.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -91,6 +92,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                                              withLabel:activityMsg];
     }
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
+
     if (!self.syncQueue) {
         self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
     }

@@ -46,3 +46,14 @@ extern NSString *kAnalyticsEventExploreSearchNearMe;
 extern NSString *kAnalyticsEventExploreAddComment;
 extern NSString *kAnalyticsEventExploreAddIdentification;
 
+// share in explore
+extern NSString *kAnalyticsEventExploreObservationShare;
+
+// create observation
+extern NSString *kAnalyticsEventCreateObservation;
+extern NSString *kAnalyticsEventSyncObservation;
+
+// login
+extern NSString *kAnalyticsEventLogin;
+extern NSString *kAnalyticsEventSignup;
+

@@ -15,6 +15,7 @@
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
@@ -267,6 +268,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         title = @"Check Your Email";
         message = @"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.";
     } else {
+        [[Analytics sharedClient] event:kAnalyticsEventSignup];
         title = NSLocalizedString(@"Welcome to iNaturalist!", nil);
         message = NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil);
     }
@@ -295,6 +297,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
              requestAccessToAccountWithType:AccountType
              assertionType:[NSURL URLWithString:@"http://facebook.com"]
              assertion:ExternalAccessToken];
+            [[Analytics sharedClient] event:kAnalyticsEventLogin
+                             withProperties:@{ @"Via": @"Facebook" }];
             break;
         case FBSessionStateClosed:
 //            NSLog(@"session FBSessionStateClosed");
@@ -416,6 +420,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         }
     }
     if (loginSucceeded){
+        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                         withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults]
          setValue:INatAccessToken

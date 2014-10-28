@@ -170,6 +170,11 @@ static NSDateFormatter *shortTimeFormatter;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld", (long)self.observation.observationId]];
     UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                            applicationActivities:nil];
+    activity.completionHandler = ^(NSString *activityType, BOOL completed) {
+        if (completed)
+            [[Analytics sharedClient] event:kAnalyticsEventExploreObservationShare
+                             withProperties:@{ @"destination": activityType }];
+    };
     [self presentViewController:activity animated:YES completion:nil];
 }
 

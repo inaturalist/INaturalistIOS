@@ -89,5 +89,15 @@ NSString *kAnalyticsEventExploreSearchNearMe =                  @"Explore - Sear
 NSString *kAnalyticsEventExploreAddComment =                    @"Explore - Add Comment";
 NSString *kAnalyticsEventExploreAddIdentification =             @"Explore - Add Identification";
 
+// share in explore
+NSString *kAnalyticsEventExploreObservationShare =              @"Explore - Observation - Share";
+
+// create observation
+NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
+NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
+
+// login
+NSString *kAnalyticsEventLogin =                                @"Login";
+NSString *kAnalyticsEventSignup =                               @"Create Account";
 
 

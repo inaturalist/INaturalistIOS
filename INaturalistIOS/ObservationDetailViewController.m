@@ -30,6 +30,7 @@
 #import "UIColor+INaturalist.h"
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
+#import "Analytics.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -1402,6 +1403,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)save
 {
+    if (self.observation.isNew) {
+        [[Analytics sharedClient] event:kAnalyticsEventCreateObservation];
+    }
+    
     [self uiToObservation];
     NSDictionary *changes = self.observation.attributeChanges;
     NSDate *now = [NSDate date];
