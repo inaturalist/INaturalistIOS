@@ -188,6 +188,9 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    // deselect the annotation so the user can select it again
+    [mapView deselectAnnotation:view.annotation animated:NO];
+    
     ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
     detail.observation = (ExploreObservation *)view.annotation;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
