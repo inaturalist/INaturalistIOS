@@ -103,7 +103,6 @@ static const int GutterWidth  = 5;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     [self tintMenuButton];
 }
@@ -455,7 +454,7 @@ static const int GutterWidth  = 5;
             [button setTintColor:[UIColor inatTint]];
         } else {
             if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-                [button setTintColor:[UIColor whiteColor]];
+                [button setTintColor:[UIColor blackColor]];
             } else {
                 [button setTintColor:[UIColor clearColor]];
             }

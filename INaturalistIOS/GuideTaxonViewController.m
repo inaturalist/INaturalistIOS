@@ -23,7 +23,6 @@ static const int WebViewTag = 1;
 - (void)viewWillAppear:(BOOL)animated
 {
     // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     [super viewWillAppear:animated];
 }

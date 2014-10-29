@@ -138,7 +138,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         } else {
             if (indexPath.row < 2) {
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
-                cell.backgroundColor = [UIColor clearColor];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.userInteractionEnabled = NO;
             }
@@ -160,7 +159,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                     UILabel *subtitle = (UILabel *)[cell viewWithTag:203];
                     UIImageView *imageView = (UIImageView *)[cell viewWithTag:201];
                     if (self.guide.ngzDownloadedAt) {
-                        title.textColor = [UIColor whiteColor];
+                        title.textColor = [UIColor blackColor];
                         title.text = NSLocalizedString(@"Downloaded", nil);
                         NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                         [fmt setTimeZone:[NSTimeZone localTimeZone]];
@@ -169,7 +168,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         subtitle.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
                         imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
                     } else if (self.guide.ngzURL) {
-                        title.textColor = [UIColor whiteColor];
+                        title.textColor = [UIColor blackColor];
                         title.text = NSLocalizedString(@"Download for offline use", nil);
                         subtitle.text = self.guide.ngzFileSize;
                         imageView.image = [UIImage imageNamed:@"265-download.png"];
@@ -183,7 +182,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             }
         }
     }
-    cell.backgroundColor = [UIColor clearColor];
     [cell setIndentationWidth:60.0];
     return cell;
 }
@@ -235,7 +233,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     }
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    view.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+    view.backgroundColor = [UIColor grayColor];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(68, 0, 252, 22)];
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];

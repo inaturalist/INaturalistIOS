@@ -24,6 +24,7 @@
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "CustomIOS7AlertView.h"
+#import "Analytics.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -91,6 +92,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                                              withLabel:activityMsg];
     }
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
+
     if (!self.syncQueue) {
         self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
     }
@@ -546,7 +549,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (!self.observations) {
         [self loadData];
     }
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"header-logo.png"]];
+    
+    self.title = NSLocalizedString(@"My Observations", nil);
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
@@ -563,7 +567,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
@@ -581,7 +584,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
+    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                self.syncButton, 

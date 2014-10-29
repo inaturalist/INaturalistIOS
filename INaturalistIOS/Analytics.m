@@ -48,9 +48,56 @@
     [Flurry logAllPageViewsForTarget:target];
 }
 
+- (void)timedEvent:(NSString *)name {
+    [Flurry logEvent:name timed:YES];
+}
+- (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
+    [Flurry logEvent:name withParameters:properties timed:YES];
+}
+
+- (void)endTimedEvent:(NSString *)name {
+    [Flurry endTimedEvent:name withParameters:nil];
+}
+- (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
+    [Flurry endTimedEvent:name withParameters:properties];
+}
+
+
 @end
 
 
 #pragma mark Event Names For Analytics
 
 NSString *kAnalyticsEventAppLaunch = @"AppLaunch";
+
+// navigation
+NSString *kAnalyticsEventNavigateExploreGrid =                  @"Explore - Navigate - Grid";
+NSString *kAnalyticsEventNavigateExploreMap =                   @"Explore - Navigate - Map";
+NSString *kAnalyticsEventNavigateExploreList =                  @"Explore - Navigate - List";
+NSString *kAnalyticsEventNavigateExploreObsDetails =            @"Explore - Navigate - Obs Details";
+NSString *kAnalyticsEventNavigateExploreTaxonDetails =          @"Explore - Navigate - Taxon Details";
+
+// search in explore
+NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";
+NSString *kAnalyticsEventExploreSearchProjects =                @"Explore - Search - Projects";
+NSString *kAnalyticsEventExploreSearchPlaces =                  @"Explore - Search - Places";
+NSString *kAnalyticsEventExploreSearchCritters =                @"Explore - Search - Critters";
+NSString *kAnalyticsEventExploreSearchNearMe =                  @"Explore - Search - Near Me";
+
+
+// add comments & ids in explore
+NSString *kAnalyticsEventExploreAddComment =                    @"Explore - Add Comment";
+NSString *kAnalyticsEventExploreAddIdentification =             @"Explore - Add Identification";
+
+// share in explore
+NSString *kAnalyticsEventExploreObservationShare =              @"Explore - Observation - Share";
+
+// create observation
+NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
+NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
+
+// login
+NSString *kAnalyticsEventLogin =                                @"Login";
+NSString *kAnalyticsEventSignup =                               @"Create Account";
+
+

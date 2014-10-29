@@ -30,6 +30,7 @@
 #import "UIColor+INaturalist.h"
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
+#import "Analytics.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -413,9 +414,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillAppear:(BOOL)animated
 {
     // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
-    self.getToolbarViewController.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.getToolbarViewController.navigationController.navigationBar.translucent = NO;
-    self.getToolbarViewController.navigationController.toolbar.barStyle = UIBarStyleBlack;
     self.getToolbarViewController.navigationController.toolbar.translucent = NO;
     if (self.observation) {
         [self reloadObservationFieldValues];
@@ -523,6 +522,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         NSLog(@"ERROR: no image specified.");
     }
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
@@ -1400,6 +1403,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)save
 {
+    if (self.observation.isNew) {
+        [[Analytics sharedClient] event:kAnalyticsEventCreateObservation];
+    }
+    
     [self uiToObservation];
     NSDictionary *changes = self.observation.attributeChanges;
     NSDate *now = [NSDate date];

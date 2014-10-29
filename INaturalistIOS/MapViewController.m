@@ -103,7 +103,7 @@
     [self.mapView setShowsUserLocation:YES];
     [self.navigationController.navigationBar setHidden:YES];
     [self.navigationController setToolbarHidden:NO];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleBlack];
+    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     if (!self.currentLocationButton) {
         self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location.png"]

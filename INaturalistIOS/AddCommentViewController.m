@@ -28,7 +28,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
 	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
