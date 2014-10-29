@@ -10,4 +10,18 @@
 
 @implementation UIFont (ExploreFonts)
 
+// from kueda: You could also only italicize when rank is genus, species, subspecies, or variety
+// (omits some other minor infraspecific taxa, but not many)
++ (instancetype)fontForTaxonRankName:(NSString *)rankName ofSize:(CGFloat)size {
+    if ([rankName isEqualToString:@"genus"] ||
+        [rankName isEqualToString:@"species"] ||
+        [rankName isEqualToString:@"subspecies"] ||
+        [rankName isEqualToString:@"variety"]) {
+        
+        return [UIFont italicSystemFontOfSize:size];
+    } else {
+        return [UIFont systemFontOfSize:size];
+    }
+}
+
 @end

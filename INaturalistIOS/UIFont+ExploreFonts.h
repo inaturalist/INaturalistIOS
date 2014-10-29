@@ -10,4 +10,6 @@
 
 @interface UIFont (ExploreFonts)
 
++ (instancetype)fontForTaxonRankName:(NSString *)rankName ofSize:(CGFloat)size;
+
 @end
