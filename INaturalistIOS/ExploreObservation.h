@@ -19,6 +19,7 @@
 @property (nonatomic, copy) NSString *iconicTaxonName;
 @property (nonatomic, copy) NSString *taxonName;
 @property (nonatomic, assign) NSInteger taxonId;
+@property (nonatomic, copy) NSString *taxonRank;
 @property (nonatomic, copy) NSString *commonName;
 @property (nonatomic, copy) NSString *observerName;
 @property (nonatomic, assign) NSInteger observerId;
