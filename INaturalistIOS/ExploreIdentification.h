@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSString *identificationScientificName;
 @property (nonatomic, copy) NSString *identificationPhotoUrlString;
 @property (nonatomic, assign) NSInteger identificationTaxonId;
+@property (nonatomic, copy) NSString *identificationTaxonRank;
 @property (nonatomic, copy) NSString *identificationIconicTaxonName;
 
 @property (nonatomic, assign) NSInteger identifierId;

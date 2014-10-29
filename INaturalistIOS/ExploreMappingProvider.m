@@ -48,6 +48,7 @@
     [mapping mapKeyPath:@"taxon.photo_url" toAttribute:@"identificationPhotoUrlString"];
     [mapping mapKeyPath:@"body" toAttribute:@"identificationBody"];
     [mapping mapKeyPath:@"taxon_id" toAttribute:@"identificationTaxonId"];
+    [mapping mapKeyPath:@"taxon.rank" toAttribute:@"identificationTaxonRank"];
     [mapping mapKeyPath:@"taxon.iconic_taxon_name" toAttribute:@"identificationIconicTaxonName"];
     [mapping mapKeyPath:@"user.id" toAttribute:@"identifierId"];
     [mapping mapKeyPath:@"user.login" toAttribute:@"identifierName"];
@@ -81,6 +82,7 @@
     [mapping mapKeyPath:@"iconic_taxon_name" toAttribute:@"iconicTaxonName"];
     [mapping mapKeyPath:@"taxon.name" toAttribute:@"taxonName"];
     [mapping mapKeyPath:@"taxon.id" toAttribute:@"taxonId"];
+    [mapping mapKeyPath:@"taxon.rank" toAttribute:@"taxonRank"];
     [mapping mapKeyPath:@"taxon.common_name.name" toAttribute:@"commonName"];
     [mapping mapKeyPath:@"time_observed_at_utc" toAttribute:@"timeObservedAt"];
     [mapping mapKeyPath:@"observed_on" toAttribute:@"observedOn"];
