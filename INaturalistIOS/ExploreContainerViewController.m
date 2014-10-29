@@ -65,6 +65,7 @@
     
     CLLocationManager *locationManager;
     
+    NSTimer *locationFetchTimer;
     BOOL hasFulfilledLocationFetch;
 }
 @end
@@ -593,6 +594,8 @@ static UIImage *userIconPlaceholder;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    [locationFetchTimer invalidate];
+    
     CLLocation *location = manager.location;
     [manager stopUpdatingLocation];
     manager = nil;
@@ -751,20 +754,27 @@ static UIImage *userIconPlaceholder;
                     if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
                         [locationManager requestWhenInUseAuthorization];
                     else {
-                        locationManager = [[CLLocationManager alloc] init];
-                        locationManager.delegate = self;
                         [locationManager startUpdatingLocation];
                     }
                     break;
                 case kCLAuthorizationStatusAuthorizedAlways:
-                case kCLAuthorizationStatusAuthorizedWhenInUse:
+                case kCLAuthorizationStatusAuthorizedWhenInUse: {
                     locationManager = [[CLLocationManager alloc] init];
                     locationManager.delegate = self;
                     [locationManager startUpdatingLocation];
                     // this may take a moment
                     [SVProgressHUD showWithStatus:@"Finding your location..."
                                          maskType:SVProgressHUDMaskTypeGradient];
+                    locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:10.0f
+                                                                              block:^(NSTimer *timer) {
+                                                                                  [SVProgressHUD showErrorWithStatus:@"Unable to find location"];
+                                                                                  [locationManager stopUpdatingLocation];
+                                                                                  locationManager = nil;
+                                                                              }
+                                                                            repeats:NO];
                     break;
+                }
+                    
                 case kCLAuthorizationStatusDenied:
                 case kCLAuthorizationStatusRestricted:
                     [[[UIAlertView alloc] initWithTitle:@"Permission denied"
@@ -786,7 +796,17 @@ static UIImage *userIconPlaceholder;
                 // search for project
                 [self searchForProject:searchBar.text];
             } else if (indexPath.row == 1) {
-                [self searchForPeople:searchBar.text];
+                // people search must be logged in
+                if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
+                    [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
+                                                message:@"People search requires logging in!"
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                    return;
+                } else {
+                    [self searchForPeople:searchBar.text];
+                }
             } else {
                 
                 [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
