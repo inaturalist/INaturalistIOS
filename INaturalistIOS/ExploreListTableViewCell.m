@@ -226,14 +226,14 @@ static NSDateFormatter *shortFormatter;
                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                         multiplier:1.0f
                                                           constant:(self.frame.size.width - 105.0f) * .7]];
-        // observer label - bottom aligned with imageview bottom
+        // observer label - bottom aligned with imageview bottom, -3px
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observerNameLabel
                                                          attribute:NSLayoutAttributeBottom
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:observationImageView
                                                          attribute:NSLayoutAttributeBottom
                                                         multiplier:1.0f
-                                                          constant:0.0f]];
+                                                          constant:-3.0f]];
         
         // observed on label - right aligned with cell
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedOnLabel
