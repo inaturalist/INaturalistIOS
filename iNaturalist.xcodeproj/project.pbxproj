@@ -313,6 +313,7 @@
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
+		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1008,6 +1009,8 @@
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
+		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
+		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1852,6 +1855,8 @@
 				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
 				FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */,
 				FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */,
+				FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */,
+				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -2474,6 +2479,7 @@
 				6098FD9B16F3F6890053987E /* GTMHTTPFetcherService.m in Sources */,
 				FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */,
 				6098FD9C16F3F6890053987E /* GTMHTTPFetchHistory.m in Sources */,
+				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				6098FD9D16F3F6890053987E /* GTMLogger.m in Sources */,
 				6098FD9E16F3F6890053987E /* GTMMethodCheck.m in Sources */,
 				6098FD9F16F3F6890053987E /* GTMNSDictionary+URLArguments.m in Sources */,
