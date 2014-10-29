@@ -36,7 +36,7 @@
                                                     <rect key="frame" x="47" y="-2" width="230" height="46"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="search"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="x2g-xK-zHb" id="WR1-Cn-Aac"/>
                                                     </connections>
