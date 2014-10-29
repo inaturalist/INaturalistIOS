@@ -16,6 +16,7 @@
 #import "ExploreObservationPhoto.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
+#import "UIFont+ExploreFonts.h"
 
 static NSDateFormatter *shortDateFormatter;
 static NSDateFormatter *shortTimeFormatter;
@@ -399,6 +400,7 @@ static UIImage *userIconPlaceholder;
     self.commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
     self.scientificNameLabel.text = observation.taxonName;
+    self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:12.0f];
     
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
     NSString *observerAvatarUrlString = [NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg",

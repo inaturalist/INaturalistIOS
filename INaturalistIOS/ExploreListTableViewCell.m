@@ -14,6 +14,7 @@
 #import "ExploreObservationPhoto.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
+#import "UIFont+ExploreFonts.h"
 
 static NSDateFormatter *shortFormatter;
 
@@ -365,6 +366,7 @@ static NSDateFormatter *shortFormatter;
     commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
     scientificNameLabel.text = observation.taxonName;
+    scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:14.0f];
     observerNameLabel.text = observation.observerName;
     
     NSDate *date = [observation timeObservedAt];
