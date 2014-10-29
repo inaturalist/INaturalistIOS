@@ -233,35 +233,37 @@ static NSDateFormatter *shortTimeFormatter;
     ExploreObservationDetailHeader *view = [[ExploreObservationDetailHeader alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 200)];
     [view setObservation:self.observation];
     
-    view.photoImageView.userInteractionEnabled = YES;
-    
-    [view.photoImageView addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+    if (self.observation.observationPhotos.count > 0) {
         
-        NSArray *galleryData = [self.observation.observationPhotos bk_map:^id(ExploreObservationPhoto *observationPhoto) {
-            return [MHGalleryItem itemWithURL:observationPhoto.largeURL thumbnailURL:observationPhoto.thumbURL];
-        }];
-        
-        MHUICustomization *customization = [[MHUICustomization alloc] init];
-        customization.showOverView = NO;
-        customization.showMHShareViewInsteadOfActivityViewController = NO;
-        customization.hideShare = YES;
-        customization.useCustomBackButtonImageOnImageViewer = NO;
-        
-        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarHidden];
-        gallery.galleryItems = galleryData;
-        gallery.presentingFromImageView = view.photoImageView;
-        gallery.presentationIndex = 0;
-        gallery.UICustomization = customization;
-        
-        __weak MHGalleryController *blockGallery = gallery;
-        
-        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [blockGallery dismissViewControllerAnimated:YES dismissImageView:view.photoImageView completion:nil];
-            });
-        };    
-        [self presentMHGalleryController:gallery animated:YES completion:nil];
-    }]];
+        view.photoImageView.userInteractionEnabled = YES;
+        [view.photoImageView addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+            
+            NSArray *galleryData = [self.observation.observationPhotos bk_map:^id(ExploreObservationPhoto *observationPhoto) {
+                return [MHGalleryItem itemWithURL:observationPhoto.largeURL thumbnailURL:observationPhoto.thumbURL];
+            }];
+            
+            MHUICustomization *customization = [[MHUICustomization alloc] init];
+            customization.showOverView = NO;
+            customization.showMHShareViewInsteadOfActivityViewController = NO;
+            customization.hideShare = YES;
+            customization.useCustomBackButtonImageOnImageViewer = NO;
+            
+            MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarHidden];
+            gallery.galleryItems = galleryData;
+            gallery.presentingFromImageView = view.photoImageView;
+            gallery.presentationIndex = 0;
+            gallery.UICustomization = customization;
+            
+            __weak MHGalleryController *blockGallery = gallery;
+            
+            gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [blockGallery dismissViewControllerAnimated:YES dismissImageView:view.photoImageView completion:nil];
+                });
+            };
+            [self presentMHGalleryController:gallery animated:YES completion:nil];
+        }]];
+    }
     
     [@[view.commonNameLabel, view.scientificNameLabel] bk_each:^(UILabel *label) {
         label.userInteractionEnabled = YES;
