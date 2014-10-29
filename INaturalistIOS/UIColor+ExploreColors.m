@@ -52,7 +52,7 @@
         return [UIColor colorWithHexString:@"#ff4500"];
     
     else if ([iconicTaxon isEqualToString:@"Chromista"])
-        return [UIColor colorWithHexString:@"993300"];
+        return [UIColor colorWithHexString:@"#993300"];
     
     else if ([iconicTaxon isEqualToString:@"Protozoa"])
         return [UIColor colorWithHexString:@"#691776"];
