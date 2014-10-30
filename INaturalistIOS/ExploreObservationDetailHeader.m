@@ -419,7 +419,7 @@ static UIImage *userIconPlaceholder;
     } else {
         // if there is a positional accuracy for the observation, display it
         if (observation.publicPositionalAccuracy > 0)
-            observedAccuracyLabel.text = [NSString stringWithFormat:@"(%ldm accuracy)", (long)observation.publicPositionalAccuracy];
+            observedAccuracyLabel.text = [NSString stringWithFormat:@"%ldm accuracy", (long)observation.publicPositionalAccuracy];
 
         observedLocationLabel.text = [NSString stringWithFormat:@"%f,%f", observation.latitude, observation.longitude];
         // attempt to geocode the lat/lng into a place name
