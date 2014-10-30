@@ -79,6 +79,9 @@
     playButton.enabled = _photoSource.numberOfPhotos > 1;
     _previousButton.enabled = _centerPhotoIndex > 0;
     _nextButton.enabled = _centerPhotoIndex >= 0 && _centerPhotoIndex < _photoSource.numberOfPhotos-1;
+    
+    self.navigationBarStyle = UIBarStyleDefault;
+    _toolbar.barStyle = UIBarStyleDefault;
 }
 
 
