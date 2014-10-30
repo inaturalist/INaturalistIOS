@@ -35,6 +35,7 @@
 @property (nonatomic, assign) BOOL mappable;
 @property (nonatomic, assign) NSInteger publicPositionalAccuracy;
 @property (nonatomic, assign) BOOL coordinatesObscured;
+@property (nonatomic, copy) NSString *placeGuess;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coords;
 

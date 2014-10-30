@@ -420,28 +420,32 @@ static UIImage *userIconPlaceholder;
         // if there is a positional accuracy for the observation, display it
         if (observation.publicPositionalAccuracy > 0)
             observedAccuracyLabel.text = [NSString stringWithFormat:@"%ldm accuracy", (long)observation.publicPositionalAccuracy];
-
-        observedLocationLabel.text = [NSString stringWithFormat:@"%f,%f", observation.latitude, observation.longitude];
-        // attempt to geocode the lat/lng into a place name
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude
-                                                          longitude:observation.longitude];
-        [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *err) {
-            // use the first placemark
-            CLPlacemark *placeMark = [placemarks firstObject];
-            if (placeMark.areasOfInterest.count > 0) {
-                // use the first area of interest
-                observedLocationLabel.text = placeMark.areasOfInterest.firstObject;
-            } else if (placeMark.inlandWater) {
-                observedLocationLabel.text = placeMark.inlandWater;
-            } else if (placeMark.ocean) {
-                observedLocationLabel.text = placeMark.ocean;
-            } else if (placeMark.locality && placeMark.administrativeArea) {
-                // San Francisco, CA
-                observedLocationLabel.text = [NSString stringWithFormat:@"%@, %@",
-                                              placeMark.locality,
-                                              placeMark.administrativeArea];
-            }
-        }];
+        
+        if (observation.placeGuess && ![observation.placeGuess isEqualToString:@""]) {
+            observedLocationLabel.text = observation.placeGuess;
+        } else {
+            observedLocationLabel.text = [NSString stringWithFormat:@"%f,%f", observation.latitude, observation.longitude];
+            // attempt to geocode the lat/lng into a place name
+            CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude
+                                                              longitude:observation.longitude];
+            [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *err) {
+                // use the first placemark
+                CLPlacemark *placeMark = [placemarks firstObject];
+                if (placeMark.areasOfInterest.count > 0) {
+                    // use the first area of interest
+                    observedLocationLabel.text = placeMark.areasOfInterest.firstObject;
+                } else if (placeMark.inlandWater) {
+                    observedLocationLabel.text = placeMark.inlandWater;
+                } else if (placeMark.ocean) {
+                    observedLocationLabel.text = placeMark.ocean;
+                } else if (placeMark.locality && placeMark.administrativeArea) {
+                    // San Francisco, CA
+                    observedLocationLabel.text = [NSString stringWithFormat:@"%@, %@",
+                                                  placeMark.locality,
+                                                  placeMark.administrativeArea];
+                }
+            }];
+        }
         observedLocationLabel.textColor = [UIColor inatBlack];
     }
     

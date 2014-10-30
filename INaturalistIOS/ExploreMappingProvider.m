@@ -94,6 +94,7 @@
     [mapping mapKeyPath:@"mappable" toAttribute:@"mappable"];
     [mapping mapKeyPath:@"public_positional_accuracy" toAttribute:@"publicPositionalAccuracy"];
     [mapping mapKeyPath:@"coordinates_obscured" toAttribute:@"coordinatesObscured"];
+    [mapping mapKeyPath:@"place_guess" toAttribute:@"placeGuess"];
     
     [mapping mapKeyPath:@"photos" toRelationship:@"observationPhotos" withMapping:[self observationPhotoMapping]];
     [mapping mapKeyPath:@"comments" toRelationship:@"comments" withMapping:[self commentMapping]];
