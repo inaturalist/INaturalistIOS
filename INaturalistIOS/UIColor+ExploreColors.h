@@ -27,4 +27,7 @@
 
 + (UIColor *)mapOverlayColor;
 
+- (UIColor *)lighterColor;
+- (UIColor *)darkerColor;
+
 @end

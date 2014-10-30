@@ -170,7 +170,7 @@
     ExploreObservation *observation = (ExploreObservation *)annotation;
     [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
     FAKIcon *mapOutline = [FAKIonIcons ios7LocationOutlineIconWithSize:25.0f];
-    [mapOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
+    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:observation.iconicTaxonName] darkerColor]];
     annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 25.0f)];
     
     
