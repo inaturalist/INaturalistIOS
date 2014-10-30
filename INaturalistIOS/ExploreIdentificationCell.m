@@ -237,7 +237,7 @@ static NSDateFormatter *shortDateFormatter = nil;
     @synchronized(shortDateFormatter) {
         dateString = [shortDateFormatter stringFromDate:identification.identifiedDate];
     }
-    identifierNameDateLabel.text = [NSString stringWithFormat:@"Added by %@ on %@.",
+    identifierNameDateLabel.text = [NSString stringWithFormat:@"Added by %@ on %@",
                                     identification.identifierName, dateString];
     
     if (identification.identifierIconUrl) {
