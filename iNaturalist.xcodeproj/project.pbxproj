@@ -308,7 +308,6 @@
 		FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */; };
 		FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */; };
 		FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
-		FA4E730A19FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730219FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.m */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -1002,8 +1001,6 @@
 		FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationDetailViewController.m; sourceTree = "<group>"; };
 		FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationVisualizerViewController.h; sourceTree = "<group>"; };
 		FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationVisualizerViewController.m; sourceTree = "<group>"; };
-		FA4E730119FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonDetailsViewController.h; sourceTree = "<group>"; };
-		FA4E730219FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonDetailsViewController.m; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
@@ -1911,8 +1908,6 @@
 				FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */,
 				FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */,
 				FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */,
-				FA4E730119FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.h */,
-				FA4E730219FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -2432,7 +2427,6 @@
 				19E4CC1D162407CE00694E5D /* AbstractActionSheetPicker.m in Sources */,
 				19E4CC1E162407CE00694E5D /* ActionSheetCustomPicker.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
-				FA4E730A19FAD14E00A9AB5D /* ExploreTaxonDetailsViewController.m in Sources */,
 				19E4CC1F162407CE00694E5D /* ActionSheetDatePicker.m in Sources */,
 				19E4CC20162407CE00694E5D /* ActionSheetDistancePicker.m in Sources */,
 				19E4CC21162407CE00694E5D /* ActionSheetStringPicker.m in Sources */,

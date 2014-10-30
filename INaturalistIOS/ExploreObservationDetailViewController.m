@@ -27,9 +27,10 @@
 #import "ExploreIdentificationCell.h"
 #import "ExploreCommentCell.h"
 #import "ExploreObservationDetailHeader.h"
-#import "ExploreTaxonDetailsViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
+#import "TaxonDetailViewController.h"
+#import "Taxon.h"
 
 static NSDateFormatter *shortDateFormatter;
 static NSDateFormatter *shortTimeFormatter;
@@ -179,9 +180,34 @@ static NSDateFormatter *shortTimeFormatter;
 }
 
 - (void)showTaxaDetailsForIdentification:(ExploreIdentification *)identification {
-    ExploreTaxonDetailsViewController *taxaDetails = [[ExploreTaxonDetailsViewController alloc] initWithNibName:nil bundle:nil];
-    taxaDetails.taxonId = identification.identificationTaxonId;
-    [self.navigationController pushViewController:taxaDetails animated:YES];
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+        return;
+    }
+    
+    RKObjectMapping *mapping = [Taxon mapping];
+    
+    NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)identification.identificationTaxonId];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
+    
+    objectLoader.onDidLoadObject = ^(id object) {
+        TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+                                           instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+        tdvc.taxon = object;
+        [self.navigationController pushViewController:tdvc animated:YES];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+    };
+    
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+    };
+    
+    [objectLoader send];
 }
 
 - (void)agreeWithIdentification:(ExploreIdentification *)identification {
@@ -269,9 +295,34 @@ static NSDateFormatter *shortTimeFormatter;
         label.userInteractionEnabled = YES;
         [label addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
             if (self.observation.taxonId != 0) {
-                ExploreTaxonDetailsViewController *taxaDetails = [[ExploreTaxonDetailsViewController alloc] initWithNibName:nil bundle:nil];
-                taxaDetails.taxonId = self.observation.taxonId;
-                [self.navigationController pushViewController:taxaDetails animated:YES];
+                if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+                    return;
+                }
+                
+                RKObjectMapping *mapping = [Taxon mapping];
+                
+                NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonId];
+                RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+                objectLoader.method = RKRequestMethodGET;
+                objectLoader.objectMapping = mapping;
+                
+                objectLoader.onDidLoadObject = ^(id object) {
+                    TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+                                                       instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+                    tdvc.taxon = object;
+                    [self.navigationController pushViewController:tdvc animated:YES];
+                };
+                
+                objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+                };
+                
+                objectLoader.onDidFailWithError = ^(NSError *err) {
+                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+                };
+                
+                [objectLoader send];
             }
         }]];
     }];
