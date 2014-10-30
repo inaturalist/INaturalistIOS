@@ -109,6 +109,7 @@
     [mapping mapKeyPath:@"square_url" toAttribute:@"squareURL"];
     [mapping mapKeyPath:@"thumb_url" toAttribute:@"thumbURL"];
     [mapping mapKeyPath:@"large_url" toAttribute:@"largeURL"];
+    [mapping mapKeyPath:@"small_url" toAttribute:@"smallURL"];
     
     return mapping;
 }

@@ -13,6 +13,7 @@
 @property (nonatomic, copy) NSString *mediumURL;
 @property (nonatomic, copy) NSString *squareURL;
 @property (nonatomic, copy) NSString *thumbURL;
+@property (nonatomic, copy) NSString *smallURL;
 @property (nonatomic, copy) NSString *largeURL;
 
 @end
