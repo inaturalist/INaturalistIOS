@@ -259,7 +259,7 @@ static UIImage *userIconPlaceholder;
         
         float photoImageHeight = 180.0f;
         if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-            photoImageHeight = 360.0f;
+            photoImageHeight = 600.0f;
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.photoImageView
                                                          attribute:NSLayoutAttributeHeight
@@ -472,7 +472,7 @@ static UIImage *userIconPlaceholder;
 
 + (CGFloat)heightForObservation:(ExploreObservation *)observation {
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-        return 460;
+        return 700;
     else
         return 280;
 }
