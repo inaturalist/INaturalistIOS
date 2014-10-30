@@ -24,7 +24,7 @@
                                                              title:@"Welcome to iNaturalist!"];
     
     // populate the photoSource with locale-specific tutorial images
-    for (int i = 1; i <= 6; i++) {
+    for (int i = 1; i <= 7; i++) {
         NSURL *tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%d%@", i, curLang]
                                                          withExtension:@"png"];
         if (!tutorialItemUrl) {
