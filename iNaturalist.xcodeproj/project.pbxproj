@@ -265,6 +265,8 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
+		FA133E021A02D54100700852 /* tutorial7en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E001A02D54000700852 /* tutorial7en.png */; };
+		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
 		FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */; };
@@ -928,6 +930,8 @@
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FA133E001A02D54000700852 /* tutorial7en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7en.png; sourceTree = "<group>"; };
+		FA133E011A02D54100700852 /* tutorial7es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7es.png; sourceTree = "<group>"; };
 		FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetLocalePicker.h; sourceTree = "<group>"; };
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
@@ -1262,6 +1266,8 @@
 				60A0E25416FD090A003621FA /* tutorial5es.png */,
 				FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */,
 				FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */,
+				FA133E001A02D54000700852 /* tutorial7en.png */,
+				FA133E011A02D54100700852 /* tutorial7es.png */,
 				194D8E4D18E227C80098E28C /* usericon.png */,
 			);
 			name = images;
@@ -2198,6 +2204,7 @@
 				19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */,
 				19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */,
 				1953066A150592DC004951D8 /* iconic_taxon_animalia.png in Resources */,
+				FA133E021A02D54100700852 /* tutorial7en.png in Resources */,
 				1953066B150592DC004951D8 /* iconic_taxon_arachnida.png in Resources */,
 				1953066C150592DC004951D8 /* iconic_taxon_aves.png in Resources */,
 				1953066D150592DC004951D8 /* iconic_taxon_fungi.png in Resources */,
@@ -2229,6 +2236,7 @@
 				FA4E72A319FAC8A000A9AB5D /* arachnida-200px.png in Resources */,
 				195F324F151AE55A0019CB85 /* 06-magnify@2x.png in Resources */,
 				FA4E72A819FAC8A000A9AB5D /* mammalia-200px.png in Resources */,
+				FA133E031A02D54100700852 /* tutorial7es.png in Resources */,
 				FA4E72AB19FAC8A000A9AB5D /* protozoa-200px.png in Resources */,
 				195F3251151AE56A0019CB85 /* 01-refresh@2x.png in Resources */,
 				195F3253151AE5760019CB85 /* 83-calendar@2x.png in Resources */,
