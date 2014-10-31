@@ -16,5 +16,6 @@
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
+@property (nonatomic, copy) NSNumber *adminLevel;
 
 @end

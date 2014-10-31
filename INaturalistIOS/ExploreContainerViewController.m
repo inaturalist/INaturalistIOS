@@ -385,10 +385,12 @@ static UIImage *userIconPlaceholder;
         
         // filter out garbage locations
         NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
-            return (location.type == 100 ||         // open spaces
-                    location.type == 9   ||         // counties
-                    location.type == 12  ||         // countries
-                    location.type == 8);            // states
+            // all administrative places, except towns, are valid
+            if (location.adminLevel && location.adminLevel.integerValue != 3) { return YES; }
+            // all open spaces (parks) are valid
+            if (location.type == 100) { return YES; }
+            // everything else is invalid
+            return NO;
         }];
 
         [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];

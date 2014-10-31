@@ -123,6 +123,7 @@
     [mapping mapKeyPath:@"display_name" toAttribute:@"name"];
     [mapping mapKeyPath:@"longitude" toAttribute:@"longitude"];
     [mapping mapKeyPath:@"latitude" toAttribute:@"latitude"];
+    [mapping mapKeyPath:@"admin_level" toAttribute:@"adminLevel"];
 
     return mapping;
 }
