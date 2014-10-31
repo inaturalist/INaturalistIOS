@@ -128,6 +128,9 @@ static const int TaxonCellSubtitleTag = 3;
         [self.searchDisplayController setActive:YES];
         self.searchDisplayController.searchBar.text = self.query;
     }
+    
+    if (self.hidesDoneButton)
+        self.navigationItem.rightBarButtonItem = nil;
 }
 
 #pragma mark - UITableViewDelegate
@@ -221,6 +224,8 @@ static const int TaxonCellSubtitleTag = 3;
                                           instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
         tsvc.taxon = taxon;
         tsvc.delegate = self.delegate;
+        // propogate the "hides done button" state through the stack
+        if (self.hidesDoneButton) { tsvc.hidesDoneButton = YES; }
         vc = tsvc;
     }
     [navigationController pushViewController:vc animated:YES];

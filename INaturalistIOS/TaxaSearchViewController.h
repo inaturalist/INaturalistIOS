@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSDate *lastRequestAt;
 @property (nonatomic, strong) NSObject *delegate;
 @property (nonatomic, strong) NSString *query;
+@property (nonatomic, assign) BOOL hidesDoneButton;
 - (IBAction)clickedCancel:(id)sender;
 - (void)loadData;
 - (void)showTaxon:(Taxon *)taxon;
