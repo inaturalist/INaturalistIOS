@@ -31,11 +31,12 @@
 #import "Analytics.h"
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
+#import "TaxaSearchViewController.h"
 
 static NSDateFormatter *shortDateFormatter;
 static NSDateFormatter *shortTimeFormatter;
 
-@interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate> {
+@interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
         
     UILabel *commonNameLabel;
@@ -69,9 +70,18 @@ static NSDateFormatter *shortTimeFormatter;
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithTableViewStyle:UITableViewStyleGrouped]) {
         self.title = @"Details";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                                               target:self
-                                                                                               action:@selector(action)];
+        UIBarButtonItem *share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                               target:self
+                                                                               action:@selector(action)];
+        FAKIcon *tagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:30.0f];
+        FAKIcon *smallTagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:25.0f];
+        [tagIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
+        UIBarButtonItem *tag = [[UIBarButtonItem alloc] initWithImage:[tagIcon imageWithSize:CGSizeMake(30, 30)]
+                                                  landscapeImagePhone:[smallTagIcon imageWithSize:CGSizeMake(25, 25)]
+                                                                style:UIBarButtonItemStylePlain
+                                                               target:self
+                                                               action:@selector(tag)];
+        self.navigationItem.rightBarButtonItems = @[tag, share];
     }
     
     return self;
@@ -113,6 +123,23 @@ static NSDateFormatter *shortTimeFormatter;
                                      destructiveButtonTitle:nil
                                           otherButtonTitles:@"Open in Safari", @"Share", nil];
     [shareActionSheet showInView:self.view];
+}
+
+- (void)tag {
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
+        [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
+                                    message:@"No anonymous identifications!"
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    TaxaSearchViewController *tsvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+                                      instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
+    [tsvc setDelegate:self];
+    tsvc.hidesDoneButton = YES;
+    [self.navigationController pushViewController:tsvc animated:YES];
 }
 
 #pragma mark - UIActionSheetDelegate
@@ -365,6 +392,13 @@ static NSDateFormatter *shortTimeFormatter;
     }
 }
 
+
+#pragma mark - TaxaSearchViewControllerDelegate
+
+- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
+    [self addIdentification:taxon.recordID.integerValue];
+}
+
 #pragma mark - SLKTableView methods
 
 - (void)didPressRightButton:(id)sender
@@ -409,6 +443,10 @@ static NSDateFormatter *shortTimeFormatter;
                                                                                             [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification];
                                                                                             // update the UI
                                                                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                // if it wasn't an "agree" id, then we need to pop back to this VC
+                                                                                                [self.navigationController popToRootViewControllerAnimated:YES];
+                                                                                                if (![self.navigationController.topViewController isEqual:self])
+                                                                                                    [self.navigationController popToRootViewControllerAnimated:YES];
                                                                                                 [SVProgressHUD showSuccessWithStatus:@"Added!"];
                                                                                             });
                                                                                             [self fetchObservationCommentsAndIds];
