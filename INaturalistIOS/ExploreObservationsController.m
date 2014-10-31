@@ -17,19 +17,15 @@
 #import "ExploreProject.h"
 #import "ExplorePerson.h"
 
-@interface ExploreObservationsController () {
-    NSMutableArray *_activeSearchPredicates;
-}
-
-@end
 
 @implementation ExploreObservationsController
 
-@synthesize observations;
+@synthesize observations, activeSearchPredicates;
 
 - (instancetype)init {
     if (self = [super init]) {
-        _activeSearchPredicates = [[NSMutableArray alloc] init];
+        self.activeSearchPredicates = @[];
+        self.observations = [NSOrderedSet orderedSet];
     }
     return self;
 }
@@ -39,47 +35,78 @@
 }
 
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate {
+    // clear any stashed objects
+    self.observations = [NSOrderedSet orderedSet];
+
     // only one predicate of a type can be active at a time
     
     // if we already have an active predicate of the type to be added, remove it
-    NSArray *selected = [_activeSearchPredicates bk_select:^BOOL(ExploreSearchPredicate *p) {
+    NSArray *selected = [self.activeSearchPredicates bk_select:^BOOL(ExploreSearchPredicate *p) {
         return p.type != predicate.type;
     }];
     // add our new predicate to the active group
-    _activeSearchPredicates = [[selected arrayByAddingObject:predicate] mutableCopy];
+    self.activeSearchPredicates = [selected arrayByAddingObject:predicate];
     
+    // fetch using new search predicate(s)
     [self fetchObservations];
 }
 
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate {
-    [_activeSearchPredicates removeObject:predicate];
+    NSMutableArray *predicates = [self.activeSearchPredicates mutableCopy];
+    [predicates removeObject:predicate];
+    self.activeSearchPredicates = predicates;
+    
+    // clear any stashed objects
+    self.observations = [NSOrderedSet orderedSet];
+    
+    // fetch using new search predicate(s), if any
     [self fetchObservations];
 }
 
 - (void)removeAllSearchPredicates {
-    [_activeSearchPredicates removeAllObjects];
+    self.activeSearchPredicates = @[];
+    
+    // clear any stashed objects
+    self.observations = [NSOrderedSet orderedSet];
+    
+    // fetch using no search predicates
     [self fetchObservations];
 }
 
-- (NSArray *)activeSearchPredicates {
-    return _activeSearchPredicates;
+- (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region {
+    [self fetchObservationsInLocationRegion:region];
+}
+
+- (void)fetchObservationsInLocationRegion:(ExploreRegion *)region {
+    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
+                                           inLocationRegion:region];
+    [self performObservationFetchForPath:path shouldNotify:NO];
 }
 
 - (void)fetchObservations {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates];
+    [self performObservationFetchForPath:path shouldNotify:YES];
+}
 
-    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
+- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
+    return [self pathForFetchWithSearchPredicates:predicates inLocationRegion:nil];
+}
 
+- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates inLocationRegion:(ExploreRegion *)region {
     NSString *baseURL = @"http://www.inaturalist.org/observations.json";
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
-
+    
+    if (region) {
+        query = [query stringByAppendingString:[NSString stringWithFormat:@"&swlat=%f&swlng=%f&nelat=%f&nelng=%f",
+                                                region.swCoord.latitude, region.swCoord.longitude,
+                                                region.neCoord.latitude, region.neCoord.longitude]];
+    }
+    
     // apply active search predicates to the query
-    if (_activeSearchPredicates.count > 0) {
-        [SVProgressHUD showWithStatus:@"Searching for observations..." maskType:SVProgressHUDMaskTypeGradient];
-        
-        for (ExploreSearchPredicate *predicate in _activeSearchPredicates) {
+    if (predicates.count > 0) {
+        for (ExploreSearchPredicate *predicate in predicates) {
             if (![predicate.searchTerm isEqualToString:@""]) {
                 if (predicate.type == ExploreSearchPredicateTypePeople) {
                     // people search requires a differnt baseurl and thus different path pattern
@@ -94,37 +121,54 @@
                 }
             }
         }
-        
-    } else
-        [SVProgressHUD showWithStatus:@"Fetching all recent observations..." maskType:SVProgressHUDMaskTypeGradient];
+    }
     
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    return [NSString stringWithFormat:@"%@%@", pathPattern, query];
+}
+
+- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify {
+    
+    if (shouldNotify) {
+        if (self.activeSearchPredicates.count > 0)
+            [SVProgressHUD showWithStatus:@"Searching for observations..." maskType:SVProgressHUDMaskTypeGradient];
+        else
+            [SVProgressHUD showWithStatus:@"Fetching all recent observations..." maskType:SVProgressHUDMaskTypeGradient];
+    }
+    
+    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
     RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
     
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        self.observations = [array copy];
+        NSSet *unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
+        NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
+        }];
+        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];        
         
-        if (array.count > 0)
-            [SVProgressHUD showSuccessWithStatus:@"Yay!"];
-        else
-            [SVProgressHUD showErrorWithStatus:@"No observations found."];
+        if ([SVProgressHUD isVisible]) {
+            if (array.count > 0)
+                [SVProgressHUD showSuccessWithStatus:@"Yay!"];
+            else
+                [SVProgressHUD showErrorWithStatus:@"No observations found."];
+        }
     };
     
     objectLoader.onDidFailWithError = ^(NSError *err) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        if (shouldNotify)
+            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
     };
     
     objectLoader.onDidFailLoadWithError = ^(NSError *err) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        if (shouldNotify)
+            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
     };
     
     [objectLoader send];
 }
-     
 
 - (NSString *)combinedColloquialSearchPhrase {
     NSMutableString *colloquial = [[NSMutableString alloc] init];
@@ -145,7 +189,7 @@
 }
 
 - (NSArray *)mappableObservations {
-    return [self.observations bk_select:^BOOL(ExploreObservation *observation) {
+    return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
         // for iOS, we have our own idea of what "mappable" is
         return !observation.coordinatesObscured;
     }];

@@ -19,6 +19,7 @@ static int KVOContext;
 
 - (void)dealloc {
     [self stopObserving:_observationDataSource forKeyPath:@"observations"];
+    [self stopObserving:_observationDataSource forKeyPath:@"activeSearchPredicates"];
 }
 
 #pragma mark - getter/setter
@@ -28,11 +29,15 @@ static int KVOContext;
 }
 
 - (void)setObservationDataSource:(NSObject<ExploreObservationsDataSource> *)newDataSource {
-    if (_observationDataSource)
+    if (_observationDataSource) {
         [self stopObserving:_observationDataSource forKeyPath:@"observations"];
+        [self stopObserving:_observationDataSource forKeyPath:@"activeSearchPredicates"];
+    }
     
     _observationDataSource = newDataSource;
     [self startObserving:_observationDataSource forKeyPath:@"observations"];
+    [self startObserving:_observationDataSource forKeyPath:@"activeSearchPredicates"];
+
 }
 
 #pragma mark - KVO
@@ -51,10 +56,15 @@ static int KVOContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &KVOContext) {
-        if ([object isEqual:self.observationDataSource] && [keyPath isEqualToString:@"observations"]) {
-            NSLog(@"observations changed");
-            if ([self respondsToSelector:@selector(observationChangedCallback)])
-                [self observationChangedCallback];
+        if ([object isEqual:self.observationDataSource]) {
+            if ([keyPath isEqualToString:@"observations"]) {
+                if ([self respondsToSelector:@selector(observationChangedCallback)])
+                    [self observationChangedCallback];
+            } else if ([keyPath isEqualToString:@"activeSearchPredicates"]) {
+                if ([self respondsToSelector:@selector(activeSearchPredicatesChangedCallback)]) {
+                    [self activeSearchPredicatesChangedCallback];
+                }
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

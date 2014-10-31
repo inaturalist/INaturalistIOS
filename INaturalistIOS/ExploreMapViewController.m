@@ -23,6 +23,7 @@
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 #import "ExploreObservation.h"
+#import "ExploreRegion.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -32,6 +33,8 @@
     BOOL isTrackingUserLocation;
     
     CLLocationManager *locationManager;
+    
+    NSTimer *mapChangedTimer;
 }
 
 @end
@@ -100,22 +103,38 @@
 
 #pragma mark - KVO
 
-- (void)observationChangedCallback {
+- (void)activeSearchPredicatesChangedCallback {
+    [mapChangedTimer invalidate];
     [mapView removeAnnotations:mapView.annotations];
-    [mapView addAnnotations:self.observationDataSource.mappableObservations];
+}
+
+- (void)observationChangedCallback {
+    // in case this callback fires because of a change in search,
+    // invalidate the map changed timer. unlikely but be safe.
+    [mapChangedTimer invalidate];
     
-    // scroll to fit the new annotations
-    [mapView showAnnotations:self.observationDataSource.mappableObservations animated:YES];
+    // sweep through and remove any annotations that aren't in the visible map rect anymore
+    [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+        return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
+    }]];
     
-    [mapView removeOverlays:mapView.overlays];
-    if ([self.observationDataSource activeSearchLimitedByLocation]) {
-        for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
-            if (predicate.type == ExploreSearchPredicateTypePlace)
-                [self addOverlaysForLocationId:predicate.searchLocation.locationId];
-            else if (predicate.type == ExploreSearchPredicateTypeProject)
-                [self addOverlaysForLocationId:predicate.searchProject.locationId];
-        }
-    }
+    // compile candidates for adding to the map
+    NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
+        return MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
+    }];
+    
+    // remove anything that's not in candidates, or that's not in the first 100
+    NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
+        return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
+    }];
+    [mapView removeAnnotations:annotationsToRemove];
+    
+    // add anything that's in candidates but not on the map already, and that's in the first 100
+    NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
+        return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
+    }];
+    
+    [mapView addAnnotations:annotationsToAdd];
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -143,12 +162,22 @@
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
+    [mapChangedTimer invalidate];
+}
+
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
-    // inifinite scroll into new region
-    /*
-    self.observationDataSource.rect = mv.visibleMapRect;
-    [self.observationDataSource fetchObservations];
-     */
+    // give the user a bit to keep scrolling before we make a new API call
+    mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.25f
+                                                           block:^(NSTimer *timer) {
+                                                               @synchronized(self) {
+                                                                   // inifinite scroll into new region
+                                                                   ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
+                                                                   [self.observationDataSource expandActiveSearchIntoLocationRegion:region];
+                                                               }
+                                                           }
+                                                         repeats:NO];
+
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation

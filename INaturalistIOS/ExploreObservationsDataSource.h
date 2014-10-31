@@ -10,11 +10,13 @@
 #import <MapKit/MapKit.h>
 
 #import "ExploreSearchPredicate.h"
+#import "ExploreRegion.h"
 
 @protocol ExploreObservationsDataSource <NSObject>
 
-@property NSArray *observations;
+@property NSOrderedSet *observations;
 @property (readonly) NSArray *mappableObservations;
+@property NSArray *activeSearchPredicates;
 
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate;
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate;
@@ -22,7 +24,8 @@
 - (void)reload;
 
 - (NSString *)combinedColloquialSearchPhrase;
-@property (readonly) NSArray *activeSearchPredicates;
 - (BOOL)activeSearchLimitedByLocation;
+
+- (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region;
 
 @end

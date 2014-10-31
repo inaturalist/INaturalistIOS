@@ -269,6 +269,7 @@
 		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
+		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */; };
 		FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */; };
 		FA4E72A219FAC8A000A9AB5D /* animalia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729419FAC8A000A9AB5D /* animalia-200px.png */; };
@@ -936,6 +937,8 @@
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
 		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
+		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "actinopterygii-200px.png"; sourceTree = "<group>"; };
 		FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "amphibia-200px.png"; sourceTree = "<group>"; };
 		FA4E729419FAC8A000A9AB5D /* animalia-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "animalia-200px.png"; sourceTree = "<group>"; };
@@ -1895,6 +1898,8 @@
 				FA4E72EF19FACEF000A9AB5D /* ExploreSearchPredicate.h */,
 				FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */,
 				FA4E72EE19FACEE000A9AB5D /* ExploreObservationsDataSource.h */,
+				FA4529E61A03F70200147895 /* ExploreRegion.h */,
+				FA4529E71A03F70200147895 /* ExploreRegion.m */,
 			);
 			name = "iNat API";
 			sourceTree = "<group>";
@@ -2379,6 +2384,7 @@
 				FA4E72EC19FACE6900A9AB5D /* ExploreSearchCompleteCell.m in Sources */,
 				198CF8E314F5B1350064DF05 /* PhotoViewController.m in Sources */,
 				FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */,
+				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,

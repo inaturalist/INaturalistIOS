@@ -14,6 +14,7 @@
 // visualizers will implement this to notice when observations has changed
 - (void)observationChangedCallback;
 - (void)observationsLimitedToLocation;
+- (void)activeSearchPredicatesChangedCallback;
 @end
 
 @interface ExploreObservationVisualizerViewController : UIViewController <ExploreObservationVisualizer>
