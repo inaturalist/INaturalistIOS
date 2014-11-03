@@ -11,6 +11,7 @@
 @class ExploreLocation;
 @class ExploreProject;
 @class ExplorePerson;
+@class Taxon;
 
 typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
     ExploreSearchPredicateTypeCritter,
@@ -22,7 +23,7 @@ typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
 @interface ExploreSearchPredicate : UIViewController
 
 @property ExploreSearchPredicateType type;
-@property (copy) NSString *searchTerm;
+@property (retain) Taxon *searchTaxon;
 @property (retain) ExploreLocation *searchLocation;
 @property (retain) ExploreProject *searchProject;
 @property (retain) ExplorePerson *searchPerson;

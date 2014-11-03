@@ -10,13 +10,18 @@
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
 #import "ExplorePerson.h"
+#import "Taxon.h"
 
 @implementation ExploreSearchPredicate
 
 - (NSString *)colloquialSearchPhrase {
     switch (self.type) {
         case ExploreSearchPredicateTypeCritter:
-            return [NSString stringWithFormat:@"named '%@'", self.searchTerm];
+            if (self.searchTaxon.defaultName) {
+                return [NSString stringWithFormat:@"named '%@ (%@)'", self.searchTaxon.name, self.searchTaxon.defaultName];
+            } else {
+                return [NSString stringWithFormat:@"named '%@'", self.searchTaxon.name];
+            }
             break;
         case ExploreSearchPredicateTypePeople:
             if (self.searchPerson.name)

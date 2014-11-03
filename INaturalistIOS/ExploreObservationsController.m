@@ -16,7 +16,7 @@
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
 #import "ExplorePerson.h"
-
+#import "Taxon.h"
 
 @implementation ExploreObservationsController
 
@@ -107,18 +107,16 @@
     // apply active search predicates to the query
     if (predicates.count > 0) {
         for (ExploreSearchPredicate *predicate in predicates) {
-            if (![predicate.searchTerm isEqualToString:@""]) {
-                if (predicate.type == ExploreSearchPredicateTypePeople) {
-                    // people search requires a differnt baseurl and thus different path pattern
-                    baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
-                    pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
-                } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
-                    query = [query stringByAppendingString:[NSString stringWithFormat:@"&q=%@", predicate.searchTerm]];
-                } else if (predicate.type == ExploreSearchPredicateTypePlace) {
-                    query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
-                } else if (predicate.type == ExploreSearchPredicateTypeProject) {
-                    query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
-                }
+            if (predicate.type == ExploreSearchPredicateTypePeople) {
+                // people search requires a differnt baseurl and thus different path pattern
+                baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
+                pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
+            } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
+            } else if (predicate.type == ExploreSearchPredicateTypePlace) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
+            } else if (predicate.type == ExploreSearchPredicateTypeProject) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
             }
         }
     }

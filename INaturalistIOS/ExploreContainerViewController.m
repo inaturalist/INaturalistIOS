@@ -27,6 +27,8 @@
 #import "ExploreSearchCompleteCell.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
+#import "Taxon.h"
+#import "TaxonPhoto.h"
 
 #define SEARCH_RESULTS_CELL_ID @"SearchResultsCell"
 
@@ -58,6 +60,10 @@
     UIAlertView *peopleSearchHelperAlertView;
     UITableView *peopleSearchHelperTableView;
     NSArray *searchedPeople;
+    
+    UIAlertView *taxaSearchHelperAlertView;
+    UITableView *taxaSearchHelperTableView;
+    NSArray *searchedTaxa;
     
     ExploreMapViewController *mapVC;
     ExploreGridViewController *gridVC;
@@ -289,6 +295,82 @@ static UIImage *userIconPlaceholder;
 }
 
 #pragma mark - iNat API Calls
+
+- (void)searchForTaxon:(NSString *)text {
+    [SVProgressHUD showWithStatus:@"Searching for critters..." maskType:SVProgressHUDMaskTypeGradient];
+    
+    RKObjectMapping *mapping = [Taxon mapping];
+    
+    NSString *pathPattern = @"/taxa/search.json";
+    NSString *queryBase = @"?per_page=20&q=%@";
+    NSString *query = [NSString stringWithFormat:queryBase, text];
+    
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
+    
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
+        
+        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
+        
+        if (results.count == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showErrorWithStatus:@"No such critters found. :("];
+            });
+        } else if (results.count == 1) {
+            // dismiss the HUD
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showSuccessWithStatus:@"Found one!"];
+            });
+            
+            // configure the predicate for the place that was found
+            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+            predicate.type = ExploreSearchPredicateTypeCritter;
+            predicate.searchTaxon = results.firstObject;
+            
+            // observations controller will fetch observations using this predicate
+            [observationsController addSearchPredicate:predicate];
+            
+            // configure and show the "active search" UI
+            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
+            activeSearchFilterView.hidden = NO;
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD dismiss];
+            });
+            
+            // show the user a list of taxa
+            searchedTaxa = results;
+            
+            taxaSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which critter?"
+                                                                     message:nil
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"Cancel"
+                                                           otherButtonTitles:nil];
+            CGRect taxaSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
+            taxaSearchHelperTableView = [[UITableView alloc] initWithFrame:taxaSearchTableViewRect
+                                                                     style:UITableViewStylePlain];
+            [taxaSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
+            taxaSearchHelperTableView.delegate = self;
+            taxaSearchHelperTableView.dataSource = self;
+            [taxaSearchHelperAlertView setValue:taxaSearchHelperTableView
+                                         forKey:@"accessoryView"];
+            [taxaSearchHelperAlertView show];
+        }
+    };
+    
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
+}
 
 - (void)searchForPeople:(NSString *)text {
     [SVProgressHUD showWithStatus:@"Searching for people..." maskType:SVProgressHUDMaskTypeGradient];
@@ -728,6 +810,8 @@ static UIImage *userIconPlaceholder;
         return searchedPeople.count;
     } else if (tableView == placeSearchHelperTableView) {
         return searchedPlaces.count;
+    } else if (tableView == taxaSearchHelperTableView) {
+        return searchedTaxa.count;
     } else {
         return 0;
     }
@@ -810,19 +894,7 @@ static UIImage *userIconPlaceholder;
                     [self searchForPeople:searchBar.text];
                 }
             } else {
-                
-                [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
-                
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = (ExploreSearchPredicateType)indexPath.row;
-                predicate.searchTerm = searchBar.text;
-                
-                // observations will fetch observations using this predicate
-                [observationsController addSearchPredicate:predicate];
-                
-                // configure and show the "active search" UI
-                activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-                activeSearchFilterView.hidden = NO;
+                [self searchForTaxon:searchBar.text];
             }
             
             // reset and hide the search UI
@@ -871,6 +943,20 @@ static UIImage *userIconPlaceholder;
         ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
         predicate.type = ExploreSearchPredicateTypePlace;
         predicate.searchLocation = place;
+        [observationsController addSearchPredicate:predicate];
+        // configure and show the "active search" UI
+        activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
+        activeSearchFilterView.hidden = NO;
+    } else if (tableView == taxaSearchHelperTableView) {
+        // searched taxa helper
+        // dismiss the alert
+        [taxaSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
+        // get the place they tapped
+        Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.item];
+        // fetch observations from this person from inat
+        ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+        predicate.type = ExploreSearchPredicateTypeCritter;
+        predicate.searchTaxon = taxon;
         [observationsController addSearchPredicate:predicate];
         // configure and show the "active search" UI
         activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
@@ -951,6 +1037,35 @@ static UIImage *userIconPlaceholder;
                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                      [cell.imageView setNeedsDisplay];
                                  }];
+        
+        return cell;
+    } else if (tableView == taxaSearchHelperTableView) {
+        // taxon search helper
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"geocoder"];
+        Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
+        
+        if (taxon.defaultName)
+            cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@)", taxon.name, taxon.defaultName];
+        else
+            cell.textLabel.text = taxon.name;
+        
+        if (taxon.taxonPhotos && taxon.taxonPhotos.count > 1) {
+            cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
+            cell.imageView.clipsToBounds = YES;
+            
+            TaxonPhoto *photo = [taxon.taxonPhotos firstObject];
+            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
+                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                         [cell setNeedsUpdateConstraints];
+                                         
+                                         [cell.imageView setNeedsDisplay];
+                                         [cell.imageView setNeedsLayout];
+                                     }];
+        } else {
+            cell.imageView.image = nil;
+        }
         
         return cell;
     } else {
