@@ -106,6 +106,7 @@
 - (void)activeSearchPredicatesChangedCallback {
     [mapChangedTimer invalidate];
     [mapView removeAnnotations:mapView.annotations];
+    [mapView removeOverlays:mapView.overlays];
 }
 
 - (void)observationChangedCallback {
@@ -135,6 +136,20 @@
     }];
     
     [mapView addAnnotations:annotationsToAdd];
+    
+    // if necessary, add an overlay
+    if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
+        for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
+            if (predicate.type == ExploreSearchPredicateTypePlace) {
+                [self addOverlaysForLocationId:predicate.searchLocation.locationId];
+                // prefer places for overlays
+                break;
+            } else if (predicate.type == ExploreSearchPredicateTypeProject) {
+                if (predicate.searchProject.locationId != 0)
+                    [self addOverlaysForLocationId:predicate.searchProject.locationId];
+            }
+        }
+    }
 }
 
 #pragma mark - CLLocationManagerDelegate
