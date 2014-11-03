@@ -29,6 +29,8 @@
 #import "Analytics.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
+#import "ExploreSearchResultsCell.h"
+#import "UIFont+ExploreFonts.h"
 
 #define SEARCH_RESULTS_CELL_ID @"SearchResultsCell"
 
@@ -352,7 +354,7 @@ static UIImage *userIconPlaceholder;
             CGRect taxaSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             taxaSearchHelperTableView = [[UITableView alloc] initWithFrame:taxaSearchTableViewRect
                                                                      style:UITableViewStylePlain];
-            [taxaSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
+            [taxaSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
             taxaSearchHelperTableView.delegate = self;
             taxaSearchHelperTableView.dataSource = self;
             [taxaSearchHelperAlertView setValue:taxaSearchHelperTableView
@@ -428,7 +430,7 @@ static UIImage *userIconPlaceholder;
             CGRect peopleSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             peopleSearchHelperTableView = [[UITableView alloc] initWithFrame:peopleSearchTableViewRect
                                                                        style:UITableViewStylePlain];
-            [peopleSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
+            [peopleSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
             peopleSearchHelperTableView.delegate = self;
             peopleSearchHelperTableView.dataSource = self;
             [peopleSearchHelperAlertView setValue:peopleSearchHelperTableView
@@ -516,7 +518,7 @@ static UIImage *userIconPlaceholder;
             CGRect placeSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             placeSearchHelperTableView = [[UITableView alloc] initWithFrame:placeSearchTableViewRect
                                                                       style:UITableViewStylePlain];
-            [placeSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
+            [placeSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
             placeSearchHelperTableView.delegate = self;
             placeSearchHelperTableView.dataSource = self;
             [placeSearchHelperAlertView setValue:placeSearchHelperTableView
@@ -592,7 +594,7 @@ static UIImage *userIconPlaceholder;
             CGRect projectSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             projectSearchHelperTableView = [[UITableView alloc] initWithFrame:projectSearchTableViewRect
                                                                         style:UITableViewStylePlain];
-            [projectSearchHelperTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"geocoder"];
+            [projectSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
             projectSearchHelperTableView.delegate = self;
             projectSearchHelperTableView.dataSource = self;
             [projectSearchHelperAlertView setValue:projectSearchHelperTableView forKey:@"accessoryView"];
@@ -1041,28 +1043,30 @@ static UIImage *userIconPlaceholder;
         return cell;
     } else if (tableView == taxaSearchHelperTableView) {
         // taxon search helper
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"geocoder"];
+        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
         Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
         
-        if (taxon.defaultName)
-            cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@)", taxon.name, taxon.defaultName];
-        else
-            cell.textLabel.text = taxon.name;
+        cell.resultTitle.text = taxon.defaultName;
+        
+        cell.resultSubtitle.font = [UIFont fontForTaxonRankName:taxon.rank ofSize:11.0f];
+        if (taxon.isSpeciesOrLower)
+            cell.resultSubtitle.text = taxon.name;
+        else {
+            NSMutableAttributedString *subtitle = [[NSMutableAttributedString alloc] init];
+            NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:taxon.rank.capitalizedString
+                                                                                     attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11.0f] }];
+            [subtitle appendAttributedString:rank];
+            [subtitle appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];;
+            NSMutableAttributedString *taxonName = [[NSMutableAttributedString alloc] initWithString:taxon.name
+                                                                                          attributes:@{ NSFontAttributeName: [UIFont fontForTaxonRankName:taxon.rank ofSize:11.0f] }];
+            [subtitle appendAttributedString:taxonName];
+            cell.resultSubtitle.attributedText = subtitle;
+        }
         
         if (taxon.taxonPhotos && taxon.taxonPhotos.count > 1) {
-            cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
-            cell.imageView.clipsToBounds = YES;
-            
             TaxonPhoto *photo = [taxon.taxonPhotos firstObject];
-            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
-                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                         [cell setNeedsUpdateConstraints];
-                                         
-                                         [cell.imageView setNeedsDisplay];
-                                         [cell.imageView setNeedsLayout];
-                                     }];
+            [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
+                                           completed:nil];
         } else {
             cell.imageView.image = nil;
         }
