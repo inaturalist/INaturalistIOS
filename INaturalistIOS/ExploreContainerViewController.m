@@ -31,6 +31,7 @@
 #import "TaxonPhoto.h"
 #import "ExploreSearchResultsCell.h"
 #import "UIFont+ExploreFonts.h"
+#import "UIImage+ExploreIconicTaxaImages.h"
 
 #define SEARCH_RESULTS_CELL_ID @"SearchResultsCell"
 
@@ -1009,36 +1010,42 @@ static UIImage *userIconPlaceholder;
         }
     } else if (tableView == projectSearchHelperTableView) {
         // project search helper
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"geocoder"];
+        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
         ExploreProject *project = [searchedProjects objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.text = project.title;
+        
+        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:project.iconUrl]
+                                placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
+
+        cell.resultTitle.text = project.title;
+        cell.resultSubtitle.text = [NSString stringWithFormat:@"%ld observed taxa", (long)project.observedTaxaCount.integerValue];
+        
         return cell;
     } else if (tableView == placeSearchHelperTableView) {
         // place search helper
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"geocoder"];
+        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
         ExploreLocation *place = [searchedPlaces objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.text = place.name;
+        
+        cell.resultTitle.text = place.name;
+        cell.resultSubtitle.text = place.placeTypeName;
+
         return cell;
     } else if (tableView == peopleSearchHelperTableView) {
         // people search helper
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"geocoder"];
+        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
         ExplorePerson *person = [searchedPeople objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
-        if (person.name)
-            cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@)", person.name, person.login];
-        else
-            cell.textLabel.text = person.login;
+        
+        if (person.name) {
+            cell.resultTitle.text = person.name;
+            cell.resultSubtitle.text = person.login;
+        } else {
+            cell.resultTitle.text = person.login;
+        }
+        
         // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
         NSString *observerAvatarUrlString = [NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg",
                                              (long)person.personId];
-        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
-                          placeholderImage:userIconPlaceholder
-                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                     [cell.imageView setNeedsDisplay];
-                                 }];
+        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
+                                placeholderImage:userIconPlaceholder];
         
         return cell;
     } else if (tableView == taxaSearchHelperTableView) {
@@ -1047,6 +1054,7 @@ static UIImage *userIconPlaceholder;
         Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.row];
         
         cell.resultTitle.text = taxon.defaultName;
+        cell.resultTitle.textColor = [UIColor colorForIconicTaxon:taxon.iconicTaxonName];
         
         cell.resultSubtitle.font = [UIFont fontForTaxonRankName:taxon.rank ofSize:11.0f];
         if (taxon.isSpeciesOrLower)
@@ -1063,13 +1071,9 @@ static UIImage *userIconPlaceholder;
             cell.resultSubtitle.attributedText = subtitle;
         }
         
-        if (taxon.taxonPhotos && taxon.taxonPhotos.count > 1) {
-            TaxonPhoto *photo = [taxon.taxonPhotos firstObject];
-            [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
-                                           completed:nil];
-        } else {
-            cell.imageView.image = nil;
-        }
+        TaxonPhoto *photo = [taxon.taxonPhotos firstObject];
+        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
+                                placeholderImage:[UIImage imageForIconicTaxon:taxon.iconicTaxonName]];
         
         return cell;
     } else {

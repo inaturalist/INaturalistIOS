@@ -16,5 +16,7 @@
 @property (nonatomic, assign) NSInteger locationId;
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
+@property (nonatomic, copy) NSNumber *observedTaxaCount;
+@property (nonatomic, copy) NSString *iconUrl;
 
 @end

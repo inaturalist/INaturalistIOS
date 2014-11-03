@@ -124,6 +124,7 @@
     [mapping mapKeyPath:@"longitude" toAttribute:@"longitude"];
     [mapping mapKeyPath:@"latitude" toAttribute:@"latitude"];
     [mapping mapKeyPath:@"admin_level" toAttribute:@"adminLevel"];
+    [mapping mapKeyPath:@"place_type_name" toAttribute:@"placeTypeName"];
 
     return mapping;
 }
@@ -136,6 +137,9 @@
     [mapping mapKeyPath:@"place_id" toAttribute:@"locationId"];
     [mapping mapKeyPath:@"longitude" toAttribute:@"longitude"];
     [mapping mapKeyPath:@"latitude" toAttribute:@"latitude"];
+    [mapping mapKeyPath:@"observed_taxa_count" toAttribute:@"observedTaxaCount"];
+    [mapping mapKeyPath:@"icon_url" toAttribute:@"iconUrl"];
+
 
     return mapping;
 }

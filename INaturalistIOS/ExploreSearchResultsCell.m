@@ -80,4 +80,10 @@
     return self;
 }
 
+- (void)prepareForReuse {
+    self.resultImageView.image = nil;
+    self.resultTitle.text = nil;
+    self.resultSubtitle.text = nil;
+}
+
 @end
