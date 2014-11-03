@@ -35,6 +35,7 @@
     CLLocationManager *locationManager;
     
     NSTimer *mapChangedTimer;
+    BOOL predicatesChanged;
 }
 
 @end
@@ -107,6 +108,8 @@
     [mapChangedTimer invalidate];
     [mapView removeAnnotations:mapView.annotations];
     [mapView removeOverlays:mapView.overlays];
+    
+    predicatesChanged = YES;
 }
 
 - (void)observationChangedCallback {
@@ -136,6 +139,11 @@
     }];
     
     [mapView addAnnotations:annotationsToAdd];
+    
+    if (predicatesChanged && self.observationDataSource.mappableObservations.count > 0 && mapView.annotations.count > 0) {
+        [mapView showAnnotations:mapView.annotations animated:YES];
+        predicatesChanged = NO;
+    }
     
     // if necessary, add an overlay
     if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
@@ -182,17 +190,19 @@
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
+
+    
+    if ([mapChangedTimer isValid])
+        [mapChangedTimer invalidate];
+    
     // give the user a bit to keep scrolling before we make a new API call
-    mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.25f
+    mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
                                                            block:^(NSTimer *timer) {
-                                                               @synchronized(self) {
-                                                                   // inifinite scroll into new region
-                                                                   ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                                   [self.observationDataSource expandActiveSearchIntoLocationRegion:region];
-                                                               }
+                                                               // inifinite scroll into new region
+                                                               ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
+                                                               [self.observationDataSource expandActiveSearchIntoLocationRegion:region];
                                                            }
                                                          repeats:NO];
-
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation
