@@ -1121,7 +1121,7 @@ static UIImage *userIconPlaceholder;
 }
 
 - (CGRect)frameForContentController {
-    return CGRectOffset(self.view.frame, 0, self.topLayoutGuide.length);
+    return self.view.frame;
 }
 
 
