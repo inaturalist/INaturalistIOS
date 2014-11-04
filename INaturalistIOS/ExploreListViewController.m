@@ -10,6 +10,7 @@
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 #import "ExploreListViewController.h"
 #import "ExploreObservation.h"
@@ -40,6 +41,12 @@
         tv.dataSource = self;
         tv.delegate = self;
         [tv registerClass:[ExploreListTableViewCell class] forCellReuseIdentifier:@"cell"];
+        
+        __weak __typeof__(self) weakSelf = self;
+        [tv addInfiniteScrollingWithActionHandler:^{
+            [weakSelf.observationDataSource expandActiveSearchToNextPageOfResults];
+        }];
+        tv.showsInfiniteScrolling = YES;
         
         tv;
     });
@@ -100,16 +107,20 @@
 #pragma mark - KVO callback
 
 - (void)observationChangedCallback {
+    // in case refresh was triggered by infinite scrolling, stop the animation
+    [observationsTableView.infiniteScrollingView stopAnimating];
+
     [observationsTableView reloadData];
 
     // if necessary, adjust the content inset of the table view
     // to make room for the active search predicate
     observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-
-    if (observationsTableView.visibleCells.count > 0)
+    
+    if (self.observationDataSource.latestSearchWasViaUserInteration) {
         [observationsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
                                      atScrollPosition:UITableViewScrollPositionTop
                                              animated:YES];
+    }
 }
 
 #pragma mark - UITableView delegate/datasource

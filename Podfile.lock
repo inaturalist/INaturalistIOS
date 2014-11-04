@@ -50,6 +50,7 @@ PODS:
   - SlackTextViewController/Additions (1.2.7):
     - SlackTextViewController/Additions
   - SVProgressHUD (1.0)
+  - SVPullToRefresh (0.4.1)
   - UIColor-HTMLColors (1.0.0)
 
 DEPENDENCIES:
@@ -65,6 +66,7 @@ DEPENDENCIES:
   - MHVideoPhotoGallery (= 1.6.6)
   - SlackTextViewController (= 1.2.7)
   - SVProgressHUD (= 1.0)
+  - SVPullToRefresh (= 0.4.1)
   - UIColor-HTMLColors (= 1.0.0)
 
 SPEC CHECKSUMS:
@@ -81,6 +83,7 @@ SPEC CHECKSUMS:
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SlackTextViewController: a42c0e698747f0fd3b59b90db011046cf96a77f2
   SVProgressHUD: 5034c6e22b8c2ca3e09402e48d41ed0340aa1c50
+  SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
   UIColor-HTMLColors: fbf3e9648f1e699aa4cdb39d0cf348b7ef814be5
 
 COCOAPODS: 0.34.1

@@ -10,6 +10,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"
@@ -55,6 +56,13 @@
         cv.delegate = self;
         
         [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:@"ExploreCell"];
+        
+        __weak __typeof__(self) weakSelf = self;
+        [cv addInfiniteScrollingWithActionHandler:^{
+            [weakSelf.observationDataSource expandActiveSearchToNextPageOfResults];
+        }];
+        cv.showsInfiniteScrolling = YES;
+
         
         cv;
     });
@@ -113,6 +121,9 @@
 #pragma mark - KVO
 
 - (void)observationChangedCallback {
+    // in case refresh was triggered by infinite scrolling, stop the animation
+    [observationsCollectionView.infiniteScrollingView stopAnimating];
+
     [observationsCollectionView reloadData];
     
     // if necessary, inset the collection view content inside the container
@@ -123,10 +134,11 @@
     // can properly scroll to the first item using the new content insets
     [self.view layoutIfNeeded];
     
-    if (observationsCollectionView.visibleCells.count > 0)
+    if (self.observationDataSource.latestSearchWasViaUserInteration) {
         [observationsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
                                            atScrollPosition:UICollectionViewScrollPositionTop
                                                    animated:YES];
+    }
 }
 
 #pragma mark - UICollectionView delegate/datasource

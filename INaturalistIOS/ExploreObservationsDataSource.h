@@ -27,6 +27,7 @@
 - (BOOL)activeSearchLimitedByLocation;
 
 - (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region;
+- (void)expandActiveSearchToNextPageOfResults;
 
 - (BOOL)latestSearchWasViaUserInteration;
 

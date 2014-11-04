@@ -20,6 +20,7 @@
 
 @interface ExploreObservationsController () {
     BOOL searchWasViaUserInteraction;
+    NSInteger lastPagedFetched;
 }
 @end
 
@@ -31,6 +32,7 @@
     if (self = [super init]) {
         self.activeSearchPredicates = @[];
         self.observations = [NSOrderedSet orderedSet];
+        lastPagedFetched = 1;
     }
     return self;
 }
@@ -40,6 +42,8 @@
 }
 
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate {
+    lastPagedFetched = 1;
+    
     // clear any stashed objects
     self.observations = [NSOrderedSet orderedSet];
 
@@ -57,6 +61,8 @@
 }
 
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate {
+    lastPagedFetched = 1;
+
     NSMutableArray *predicates = [self.activeSearchPredicates mutableCopy];
     [predicates removeObject:predicate];
     self.activeSearchPredicates = predicates;
@@ -69,6 +75,8 @@
 }
 
 - (void)removeAllSearchPredicates {
+    lastPagedFetched = 1;
+    
     self.activeSearchPredicates = @[];
     
     // clear any stashed objects
@@ -82,19 +90,34 @@
     [self fetchObservationsInLocationRegion:region];
 }
 
+- (void)expandActiveSearchToNextPageOfResults {
+    [self fetchObservationsPage:++lastPagedFetched];
+}
+
 - (void)fetchObservationsInLocationRegion:(ExploreRegion *)region {
     NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
                                            inLocationRegion:region];
-    [self performObservationFetchForPath:path shouldNotify:NO];
+    [self performObservationFetchForPath:path shouldNotify:NO shouldResetUI:NO];
+}
+
+- (void)fetchObservationsPage:(NSInteger)page {
+    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
+                                                   withPage:page];
+    [self performObservationFetchForPath:path shouldNotify:YES shouldResetUI:NO];
 }
 
 - (void)fetchObservations {
     NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates];
-    [self performObservationFetchForPath:path shouldNotify:YES];
+    [self performObservationFetchForPath:path shouldNotify:YES shouldResetUI:YES];
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
     return [self pathForFetchWithSearchPredicates:predicates inLocationRegion:nil];
+}
+
+- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates withPage:(NSInteger)page {
+    NSString *path = [self pathForFetchWithSearchPredicates:predicates inLocationRegion:nil];
+    return [path stringByAppendingString:[NSString stringWithFormat:@"&page=%ld", (long)page]];
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates inLocationRegion:(ExploreRegion *)region {
@@ -129,7 +152,7 @@
     return [NSString stringWithFormat:@"%@%@", pathPattern, query];
 }
 
-- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify {
+- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify shouldResetUI:(BOOL)shouldResetUI {
     
     if (shouldNotify) {
         if (self.activeSearchPredicates.count > 0)
@@ -148,7 +171,7 @@
         NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
         }];
-        searchWasViaUserInteraction = shouldNotify;
+        searchWasViaUserInteraction = shouldResetUI;
         self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];        
         
         if ([SVProgressHUD isVisible]) {
