@@ -29,6 +29,6 @@
 - (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region;
 - (void)expandActiveSearchToNextPageOfResults;
 
-- (BOOL)latestSearchWasViaUserInteration;
+- (BOOL)latestSearchShouldResetUI;
 
 @end

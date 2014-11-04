@@ -134,7 +134,7 @@
     // can properly scroll to the first item using the new content insets
     [self.view layoutIfNeeded];
     
-    if (self.observationDataSource.latestSearchWasViaUserInteration && self.observationDataSource.observations.count > 0) {
+    if (self.observationDataSource.latestSearchShouldResetUI && self.observationDataSource.observations.count > 0) {
         [observationsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
                                            atScrollPosition:UICollectionViewScrollPositionTop
                                                    animated:YES];

@@ -19,7 +19,7 @@
 #import "Taxon.h"
 
 @interface ExploreObservationsController () {
-    BOOL searchWasViaUserInteraction;
+    BOOL _latestSearchShouldResetUI;
     NSInteger lastPagedFetched;
 }
 @end
@@ -171,7 +171,7 @@
         NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
         }];
-        searchWasViaUserInteraction = shouldResetUI;
+        _latestSearchShouldResetUI = shouldResetUI;
         self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];        
         
         if ([SVProgressHUD isVisible]) {
@@ -222,8 +222,8 @@
     }];
 }
 
-- (BOOL)latestSearchWasViaUserInteration {
-    return searchWasViaUserInteraction;
+- (BOOL)latestSearchShouldResetUI {
+    return _latestSearchShouldResetUI;
 }
 
 @end

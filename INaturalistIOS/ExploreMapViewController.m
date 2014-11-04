@@ -112,7 +112,7 @@
     // invalidate the map changed timer. unlikely but be safe.
     [mapChangedTimer invalidate];
     
-    if (self.observationDataSource.latestSearchWasViaUserInteration) {
+    if (self.observationDataSource.latestSearchShouldResetUI) {
         [mapView removeAnnotations:mapView.annotations];
         [mapView removeOverlays:mapView.overlays];
         
