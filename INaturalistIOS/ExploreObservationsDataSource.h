@@ -28,4 +28,6 @@
 
 - (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region;
 
+- (BOOL)latestSearchWasViaUserInteration;
+
 @end

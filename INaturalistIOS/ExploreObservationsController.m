@@ -18,6 +18,11 @@
 #import "ExplorePerson.h"
 #import "Taxon.h"
 
+@interface ExploreObservationsController () {
+    BOOL searchWasViaUserInteraction;
+}
+@end
+
 @implementation ExploreObservationsController
 
 @synthesize observations, activeSearchPredicates;
@@ -143,6 +148,7 @@
         NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
         }];
+        searchWasViaUserInteraction = shouldNotify;
         self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];        
         
         if ([SVProgressHUD isVisible]) {
@@ -191,6 +197,10 @@
         // for iOS, we have our own idea of what "mappable" is
         return !observation.coordinatesObscured;
     }];
+}
+
+- (BOOL)latestSearchWasViaUserInteration {
+    return searchWasViaUserInteraction;
 }
 
 @end

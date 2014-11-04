@@ -35,7 +35,6 @@
     CLLocationManager *locationManager;
     
     NSTimer *mapChangedTimer;
-    BOOL predicatesChanged;
 }
 
 @end
@@ -88,76 +87,82 @@
     [self.view addSubview:mapView];
     
     NSDictionary *views = @{
-                            @"bottomLayoutGuide": self.bottomLayoutGuide,
                             @"mapView": mapView,
                             };
+    
+    NSDictionary *metrics = @{
+                              @"topLayoutGuideLength": @(self.parentViewController.topLayoutGuide.length),
+                              @"bottomLayoutGuideLength": @(self.parentViewController.bottomLayoutGuide.length),
+                              };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[mapView]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[mapView]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topLayoutGuideLength-[mapView]-bottomLayoutGuideLength-|"
                                                                       options:0
-                                                                      metrics:0
+                                                                      metrics:metrics
                                                                         views:views]];
 }
 
 #pragma mark - KVO
-
-- (void)activeSearchPredicatesChangedCallback {
-    [mapChangedTimer invalidate];
-    [mapView removeAnnotations:mapView.annotations];
-    [mapView removeOverlays:mapView.overlays];
-    
-    predicatesChanged = YES;
-}
 
 - (void)observationChangedCallback {
     // in case this callback fires because of a change in search,
     // invalidate the map changed timer. unlikely but be safe.
     [mapChangedTimer invalidate];
     
-    // sweep through and remove any annotations that aren't in the visible map rect anymore
-    [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
-        return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
-    }]];
-    
-    // compile candidates for adding to the map
-    NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
-        return MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
-    }];
-    
-    // remove anything that's not in candidates, or that's not in the first 100
-    NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
-        return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
-    }];
-    [mapView removeAnnotations:annotationsToRemove];
-    
-    // add anything that's in candidates but not on the map already, and that's in the first 100
-    NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
-        return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
-    }];
-    
-    [mapView addAnnotations:annotationsToAdd];
-    
-    if (predicatesChanged && self.observationDataSource.mappableObservations.count > 0 && mapView.annotations.count > 0) {
+    if (self.observationDataSource.latestSearchWasViaUserInteration) {
+        [mapView removeAnnotations:mapView.annotations];
+        [mapView removeOverlays:mapView.overlays];
+        
+        // when the user has caused this latest fetch, we want to show just the 100 most recent
+        [mapView removeAnnotations:mapView.annotations];
+        NSArray *recent = [self.observationDataSource.mappableObservations bk_select:^BOOL(id obj) {
+            return [self.observationDataSource.mappableObservations indexOfObject:obj] < 100;
+        }];
+        [mapView addAnnotations:recent];
         [mapView showAnnotations:mapView.annotations animated:YES];
-        predicatesChanged = NO;
-    }
-    
-    // if necessary, add an overlay
-    if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
-        for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
-            if (predicate.type == ExploreSearchPredicateTypePlace) {
-                [self addOverlaysForLocationId:predicate.searchLocation.locationId];
-                // prefer places for overlays
-                break;
-            } else if (predicate.type == ExploreSearchPredicateTypeProject) {
-                if (predicate.searchProject.locationId != 0)
-                    [self addOverlaysForLocationId:predicate.searchProject.locationId];
+        
+        // if necessary, add an overlay
+        if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
+            for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
+                if (predicate.type == ExploreSearchPredicateTypePlace) {
+                    [self addOverlaysForLocationId:predicate.searchLocation.locationId];
+                    // prefer places for overlays
+                    break;
+                } else if (predicate.type == ExploreSearchPredicateTypeProject) {
+                    if (predicate.searchProject.locationId != 0)
+                        [self addOverlaysForLocationId:predicate.searchProject.locationId];
+                }
             }
         }
+    } else {
+        // try to be smart about updating the visible annotations
+        // sweep through and remove any annotations that aren't in the visible map rect anymore
+        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
+        }]];
+        
+        // compile candidates for adding to the map
+        NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
+            return MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
+        }];
+        
+        // remove anything that's not in candidates, or that's not in the first 100
+        NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
+            return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
+        }];
+        [mapView removeAnnotations:annotationsToRemove];
+        
+        // add anything that's in candidates but not on the map already, and that's in the first 100
+        NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
+            return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
+        }];
+        
+        [mapView addAnnotations:annotationsToAdd];
     }
+    
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -186,14 +191,14 @@
 #pragma mark - MKMapViewDelegate
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
-    [mapChangedTimer invalidate];
+    //[mapChangedTimer invalidate];
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
-
-    
-    if ([mapChangedTimer isValid])
-        [mapChangedTimer invalidate];
+    if ([mapChangedTimer isValid]) {
+        // already something queued up
+        return;
+    }
     
     // give the user a bit to keep scrolling before we make a new API call
     mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
