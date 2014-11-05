@@ -16,7 +16,7 @@
 typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
     ExploreSearchPredicateTypeCritter,
     ExploreSearchPredicateTypePeople,
-    ExploreSearchPredicateTypePlace,
+    ExploreSearchPredicateTypeLocation,
     ExploreSearchPredicateTypeProject
 };
 

@@ -29,7 +29,7 @@
             else
                 return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.login];
             break;
-        case ExploreSearchPredicateTypePlace:
+        case ExploreSearchPredicateTypeLocation:
             return [NSString stringWithFormat:@"seen at '%@'", self.searchLocation.name];
             break;
         case ExploreSearchPredicateTypeProject:

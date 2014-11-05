@@ -127,7 +127,7 @@
         // if necessary, add an overlay
         if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
             for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
-                if (predicate.type == ExploreSearchPredicateTypePlace) {
+                if (predicate.type == ExploreSearchPredicateTypeLocation) {
                     [self addOverlaysForLocationId:predicate.searchLocation.locationId];
                     // prefer places for overlays
                     break;

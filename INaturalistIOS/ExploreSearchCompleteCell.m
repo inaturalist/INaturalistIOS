@@ -42,7 +42,7 @@
         case ExploreSearchPredicateTypePeople:
             predicate = @"observers";
             break;
-        case ExploreSearchPredicateTypePlace:
+        case ExploreSearchPredicateTypeLocation:
             predicate = @"places";
             break;
         case ExploreSearchPredicateTypeProject:

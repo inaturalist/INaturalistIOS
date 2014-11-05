@@ -490,12 +490,12 @@ static UIImage *userIconPlaceholder;
                 [SVProgressHUD showSuccessWithStatus:@"Found one!"];
             });
             
-            ExploreLocation *place = (ExploreLocation *)validPlaces.firstObject;
+            ExploreLocation *location = (ExploreLocation *)validPlaces.firstObject;
             
-            // configure the predicate for the place that was found
+            // configure the predicate for the location that was found
             ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypePlace;
-            predicate.searchLocation = place;
+            predicate.type = ExploreSearchPredicateTypeLocation;
+            predicate.searchLocation = location;
             
             // observations controller will fetch observations using this predicate
             [observationsController addSearchPredicate:predicate];
@@ -651,10 +651,8 @@ static UIImage *userIconPlaceholder;
                                   otherButtonTitles:nil] show];
             } else {
                 ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypePlace;
-                // TODO: place id for now
+                predicate.type = ExploreSearchPredicateTypeLocation;
                 predicate.searchLocation = location;
-                //predicate.searchTerm = [NSString stringWithFormat:@"%ld", (long)location.locationId];
                 
                 [observationsController addSearchPredicate:predicate];
                 
@@ -734,7 +732,7 @@ static UIImage *userIconPlaceholder;
                 
                 // configure the predicate for the place that was found
                 ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypePlace;
+                predicate.type = ExploreSearchPredicateTypeLocation;
                 predicate.searchLocation = location;
                 
                 // observations controller will fetch observations using this predicate
@@ -940,12 +938,12 @@ static UIImage *userIconPlaceholder;
         // searched places helper
         // dismiss the alert
         [placeSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        // get the place they tapped
-        ExploreLocation *place = [searchedPlaces objectAtIndex:indexPath.item];
+        // get the location they tapped
+        ExploreLocation *location = [searchedPlaces objectAtIndex:indexPath.item];
         // fetch observations from this person from inat
         ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-        predicate.type = ExploreSearchPredicateTypePlace;
-        predicate.searchLocation = place;
+        predicate.type = ExploreSearchPredicateTypeLocation;
+        predicate.searchLocation = location;
         [observationsController addSearchPredicate:predicate];
         // configure and show the "active search" UI
         activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
@@ -993,7 +991,7 @@ static UIImage *userIconPlaceholder;
                 [cell setSearchPredicateType:ExploreSearchPredicateTypePeople];
                 predicate = @"people";
             } else if (indexPath.item == 2) {
-                [cell setSearchPredicateType:ExploreSearchPredicateTypePlace];
+                [cell setSearchPredicateType:ExploreSearchPredicateTypeLocation];
                 predicate = @"places";
             } else if (indexPath.item == 3) {
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeProject];

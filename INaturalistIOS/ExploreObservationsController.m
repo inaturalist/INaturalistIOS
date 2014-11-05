@@ -141,7 +141,7 @@
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
-            } else if (predicate.type == ExploreSearchPredicateTypePlace) {
+            } else if (predicate.type == ExploreSearchPredicateTypeLocation) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
             } else if (predicate.type == ExploreSearchPredicateTypeProject) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
@@ -211,7 +211,7 @@
 
 - (BOOL)activeSearchLimitedByLocation {
     return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *predicate) {
-        return predicate.type == ExploreSearchPredicateTypePlace || predicate.type == ExploreSearchPredicateTypeProject;
+        return predicate.type == ExploreSearchPredicateTypeLocation || predicate.type == ExploreSearchPredicateTypeProject;
     }];
 }
 
