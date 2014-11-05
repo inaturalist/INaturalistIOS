@@ -35,7 +35,6 @@
         case ExploreSearchPredicateTypeProject:
             return [NSString stringWithFormat:@"in project '%@'", self.searchProject.title];
             break;
-
         default:
             break;
     }

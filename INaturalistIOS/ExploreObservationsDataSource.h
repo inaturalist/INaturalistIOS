@@ -17,6 +17,7 @@
 @property NSOrderedSet *observations;
 @property (readonly) NSArray *mappableObservations;
 @property NSArray *activeSearchPredicates;
+@property ExploreRegion *limitingRegion;
 
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate;
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate;
@@ -24,9 +25,8 @@
 - (void)reload;
 
 - (NSString *)combinedColloquialSearchPhrase;
-- (BOOL)activeSearchLimitedByLocation;
-
-- (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region;
+- (BOOL)activeSearchLimitedBySearchedLocation;
+- (BOOL)activeSearchLimitedByLimitingRegion;
 - (void)expandActiveSearchToNextPageOfResults;
 
 - (BOOL)latestSearchShouldResetUI;

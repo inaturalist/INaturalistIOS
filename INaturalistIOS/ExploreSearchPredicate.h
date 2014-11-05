@@ -11,6 +11,7 @@
 @class ExploreLocation;
 @class ExploreProject;
 @class ExplorePerson;
+@class ExploreRegion;
 @class Taxon;
 
 typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {

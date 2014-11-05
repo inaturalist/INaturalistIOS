@@ -11,6 +11,8 @@
 #import <FontAwesomeKit/FAKFoundationIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <PDKTStickySectionHeadersCollectionViewLayout/PDKTStickySectionHeadersCollectionViewLayout.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"
@@ -20,7 +22,7 @@
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 
-@interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate> {
+@interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     UICollectionView *observationsCollectionView;
 }
 @end
@@ -33,7 +35,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     observationsCollectionView = ({
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        UICollectionViewFlowLayout *flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
         
         float numberOfCellsPerRow = 3;
         if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
@@ -56,6 +58,7 @@
         cv.delegate = self;
         
         [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:@"ExploreCell"];
+        [cv registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ExploreHeader"];
         
         __weak __typeof__(self) weakSelf = self;
         [cv addInfiniteScrollingWithActionHandler:^{
@@ -177,6 +180,38 @@
                                                                       forIndexPath:indexPath];
     [cell setObservation:[self.observationDataSource.observations objectAtIndex:indexPath.item]];
     return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                            withReuseIdentifier:@"ExploreHeader"
+                                                                                   forIndexPath:indexPath];
+        view.frame = CGRectIntegral(view.frame);
+        view.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
+        
+        if (![view viewWithTag:0x1]) {
+            // as much as possible, match the style of the explore list view controller table view header
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, view.frame.size.width - 28, view.frame.size.height)];
+            label.font = [UIFont systemFontOfSize:12.0f];
+            label.text = @"restricted to current map area";
+            label.tag = 0x1;
+            label.backgroundColor = [UIColor clearColor];
+            label.textColor = [UIColor blackColor];
+            [view addSubview:label];
+        }
+                
+        return view;
+    }
+}
+
+
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    if ([self.observationDataSource activeSearchLimitedByLimitingRegion] && self.observationDataSource.observations.count > 0)
+        return CGSizeMake(collectionView.frame.size.width, 28);
+    else
+        return CGSizeMake(0, 0);
 }
 
 #pragma mark - ExploreViewControllerControlIcon

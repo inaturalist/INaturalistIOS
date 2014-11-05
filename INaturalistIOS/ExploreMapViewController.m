@@ -122,10 +122,10 @@
             return [self.observationDataSource.mappableObservations indexOfObject:obj] < 100;
         }];
         [mapView addAnnotations:recent];
-        [mapView showAnnotations:mapView.annotations animated:YES];
+        //[mapView showAnnotations:mapView.annotations animated:YES];
         
         // if necessary, add an overlay
-        if ([self.observationDataSource activeSearchLimitedByLocation] && mapView.overlays.count == 0) {
+        if ([self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count == 0) {
             for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
                 if (predicate.type == ExploreSearchPredicateTypeLocation) {
                     [self addOverlaysForLocationId:predicate.searchLocation.locationId];
@@ -142,6 +142,11 @@
         // sweep through and remove any annotations that aren't in the visible map rect anymore
         [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
             return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
+        }]];
+        
+        // sweep through and remove any annotations that aren't in the active observations list anymore
+        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return ![self.observationDataSource.observations containsObject:annotation];
         }]];
         
         // compile candidates for adding to the map
@@ -161,6 +166,34 @@
         }];
         
         [mapView addAnnotations:annotationsToAdd];
+        
+        if ([self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count == 0) {
+            // if necessary, add an overlay
+            CLLocationCoordinate2D newCenter;
+            for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
+                if (predicate.type == ExploreSearchPredicateTypeLocation) {
+                    [self addOverlaysForLocationId:predicate.searchLocation.locationId];
+                    newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
+                                                           predicate.searchLocation.longitude);
+                    // prefer places for overlays
+                    break;
+                } else if (predicate.type == ExploreSearchPredicateTypeProject) {
+                    if (predicate.searchProject.locationId != 0) {
+                        [self addOverlaysForLocationId:predicate.searchProject.locationId];
+                        newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
+                                                               predicate.searchLocation.longitude);
+                    }
+                }
+            }
+            
+            // if we had to add an overlay, we should pan to show it
+            if (CLLocationCoordinate2DIsValid(newCenter)) {
+                [mapView setCenterCoordinate:newCenter animated:YES];
+            }
+        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
+            // if necessary, remove the overlays
+            [mapView removeOverlays:mapView.overlays];
+        }
     }
     
 }
@@ -190,22 +223,22 @@
 
 #pragma mark - MKMapViewDelegate
 
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
-    //[mapChangedTimer invalidate];
+- (void)mapView:(MKMapView *)mv regionWillChangeAnimated:(BOOL)animated {
+    NSLog(@"mapview will change");
+    [mapChangedTimer invalidate];
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
-    if ([mapChangedTimer isValid]) {
-        // already something queued up
-        return;
-    }
+    NSLog(@"mapview did change");
     
+    [mapChangedTimer invalidate];
+
     // give the user a bit to keep scrolling before we make a new API call
     mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
                                                            block:^(NSTimer *timer) {
-                                                               // inifinite scroll into new region
+                                                               // notify the observation data source that we have a new limiting region
                                                                ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                               [self.observationDataSource expandActiveSearchIntoLocationRegion:region];
+                                                               self.observationDataSource.limitingRegion = region;
                                                            }
                                                          repeats:NO];
 }

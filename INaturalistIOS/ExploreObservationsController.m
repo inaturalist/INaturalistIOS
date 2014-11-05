@@ -21,6 +21,7 @@
 @interface ExploreObservationsController () {
     BOOL _latestSearchShouldResetUI;
     NSInteger lastPagedFetched;
+    ExploreRegion *_limitingRegion;
 }
 @end
 
@@ -38,27 +39,47 @@
 }
 
 - (void)reload {
-    [self fetchObservations];
+    [self fetchObservationsShouldNotify:YES];
 }
 
-- (void)addSearchPredicate:(ExploreSearchPredicate *)predicate {
+- (void)setLimitingRegion:(ExploreRegion *)newRegion {
+    if ([_limitingRegion isEqualToRegion:newRegion])
+        return;
+    
+    _limitingRegion = newRegion;
+    
+    // trim out any observations that aren't in the map rect, unless we have an overriding location search predicate
+    if (![self hasActiveLocationSearchPredicate]) {
+        self.observations = [self.observations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return MKMapRectContainsPoint(_limitingRegion.mapRect, MKMapPointForCoordinate(annotation.coordinate));
+        }];
+    }
+
+    [self fetchObservationsShouldNotify:NO];
+}
+
+-(ExploreRegion *)limitingRegion {
+    return _limitingRegion;
+}
+
+- (void)addSearchPredicate:(ExploreSearchPredicate *)newPredicate {
     lastPagedFetched = 1;
     
     // clear any stashed objects
     self.observations = [NSOrderedSet orderedSet];
-
-    // only one predicate of a type can be active at a time
     
     // if we already have an active predicate of the type to be added, remove it
     NSArray *selected = [self.activeSearchPredicates bk_select:^BOOL(ExploreSearchPredicate *p) {
-        return p.type != predicate.type;
+        return p.type != newPredicate.type;
     }];
+
     // add our new predicate to the active group
-    self.activeSearchPredicates = [selected arrayByAddingObject:predicate];
+    self.activeSearchPredicates = [selected arrayByAddingObject:newPredicate];
     
     // fetch using new search predicate(s)
-    [self fetchObservations];
+    [self fetchObservationsShouldNotify:YES];
 }
+
 
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate {
     lastPagedFetched = 1;
@@ -71,7 +92,7 @@
     self.observations = [NSOrderedSet orderedSet];
     
     // fetch using new search predicate(s), if any
-    [self fetchObservations];
+    [self fetchObservationsShouldNotify:YES];
 }
 
 - (void)removeAllSearchPredicates {
@@ -83,54 +104,36 @@
     self.observations = [NSOrderedSet orderedSet];
     
     // fetch using no search predicates
-    [self fetchObservations];
-}
-
-- (void)expandActiveSearchIntoLocationRegion:(ExploreRegion *)region {
-    [self fetchObservationsInLocationRegion:region];
+    [self fetchObservationsShouldNotify:YES];
 }
 
 - (void)expandActiveSearchToNextPageOfResults {
     [self fetchObservationsPage:++lastPagedFetched];
 }
 
-- (void)fetchObservationsInLocationRegion:(ExploreRegion *)region {
-    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
-                                           inLocationRegion:region];
-    [self performObservationFetchForPath:path shouldNotify:NO shouldResetUI:NO];
-}
-
 - (void)fetchObservationsPage:(NSInteger)page {
     NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
                                                    withPage:page];
-    [self performObservationFetchForPath:path shouldNotify:YES shouldResetUI:NO];
+    [self performObservationFetchForPath:path shouldNotify:YES];
 }
 
-- (void)fetchObservations {
+- (void)fetchObservationsShouldNotify:(BOOL)notify {
     NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates];
-    [self performObservationFetchForPath:path shouldNotify:YES shouldResetUI:YES];
-}
-
-- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    return [self pathForFetchWithSearchPredicates:predicates inLocationRegion:nil];
+    [self performObservationFetchForPath:path shouldNotify:notify];
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates withPage:(NSInteger)page {
-    NSString *path = [self pathForFetchWithSearchPredicates:predicates inLocationRegion:nil];
+    NSString *path = [self pathForFetchWithSearchPredicates:predicates];
     return [path stringByAppendingString:[NSString stringWithFormat:@"&page=%ld", (long)page]];
 }
 
-- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates inLocationRegion:(ExploreRegion *)region {
+- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
     NSString *baseURL = @"http://www.inaturalist.org/observations.json";
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
     
-    if (region) {
-        query = [query stringByAppendingString:[NSString stringWithFormat:@"&swlat=%f&swlng=%f&nelat=%f&nelng=%f",
-                                                region.swCoord.latitude, region.swCoord.longitude,
-                                                region.neCoord.latitude, region.neCoord.longitude]];
-    }
+    BOOL hasActiveLocationPredicate = NO;
     
     // apply active search predicates to the query
     if (predicates.count > 0) {
@@ -142,6 +145,7 @@
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
             } else if (predicate.type == ExploreSearchPredicateTypeLocation) {
+                hasActiveLocationPredicate = YES;
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
             } else if (predicate.type == ExploreSearchPredicateTypeProject) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
@@ -149,10 +153,20 @@
         }
     }
     
+    // having a Location predicate cancels any limiting region boundary
+    if (self.limitingRegion && !hasActiveLocationPredicate) {
+        query = [query stringByAppendingString:[NSString stringWithFormat:@"&swlat=%f&swlng=%f&nelat=%f&nelng=%f",
+                                                self.limitingRegion.swCoord.latitude,
+                                                self.limitingRegion.swCoord.longitude,
+                                                self.limitingRegion.neCoord.latitude,
+                                                self.limitingRegion.neCoord.longitude]];
+    }
+
+    
     return [NSString stringWithFormat:@"%@%@", pathPattern, query];
 }
 
-- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify shouldResetUI:(BOOL)shouldResetUI {
+- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify {
     
     if (shouldNotify) {
         if (self.activeSearchPredicates.count > 0)
@@ -162,6 +176,7 @@
     }
     
     RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
+    
     RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
     objectLoader.method = RKRequestMethodGET;
     objectLoader.objectMapping = mapping;
@@ -171,10 +186,10 @@
         NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
         }];
-        _latestSearchShouldResetUI = shouldResetUI;
-        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];        
         
-        if ([SVProgressHUD isVisible]) {
+        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+        
+        if (shouldNotify) {
             if (array.count > 0)
                 [SVProgressHUD showSuccessWithStatus:@"Yay!"];
             else
@@ -209,7 +224,11 @@
     return colloquial;
 }
 
-- (BOOL)activeSearchLimitedByLocation {
+- (BOOL)activeSearchLimitedByLimitingRegion {
+    return self.limitingRegion && ![self hasActiveLocationSearchPredicate];
+}
+
+- (BOOL)activeSearchLimitedBySearchedLocation {
     return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *predicate) {
         return predicate.type == ExploreSearchPredicateTypeLocation || predicate.type == ExploreSearchPredicateTypeProject;
     }];
@@ -224,6 +243,12 @@
 
 - (BOOL)latestSearchShouldResetUI {
     return _latestSearchShouldResetUI;
+}
+
+- (BOOL)hasActiveLocationSearchPredicate {
+    return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *p) {
+        return p.type == ExploreSearchPredicateTypeLocation;
+    }];
 }
 
 @end

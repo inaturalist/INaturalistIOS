@@ -11,6 +11,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ExploreListViewController.h"
 #import "ExploreObservation.h"
@@ -85,6 +86,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    // presenting from this collection view is screwing up the content inset
+    // reset it here
+    observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreList];
 }
 
@@ -99,7 +104,7 @@
 - (UIEdgeInsets)insetsForPredicateCount:(NSInteger)count {
     CGFloat topInset = 0.0f;
     if (count > 0)
-        topInset = 51.0f;
+        topInset = 50.0f;
     
     return UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
@@ -169,6 +174,22 @@
     [cell setObservation:obs];
         
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if ([self.observationDataSource activeSearchLimitedByLimitingRegion])
+        return @"restricted to current map area";
+    else
+        return nil;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+    // adjust the font of the header view
+    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    header.textLabel.font = [UIFont systemFontOfSize:12.0f];
+    header.contentView.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
+
+    header.textLabel.textColor = [UIColor blackColor];
 }
 
 #pragma mark - ExploreViewControllerControlIcon

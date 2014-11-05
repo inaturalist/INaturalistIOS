@@ -14,7 +14,10 @@
 
 @property CLLocationCoordinate2D swCoord;
 @property CLLocationCoordinate2D neCoord;
+@property (readonly) MKMapRect mapRect;
 
 + (instancetype)regionFromMKMapRect:(MKMapRect)rect;
+
+- (BOOL)isEqualToRegion:(ExploreRegion *)other;
 
 @end

@@ -8,10 +8,18 @@
 
 #import "ExploreRegion.h"
 
+@interface ExploreRegion () {
+    MKMapRect _mapRect;
+}
+@end
+
 @implementation ExploreRegion
+
 
 - (instancetype)initWithMKMapRect:(MKMapRect)mapRect {
     if (self = [super init]) {
+        _mapRect = mapRect;
+        
         MKMapPoint sw = MKMapPointMake(mapRect.origin.x,
                                        mapRect.origin.y + mapRect.size.height);
         self.swCoord = MKCoordinateForMapPoint(sw);
@@ -25,6 +33,17 @@
 
 + (instancetype)regionFromMKMapRect:(MKMapRect)rect {
     return [[ExploreRegion alloc] initWithMKMapRect:rect];
+}
+
+- (BOOL)isEqualToRegion:(ExploreRegion *)other {
+    return self.swCoord.latitude == other.swCoord.latitude &&
+            self.swCoord.longitude == other.swCoord.longitude &&
+            self.neCoord.latitude == other.neCoord.latitude &&
+            self.neCoord.longitude == other.neCoord.longitude;
+}
+
+- (MKMapRect)mapRect {
+    return _mapRect;
 }
 
 @end

@@ -133,7 +133,7 @@ static UIImage *userIconPlaceholder;
         
         view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
         view.hidden = YES;
-        
+                
         searchBar = ({
             UISearchBar *bar = [[UISearchBar alloc] initWithFrame:CGRectZero];
             bar.translatesAutoresizingMaskIntoConstraints = NO;

@@ -41,6 +41,7 @@ PODS:
   - HexColors (2.2.1)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
+  - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - SDWebImage (3.7.1):
     - SDWebImage/Core
   - SDWebImage/Core (3.7.1)
@@ -64,6 +65,7 @@ DEPENDENCIES:
   - GeoJSONSerialization (= 0.0.4)
   - HexColors (= 2.2.1)
   - MHVideoPhotoGallery (= 1.6.6)
+  - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - SlackTextViewController (= 1.2.7)
   - SVProgressHUD (= 1.0)
   - SVPullToRefresh (= 0.4.1)
@@ -80,6 +82,7 @@ SPEC CHECKSUMS:
   GeoJSONSerialization: 87d7a81f770d111506e690980ef192fba3966d01
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
+  PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SlackTextViewController: a42c0e698747f0fd3b59b90db011046cf96a77f2
   SVProgressHUD: 5034c6e22b8c2ca3e09402e48d41ed0340aa1c50
