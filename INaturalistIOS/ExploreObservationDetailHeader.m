@@ -301,7 +301,7 @@ static UIImage *userIconPlaceholder;
                                                         multiplier:1.0f
                                                           constant:-1.0f]];
         
-        // observed location is left aligned with map's right (+3px)
+        // observed location is left aligned with map pin's right (+3px)
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedLocationLabel
                                                          attribute:NSLayoutAttributeLeft
                                                          relatedBy:NSLayoutRelationEqual
@@ -317,6 +317,15 @@ static UIImage *userIconPlaceholder;
                                                          attribute:NSLayoutAttributeBaseline
                                                         multiplier:1.0f
                                                           constant:0.0f]];
+        // observed location is right aligned with observed time label's left edge
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:observedLocationLabel
+                                                         attribute:NSLayoutAttributeRight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:observedTimeLabel
+                                                         attribute:NSLayoutAttributeLeft
+                                                        multiplier:1.0f
+                                                          constant:0.0f]];
+
         // observed accuracy is left aligned with map's right (+3px)
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedAccuracyLabel
                                                          attribute:NSLayoutAttributeLeft
