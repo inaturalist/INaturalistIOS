@@ -13,4 +13,6 @@
 
 @interface ExploreMapViewController : ExploreObservationVisualizerViewController <ExploreViewControllerControlIcon>
 
+- (void)mapShouldZoomToCoordinates:(CLLocationCoordinate2D)coords andShowUserLocation:(BOOL)showUserLocation;
+
 @end

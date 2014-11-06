@@ -135,13 +135,7 @@
 
     // the collection view seems to need to be forced to re-layout before it
     // can properly scroll to the first item using the new content insets
-    [self.view layoutIfNeeded];
-    
-    if (self.observationDataSource.latestSearchShouldResetUI && self.observationDataSource.observations.count > 0) {
-        [observationsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-                                           atScrollPosition:UICollectionViewScrollPositionTop
-                                                   animated:YES];
-    }
+    [self.view layoutIfNeeded];    
 }
 
 #pragma mark - UICollectionView delegate/datasource

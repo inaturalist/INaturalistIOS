@@ -120,12 +120,6 @@
     // if necessary, adjust the content inset of the table view
     // to make room for the active search predicate
     observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-    
-    if (self.observationDataSource.latestSearchShouldResetUI && self.observationDataSource.observations.count > 0) {
-        [observationsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-                                     atScrollPosition:UITableViewScrollPositionTop
-                                             animated:YES];
-    }
 }
 
 #pragma mark - UITableView delegate/datasource

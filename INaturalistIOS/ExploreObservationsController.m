@@ -19,7 +19,6 @@
 #import "Taxon.h"
 
 @interface ExploreObservationsController () {
-    BOOL _latestSearchShouldResetUI;
     NSInteger lastPagedFetched;
     ExploreRegion *_limitingRegion;
 }
@@ -96,6 +95,10 @@
 }
 
 - (void)removeAllSearchPredicates {
+    [self removeAllSearchPredicatesUpdatingObservations:YES];
+}
+
+- (void)removeAllSearchPredicatesUpdatingObservations:(BOOL)update {
     lastPagedFetched = 1;
     
     self.activeSearchPredicates = @[];
@@ -103,8 +106,8 @@
     // clear any stashed objects
     self.observations = [NSOrderedSet orderedSet];
     
-    // fetch using no search predicates
-    [self fetchObservationsShouldNotify:YES];
+    if (update)
+        [self fetchObservationsShouldNotify:YES];
 }
 
 - (void)expandActiveSearchToNextPageOfResults {
@@ -239,10 +242,6 @@
         // for iOS, we have our own idea of what "mappable" is
         return !observation.coordinatesObscured;
     }];
-}
-
-- (BOOL)latestSearchShouldResetUI {
-    return _latestSearchShouldResetUI;
 }
 
 - (BOOL)hasActiveLocationSearchPredicate {

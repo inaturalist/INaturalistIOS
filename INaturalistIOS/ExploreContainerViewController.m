@@ -76,6 +76,7 @@
     
     NSTimer *locationFetchTimer;
     BOOL hasFulfilledLocationFetch;
+    BOOL isFetchingLocation;
 }
 @end
 
@@ -676,28 +677,36 @@ static UIImage *userIconPlaceholder;
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    isFetchingLocation = NO;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    if (hasFulfilledLocationFetch)
+        return;
+    
+    isFetchingLocation = NO;
+    CLLocation *recentLocation = locations.lastObject;
+    
     [locationFetchTimer invalidate];
     
-    CLLocation *location = manager.location;
-    [manager stopUpdatingLocation];
-    manager = nil;
+    [locationManager stopUpdatingLocation];
     
     // one location fetch per user interaction with the "find observations near me" menu item
     if (!hasFulfilledLocationFetch) {
         hasFulfilledLocationFetch = YES;
         [SVProgressHUD showSuccessWithStatus:@"Found you!"];
         
+        [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate andShowUserLocation:YES];
+        /*
+        [mapVC mapShouldShowLocation]
         // fetch iNat place for this location
         RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
         
         NSString *pathPattern = @"/places.json";
         NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";        // place_type=County|Open+Space
         NSString *query = [NSString stringWithFormat:queryBase,
-                           location.coordinate.latitude,
-                           location.coordinate.longitude];
+                           recentLocation.coordinate.latitude,
+                           recentLocation.coordinate.longitude];
         
         NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
         RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
@@ -752,20 +761,22 @@ static UIImage *userIconPlaceholder;
             [SVProgressHUD showErrorWithStatus:err.localizedDescription];
         };
         
-        [objectLoader send];        
+        [objectLoader send];      
+         */
     }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if (hasFulfilledLocationFetch)
+        return;
+    
     switch ([CLLocationManager authorizationStatus]) {
         case kCLAuthorizationStatusNotDetermined:
             return;
             break;
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
-            locationManager = [[CLLocationManager alloc] init];
-            locationManager.delegate = self;
-            [locationManager startUpdatingLocation];
+            [self startLookingForCurrentLocation];
             break;
         case kCLAuthorizationStatusDenied:
         case kCLAuthorizationStatusRestricted:
@@ -777,6 +788,39 @@ static UIImage *userIconPlaceholder;
         default:
             break;
     }
+}
+
+#pragma mark - Location Manager helpers
+
+- (void)startLookingForCurrentLocation {
+    if (isFetchingLocation)
+        return;
+    
+    if (hasFulfilledLocationFetch)
+        return;
+    
+    isFetchingLocation = YES;
+    locationManager = [[CLLocationManager alloc] init];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        // request will start over
+        [locationManager requestWhenInUseAuthorization];
+    }
+    
+    locationManager.delegate = self;
+    locationManager.distanceFilter = 1000;
+    [locationManager stopUpdatingLocation];
+    [locationManager startUpdatingLocation];
+    // this may take a moment
+    [SVProgressHUD showWithStatus:@"Finding your location..."
+                         maskType:SVProgressHUDMaskTypeGradient];
+    locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
+                                                              block:^(NSTimer *timer) {
+                                                                  [SVProgressHUD showErrorWithStatus:@"Unable to find location"];
+                                                                  [locationManager stopUpdatingLocation];
+                                                                  locationManager = nil;
+                                                                  isFetchingLocation = NO;
+                                                              }
+                                                            repeats:NO];
 }
 
 #pragma mark - UITableView delegate/datasource
@@ -832,35 +876,20 @@ static UIImage *userIconPlaceholder;
             [searchResultsTableView reloadData];
             [searchView layoutIfNeeded];
             searchView.hidden = YES;
-
+            
+            // clear all active search predicates
+            // since it's not built to remove them one at a time yet
+            [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+            
             // get observations near current location
             switch ([CLLocationManager authorizationStatus]) {
                 case kCLAuthorizationStatusNotDetermined:
-                    locationManager = [[CLLocationManager alloc] init];
-                    locationManager.delegate = self;
-                    if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
-                        [locationManager requestWhenInUseAuthorization];
-                    else {
-                        [locationManager startUpdatingLocation];
-                    }
+                    [self startLookingForCurrentLocation];
                     break;
                 case kCLAuthorizationStatusAuthorizedAlways:
-                case kCLAuthorizationStatusAuthorizedWhenInUse: {
-                    locationManager = [[CLLocationManager alloc] init];
-                    locationManager.delegate = self;
-                    [locationManager startUpdatingLocation];
-                    // this may take a moment
-                    [SVProgressHUD showWithStatus:@"Finding your location..."
-                                         maskType:SVProgressHUDMaskTypeGradient];
-                    locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:10.0f
-                                                                              block:^(NSTimer *timer) {
-                                                                                  [SVProgressHUD showErrorWithStatus:@"Unable to find location"];
-                                                                                  [locationManager stopUpdatingLocation];
-                                                                                  locationManager = nil;
-                                                                              }
-                                                                            repeats:NO];
+                case kCLAuthorizationStatusAuthorizedWhenInUse:
+                    [self startLookingForCurrentLocation];
                     break;
-                }
                     
                 case kCLAuthorizationStatusDenied:
                 case kCLAuthorizationStatusRestricted:

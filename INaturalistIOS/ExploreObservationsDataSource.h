@@ -22,13 +22,12 @@
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate;
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate;
 - (void)removeAllSearchPredicates;
+- (void)removeAllSearchPredicatesUpdatingObservations:(BOOL)update;
 - (void)reload;
 
 - (NSString *)combinedColloquialSearchPhrase;
 - (BOOL)activeSearchLimitedBySearchedLocation;
 - (BOOL)activeSearchLimitedByLimitingRegion;
 - (void)expandActiveSearchToNextPageOfResults;
-
-- (BOOL)latestSearchShouldResetUI;
 
 @end
