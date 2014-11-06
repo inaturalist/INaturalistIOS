@@ -17,14 +17,14 @@
 - (NSString *)colloquialSearchPhrase {
     switch (self.type) {
         case ExploreSearchPredicateTypeCritter:
-            if (self.searchTaxon.defaultName) {
+            if (self.searchTaxon.defaultName && ![self.searchTaxon.defaultName isEqualToString:@""]) {
                 return [NSString stringWithFormat:@"named '%@ (%@)'", self.searchTaxon.name, self.searchTaxon.defaultName];
             } else {
                 return [NSString stringWithFormat:@"named '%@'", self.searchTaxon.name];
             }
             break;
         case ExploreSearchPredicateTypePeople:
-            if (self.searchPerson.name)
+            if (self.searchPerson.name && ![self.searchPerson.name isEqualToString:@""])
                 return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.name];
             else
                 return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.login];
