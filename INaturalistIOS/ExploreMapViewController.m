@@ -27,13 +27,7 @@
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
-    
     MKMapView *mapView;
-    
-    BOOL isTrackingUserLocation;
-    
-    CLLocationManager *locationManager;
-    
     NSTimer *mapChangedTimer;
 }
 
@@ -196,29 +190,6 @@
         }
     }
     
-}
-
-#pragma mark - CLLocationManagerDelegate
-
--(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    switch ([CLLocationManager authorizationStatus]) {
-        case kCLAuthorizationStatusNotDetermined:
-            return;
-            break;
-        case kCLAuthorizationStatusAuthorizedAlways:
-        case kCLAuthorizationStatusAuthorizedWhenInUse:
-            //[self showUserLocation];
-            break;
-        case kCLAuthorizationStatusDenied:
-        case kCLAuthorizationStatusRestricted:
-            [[[UIAlertView alloc] initWithTitle:@"Permission denied"
-                                        message:@"We don't have permission from iOS to use your location."
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
-        default:
-            break;
-    }
 }
 
 #pragma mark - MKMapViewDelegate
