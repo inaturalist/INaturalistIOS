@@ -286,7 +286,8 @@ static UIImage *userIconPlaceholder;
 - (void)searchPressed {
     if (searchView.hidden) {
         searchView.hidden = NO;
-        searchResultsTableViewHeightConstraint.constant = (searchBar.text.length > 0) ? 220.0f : 44.0f;
+        searchResultsTableViewHeightConstraint.constant = [self heightForTableView:searchResultsTableView
+                                                                     withRowHeight:44.0f];
         [self.view layoutIfNeeded];
         activeSearchFilterView.hidden = YES;
     } else {
@@ -299,6 +300,99 @@ static UIImage *userIconPlaceholder;
 }
 
 #pragma mark - iNat API Calls
+
+
+- (void)searchForMyObservations {
+    
+    // clear all active search predicates
+    // since it's not built to remove them one at a time yet
+    [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+
+    [SVProgressHUD showWithStatus:@"Fetching..." maskType:SVProgressHUDMaskTypeGradient];
+    
+    RKObjectMapping *mapping = [ExploreMappingProvider personMapping];
+    
+    NSString *pathPattern = [NSString stringWithFormat:@"/people/%@.json", [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]];
+    NSString *query = @"?per_page=1";
+    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
+    objectLoader.method = RKRequestMethodGET;
+    objectLoader.objectMapping = mapping;
+    
+    objectLoader.onDidLoadObjects = ^(NSArray *array) {
+        NSArray *results = [array copy];
+        
+        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
+        
+        if (results.count == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showErrorWithStatus:@"Can't find your user details. :("];
+            });
+        } else if (results.count == 1) {
+            // dismiss the HUD
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showSuccessWithStatus:@"Found you!"];
+            });
+            
+            // configure the predicate for the place that was found
+            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+            predicate.type = ExploreSearchPredicateTypePeople;
+            predicate.searchPerson = results.firstObject;
+            
+            // observations controller will fetch observations using this predicate
+            [observationsController addSearchPredicate:predicate];
+            
+            // configure and show the "active search" UI
+            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
+            activeSearchFilterView.hidden = NO;
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showErrorWithStatus:@"Found conflicting user details. :("];
+            });
+        }
+    };
+    
+    objectLoader.onDidFailWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
+        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+    };
+    
+    [objectLoader send];
+}
+
+- (void)searchForNearbyObservations {
+    hasFulfilledLocationFetch = NO;
+    
+    [[Analytics sharedClient] event:kAnalyticsEventExploreSearchNearMe];
+    
+    // clear all active search predicates
+    // since it's not built to remove them one at a time yet
+    [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+    
+    // get observations near current location
+    switch ([CLLocationManager authorizationStatus]) {
+        case kCLAuthorizationStatusNotDetermined:
+            [self startLookingForCurrentLocation];
+            break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+            [self startLookingForCurrentLocation];
+            break;
+            
+        case kCLAuthorizationStatusDenied:
+        case kCLAuthorizationStatusRestricted:
+            [[[UIAlertView alloc] initWithTitle:@"Permission denied"
+                                        message:@"We don't have permission from iOS to use your location."
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        default:
+            break;
+    }
+}
 
 - (void)searchForTaxon:(NSString *)text {
     [SVProgressHUD showWithStatus:@"Searching for critters..." maskType:SVProgressHUDMaskTypeGradient];
@@ -349,10 +443,10 @@ static UIImage *userIconPlaceholder;
             searchedTaxa = results;
             
             taxaSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which critter?"
-                                                                     message:nil
-                                                                    delegate:self
-                                                           cancelButtonTitle:@"Cancel"
-                                                           otherButtonTitles:nil];
+                                                                   message:nil
+                                                                  delegate:self
+                                                         cancelButtonTitle:@"Cancel"
+                                                         otherButtonTitles:nil];
             CGRect taxaSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
             taxaSearchHelperTableView = [[UITableView alloc] initWithFrame:taxaSearchTableViewRect
                                                                      style:UITableViewStylePlain];
@@ -844,8 +938,19 @@ static UIImage *userIconPlaceholder;
             else
                 return 0;
         } else {
-            // 1 section for "search near me"
-            return 1;
+            if ([searchBar.text isEqualToString:@""]) {
+                if ([[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]) {
+                    // 1 row for "search near me"
+                    // 1 row for "search my observations"
+                    return 2;
+                } else {
+                    // no "my observations"
+                    return 1;
+                }
+            } else {
+                // hide search near me once the user has entered text
+                return 0;
+            }
         }
     } else if (tableView == projectSearchHelperTableView) {
         // searched projects helper
@@ -867,40 +972,17 @@ static UIImage *userIconPlaceholder;
         [searchBar resignFirstResponder];
 
         if (indexPath.section == 1) {
-            hasFulfilledLocationFetch = NO;
-            
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchNearMe];
+            if (indexPath.item == 0) {
+                [self searchForNearbyObservations];
+            } else {
+                [self searchForMyObservations];
+            }
 
             // reset and hide the search UI
             searchBar.text = @"";
             [searchResultsTableView reloadData];
             [searchView layoutIfNeeded];
             searchView.hidden = YES;
-            
-            // clear all active search predicates
-            // since it's not built to remove them one at a time yet
-            [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
-            
-            // get observations near current location
-            switch ([CLLocationManager authorizationStatus]) {
-                case kCLAuthorizationStatusNotDetermined:
-                    [self startLookingForCurrentLocation];
-                    break;
-                case kCLAuthorizationStatusAuthorizedAlways:
-                case kCLAuthorizationStatusAuthorizedWhenInUse:
-                    [self startLookingForCurrentLocation];
-                    break;
-                    
-                case kCLAuthorizationStatusDenied:
-                case kCLAuthorizationStatusRestricted:
-                    [[[UIAlertView alloc] initWithTitle:@"Permission denied"
-                                                message:@"We don't have permission from iOS to use your location."
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                default:
-                    break;
-            }
 
         } else {
             if ([searchBar.text isEqualToString:@""])
@@ -1031,8 +1113,12 @@ static UIImage *userIconPlaceholder;
             return cell;
         } else {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BlankSearchCell"];
-            cell.textLabel.text = @"Find observations near me";
             cell.textLabel.font = [UIFont italicSystemFontOfSize:14.0f];
+            if (indexPath.item == 0) {
+                cell.textLabel.text = @"Find observations near me";
+            } else {
+                cell.textLabel.text = @"Find my observations";
+            }
             return cell;
         }
     } else if (tableView == projectSearchHelperTableView) {
@@ -1108,11 +1194,22 @@ static UIImage *userIconPlaceholder;
     }
 }
 
+#pragma mark - tableview constraint helpers
+
+- (CGFloat)heightForTableView:(UITableView *)tableView withRowHeight:(CGFloat)rowHeight {
+    int numberOfRows = 0;
+    for (int section = 0; section < searchResultsTableView.numberOfSections; section++)
+        for (int row = 0; row < [searchResultsTableView numberOfRowsInSection:section]; row++)
+            numberOfRows++;
+    return rowHeight * numberOfRows;
+}
+
 #pragma mark - UISearchBar delegate
 
 - (void)searchBar:(UISearchBar *)field textDidChange:(NSString *)searchText {
     [searchResultsTableView reloadData];
-    searchResultsTableViewHeightConstraint.constant = (searchText.length > 0) ? 220.0f : 44.0f;
+    searchResultsTableViewHeightConstraint.constant = [self heightForTableView:searchResultsTableView
+                                                                 withRowHeight:44.0f];
     [self.view layoutIfNeeded];
 }
 
