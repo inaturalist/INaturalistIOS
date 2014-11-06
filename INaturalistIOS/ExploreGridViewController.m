@@ -202,7 +202,7 @@
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    if ([self.observationDataSource activeSearchLimitedByLimitingRegion] && self.observationDataSource.observations.count > 0)
+    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observations.count > 0)
         return CGSizeMake(collectionView.frame.size.width, 28);
     else
         return CGSizeMake(0, 0);

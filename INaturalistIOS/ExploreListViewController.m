@@ -171,7 +171,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if ([self.observationDataSource activeSearchLimitedByLimitingRegion])
+    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion])
         return @"restricted to current map area";
     else
         return nil;

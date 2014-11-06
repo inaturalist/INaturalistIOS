@@ -227,7 +227,7 @@
     return colloquial;
 }
 
-- (BOOL)activeSearchLimitedByLimitingRegion {
+- (BOOL)activeSearchLimitedByCurrentMapRegion {
     return self.limitingRegion && ![self hasActiveLocationSearchPredicate];
 }
 

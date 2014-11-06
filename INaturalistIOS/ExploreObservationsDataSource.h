@@ -27,7 +27,7 @@
 
 - (NSString *)combinedColloquialSearchPhrase;
 - (BOOL)activeSearchLimitedBySearchedLocation;
-- (BOOL)activeSearchLimitedByLimitingRegion;
+- (BOOL)activeSearchLimitedByCurrentMapRegion;
 - (void)expandActiveSearchToNextPageOfResults;
 
 @end
