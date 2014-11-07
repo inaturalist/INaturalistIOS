@@ -230,6 +230,11 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    // do nothing if the user taps their location annotation
+    if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
+        return;
+    }
+    
     // deselect the annotation so the user can select it again
     [mapView deselectAnnotation:view.annotation animated:NO];
     
