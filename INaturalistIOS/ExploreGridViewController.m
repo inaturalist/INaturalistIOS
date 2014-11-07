@@ -99,16 +99,21 @@
     // presenting from this collection view is screwing up the content inset
     // reset it here
     observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-
-    [super viewDidAppear:animated];
     
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreGrid];
+    
+    // ensure the collection view is up to date
+    // this isn't always happening automatically from -observationChangedCallback
+    // on the iPhone 4s for some reason
+    [observationsCollectionView reloadData];
+    
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreGrid];
+    
+    [super viewDidDisappear:animated];
 }
 
 #pragma mark - UI Helper
