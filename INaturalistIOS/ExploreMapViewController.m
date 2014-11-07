@@ -24,27 +24,7 @@
 #import "Analytics.h"
 #import "ExploreObservation.h"
 #import "ExploreRegion.h"
-
-#define MERCATOR_RADIUS 85445659.44705395
-#define MAX_GOOGLE_LEVELS 20
-
-@interface MKMapView (ZoomLevel)
-- (double)getZoomLevel;
-@end
-
-@implementation MKMapView (ZoomLevel)
-
-- (double)getZoomLevel {
-    CLLocationDegrees longitudeDelta = self.region.span.longitudeDelta;
-    CGFloat mapWidthInPixels = self.bounds.size.width;
-    double zoomScale = longitudeDelta * MERCATOR_RADIUS * M_PI / (180.0 * mapWidthInPixels);
-    double zoomer = MAX_GOOGLE_LEVELS - log2( zoomScale );
-    if ( zoomer < 0 ) zoomer = 0;
-    //  zoomer = round(zoomer);
-    return zoomer;
-}
-
-@end
+#import "MKMapView+ZoomLevel.h"
 
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
@@ -198,10 +178,8 @@
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
     [mapChangedTimer invalidate];
 
-    NSLog(@"zoom level is %d", (int)[mv getZoomLevel]);
-    if ((int)[mv getZoomLevel] < 2) {
+    if ((int)[mv inat_zoomLevel] < 2) {
         self.observationDataSource.limitingRegion = nil;
-
         return;
     }
     

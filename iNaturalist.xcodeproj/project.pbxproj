@@ -265,6 +265,7 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
+		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA133E021A02D54100700852 /* tutorial7en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E001A02D54000700852 /* tutorial7en.png */; };
 		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
@@ -932,6 +933,8 @@
 		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
+		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
 		FA133E001A02D54000700852 /* tutorial7en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7en.png; sourceTree = "<group>"; };
 		FA133E011A02D54100700852 /* tutorial7es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7es.png; sourceTree = "<group>"; };
 		FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetLocalePicker.h; sourceTree = "<group>"; };
@@ -1866,6 +1869,8 @@
 				FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */,
 				FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */,
 				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
+				FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */,
+				FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -2372,6 +2377,7 @@
 			files = (
 				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
 				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
+				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
