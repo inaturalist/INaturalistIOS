@@ -320,7 +320,7 @@ static UIImage *userIconPlaceholder;
         // observed location is right aligned with observed time label's left edge
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedLocationLabel
                                                          attribute:NSLayoutAttributeRight
-                                                         relatedBy:NSLayoutRelationEqual
+                                                         relatedBy:NSLayoutRelationLessThanOrEqual
                                                             toItem:observedTimeLabel
                                                          attribute:NSLayoutAttributeLeft
                                                         multiplier:1.0f
