@@ -179,6 +179,9 @@ static UIImage *userIconPlaceholder;
         view;
     });
     [self.view insertSubview:activeSearchFilterView aboveSubview:searchView];
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
 
     // set up the map|grid|list selector
     mapVC = [[ExploreMapViewController alloc] initWithNibName:nil bundle:nil];
@@ -1245,7 +1248,7 @@ static UIImage *userIconPlaceholder;
 }
 
 - (CGRect)frameForContentController {
-    return self.view.frame;
+    return self.view.bounds;
 }
 
 
