@@ -193,12 +193,16 @@
             // as much as possible, match the style of the explore list view controller table view header
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, view.frame.size.width - 28, view.frame.size.height)];
             label.font = [UIFont systemFontOfSize:12.0f];
-            label.text = @"restricted to current map area";
+            label.text = @"restricted to current map area (tap to clear)";
             label.tag = 0x1;
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor blackColor];
             [view addSubview:label];
         }
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(tappedClearMapRestriction:)];
+        [view addGestureRecognizer:tap];
                 
         return view;
     }
@@ -211,6 +215,12 @@
         return CGSizeMake(collectionView.frame.size.width, 28);
     else
         return CGSizeMake(0, 0);
+}
+
+#pragma mark - UIControl targets
+
+- (void)tappedClearMapRestriction:(UIGestureRecognizer *)gesture {
+    self.observationDataSource.limitingRegion = nil;
 }
 
 #pragma mark - ExploreViewControllerControlIcon

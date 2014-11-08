@@ -50,20 +50,21 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    // if the limiting region was cleared, then re-apply it once the map returns
+    if (!self.observationDataSource.limitingRegion)
+        self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+    
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreMap];
+    
+    // wait to set the delegate and receive regionDidChange notifications until
+    // after the view has completely finished loading
+    mapView.delegate = self;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreMap];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    //[self stopShowingUserLocation];
-}
-
-- (void)viewDidUnload {
 }
 
 - (void)viewDidLoad {
@@ -76,7 +77,6 @@
         map.translatesAutoresizingMaskIntoConstraints = NO;
         
         map.mapType = MKMapTypeHybrid;
-        map.delegate = self;
         
         map;
     });
@@ -149,17 +149,22 @@
         [mapView removeOverlays:mapView.overlays];
         
         CLLocationCoordinate2D newCenter;
+        int overlayLocationId = 0;
         for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
             if (predicate.type == ExploreSearchPredicateTypeLocation) {
                 newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
                                                        predicate.searchLocation.longitude);
-                [self addOverlaysForLocationId:predicate.searchLocation.locationId];
-                break;
+                overlayLocationId = predicate.searchLocation.locationId;
+                break;  // prefer places to projects
+            } if (predicate.type == ExploreSearchPredicateTypeProject) {
+                newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
+                                                       predicate.searchProject.longitude);
+                overlayLocationId = predicate.searchProject.locationId;
             }
         }
         
-        // this will only trigger if we added an overlay (without already having one)
-        // and if we found a location predicate
+        if (overlayLocationId != 0)
+            [self addOverlaysForLocationId:overlayLocationId];
         if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter))
             [mapView setCenterCoordinate:newCenter animated:YES];
         
@@ -177,11 +182,6 @@
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
     [mapChangedTimer invalidate];
-
-    if ((int)[mv inat_zoomLevel] < 2) {
-        self.observationDataSource.limitingRegion = nil;
-        return;
-    }
     
     // give the user a bit to keep scrolling before we make a new API call
     mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f

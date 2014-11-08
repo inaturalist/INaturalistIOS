@@ -20,4 +20,6 @@
 
 - (BOOL)isEqualToRegion:(ExploreRegion *)other;
 
+- (BOOL)containsCoordinate:(CLLocationCoordinate2D)coord;
+
 @end

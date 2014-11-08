@@ -46,4 +46,9 @@
     return _mapRect;
 }
 
+- (BOOL)containsCoordinate:(CLLocationCoordinate2D)coord {
+    return MKMapRectContainsPoint(self.mapRect, MKMapPointForCoordinate(coord));
+}
+
+
 @end

@@ -268,9 +268,6 @@ static UIImage *userIconPlaceholder;
                                                                          multiplier:1.0f
                                                                            constant:0.0f];
     [self.view addConstraint:searchResultsTableViewHeightConstraint];
-    
-    // fetch default observations
-    [observationsController reload];
 }
 
 #pragma mark - UIControl targets
@@ -772,6 +769,8 @@ static UIImage *userIconPlaceholder;
     [objectLoader send];
 }
 
+#pragma mark - CLLocationManagerDelegate
+
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     [SVProgressHUD showErrorWithStatus:error.localizedDescription];
     isFetchingLocation = NO;
@@ -794,72 +793,6 @@ static UIImage *userIconPlaceholder;
         [SVProgressHUD showSuccessWithStatus:@"Found you!"];
         
         [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate andShowUserLocation:YES];
-        /*
-        [mapVC mapShouldShowLocation]
-        // fetch iNat place for this location
-        RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
-        
-        NSString *pathPattern = @"/places.json";
-        NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";        // place_type=County|Open+Space
-        NSString *query = [NSString stringWithFormat:queryBase,
-                           recentLocation.coordinate.latitude,
-                           recentLocation.coordinate.longitude];
-        
-        NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-        RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-        objectLoader.method = RKRequestMethodGET;
-        objectLoader.objectMapping = mapping;
-        
-        objectLoader.onDidLoadObjects = ^(NSArray *array) {
-            NSArray *results = [array copy];
-            
-            NSArray *openSpaces = [results bk_select:^BOOL(ExploreLocation *location) {
-                return (location.type == 100);
-            }];
-            NSArray *counties = [results bk_select:^BOOL(ExploreLocation *location) {
-                return (location.type == 9);
-            }];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                // pick a location to use
-                // prefer open spaces to counties
-                ExploreLocation *location = openSpaces.count ? openSpaces.lastObject : (counties.count ? counties.lastObject : nil);
-                
-                // assign search predicate with the chosen location
-                if (!location) {
-                    [[[UIAlertView alloc] initWithTitle:@"No location found"
-                                                message:@"Nope. :("
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                    return;
-                }
-                
-                // configure the predicate for the place that was found
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypeLocation;
-                predicate.searchLocation = location;
-                
-                // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:predicate];
-                
-                // configure and show the "active search" UI
-                activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-                activeSearchFilterView.hidden = NO;
-            });
-        };
-        
-        objectLoader.onDidFailWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-        };
-        
-        objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-        };
-        
-        [objectLoader send];      
-         */
     }
 }
 

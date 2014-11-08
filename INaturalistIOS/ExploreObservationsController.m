@@ -54,7 +54,7 @@
         }];
     }
 
-    [self fetchObservationsShouldNotify:NO];
+    [self fetchObservationsShouldNotify:YES];
 }
 
 -(ExploreRegion *)limitingRegion {
@@ -172,10 +172,21 @@
 - (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify {
     
     if (shouldNotify) {
-        if (self.activeSearchPredicates.count > 0)
-            [SVProgressHUD showWithStatus:@"Searching for observations..." maskType:SVProgressHUDMaskTypeGradient];
-        else
-            [SVProgressHUD showWithStatus:@"Fetching all recent observations..." maskType:SVProgressHUDMaskTypeGradient];
+        NSString *statusMessage;
+        if (self.activeSearchPredicates.count > 0) {
+            // searching
+            if (self.limitingRegion)
+                statusMessage = @"Searching for recent observations in map area";
+            else
+                statusMessage = @"Searching for recent observations worldwide";
+        } else {
+            if (self.limitingRegion)
+                statusMessage = @"Fetching recent observations in map area";
+            else
+                statusMessage = @"Fetching recent observations worldwide";
+        }
+
+        [SVProgressHUD showWithStatus:statusMessage maskType:SVProgressHUDMaskTypeGradient];
     }
     
     RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
@@ -185,7 +196,17 @@
     objectLoader.objectMapping = mapping;
     
     objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSSet *unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
+        NSSet *trimmedObservations;
+        NSSet *unorderedObservations;
+        if (self.limitingRegion) {
+            trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
+                // trim out anything that isn't in the limiting region
+                return [self.limitingRegion containsCoordinate:obs.coordinate];
+            }];
+            unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
+        } else {
+            unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
+        }
         NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
         }];

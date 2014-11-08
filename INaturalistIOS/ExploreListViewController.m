@@ -172,7 +172,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion])
-        return @"restricted to current map area";
+        return @"restricted to current map area (tap to clear)";
     else
         return nil;
 }
@@ -184,6 +184,15 @@
     header.contentView.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
 
     header.textLabel.textColor = [UIColor blackColor];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedClearMapRestriction:)];
+    [header addGestureRecognizer:tap];
+}
+
+#pragma mark - UIControl targets
+
+- (void)tappedClearMapRestriction:(UIGestureRecognizer *)gesture {
+    self.observationDataSource.limitingRegion = nil;
 }
 
 #pragma mark - ExploreViewControllerControlIcon
