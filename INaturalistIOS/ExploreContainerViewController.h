@@ -15,9 +15,15 @@
 @interface ExploreContainerViewController : UIViewController
 
 @property UISegmentedControl *segmentedControl;
-
 @property NSArray *viewControllers;
 @property UIViewController *selectedViewController;
+@property UIView *overlayView;
+
+- (void)segmentedControlChanged:(UISegmentedControl *)control;
+- (void)displayContentController:(UIViewController*)content;
+- (void)hideContentController:(UIViewController*)content;
+- (CGRect)frameForContentController;
+
 
 @end
 
