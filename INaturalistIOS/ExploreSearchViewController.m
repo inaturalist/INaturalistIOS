@@ -32,8 +32,10 @@
 #import "ExploreSearchResultsCell.h"
 #import "UIFont+ExploreFonts.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
+#import "ExploreDisambiguator.h"
 
-#define SEARCH_RESULTS_CELL_ID @"SearchResultsCell"
+#define SEARCH_AUTOCOMPLETE_CELL @"SearchAutocompleteCell"
+#define SEARCH_SHORTCUT_CELL @"SearchShortcutCell"
 
 @interface ExploreSearchViewController () <UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate, CLLocationManagerDelegate> {
     ExploreObservationsController *observationsController;
@@ -82,17 +84,12 @@
 
 @end
 
-static UIImage *userIconPlaceholder;
 
 @implementation ExploreSearchViewController
 
 // since we're coming out of a storyboard, -initWithCoder: is the initializer
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:30.0f];
-        [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
-        userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
         
         FAKIcon *worldOutline = [FAKIonIcons ios7WorldOutlineIconWithSize:35];;
         FAKIcon *worldFilled = [FAKIonIcons ios7WorldIconWithSize:35];
@@ -155,8 +152,8 @@ static UIImage *userIconPlaceholder;
             tv.dataSource = self;
             
             tv.delegate = self;
-            [tv registerClass:[ExploreSearchCompleteCell class] forCellReuseIdentifier:SEARCH_RESULTS_CELL_ID];
-            [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"BlankSearchCell"];
+            [tv registerClass:[ExploreSearchCompleteCell class] forCellReuseIdentifier:SEARCH_AUTOCOMPLETE_CELL];
+            [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:SEARCH_SHORTCUT_CELL];
             
             tv;
         });
@@ -436,23 +433,26 @@ static UIImage *userIconPlaceholder;
                 [SVProgressHUD dismiss];
             });
             
-            // show the user a list of taxa
-            searchedTaxa = results;
+            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+            disambiguator.title = @"Which critter?";
+            disambiguator.searchOptions = results;
             
-            taxaSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which critter?"
-                                                                   message:nil
-                                                                  delegate:self
-                                                         cancelButtonTitle:@"Cancel"
-                                                         otherButtonTitles:nil];
-            CGRect taxaSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
-            taxaSearchHelperTableView = [[UITableView alloc] initWithFrame:taxaSearchTableViewRect
-                                                                     style:UITableViewStylePlain];
-            [taxaSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
-            taxaSearchHelperTableView.delegate = self;
-            taxaSearchHelperTableView.dataSource = self;
-            [taxaSearchHelperAlertView setValue:taxaSearchHelperTableView
-                                         forKey:@"accessoryView"];
-            [taxaSearchHelperAlertView show];
+            __weak typeof(self)weakSelf = self;
+            disambiguator.chosenBlock = ^void(id choice) {
+                // get the taxon they chose
+                Taxon *taxon = (Taxon *)choice;
+                // fetch observations from this taxon from inat
+                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+                predicate.type = ExploreSearchPredicateTypeCritter;
+                predicate.searchTaxon = taxon;
+                
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                [strongSelf->observationsController addSearchPredicate:predicate];
+                // configure and show the "active search" UI
+                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
+                strongSelf->activeSearchFilterView.hidden = NO;
+            };
+            [disambiguator presentDisambiguationAlert];
         }
     };
     
@@ -512,23 +512,26 @@ static UIImage *userIconPlaceholder;
                 [SVProgressHUD dismiss];
             });
             
-            // show the user a list of people
-            searchedPeople = results;
+            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+            disambiguator.title = @"Which person?";
+            disambiguator.searchOptions = results;
             
-            peopleSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which person?"
-                                                                     message:nil
-                                                                    delegate:self
-                                                           cancelButtonTitle:@"Cancel"
-                                                           otherButtonTitles:nil];
-            CGRect peopleSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
-            peopleSearchHelperTableView = [[UITableView alloc] initWithFrame:peopleSearchTableViewRect
-                                                                       style:UITableViewStylePlain];
-            [peopleSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
-            peopleSearchHelperTableView.delegate = self;
-            peopleSearchHelperTableView.dataSource = self;
-            [peopleSearchHelperAlertView setValue:peopleSearchHelperTableView
-                                           forKey:@"accessoryView"];
-            [peopleSearchHelperAlertView show];
+            __weak typeof(self)weakSelf = self;
+            disambiguator.chosenBlock = ^void(id choice) {
+                // get the taxon they chose
+                ExplorePerson *person = (ExplorePerson *)choice;
+                // fetch observations from this taxon from inat
+                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+                predicate.type = ExploreSearchPredicateTypePeople;
+                predicate.searchPerson = person;
+                
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                [strongSelf->observationsController addSearchPredicate:predicate];
+                // configure and show the "active search" UI
+                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
+                strongSelf->activeSearchFilterView.hidden = NO;
+            };
+            [disambiguator presentDisambiguationAlert];
         }
     };
     
@@ -600,23 +603,26 @@ static UIImage *userIconPlaceholder;
                 [SVProgressHUD dismiss];
             });
             
-            // show the user a list of places
-            searchedPlaces = validPlaces;
+            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+            disambiguator.title = @"Which place?";
+            disambiguator.searchOptions = results;
             
-            placeSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which place?"
-                                                                    message:nil
-                                                                   delegate:self
-                                                          cancelButtonTitle:@"Cancel"
-                                                          otherButtonTitles:nil];
-            CGRect placeSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
-            placeSearchHelperTableView = [[UITableView alloc] initWithFrame:placeSearchTableViewRect
-                                                                      style:UITableViewStylePlain];
-            [placeSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
-            placeSearchHelperTableView.delegate = self;
-            placeSearchHelperTableView.dataSource = self;
-            [placeSearchHelperAlertView setValue:placeSearchHelperTableView
-                                          forKey:@"accessoryView"];
-            [placeSearchHelperAlertView show];
+            __weak typeof(self)weakSelf = self;
+            disambiguator.chosenBlock = ^void(id choice) {
+                // get the taxon they chose
+                ExploreLocation *location = (ExploreLocation *)choice;
+                // fetch observations from this taxon from inat
+                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+                predicate.type = ExploreSearchPredicateTypeLocation;
+                predicate.searchLocation = location;
+                
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                [strongSelf->observationsController addSearchPredicate:predicate];
+                // configure and show the "active search" UI
+                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
+                strongSelf->activeSearchFilterView.hidden = NO;
+            };
+            [disambiguator presentDisambiguationAlert];
         }
     };
     
@@ -676,22 +682,26 @@ static UIImage *userIconPlaceholder;
                 [SVProgressHUD dismiss];
             });
             
-            // show the user a list of projects
-            searchedProjects = results;
+            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+            disambiguator.title = @"Which project?";
+            disambiguator.searchOptions = results;
             
-            projectSearchHelperAlertView = [[UIAlertView alloc] initWithTitle:@"Which project?"
-                                                                      message:nil
-                                                                     delegate:self
-                                                            cancelButtonTitle:@"Cancel"
-                                                            otherButtonTitles:nil];
-            CGRect projectSearchTableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
-            projectSearchHelperTableView = [[UITableView alloc] initWithFrame:projectSearchTableViewRect
-                                                                        style:UITableViewStylePlain];
-            [projectSearchHelperTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:@"geocoder"];
-            projectSearchHelperTableView.delegate = self;
-            projectSearchHelperTableView.dataSource = self;
-            [projectSearchHelperAlertView setValue:projectSearchHelperTableView forKey:@"accessoryView"];
-            [projectSearchHelperAlertView show];
+            __weak typeof(self)weakSelf = self;
+            disambiguator.chosenBlock = ^void(id choice) {
+                // get the taxon they chose
+                ExploreProject *project = (ExploreProject *)choice;
+                // fetch observations from this taxon from inat
+                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+                predicate.type = ExploreSearchPredicateTypeProject;
+                predicate.searchProject = project;
+                
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                [strongSelf->observationsController addSearchPredicate:predicate];
+                // configure and show the "active search" UI
+                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
+                strongSelf->activeSearchFilterView.hidden = NO;
+            };
+            [disambiguator presentDisambiguationAlert];
         }
     };
     
@@ -769,80 +779,58 @@ static UIImage *userIconPlaceholder;
 #pragma mark - UITableView delegate/datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (tableView == searchResultsTableView) {
-        return 2;
-    } else if (tableView == projectSearchHelperTableView) {
-        return 1;
-    } else {
-        // geocoder helper
-        return 1;
-    }
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == searchResultsTableView) {
-        if (section == 0) {
-            if (searchBar.superview && ![searchBar.text isEqualToString:@""])
-                return 4;
-            else
-                return 0;
-        } else {
-            if ([searchBar.text isEqualToString:@""]) {
-                if ([[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]) {
-                    // 1 row for "search near me"
-                    // 1 row for "search my observations"
-                    return 2;
-                } else {
-                    // no "my observations"
-                    return 1;
-                }
-            } else {
-                // hide search near me once the user has entered text
-                return 0;
-            }
-        }
-    } else if (tableView == projectSearchHelperTableView) {
-        // searched projects helper
-        return searchedProjects.count;
-    } else if (tableView == peopleSearchHelperTableView) {
-        // searched people helper
-        return searchedPeople.count;
-    } else if (tableView == placeSearchHelperTableView) {
-        return searchedPlaces.count;
-    } else if (tableView == taxaSearchHelperTableView) {
-        return searchedTaxa.count;
+    if (section == 0) {
+        // search auto-complete section: "find observers named alex" etc
+        // only show when search text isn't empty
+        if (searchBar.superview && ![searchBar.text isEqualToString:@""])
+            return 4;
+        else
+            return 0;
     } else {
-        return 0;
+        // search shortcut section: "find observations near me" etc
+        // only show when search text is empty
+        if ([searchBar.text isEqualToString:@""]) {
+            if ([[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]) {
+                // 1 row for "search near me"
+                // 1 row for "search my observations"
+                return 2;
+            } else {
+                // no "my observations"
+                return 1;
+            }
+        } else {
+            return 0;
+        }
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == searchResultsTableView) {
-        [searchBar resignFirstResponder];
-        
-        if (indexPath.section == 1) {
-            if (indexPath.item == 0) {
-                [self searchForNearbyObservations];
-            } else {
-                [self searchForMyObservations];
-            }
-            
-            // reset and hide the search UI
-            searchBar.text = @"";
-            [searchResultsTableView reloadData];
-            [searchView layoutIfNeeded];
-            searchView.hidden = YES;
-            
+    // remove the keyboard
+    [searchBar resignFirstResponder];
+    
+    if (indexPath.section == 1) {
+        if (indexPath.item == 0) {
+            [self searchForNearbyObservations];
         } else {
-            if ([searchBar.text isEqualToString:@""])
-                return;
-            
-            if (indexPath.row == 2) {
-                [self searchForPlace:searchBar.text];
-            } else if (indexPath.row == 3) {
-                // search for project
-                [self searchForProject:searchBar.text];
-            } else if (indexPath.row == 1) {
+            [self searchForMyObservations];
+        }
+        
+        
+    } else {
+        // shouldn't really be possible to select a row with no search text
+        // but be defensive anyways
+        if ([searchBar.text isEqualToString:@""])
+            return;
+        
+        switch (indexPath.row) {
+            case 0:
+                [self searchForTaxon:searchBar.text];
+                break;
+            case 1:
                 // people search must be logged in
                 if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
                     [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
@@ -854,192 +842,68 @@ static UIImage *userIconPlaceholder;
                 } else {
                     [self searchForPeople:searchBar.text];
                 }
-            } else {
-                [self searchForTaxon:searchBar.text];
-            }
-            
-            // reset and hide the search UI
-            searchBar.text = @"";
-            [searchResultsTableView reloadData];
-            [searchView layoutIfNeeded];
-            searchView.hidden = YES;
-            
-            return;
+                break;
+            case 2:
+                [self searchForPlace:searchBar.text];
+                break;
+            case 3:
+                [self searchForProject:searchBar.text];
+                break;
+            default:
+                break;
         }
-    } else if (tableView == projectSearchHelperTableView) {
-        // searched projects helper
-        // dismiss the helper alert
-        [projectSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        // get the project they tapped
-        ExploreProject *project = [searchedProjects objectAtIndex:indexPath.item];
-        // fetch observations for this project from inat
-        ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-        predicate.type = ExploreSearchPredicateTypeProject;
-        predicate.searchProject = project;
-        [observationsController addSearchPredicate:predicate];
-        // configure and show the "active search" UI
-        activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-        activeSearchFilterView.hidden = NO;
-    } else if (tableView == peopleSearchHelperTableView) {
-        // searched people helper
-        // dismiss the alert
-        [peopleSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        // get the person they tapped
-        ExplorePerson *person = [searchedPeople objectAtIndex:indexPath.item];
-        // fetch observations from this person from inat
-        ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-        predicate.type = ExploreSearchPredicateTypePeople;
-        predicate.searchPerson = person;
-        [observationsController addSearchPredicate:predicate];
-        // configure and show the "active search" UI
-        activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-        activeSearchFilterView.hidden = NO;
-    } else if (tableView == placeSearchHelperTableView) {
-        // searched places helper
-        // dismiss the alert
-        [placeSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        // get the location they tapped
-        ExploreLocation *location = [searchedPlaces objectAtIndex:indexPath.item];
-        // fetch observations from this person from inat
-        ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-        predicate.type = ExploreSearchPredicateTypeLocation;
-        predicate.searchLocation = location;
-        [observationsController addSearchPredicate:predicate];
-        // configure and show the "active search" UI
-        activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-        activeSearchFilterView.hidden = NO;
-    } else if (tableView == taxaSearchHelperTableView) {
-        // searched taxa helper
-        // dismiss the alert
-        [taxaSearchHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        // get the place they tapped
-        Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.item];
-        // fetch observations from this person from inat
-        ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-        predicate.type = ExploreSearchPredicateTypeCritter;
-        predicate.searchTaxon = taxon;
-        [observationsController addSearchPredicate:predicate];
-        // configure and show the "active search" UI
-        activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-        activeSearchFilterView.hidden = NO;
-    } else {
-        return;
-        /*
-         // geocoder helper
-         // dismiss the helper alert
-         [geocoderHelperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-         // get the place they tapped
-         CLPlacemark *place = [geocodedPlaces objectAtIndex:indexPath.item];
-         // search iNat for it
-         [self searchForCoordinate:place.location.coordinate];
-         */
     }
+    
+    // reset and hide the search UI
+    searchBar.text = @"";
+    [searchResultsTableView reloadData];
+    [searchView layoutIfNeeded];
+    searchView.hidden = YES;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == searchResultsTableView) {
+    if (indexPath.section == 0) {
+        // autocomplete cells
         
-        if (indexPath.section == 0) {
-            
-            ExploreSearchCompleteCell *cell = (ExploreSearchCompleteCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_RESULTS_CELL_ID];
-            
-            NSString *predicate;
-            if (indexPath.item == 0) {
+        ExploreSearchCompleteCell *cell = (ExploreSearchCompleteCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_AUTOCOMPLETE_CELL];
+        cell.searchText = searchBar.text;
+
+        switch (indexPath.row) {
+            case 0:
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeCritter];
-                predicate = @"critters";
-            } else if (indexPath.item == 1) {
+                break;
+            case 1:
                 [cell setSearchPredicateType:ExploreSearchPredicateTypePeople];
-                predicate = @"people";
-            } else if (indexPath.item == 2) {
+                break;
+            case 2:
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeLocation];
-                predicate = @"places";
-            } else if (indexPath.item == 3) {
+                break;
+            case 3:
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeProject];
-                predicate = @"projects";
-            }
-            cell.searchText = searchBar.text;
-            
-            return cell;
-        } else {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BlankSearchCell"];
-            cell.textLabel.font = [UIFont italicSystemFontOfSize:14.0f];
-            if (indexPath.item == 0) {
-                cell.textLabel.text = @"Find observations near me";
-            } else {
-                cell.textLabel.text = @"Find my observations";
-            }
-            return cell;
+                break;
+            default:
+                break;
         }
-    } else if (tableView == projectSearchHelperTableView) {
-        // project search helper
-        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
-        ExploreProject *project = [searchedProjects objectAtIndex:indexPath.row];
-        
-        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:project.iconUrl]
-                                placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
-        
-        cell.resultTitle.text = project.title;
-        cell.resultSubtitle.text = [NSString stringWithFormat:@"%ld observed taxa", (long)project.observedTaxaCount.integerValue];
-        
         return cell;
-    } else if (tableView == placeSearchHelperTableView) {
-        // place search helper
-        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
-        ExploreLocation *place = [searchedPlaces objectAtIndex:indexPath.row];
         
-        cell.resultTitle.text = place.name;
-        cell.resultSubtitle.text = place.placeTypeName;
-        
-        return cell;
-    } else if (tableView == peopleSearchHelperTableView) {
-        // people search helper
-        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
-        ExplorePerson *person = [searchedPeople objectAtIndex:indexPath.row];
-        
-        if (person.name) {
-            cell.resultTitle.text = person.name;
-            cell.resultSubtitle.text = person.login;
-        } else {
-            cell.resultTitle.text = person.login;
-        }
-        
-        // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
-        NSString *observerAvatarUrlString = [NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg",
-                                             (long)person.personId];
-        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
-                                placeholderImage:userIconPlaceholder];
-        
-        return cell;
-    } else if (tableView == taxaSearchHelperTableView) {
-        // taxon search helper
-        ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:@"geocoder"];
-        Taxon *taxon = [searchedTaxa objectAtIndex:indexPath.row];
-        
-        cell.resultTitle.text = taxon.defaultName;
-        cell.resultTitle.textColor = [UIColor colorForIconicTaxon:taxon.iconicTaxonName];
-        
-        cell.resultSubtitle.font = [UIFont fontForTaxonRankName:taxon.rank ofSize:11.0f];
-        if (taxon.isSpeciesOrLower)
-            cell.resultSubtitle.text = taxon.name;
-        else {
-            NSMutableAttributedString *subtitle = [[NSMutableAttributedString alloc] init];
-            NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:taxon.rank.capitalizedString
-                                                                                     attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11.0f] }];
-            [subtitle appendAttributedString:rank];
-            [subtitle appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];;
-            NSMutableAttributedString *taxonName = [[NSMutableAttributedString alloc] initWithString:taxon.name
-                                                                                          attributes:@{ NSFontAttributeName: [UIFont fontForTaxonRankName:taxon.rank ofSize:11.0f] }];
-            [subtitle appendAttributedString:taxonName];
-            cell.resultSubtitle.attributedText = subtitle;
-        }
-        
-        TaxonPhoto *photo = [taxon.taxonPhotos firstObject];
-        [cell.resultImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
-                                placeholderImage:[UIImage imageForIconicTaxon:taxon.iconicTaxonName]];
-        
-        return cell;
     } else {
-        return nil;
+        //shortcut cells
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SEARCH_SHORTCUT_CELL];
+        cell.textLabel.font = [UIFont italicSystemFontOfSize:14.0f];
+        switch (indexPath.row) {
+            case 0:
+                cell.textLabel.text = @"Find observations near me";
+                break;
+            case 1:
+                cell.textLabel.text = @"Find my observations";
+                break;
+            default:
+                cell.textLabel.text = nil;
+                break;
+        }
+        return cell;
     }
 }
 

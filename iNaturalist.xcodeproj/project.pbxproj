@@ -270,6 +270,11 @@
 		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
 		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
 		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
+		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
+		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
+		FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
+		FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */; };
+		FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */; };
 		FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */; };
@@ -942,6 +947,17 @@
 		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
 		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
 		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreDisambiguator.h; sourceTree = "<group>"; };
+		FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreDisambiguator.m; sourceTree = "<group>"; };
+		FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreProject+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreProject+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsHelper.h; sourceTree = "<group>"; };
+		FA3F1F8F1A12B42E00928102 /* Taxon+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Taxon+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Taxon+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F921A12CABA00928102 /* ExplorePerson+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExplorePerson+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExplorePerson+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreLocation+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreLocation+SearchResultsHelper.m"; sourceTree = "<group>"; };
 		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "actinopterygii-200px.png"; sourceTree = "<group>"; };
@@ -1797,6 +1813,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FA3F1F741A12ABC400928102 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
+				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
+				FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */,
+				FA3F1F8F1A12B42E00928102 /* Taxon+SearchResultsHelper.h */,
+				FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */,
+				FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */,
+				FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */,
+				FA3F1F921A12CABA00928102 /* ExplorePerson+SearchResultsHelper.h */,
+				FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */,
+				FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */,
+				FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		FA4E72AE19FAC8A900A9AB5D /* iconic taxa */ = {
 			isa = PBXGroup;
 			children = (
@@ -1821,6 +1855,7 @@
 		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				FA3F1F741A12ABC400928102 /* Helpers */,
 				FA4E730B19FAD15400A9AB5D /* View Controllers */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
 				FA4E72D419FACE3300A9AB5D /* Views */,
@@ -2427,6 +2462,7 @@
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
 				197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
+				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* ExploreSearchResultsCell.m in Sources */,
 				1997411115194E89006FBEA0 /* SyncQueue.m in Sources */,
@@ -2445,6 +2481,7 @@
 				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
 				190619B8152A363E0001A307 /* DCRoundSwitch.m in Sources */,
 				190619B9152A363E0001A307 /* DCRoundSwitchKnobLayer.m in Sources */,
+				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				190619BA152A363E0001A307 /* DCRoundSwitchOutlineLayer.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
 				190619BB152A363E0001A307 /* DCRoundSwitchToggleLayer.m in Sources */,
@@ -2465,6 +2502,7 @@
 				19E4CC22162407CE00694E5D /* DistancePickerView.m in Sources */,
 				6098FD7E16F3F6890053987E /* GTLBase64.m in Sources */,
 				6098FD7F16F3F6890053987E /* GTLBatchQuery.m in Sources */,
+				FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */,
 				6098FD8016F3F6890053987E /* GTLBatchResult.m in Sources */,
 				6098FD8116F3F6890053987E /* GTLDateTime.m in Sources */,
 				6098FD8216F3F6890053987E /* GTLErrorObject.m in Sources */,
@@ -2490,6 +2528,7 @@
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				6098FD8F16F3F6890053987E /* GTLPlusMomentsFeed.m in Sources */,
 				6098FD9016F3F6890053987E /* GTLPlusPeopleFeed.m in Sources */,
+				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				6098FD9116F3F6890053987E /* GTLPlusPerson.m in Sources */,
 				6098FD9216F3F6890053987E /* GTLQueryPlus.m in Sources */,
 				6098FD9316F3F6890053987E /* GTLServicePlus.m in Sources */,
@@ -2511,6 +2550,7 @@
 				6098FD9F16F3F6890053987E /* GTMNSDictionary+URLArguments.m in Sources */,
 				6098FDA016F3F6890053987E /* GTMNSString+URLArguments.m in Sources */,
 				6098FDA116F3F6890053987E /* GTMOAuth2Authentication.m in Sources */,
+				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
 				6098FDA216F3F6890053987E /* GTMOAuth2SignIn.m in Sources */,
 				6098FDA316F3F6890053987E /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
