@@ -83,7 +83,7 @@ NSString *kAnalyticsEventExploreSearchProjects =                @"Explore - Sear
 NSString *kAnalyticsEventExploreSearchPlaces =                  @"Explore - Search - Places";
 NSString *kAnalyticsEventExploreSearchCritters =                @"Explore - Search - Critters";
 NSString *kAnalyticsEventExploreSearchNearMe =                  @"Explore - Search - Near Me";
-
+NSString *kAnalyticsEventExploreSearchMine =                    @"Explore - Search - Mine";
 
 // add comments & ids in explore
 NSString *kAnalyticsEventExploreAddComment =                    @"Explore - Add Comment";

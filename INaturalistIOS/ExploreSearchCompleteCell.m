@@ -39,7 +39,7 @@
         case ExploreSearchPredicateTypeCritter:
             predicate = @"critters";
             break;
-        case ExploreSearchPredicateTypePeople:
+        case ExploreSearchPredicateTypePerson:
             predicate = @"observers";
             break;
         case ExploreSearchPredicateTypeLocation:

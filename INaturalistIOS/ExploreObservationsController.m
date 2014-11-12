@@ -141,7 +141,7 @@
     // apply active search predicates to the query
     if (predicates.count > 0) {
         for (ExploreSearchPredicate *predicate in predicates) {
-            if (predicate.type == ExploreSearchPredicateTypePeople) {
+            if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
                 baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];

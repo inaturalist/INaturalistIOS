@@ -9,7 +9,6 @@
 #import <FontAwesomeKit/FAKFoundationIcons.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit.h>
-#import <RestKit/RestKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
@@ -33,6 +32,7 @@
 #import "UIFont+ExploreFonts.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "ExploreDisambiguator.h"
+#import "ExploreSearchController.h"
 
 #define SEARCH_AUTOCOMPLETE_CELL @"SearchAutocompleteCell"
 #define SEARCH_SHORTCUT_CELL @"SearchShortcutCell"
@@ -80,6 +80,8 @@
     ExploreMapViewController *mapVC;
     ExploreGridViewController *gridVC;
     ExploreListViewController *listVC;
+    
+    ExploreSearchController *searchController;
 }
 
 @end
@@ -103,6 +105,7 @@
         self.navigationController.tabBarItem.title = @"Explore";
         
         observationsController = [[ExploreObservationsController alloc] init];
+        searchController = [[ExploreSearchController alloc] init];
         
         geocoder = [[CLGeocoder alloc] init];
     }
@@ -294,67 +297,54 @@
     }
 }
 
+#pragma mark - Show Search UI Helper
+
+- (void)showActiveSearchUI {
+    // configure and show the "active search" UI
+    activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
+    activeSearchFilterView.hidden = NO;
+}
+
 #pragma mark - iNat API Calls
 
 - (void)searchForMyObservations {
-    
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
     [SVProgressHUD showWithStatus:@"Fetching..." maskType:SVProgressHUDMaskTypeGradient];
     
-    RKObjectMapping *mapping = [ExploreMappingProvider personMapping];
-    
-    NSString *pathPattern = [NSString stringWithFormat:@"/people/%@.json", [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]];
-    NSString *query = @"?per_page=1";
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
-        
-        if (results.count == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"Can't find your user details. :("];
-            });
-        } else if (results.count == 1) {
-            // dismiss the HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Found you!"];
-            });
+    [searchController searchForLogin:[[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey] completionHandler:^(NSArray *results, NSError *error) {
+        if (error) {
             
-            // configure the predicate for the place that was found
-            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypePeople;
-            predicate.searchPerson = results.firstObject;
-            
-            // observations controller will fetch observations using this predicate
-            [observationsController addSearchPredicate:predicate];
-            
-            // configure and show the "active search" UI
-            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-            activeSearchFilterView.hidden = NO;
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"Found conflicting user details. :("];
-            });
+            
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchMine];
+            
+            if (results.count == 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"Can't find your user details. :("];
+                });
+            } else if (results.count == 1) {
+                // dismiss the HUD
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showSuccessWithStatus:@"Found you!"];
+                });
+                
+                // observations controller will fetch observations using this predicate
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
+                
+                [self showActiveSearchUI];
+
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"Found conflicting user details. :("];
+                });
+            }
         }
-    };
+        
+    }];
     
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
 }
 
 - (void)searchForNearbyObservations {
@@ -391,389 +381,209 @@
 - (void)searchForTaxon:(NSString *)text {
     [SVProgressHUD showWithStatus:@"Searching for critters..." maskType:SVProgressHUDMaskTypeGradient];
     
-    RKObjectMapping *mapping = [Taxon mapping];
-    
-    NSString *pathPattern = @"/taxa/search.json";
-    NSString *queryBase = @"?per_page=20&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, text];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
-        
-        if (results.count == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"No such critters found. :("];
-            });
-        } else if (results.count == 1) {
-            // dismiss the HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Found one!"];
-            });
-            
-            // configure the predicate for the place that was found
-            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypeCritter;
-            predicate.searchTaxon = results.firstObject;
-            
-            // observations controller will fetch observations using this predicate
-            [observationsController addSearchPredicate:predicate];
-            
-            // configure and show the "active search" UI
-            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-            activeSearchFilterView.hidden = NO;
+    [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
+        if (error) {
+            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD dismiss];
-            });
             
-            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
-            disambiguator.title = @"Which critter?";
-            disambiguator.searchOptions = results;
-            
-            __weak typeof(self)weakSelf = self;
-            disambiguator.chosenBlock = ^void(id choice) {
-                // get the taxon they chose
-                Taxon *taxon = (Taxon *)choice;
-                // fetch observations from this taxon from inat
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypeCritter;
-                predicate.searchTaxon = taxon;
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
+
+            if (results.count == 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"No such critters found. :("];
+                });
+            } else if (results.count == 1) {
+                // dismiss the HUD
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showSuccessWithStatus:@"Found one!"];
+                });
                 
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                [strongSelf->observationsController addSearchPredicate:predicate];
-                // configure and show the "active search" UI
-                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
-                strongSelf->activeSearchFilterView.hidden = NO;
-            };
-            [disambiguator presentDisambiguationAlert];
+                // observations controller will fetch observations using this predicate
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
+                
+                [self showActiveSearchUI];
+                
+            } else {
+                
+                // allow the user to disambiguate the search results
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD dismiss];
+                });
+                
+                ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+                disambiguator.title = @"Which critter?";
+                disambiguator.searchOptions = results;
+                
+                __weak typeof(self)weakSelf = self;
+                disambiguator.chosenBlock = ^void(id choice) {
+                    // observations controller will fetch observations using this taxon
+                    [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(Taxon *)choice]];
+                    
+                    __strong typeof(weakSelf)strongSelf = weakSelf;
+                    [strongSelf showActiveSearchUI];
+                };
+                [disambiguator presentDisambiguationAlert];
+            }
         }
-    };
+    }];
     
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
 }
 
-- (void)searchForPeople:(NSString *)text {
+- (void)searchForPerson:(NSString *)text {
+    
     [SVProgressHUD showWithStatus:@"Searching for people..." maskType:SVProgressHUDMaskTypeGradient];
-    
-    RKObjectMapping *mapping = [ExploreMappingProvider personMapping];
-    
-    NSString *pathPattern = @"/people/search.json";
-    NSString *queryBase = @"?per_page=50&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, text];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
-        
-        if (results.count == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"No such people found. :("];
-            });
-        } else if (results.count == 1) {
-            // dismiss the HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Found one!"];
-            });
-            
-            // configure the predicate for the place that was found
-            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypePeople;
-            predicate.searchPerson = results.firstObject;
-            
-            // observations controller will fetch observations using this predicate
-            [observationsController addSearchPredicate:predicate];
-            
-            // configure and show the "active search" UI
-            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-            activeSearchFilterView.hidden = NO;
+
+    [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
+        if (error) {
+            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD dismiss];
-            });
             
-            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
-            disambiguator.title = @"Which person?";
-            disambiguator.searchOptions = results;
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
             
-            __weak typeof(self)weakSelf = self;
-            disambiguator.chosenBlock = ^void(id choice) {
-                // get the taxon they chose
-                ExplorePerson *person = (ExplorePerson *)choice;
-                // fetch observations from this taxon from inat
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypePeople;
-                predicate.searchPerson = person;
+            if (results.count == 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"No such person found. :("];
+                });
+            } else if (results.count == 1) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showSuccessWithStatus:@"Found one!"];
+                });
                 
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                [strongSelf->observationsController addSearchPredicate:predicate];
-                // configure and show the "active search" UI
-                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
-                strongSelf->activeSearchFilterView.hidden = NO;
-            };
-            [disambiguator presentDisambiguationAlert];
+                // observations controller will fetch observations using this predicate
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
+                
+                [self showActiveSearchUI];
+                
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD dismiss];
+                });
+                
+                ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+                disambiguator.title = @"Which person?";
+                disambiguator.searchOptions = results;
+                
+                __weak typeof(self)weakSelf = self;
+                disambiguator.chosenBlock = ^void(id choice) {
+                    __strong typeof(weakSelf)strongSelf = weakSelf;
+
+                    // observations controller will fetch observations using this predicate
+                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExplorePerson *)choice]];
+                    
+                    [strongSelf showActiveSearchUI];
+                };
+                [disambiguator presentDisambiguationAlert];
+            }
         }
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
+    }];
 }
 
-- (void)searchForPlace:(NSString *)text {
+- (void)searchForLocation:(NSString *)text {
     [SVProgressHUD showWithStatus:@"Searching for place..." maskType:SVProgressHUDMaskTypeGradient];
     
-    RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
-    
-    NSString *pathPattern = @"/places/search.json";
-    NSString *queryBase = @"?q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, text];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        // filter out garbage locations
-        NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
-            // all administrative places, except towns, are valid
-            if (location.adminLevel && location.adminLevel.integerValue != 3) { return YES; }
-            // all open spaces (parks) are valid
-            if (location.type == 100) { return YES; }
-            // everything else is invalid
-            return NO;
-        }];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
-        
-        if (validPlaces.count == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"No such place found. :("];
-            });
-        } else if (validPlaces.count == 1) {
-            // dismiss the HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Found one!"];
-            });
-            
-            ExploreLocation *location = (ExploreLocation *)validPlaces.firstObject;
-            
-            // configure the predicate for the location that was found
-            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypeLocation;
-            predicate.searchLocation = location;
-            
-            // observations controller will fetch observations using this predicate
-            [observationsController addSearchPredicate:predicate];
-            
-            // configure and show the "active search" UI
-            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-            activeSearchFilterView.hidden = NO;
+    [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
+        if (error) {
+            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD dismiss];
-            });
             
-            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
-            disambiguator.title = @"Which place?";
-            disambiguator.searchOptions = results;
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
+
+            // filter out garbage locations
+            NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
+                // all administrative places, except towns, are valid
+                if (location.adminLevel && location.adminLevel.integerValue != 3) { return YES; }
+                // all open spaces (parks) are valid
+                if (location.type == 100) { return YES; }
+                // everything else is invalid
+                return NO;
+            }];
             
-            __weak typeof(self)weakSelf = self;
-            disambiguator.chosenBlock = ^void(id choice) {
-                // get the taxon they chose
-                ExploreLocation *location = (ExploreLocation *)choice;
-                // fetch observations from this taxon from inat
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypeLocation;
-                predicate.searchLocation = location;
+            if (validPlaces.count == 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"No such place found. :("];
+                });
+            } else if (validPlaces.count == 1) {
+                // dismiss the HUD
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showSuccessWithStatus:@"Found one!"];
+                });
                 
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                [strongSelf->observationsController addSearchPredicate:predicate];
-                // configure and show the "active search" UI
-                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
-                strongSelf->activeSearchFilterView.hidden = NO;
-            };
-            [disambiguator presentDisambiguationAlert];
+                // observations controller will fetch observations using this predicate
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
+                
+                [self showActiveSearchUI];
+                
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD dismiss];
+                });
+                
+                ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+                disambiguator.title = @"Which place?";
+                disambiguator.searchOptions = results;
+                
+                __weak typeof(self)weakSelf = self;
+                disambiguator.chosenBlock = ^void(id choice) {
+                    __strong typeof(weakSelf)strongSelf = weakSelf;
+
+                    // observations controller will fetch observations using this predicate
+                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
+
+                    [strongSelf showActiveSearchUI];
+                };
+                [disambiguator presentDisambiguationAlert];
+            }
         }
-    };
+    }];
     
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
 }
 
 - (void)searchForProject:(NSString *)text {
     [SVProgressHUD showWithStatus:@"Searching for project..." maskType:SVProgressHUDMaskTypeGradient];
     
-    RKObjectMapping *mapping = [ExploreMappingProvider projectMapping];
-    
-    NSString *pathPattern = @"/projects/search.json";
-    NSString *queryBase = @"?per_page=50&q=%@";        // place_type=County|Open+Space
-    NSString *query = [NSString stringWithFormat:queryBase, text];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
-        
-        if (results.count == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"No such project found."];
-            });
-        } else if (results.count == 1) {
-            // dismiss the HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Found one!"];
-            });
-            
-            // configure the predicate for the project that was found
-            ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-            predicate.type = ExploreSearchPredicateTypeProject;
-            predicate.searchProject = results.firstObject;
-            
-            // observations controller will fetch observations using this predicate
-            [observationsController addSearchPredicate:predicate];
-            
-            // configure and show the "active search" UI
-            activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-            activeSearchFilterView.hidden = NO;
+    [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
+        if (error) {
+            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD dismiss];
-            });
+            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
             
-            ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
-            disambiguator.title = @"Which project?";
-            disambiguator.searchOptions = results;
-            
-            __weak typeof(self)weakSelf = self;
-            disambiguator.chosenBlock = ^void(id choice) {
-                // get the taxon they chose
-                ExploreProject *project = (ExploreProject *)choice;
-                // fetch observations from this taxon from inat
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypeProject;
-                predicate.searchProject = project;
+            if (results.count == 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showErrorWithStatus:@"No such project found."];
+                });
+            } else if (results.count == 1) {
+                // dismiss the HUD
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD showSuccessWithStatus:@"Found one!"];
+                });
                 
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                [strongSelf->observationsController addSearchPredicate:predicate];
-                // configure and show the "active search" UI
-                strongSelf->activeSearchFilterView.activeSearchLabel.text = strongSelf->observationsController.combinedColloquialSearchPhrase;
-                strongSelf->activeSearchFilterView.hidden = NO;
-            };
-            [disambiguator presentDisambiguationAlert];
-        }
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
-}
+                // observations controller will fetch observations using this predicate
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
+                
+                [self showActiveSearchUI];
 
-- (void)searchForCoordinate:(CLLocationCoordinate2D)coord {
-    RKObjectMapping *mapping = [ExploreMappingProvider locationMapping];
-    
-    NSString *pathPattern = @"/places.json";
-    NSString *queryBase = @"?per_page=50&latitude=%f&longitude=%f";
-    NSString *query = [NSString stringWithFormat:queryBase, coord.latitude, coord.longitude];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSArray *results = [array copy];
-        
-        NSArray *openSpaces = [results bk_select:^BOOL(ExploreLocation *location) {
-            return (location.type == 100);
-        }];
-        NSArray *counties = [results bk_select:^BOOL(ExploreLocation *location) {
-            return (location.type == 9);
-        }];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            // pick a location to use
-            // prefer open spaces to counties
-            ExploreLocation *location = openSpaces.count ? openSpaces.lastObject : (counties.count ? counties.lastObject : nil);
-            
-            // don't do any anything else if we can't get a location
-            if (!location) {
-                [[[UIAlertView alloc] initWithTitle:@"No iNat Location"
-                                            message:@"No iNat Location Found"
-                                           delegate:nil
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil] show];
             } else {
-                ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
-                predicate.type = ExploreSearchPredicateTypeLocation;
-                predicate.searchLocation = location;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SVProgressHUD dismiss];
+                });
                 
-                [observationsController addSearchPredicate:predicate];
+                ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
+                disambiguator.title = @"Which project?";
+                disambiguator.searchOptions = results;
                 
-                // configure and show the "active search" UI
-                activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-                activeSearchFilterView.hidden = NO;
+                __weak typeof(self)weakSelf = self;
+                disambiguator.chosenBlock = ^void(id choice) {
+                    __strong typeof(weakSelf)strongSelf = weakSelf;
+
+                    // observations controller will fetch observations using this predicate
+                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
+
+                    [strongSelf showActiveSearchUI];
+                };
+                [disambiguator presentDisambiguationAlert];
             }
-        });
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
+        }
+    }];    
 }
 
 #pragma mark - UITableView delegate/datasource
@@ -840,11 +650,11 @@
                                       otherButtonTitles:nil] show];
                     return;
                 } else {
-                    [self searchForPeople:searchBar.text];
+                    [self searchForPerson:searchBar.text];
                 }
                 break;
             case 2:
-                [self searchForPlace:searchBar.text];
+                [self searchForLocation:searchBar.text];
                 break;
             case 3:
                 [self searchForProject:searchBar.text];
@@ -874,7 +684,7 @@
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeCritter];
                 break;
             case 1:
-                [cell setSearchPredicateType:ExploreSearchPredicateTypePeople];
+                [cell setSearchPredicateType:ExploreSearchPredicateTypePerson];
                 break;
             case 2:
                 [cell setSearchPredicateType:ExploreSearchPredicateTypeLocation];

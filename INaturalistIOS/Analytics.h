@@ -41,6 +41,8 @@ extern NSString *kAnalyticsEventExploreSearchPlaces;
 extern NSString *kAnalyticsEventExploreSearchCritters;
 
 extern NSString *kAnalyticsEventExploreSearchNearMe;
+extern NSString *kAnalyticsEventExploreSearchMine;
+
 
 // add comments & ids in explore
 extern NSString *kAnalyticsEventExploreAddComment;

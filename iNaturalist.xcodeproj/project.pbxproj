@@ -275,6 +275,7 @@
 		FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
 		FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */; };
 		FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */; };
+		FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F991A12DFD200928102 /* ExploreSearchController.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */; };
 		FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4E729319FAC8A000A9AB5D /* amphibia-200px.png */; };
@@ -958,6 +959,8 @@
 		FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExplorePerson+SearchResultsHelper.m"; sourceTree = "<group>"; };
 		FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreLocation+SearchResultsHelper.h"; sourceTree = "<group>"; };
 		FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreLocation+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F981A12DFD200928102 /* ExploreSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchController.h; sourceTree = "<group>"; };
+		FA3F1F991A12DFD200928102 /* ExploreSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreSearchController.m; sourceTree = "<group>"; };
 		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4E729219FAC8A000A9AB5D /* actinopterygii-200px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "actinopterygii-200px.png"; sourceTree = "<group>"; };
@@ -1948,6 +1951,8 @@
 				FA4E72EE19FACEE000A9AB5D /* ExploreObservationsDataSource.h */,
 				FA4529E61A03F70200147895 /* ExploreRegion.h */,
 				FA4529E71A03F70200147895 /* ExploreRegion.m */,
+				FA3F1F981A12DFD200928102 /* ExploreSearchController.h */,
+				FA3F1F991A12DFD200928102 /* ExploreSearchController.m */,
 			);
 			name = "iNat API";
 			sourceTree = "<group>";
@@ -2522,6 +2527,7 @@
 				6098FD8A16F3F6890053987E /* GTLPlusComment.m in Sources */,
 				6098FD8B16F3F6890053987E /* GTLPlusCommentFeed.m in Sources */,
 				6098FD8C16F3F6890053987E /* GTLPlusConstants.m in Sources */,
+				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				6098FD8D16F3F6890053987E /* GTLPlusItemScope.m in Sources */,
 				6098FD8E16F3F6890053987E /* GTLPlusMoment.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
