@@ -60,24 +60,23 @@
 }
 
 - (void)searchForPath:(NSString *)path mapping:(RKObjectMapping *)mapping completionHandler:(SearchCompletionHandler)handler {
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path
-                                                                                        delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        handler(array, nil);
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        handler(nil, err);
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        handler(nil, err);
-    };
-    
-    [objectLoader send];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        
+        // can't infer search mappings via keypath
+        loader.objectMapping = mapping;
+        
+        loader.onDidLoadObjects = ^(NSArray *array) {
+            handler(array, nil);
+        };
+        
+        loader.onDidFailWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+        
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+    }];
 }
 
 @end

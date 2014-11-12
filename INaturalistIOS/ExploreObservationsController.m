@@ -189,51 +189,49 @@
         [SVProgressHUD showWithStatus:statusMessage maskType:SVProgressHUDMaskTypeGradient];
     }
     
-    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
-    
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSSet *trimmedObservations;
-        NSSet *unorderedObservations;
-        if (self.limitingRegion) {
-            trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
-                // trim out anything that isn't in the limiting region
-                return [self.limitingRegion containsCoordinate:obs.coordinate];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        
+        // can't infer search mappings via keypath
+        loader.objectMapping = [ExploreMappingProvider observationMapping];
+        
+        loader.onDidLoadObjects = ^(NSArray *array) {
+            NSSet *trimmedObservations;
+            NSSet *unorderedObservations;
+            if (self.limitingRegion) {
+                trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
+                    // trim out anything that isn't in the limiting region
+                    return [self.limitingRegion containsCoordinate:obs.coordinate];
+                }];
+                unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
+            } else {
+                unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
+            }
+            NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
             }];
-            unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
-        } else {
-            unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
-        }
-        NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
-        }];
+            
+            self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+            
+            if (shouldNotify) {
+                if (array.count > 0)
+                    [SVProgressHUD showSuccessWithStatus:@"Yay!"];
+                else
+                    [SVProgressHUD showErrorWithStatus:@"No observations found."];
+            }
+        };
         
-        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+        loader.onDidFailWithError = ^(NSError *err) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            if (shouldNotify)
+                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
         
-        if (shouldNotify) {
-            if (array.count > 0)
-                [SVProgressHUD showSuccessWithStatus:@"Yay!"];
-            else
-                [SVProgressHUD showErrorWithStatus:@"No observations found."];
-        }
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        if (shouldNotify)
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        if (shouldNotify)
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            if (shouldNotify)
+                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
+    }];
 }
 
 - (NSString *)combinedColloquialSearchPhrase {
