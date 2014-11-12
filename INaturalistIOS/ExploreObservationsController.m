@@ -269,4 +269,55 @@
     }];
 }
 
+- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [self postToPath:@"/identifications"
+              params:@{ @"identification[observation_id]": @(observation.observationId),
+                        @"identification[taxon_id]": @(taxonId) }
+          completion:handler];
+}
+
+- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [self postToPath:@"/comments"
+              params:@{ @"comment[body]": commentBody,
+                        @"comment[parent_id]": @(observation.observationId),
+                        @"comment[parent_type]": @"Observation" }
+          completion:handler];
+}
+
+- (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
+    [[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
+        request.params = params;
+        
+        request.onDidLoadResponse = ^(RKResponse *response) {
+            handler(response, nil);
+        };
+        
+        request.onDidFailLoadWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+    }];
+}
+
+- (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler {
+    NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)observation.observationId];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        loader.method = RKRequestMethodGET;
+        loader.objectMapping = [ExploreMappingProvider observationMapping];
+        
+        loader.onDidLoadObjects = ^(NSArray *results) {
+            handler(results, nil);
+        };
+        
+        loader.onDidFailWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+        
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+    }];
+}
+
+
+
 @end
