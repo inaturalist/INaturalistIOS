@@ -10,7 +10,7 @@
 
 typedef void(^DismbiguationChosen)(id choice);
 
-@interface ExploreDisambiguator : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@interface ExploreDisambiguator : NSObject <UITableViewDataSource,UITableViewDelegate>
 
 @property NSString *title;
 @property NSString *message;
