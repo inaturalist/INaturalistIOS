@@ -16,7 +16,6 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <AFNetworking/AFNetworking.h>
 
 #import "ExploreObservationDetailViewController.h"
 #import "ExploreObservation.h"
@@ -32,30 +31,13 @@
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
 #import "TaxaSearchViewController.h"
-
-static NSDateFormatter *shortDateFormatter;
-static NSDateFormatter *shortTimeFormatter;
+#import "ExploreObservationsDataSource.h"
+#import "ExploreObservationsController.h"
 
 @interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
-        
-    UILabel *commonNameLabel;
-    UILabel *scientificNameLabel;
-    UIImageView *photoImageView;
-    
-    UIImageView *observerAvatarImageView;
-    UILabel *observerNameLabel;
-    UILabel *observedDateLabel;
-    UILabel *observedTimeLabel;
-    
-    UILabel *mapPinLabel;
-    UILabel *observedLocationLabel;
-    
-    UIView *separatorView;
     
     NSArray *commentsAndIds;
-    
-    CLGeocoder *geocoder;
     
     UIActionSheet *shareActionSheet;
     UIActionSheet *identifyActionSheet;
@@ -66,6 +48,8 @@ static NSDateFormatter *shortTimeFormatter;
 @end
 
 @implementation ExploreObservationDetailViewController
+
+#pragma mark - UIView lifecycle
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithTableViewStyle:UITableViewStyleGrouped]) {
@@ -116,6 +100,39 @@ static NSDateFormatter *shortTimeFormatter;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreObsDetails];
 }
 
+#pragma mark - Show Taxon Details Helper
+
+- (void)showTaxonDetailsForTaxonId:(NSInteger)taxonId {
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        loader.method = RKRequestMethodGET;
+        loader.objectMapping = [Taxon mapping];
+        
+        loader.onDidLoadObject = ^(id object) {
+            TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+                                               instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+            tdvc.taxon = object;
+            [self.navigationController pushViewController:tdvc animated:YES];
+        };
+        
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+        };
+        
+        loader.onDidFailWithError = ^(NSError *err) {
+            [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+        };
+    }];
+    
+}
+
+#pragma mark - UIBarButton targets
+
 - (void)action {
     shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                    delegate:self
@@ -163,12 +180,14 @@ static NSDateFormatter *shortTimeFormatter;
         switch (buttonIndex) {
             case 0:
                 // view taxa details
-                [self showTaxaDetailsForIdentification:selectedIdentification];
+                [self showTaxonDetailsForTaxonId:selectedIdentification.identificationTaxonId];
                 break;
             case 1:
                 // agree
                 if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-                    [self agreeWithIdentification:selectedIdentification];
+                    [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification
+                                     withProperties:@{ @"Via": @"Agree" }];
+                    [self addIdentificationWithTaxonId:selectedIdentification.identificationTaxonId];
                 } else {
                     [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
                                                 message:@"No anonymous identifications!"
@@ -192,7 +211,7 @@ static NSDateFormatter *shortTimeFormatter;
     selectedIdentification = nil;
 }
 
-#pragma mark - ActionSheet items
+#pragma mark - ActionSheet targets
 
 - (void)shareObservation:(ExploreObservation *)observation {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld", (long)self.observation.observationId]];
@@ -206,42 +225,8 @@ static NSDateFormatter *shortTimeFormatter;
     [self presentViewController:activity animated:YES completion:nil];
 }
 
-- (void)showTaxaDetailsForIdentification:(ExploreIdentification *)identification {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-        return;
-    }
-    
-    RKObjectMapping *mapping = [Taxon mapping];
-    
-    NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)identification.identificationTaxonId];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObject = ^(id object) {
-        TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-                                           instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-        tdvc.taxon = object;
-        [self.navigationController pushViewController:tdvc animated:YES];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-    };
-    
-    [objectLoader send];
-}
-
-- (void)agreeWithIdentification:(ExploreIdentification *)identification {
-    [self addIdentification:identification.identificationTaxonId];
-}
-
 #pragma mark - Setter/getter for observation
+
 - (void)setObservation:(ExploreObservation *)observation {
     _observation = observation;
     
@@ -322,34 +307,7 @@ static NSDateFormatter *shortTimeFormatter;
         label.userInteractionEnabled = YES;
         [label addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
             if (self.observation.taxonId != 0) {
-                if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-                    return;
-                }
-                
-                RKObjectMapping *mapping = [Taxon mapping];
-                
-                NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonId];
-                RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-                objectLoader.method = RKRequestMethodGET;
-                objectLoader.objectMapping = mapping;
-                
-                objectLoader.onDidLoadObject = ^(id object) {
-                    TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-                                                       instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-                    tdvc.taxon = object;
-                    [self.navigationController pushViewController:tdvc animated:YES];
-                };
-                
-                objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-                };
-                
-                objectLoader.onDidFailWithError = ^(NSError *err) {
-                    [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
-                };
-                
-                [objectLoader send];
+                [self showTaxonDetailsForTaxonId:self.observation.taxonId];
             }
         }]];
     }];
@@ -396,22 +354,22 @@ static NSDateFormatter *shortTimeFormatter;
 #pragma mark - TaxaSearchViewControllerDelegate
 
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
-    [self addIdentification:taxon.recordID.integerValue];
+    [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification
+                     withProperties:@{ @"Via": @"Taxon Chooser" }];
+    [self addIdentificationWithTaxonId:taxon.recordID.integerValue];
 }
 
 #pragma mark - SLKTableView methods
 
-- (void)didPressRightButton:(id)sender
-{
+- (void)didPressRightButton:(id)sender {
     // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
     
+    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+    [self.textView refreshFirstResponder];
+    [self.textView resignFirstResponder];
+
     if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-        // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
-        [self.textView refreshFirstResponder];
-        [self.textView resignFirstResponder];
-        
-        NSString *message = [self.textView.text copy];
-        [self addComment:message];
+        [self addComment:self.textView.text];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
                                     message:@"No anonymous comments!"
@@ -425,107 +383,73 @@ static NSDateFormatter *shortTimeFormatter;
 
 #pragma mark - iNat API Calls
 
-- (void)addIdentification:(NSInteger)taxonId {
+- (void)addIdentificationWithTaxonId:(NSInteger)taxonId {
     [SVProgressHUD showWithStatus:@"Adding Identification..." maskType:SVProgressHUDMaskTypeGradient];
     
-    // doing this with AFNetworking because RESTKit/OAuth is hurting my brain right now
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://inaturalist.org"]];
-    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
-                                                            path:@"/identifications.json"
-                                                      parameters:@{@"identification[observation_id]": @(self.observation.observationId),
-                                                                   @"identification[taxon_id]": @(taxonId)}];
-    
-    // token is preformatted, in user defaults
-    [request addValue:[[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
-    
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-                                                                                        success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                                                                            [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification];
-                                                                                            // update the UI
-                                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                // if it wasn't an "agree" id, then we need to pop back to this VC
-                                                                                                [self.navigationController popToRootViewControllerAnimated:YES];
-                                                                                                if (![self.navigationController.topViewController isEqual:self])
-                                                                                                    [self.navigationController popToRootViewControllerAnimated:YES];
-                                                                                                [SVProgressHUD showSuccessWithStatus:@"Added!"];
-                                                                                            });
-                                                                                            [self fetchObservationCommentsAndIds];
-                                                                                        }
-                                                                                        failure:^( NSURLRequest *request , NSHTTPURLResponse *response , NSError *error , id JSON ) {
-                                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                [SVProgressHUD showErrorWithStatus:@"Identification failed :("];
-                                                                                            });
-                                                                                        }];
-    [operation start];
+    ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
+    [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showErrorWithStatus:@"Identification failed :("];
+            });
+        } else {
+            // if it wasn't an "agree" id, then we need to pop back through the taxon chooser to this VC
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD showSuccessWithStatus:@"Added!"];
+            });
+            [self fetchObservationCommentsAndIds];
+        }
+    }];
 }
 
-- (void)addComment:(NSString *)comment {
+- (void)addComment:(NSString *)commentBody {
     [SVProgressHUD showWithStatus:@"Adding Comment..." maskType:SVProgressHUDMaskTypeGradient];
     
-    // doing this with AFNetworking because RESTKit/OAuth is hurting my brain right now
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://inaturalist.org"]];
-    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
-                                                            path:@"/comments.json"
-                                                      parameters:@{@"comment[parent_type]": @"Observation",
-                                                                   @"comment[parent_id]": @(self.observation.observationId),
-                                                                   @"comment[body]": comment}];
-    // token is preformatted, in user defaults
-    [request addValue:[[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
-    
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-                                                                                        success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                                                                            [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
-                                                                                             // update the UI
-                                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                [SVProgressHUD showSuccessWithStatus:@"Added!"];
-                                                                                            });
-                                                                                            [self fetchObservationCommentsAndIds];
-                                                                                        }
-                                                                                        failure:^( NSURLRequest *request , NSHTTPURLResponse *response , NSError *error , id JSON ) {
-                                                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                [SVProgressHUD showErrorWithStatus:@"Comment failed :("];
-                                                                                            });
-                                                                                        }];
-    [operation start];
+    ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
+    [controller addComment:commentBody
+            forObservation:self.observation
+         completionHandler:^(RKResponse *response, NSError *error) {
+             if (error) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [SVProgressHUD showErrorWithStatus:@"Comment failed :("];
+                 });
+             } else {
+                 [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
+                 // update the UI
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [SVProgressHUD showSuccessWithStatus:@"Added!"];
+                 });
+                 [self fetchObservationCommentsAndIds];
+             }
+    }];
 }
 
 - (void)fetchObservationCommentsAndIds {
+    ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
+    [controller loadCommentsAndIdentificationsForObservation:self.observation
+                                           completionHandler:^(NSArray *results, NSError *error) {
+                                               if (error) {
+                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                               } else {
+                                                   ExploreObservation *observation = (ExploreObservation *)results.firstObject;
+                                                   
+                                                   // interleave comments and ids together, sorted by date
+                                                   NSMutableArray *array = [NSMutableArray array];
+                                                   [array addObjectsFromArray:observation.comments];
+                                                   [array addObjectsFromArray:observation.identifications];
+                                                   [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                                       return [[obj1 performSelector:@selector(date)] compare:[obj2 performSelector:@selector(date)]];
+                                                   }];
+                                                   commentsAndIds = [NSArray arrayWithArray:array];
+                                                   
+                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                       [self.tableView reloadData];
+                                                   });
+                                               }
+                                           }];
     
-    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
-    
-    NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)self.observation.observationId];
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObject = ^(id object) {
-        ExploreObservation *observation = (ExploreObservation *)object;
-        
-        NSMutableArray *array = [NSMutableArray array];
-        [array addObjectsFromArray:observation.comments];
-        [array addObjectsFromArray:observation.identifications];
-        
-        [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return [[obj1 performSelector:@selector(date)] compare:[obj2 performSelector:@selector(date)]];
-        }];
-        
-        commentsAndIds = [NSArray arrayWithArray:array];
-        
-        //self.observation = observation;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
 }
 
 @end
