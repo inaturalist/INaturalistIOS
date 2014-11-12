@@ -303,7 +303,6 @@
 		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
 		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
 		FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */; };
-		FA4E72E619FACE6900A9AB5D /* ExploreAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D819FACE6900A9AB5D /* ExploreAnnotationView.m */; };
 		FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */; };
 		FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */; };
 		FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */; };
@@ -1001,8 +1000,6 @@
 		FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ExploreIconicTaxaImages.m"; sourceTree = "<group>"; };
 		FA4E72D519FACE6900A9AB5D /* ExploreActiveSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreActiveSearchView.h; sourceTree = "<group>"; };
 		FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreActiveSearchView.m; sourceTree = "<group>"; };
-		FA4E72D719FACE6900A9AB5D /* ExploreAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreAnnotationView.h; sourceTree = "<group>"; };
-		FA4E72D819FACE6900A9AB5D /* ExploreAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreAnnotationView.m; sourceTree = "<group>"; };
 		FA4E72D919FACE6900A9AB5D /* ExploreCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreCommentCell.h; sourceTree = "<group>"; };
 		FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreCommentCell.m; sourceTree = "<group>"; };
 		FA4E72DB19FACE6900A9AB5D /* ExploreGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreGridCell.h; sourceTree = "<group>"; };
@@ -1921,8 +1918,6 @@
 			children = (
 				FA4E72D519FACE6900A9AB5D /* ExploreActiveSearchView.h */,
 				FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */,
-				FA4E72D719FACE6900A9AB5D /* ExploreAnnotationView.h */,
-				FA4E72D819FACE6900A9AB5D /* ExploreAnnotationView.m */,
 				FA4E72D919FACE6900A9AB5D /* ExploreCommentCell.h */,
 				FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */,
 				FA4E72DB19FACE6900A9AB5D /* ExploreGridCell.h */,
@@ -2480,7 +2475,6 @@
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
-				FA4E72E619FACE6900A9AB5D /* ExploreAnnotationView.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
 				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
