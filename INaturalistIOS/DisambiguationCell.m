@@ -60,7 +60,7 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[resultImageView(==40)]-2-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[resultImageView]-2-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
