@@ -9,7 +9,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ExploreDisambiguator.h"
-#import "ExploreSearchResultsCell.h"
+#import "DisambiguationCell.h"
 #import "SearchResultsHelper.h"
 
 #define SEARCH_OPTION_CELL_ID @"SearchOptionCell"
@@ -39,7 +39,7 @@
     
     optionsTableView = [[UITableView alloc] initWithFrame:tableViewRect
                                                                  style:UITableViewStylePlain];
-    [optionsTableView registerClass:[ExploreSearchResultsCell class] forCellReuseIdentifier:SEARCH_OPTION_CELL_ID];
+    [optionsTableView registerClass:[DisambiguationCell class] forCellReuseIdentifier:SEARCH_OPTION_CELL_ID];
     optionsTableView.delegate = self;
     optionsTableView.dataSource = self;
     [alert setValue:optionsTableView
@@ -79,7 +79,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     id option = [self.searchOptions objectAtIndex:indexPath.row];
     
-    ExploreSearchResultsCell *cell = (ExploreSearchResultsCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_OPTION_CELL_ID
+    DisambiguationCell *cell = (DisambiguationCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_OPTION_CELL_ID
                                                                                                  forIndexPath:indexPath];
     
     id <SearchResultsHelper> searchOption = (id <SearchResultsHelper>)option;

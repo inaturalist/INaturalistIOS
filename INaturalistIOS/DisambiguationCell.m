@@ -1,15 +1,15 @@
 //
-//  ExploreSearchResultsCell.m
+//  DisambiguationCell.m
 //  iNaturalist
 //
 //  Created by Alex Shepard on 11/3/14.
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import "ExploreSearchResultsCell.h"
+#import "DisambiguationCell.h"
 #import "UIColor+ExploreColors.h"
 
-@implementation ExploreSearchResultsCell
+@implementation DisambiguationCell
 
 // designated initializer for UITableViewCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {

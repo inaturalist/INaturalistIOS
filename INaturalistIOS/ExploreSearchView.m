@@ -8,7 +8,7 @@
 
 #import "ExploreSearchView.h"
 #import "ExploreActiveSearchView.h"
-#import "ExploreSearchCompleteCell.h"
+#import "AutocompleteCell.h"
 #import "ShortcutSearchItem.h"
 #import "AutocompleteSearchItem.h"
 
@@ -57,7 +57,7 @@
                 tv.dataSource = self;
                 tv.delegate = self;
                 
-                [tv registerClass:[ExploreSearchCompleteCell class] forCellReuseIdentifier:SEARCH_AUTOCOMPLETE_CELL];
+                [tv registerClass:[AutocompleteCell class] forCellReuseIdentifier:SEARCH_AUTOCOMPLETE_CELL];
                 [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:SEARCH_SHORTCUT_CELL];
                 
                 tv;
@@ -253,7 +253,7 @@
         // autocomplete cells
         
         AutocompleteSearchItem *item = [self.autocompleteItems objectAtIndex:indexPath.row];
-        ExploreSearchCompleteCell *cell = (ExploreSearchCompleteCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_AUTOCOMPLETE_CELL];
+        AutocompleteCell *cell = (AutocompleteCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_AUTOCOMPLETE_CELL];
         // set the predicate first
         cell.predicate = item.predicate;
         cell.searchText = optionsSearchBar.text;

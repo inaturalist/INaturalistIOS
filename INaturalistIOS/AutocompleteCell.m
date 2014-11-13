@@ -1,5 +1,5 @@
 //
-//  ExploreSearchCompleteCell.m
+//  AutocompleteCell.m
 //  Explore Prototype
 //
 //  Created by Alex Shepard on 10/9/14.
@@ -8,16 +8,16 @@
 
 #import <FontAwesomeKit/FAKIonIcons.h>
 
-#import "ExploreSearchCompleteCell.h"
+#import "AutocompleteCell.h"
 #import "UIColor+ExploreColors.h"
 
-@interface ExploreSearchCompleteCell () {
+@interface AutocompleteCell () {
     NSString *_searchText;
 }
 
 @end
 
-@implementation ExploreSearchCompleteCell
+@implementation AutocompleteCell
 
 // designated initializer for UITableViewCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {

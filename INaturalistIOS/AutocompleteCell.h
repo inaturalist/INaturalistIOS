@@ -1,5 +1,5 @@
 //
-//  ExploreSearchCompleteCell.h
+//  AutocompleteCell.h
 //  Explore Prototype
 //
 //  Created by Alex Shepard on 10/9/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ExploreSearchCompleteCell : UITableViewCell
+@interface AutocompleteCell : UITableViewCell
 
 @property NSString *predicate;
 @property NSString *searchText;
