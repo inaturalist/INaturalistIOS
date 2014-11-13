@@ -137,10 +137,6 @@
     // if necessary, inset the collection view content inside the container
     // to make room for the active search text
     observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-
-    // the collection view seems to need to be forced to re-layout before it
-    // can properly scroll to the first item using the new content insets
-    [self.view layoutIfNeeded];    
 }
 
 #pragma mark - UICollectionView delegate/datasource
