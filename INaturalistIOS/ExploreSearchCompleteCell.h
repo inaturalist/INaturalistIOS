@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ExploreSearchPredicate.h"
 
 @interface ExploreSearchCompleteCell : UITableViewCell
 
-@property ExploreSearchPredicateType searchPredicateType;
+@property NSString *predicate;
 @property NSString *searchText;
 
 @end

@@ -33,49 +33,21 @@
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "ExploreDisambiguator.h"
 #import "ExploreSearchController.h"
+#import "ExploreSearchView.h"
+#import "AutocompleteSearchItem.h"
+#import "ShortcutSearchItem.h"
 
-#define SEARCH_AUTOCOMPLETE_CELL @"SearchAutocompleteCell"
-#define SEARCH_SHORTCUT_CELL @"SearchShortcutCell"
 
-@interface ExploreSearchViewController () <UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate, CLLocationManagerDelegate> {
+@interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
     
-    UIView *searchView;
-    UISearchBar *searchBar;
-    UITableView *searchResultsTableView;
-    
-    ExploreActiveSearchView *activeSearchFilterView;
-    
-    NSLayoutConstraint *searchResultsTableViewHeightConstraint;
-    
+    ExploreSearchView *searchMenu;
     
     CLLocationManager *locationManager;
     
     NSTimer *locationFetchTimer;
     BOOL hasFulfilledLocationFetch;
     BOOL isFetchingLocation;
-
-    // for geocoding place search text
-    CLGeocoder *geocoder;
-    UIAlertView *geocoderHelperAlertView;
-    NSArray *geocodedPlaces;
-    
-    // for choosing among project search
-    UIAlertView *projectSearchHelperAlertView;
-    UITableView *projectSearchHelperTableView;
-    NSArray *searchedProjects;
-    
-    UIAlertView *placeSearchHelperAlertView;
-    UITableView *placeSearchHelperTableView;
-    NSArray *searchedPlaces;
-    
-    UIAlertView *peopleSearchHelperAlertView;
-    UITableView *peopleSearchHelperTableView;
-    NSArray *searchedPeople;
-    
-    UIAlertView *taxaSearchHelperAlertView;
-    UITableView *taxaSearchHelperTableView;
-    NSArray *searchedTaxa;
     
     ExploreMapViewController *mapVC;
     ExploreGridViewController *gridVC;
@@ -93,30 +65,28 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         
-        FAKIcon *worldOutline = [FAKIonIcons ios7WorldOutlineIconWithSize:35];;
-        FAKIcon *worldFilled = [FAKIonIcons ios7WorldIconWithSize:35];
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *worldOutline = [FAKIonIcons ios7WorldOutlineIconWithSize:35];
+            [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [worldOutline imageWithSize:CGSizeMake(34, 45)];
+        });
         
-        [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        [worldFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        
-        self.navigationController.tabBarItem.image = [worldOutline imageWithSize:CGSizeMake(34, 45)];
-        self.navigationController.tabBarItem.selectedImage = [worldFilled imageWithSize:CGSizeMake(34, 45)];
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *worldFilled = [FAKIonIcons ios7WorldIconWithSize:35];
+            [worldFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [worldFilled imageWithSize:CGSizeMake(34, 45)];
+        });
         
         self.navigationController.tabBarItem.title = @"Explore";
         
         observationsController = [[ExploreObservationsController alloc] init];
         searchController = [[ExploreSearchController alloc] init];
-        
-        geocoder = [[CLGeocoder alloc] init];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // tab bar ui
-    self.tabBarItem.title = @"Container";
     
     // nav bar ui
     UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
@@ -129,61 +99,66 @@
                                                                              action:@selector(refreshPressed)];
     self.navigationItem.rightBarButtonItem = refresh;
     
-    // set up the search ui
-    searchView = ({
-        UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+    searchMenu = ({
+        ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
         view.translatesAutoresizingMaskIntoConstraints = NO;
+          
+        // autocomplete items
+        AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:@"critters"
+                                                                              action:^(NSString *searchText) {
+                                                                                  [self searchForTaxon:searchText];
+                                                                                  [searchMenu showActiveSearch];
+                                                                              }];
+        AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:@"people"
+                                                                            action:^(NSString *searchText) {
+                                                                                [self searchForPerson:searchText];
+                                                                                [searchMenu showActiveSearch];
+                                                                            }];
+        AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:@"locations"
+                                                                               action:^(NSString *searchText) {
+                                                                                   [self searchForLocation:searchText];
+                                                                                   [searchMenu showActiveSearch];
+                                                                               }];
+        AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:@"projects"
+                                                                              action:^(NSString *searchText) {
+                                                                                  [self searchForProject:searchText];
+                                                                                  [searchMenu showActiveSearch];
+                                                                              }];
+        view.autocompleteItems = @[critters, people, locations, projects];
         
-        view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-        view.hidden = YES;
+        // non-autocomplete shortcut items
+        ShortcutSearchItem *nearMe = [ShortcutSearchItem itemWithTitle:@"Find observations near me"
+                                                                action:^{
+                                                                    [self searchForNearbyObservations];
+                                                                    [searchMenu hideOptionSearch];
+                                                                }];
+        ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:@"Find my observations"
+                                                              action:^{
+                                                                  if ([[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey]) {
+                                                                      [self searchForMyObservations];
+                                                                      [searchMenu showActiveSearch];
+                                                                  } else {
+                                                                      [[[UIAlertView alloc] initWithTitle:@"You must be logged in!"
+                                                                                                  message:nil
+                                                                                                 delegate:nil
+                                                                                        cancelButtonTitle:@"OK"
+                                                                                        otherButtonTitles:nil] show];
+                                                                  }
+                                                              }];
+        view.shortcutItems = @[nearMe, mine];
         
-        searchBar = ({
-            UISearchBar *bar = [[UISearchBar alloc] initWithFrame:CGRectZero];
-            bar.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            bar.delegate = self;
-            bar.placeholder = @"Search";        // follow Apple mail example
-            
-            bar;
-        });
-        [view addSubview:searchBar];
-        
-        searchResultsTableView = ({
-            UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-            tv.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            tv.dataSource = self;
-            
-            tv.delegate = self;
-            [tv registerClass:[ExploreSearchCompleteCell class] forCellReuseIdentifier:SEARCH_AUTOCOMPLETE_CELL];
-            [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:SEARCH_SHORTCUT_CELL];
-            
-            tv;
-        });
-        [view addSubview:searchResultsTableView];
+        view.activeSearchFilterView.userInteractionEnabled = NO;
+        [view.activeSearchFilterView.removeActiveSearchButton addTarget:self
+                                                                 action:@selector(removeSearchPressed)
+                                                       forControlEvents:UIControlEventTouchUpInside];
+        view.activeSearchTextDelegate = self;
         
         view;
     });
-    [self.view addSubview:searchView];
+    [self.view addSubview:searchMenu];
     
     // the search view overlays on top of all of the stuff in the container view
-    self.overlayView = searchView;
-    
-    activeSearchFilterView = ({
-        ExploreActiveSearchView *view = [[ExploreActiveSearchView alloc] initWithFrame:CGRectZero];
-        view.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        view.userInteractionEnabled = NO;
-        
-        [view.removeActiveSearchButton addTarget:self
-                                          action:@selector(removeSearchPressed)
-                                forControlEvents:UIControlEventTouchUpInside];
-        
-        view.hidden = YES;
-        
-        view;
-    });
-    [self.view insertSubview:activeSearchFilterView aboveSubview:searchView];
+    self.overlayView = searchMenu;
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -211,60 +186,21 @@
     [self displayContentController:mapVC];
     
     NSDictionary *views = @{
-                            @"searchView": searchView,
+                            @"searchMenu": searchMenu,
                             @"topLayoutGuide": self.topLayoutGuide,
                             @"bottomLayoutGuide": self.bottomLayoutGuide,
-                            @"searchBar": searchBar,
-                            @"searchResultsTableView": searchResultsTableView,
-                            @"activeSearchFilterView": activeSearchFilterView,
                             };
     
     
     // Configure the Active Search UI
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[activeSearchFilterView]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchMenu]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[activeSearchFilterView]-0-[bottomLayoutGuide]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[searchMenu]-0-[bottomLayoutGuide]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    
-    
-    
-    
-    // Configure the Search UI
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[searchView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchBar]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchResultsTableView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[searchBar]-0-[searchResultsTableView]"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
-    searchResultsTableViewHeightConstraint = [NSLayoutConstraint constraintWithItem:searchResultsTableView
-                                                                          attribute:NSLayoutAttributeHeight
-                                                                          relatedBy:NSLayoutRelationEqual
-                                                                             toItem:nil
-                                                                          attribute:NSLayoutAttributeNotAnAttribute
-                                                                         multiplier:1.0f
-                                                                           constant:0.0f];
-    [self.view addConstraint:searchResultsTableViewHeightConstraint];
 }
 
 
@@ -275,34 +211,21 @@
 }
 
 - (void)removeSearchPressed {
-    activeSearchFilterView.activeSearchLabel.text = @"";
-    activeSearchFilterView.hidden = YES;
+    [searchMenu hideActiveSearch];
     
     [observationsController removeAllSearchPredicates];
 }
 
 - (void)searchPressed {
-    if (searchView.hidden) {
-        searchView.hidden = NO;
-        searchResultsTableViewHeightConstraint.constant = [self heightForTableView:searchResultsTableView
-                                                                     withRowHeight:44.0f];
-        [self.view layoutIfNeeded];
-        activeSearchFilterView.hidden = YES;
-    } else {
-        [searchBar resignFirstResponder];
-        searchView.hidden = YES;
+    if ([searchMenu optionSearchIsActive]) {
         if (observationsController.activeSearchPredicates.count > 0) {
-            activeSearchFilterView.hidden = NO;
+            [searchMenu showActiveSearch]; // implicitly hides option search
+        } else {
+            [searchMenu hideOptionSearch];
         }
+    } else {
+        [searchMenu showOptionSearch];
     }
-}
-
-#pragma mark - Show Search UI Helper
-
-- (void)showActiveSearchUI {
-    // configure and show the "active search" UI
-    activeSearchFilterView.activeSearchLabel.text = observationsController.combinedColloquialSearchPhrase;
-    activeSearchFilterView.hidden = NO;
 }
 
 #pragma mark - iNat API Calls
@@ -334,7 +257,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
-                [self showActiveSearchUI];
+                [searchMenu showActiveSearch];
 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -355,6 +278,9 @@
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+    
+    // no predicates, so hide the active search UI
+    [searchMenu hideActiveSearch];
     
     // get observations near current location
     switch ([CLLocationManager authorizationStatus]) {
@@ -401,7 +327,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
                 
-                [self showActiveSearchUI];
+                [searchMenu showActiveSearch];
                 
             } else {
                 
@@ -420,7 +346,7 @@
                     [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(Taxon *)choice]];
                     
                     __strong typeof(weakSelf)strongSelf = weakSelf;
-                    [strongSelf showActiveSearchUI];
+                    [strongSelf->searchMenu showActiveSearch];
                 };
                 [disambiguator presentDisambiguationAlert];
             }
@@ -452,7 +378,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
-                [self showActiveSearchUI];
+                [searchMenu showActiveSearch];
                 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -470,7 +396,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExplorePerson *)choice]];
                     
-                    [strongSelf showActiveSearchUI];
+                    [strongSelf->searchMenu showActiveSearch];
                 };
                 [disambiguator presentDisambiguationAlert];
             }
@@ -511,7 +437,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
                 
-                [self showActiveSearchUI];
+                [searchMenu showActiveSearch];
                 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -529,7 +455,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
 
-                    [strongSelf showActiveSearchUI];
+                    [strongSelf->searchMenu showActiveSearch];
                 };
                 [disambiguator presentDisambiguationAlert];
             }
@@ -560,7 +486,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
                 
-                [self showActiveSearchUI];
+                [searchMenu showActiveSearch];
 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -578,7 +504,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
 
-                    [strongSelf showActiveSearchUI];
+                    [strongSelf->searchMenu showActiveSearch];
                 };
                 [disambiguator presentDisambiguationAlert];
             }
@@ -586,136 +512,6 @@
     }];    
 }
 
-#pragma mark - UITableView delegate/datasource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        // search auto-complete section: "find observers named alex" etc
-        // only show when search text isn't empty
-        if (searchBar.superview && ![searchBar.text isEqualToString:@""])
-            return 4;
-        else
-            return 0;
-    } else {
-        // search shortcut section: "find observations near me" etc
-        // only show when search text is empty
-        if ([searchBar.text isEqualToString:@""]) {
-            if ([[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey]) {
-                // 1 row for "search near me"
-                // 1 row for "search my observations"
-                return 2;
-            } else {
-                // no "my observations"
-                return 1;
-            }
-        } else {
-            return 0;
-        }
-    }
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // remove the keyboard
-    [searchBar resignFirstResponder];
-    
-    if (indexPath.section == 1) {
-        if (indexPath.item == 0) {
-            [self searchForNearbyObservations];
-        } else {
-            [self searchForMyObservations];
-        }
-        
-        
-    } else {
-        // shouldn't really be possible to select a row with no search text
-        // but be defensive anyways
-        if ([searchBar.text isEqualToString:@""])
-            return;
-        
-        switch (indexPath.row) {
-            case 0:
-                [self searchForTaxon:searchBar.text];
-                break;
-            case 1:
-                // people search must be logged in
-                if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-                    [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
-                                                message:@"People search requires logging in!"
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                    return;
-                } else {
-                    [self searchForPerson:searchBar.text];
-                }
-                break;
-            case 2:
-                [self searchForLocation:searchBar.text];
-                break;
-            case 3:
-                [self searchForProject:searchBar.text];
-                break;
-            default:
-                break;
-        }
-    }
-    
-    // reset and hide the search UI
-    searchBar.text = @"";
-    [searchResultsTableView reloadData];
-    [searchView layoutIfNeeded];
-    searchView.hidden = YES;
-
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        // autocomplete cells
-        
-        ExploreSearchCompleteCell *cell = (ExploreSearchCompleteCell *)[tableView dequeueReusableCellWithIdentifier:SEARCH_AUTOCOMPLETE_CELL];
-        cell.searchText = searchBar.text;
-
-        switch (indexPath.row) {
-            case 0:
-                [cell setSearchPredicateType:ExploreSearchPredicateTypeCritter];
-                break;
-            case 1:
-                [cell setSearchPredicateType:ExploreSearchPredicateTypePerson];
-                break;
-            case 2:
-                [cell setSearchPredicateType:ExploreSearchPredicateTypeLocation];
-                break;
-            case 3:
-                [cell setSearchPredicateType:ExploreSearchPredicateTypeProject];
-                break;
-            default:
-                break;
-        }
-        return cell;
-        
-    } else {
-        //shortcut cells
-        
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SEARCH_SHORTCUT_CELL];
-        cell.textLabel.font = [UIFont italicSystemFontOfSize:14.0f];
-        switch (indexPath.row) {
-            case 0:
-                cell.textLabel.text = @"Find observations near me";
-                break;
-            case 1:
-                cell.textLabel.text = @"Find my observations";
-                break;
-            default:
-                cell.textLabel.text = nil;
-                break;
-        }
-        return cell;
-    }
-}
 
 #pragma mark - CLLocationManagerDelegate
 
@@ -801,29 +597,12 @@
                                                             repeats:NO];
 }
 
-#pragma mark - tableview constraint helpers
 
-- (CGFloat)heightForTableView:(UITableView *)tableView withRowHeight:(CGFloat)rowHeight {
-    int numberOfRows = 0;
-    for (int section = 0; section < searchResultsTableView.numberOfSections; section++)
-        for (int row = 0; row < [searchResultsTableView numberOfRowsInSection:section]; row++)
-            numberOfRows++;
-    return rowHeight * numberOfRows;
-}
 
-#pragma mark - UISearchBar delegate
+#pragma mark ActiveSearchText delegate
 
-- (void)searchBar:(UISearchBar *)field textDidChange:(NSString *)searchText {
-    [searchResultsTableView reloadData];
-    searchResultsTableViewHeightConstraint.constant = [self heightForTableView:searchResultsTableView
-                                                                 withRowHeight:44.0f];
-    [self.view layoutIfNeeded];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)field {
-    // simulate tap on first row
-    [searchResultsTableView.delegate tableView:searchResultsTableView
-                       didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+- (NSString *)activeSearchText {
+    return observationsController.combinedColloquialSearchPhrase;
 }
 
 @end
