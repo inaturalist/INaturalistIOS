@@ -229,7 +229,7 @@
     return renderer;
 }
 
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+- (void)mapView:(MKMapView *)map didSelectAnnotationView:(MKAnnotationView *)view {
     // do nothing if the user taps their location annotation
     if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
         return;

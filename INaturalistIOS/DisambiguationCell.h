@@ -1,5 +1,5 @@
 //
-//  ExploreSearchResultsCell.h
+//  DisambiguationCell.h
 //  iNaturalist
 //
 //  Created by Alex Shepard on 11/3/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ExploreSearchResultsCell : UITableViewCell
+@interface DisambiguationCell : UITableViewCell
 
 @property UIImageView *resultImageView;
 @property UILabel *resultTitle;

@@ -38,6 +38,8 @@ static NSDateFormatter *shortDateFormatter = nil;
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
+        self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
         if (!shortDateFormatter) {
             shortDateFormatter = [[NSDateFormatter alloc] init];
             shortDateFormatter.dateStyle = NSDateFormatterShortStyle;

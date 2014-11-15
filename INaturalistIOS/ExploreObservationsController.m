@@ -141,7 +141,7 @@
     // apply active search predicates to the query
     if (predicates.count > 0) {
         for (ExploreSearchPredicate *predicate in predicates) {
-            if (predicate.type == ExploreSearchPredicateTypePeople) {
+            if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
                 baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
@@ -189,51 +189,49 @@
         [SVProgressHUD showWithStatus:statusMessage maskType:SVProgressHUDMaskTypeGradient];
     }
     
-    RKObjectMapping *mapping = [ExploreMappingProvider observationMapping];
-    
-    RKObjectLoader *objectLoader = [[RKObjectManager sharedManager] objectLoaderWithResourcePath:path delegate:nil];
-    objectLoader.method = RKRequestMethodGET;
-    objectLoader.objectMapping = mapping;
-    
-    objectLoader.onDidLoadObjects = ^(NSArray *array) {
-        NSSet *trimmedObservations;
-        NSSet *unorderedObservations;
-        if (self.limitingRegion) {
-            trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
-                // trim out anything that isn't in the limiting region
-                return [self.limitingRegion containsCoordinate:obs.coordinate];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        
+        // can't infer search mappings via keypath
+        loader.objectMapping = [ExploreMappingProvider observationMapping];
+        
+        loader.onDidLoadObjects = ^(NSArray *array) {
+            NSSet *trimmedObservations;
+            NSSet *unorderedObservations;
+            if (self.limitingRegion) {
+                trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
+                    // trim out anything that isn't in the limiting region
+                    return [self.limitingRegion containsCoordinate:obs.coordinate];
+                }];
+                unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
+            } else {
+                unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
+            }
+            NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
             }];
-            unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
-        } else {
-            unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
-        }
-        NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
-        }];
+            
+            self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+            
+            if (shouldNotify) {
+                if (array.count > 0)
+                    [SVProgressHUD showSuccessWithStatus:@"Yay!"];
+                else
+                    [SVProgressHUD showErrorWithStatus:@"No observations found."];
+            }
+        };
         
-        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+        loader.onDidFailWithError = ^(NSError *err) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            if (shouldNotify)
+                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
         
-        if (shouldNotify) {
-            if (array.count > 0)
-                [SVProgressHUD showSuccessWithStatus:@"Yay!"];
-            else
-                [SVProgressHUD showErrorWithStatus:@"No observations found."];
-        }
-    };
-    
-    objectLoader.onDidFailWithError = ^(NSError *err) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        if (shouldNotify)
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    objectLoader.onDidFailLoadWithError = ^(NSError *err) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        if (shouldNotify)
-            [SVProgressHUD showErrorWithStatus:err.localizedDescription];
-    };
-    
-    [objectLoader send];
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            if (shouldNotify)
+                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+        };
+    }];
 }
 
 - (NSString *)combinedColloquialSearchPhrase {
@@ -270,5 +268,56 @@
         return p.type == ExploreSearchPredicateTypeLocation;
     }];
 }
+
+- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [self postToPath:@"/identifications"
+              params:@{ @"identification[observation_id]": @(observation.observationId),
+                        @"identification[taxon_id]": @(taxonId) }
+          completion:handler];
+}
+
+- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [self postToPath:@"/comments"
+              params:@{ @"comment[body]": commentBody,
+                        @"comment[parent_id]": @(observation.observationId),
+                        @"comment[parent_type]": @"Observation" }
+          completion:handler];
+}
+
+- (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
+    [[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
+        request.params = params;
+        
+        request.onDidLoadResponse = ^(RKResponse *response) {
+            handler(response, nil);
+        };
+        
+        request.onDidFailLoadWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+    }];
+}
+
+- (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler {
+    NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)observation.observationId];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        loader.method = RKRequestMethodGET;
+        loader.objectMapping = [ExploreMappingProvider observationMapping];
+        
+        loader.onDidLoadObjects = ^(NSArray *results) {
+            handler(results, nil);
+        };
+        
+        loader.onDidFailWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+        
+        loader.onDidFailLoadWithError = ^(NSError *err) {
+            handler(nil, err);
+        };
+    }];
+}
+
+
 
 @end

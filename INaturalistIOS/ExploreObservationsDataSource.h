@@ -12,6 +12,12 @@
 #import "ExploreSearchPredicate.h"
 #import "ExploreRegion.h"
 
+typedef void(^FetchCompletionHandler)(NSArray *results, NSError *error);
+typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
+
+
+@class ExploreObservation;
+
 @protocol ExploreObservationsDataSource <NSObject>
 
 @property NSOrderedSet *observations;
@@ -29,5 +35,9 @@
 - (BOOL)activeSearchLimitedBySearchedLocation;
 - (BOOL)activeSearchLimitedByCurrentMapRegion;
 - (void)expandActiveSearchToNextPageOfResults;
+
+- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
+- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
+- (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler;
 
 @end

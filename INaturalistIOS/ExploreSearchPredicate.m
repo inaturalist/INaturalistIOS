@@ -23,7 +23,7 @@
                 return [NSString stringWithFormat:@"named '%@'", self.searchTaxon.name];
             }
             break;
-        case ExploreSearchPredicateTypePeople:
+        case ExploreSearchPredicateTypePerson:
             if (self.searchPerson.name && ![self.searchPerson.name isEqualToString:@""])
                 return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.name];
             else
@@ -39,5 +39,34 @@
             break;
     }
 }
+
++ (instancetype)predicateForTaxon:(Taxon *)taxon {
+    ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+    predicate.type = ExploreSearchPredicateTypeCritter;
+    predicate.searchTaxon = taxon;
+    return predicate;
+}
+
++ (instancetype)predicateForLocation:(ExploreLocation *)location {
+    ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+    predicate.type = ExploreSearchPredicateTypeLocation;
+    predicate.searchLocation = location;
+    return predicate;
+}
+
++ (instancetype)predicateForProject:(ExploreProject *)project {
+    ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+    predicate.type = ExploreSearchPredicateTypeProject;
+    predicate.searchProject = project;
+    return predicate;
+}
+
++ (instancetype)predicateForPerson:(ExplorePerson *)person {
+    ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
+    predicate.type = ExploreSearchPredicateTypePerson;
+    predicate.searchPerson = person;
+    return predicate;
+}
+
 
 @end
