@@ -16,8 +16,8 @@ PODS:
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
   - Bolts (1.1.3)
-  - CrashlyticsFramework (2.2.4)
-  - Facebook-iOS-SDK (3.19.0):
+  - CrashlyticsFramework (2.2.5.1)
+  - Facebook-iOS-SDK (3.20.0):
     - Bolts (~> 1.0)
   - FlurrySDK (5.4.0):
     - FlurrySDK/FlurrySDK
@@ -45,11 +45,9 @@ PODS:
   - SDWebImage (3.7.1):
     - SDWebImage/Core
   - SDWebImage/Core (3.7.1)
-  - SlackTextViewController (1.2.7):
+  - SlackTextViewController (1.3.2):
     - SlackTextViewController/Additions
-    - SlackTextViewController/Additions
-  - SlackTextViewController/Additions (1.2.7):
-    - SlackTextViewController/Additions
+  - SlackTextViewController/Additions (1.3.2)
   - SVProgressHUD (1.0)
   - SVPullToRefresh (0.4.1)
   - UIColor-HTMLColors (1.0.0)
@@ -58,15 +56,15 @@ DEPENDENCIES:
   - AFNetworking (= 1.3.4)
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
-  - CrashlyticsFramework (= 2.2.4)
-  - Facebook-iOS-SDK (= 3.19.0)
+  - CrashlyticsFramework (= 2.2.5.1)
+  - Facebook-iOS-SDK (= 3.20.0)
   - FlurrySDK (= 5.4.0)
   - FontAwesomeKit (= 2.1.8)
   - GeoJSONSerialization (= 0.0.4)
   - HexColors (= 2.2.1)
   - MHVideoPhotoGallery (= 1.6.6)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - SlackTextViewController (= 1.2.7)
+  - SlackTextViewController (= 1.3.2)
   - SVProgressHUD (= 1.0)
   - SVPullToRefresh (= 0.4.1)
   - UIColor-HTMLColors (= 1.0.0)
@@ -75,8 +73,8 @@ SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
-  CrashlyticsFramework: 0c28a2c07a51b7691e6668b83824b0b0be77f307
-  Facebook-iOS-SDK: cb7d74759d0b1ba546e6e6f1dde407b0d4e448d6
+  CrashlyticsFramework: 195dfef587ade7a3954ce8effd483a3879d35877
+  Facebook-iOS-SDK: 5854404b4b651f612a8ef79ca06d766858f4cb8e
   FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
   FontAwesomeKit: a2edea3111dab107b4cc43b85881b404eb063385
   GeoJSONSerialization: 87d7a81f770d111506e690980ef192fba3966d01
@@ -84,9 +82,9 @@ SPEC CHECKSUMS:
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
   PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
-  SlackTextViewController: a42c0e698747f0fd3b59b90db011046cf96a77f2
+  SlackTextViewController: 113d3e4580fdcd77767da2a5fb71444554e57b26
   SVProgressHUD: 5034c6e22b8c2ca3e09402e48d41ed0340aa1c50
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
   UIColor-HTMLColors: fbf3e9648f1e699aa4cdb39d0cf348b7ef814be5
 
-COCOAPODS: 0.34.1
+COCOAPODS: 0.34.4
