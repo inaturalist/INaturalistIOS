@@ -1037,7 +1037,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
     } else if (indexPath.section == ObservedOnTableViewSection) {
         [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
-                                    datePickerMode:UIDatePickerModeDateAndTime selectedDate:self.observation.localObservedOn
+                                    datePickerMode:UIDatePickerModeDateAndTime
+                                      selectedDate:self.observation.localObservedOn ? self.observation.localObservedOn : [NSDate date]
                                             target:self
                                             action:@selector(doneDatePicker:element:)
                                             origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
