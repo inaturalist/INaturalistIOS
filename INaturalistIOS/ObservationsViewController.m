@@ -111,8 +111,28 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         }
         [[[RKObjectManager sharedManager] objectStore] save:nil];
     }
-	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
-	[self.syncQueue start];
+    [self.syncQueue addModel:ObservationPhoto.class loaderConfigBlock:^(RKObjectLoader *loader, INatModel *object) {
+        ObservationPhoto *op = (ObservationPhoto *)object;
+        
+        INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
+        [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
+        
+        RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider
+                                                 serializationMappingForClass:[ObservationPhoto class]];
+        NSError* error = nil;
+        NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping]
+                                    serializedObject:&error];
+        RKParams* params = [RKParams paramsWithDictionary:dictionary];
+        NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
+        
+        [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey
+                                                          forSize:imageSize]
+               forParam:@"file"];
+        loader.params = params;
+        loader.objectMapping = [ObservationPhoto mapping];
+    }];
+
+    [self.syncQueue start];
 }
 
 - (void)stopSync
@@ -132,38 +152,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (BOOL)isSyncing
 {
     return [UIApplication sharedApplication].isIdleTimerDisabled;
-}
-
-- (void)syncObservationPhoto:(ObservationPhoto *)op
-{
-    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
-    // in theory no observation photo should be without an observation, but...
-    if (!op.observation) {
-        [op destroy];
-        return;
-    }
-    void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
-        loader.delegate = self.syncQueue;
-        RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
-                                                 serializationMappingForClass:[ObservationPhoto class]];
-        NSError* error = nil;
-        NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
-                                    serializedObject:&error];
-        RKParams* params = [RKParams paramsWithDictionary:dictionary];
-        NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
-        
-        [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                          forSize:imageSize]
-               forParam:@"file"];
-        loader.params = params;
-        loader.objectMapping = [ObservationPhoto mapping];
-    };
-    if (op.syncedAt && op.recordID) {
-        [app.photoObjectManager putObject:op usingBlock:prepareObservationPhoto];
-    } else {
-        [app.photoObjectManager postObject:op usingBlock:prepareObservationPhoto];
-    }
 }
 
 - (IBAction)edit:(id)sender {

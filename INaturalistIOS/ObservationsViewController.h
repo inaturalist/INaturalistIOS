@@ -42,7 +42,6 @@
 - (IBAction)edit:(id)sender;
 - (void)stopEditing;
 
-- (void)syncObservationPhoto:(ObservationPhoto *)op;
 - (void)loadData;
 - (void)reload;
 - (void)checkSyncStatus;

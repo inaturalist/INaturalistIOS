@@ -11,6 +11,8 @@
 @class INatModel;
 @class SyncQueue;
 
+typedef void(^LoaderConfigBlock)(RKObjectLoader *loader, INatModel *object);
+
 @protocol SyncQueueDelegate <NSObject>
 @optional
 - (void)syncQueueStartedSyncFor:(id)model;
@@ -26,10 +28,9 @@
  * Queue of INatModels to sync with the server. Ensures that records of each
  * model are fully * synced before moving on to the next model.
  */
-@interface SyncQueue : NSObject <RKObjectLoaderDelegate, RKRequestQueueDelegate, RKRequestDelegate>
+@interface SyncQueue : NSObject
 @property (nonatomic, strong) NSMutableArray *queue;
 @property (nonatomic, weak) id delegate;
-@property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, assign) BOOL started;
 
 - (id)initWithDelegate:(id)delegate;
@@ -40,14 +41,12 @@
 - (void)addModel:(id)model;
 
 /**
- * Add model to the queue with optional selector to fire on the delegate to
- * actually perform the sync operation. Useful for appending extra params like
+ * Add model to the queue with optional block to configure the object loader
+ * before performing the sync operation. Useful for appending extra params like
  * file data.
  */
-- (void)addModel:(id)model syncSelector:(SEL)syncSelector;
+- (void)addModel:(id)model loaderConfigBlock:(LoaderConfigBlock)block;
 - (void)start;
-- (void)next;
-- (void)startDelete;
 - (void)stop;
 - (void)finish;
 - (BOOL)isRunning;
