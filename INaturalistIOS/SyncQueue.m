@@ -23,14 +23,13 @@
 
 @implementation SyncQueue
 @synthesize queue = _queue;
-@synthesize delegate = _delegate;
 @synthesize started = _started;
 
-- (id)initWithDelegate:(id)delegate
+- (id)initWithDelegate:(id <SyncQueueNotificationDelegate>)delegate
 {
     self = [super init];
     if (self) {
-        self.delegate = delegate;
+        self.notificationDelegate = delegate;
         self.queue = [[NSMutableArray alloc] init];
     }
     return self;
@@ -90,8 +89,8 @@
                                      
                                      request.onDidFailLoadWithError = ^(NSError *error) {
                                          [self stop];
-                                         if ([self.delegate respondsToSelector:@selector(syncQueueUnexpectedResponse)]) {
-                                             [self.delegate syncQueueUnexpectedResponse];
+                                         if ([self.notificationDelegate respondsToSelector:@selector(syncQueueUnexpectedResponse)]) {
+                                             [self.notificationDelegate syncQueueUnexpectedResponse];
                                          }
                                      };
                                  }];
@@ -103,15 +102,15 @@
     NSArray *recordsToSync = [[current.model class] needingSync];
     if (recordsToSync.count == 0) {
         [self.queue removeObject:current];
-        if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
-            [self.delegate performSelector:@selector(syncQueueFinishedSyncFor:) withObject:current.model];
+        if ([self.notificationDelegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
+            [self.notificationDelegate syncQueueFinishedSyncFor:current.model.class];
         }
         [self start];
         return;
     }
     
-    if ([self.delegate respondsToSelector:@selector(syncQueueStartedSyncFor:)]) {
-        [self.delegate performSelector:@selector(syncQueueStartedSyncFor:) withObject:current.model];
+    if ([self.notificationDelegate respondsToSelector:@selector(syncQueueStartedSyncFor:)]) {
+        [self.notificationDelegate syncQueueStartedSyncFor:current.model.class];
     }
     
     // manually applying mappings b/c PUT and POST responses return JSON without a root element,
@@ -139,10 +138,10 @@
                     
                     current.syncedCount++;
                     
-                    if ([self.delegate respondsToSelector:@selector(syncQueueSynced:number:of:)]) {
-                        [self.delegate syncQueueSynced:o
-                                                number:current.syncedCount
-                                                    of:current.needingSyncCount];
+                    if ([self.notificationDelegate respondsToSelector:@selector(syncQueueSynced:number:of:)]) {
+                        [self.notificationDelegate syncQueueSynced:o.class
+                                                            number:current.syncedCount
+                                                                of:current.needingSyncCount];
                     }
                 }
                 
@@ -168,8 +167,8 @@
                 
                 if (jsonParsingError || authFailure) {
                     [self stop];
-                    if ([self.delegate respondsToSelector:@selector(syncQueueAuthRequired)]) {
-                        [self.delegate performSelector:@selector(syncQueueAuthRequired)];
+                    if ([self.notificationDelegate respondsToSelector:@selector(syncQueueAuthRequired)]) {
+                        [self.notificationDelegate syncQueueAuthRequired];
                     }
                 } else if (recordDeletedFromServer) {
                     // if it was in the sync queue there were local changes, so post it again
@@ -177,10 +176,11 @@
                     [record setSyncedAt:nil];
                     [record setRecordID:nil];
                     [record save];
-                } else if ([self.delegate respondsToSelector:@selector(syncQueue:objectLoader:didFailWithError:)]) {
-                    [self.delegate syncQueue:self objectLoader:strongLoader didFailWithError:error];
                 } else {
                     [self stop];
+                    if ([self.notificationDelegate respondsToSelector:@selector(syncQueueFailedForRecord:withError:)]) {
+                        [self.notificationDelegate syncQueueFailedForRecord:record withError:error];
+                    }
                 }
                 
                 // even if it was an error the object was still handled, so update the
@@ -192,8 +192,6 @@
             };
             
             loader.onDidFailLoadWithError = ^(NSError *error) {
-                __strong typeof(weakLoader) strongLoader = weakLoader;
-                if (strongLoader.response.request.method != RKRequestMethodDELETE) return;
                 [self stop];
             };
         };
@@ -217,8 +215,8 @@
 - (void)finish
 {
     [self stop];
-    if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
-        [self.delegate performSelector:@selector(syncQueueFinished)];
+    if ([self.notificationDelegate respondsToSelector:@selector(syncQueueFinished)]) {
+        [self.notificationDelegate syncQueueFinished];
     }
     NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:syncNotification];

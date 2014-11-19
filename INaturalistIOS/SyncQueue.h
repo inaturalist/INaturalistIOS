@@ -13,12 +13,12 @@
 
 typedef void(^LoaderConfigBlock)(RKObjectLoader *loader, INatModel *object);
 
-@protocol SyncQueueDelegate <NSObject>
+@protocol SyncQueueNotificationDelegate <NSObject>
 @optional
-- (void)syncQueueStartedSyncFor:(id)model;
-- (void)syncQueueFinishedSyncFor:(id)model;
-- (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total;
-- (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error;
+- (void)syncQueueStartedSyncFor:(Class)model;
+- (void)syncQueueFinishedSyncFor:(Class)model;
+- (void)syncQueueSynced:(Class)model number:(NSInteger)number of:(NSInteger)total;
+- (void)syncQueueFailedForRecord:(INatModel *)failedSyncRecord withError:(NSError *)error;
 - (void)syncQueueUnexpectedResponse;
 - (void)syncQueueAuthRequired;
 - (void)syncQueueFinished;
@@ -30,10 +30,10 @@ typedef void(^LoaderConfigBlock)(RKObjectLoader *loader, INatModel *object);
  */
 @interface SyncQueue : NSObject
 @property (nonatomic, strong) NSMutableArray *queue;
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, assign) id <SyncQueueNotificationDelegate> notificationDelegate;
 @property (nonatomic, assign) BOOL started;
 
-- (id)initWithDelegate:(id)delegate;
+- (id)initWithDelegate:(id <SyncQueueNotificationDelegate>)delegate;
 
 /**
  * Add model to the queue, e.g. [sq addModel:Observation.class]

@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
@@ -14,7 +16,6 @@
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
-#import "DejalActivityView.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
@@ -25,6 +26,7 @@
 #import "UIColor+INaturalist.h"
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
+#import "NSString+Helpers.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -84,13 +86,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                  animated:YES];
     
     NSString *activityMsg = NSLocalizedString(@"Syncing...",nil);
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-    } else {
-        self.tableView.scrollEnabled = NO;
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.tableView
-                                                             withLabel:activityMsg];
-    }
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeGradient];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
@@ -137,10 +133,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)stopSync
 {
-    if (syncActivityView) {
-        [DejalBezelActivityView removeView];
-        syncActivityView = nil;
-    }
+    [SVProgressHUD dismiss];
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
@@ -787,42 +780,28 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 #pragma mark - SyncQueueDelegate
-- (void)syncQueueStartedSyncFor:(id)model
+- (void)syncQueueStartedSyncFor:(Class)model
 {
-    NSString *activityMsg;
-    if (model == ObservationPhoto.class) {
-        activityMsg = NSLocalizedString(@"Syncing photos...",nil);
-    } else {
-        NSString *modelName = NSStringFromClass(model).humanize.pluralize;
-        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
-    }
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-        [syncActivityView layoutSubviews];
-    } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
-                                                             withLabel:activityMsg];
-    }
+    NSString *status = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil),
+                        NSLocalizedString(NSStringFromClass(model.class).humanize.pluralize, nil)];
+    
+    [SVProgressHUD showWithStatus:status maskType:SVProgressHUDMaskTypeGradient];
 }
-- (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
+
+- (void)syncQueueSynced:(Class)model number:(NSInteger)number of:(NSInteger)total
 {
     NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
                              number, 
                              total, 
-                             NSStringFromClass(record.class).humanize.pluralize];
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-        [syncActivityView layoutSubviews];
-    } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
-                                                             withLabel:activityMsg];
-    }
+                             NSStringFromClass(model.class).humanize.pluralize];
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeGradient];
 }
 
 - (void)syncQueueFinished
 {
     [self stopSync];
     if (self.syncErrors && self.syncErrors.count > 0) {
+        [SVProgressHUD showErrorWithStatus:[self.syncErrors componentsJoinedByString:@"\n\n"]];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
                                                      message:[self.syncErrors componentsJoinedByString:@"\n\n"]
                                                     delegate:self 
@@ -830,6 +809,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                            otherButtonTitles:nil];
         [av show];
         self.syncErrors = nil;
+    } else {
+        [SVProgressHUD showSuccessWithStatus:nil];
     }
     
     // make sure any deleted records get gone
@@ -843,15 +824,15 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
 }
 
-- (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
+- (void)syncQueueFailedForRecord:(INatModel *)failedSyncRecord withError:(NSError *)error
 {
-    if ([objectLoader.targetObject isKindOfClass:ProjectObservation.class]) {
-        ProjectObservation *po = (ProjectObservation *)objectLoader.targetObject;
+    if ([failedSyncRecord isKindOfClass:ProjectObservation.class]) {
+        ProjectObservation *po = (ProjectObservation *)failedSyncRecord;
         if (!self.syncErrors) {
             self.syncErrors = [[NSMutableArray alloc] init];
         }
         [self.syncErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
-                                    po.observation.speciesGuess, 
+                                    po.observation.speciesGuess,
                                     po.observation.observedOnShortString,
                                     po.project.title,
                                     error.localizedDescription]];
@@ -867,14 +848,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                 alertTitle = NSLocalizedString(@"Whoops!",nil);
                 alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
             }
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle 
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                          message:alertMessage
-                                                        delegate:self 
+                                                        delegate:self
                                                cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                                otherButtonTitles:nil];
             [av show];
-            [objectLoader cancel];
-        } 
+        }
         [self stopSync];
     }
 }
