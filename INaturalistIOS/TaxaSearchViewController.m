@@ -92,11 +92,15 @@ static const int TaxonCellSubtitleTag = 3;
     }
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:targetTableView];
     NSIndexPath *indexPath = [targetTableView indexPathForRowAtPoint:currentTouchPosition];
-    Taxon *t = [targetTaxa objectAtIndex:indexPath.row];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
-        [self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:t];
-    } else {
-        [self showTaxon:t];
+    
+    // be defensive
+    if (indexPath && targetTaxa.count > indexPath.row) {
+        Taxon *t = [targetTaxa objectAtIndex:indexPath.row];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
+            [self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:t];
+        } else {
+            [self showTaxon:t];
+        }
     }
 }
 
