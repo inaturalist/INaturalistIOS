@@ -313,9 +313,13 @@
 - (UIImage *)scaledToSize:(CGSize)targetSize {
     // this is memory intensive, so let's clear our autorelease pool quickly
     @autoreleasepool {
-        UIGraphicsBeginImageContextWithOptions(targetSize, TRUE, 0.0);
-        [self drawInRect:CGRectMake(0, 0, targetSize.width, targetSize.height)];
-        return UIGraphicsGetImageFromCurrentImageContext();
+        NSData* jpegData =  UIImageJPEGRepresentation(self, 0.9);
+        CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)jpegData, NULL);
+        NSDictionary *options = @{
+                                  (NSString *)kCGImageSourceThumbnailMaxPixelSize: @(MAX(targetSize.width, targetSize.height)),
+                                  (NSString *)kCGImageSourceCreateThumbnailFromImageIfAbsent: @(YES)
+                                  };
+        return [UIImage imageWithCGImage:CGImageSourceCreateThumbnailAtIndex(source, 0, (CFDictionaryRef)options)];
     }
 }
 @end
