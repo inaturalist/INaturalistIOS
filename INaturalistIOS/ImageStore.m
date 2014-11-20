@@ -280,7 +280,7 @@
 
 // generates a cutdown for an image with a given ImageStoreSize
 - (UIImage *)cutdownFromImage:(UIImage *)sourceImage size:(ImageStoreSize)size {
-    CGSize targetSize = [self croppedSizeForImageSized:sourceImage.size imageStoreSize:ImageStoreLargeSize];
+    CGSize targetSize = [self croppedSizeForImageSized:sourceImage.size imageStoreSize:size];
     return [sourceImage scaledToSize:targetSize];
 }
 
