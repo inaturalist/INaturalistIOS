@@ -9,41 +9,38 @@
 //  Second Edition by Joe Conway and Aaron Hillegass.
 //
 
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "ImageStore.h"
 
-static ImageStore *sharedImageStore = nil;
+#import <Photos/Photos.h>
+
+@interface UIImage (Scaled)
+- (UIImage *)scaledToSize:(CGSize)size;
+@end
 
 @implementation ImageStore
 @synthesize dictionary;
 
-+ (id)allocWithZone:(NSZone *)zone
-{
-    return [self sharedImageStore];
-}
-
+// singleton
 + (ImageStore *)sharedImageStore
 {
-    if (!sharedImageStore) {
-        sharedImageStore = [[super allocWithZone:NULL] init];
-    }
-    return sharedImageStore;
-}
-
-- (id)init
-{
-    if (sharedImageStore) {
-        return sharedImageStore;
-    }
-    self = [super init];
-    if (self) {
-        [self setDictionary:[[NSMutableDictionary alloc] init]];
+    static dispatch_once_t onceToken;
+    static ImageStore *sharedInstance;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [super new];
         
-        [NSNotificationCenter.defaultCenter addObserver:self 
-                                               selector:@selector(clearCache:) 
-                                                   name:UIApplicationDidReceiveMemoryWarningNotification 
+        sharedInstance.dictionary = [NSMutableDictionary dictionary];
+        sharedInstance.assetsLibrary = [[ALAssetsLibrary alloc] init];
+        
+        [NSNotificationCenter.defaultCenter addObserver:sharedInstance
+                                               selector:@selector(clearCache:)
+                                                   name:UIApplicationDidReceiveMemoryWarningNotification
                                                  object:nil];
-    }
-    return self;
+
+    });
+    
+    return sharedInstance;
 }
 
 - (UIImage *)find:(NSString *)key
@@ -66,87 +63,107 @@ static ImageStore *sharedImageStore = nil;
     return image;
 }
 
-- (void)store:(UIImage *)image forKey:(NSString *)key
-{
-    [self.dictionary setValue:image forKey:key];
-    NSString *filePath = [self pathForKey:key];
-    NSData *data = UIImageJPEGRepresentation(image, 0.8);
-    [data writeToFile:filePath atomically:YES];
-    
-    float screenMax = MAX([UIScreen mainScreen].bounds.size.width, 
-                          [UIScreen mainScreen].bounds.size.height);
-    
-    // generate small
-    NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
-    [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
-       key, @"key",
-       [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
-       longEdge, @"longEdge",
-       [NSNumber numberWithFloat:1.0], @"compression",
-       nil]];
 
-    // generate large
-    [self performSelectorInBackground:@selector(generateImageWithParams:) 
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
-                                       [NSNumber numberWithFloat:2.0 * screenMax], @"longEdge",
-                                       [NSNumber numberWithFloat:1.0], @"compression",
-                                       nil]];
-    
-    // generate square
-    [self performSelectorInBackground:@selector(generateImageWithParams:) 
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreSquareSize], @"size",
-                                       [NSNumber numberWithFloat:0.5], @"compression",
-                                       nil]];
-}
 
-- (void)generateImageWithParams:(NSDictionary *)params
-{
-    NSString *key = [params objectForKey:@"key"];
-    if (!key) return;
-    
-    int size = [[params objectForKey:@"size"] intValue];
-    if (!size) size = ImageStoreOriginalSize;
-    
-    NSString *sizedKey = [self keyForKey:key forSize:size];
-    
-    CGFloat longEdge = [[params objectForKey:@"longEdge"] floatValue];
-    float compression = [[params objectForKey:@"compression"] floatValue];
-    if (!compression || compression == 0) compression = 1.0;
-    
-    UIImage *image = [self find:key];
-    if (!image) {
-        NSLog(@"Error: failed to generate image for %@: image not in store.", key);
-        return;
-    }
-    
-    CGSize imgSize;
-    if (size == ImageStoreSquareSize) {
-        imgSize = CGSizeMake(75, 75);
+- (void)storeAsset:(NSURL *)assetUrl forKey:(NSString *)key completion:(void (^)(NSError *error))completion {
+
+    if (NSClassFromString(@"PHAsset")) {
+        
+        // use the iOS 8 photo framework to fetch the image, which may be in the user's photostream in iCloud
+        PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[assetUrl] options:nil];
+        PHAsset *asset = result.firstObject;
+        
+        [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                          options:nil
+                                                    resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                                                        
+                                                        // original
+                                                        NSString *fullPath = [self pathForKey:key];
+                                                        [imageData writeToFile:fullPath atomically:YES];
+                                                        
+                                                        // generate cutdowns
+                                                        UIImage *original = [UIImage imageWithData:imageData];
+                                                        
+                                                        // large > small > square thumbnail
+                                                        UIImage *large = [self cutdownFromImage:original size:ImageStoreLargeSize];
+                                                        [self saveImage:large key:key size:ImageStoreLargeSize];
+                                                        
+                                                        UIImage *small = [self cutdownFromImage:large size:ImageStoreSmallSize];
+                                                        [self saveImage:small key:key size:ImageStoreSmallSize];
+
+                                                        UIImage *thumbnail = [self cutdownFromImage:small size:ImageStoreSquareSize];
+                                                        [self saveImage:thumbnail key:key size:ImageStoreSquareSize];
+
+                                                        completion(nil);
+                                                    }];
+        
     } else {
-        float newWidth = image.size.width;
-        float newHeight = image.size.height;
-        float max = longEdge ? longEdge : MAX(newWidth, newHeight);
-        float scaleFactor = max / MAX(newWidth, newHeight);
-        if (newWidth > newHeight) {
-            newWidth = max;
-            newHeight = newHeight * scaleFactor;
-        } else {
-            newHeight = max;
-            newWidth = newWidth * scaleFactor;
-        }   
-        imgSize = CGSizeMake(newWidth, newHeight);
+        
+        // use the iOS 7 ALAssetsLibrary framework to fetch the image
+        [self.assetsLibrary assetForURL:assetUrl resultBlock:^(ALAsset *asset) {
+            
+            // generate cutdowns
+            UIImage *fullScreen = [UIImage imageWithCGImage:[asset.defaultRepresentation fullScreenImage]];
+            
+            // large > small > square thumbnail
+            UIImage *large = [self cutdownFromImage:fullScreen size:ImageStoreLargeSize];
+            [self saveImage:large key:key size:ImageStoreLargeSize];
+            
+            UIImage *small = [self cutdownFromImage:large size:ImageStoreSmallSize];
+            [self saveImage:small key:key size:ImageStoreSmallSize];
+            
+            UIImage *thumbnail = [self cutdownFromImage:small size:ImageStoreSquareSize];
+            [self saveImage:thumbnail key:key size:ImageStoreSquareSize];
+            
+            // safe to call the completion, the UI operates on the above cutdowns
+            completion(nil);
+            
+            // original
+            // Open the temporary file for writing
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *fullPath = [self pathForKey:key];
+                NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:fullPath];
+                ALAssetRepresentation *assetRepresentation = asset.defaultRepresentation;
+                long assetSize = assetRepresentation.size;
+                
+                if (fileHandle) {
+                    // Copy the default representation data into the temporary file
+                    @autoreleasepool {
+                        uint8_t buffer[65536];
+                        for (long long offset = 0; offset < assetSize; offset += sizeof(buffer)) {
+                            NSUInteger length = MIN(sizeof(buffer), assetSize-offset);
+                            NSError *error = nil;
+                            [assetRepresentation getBytes:buffer fromOffset:offset length:length error:&error];
+                            if (error) {
+                                fileHandle = nil;
+                                break;
+                            }
+                            @try {
+                                [fileHandle writeData:[NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:NO]];
+                            }
+                            @catch (NSException *exception) {
+                                fileHandle = nil;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                // If the file handle is not valid, an error must have occurred above
+                if (!fileHandle) {
+                    NSLog(@"error writing FS asset: %@", assetUrl);
+                }
+                
+                // Truncate the temporary file (in case
+                // it was larger before) and close it
+                [fileHandle truncateFileAtOffset:assetSize];
+                [fileHandle closeFile];
+            });
+        } failureBlock:^(NSError *error) {
+            NSLog(@"couldn't store asset %@", error.localizedDescription);
+            completion(error);
+        }];
     }
-    
-    UIImage *newImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:imgSize];
-    
-    [self.dictionary setValue:newImage forKey:sizedKey];
-    NSString *filePath = [self pathForKey:sizedKey];
-    NSData *data = UIImageJPEGRepresentation(newImage, compression);
-    [data writeToFile:filePath atomically:YES];
 }
 
 - (void)destroy:(NSString *)key
@@ -163,13 +180,9 @@ static ImageStore *sharedImageStore = nil;
     }
 }
 
-// http://stackoverflow.com/questions/8684551/generate-a-uuid-string-with-arc-enabled
 - (NSString *)createKey
 {
-    CFUUIDRef uuid = CFUUIDCreate(NULL);
-    NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, uuid);
-    CFRelease(uuid);
-    return uuidStr;
+    return [[NSUUID UUID] UUIDString];
 }
 
 - (NSString *)pathForKey:(NSString *)key
@@ -232,113 +245,50 @@ static ImageStore *sharedImageStore = nil;
     [self clearCache];
 }
 
-// Adapted from http://stackoverflow.com/questions/1282830/uiimagepickercontroller-uiimage-memory-and-more
-// this code has numerous authors, please see stackoverflow for them all
-+ (UIImage*)imageWithImage:(UIImage*)sourceImage scaledToSizeWithSameAspectRatio:(CGSize)targetSize
-{  
-    CGSize imageSize = sourceImage.size;
-    CGFloat width = imageSize.width;
-    CGFloat height = imageSize.height;
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    
-    // don't scale up
-    if (targetSize.width > width || targetSize.height > height) {
-        targetWidth = width;
-        targetHeight = height;
-    }
-    
-    CGFloat scaleFactor = 0.0;
-    CGFloat scaledWidth = targetWidth;
-    CGFloat scaledHeight = targetHeight;
-    CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
-    
-    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
-        CGFloat widthFactor = targetWidth / width;
-        CGFloat heightFactor = targetHeight / height;
-        
-        if (widthFactor > heightFactor) {
-            scaleFactor = widthFactor; // scale to fit height
-        }
-        else {
-            scaleFactor = heightFactor; // scale to fit width
-        }
-        
-        scaledWidth  = width * scaleFactor;
-        scaledHeight = height * scaleFactor;
-        
-        // center the image
-        if (widthFactor > heightFactor) {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5; 
-        }
-        else if (widthFactor < heightFactor) {
-            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-        }
-    }     
-    
-    CGImageRef imageRef = [sourceImage CGImage];
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
-    
-    if (bitmapInfo == kCGImageAlphaNone) {
-        bitmapInfo = kCGImageAlphaNoneSkipLast;
-    }
-    
-    CGContextRef bitmap;
-    bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
-    
-    // In the right or left cases, we need to switch scaledWidth and scaledHeight,
-    // and also the thumbnail point
-    if (sourceImage.imageOrientation == UIImageOrientationLeft) {
-        thumbnailPoint = CGPointMake(thumbnailPoint.y, thumbnailPoint.x);
-        CGFloat oldScaledWidth = scaledWidth;
-        scaledWidth = scaledHeight;
-        scaledHeight = oldScaledWidth;
-        CGFloat translation;
-        if (targetWidth == targetHeight) {
-            translation = -targetHeight;
-        } else {
-            translation = -scaledHeight;
-        }
-        
-        CGContextRotateCTM (bitmap, radians(90));
-        CGContextTranslateCTM (bitmap, 0, translation);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationRight) {
-        thumbnailPoint = CGPointMake(thumbnailPoint.y, thumbnailPoint.x);
-        CGFloat oldScaledWidth = scaledWidth;
-        scaledWidth = scaledHeight;
-        scaledHeight = oldScaledWidth;
-        CGFloat translation;
-        if (targetWidth == targetHeight) {
-            translation = -targetWidth;
-        } else {
-            translation = -scaledWidth;
-        }
-        
-        CGContextRotateCTM (bitmap, radians(-90));
-        CGContextTranslateCTM (bitmap, translation, 0);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationUp) {
-        // NOTHING
-    } else if (sourceImage.imageOrientation == UIImageOrientationDown) {
-        CGContextTranslateCTM (bitmap, targetWidth, targetHeight);
-        CGContextRotateCTM (bitmap, radians(-180.));
-    }
-    
-    CGContextDrawImage(bitmap, CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledWidth, scaledHeight), imageRef);
-    CGImageRef ref = CGBitmapContextCreateImage(bitmap);
-    UIImage* newImage = [UIImage imageWithCGImage:ref];
-    
-    CGContextRelease(bitmap);
-    CGImageRelease(ref);
-    
-    return newImage; 
-}
-
 - (NSString *)urlStringForKey:(NSString *)key forSize:(int)size
 {
     return [NSString stringWithFormat:@"documents://photos/%@.jpg", [self keyForKey:key forSize:size]];
+}
+
+// helper to calculate what CGSize to crop an image to, for a given ImageStoreSize
+- (CGSize)croppedSizeForImageSized:(CGSize)originalSize imageStoreSize:(ImageStoreSize)imageStoreSize {
+    if (imageStoreSize == ImageStoreSquareSize) {
+        return CGSizeMake(75, 75);
+    } else {
+        float newWidth = originalSize.width;
+        float newHeight = originalSize.height;
+        float max;
+        if (imageStoreSize == ImageStoreLargeSize) {
+            CGSize screenSize = [UIScreen mainScreen].bounds.size;
+            max = MAX(screenSize.width, screenSize.height);
+        } else if (imageStoreSize == ImageStoreSmallSize) {
+            CGSize screenSize = [UIScreen mainScreen].bounds.size;
+            max = (MAX(screenSize.width, screenSize.height) * 0.5);
+        }
+        
+        float scaleFactor = max / MAX(newWidth, newHeight);
+        if (newWidth > newHeight) {
+            newWidth = max;
+            newHeight = newHeight * scaleFactor;
+        } else {
+            newHeight = max;
+            newWidth = newWidth * scaleFactor;
+        }
+        return CGSizeMake(newWidth, newHeight);
+    }
+}
+
+// generates a cutdown for an image with a given ImageStoreSize
+- (UIImage *)cutdownFromImage:(UIImage *)sourceImage size:(ImageStoreSize)size {
+    CGSize targetSize = [self croppedSizeForImageSized:sourceImage.size imageStoreSize:ImageStoreLargeSize];
+    return [sourceImage scaledToSize:targetSize];
+}
+
+// saves an image into the ImageStore with a given key and ImageStoreSize
+- (void)saveImage:(UIImage *)image key:(NSString *)key size:(ImageStoreSize)size {
+    NSString *path = [self pathForKey:key forSize:size];
+    NSData *jpegData = UIImageJPEGRepresentation(image, 0.8);
+    [jpegData writeToFile:path atomically:YES];
 }
 
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
@@ -356,4 +306,16 @@ static ImageStore *sharedImageStore = nil;
     return img;
 }
 
+@end
+
+@implementation UIImage (Scaling)
+
+- (UIImage *)scaledToSize:(CGSize)targetSize {
+    // this is memory intensive, so let's clear our autorelease pool quickly
+    @autoreleasepool {
+        UIGraphicsBeginImageContextWithOptions(targetSize, TRUE, 0.0);
+        [self drawInRect:CGRectMake(0, 0, targetSize.width, targetSize.height)];
+        return UIGraphicsGetImageFromCurrentImageContext();
+    }
+}
 @end

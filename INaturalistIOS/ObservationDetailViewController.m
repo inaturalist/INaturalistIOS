@@ -48,6 +48,13 @@ NSString *const ObservationFieldValueDefaultCell = @"ObservationFieldValueDefaul
 NSString *const ObservationFieldValueStaticCell = @"ObservationFieldValueStaticCell";
 NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchCell";
 
+
+@interface ObservationDetailViewController () {
+    ALAssetsLibrary *assetsLibrary;
+}
+@end
+
+
 @implementation OFVTaxaSearchControllerDelegate
 @synthesize controller = _controller;
 @synthesize indexPath = _indexPath;
@@ -506,19 +513,31 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
-    if (image) {
-        [self pickedImage:image withInfo:info];
-    } else if (referenceURL) {
+    ObservationPhoto *op = [ObservationPhoto object];
+    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
+    [op setObservation:self.observation];
+    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+    [self addPhoto:op];
+    
+    if (referenceURL) {
+        [self pickedAsset:referenceURL fromCamera:NO forObsPhoto:op];
+    } else if (image) {
         ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        [assetsLib assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef iref = [rep fullResolutionImage];
-            if (iref) {
-                [self pickedImage:[UIImage imageWithCGImage:iref] withInfo:info];
-            }
-        } failureBlock:^(NSError *error) {
-            NSLog(@"error: %@", error);
-        }];
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                     longitude:[self.observation.visibleLongitude doubleValue]];
+        
+        NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
+        [meta setValue:[self getGPSDictionaryForLocation:loc]
+                forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+        
+
+        [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
+                                       metadata:meta
+                                completionBlock:^(NSURL *assetURL, NSError *error) {
+                                    if (assetURL) {
+                                        [self pickedAsset:assetURL fromCamera:YES forObsPhoto:op];
+                                    }
+                                }];
     } else {
         NSLog(@"ERROR: no image specified.");
     }
@@ -528,38 +547,36 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
+- (void)pickedAsset:(NSURL *)assetUrl fromCamera:(BOOL)fromCamera forObsPhoto:(ObservationPhoto *)op
 {
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
-    ObservationPhoto *op = [ObservationPhoto object];
-    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
-    [op setObservation:self.observation];
-    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
-    [self addPhoto:op];
-    op.localCreatedAt = [NSDate date];
-	op.localUpdatedAt = [NSDate date];
-    
-    if (referenceURL) {
-        self.lastImageReferenceURL = referenceURL;
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import metadata?", nil)
-                                                     message:NSLocalizedString(@"Do you want to set the date, time, and location of this observation from the photo's metadata?",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"No", nil)
-                                           otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
-        [av show];
-    } else {
-        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
-                                                     longitude:[self.observation.visibleLongitude doubleValue]];
-        
-        NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
-        [meta setValue:[self getGPSDictionaryForLocation:loc]
-                forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-        [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
-                                       metadata:meta
-                                completionBlock:nil];
-    }
+    [[ImageStore sharedImageStore] storeAsset:assetUrl forKey:op.photoKey completion:^(NSError *error){
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import Error", nil)
+                                       message:error.localizedDescription
+                                      delegate:nil
+                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSInteger currentIndex = self.coverflowView.currentIndex;
+                [self refreshCoverflowView];
+                [self.coverflowView setCurrentIndex:currentIndex];
+            });
+            
+            if (!fromCamera) {
+                op.localCreatedAt = [NSDate date];
+                op.localUpdatedAt = [NSDate date];
+                
+                self.lastImageReferenceURL = assetUrl;
+                UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import metadata?", nil)
+                                                             message:NSLocalizedString(@"Do you want to set the date, time, and location of this observation from the photo's metadata?",nil)
+                                                            delegate:self
+                                                   cancelButtonTitle:NSLocalizedString(@"No", nil)
+                                                   otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
+                [av show];
+            }
+        }
+    }];
 }
 
 // http://stackoverflow.com/a/5314634/720268
@@ -692,8 +709,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                      }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
-		if (img) cover.image = img;
+        if (!img) {
+            img = [[ImageStore sharedImageStore] find:op.photoKey];
+        }
+        cover.image = img ? img : [UIImage imageNamed:@"loading.png"];
 	}
     return cover;
 }

@@ -128,6 +128,5 @@
 - (NSArray *)projectsRequireField:(ObservationField *)observationField;
 - (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath;
 - (void)clearCurrentObservationField;
-- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info;
 
 @end
