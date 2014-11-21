@@ -282,6 +282,8 @@
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
+		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
+		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
@@ -909,6 +911,9 @@
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
 		FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreSearchViewController.m; sourceTree = "<group>"; };
+		FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlusAuthViewController.h; sourceTree = "<group>"; };
+		FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlusAuthViewController.m; sourceTree = "<group>"; };
+		FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GooglePlusAuthViewController.xib; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
@@ -1530,6 +1535,9 @@
 				191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */,
 				FA63FA1319E4CE65007306F9 /* Analytics.h */,
 				FA63FA1419E4CE65007306F9 /* Analytics.m */,
+				FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */,
+				FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */,
+				FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2100,6 +2108,7 @@
 				1958894318068BD700294EB3 /* Default-Portrait~ipad.png in Resources */,
 				1958894518068BE700294EB3 /* Default-Portrait@2x~ipad.png in Resources */,
 				FA4E72A619FAC8A000A9AB5D /* fungi-200px.png in Resources */,
+				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
 				1958894718068BF100294EB3 /* Default-Landscape~ipad.png in Resources */,
 				1958894918068BF300294EB3 /* Default-Landscape@2x~ipad.png in Resources */,
 			);
@@ -2160,6 +2169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
+				FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */,
 				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
 				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,

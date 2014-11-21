@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <GoogleOpenSource/GoogleOpenSource.h>
 #import "INaturalistAppDelegate.h"
 #import "LoginViewController.h"
 #import "DejalActivityView.h"
@@ -17,6 +16,7 @@
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "GooglePlusAuthViewController.h"
 
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
@@ -228,13 +228,13 @@ static const NSInteger GoogleAssertionType = 2;
                 scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
         }];
         
-        GTMOAuth2ViewControllerTouch *vc = [GTMOAuth2ViewControllerTouch controllerWithScope:scopes
+        GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:scopes
                                                                                     clientID:signin.clientID
                                                                                 clientSecret:nil
                                                                             keychainItemName:nil
                                                                                     delegate:self
                                                                             finishedSelector:@selector(viewController:finishedAuth:error:)];
-        [self.navigationController pushViewController:vc animated:NO];
+        [self.navigationController pushViewController:vc animated:YES];
     }
     else if (indexPath.section == 3) {
         lastAssertionType = 0;
@@ -372,8 +372,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
           finishedAuth:(GTMOAuth2Authentication *)auth
                  error:(NSError *)error
 {
-    
-//    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
+    [self finishedWithAuth:auth error:error];
+}
+
+- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
+{
+    //    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
     if (error || (!auth.accessToken && tryingGoogleReauth)) {
         NSString *msg = error.localizedDescription;
         if (!msg) {
