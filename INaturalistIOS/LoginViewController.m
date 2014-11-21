@@ -16,6 +16,7 @@
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "GooglePlusAuthViewController.h"
 
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
@@ -211,15 +212,31 @@ static const NSInteger GoogleAssertionType = 2;
         [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
         [self openFacebookSession];
     }
-    /*
     else if (indexPath.section == 2) {// Google+
         lastAssertionType = GoogleAssertionType;
         isLoginCompleted = NO;
-        [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
-        [[GPPSignIn sharedInstance] authenticate];
+        
+        GPPSignIn *signin = [GPPSignIn sharedInstance];
+        
+        // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
+        // @"plus.login plus.me userinfo.email"
+        __block NSString *scopes;
+        [signin.scopes enumerateObjectsUsingBlock:^(NSString *scope, NSUInteger idx, BOOL *stop) {
+            if (idx == 0)
+                scopes = [NSString stringWithString:scope];
+            else
+                scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
+        }];
+        
+        GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:scopes
+                                                                                    clientID:signin.clientID
+                                                                                clientSecret:nil
+                                                                            keychainItemName:nil
+                                                                                    delegate:self
+                                                                            finishedSelector:@selector(viewController:finishedAuth:error:)];
+        [self.navigationController pushViewController:vc animated:YES];
     }
-     */
-    else if (indexPath.section == 2) {
+    else if (indexPath.section == 3) {
         lastAssertionType = 0;
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
@@ -229,7 +246,7 @@ static const NSInteger GoogleAssertionType = 2;
         webController.delegate = self;
         [nc pushViewController:webController animated:YES];
      }
-    else if (indexPath.section == 3) {
+    else if (indexPath.section == 4) {
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
@@ -351,11 +368,16 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [googleSignIn trySilentAuthentication];
 }
 
-- (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
-                   error: (NSError *) error
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
+          finishedAuth:(GTMOAuth2Authentication *)auth
+                 error:(NSError *)error
 {
-    
-//    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
+    [self finishedWithAuth:auth error:error];
+}
+
+- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
+{
+    //    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
     if (error || (!auth.accessToken && tryingGoogleReauth)) {
         NSString *msg = error.localizedDescription;
         if (!msg) {
