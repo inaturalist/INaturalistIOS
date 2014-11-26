@@ -9,6 +9,7 @@
 #import "EditLocationViewController.h"
 #import "CrossHairView.h"
 #import "AccuracyCircleView.h"
+#import "Analytics.h"
 
 @implementation EditLocationViewController
 @synthesize mapView = _mapView;
@@ -75,6 +76,16 @@
     [self setMapTypeButton:nil];
     [self setCrossHairView:nil];
     [self setAccuracyCircleView:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateEditLocation];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateEditLocation];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

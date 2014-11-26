@@ -13,6 +13,7 @@
 #import "PhotoSource.h"
 #import "GuidePhotoViewController.h"
 #import "GuideImageXML.h"
+#import "Analytics.h"
 
 static const int WebViewTag = 1;
 
@@ -61,6 +62,12 @@ static const int WebViewTag = 1;
 - (void)viewDidAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES animated:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideTaxon];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideTaxon];
 }
 
 - (void)viewDidUnload {

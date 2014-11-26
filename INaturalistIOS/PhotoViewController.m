@@ -8,17 +8,32 @@
 
 #import "PhotoViewController.h"
 #import "PhotoSource.h"
+#import "Analytics.h"
 
 @implementation PhotoViewController
 
 @synthesize deleteButton = _deleteButton;
 @synthesize delegate = _delegate;
 
+#pragma mark - UIViewController lifecycle
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigatePhoto];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigatePhoto];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
+
+#pragma mark - TTPhotoView
 
 - (TTPhotoView *)createPhotoView
 {

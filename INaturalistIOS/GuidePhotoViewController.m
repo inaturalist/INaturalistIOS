@@ -9,8 +9,23 @@
 #import "GuidePhotoViewController.h"
 #import "PhotoSource.h"
 #import "GuideImageXML.h"
+#import "Analytics.h"
 
 @implementation GuidePhotoViewController
+
+#pragma mark UIViewController lifecycle
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuidePhoto];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuidePhoto];
+}
+
+#pragma mark Configure Photosource
 
 - (void)setCurrentURL:(NSString *)currentURL
 {

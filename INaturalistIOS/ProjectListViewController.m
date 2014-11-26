@@ -17,6 +17,7 @@
 #import "DejalActivityView.h"
 #import "TaxonDetailViewController.h"
 #import "ProjectDetailViewController.h"
+#import "Analytics.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
@@ -185,6 +186,13 @@ static const int ListedTaxonCellSubtitleTag = 3;
     } else if (self.listedTaxa.count == 0 && !self.lastSyncedAt && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectList];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectList];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

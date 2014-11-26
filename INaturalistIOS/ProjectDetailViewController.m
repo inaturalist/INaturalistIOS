@@ -11,6 +11,7 @@
 #import "DejalActivityView.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -172,6 +173,16 @@ static const int LeaveProjectAlertViewTag = 1;
     [self.navigationController setToolbarHidden:YES animated:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectDetail];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
 - (void)viewDidUnload {

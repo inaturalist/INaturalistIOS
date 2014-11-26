@@ -24,6 +24,7 @@
 #import "PhotoSource.h"
 #import "TaxonPhoto.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 static const int CommentCellImageTag = 1;
 static const int CommentCellBodyTag = 2;
@@ -84,6 +85,13 @@ static const int IdentificationCellBodyTag = 11;
     [self refreshData];
 	[self markAsRead];
 	[self reload];
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationActivity];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationActivity];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

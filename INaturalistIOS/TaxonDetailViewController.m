@@ -14,6 +14,7 @@
 #import "ImageStore.h"
 #import "ObservationDetailViewController.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
@@ -136,6 +137,16 @@ static const int TaxonDescTag = 1;
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTaxonDetails];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTaxonDetails];
 }
 
 #pragma mark - UITableView

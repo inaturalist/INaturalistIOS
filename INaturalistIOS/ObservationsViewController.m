@@ -610,6 +610,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [self checkForDeleted];
         [self checkNewActivity];
     }
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -623,6 +625,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservations];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

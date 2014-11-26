@@ -68,6 +68,16 @@ static const NSInteger GoogleAssertionType = 2;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateLogin];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateLogin];
+}
+
 - (void)viewDidUnload
 {
     [self setUsernameField:nil];

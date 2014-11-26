@@ -11,6 +11,7 @@
 #import "ProjectListViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
+#import "Analytics.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -315,6 +316,16 @@ static const int ListControlIndexNearby = 2;
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjects];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjects];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -11,6 +11,7 @@
 #import "Project.h"
 #import "ProjectUser.h"
 #import "DejalActivityView.h"
+#import "Analytics.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -117,6 +118,13 @@ static const int ProjectCellTitleTag = 2;
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
     }
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectChooser];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectChooser];
 }
 
 #pragma mark - Table view data source

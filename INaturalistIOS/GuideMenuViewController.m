@@ -11,6 +11,7 @@
 #import "Observation.h"
 #import "SSZipArchive.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 @implementation GuideMenuViewController
 
@@ -78,6 +79,16 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         }
         self.tagPredicates = [[predicates allObjects] sortedArrayUsingSelector:@selector(compare:)];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideMenu];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideMenu];
 }
 
 - (void)didReceiveMemoryWarning

@@ -12,6 +12,7 @@
 #import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
 #import "DejalActivityView.h"
+#import "Analytics.h"
 
 static const int TaxonCellImageTag = 1;
 static const int TaxonCellTitleTag = 2;
@@ -135,6 +136,16 @@ static const int TaxonCellSubtitleTag = 3;
     
     if (self.hidesDoneButton)
         self.navigationItem.rightBarButtonItem = nil;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTaxaSearch];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTaxaSearch];
 }
 
 #pragma mark - UITableViewDelegate

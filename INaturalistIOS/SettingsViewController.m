@@ -21,6 +21,7 @@
 #import "INatUITabBarController.h"
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
+#import "Analytics.h"
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
@@ -156,6 +157,16 @@ static const int VersionCellTag = 4;
 {
     [super viewWillAppear:animated];
     [self initUI];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateSettings];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
 }
 
 #pragma mark - UITableView

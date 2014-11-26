@@ -10,6 +10,7 @@
 #import "TutorialViewController.h"
 #import "PhotoStub.h"
 #import "PhotoSource.h"
+#import "Analytics.h"
 
 @implementation TutorialViewController
 
@@ -47,11 +48,25 @@
     
 }
 
+#pragma mark - UIViewController lifecycle
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self ensureDoneButton];
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTutorial];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTutorial];
+}
+
+#pragma mark - UI helpers
 
 - (void)ensureDoneButton
 {

@@ -15,6 +15,7 @@
 #import "UIColor+INaturalist.h"
 #import "UIImageView+WebCache.h"
 #import <MapKit/MapKit.h>
+#import "Analytics.h"
 
 @interface MapViewController()
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
@@ -140,6 +141,16 @@
 {
     [self.mapView setShowsUserLocation:NO];
     [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateMap];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateMap];
 }
 
 

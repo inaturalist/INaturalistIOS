@@ -77,6 +77,35 @@ NSString *kAnalyticsEventNavigateExploreList =                  @"Explore - Navi
 NSString *kAnalyticsEventNavigateExploreObsDetails =            @"Explore - Navigate - Obs Details";
 NSString *kAnalyticsEventNavigateExploreTaxonDetails =          @"Explore - Navigate - Taxon Details";
 
+NSString *kAnalyticsEventNavigateGuides =                       @"Navigate - Guides - List";
+NSString *kAnalyticsEventNavigateGuideCollection =              @"Navigate - Guides - Collection";
+NSString *kAnalyticsEventNavigateGuideMenu =                    @"Navigate - Guides - Menu";
+NSString *kAnalyticsEventNavigateGuideTaxon =                   @"Navigate - Guides - Taxon";
+NSString *kAnalyticsEventNavigateGuidePhoto =                   @"Navigate - Guides - Photo";
+
+NSString *kAnalyticsEventNavigateSettings =                     @"Navigate - Settings";
+NSString *kAnalyticsEventNavigateTutorial =                     @"Navigate - Tutorial";
+NSString *kAnalyticsEventNavigateLogin =                        @"Navigate - Login";
+
+NSString *kAnalyticsEventNavigateMap =                          @"Navigate - Map";
+
+NSString *kAnalyticsEventNavigateObservationActivity =          @"Navigate - Observations - Activity";
+NSString *kAnalyticsEventNavigateObservationDetail =            @"Navigate - Observations - Details";
+NSString *kAnalyticsEventNavigateObservations =                 @"Navigate - Observations - List";
+NSString *kAnalyticsEventNavigatePhoto =                        @"Navigate - Observations - Photo";
+NSString *kAnalyticsEventNavigateAddComment =                   @"Navigate - Observations - Add Comment";
+NSString *kAnalyticsEventNavigateAddIdentification =            @"Navigate - Observations - Add Identification";
+NSString *kAnalyticsEventNavigateEditLocation =                 @"Navigate - Observations - Edit Location";
+NSString *kAnalyticsEventNavigateProjectChooser =               @"Navigate - Observations - Project Chooser";
+
+NSString *kAnalyticsEventNavigateProjectDetail =                @"Navigate - Projects - Details";
+NSString *kAnalyticsEventNavigateProjectList =                  @"Navigate - Projects - Listed Taxa";
+NSString *kAnalyticsEventNavigateProjects =                     @"Navigate - Projects - List";
+
+NSString *kAnalyticsEventNavigateTaxaSearch =                   @"Navigate - Taxa Search";
+NSString *kAnalyticsEventNavigateTaxonDetails =                 @"Navigate - Taxon Details";
+
+
 // search in explore
 NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";
 NSString *kAnalyticsEventExploreSearchProjects =                @"Explore - Search - Projects";

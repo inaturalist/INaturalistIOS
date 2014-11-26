@@ -13,6 +13,7 @@
 #import "Observation.h"
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
+#import "Analytics.h"
 
 @interface AddIdentificationViewController () <RKRequestDelegate>
 
@@ -37,6 +38,16 @@
 	if (!self.taxon) {
 		[self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
 	}
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddIdentification];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddIdentification];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

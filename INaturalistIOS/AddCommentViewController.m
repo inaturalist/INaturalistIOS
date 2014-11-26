@@ -9,6 +9,7 @@
 #import "AddCommentViewController.h"
 #import "Observation.h"
 #import "DejalActivityView.h"
+#import "Analytics.h"
 
 @interface AddCommentViewController () <RKRequestDelegate>
 
@@ -31,6 +32,16 @@
     self.navigationController.navigationBar.translucent = NO;
 	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddComment];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddComment];
 }
 
 - (IBAction)clickedCancel:(id)sender {

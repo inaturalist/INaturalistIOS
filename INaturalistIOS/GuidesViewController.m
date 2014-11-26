@@ -13,6 +13,7 @@
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "Analytics.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -351,6 +352,16 @@ static const int ListControlIndexNearby = 2;
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuides];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuides];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

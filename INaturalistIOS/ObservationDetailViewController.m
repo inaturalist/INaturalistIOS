@@ -435,6 +435,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [super viewDidAppear:animated];
     [self.getToolbarViewController.navigationController setToolbarHidden:NO
                                                                 animated:animated];
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
 - (void)didReceiveMemoryWarning
