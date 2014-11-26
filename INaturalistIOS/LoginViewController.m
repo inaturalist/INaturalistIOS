@@ -390,6 +390,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [[GPPSignIn sharedInstance] signOut];
         [self initGoogleLogin];
     } else {
+        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                         withProperties:@{ @"Via": @"Google+" }];
         ExternalAccessToken = [[auth accessToken] copy];
         AccountType = nil;
         AccountType = kINatAuthServiceExtToken;
