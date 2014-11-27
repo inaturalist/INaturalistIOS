@@ -292,7 +292,7 @@
 #pragma mark - Hit Test magic
 
 // return the deepest view that can handle the event
-// if search is inactive, allow and views underneath to receive the event
+// if search is inactive, allow any views underneath to receive the event
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if (self.optionSearchIsActive && CGRectContainsPoint(optionsTableView.frame, point))
         return optionsTableView;
