@@ -15,11 +15,13 @@
 #define SEARCH_AUTOCOMPLETE_CELL @"SearchAutocompleteCell"
 #define SEARCH_SHORTCUT_CELL @"SearchShortcutCell"
 
-@interface ExploreSearchView () <UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate> {
+@interface ExploreSearchView () <UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIGestureRecognizerDelegate> {
     NSLayoutConstraint *optionsTableViewHeightConstraint;
     UIView *optionsContainerView;
     UITableView *optionsTableView;
     UISearchBar *optionsSearchBar;
+    
+    UITapGestureRecognizer *tapAwayGesture;
 }
 @end
 
@@ -28,6 +30,16 @@
 -(instancetype)initWithFrame:(CGRect)frame {
     
     if (self = [super initWithFrame:frame]) {
+        
+        tapAwayGesture = ({
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(tappedAway)];
+            tap.delegate = self;
+            
+            // will be enabled in -showOptionSearch
+            tap.enabled = NO;
+        });
+        [self addGestureRecognizer:tapAwayGesture];
         
         // set up the search ui
         optionsContainerView = ({
@@ -159,6 +171,9 @@
     
     // hide the options container
     optionsContainerView.hidden = YES;
+    
+    // disable the tap away gesture
+    tapAwayGesture.enabled = NO;
 }
 
 - (void)showOptionSearch {
@@ -169,6 +184,9 @@
     
     // show the options container
     optionsContainerView.hidden = NO;
+    
+    // enable the tap away gesture
+    tapAwayGesture.enabled = YES;
 }
 
 - (BOOL)optionSearchIsActive {
@@ -271,6 +289,10 @@
     }
 }
 
+#pragma mark - Hit Test magic
+
+// return the deepest view that can handle the event
+// if search is inactive, allow and views underneath to receive the event
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if (self.optionSearchIsActive && CGRectContainsPoint(optionsTableView.frame, point))
         return optionsTableView;
@@ -281,7 +303,26 @@
     if (!self.optionSearchIsActive && !self.activeSearchFilterView.hidden && CGRectContainsPoint(self.activeSearchFilterView.removeActiveSearchButton.frame, point))
         return self.activeSearchFilterView.removeActiveSearchButton;
     
+    if ((self.optionSearchIsActive) && CGRectContainsPoint(self.frame, point))
+        return self;
+    
     return nil;
+}
+
+#pragma mark - GestureRecognizerDelegate
+
+// make sure none of the child views can handle this touch
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    CGPoint location = [touch locationInView:self];
+    UIView *view = [self hitTest:location withEvent:nil];
+    return [view isEqual:self];
+}
+
+#pragma mark - GestureRecognizer Target
+
+- (void)tappedAway {
+    if ([self optionSearchIsActive])
+        [self hideOptionSearch];
 }
 
 @end
