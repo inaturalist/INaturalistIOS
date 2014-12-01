@@ -32,14 +32,14 @@
     if (self = [super initWithFrame:frame]) {
         
         tapAwayGesture = ({
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                  action:@selector(tappedAway)];
-            tap.delegate = self;
+            UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                      action:@selector(tappedAway)];
+            gesture.delegate = self;
             
             // will be enabled in -showOptionSearch
-            tap.enabled = NO;
+            gesture.enabled = NO;
             
-            tap;
+            gesture;
         });
         [self addGestureRecognizer:tapAwayGesture];
         
