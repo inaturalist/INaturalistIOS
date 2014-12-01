@@ -207,7 +207,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
 #pragma mark - UIControl targets
 
-- (void)tappedClearMapRestriction:(UIGestureRecognizer *)gesture {
+- (void)tappedClearMapRestriction:(UIControl *)control {
     self.observationDataSource.limitingRegion = nil;
 }
 
