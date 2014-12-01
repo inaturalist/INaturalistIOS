@@ -18,32 +18,34 @@
 
 - (id)initWithDefaultTutorial
 {
-    NSString *curLang = [[NSLocale preferredLanguages] objectAtIndex:0];
-    
-    // initialize with an empty photos list
-    PhotoSource *photoSource = [[PhotoSource alloc] initWithPhotos:@[]
-                                                             title:@"Welcome to iNaturalist!"];
-    
-    // populate the photoSource with locale-specific tutorial images
-    for (int i = 1; i <= 7; i++) {
-        NSURL *tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%d%@", i, curLang]
-                                                         withExtension:@"png"];
-        if (!tutorialItemUrl) {
-            // if we don't have tutorial files for the user's preferred language,
-            // default to english
-            tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%den", i]
-                                                      withExtension:@"png"];
-        }
+    if (self = [super init]) {
+        NSString *curLang = [[NSLocale preferredLanguages] objectAtIndex:0];
         
-        // be defensive
-        if (tutorialItemUrl) {
-            // PhotoStub takes an argument called URL that's an NSString. Wat?
-            PhotoStub *stub = [[PhotoStub alloc] initWithURL:tutorialItemUrl.absoluteString];
-            [photoSource.photos addObject:stub];
+        // initialize with an empty photos list
+        PhotoSource *photoSource = [[PhotoSource alloc] initWithPhotos:@[]
+                                                                 title:@"Welcome to iNaturalist!"];
+        
+        // populate the photoSource with locale-specific tutorial images
+        for (int i = 1; i <= 7; i++) {
+            NSURL *tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%d%@", i, curLang]
+                                                             withExtension:@"png"];
+            if (!tutorialItemUrl) {
+                // if we don't have tutorial files for the user's preferred language,
+                // default to english
+                tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%den", i]
+                                                          withExtension:@"png"];
+            }
+            
+            // be defensive
+            if (tutorialItemUrl) {
+                // PhotoStub takes an argument called URL that's an NSString. Wat?
+                PhotoStub *stub = [[PhotoStub alloc] initWithURL:tutorialItemUrl.absoluteString];
+                [photoSource.photos addObject:stub];
+            }
         }
+        self.photoSource = photoSource;
     }
 
-    self = [super initWithPhotoSource:photoSource];
     return self;
     
 }
