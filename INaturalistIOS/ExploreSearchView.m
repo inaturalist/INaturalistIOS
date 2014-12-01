@@ -38,6 +38,8 @@
             
             // will be enabled in -showOptionSearch
             tap.enabled = NO;
+            
+            tap;
         });
         [self addGestureRecognizer:tapAwayGesture];
         
