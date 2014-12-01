@@ -20,8 +20,10 @@
 #import "ExploreObservationDetailViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
+#import "RestrictedListHeader.h"
 
 static NSString *ExploreListCellId = @"ExploreListCell";
+static NSString *ExploreListHeaderId = @"ExploreListHeader";
 
 @interface ExploreListViewController () <UITableViewDataSource,UITableViewDelegate> {
     UITableView *observationsTableView;
@@ -44,6 +46,7 @@ static NSString *ExploreListCellId = @"ExploreListCell";
         tv.dataSource = self;
         tv.delegate = self;
         [tv registerClass:[ExploreListTableViewCell class] forCellReuseIdentifier:ExploreListCellId];
+        [tv registerClass:[RestrictedListHeader class] forHeaderFooterViewReuseIdentifier:ExploreListHeaderId];
         
         __weak __typeof__(self) weakSelf = self;
         [tv addInfiniteScrollingWithActionHandler:^{
@@ -155,6 +158,10 @@ static NSString *ExploreListCellId = @"ExploreListCell";
     return 105.0f;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 44.0f;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -172,28 +179,24 @@ static NSString *ExploreListCellId = @"ExploreListCell";
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion])
-        return @"Restricted to current map area (tap to clear)";
-    else
-        return nil;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-    // adjust the font of the header view
-    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    header.textLabel.font = [UIFont systemFontOfSize:12.0f];
-    header.contentView.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
-
-    header.textLabel.textColor = [UIColor blackColor];
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion]) {
+        RestrictedListHeader *header = (RestrictedListHeader *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:ExploreListHeaderId];
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedClearMapRestriction:)];
-    [header addGestureRecognizer:tap];
+        header.titleLabel.text = @"Restricted to current map area";
+        [header.clearButton addTarget:self
+                               action:@selector(tappedClearMapRestriction:)
+                     forControlEvents:UIControlEventTouchUpInside];
+    
+        return header;
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - UIControl targets
 
-- (void)tappedClearMapRestriction:(UIGestureRecognizer *)gesture {
+- (void)tappedClearMapRestriction:(UIControl *)control {
     self.observationDataSource.limitingRegion = nil;
 }
 

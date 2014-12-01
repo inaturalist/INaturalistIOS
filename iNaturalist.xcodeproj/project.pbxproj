@@ -282,6 +282,7 @@
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
+		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
@@ -912,6 +913,8 @@
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
+		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
+		FA8872701A2D048300D2168E /* RestrictedListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedListHeader.m; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
 		FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreSearchViewController.m; sourceTree = "<group>"; };
 		FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlusAuthViewController.h; sourceTree = "<group>"; };
@@ -1727,6 +1730,8 @@
 			children = (
 				FA4E72DF19FACE6900A9AB5D /* ExploreListTableViewCell.h */,
 				FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */,
+				FA88726F1A2D048300D2168E /* RestrictedListHeader.h */,
+				FA8872701A2D048300D2168E /* RestrictedListHeader.m */,
 			);
 			name = "List View";
 			sourceTree = "<group>";
@@ -2231,6 +2236,7 @@
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
+				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
 				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
 				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
