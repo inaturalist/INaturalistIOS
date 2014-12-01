@@ -21,6 +21,7 @@
 #import "ExploreGridCell.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
+#import "RestrictedCollectionHeader.h"
 
 @interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     UICollectionView *observationsCollectionView;
@@ -58,7 +59,7 @@
         cv.delegate = self;
         
         [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:@"ExploreCell"];
-        [cv registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ExploreHeader"];
+        [cv registerClass:[RestrictedCollectionHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ExploreHeader"];
         
         __weak __typeof__(self) weakSelf = self;
         [cv addInfiniteScrollingWithActionHandler:^{
@@ -179,28 +180,16 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                                            withReuseIdentifier:@"ExploreHeader"
-                                                                                   forIndexPath:indexPath];
-        view.frame = CGRectIntegral(view.frame);
-        view.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
+        RestrictedCollectionHeader *header = (RestrictedCollectionHeader *)[collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                                                              withReuseIdentifier:@"ExploreHeader"
+                                                                                                                     forIndexPath:indexPath];
         
-        if (![view viewWithTag:0x1]) {
-            // as much as possible, match the style of the explore list view controller table view header
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, view.frame.size.width - 28, view.frame.size.height)];
-            label.font = [UIFont systemFontOfSize:12.0f];
-            label.text = @"Restricted to current map area (tap to clear)";
-            label.tag = 0x1;
-            label.backgroundColor = [UIColor clearColor];
-            label.textColor = [UIColor blackColor];
-            [view addSubview:label];
-        }
+        header.titleLabel.text = @"Restricted to current map area";
+        [header.clearButton addTarget:self
+                               action:@selector(tappedClearMapRestriction:)
+                     forControlEvents:UIControlEventTouchUpInside];
         
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(tappedClearMapRestriction:)];
-        [view addGestureRecognizer:tap];
-                
-        return view;
+        return header;
     }
 }
 
@@ -208,7 +197,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observations.count > 0)
-        return CGSizeMake(collectionView.frame.size.width, 28);
+        return CGSizeMake(collectionView.frame.size.width, 44);
     else
         return CGSizeMake(0, 0);
 }
