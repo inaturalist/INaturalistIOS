@@ -189,7 +189,7 @@
             // as much as possible, match the style of the explore list view controller table view header
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, view.frame.size.width - 28, view.frame.size.height)];
             label.font = [UIFont systemFontOfSize:12.0f];
-            label.text = @"restricted to current map area (tap to clear)";
+            label.text = @"Restricted to current map area (tap to clear)";
             label.tag = 0x1;
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor blackColor];
