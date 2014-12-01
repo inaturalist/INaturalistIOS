@@ -283,6 +283,7 @@
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
+		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
@@ -915,6 +916,8 @@
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
 		FA8872701A2D048300D2168E /* RestrictedListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedListHeader.m; sourceTree = "<group>"; };
+		FA8872721A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreObservationPhoto+BestAvailableURL.h"; sourceTree = "<group>"; };
+		FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreObservationPhoto+BestAvailableURL.m"; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
 		FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreSearchViewController.m; sourceTree = "<group>"; };
 		FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlusAuthViewController.h; sourceTree = "<group>"; };
@@ -1662,6 +1665,8 @@
 				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
 				FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */,
 				FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */,
+				FA8872721A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.h */,
+				FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -2249,6 +2254,7 @@
 				FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
+				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
 				19F62193150ECBEE00C58F28 /* List.m in Sources */,
 				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,

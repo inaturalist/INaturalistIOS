@@ -17,6 +17,7 @@
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "UIFont+ExploreFonts.h"
+#import "ExploreObservationPhoto+BestAvailableURL.h"
 
 static NSDateFormatter *shortDateFormatter;
 static NSDateFormatter *shortTimeFormatter;
@@ -390,7 +391,7 @@ static UIImage *userIconPlaceholder;
         [imageLoadingSpinner startAnimating];
         
         ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
-        [self.photoImageView sd_setImageWithURL:[NSURL URLWithString:photo.mediumURL]
+        [self.photoImageView sd_setImageWithURL:[NSURL URLWithString:[photo bestAvailableUrlStringMax:ExploreObsPhotoUrlSizeMedium]]
                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                           [imageLoadingSpinner stopAnimating];  // automatically hides itself
                                           [self.photoImageView setNeedsDisplay];

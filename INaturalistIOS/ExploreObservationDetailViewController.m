@@ -33,6 +33,7 @@
 #import "TaxaSearchViewController.h"
 #import "ExploreObservationsDataSource.h"
 #import "ExploreObservationsController.h"
+#import "ExploreObservationPhoto+BestAvailableURL.h"
 
 @interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
@@ -296,7 +297,8 @@
         [view.photoImageView addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
             
             NSArray *galleryData = [self.observation.observationPhotos bk_map:^id(ExploreObservationPhoto *observationPhoto) {
-                return [MHGalleryItem itemWithURL:observationPhoto.largeURL thumbnailURL:observationPhoto.thumbURL];
+                return [MHGalleryItem itemWithURL:[observationPhoto bestAvailableUrlString]
+                                     thumbnailURL:observationPhoto.thumbURL];
             }];
             
             MHUICustomization *customization = [[MHUICustomization alloc] init];
