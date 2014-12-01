@@ -43,6 +43,11 @@
     UIActionSheet *identifyActionSheet;
     
     ExploreIdentification *selectedIdentification;
+    
+    UIBarButtonItem *share;
+    
+    // must be an instance variable for iOS 7, which doesn't hold on to presented when they go out of scope
+    UIPopoverController *sharePopover;
 }
 
 @end
@@ -54,7 +59,7 @@
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithTableViewStyle:UITableViewStyleGrouped]) {
         self.title = @"Details";
-        UIBarButtonItem *share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+        share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                target:self
                                                                                action:@selector(action)];
         FAKIcon *tagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:30.0f];
@@ -222,7 +227,21 @@
             [[Analytics sharedClient] event:kAnalyticsEventExploreObservationShare
                              withProperties:@{ @"destination": activityType }];
     };
-    [self presentViewController:activity animated:YES completion:nil];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        // wait a second for the action sheet to dismiss (can't present two VCs at the same time, and
+        // on iPad, action sheets are implemented as VCs that are presented starting in iOS 8)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            // now present the sharing activity view in a popover
+            sharePopover = [[UIPopoverController alloc] initWithContentViewController:activity];
+            [sharePopover presentPopoverFromBarButtonItem:share
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
+        });
+    } else {
+        [self presentViewController:activity animated:YES completion:nil];
+    }
 }
 
 #pragma mark - Setter/getter for observation
