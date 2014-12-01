@@ -24,14 +24,6 @@
  Observations have changed.
  */
 - (void)observationChangedCallback;
-/**
- Observations are now limited to location.
- */
-- (void)observationsLimitedToLocation;
-/**
- The active search predicates for an observations data source changed.
- */
-- (void)activeSearchPredicatesChangedCallback;
 @end
 
 /**
