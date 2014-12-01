@@ -21,6 +21,8 @@
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 
+static NSString *ExploreListCellId = @"ExploreListCell";
+
 @interface ExploreListViewController () <UITableViewDataSource,UITableViewDelegate> {
     UITableView *observationsTableView;
 }
@@ -41,7 +43,7 @@
         
         tv.dataSource = self;
         tv.delegate = self;
-        [tv registerClass:[ExploreListTableViewCell class] forCellReuseIdentifier:@"cell"];
+        [tv registerClass:[ExploreListTableViewCell class] forCellReuseIdentifier:ExploreListCellId];
         
         __weak __typeof__(self) weakSelf = self;
         [tv addInfiniteScrollingWithActionHandler:^{
@@ -162,7 +164,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ExploreListTableViewCell *cell = (ExploreListTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"cell"];
+    ExploreListTableViewCell *cell = (ExploreListTableViewCell *)[tableView dequeueReusableCellWithIdentifier:ExploreListCellId];
     
     ExploreObservation *obs = [self.observationDataSource.observations objectAtIndex:indexPath.item];
     [cell setObservation:obs];
