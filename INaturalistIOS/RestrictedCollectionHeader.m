@@ -24,7 +24,6 @@
                                                                        frame.size.width - 15 - 30, // room for indent and clearbutton
                                                                        frame.size.height)];
             label.font = [UIFont systemFontOfSize:12.0f];
-            label.tag = 0x1;
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor blackColor];
             label;
