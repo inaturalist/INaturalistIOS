@@ -20,7 +20,6 @@
         self.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
         
         self.titleLabel = ({
-            // as much as possible, match the style of the explore list view controller table view header
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0,
                                                                        frame.size.width - 15 - 30, // room for indent and clearbutton
                                                                        frame.size.height)];
