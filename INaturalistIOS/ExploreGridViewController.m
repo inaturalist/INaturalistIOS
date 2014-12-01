@@ -23,6 +23,9 @@
 #import "Analytics.h"
 #import "RestrictedCollectionHeader.h"
 
+static NSString *ExploreGridCellId = @"ExploreCell";
+static NSString *ExploreGridHeaderId = @"ExploreHeader";
+
 @interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     UICollectionView *observationsCollectionView;
 }
@@ -58,8 +61,8 @@
         cv.dataSource = self;
         cv.delegate = self;
         
-        [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:@"ExploreCell"];
-        [cv registerClass:[RestrictedCollectionHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"ExploreHeader"];
+        [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:ExploreGridCellId];
+        [cv registerClass:[RestrictedCollectionHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:ExploreGridHeaderId];
         
         __weak __typeof__(self) weakSelf = self;
         [cv addInfiniteScrollingWithActionHandler:^{
@@ -172,7 +175,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    ExploreGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ExploreCell"
+    ExploreGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ExploreGridCellId
                                                                       forIndexPath:indexPath];
     [cell setObservation:[self.observationDataSource.observations objectAtIndex:indexPath.item]];
     return cell;
@@ -181,7 +184,7 @@
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         RestrictedCollectionHeader *header = (RestrictedCollectionHeader *)[collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                                                                              withReuseIdentifier:@"ExploreHeader"
+                                                                                                              withReuseIdentifier:ExploreGridHeaderId
                                                                                                                      forIndexPath:indexPath];
         
         header.titleLabel.text = @"Restricted to current map area";
