@@ -76,15 +76,15 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        // pin the search label to 80% of the screen width, to leave room to accomodate
-        // the close button
+        // pin the search label to the screen width - 75 px, to leave room to accomodate
+        // the close button & padding
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.activeSearchLabel
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeWidth
-                                                        multiplier:0.8f
-                                                          constant:0.0f]];
+                                                        multiplier:1.0f
+                                                          constant:-75]];
         
         // vertically center the search label and the close button in the container
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.activeSearchLabel
