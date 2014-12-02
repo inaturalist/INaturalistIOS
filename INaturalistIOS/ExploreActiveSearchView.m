@@ -72,7 +72,7 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[activeSearchLabel]-[removeActiveSearchButton]-10-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[activeSearchLabel]-[removeActiveSearchButton]-15-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
