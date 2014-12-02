@@ -268,6 +268,15 @@
         else
             [colloquial appendFormat:@" and %@", predicate.colloquialSearchPhrase];
     }
+    
+    // Capitalize the first character of the combined search phrase.
+    // This will not work in languages that are right to left, but then neither
+    // will this entire method.
+    if (colloquial.length > 0) {
+        colloquial = [[colloquial stringByReplacingCharactersInRange:NSMakeRange(0,1)
+                                                          withString:[[colloquial substringToIndex:1] uppercaseString]] mutableCopy];
+    }
+    
     return colloquial;
 }
 
