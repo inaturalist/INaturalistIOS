@@ -50,9 +50,20 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // if the limiting region was cleared, then re-apply it once the map returns
-    if (!self.observationDataSource.limitingRegion)
-        self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+    // make sure we are really and truly on top
+    // this is fragile and assumes this VC will only be used in the app in this view hierarchy
+    if ([self.tabBarController.selectedViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *topNav = (UINavigationController *)self.tabBarController.selectedViewController;
+        if ([topNav.topViewController isKindOfClass:[ExploreContainerViewController class]]) {
+            ExploreContainerViewController *container = (ExploreContainerViewController *)topNav.topViewController;
+            if (container.selectedViewController == self) {
+                
+                // if the limiting region was cleared, then re-apply it once the map returns
+                if (!self.observationDataSource.limitingRegion)
+                    self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+            }
+        }
+    }
     
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreMap];
     
