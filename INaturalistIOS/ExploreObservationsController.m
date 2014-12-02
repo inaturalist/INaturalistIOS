@@ -38,7 +38,11 @@
 }
 
 - (void)reload {
-    [self fetchObservationsShouldNotify:YES];
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [self fetchObservationsShouldNotify:YES];
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+    }
 }
 
 - (void)setLimitingRegion:(ExploreRegion *)newRegion {
@@ -54,7 +58,11 @@
         }];
     }
 
-    [self fetchObservationsShouldNotify:YES];
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [self fetchObservationsShouldNotify:YES];
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+    }
 }
 
 -(ExploreRegion *)limitingRegion {
@@ -75,8 +83,12 @@
     // add our new predicate to the active group
     self.activeSearchPredicates = [selected arrayByAddingObject:newPredicate];
     
-    // fetch using new search predicate(s)
-    [self fetchObservationsShouldNotify:YES];
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        // fetch using new search predicate(s)
+        [self fetchObservationsShouldNotify:YES];
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+    }
 }
 
 
@@ -90,8 +102,12 @@
     // clear any stashed objects
     self.observations = [NSOrderedSet orderedSet];
     
-    // fetch using new search predicate(s), if any
-    [self fetchObservationsShouldNotify:YES];
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        // fetch using new search predicate(s)
+        [self fetchObservationsShouldNotify:YES];
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+    }
 }
 
 - (void)removeAllSearchPredicates {
@@ -106,12 +122,21 @@
     // clear any stashed objects
     self.observations = [NSOrderedSet orderedSet];
     
-    if (update)
-        [self fetchObservationsShouldNotify:YES];
+    if (update) {
+        if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            [self fetchObservationsShouldNotify:YES];
+        } else {
+            [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        }
+    }
 }
 
 - (void)expandActiveSearchToNextPageOfResults {
-    [self fetchObservationsPage:++lastPagedFetched];
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [self fetchObservationsPage:++lastPagedFetched];
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+    }
 }
 
 - (void)fetchObservationsPage:(NSInteger)page {

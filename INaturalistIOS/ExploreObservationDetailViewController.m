@@ -405,6 +405,12 @@
 #pragma mark - iNat API Calls
 
 - (void)addIdentificationWithTaxonId:(NSInteger)taxonId {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot add identification"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Adding Identification..." maskType:SVProgressHUDMaskTypeGradient];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
@@ -426,6 +432,12 @@
 }
 
 - (void)addComment:(NSString *)commentBody {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot add comment"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Adding Comment..." maskType:SVProgressHUDMaskTypeGradient];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
@@ -448,6 +460,11 @@
 }
 
 - (void)fetchObservationCommentsAndIds {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller loadCommentsAndIdentificationsForObservation:self.observation
                                            completionHandler:^(NSArray *results, NSError *error) {

@@ -229,6 +229,12 @@
 #pragma mark - iNat API Calls
 
 - (void)searchForMyObservations {
+
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
@@ -269,6 +275,12 @@
 }
 
 - (void)searchForNearbyObservations {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+    
     hasFulfilledLocationFetch = NO;
     
     [[Analytics sharedClient] event:kAnalyticsEventExploreSearchNearMe];
@@ -303,6 +315,12 @@
 }
 
 - (void)searchForTaxon:(NSString *)text {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Searching for critters..." maskType:SVProgressHUDMaskTypeGradient];
     
     [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
@@ -355,6 +373,11 @@
 
 - (void)searchForPerson:(NSString *)text {
     
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Searching for people..." maskType:SVProgressHUDMaskTypeGradient];
 
     [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
@@ -403,6 +426,12 @@
 }
 
 - (void)searchForLocation:(NSString *)text {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Searching for place..." maskType:SVProgressHUDMaskTypeGradient];
     
     [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
@@ -463,6 +492,12 @@
 }
 
 - (void)searchForProject:(NSString *)text {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        return;
+    }
+
     [SVProgressHUD showWithStatus:@"Searching for project..." maskType:SVProgressHUDMaskTypeGradient];
     
     [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
