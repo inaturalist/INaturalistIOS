@@ -224,7 +224,11 @@
     [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
     FAKIcon *mapOutline = [FAKIonIcons ios7LocationOutlineIconWithSize:25.0f];
     [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:observation.iconicTaxonName] darkerColor]];
-    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 25.0f)];
+    
+    // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
+    [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
+    [mapOutline addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
+    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 50.0f)];
     
     
     return annotationView;
