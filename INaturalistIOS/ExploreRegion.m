@@ -50,5 +50,10 @@
     return MKMapRectContainsPoint(self.mapRect, MKMapPointForCoordinate(coord));
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"ExploreRegion: SW: %f,%f, NE: %f,%f",
+            self.swCoord.latitude, self.swCoord.longitude,
+            self.neCoord.latitude, self.neCoord.longitude];
+}
 
 @end
