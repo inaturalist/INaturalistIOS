@@ -33,6 +33,12 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void)viewDidLoad {
+    // TTTPhotoViewController defaults to black nav and toolbars
+    self.navigationBarStyle = UIBarStyleDefault;
+    _toolbar.barStyle = UIBarStyleDefault;
+}
+
 #pragma mark - TTPhotoView
 
 - (TTPhotoView *)createPhotoView
