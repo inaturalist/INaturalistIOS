@@ -159,7 +159,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 44.0f;
+    return [self.observationDataSource activeSearchLimitedByCurrentMapRegion] ? 44.0f : 0.0f;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
