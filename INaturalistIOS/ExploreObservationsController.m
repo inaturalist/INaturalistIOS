@@ -7,7 +7,6 @@
 //
 
 #import <RestKit/RestKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <BlocksKit/BlocksKit.h>
 
 #import "ExploreObservationsController.h"
@@ -26,7 +25,7 @@
 
 @implementation ExploreObservationsController
 
-@synthesize observations, activeSearchPredicates;
+@synthesize observations, activeSearchPredicates, notificationDelegate;
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -41,7 +40,12 @@
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self fetchObservationsShouldNotify:YES];
     } else {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                             code:-1008
+                                         userInfo:@{
+                                                    NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                    }];
+        [self.notificationDelegate failedObservationFetch:error];
     }
 }
 
@@ -61,7 +65,12 @@
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self fetchObservationsShouldNotify:YES];
     } else {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                             code:-1008
+                                         userInfo:@{
+                                                    NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                    }];
+        [self.notificationDelegate failedObservationFetch:error];
     }
 }
 
@@ -87,7 +96,12 @@
         // fetch using new search predicate(s)
         [self fetchObservationsShouldNotify:YES];
     } else {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                             code:-1008
+                                         userInfo:@{
+                                                    NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                    }];
+        [self.notificationDelegate failedObservationFetch:error];
     }
 }
 
@@ -106,7 +120,12 @@
         // fetch using new search predicate(s)
         [self fetchObservationsShouldNotify:YES];
     } else {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                             code:-1008
+                                         userInfo:@{
+                                                    NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                    }];
+        [self.notificationDelegate failedObservationFetch:error];
     }
 }
 
@@ -126,7 +145,12 @@
         if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             [self fetchObservationsShouldNotify:YES];
         } else {
-            [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+            NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                                 code:-1008
+                                             userInfo:@{
+                                                        NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                        }];
+            [self.notificationDelegate failedObservationFetch:error];
         }
     }
 }
@@ -135,7 +159,12 @@
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self fetchObservationsPage:++lastPagedFetched];
     } else {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot search iNaturalist.org"];
+        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                             code:-1008
+                                         userInfo:@{
+                                                    NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
+                                                    }];
+        [self.notificationDelegate failedObservationFetch:error];
     }
 }
 
@@ -210,8 +239,8 @@
             else
                 statusMessage = @"Fetching recent observations worldwide";
         }
-
-        [SVProgressHUD showWithStatus:statusMessage maskType:SVProgressHUDMaskTypeGradient];
+        
+        [self.notificationDelegate startedObservationFetch];
     }
     
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
@@ -239,22 +268,24 @@
             
             if (shouldNotify) {
                 if (array.count > 0)
-                    [SVProgressHUD showSuccessWithStatus:@"Yay!"];
-                else
-                    [SVProgressHUD showErrorWithStatus:@"No observations found."];
+                    [self.notificationDelegate finishedObservationFetch];
+                else {
+                    NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
+                                                                code:-1014
+                                                            userInfo:@{ NSLocalizedDescriptionKey: @"No observations found." }];
+                    [self.notificationDelegate failedObservationFetch:error];
+                }
             }
         };
         
         loader.onDidFailWithError = ^(NSError *err) {
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            if (shouldNotify)
-                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+            [self.notificationDelegate failedObservationFetch:err];
         };
         
         loader.onDidFailLoadWithError = ^(NSError *err) {
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            if (shouldNotify)
-                [SVProgressHUD showErrorWithStatus:err.localizedDescription];
+            [self.notificationDelegate failedObservationFetch:err];
         };
     }];
 }
@@ -352,6 +383,18 @@
     }];
 }
 
+
+#pragma mark - Notification
+
+- (BOOL)isFetching {
+    if ([[[RKClient sharedClient] requestQueue] count] == 0)
+        return NO;
+    
+    if ([[[RKClient sharedClient] requestQueue] loadingCount] == 0)
+        return NO;
+    
+    return YES;
+}
 
 
 @end

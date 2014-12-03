@@ -52,6 +52,10 @@
     ExploreListViewController *listVC;
     
     ExploreSearchController *searchController;
+    
+    UIBarButtonItem *refreshItem;
+    UIBarButtonItem *spinnerItem;
+    UIActivityIndicatorView *spinner;
 }
 
 @end
@@ -77,7 +81,23 @@
         
         self.navigationController.tabBarItem.title = @"Explore";
         
+        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                target:self
+                                                                                action:@selector(searchPressed)];
+        self.navigationItem.leftBarButtonItem = search;
+
+        refreshItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                    target:self
+                                                                    action:@selector(refreshPressed)];
+        self.navigationItem.rightBarButtonItem = refreshItem;
+        
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
+
+        
         observationsController = [[ExploreObservationsController alloc] init];
+        observationsController.notificationDelegate = self;
+        
         searchController = [[ExploreSearchController alloc] init];
     }
     return self;
@@ -85,17 +105,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // nav bar ui
-    UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                            target:self
-                                                                            action:@selector(searchPressed)];
-    self.navigationItem.leftBarButtonItem = search;
-    
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                             target:self
-                                                                             action:@selector(refreshPressed)];
-    self.navigationItem.rightBarButtonItem = refresh;
     
     searchMenu = ({
         ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
@@ -648,6 +657,30 @@
 
 - (NSString *)activeSearchText {
     return observationsController.combinedColloquialSearchPhrase;
+}
+
+#pragma mark - ExploreObsNotificationDelegate
+
+- (void)startedObservationFetch {
+    [spinner startAnimating];
+    self.navigationItem.rightBarButtonItem = spinnerItem;
+}
+
+- (void)finishedObservationFetch {
+    if (!observationsController.isFetching) {
+        // set the right bar button item to the reload button
+        self.navigationItem.rightBarButtonItem = refreshItem;
+        // stop the progress view
+        [spinner stopAnimating];
+    }
+}
+
+- (void)failedObservationFetch:(NSError *)error {
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    // set the right bar button item to the reload button
+    self.navigationItem.rightBarButtonItem = refreshItem;
+    // stop the progress view
+    [spinner stopAnimating];
 }
 
 @end

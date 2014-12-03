@@ -12,6 +12,26 @@
 #import "ExploreSearchPredicate.h"
 #import "ExploreRegion.h"
 
+/**
+ A class that implements this protocol wishes to receive notifications about
+ the success and/or failure of observation fetch requests.
+ */
+@protocol ExploreObsNotificationDelegate
+/**
+ Delegate callback method that is called when an observation fetch starts.
+ */
+- (void)startedObservationFetch;
+/**
+ Delegate callback method that is called when an observation fetch finishes.
+ */
+- (void)finishedObservationFetch;
+/**
+ Delegate callback that is called when an observation fetch fails.
+ @param error The network or other error.
+ */
+- (void)failedObservationFetch:(NSError *)error;
+@end
+
 typedef void(^FetchCompletionHandler)(NSArray *results, NSError *error);
 typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 
@@ -24,6 +44,9 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 @property (readonly) NSArray *mappableObservations;
 @property NSArray *activeSearchPredicates;
 @property ExploreRegion *limitingRegion;
+
+@property (assign) id <ExploreObsNotificationDelegate> notificationDelegate;
+@property (readonly) BOOL isFetching;
 
 - (void)addSearchPredicate:(ExploreSearchPredicate *)predicate;
 - (void)removeSearchPredicate:(ExploreSearchPredicate *)predicate;

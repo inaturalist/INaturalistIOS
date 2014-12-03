@@ -7,7 +7,8 @@
 //
 
 #import "ExploreContainerViewController.h"
+#import "ExploreObservationsDataSource.h"
 
-@interface ExploreSearchViewController : ExploreContainerViewController
+@interface ExploreSearchViewController : ExploreContainerViewController <ExploreObsNotificationDelegate>
 
 @end
