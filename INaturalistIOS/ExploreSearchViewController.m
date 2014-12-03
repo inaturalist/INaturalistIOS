@@ -105,22 +105,30 @@
         AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:@"critters"
                                                                               action:^(NSString *searchText) {
                                                                                   [self searchForTaxon:searchText];
-                                                                                  [searchMenu showActiveSearch];
+                                                                                  [searchMenu hideOptionSearch];
+                                                                                  if (observationsController.activeSearchPredicates.count > 0)
+                                                                                      [searchMenu showActiveSearch];
                                                                               }];
         AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:@"people"
                                                                             action:^(NSString *searchText) {
                                                                                 [self searchForPerson:searchText];
-                                                                                [searchMenu showActiveSearch];
+                                                                                [searchMenu hideOptionSearch];
+                                                                                if (observationsController.activeSearchPredicates.count > 0)
+                                                                                    [searchMenu showActiveSearch];
                                                                             }];
         AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:@"locations"
                                                                                action:^(NSString *searchText) {
                                                                                    [self searchForLocation:searchText];
-                                                                                   [searchMenu showActiveSearch];
+                                                                                   [searchMenu hideOptionSearch];
+                                                                                   if (observationsController.activeSearchPredicates.count > 0)
+                                                                                       [searchMenu showActiveSearch];
                                                                                }];
         AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:@"projects"
                                                                               action:^(NSString *searchText) {
                                                                                   [self searchForProject:searchText];
-                                                                                  [searchMenu showActiveSearch];
+                                                                                  [searchMenu hideOptionSearch];
+                                                                                  if (observationsController.activeSearchPredicates.count > 0)
+                                                                                      [searchMenu showActiveSearch];
                                                                               }];
         view.autocompleteItems = @[critters, people, locations, projects];
         
@@ -129,12 +137,16 @@
                                                                 action:^{
                                                                     [self searchForNearbyObservations];
                                                                     [searchMenu hideOptionSearch];
+                                                                    if (observationsController.activeSearchPredicates.count > 0)
+                                                                        [searchMenu showActiveSearch];
                                                                 }];
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:@"Find my observations"
                                                               action:^{
                                                                   if ([[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey]) {
                                                                       [self searchForMyObservations];
-                                                                      [searchMenu showActiveSearch];
+                                                                      [searchMenu hideOptionSearch];
+                                                                      if (observationsController.activeSearchPredicates.count > 0)
+                                                                          [searchMenu showActiveSearch];
                                                                   } else {
                                                                       [[[UIAlertView alloc] initWithTitle:@"You must be logged in!"
                                                                                                   message:nil
