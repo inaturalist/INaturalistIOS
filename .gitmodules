@@ -22,6 +22,3 @@
 [submodule "Vendor/SWRevealViewController"]
 	path = Vendor/SWRevealViewController
 	url = https://github.com/John-Lluch/SWRevealViewController.git
-[submodule "Vendor/ssziparchive"]
-	path = Vendor/ssziparchive
-	url = https://github.com/soffes/ssziparchive.git

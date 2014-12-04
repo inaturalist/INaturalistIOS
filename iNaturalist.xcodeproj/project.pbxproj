@@ -83,11 +83,6 @@
 		1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0217F21602004F57F2 /* 258-checkmark.png */; };
 		1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */; };
 		1955FD2B17F230E9004F57F2 /* libRestKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19D9B53D14F612270017B70A /* libRestKit.a */; };
-		1955FDC017F2415F004F57F2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 1955FDB617F2415F004F57F2 /* ioapi.c */; };
-		1955FDC117F2415F004F57F2 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 1955FDB817F2415F004F57F2 /* mztools.c */; };
-		1955FDC217F2415F004F57F2 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 1955FDBA17F2415F004F57F2 /* unzip.c */; };
-		1955FDC317F2415F004F57F2 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 1955FDBC17F2415F004F57F2 /* zip.c */; };
-		1955FDC417F2415F004F57F2 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FDBF17F2415F004F57F2 /* SSZipArchive.m */; };
 		19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CAD17EB8D10000C800A /* SWRevealViewController.m */; };
 		19570CC417EB92D8000C800A /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideViewController.m */; };
 		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
@@ -594,17 +589,6 @@
 		1955FCFC17F102FA004F57F2 /* GuideXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideXML.m; sourceTree = "<group>"; };
 		1955FD0217F21602004F57F2 /* 258-checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "258-checkmark.png"; sourceTree = "<group>"; };
 		1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "258-checkmark@2x.png"; sourceTree = "<group>"; };
-		1955FDB517F2415F004F57F2 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		1955FDB617F2415F004F57F2 /* ioapi.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = ioapi.c; sourceTree = "<group>"; };
-		1955FDB717F2415F004F57F2 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		1955FDB817F2415F004F57F2 /* mztools.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = mztools.c; sourceTree = "<group>"; };
-		1955FDB917F2415F004F57F2 /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		1955FDBA17F2415F004F57F2 /* unzip.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = unzip.c; sourceTree = "<group>"; };
-		1955FDBB17F2415F004F57F2 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		1955FDBC17F2415F004F57F2 /* zip.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = zip.c; sourceTree = "<group>"; };
-		1955FDBD17F2415F004F57F2 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
-		1955FDBE17F2415F004F57F2 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
-		1955FDBF17F2415F004F57F2 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		19570CAC17EB8D10000C800A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		19570CAD17EB8D10000C800A /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		19570CC217EB92D8000C800A /* GuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewController.h; sourceTree = "<group>"; };
@@ -1188,33 +1172,6 @@
 			name = images;
 			sourceTree = "<group>";
 		};
-		1955FDB317F2415F004F57F2 /* SSZipArchive */ = {
-			isa = PBXGroup;
-			children = (
-				1955FDB417F2415F004F57F2 /* minizip */,
-				1955FDBE17F2415F004F57F2 /* SSZipArchive.h */,
-				1955FDBF17F2415F004F57F2 /* SSZipArchive.m */,
-			);
-			name = SSZipArchive;
-			path = Vendor/ssziparchive/SSZipArchive;
-			sourceTree = "<group>";
-		};
-		1955FDB417F2415F004F57F2 /* minizip */ = {
-			isa = PBXGroup;
-			children = (
-				1955FDB517F2415F004F57F2 /* crypt.h */,
-				1955FDB617F2415F004F57F2 /* ioapi.c */,
-				1955FDB717F2415F004F57F2 /* ioapi.h */,
-				1955FDB817F2415F004F57F2 /* mztools.c */,
-				1955FDB917F2415F004F57F2 /* mztools.h */,
-				1955FDBA17F2415F004F57F2 /* unzip.c */,
-				1955FDBB17F2415F004F57F2 /* unzip.h */,
-				1955FDBC17F2415F004F57F2 /* zip.c */,
-				1955FDBD17F2415F004F57F2 /* zip.h */,
-			);
-			path = minizip;
-			sourceTree = "<group>";
-		};
 		19570CAB17EB8D10000C800A /* SWRevealViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1266,7 +1223,6 @@
 			children = (
 				19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */,
 				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
-				1955FDB317F2415F004F57F2 /* SSZipArchive */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
 				19F3AC7717E13946005706E8 /* RaptureXML */,
 				19E4CBED162407CE00694E5D /* ActionSheetPicker */,
@@ -2336,16 +2292,11 @@
 				19389224191D5D5000CF62D3 /* CustomIOS7AlertView.m in Sources */,
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
-				1955FDC017F2415F004F57F2 /* ioapi.c in Sources */,
-				1955FDC117F2415F004F57F2 /* mztools.c in Sources */,
-				1955FDC217F2415F004F57F2 /* unzip.c in Sources */,
-				1955FDC317F2415F004F57F2 /* zip.c in Sources */,
 				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
 				19AE897618DD08B600505918 /* Identification.m in Sources */,
 				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
-				1955FDC417F2415F004F57F2 /* SSZipArchive.m in Sources */,
 				197FD41317FD29B30099BDE6 /* GuidePhotoViewController.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
