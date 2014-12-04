@@ -18,6 +18,7 @@ PODS:
     - BlocksKit/DynamicDelegate
   - Bolts (1.1.3)
   - CrashlyticsFramework (2.2.5.1)
+  - DCRoundSwitch (0.0.1)
   - Facebook-iOS-SDK (3.20.0):
     - Bolts (~> 1.0)
   - FlurrySDK (5.4.0):
@@ -63,6 +64,7 @@ DEPENDENCIES:
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
   - CrashlyticsFramework (= 2.2.5.1)
+  - DCRoundSwitch (= 0.0.1)
   - Facebook-iOS-SDK (= 3.20.0)
   - FlurrySDK (= 5.4.0)
   - FontAwesomeKit (= 2.1.8)
@@ -85,6 +87,7 @@ SPEC CHECKSUMS:
   BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
   CrashlyticsFramework: 195dfef587ade7a3954ce8effd483a3879d35877
+  DCRoundSwitch: df465861ed880ee8d3c44ac8d3459faf1abaa6a9
   Facebook-iOS-SDK: 5854404b4b651f612a8ef79ca06d766858f4cb8e
   FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
   FontAwesomeKit: a2edea3111dab107b4cc43b85881b404eb063385
