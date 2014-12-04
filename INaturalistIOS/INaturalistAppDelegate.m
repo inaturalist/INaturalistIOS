@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "INaturalistAppDelegate.h"
 #import "List.h"
 #import "ListedTaxon.h"
@@ -67,6 +69,8 @@
         [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
         [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
     }
+    
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
     
     return YES;
 }

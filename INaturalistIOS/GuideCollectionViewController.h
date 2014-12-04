@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "GuideXML.h"
-#import "DejalActivityView.h"
 #import "RXMLElement.h"
 #import "GuideMenuViewController.h"
 
 @interface GuideCollectionViewController : UICollectionViewController <UISearchBarDelegate, GuideMenuControllerDelegate>
 {
-    DejalActivityView *modalActivityView;
     NSTimer *searchTimer;
     NSMutableArray *items;
     UILabel *noContent;
@@ -43,7 +41,6 @@
 @property (nonatomic, strong) UIProgressView *progress;
 @property (nonatomic, strong) NSMutableData *receivedData;
 @property (nonatomic) long expectedBytes;
-@property (nonatomic, strong) DejalActivityView *dejalActivityView;
 @property (nonatomic) NSInteger lastStatusCode;
 @property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, strong) GuideCollectionViewController *controller;

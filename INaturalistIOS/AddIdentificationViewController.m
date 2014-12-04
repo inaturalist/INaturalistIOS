@@ -8,7 +8,8 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "DejalActivityView.h"
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "AddIdentificationViewController.h"
 #import "Observation.h"
 #import "ImageStore.h"
@@ -63,7 +64,7 @@
 }
 
 - (IBAction)saveAction:(id)sender {
-	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Saving...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
 							 @"identification[observation_id]": self.observation.recordID,
@@ -81,27 +82,17 @@
     }
 }
 
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-	[DejalBezelActivityView removeView];
-	NSLog(@"Response: %@", response);
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
 	if (response.statusCode == 200) {
+        [SVProgressHUD showSuccessWithStatus:nil];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
-		[self showError:@"An unknown error occurred. Please try again."];
+        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
 	}
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
-{
-	[DejalBezelActivityView removeView];
-	NSLog(@"Request Error: %@", error.localizedDescription);
-	[self showError:error.localizedDescription];
-}
-
-- (void)showError:(NSString *)errorMessage{
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[alert show];
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate

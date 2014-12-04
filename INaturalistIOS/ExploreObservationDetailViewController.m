@@ -411,7 +411,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Adding Identification..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Adding Identification..."];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
@@ -438,7 +438,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Adding Comment..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Adding Comment..."];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addComment:commentBody

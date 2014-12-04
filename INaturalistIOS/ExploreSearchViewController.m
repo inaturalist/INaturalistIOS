@@ -260,7 +260,7 @@
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
-    [SVProgressHUD showWithStatus:@"Fetching..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Fetching..."];
     
     [searchController searchForLogin:[[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey] completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -342,7 +342,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Searching for critters..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Searching for critters..."];
     
     [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -399,7 +399,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Searching for people..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Searching for people..."];
 
     [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -453,7 +453,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Searching for place..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Searching for place..."];
     
     [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -519,7 +519,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Searching for project..." maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Searching for project..."];
     
     [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -639,8 +639,7 @@
     [locationManager stopUpdatingLocation];
     [locationManager startUpdatingLocation];
     // this may take a moment
-    [SVProgressHUD showWithStatus:@"Finding your location..."
-                         maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"Finding your location..."];
     locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
                                                               block:^(NSTimer *timer) {
                                                                   [SVProgressHUD showErrorWithStatus:@"Unable to find location"];

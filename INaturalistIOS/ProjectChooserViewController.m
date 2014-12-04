@@ -7,10 +7,11 @@
 //
 
 #import <Three20/Three20.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ProjectChooserViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
-#import "DejalActivityView.h"
 #import "Analytics.h"
 
 static const int ProjectCellImageTag = 1;
@@ -91,7 +92,7 @@ static const int ProjectCellTitleTag = 2;
                         language,
                         countryCode];
         if (username && username.length > 0) {
-            [DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Loading...",nil)];
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                          objectMapping:[ProjectUser mapping]
                                                               delegate:self];
@@ -173,7 +174,7 @@ static const int ProjectCellTitleTag = 2;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD showSuccessWithStatus:nil];
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
@@ -198,7 +199,7 @@ static const int ProjectCellTitleTag = 2;
     // getting deallocated after handling an error.  This is a kludge.
     self.loader = objectLoader;
     
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
     
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;

@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
 #import "Observation.h"
@@ -14,7 +16,6 @@
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
-#import "DejalActivityView.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
@@ -83,14 +84,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
                  animated:YES];
     
-    NSString *activityMsg = NSLocalizedString(@"Syncing...",nil);
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-    } else {
-        self.tableView.scrollEnabled = NO;
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.tableView
-                                                             withLabel:activityMsg];
-    }
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil)];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
@@ -117,10 +111,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)stopSync
 {
-    if (syncActivityView) {
-        [DejalBezelActivityView removeView];
-        syncActivityView = nil;
-    }
+    [SVProgressHUD dismiss];
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
@@ -811,13 +802,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSString *modelName = NSStringFromClass(model).humanize.pluralize;
         activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
     }
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-        [syncActivityView layoutSubviews];
-    } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
-                                                             withLabel:activityMsg];
-    }
+    [SVProgressHUD showWithStatus:activityMsg];
 }
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
@@ -825,13 +810,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                              number, 
                              total, 
                              NSStringFromClass(record.class).humanize.pluralize];
-    if (syncActivityView) {
-        [[syncActivityView activityLabel] setText:activityMsg];
-        [syncActivityView layoutSubviews];
-    } else {
-        syncActivityView = [DejalBezelActivityView activityViewForView:self.view
-                                                             withLabel:activityMsg];
-    }
+    [SVProgressHUD showWithStatus:activityMsg];
 }
 
 - (void)syncQueueFinished
@@ -845,6 +824,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                            otherButtonTitles:nil];
         [av show];
         self.syncErrors = nil;
+    } else {
+        [SVProgressHUD showSuccessWithStatus:nil];
     }
     
     // make sure any deleted records get gone

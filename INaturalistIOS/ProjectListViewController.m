@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ProjectListViewController.h"
 #import "Observation.h"
 #import "Project.h"
@@ -14,7 +16,6 @@
 #import "ListedTaxon.h"
 #import "Taxon.h"
 #import "ImageStore.h"
-#import "DejalActivityView.h"
 #import "TaxonDetailViewController.h"
 #import "ProjectDetailViewController.h"
 #import "Analytics.h"
@@ -83,8 +84,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.navigationItem.rightBarButtonItem = self.stopSyncButton;
     self.lastSyncedAt = [NSDate date];
     self.tableView.scrollEnabled = NO;
-    [DejalBezelActivityView activityViewForView:self.tableView
-                                      withLabel:NSLocalizedString(@"Syncing list...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing list...",nil)];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
@@ -95,7 +95,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
     self.tableView.scrollEnabled = YES;
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     [self loadData];
     [[self tableView] reloadData];

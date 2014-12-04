@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
 #import "GuideViewController.h"
@@ -366,13 +368,7 @@ static const int GutterWidth  = 5;
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly
 {
     if (!quietly) {
-        NSString *activityMsg = NSLocalizedString(@"Loading...",nil);
-        if (modalActivityView) {
-            [[modalActivityView activityLabel] setText:activityMsg];
-        } else {
-            modalActivityView = [DejalBezelActivityView activityViewForView:self.collectionView
-                                                                  withLabel:activityMsg];
-        }
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
     }
     NSMutableURLRequest *r = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -520,7 +516,6 @@ static const int GutterWidth  = 5;
 @synthesize progress = _progress;
 @synthesize receivedData = _receivedData;
 @synthesize expectedBytes = _expectedBytes;
-@synthesize dejalActivityView = _dejalActivityView;
 @synthesize lastStatusCode = _lastStatusCode;
 @synthesize filePath = _filePath;
 @synthesize controller = _controller;
@@ -554,15 +549,6 @@ static const int GutterWidth  = 5;
     return self;
 }
 
-- (id)initWithDejalActivityView:(DejalActivityView *)activityView
-{
-    self = [self init];
-    if (self) {
-        self.dejalActivityView = activityView;
-    }
-    return self;
-}
-
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
     self.lastStatusCode = httpResponse.statusCode;
@@ -584,6 +570,8 @@ static const int GutterWidth  = 5;
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+    [SVProgressHUD dismiss];
     if (!self.quiet) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
                                                      message:error.localizedDescription
@@ -592,7 +580,6 @@ static const int GutterWidth  = 5;
                                            otherButtonTitles:nil];
         [av show];
     }
-    [DejalBezelActivityView removeView];
 }
 
 - (NSCachedURLResponse *) connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
@@ -604,7 +591,9 @@ static const int GutterWidth  = 5;
     if (self.progress) {
         self.progress.hidden = YES;
     }
-    [DejalBezelActivityView removeView];
+    
+    [SVProgressHUD dismiss];
+    
     if (self.lastStatusCode == 200) {
         NSError *error;
         if ([self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {

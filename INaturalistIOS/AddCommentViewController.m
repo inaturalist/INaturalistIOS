@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "AddCommentViewController.h"
 #import "Observation.h"
-#import "DejalActivityView.h"
 #import "Analytics.h"
 
 @interface AddCommentViewController () <RKRequestDelegate>
@@ -49,7 +50,7 @@
 }
 
 - (IBAction)clickedSave:(id)sender {
-	[DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Saving...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"comment[body]": self.textView.text,
 							 @"comment[parent_id]": self.observation.recordID,
@@ -58,27 +59,17 @@
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-	[DejalBezelActivityView removeView];
-	NSLog(@"Response: %@", response);
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
 	if (response.statusCode == 200) {
+        [SVProgressHUD showSuccessWithStatus:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
 	} else {
-		[self showError:@"An unknown error occurred. Please try again."];
+        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
 	}
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
-{
-	[DejalBezelActivityView removeView];
-	NSLog(@"Request Error: %@", error.localizedDescription);
-	[self showError:error.localizedDescription];
-}
-
-- (void)showError:(NSString *)errorMessage{
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[alert show];
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
 }
 
 -(BOOL)prefersStatusBarHidden { return YES; }

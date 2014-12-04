@@ -7,8 +7,9 @@
 //
 
 #import <TapkuLibrary/TapkuLibrary.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ProjectDetailViewController.h"
-#import "DejalActivityView.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
@@ -93,8 +94,7 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (void)join
 {
-    [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                      withLabel:NSLocalizedString(@"Joining...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Joining...",nil)];
     if (!self.projectUser) {
         self.projectUser = [ProjectUser object];
         self.projectUser.project = self.project;
@@ -109,8 +109,7 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (void)leave
 {
-    [DejalBezelActivityView activityViewForView:self.navigationController.view
-                                      withLabel:NSLocalizedString(@"Leaving...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Leaving...",nil)];
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
@@ -336,12 +335,12 @@ static const int LeaveProjectAlertViewTag = 1;
         [self clickedClose:nil];
     }
     self.projectUser = pu;
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
 {
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
     if (objectLoader.response.statusCode == 401) {
         [self performSegueWithIdentifier:@"LoginSegue" sender:self];
     } else {

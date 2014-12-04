@@ -6,9 +6,10 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "INaturalistAppDelegate.h"
 #import "LoginViewController.h"
-#import "DejalActivityView.h"
 #import "INatWebController.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "GTLPlusConstants.h"
@@ -94,7 +95,7 @@ static const NSInteger GoogleAssertionType = 2;
 
 - (IBAction)signIn:(id)sender {
     //INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
     AccountType = nil;
     AccountType = kINatAuthService;
     isLoginCompleted = NO;
@@ -107,7 +108,7 @@ static const NSInteger GoogleAssertionType = 2;
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
     if (response.statusCode == 200 || response.statusCode == 304) {
-        [DejalBezelActivityView removeView];
+        [SVProgressHUD dismiss];
         NSString *jsonString = [[NSString alloc] initWithData:response.body
                                                      encoding:NSUTF8StringEncoding];
         NSError* error = nil;
@@ -150,7 +151,7 @@ static const NSInteger GoogleAssertionType = 2;
                               otherButtonTitles:nil];
         [av show];
     }
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
 }
 
 - (void)failedLogin
@@ -187,7 +188,7 @@ static const NSInteger GoogleAssertionType = 2;
         [av show];
     }
     isLoginCompleted = YES;
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -219,7 +220,7 @@ static const NSInteger GoogleAssertionType = 2;
     if (indexPath.section == 1) { //Facebook
         lastAssertionType = FacebookAssertionType;
         isLoginCompleted = NO;
-        [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing in...",nil)];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
         [self openFacebookSession];
     }
     else if (indexPath.section == 2) {// Google+
@@ -442,7 +443,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 
 -(void) finishWithAuth2Login{
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD dismiss];
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:AccountType]) {

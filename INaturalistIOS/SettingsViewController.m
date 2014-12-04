@@ -6,9 +6,10 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "SettingsViewController.h"
 #import "LoginViewController.h"
-#import "DejalActivityView.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ProjectUser.h"
@@ -85,7 +86,7 @@ static const int VersionCellTag = 4;
 
 - (void)signOut
 {
-    [DejalBezelActivityView activityViewForView:self.view withLabel:NSLocalizedString(@"Signing out...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
     for (UIViewController *vc in self.tabBarController.viewControllers) {
         if ([vc isKindOfClass:UINavigationController.class]) {
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
@@ -104,7 +105,7 @@ static const int VersionCellTag = 4;
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self localSignOut];
-    [DejalBezelActivityView removeView];
+    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
 - (void)localSignOut

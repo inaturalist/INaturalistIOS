@@ -8,6 +8,8 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "ObservationActivityViewController.h"
 #import "Observation.h"
 #import "Comment.h"
@@ -17,7 +19,6 @@
 #import "Taxon.h"
 #import "AddCommentViewController.h"
 #import "AddIdentificationViewController.h"
-#import "DejalActivityView.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
 #import "PhotoViewController.h"
@@ -209,7 +210,7 @@ static const int IdentificationCellBodyTag = 11;
 
 - (void)agreeWithIdentification:(Identification *)identification
 {
-	[DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Agreeing...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Agreeing...",nil)];
 	NSDictionary *params = @{
 							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":identification.taxonID
@@ -234,7 +235,7 @@ static const int IdentificationCellBodyTag = 11;
 	if (self.observation.recordID
             && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
             && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [DejalBezelActivityView activityViewForView:self.navigationController.view withLabel:NSLocalizedString(@"Refreshing...",nil)];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Refreshing...",nil)];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
@@ -248,12 +249,13 @@ static const int IdentificationCellBodyTag = 11;
 	if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound && response.statusCode == 200) {
 		[self refreshData];
 	} else {
-		[DejalBezelActivityView removeView];
+        [SVProgressHUD dismiss];
 	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
 	NSLog(@"Did fail with error: %@ for URL: %@", error.localizedDescription, request.URL);
 }
 
@@ -262,7 +264,7 @@ static const int IdentificationCellBodyTag = 11;
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
-	[DejalBezelActivityView removeView];
+    [SVProgressHUD showSuccessWithStatus:nil];
 	
     if (objects.count == 0) return;
     

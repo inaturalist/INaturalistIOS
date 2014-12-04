@@ -118,7 +118,6 @@
 		1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */; };
 		1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
 		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
-		198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552EB14EF5FB500DB55C5 /* DejalActivityView.m */; };
 		198CF8DF14F5AEA80064DF05 /* Three20.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 198CF8DE14F5AEA80064DF05 /* Three20.bundle */; };
 		198CF8E314F5B1350064DF05 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198CF8E214F5B1350064DF05 /* PhotoViewController.m */; };
 		198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 198CF8E514F5B86B0064DF05 /* PhotoSource.m */; };
@@ -602,8 +601,6 @@
 		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		198552E714EF208600DB55C5 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = constants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		198552EA14EF5FB400DB55C5 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DejalActivityView.h; path = INaturalistIOS/DejalActivityView.h; sourceTree = "<group>"; };
-		198552EB14EF5FB500DB55C5 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DejalActivityView.m; path = INaturalistIOS/DejalActivityView.m; sourceTree = "<group>"; };
 		198CF86F14F5AC420064DF05 /* Three20.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20.xcodeproj; path = Vendor/three20/src/Three20/Three20.xcodeproj; sourceTree = "<group>"; };
 		198CF89F14F5AE180064DF05 /* Three20Core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Core.xcodeproj; path = Vendor/three20/src/Three20Core/Three20Core.xcodeproj; sourceTree = "<group>"; };
 		198CF8A014F5AE180064DF05 /* Three20Network.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Network.xcodeproj; path = Vendor/three20/src/Three20Network/Three20Network.xcodeproj; sourceTree = "<group>"; };
@@ -1138,8 +1135,6 @@
 				19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */,
 				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
-				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
-				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
 				198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */,
 				198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */,
@@ -2018,7 +2013,6 @@
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
-				198552EC14EF5FB500DB55C5 /* DejalActivityView.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,

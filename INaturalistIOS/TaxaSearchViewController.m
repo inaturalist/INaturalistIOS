@@ -7,11 +7,12 @@
 //
 
 #import <Three20/Three20.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
-#import "DejalActivityView.h"
 #import "Analytics.h"
 
 static const int TaxonCellImageTag = 1;
@@ -70,7 +71,7 @@ static const int TaxonCellSubtitleTag = 3;
     }
     BOOL modal = self.taxa.count == 0;
     if (modal) {
-        [DejalBezelActivityView activityViewForView:self.tableView withLabel:NSLocalizedString(@"Loading...",nil)];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
     }
     
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
@@ -270,12 +271,12 @@ static const int TaxonCellSubtitleTag = 3;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self loadData];
     [self.tableView reloadData];
-    [DejalBezelActivityView removeViewAnimated:YES];
+    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
 {
-    [DejalBezelActivityView removeViewAnimated:YES];
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
 }
 
 #pragma mark - RecordSearchControllerDelegate
