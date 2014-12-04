@@ -173,7 +173,6 @@
 		19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A47F17F4BAA90086455D /* 265-download-gray.png */; };
 		19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A48017F4BAA90086455D /* 265-download-gray@2x.png */; };
 		19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F3AC7517E138A9005706E8 /* libz.dylib */; };
-		19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F3AC7917E13946005706E8 /* RXMLElement.m */; };
 		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
 		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
 		19F62190150ECA8300C58F28 /* projects-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218E150ECA8300C58F28 /* projects-tab.png */; };
@@ -689,8 +688,6 @@
 		19F0A47F17F4BAA90086455D /* 265-download-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "265-download-gray.png"; sourceTree = "<group>"; };
 		19F0A48017F4BAA90086455D /* 265-download-gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "265-download-gray@2x.png"; sourceTree = "<group>"; };
 		19F3AC7517E138A9005706E8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		19F3AC7817E13946005706E8 /* RXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXMLElement.h; sourceTree = "<group>"; };
-		19F3AC7917E13946005706E8 /* RXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RXMLElement.m; sourceTree = "<group>"; };
 		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
 		19F62187150EC6B700C58F28 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
 		19F6218D150ECA8300C58F28 /* projects-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab@2x.png"; sourceTree = "<group>"; };
@@ -1169,7 +1166,6 @@
 				19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */,
 				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
-				19F3AC7717E13946005706E8 /* RaptureXML */,
 				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
 				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
@@ -1228,16 +1224,6 @@
 				19DA9F38161D3EA200DCCB5B /* RestKitResources.bundle */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		19F3AC7717E13946005706E8 /* RaptureXML */ = {
-			isa = PBXGroup;
-			children = (
-				19F3AC7817E13946005706E8 /* RXMLElement.h */,
-				19F3AC7917E13946005706E8 /* RXMLElement.m */,
-			);
-			name = RaptureXML;
-			path = Vendor/RaptureXML/RaptureXML;
 			sourceTree = "<group>";
 		};
 		19F621A1150ECD0100C58F28 /* Models */ = {
@@ -2151,7 +2137,6 @@
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
-				19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */,

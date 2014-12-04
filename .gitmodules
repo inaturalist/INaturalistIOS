@@ -10,9 +10,6 @@
 [submodule "Vendor/DCRoundSwitch"]
 	path = Vendor/DCRoundSwitch
 	url = git://github.com/computerlogicx/DCRoundSwitch.git
-[submodule "Vendor/RaptureXML"]
-	path = Vendor/RaptureXML
-	url = https://github.com/ZaBlanc/RaptureXML.git
 [submodule "Vendor/SWRevealViewController"]
 	path = Vendor/SWRevealViewController
 	url = https://github.com/John-Lluch/SWRevealViewController.git
