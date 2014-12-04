@@ -10,9 +10,6 @@
 [submodule "Vendor/DCRoundSwitch"]
 	path = Vendor/DCRoundSwitch
 	url = git://github.com/computerlogicx/DCRoundSwitch.git
-[submodule "Vendor/ActionSheetPicker"]
-	path = Vendor/ActionSheetPicker
-	url = git://github.com/inaturalist/ActionSheetPicker-3.0.git
 [submodule "Vendor/OAuth2Client"]
 	path = Vendor/OAuth2Client
 	url = git://github.com/nxtbgthng/OAuth2Client.git

@@ -167,15 +167,6 @@
 		19DA9F4E161D40A400DCCB5B /* libThree20Network.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8BA14F5AE180064DF05 /* libThree20Network.a */; };
 		19DA9F4F161D40A400DCCB5B /* libThree20Style.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198CF8C014F5AE180064DF05 /* libThree20Style.a */; };
 		19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
-		19E4CC1A162407CE00694E5D /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CBEE162407CE00694E5D /* .gitignore */; };
-		19E4CC1C162407CE00694E5D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CBF1162407CE00694E5D /* LICENSE */; };
-		19E4CC1D162407CE00694E5D /* AbstractActionSheetPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */; };
-		19E4CC1E162407CE00694E5D /* ActionSheetCustomPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBF6162407CE00694E5D /* ActionSheetCustomPicker.m */; };
-		19E4CC1F162407CE00694E5D /* ActionSheetDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBF9162407CE00694E5D /* ActionSheetDatePicker.m */; };
-		19E4CC20162407CE00694E5D /* ActionSheetDistancePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBFB162407CE00694E5D /* ActionSheetDistancePicker.m */; };
-		19E4CC21162407CE00694E5D /* ActionSheetStringPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBFD162407CE00694E5D /* ActionSheetStringPicker.m */; };
-		19E4CC22162407CE00694E5D /* DistancePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E4CBFF162407CE00694E5D /* DistancePickerView.m */; };
-		19E4CC23162407CE00694E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC00162407CE00694E5D /* README.md */; };
 		19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */; };
 		19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */; };
 		19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */; };
@@ -221,8 +212,6 @@
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA133E021A02D54100700852 /* tutorial7en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E001A02D54000700852 /* tutorial7en.png */; };
 		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
-		FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */; };
-		FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2FEE5719DCA76400370426 /* SWActionSheet.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
 		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
 		FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
@@ -716,22 +705,6 @@
 		19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "guide_taxon-local.xsl"; sourceTree = "<group>"; };
 		19D9B54414F62B840017B70A /* INatUITabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatUITabBarController.h; sourceTree = "<group>"; };
 		19D9B54514F62B850017B70A /* INatUITabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatUITabBarController.m; sourceTree = "<group>"; };
-		19E4CBEE162407CE00694E5D /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		19E4CBF1162407CE00694E5D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		19E4CBF3162407CE00694E5D /* AbstractActionSheetPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractActionSheetPicker.h; sourceTree = "<group>"; };
-		19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractActionSheetPicker.m; sourceTree = "<group>"; };
-		19E4CBF5162407CE00694E5D /* ActionSheetCustomPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetCustomPicker.h; sourceTree = "<group>"; };
-		19E4CBF6162407CE00694E5D /* ActionSheetCustomPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetCustomPicker.m; sourceTree = "<group>"; };
-		19E4CBF7162407CE00694E5D /* ActionSheetCustomPickerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetCustomPickerDelegate.h; sourceTree = "<group>"; };
-		19E4CBF8162407CE00694E5D /* ActionSheetDatePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetDatePicker.h; sourceTree = "<group>"; };
-		19E4CBF9162407CE00694E5D /* ActionSheetDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetDatePicker.m; sourceTree = "<group>"; };
-		19E4CBFA162407CE00694E5D /* ActionSheetDistancePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetDistancePicker.h; sourceTree = "<group>"; };
-		19E4CBFB162407CE00694E5D /* ActionSheetDistancePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetDistancePicker.m; sourceTree = "<group>"; };
-		19E4CBFC162407CE00694E5D /* ActionSheetStringPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetStringPicker.h; sourceTree = "<group>"; };
-		19E4CBFD162407CE00694E5D /* ActionSheetStringPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetStringPicker.m; sourceTree = "<group>"; };
-		19E4CBFE162407CE00694E5D /* DistancePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistancePickerView.h; sourceTree = "<group>"; };
-		19E4CBFF162407CE00694E5D /* DistancePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DistancePickerView.m; sourceTree = "<group>"; };
-		19E4CC00162407CE00694E5D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ObservationFieldValueStaticCell.xib; sourceTree = "<group>"; };
 		19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ObservationFieldValueDefaultCell.xib; sourceTree = "<group>"; };
 		19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "guide_taxon-remote.xsl"; sourceTree = "<group>"; };
@@ -800,10 +773,6 @@
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
 		FA133E001A02D54000700852 /* tutorial7en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7en.png; sourceTree = "<group>"; };
 		FA133E011A02D54100700852 /* tutorial7es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial7es.png; sourceTree = "<group>"; };
-		FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetLocalePicker.h; sourceTree = "<group>"; };
-		FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
-		FA2FEE5619DCA76400370426 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
-		FA2FEE5719DCA76400370426 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
 		FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreDisambiguator.h; sourceTree = "<group>"; };
 		FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreDisambiguator.m; sourceTree = "<group>"; };
 		FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreProject+SearchResultsHelper.h"; sourceTree = "<group>"; };
@@ -1225,7 +1194,6 @@
 				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
 				19F3AC7717E13946005706E8 /* RaptureXML */,
-				19E4CBED162407CE00694E5D /* ActionSheetPicker */,
 				198552EA14EF5FB400DB55C5 /* DejalActivityView.h */,
 				198552EB14EF5FB500DB55C5 /* DejalActivityView.m */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
@@ -1285,42 +1253,6 @@
 				19DA9F38161D3EA200DCCB5B /* RestKitResources.bundle */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		19E4CBED162407CE00694E5D /* ActionSheetPicker */ = {
-			isa = PBXGroup;
-			children = (
-				19E4CBEE162407CE00694E5D /* .gitignore */,
-				19E4CBF1162407CE00694E5D /* LICENSE */,
-				19E4CBF2162407CE00694E5D /* Pickers */,
-				19E4CC00162407CE00694E5D /* README.md */,
-			);
-			name = ActionSheetPicker;
-			path = Vendor/ActionSheetPicker;
-			sourceTree = "<group>";
-		};
-		19E4CBF2162407CE00694E5D /* Pickers */ = {
-			isa = PBXGroup;
-			children = (
-				FA2FEE5419DCA76400370426 /* ActionSheetLocalePicker.h */,
-				FA2FEE5519DCA76400370426 /* ActionSheetLocalePicker.m */,
-				FA2FEE5619DCA76400370426 /* SWActionSheet.h */,
-				FA2FEE5719DCA76400370426 /* SWActionSheet.m */,
-				19E4CBF3162407CE00694E5D /* AbstractActionSheetPicker.h */,
-				19E4CBF4162407CE00694E5D /* AbstractActionSheetPicker.m */,
-				19E4CBF5162407CE00694E5D /* ActionSheetCustomPicker.h */,
-				19E4CBF6162407CE00694E5D /* ActionSheetCustomPicker.m */,
-				19E4CBF7162407CE00694E5D /* ActionSheetCustomPickerDelegate.h */,
-				19E4CBF8162407CE00694E5D /* ActionSheetDatePicker.h */,
-				19E4CBF9162407CE00694E5D /* ActionSheetDatePicker.m */,
-				19E4CBFA162407CE00694E5D /* ActionSheetDistancePicker.h */,
-				19E4CBFB162407CE00694E5D /* ActionSheetDistancePicker.m */,
-				19E4CBFC162407CE00694E5D /* ActionSheetStringPicker.h */,
-				19E4CBFD162407CE00694E5D /* ActionSheetStringPicker.m */,
-				19E4CBFE162407CE00694E5D /* DistancePickerView.h */,
-				19E4CBFF162407CE00694E5D /* DistancePickerView.m */,
-			);
-			path = Pickers;
 			sourceTree = "<group>";
 		};
 		19F3AC7717E13946005706E8 /* RaptureXML */ = {
@@ -2064,9 +1996,6 @@
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
-				19E4CC1A162407CE00694E5D /* .gitignore in Resources */,
-				19E4CC1C162407CE00694E5D /* LICENSE in Resources */,
-				19E4CC23162407CE00694E5D /* README.md in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
@@ -2192,7 +2121,6 @@
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
 				198CF8E314F5B1350064DF05 /* PhotoViewController.m in Sources */,
-				FA2FEE5819DCA76400370426 /* ActionSheetLocalePicker.m in Sources */,
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				198CF8E614F5B86B0064DF05 /* PhotoSource.m in Sources */,
@@ -2252,13 +2180,7 @@
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
 				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
-				19E4CC1D162407CE00694E5D /* AbstractActionSheetPicker.m in Sources */,
-				19E4CC1E162407CE00694E5D /* ActionSheetCustomPicker.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
-				19E4CC1F162407CE00694E5D /* ActionSheetDatePicker.m in Sources */,
-				19E4CC20162407CE00694E5D /* ActionSheetDistancePicker.m in Sources */,
-				19E4CC21162407CE00694E5D /* ActionSheetStringPicker.m in Sources */,
-				19E4CC22162407CE00694E5D /* DistancePickerView.m in Sources */,
 				FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */,
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
@@ -2280,7 +2202,6 @@
 				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
-				FA2FEE5919DCA76400370426 /* SWActionSheet.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
 				19F3AC7A17E13946005706E8 /* RXMLElement.m in Sources */,
