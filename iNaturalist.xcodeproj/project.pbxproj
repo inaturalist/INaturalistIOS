@@ -193,7 +193,6 @@
 		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
 		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		60A0E22916F7D1E3003621FA /* libOAuth2Client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60A0E21416F7D17D003621FA /* libOAuth2Client.a */; };
 		60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24216FC0B23003621FA /* GoogleIcon.png */; };
 		60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24616FCBE54003621FA /* FacebookIcon.png */; };
 		60A0E24B16FD06C1003621FA /* tutorial1en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24816FD06C1003621FA /* tutorial1en.png */; };
@@ -444,27 +443,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 25160D1514564E810060A5C5;
 			remoteInfo = RestKit;
-		};
-		60A0E21116F7D17D003621FA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 942FFCD612315E0A00E6C65E;
-			remoteInfo = OAuth2Client.framework;
-		};
-		60A0E21316F7D17D003621FA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = OAuth2Client;
-		};
-		60A0E22716F7D1C6003621FA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = OAuth2Client;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -749,7 +727,6 @@
 		6098FD1416F3BE270053987E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		6098FD1616F3BE4C0053987E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		6098FD1816F3BE690053987E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OAuth2Client.xcodeproj; path = Vendor/OAuth2Client/OAuth2Client.xcodeproj; sourceTree = "<group>"; };
 		60A0E24216FC0B23003621FA /* GoogleIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoogleIcon.png; sourceTree = "<group>"; };
 		60A0E24616FCBE54003621FA /* FacebookIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FacebookIcon.png; sourceTree = "<group>"; };
 		60A0E24816FD06C1003621FA /* tutorial1en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1en.png; sourceTree = "<group>"; };
@@ -890,7 +867,6 @@
 			files = (
 				1955FD2B17F230E9004F57F2 /* libRestKit.a in Frameworks */,
 				19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */,
-				60A0E22916F7D1E3003621FA /* libOAuth2Client.a in Frameworks */,
 				6098FD1916F3BE690053987E /* Social.framework in Frameworks */,
 				6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */,
 				19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */,
@@ -1202,7 +1178,6 @@
 				198CF8E714F5C02F0064DF05 /* libRestKit.a */,
 				198CF8DE14F5AEA80064DF05 /* Three20.bundle */,
 				190619AF152A363E0001A307 /* DCRoundSwitch */,
-				60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */,
 				198551E114EC931900DB55C5 /* RestKit.xcodeproj */,
 				198CF89F14F5AE180064DF05 /* Three20Core.xcodeproj */,
 				198CF8A014F5AE180064DF05 /* Three20Network.xcodeproj */,
@@ -1448,15 +1423,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		60A0E20D16F7D17C003621FA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				60A0E21216F7D17D003621FA /* OAuth2Client.framework */,
-				60A0E21416F7D17D003621FA /* libOAuth2Client.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		FA3F1F741A12ABC400928102 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1678,7 +1644,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				60A0E22816F7D1C6003621FA /* PBXTargetDependency */,
 				19DA9F5C161D4AA900DCCB5B /* PBXTargetDependency */,
 				19DA9F52161D441E00DCCB5B /* PBXTargetDependency */,
 				193BD57F14F42358005209CA /* PBXTargetDependency */,
@@ -1710,10 +1675,6 @@
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = 60A0E20D16F7D17C003621FA /* Products */;
-					ProjectRef = 60A0E20C16F7D17C003621FA /* OAuth2Client.xcodeproj */;
-				},
 				{
 					ProductGroup = 19D9B53614F612270017B70A /* Products */;
 					ProjectRef = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
@@ -1904,20 +1865,6 @@
 			fileType = wrapper.cfbundle;
 			path = RestKitResources.bundle;
 			remoteRef = 19DA9F37161D3EA200DCCB5B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		60A0E21216F7D17D003621FA /* OAuth2Client.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = OAuth2Client.framework;
-			remoteRef = 60A0E21116F7D17D003621FA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		60A0E21416F7D17D003621FA /* libOAuth2Client.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libOAuth2Client.a;
-			remoteRef = 60A0E21316F7D17D003621FA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -2243,11 +2190,6 @@
 			isa = PBXTargetDependency;
 			name = RestKit;
 			targetProxy = 19DA9F5B161D4AA900DCCB5B /* PBXContainerItemProxy */;
-		};
-		60A0E22816F7D1C6003621FA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OAuth2Client;
-			targetProxy = 60A0E22716F7D1C6003621FA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

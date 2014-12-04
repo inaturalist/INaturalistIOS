@@ -43,6 +43,7 @@ PODS:
   - HexColors (2.2.1)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
+  - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
@@ -68,6 +69,7 @@ DEPENDENCIES:
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
   - MHVideoPhotoGallery (= 1.6.6)
+  - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - SlackTextViewController (= 1.3.2)
   - SSZipArchive (= 0.3.2)
@@ -88,6 +90,7 @@ SPEC CHECKSUMS:
   googleplus-ios-sdk: b0f6cd8aa29c51d0048cace8dc3bd8f4ae0806bb
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
+  NXOAuth2Client: fa81be68c9ce628202028ae037c9c92cfbb37865
   PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SlackTextViewController: 113d3e4580fdcd77767da2a5fb71444554e57b26
