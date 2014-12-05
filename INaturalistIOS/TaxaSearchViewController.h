@@ -16,16 +16,15 @@
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon;
 @end
 
-@interface TaxaSearchViewController : UITableViewController <RKObjectLoaderDelegate, RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
+@interface TaxaSearchViewController : UITableViewController <RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
 @property (nonatomic, strong) TaxaSearchController *taxaSearchController;
 @property (nonatomic, strong) Taxon *taxon;
 @property (nonatomic, strong) NSMutableArray *taxa;
 @property (nonatomic, strong) NSDate *lastRequestAt;
-@property (nonatomic, strong) NSObject *delegate;
+@property (nonatomic, strong) id <TaxaSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) BOOL hidesDoneButton;
 - (IBAction)clickedCancel:(id)sender;
-- (void)loadData;
 - (void)showTaxon:(Taxon *)taxon;
 - (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController;
 - (void)clickedAccessory:(id)sender event:(UIEvent *)event;
