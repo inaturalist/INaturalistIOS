@@ -475,7 +475,7 @@ static UIImage *userIconPlaceholder;
         observedDate = observation.timeObservedAt;
         // we can handle time
         @synchronized(shortTimeFormatter) {
-            observedTimeLabel.text = [shortTimeFormatter stringFromDate:observation.observedOn];
+            observedTimeLabel.text = [shortTimeFormatter stringFromDate:observedDate];
         }
         observedTimeLabel.hidden = NO;
     } else {
