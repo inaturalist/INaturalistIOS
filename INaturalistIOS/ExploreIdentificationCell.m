@@ -25,6 +25,8 @@
     
     UILabel *identifierNameDateLabel;
     UIImageView *identifierIconImageView;
+    
+    UIView *separator;
 }
 @end
 
@@ -122,7 +124,7 @@ static NSDateFormatter *shortDateFormatter = nil;
         });
         [self.contentView addSubview:identifierIconImageView];
         
-        UIView *separator = ({
+        separator = ({
             UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
             view.translatesAutoresizingMaskIntoConstraints = NO;
             
@@ -132,86 +134,107 @@ static NSDateFormatter *shortDateFormatter = nil;
         });
         [self.contentView addSubview:separator];
 
-        NSDictionary *views = @{
-                                @"identificationImageView": identificationImageView,
-                                @"identificationCommonNameLabel": identificationCommonNameLabel,
-                                @"identificationScientificNameLabel": identificationScientificNameLabel,
-                                @"identificationBodyLabel": identificationBodyLabel,
-                                @"identifierNameDateLabel": identifierNameDateLabel,
-                                @"identifierIconImageView": identifierIconImageView,
-                                @"separator": separator,
-                                };
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[identificationImageView(==50)]-5-[identificationCommonNameLabel]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        // scientific name indented four pixels more than common name
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationScientificNameLabel
-                                                         attribute:NSLayoutAttributeLeft
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:identificationCommonNameLabel
-                                                         attribute:NSLayoutAttributeLeft
-                                                        multiplier:1.0f
-                                                          constant:4.0f]];
-
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[identificationBodyLabel]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[identifierNameDateLabel]-[identifierIconImageView(==20)]-10-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        // identifier icon imageview frame is square
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:identifierIconImageView
-                                                         attribute:NSLayoutAttributeHeight
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:identifierIconImageView
-                                                         attribute:NSLayoutAttributeWidth
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[separator]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[identificationImageView(==50)]-5-[identificationBodyLabel]-5-[identifierNameDateLabel]-10-[separator(==1)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationCommonNameLabel
-                                                         attribute:NSLayoutAttributeTop
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:identificationImageView
-                                                         attribute:NSLayoutAttributeTop
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationScientificNameLabel
-                                                         attribute:NSLayoutAttributeTop
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:identificationCommonNameLabel
-                                                         attribute:NSLayoutAttributeBottom
-                                                        multiplier:1.0f
-                                                          constant:3.0f]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:identifierIconImageView
-                                                         attribute:NSLayoutAttributeCenterY
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:identifierNameDateLabel
-                                                         attribute:NSLayoutAttributeCenterY
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
         
 
     }
     
     return self;
+}
+
+- (void)layoutSubviews {
+    NSDictionary *views = @{
+                            @"identificationImageView": identificationImageView,
+                            @"identificationCommonNameLabel": identificationCommonNameLabel,
+                            @"identificationScientificNameLabel": identificationScientificNameLabel,
+                            @"identificationBodyLabel": identificationBodyLabel,
+                            @"identifierNameDateLabel": identifierNameDateLabel,
+                            @"identifierIconImageView": identifierIconImageView,
+                            @"separator": separator,
+                            };
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[identificationImageView(==50)]-5-[identificationCommonNameLabel]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    // scientific name indented four pixels more than common name
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationScientificNameLabel
+                                                     attribute:NSLayoutAttributeLeft
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:identificationCommonNameLabel
+                                                     attribute:NSLayoutAttributeLeft
+                                                    multiplier:1.0f
+                                                      constant:4.0f]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[identifierNameDateLabel]-[identifierIconImageView(==20)]-10-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    // identifier icon imageview frame is square
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:identifierIconImageView
+                                                     attribute:NSLayoutAttributeHeight
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:identifierIconImageView
+                                                     attribute:NSLayoutAttributeWidth
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[separator]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+
+    if (!self.identification.identificationBody || [self.identification.identificationBody isEqualToString:@""]) {
+        
+        // without an ID body, tuck the name & date in alongside the the image view
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[identificationImageView(==50)]-10-[separator(==1)]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:identifierNameDateLabel
+                                                         attribute:NSLayoutAttributeBottom
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:identificationImageView
+                                                         attribute:NSLayoutAttributeBottom
+                                                        multiplier:1.0f
+                                                          constant:0.0f]];
+    } else {
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[identificationBodyLabel]-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[identificationImageView(==50)]-5-[identificationBodyLabel]-5-[identifierNameDateLabel]-10-[separator(==1)]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+    }
+    
+    
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationCommonNameLabel
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:identificationImageView
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationScientificNameLabel
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:identificationCommonNameLabel
+                                                     attribute:NSLayoutAttributeBottom
+                                                    multiplier:1.0f
+                                                      constant:3.0f]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:identifierIconImageView
+                                                     attribute:NSLayoutAttributeCenterY
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:identifierNameDateLabel
+                                                     attribute:NSLayoutAttributeCenterY
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
 }
 
 - (ExploreIdentification *)identification {
@@ -254,6 +277,7 @@ static NSDateFormatter *shortDateFormatter = nil;
     
     identificationBodyLabel.text = identification.identificationBody;
     
+    [self layoutSubviews];
 }
 
 
@@ -268,7 +292,7 @@ static NSDateFormatter *shortDateFormatter = nil;
                                                                       context:nil];
         return textRect.size.height + 101.0f;   // 5 + 50 + 5 + 30 + 10 + 1
     } else {
-        return 86;                              // 5 + 50 + 20 + 10 + 1
+        return 66;                              // 5 + 50 + 10 + 1
     }
 }
 
