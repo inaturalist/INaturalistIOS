@@ -8,6 +8,8 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
@@ -134,19 +136,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [descriptionTextView setText:self.observation.inatDescription];
     
     UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    TTImageView *img = (TTImageView *)[speciesCell viewWithTag:1];
+    UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
     UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
-    img.style = [TTShapeStyle styleWithShape:[TTRoundedRectangleShape shapeWithTopLeft:5 
-                                                                              topRight:5 
-                                                                           bottomRight:5 
-                                                                            bottomLeft:5] 
-                                        next:[TTContentStyle styleWithNext:nil]];
-    [img unsetImage];
-    img.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
+    img.layer.cornerRadius = 5.0f;
+    img.clipsToBounds = YES;
+
+    [img sd_cancelCurrentImageLoad];
+    UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
+    img.image = iconicTaxonImage;
     if (self.observation.taxon) {
         if (self.observation.taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = (TaxonPhoto *)self.observation.taxon.taxonPhotos.firstObject;
-            img.urlPath = tp.squareURL;
+            [img sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
+                   placeholderImage:iconicTaxonImage];
         }
         self.speciesGuessTextField.enabled = NO;
         if (self.speciesGuessTextField.text.length == 0 && self.observation.speciesGuess.length == 0) {
@@ -937,11 +939,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
     
     float imageMargin = 5;
-    TTImageView *imageView = [[TTImageView alloc] initWithFrame:CGRectMake(imageMargin,imageMargin,33,33)];
-    [imageView unsetImage];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(imageMargin,imageMargin,33,33)];
+    [imageView sd_cancelCurrentImageLoad];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.defaultImage = [UIImage imageNamed:@"projects"];
-    imageView.urlPath = po.project.iconURL;
+    [imageView sd_setImageWithURL:[NSURL URLWithString:po.project.iconURL]
+                 placeholderImage:[UIImage imageNamed:@"projects"]];
     [imageView setBackgroundColor:[UIColor clearColor]];
     [cell.contentView addSubview:imageView];
     

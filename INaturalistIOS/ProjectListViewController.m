@@ -7,6 +7,7 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ProjectListViewController.h"
 #import "Observation.h"
@@ -158,8 +159,9 @@ static const int ListedTaxonCellSubtitleTag = 3;
     if (!self.listedTaxa) {
         [self loadData];
     }
-    self.projectIcon.defaultImage = [UIImage imageNamed:@"projects.png"];
-    self.projectIcon.urlPath = self.project.iconURL;
+    
+    [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
+                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
     self.projectTitle.text = self.project.title;
     
     CAGradientLayer *lyr = [CAGradientLayer layer];
@@ -250,14 +252,20 @@ static const int ListedTaxonCellSubtitleTag = 3;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.accessoryView = addButton;
     
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
-    [imageView unsetImage];
-    UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
+        UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
     if (lt) {
         titleLabel.text = lt.taxonDefaultName;
     }
-    imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:(lt ? lt.iconicTaxonName : @"unknown")];
-    imageView.urlPath = lt ? lt.photoURL : nil;
+    
+    UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:(lt ? lt.iconicTaxonName : @"unknown")];
+    imageView.image = iconicTaxonImage;
+    if (lt) {
+        [imageView sd_setImageWithURL:[NSURL URLWithString:lt.photoURL]
+                     placeholderImage:iconicTaxonImage];
+    }
+
     if (lt) {
         if ([lt.taxonName isEqualToString:lt.taxonDefaultName]) {
             if (lt.taxon.rankLevel.intValue >= 30) {

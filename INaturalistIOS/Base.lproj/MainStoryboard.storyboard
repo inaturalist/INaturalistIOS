@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="ObservationDetailViewController" id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -27,7 +27,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" id="gnn-om-Dvf" customClass="TTImageView">
+                                                <view userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" id="gnn-om-Dvf" customClass="UIImageView">
                                                     <rect key="frame" x="5" y="5" width="34" height="34"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -766,7 +766,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="92R-nd-fDz" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="92R-nd-fDz" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="43" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -838,7 +838,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="q3m-El-BkW" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="q3m-El-BkW" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="43" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1060,7 +1060,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view tag="100" contentMode="scaleToFill" id="88M-Tk-DhX" customClass="TTImageView">
+                                        <view tag="100" contentMode="scaleToFill" id="88M-Tk-DhX" customClass="UIImageView">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1180,7 +1180,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <rect key="frame" x="0.0" y="64" width="320" height="80"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view contentMode="scaleAspectFit" id="Ylj-cd-RUn" customClass="TTImageView">
+                                <view contentMode="scaleAspectFit" id="Ylj-cd-RUn" customClass="UIImageView">
                                     <rect key="frame" x="5" y="5" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1228,7 +1228,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="hhr-gn-yjK" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="hhr-gn-yjK" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="43" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1253,7 +1253,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="Y0H-hM-euN" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="Y0H-hM-euN" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="43" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1278,7 +1278,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="CRf-tm-UqZ" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="CRf-tm-UqZ" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="43" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1334,7 +1334,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view tag="3" contentMode="scaleAspectFit" id="pW2-GN-tGi" customClass="TTImageView">
+                                <view tag="3" contentMode="scaleAspectFit" id="pW2-GN-tGi" customClass="UIImageView">
                                     <rect key="frame" x="250" y="0.0" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1798,7 +1798,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="Nzm-nG-y5B" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="Nzm-nG-y5B" customClass="UIImageView">
                                             <rect key="frame" x="5" y="5" width="44" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1929,7 +1929,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                             <rect key="frame" x="0.0" y="64" width="320" height="80"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view contentMode="scaleAspectFit" id="xXG-M1-ixv" customClass="TTImageView">
+                                <view contentMode="scaleAspectFit" id="xXG-M1-ixv" customClass="UIImageView">
                                     <rect key="frame" x="5" y="5" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -2110,7 +2110,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="1" contentMode="scaleAspectFit" id="30f-yV-S5a" customClass="TTImageView">
+                                        <view tag="1" contentMode="scaleAspectFit" id="30f-yV-S5a" customClass="UIImageView">
                                             <rect key="frame" x="7" y="7" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -2163,12 +2163,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view tag="4" contentMode="scaleAspectFit" id="AjL-mH-k0k" customClass="TTImageView">
-                                            <rect key="frame" x="8" y="9" width="45" height="45"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                        </view>
-                                        <view tag="5" contentMode="scaleAspectFit" id="xIo-Re-b3P" customClass="TTImageView">
+                                        <view tag="5" contentMode="scaleAspectFit" id="xIo-Re-b3P" customClass="UIImageView">
                                             <rect key="frame" x="61" y="9" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -2180,6 +2175,11 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <view tag="4" contentMode="scaleAspectFit" id="AjL-mH-k0k" customClass="UIImageView">
+                                            <rect key="frame" x="8" y="9" width="45" height="45"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        </view>
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -2268,7 +2268,7 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" id="YcH-Sm-iYT" customClass="TTImageView">
+                                                <view userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" id="YcH-Sm-iYT" customClass="UIImageView">
                                                     <rect key="frame" x="5" y="5" width="34" height="34"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2374,10 +2374,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="951-R5-gTN"/>
-        <segue reference="i4O-ab-ts2"/>
+        <segue reference="8j7-c4-5Sv"/>
+        <segue reference="pIq-2G-oJw"/>
+        <segue reference="hvR-ND-N81"/>
         <segue reference="Q4H-Ck-yCo"/>
-        <segue reference="sKu-Sy-oMc"/>
         <segue reference="6Re-on-nUT"/>
     </inferredMetricsTieBreakers>
 </document>

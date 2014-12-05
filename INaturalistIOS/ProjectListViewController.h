@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Three20/Three20.h>
 #import "ObservationDetailViewController.h"
 
 @class Project;
@@ -19,7 +18,7 @@
 @property (nonatomic, strong) ProjectUser *projectUser;
 @property (nonatomic, assign) BOOL detailsPresented;
 @property (nonatomic, strong) NSMutableArray *listedTaxa;
-@property (weak, nonatomic) IBOutlet TTImageView *projectIcon;
+@property (weak, nonatomic) IBOutlet UIImageView *projectIcon;
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;
 @property (weak, nonatomic) IBOutlet TTStyledTextLabel *projectSubtitle;
 @property (nonatomic, strong) RKObjectLoader *loader;

@@ -9,6 +9,7 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <UIImageView+WebCache.h>
 
 #import "AddIdentificationViewController.h"
 #import "Observation.h"
@@ -110,19 +111,18 @@
 	[self.speciesGuessTextField setText:self.taxon.defaultName];
     
 	UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-	TTImageView *img = (TTImageView *)[speciesCell viewWithTag:1];
+	UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
 	UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
-	img.style = [TTShapeStyle styleWithShape:[TTRoundedRectangleShape shapeWithTopLeft:5
-                                                                              topRight:5
-                                                                           bottomRight:5
-                                                                            bottomLeft:5]
-                                        next:[TTContentStyle styleWithNext:nil]];
-    [img unsetImage];
-    img.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+    img.layer.cornerRadius = 5.0f;
+    img.clipsToBounds = YES;
+    [img sd_cancelCurrentImageLoad];
+    
+    img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
     if (self.taxon) {
         if (self.taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = (TaxonPhoto *)self.taxon.taxonPhotos.firstObject;
-            img.urlPath = tp.squareURL;
+            [img sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
+                   placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
         }
         self.speciesGuessTextField.enabled = NO;
         rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];

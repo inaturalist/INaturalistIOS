@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ProjectChooserViewController.h"
 #import "Project.h"
@@ -140,12 +140,12 @@ static const int ProjectCellTitleTag = 2;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView unsetImage];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = pu.project.title;
-    imageView.defaultImage = [UIImage imageNamed:@"projects"];
-    imageView.urlPath = pu.project.iconURL;
+    [imageView sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
+                 placeholderImage:[UIImage imageNamed:@"projects"]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {

@@ -8,6 +8,7 @@
 
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ProjectDetailViewController.h"
 #import "INaturalistAppDelegate.h"
@@ -143,10 +144,9 @@ static const int LeaveProjectAlertViewTag = 1;
 }
 
 #pragma mark - View lifecycle
-- (void)viewDidLoad
-{
-    self.projectIcon.defaultImage = [UIImage imageNamed:@"projects.png"];
-    self.projectIcon.urlPath = self.project.iconURL;
+- (void)viewDidLoad {
+    [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
+                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
     self.projectTitle.text = self.project.title;
     
     CAGradientLayer *lyr = [CAGradientLayer layer];

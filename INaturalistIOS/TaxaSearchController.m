@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
 #import "TaxaSearchController.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Three20/Three20.h>
 
 @class Taxon;
 
@@ -16,7 +15,7 @@
 - (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
 @end
 
-@interface TaxonDetailViewController : UITableViewController <TTImageViewDelegate, UIActionSheetDelegate, RKObjectLoaderDelegate>
+@interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate, RKObjectLoaderDelegate>
 @property (nonatomic, strong) Taxon *taxon;
 @property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;
 @property (nonatomic, strong) UIViewController *delegate;

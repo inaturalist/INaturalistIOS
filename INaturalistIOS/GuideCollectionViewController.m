@@ -7,12 +7,12 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
 #import "GuideViewController.h"
 #import "RXMLElement+Helpers.h"
-#import <Three20/Three20.h>
 #import "SWRevealViewController.h"
 #import "GuidePageViewController.h"
 #import "INaturalistAppDelegate.h"
@@ -158,23 +158,21 @@ static const int GutterWidth  = 5;
 {
     static NSString *identifier = @"GuideTaxonCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    TTImageView *img = (TTImageView *)[cell viewWithTag:100];
-    [img unsetImage];
-    img.urlPath = nil;
-    [img setDefaultImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
+    UIImageView *img = (UIImageView *)[cell viewWithTag:100];
+    [img sd_cancelCurrentImageLoad];
+    img.image = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
     img.contentMode = UIViewContentModeCenter;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     NSString *size = [self currentImageSize];
     NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
     if (localImagePath) {
-        [img setDefaultImage:[UIImage imageWithContentsOfFile:localImagePath]];
-        img.urlPath = localImagePath;
+        img.image = [UIImage imageWithContentsOfFile:localImagePath];
         img.contentMode = UIViewContentModeScaleAspectFill;
     } else {
         NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
         if (remoteImageURL) {
-            [img setDefaultImage:nil];
-            img.urlPath = remoteImageURL;
+            [img sd_setImageWithURL:[NSURL URLWithString:remoteImageURL]
+                   placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
             img.contentMode = UIViewContentModeScaleAspectFill;
         }
     }

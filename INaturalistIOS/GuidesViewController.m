@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "GuidesViewController.h"
 #import "Guide.h"
 #import "GuideXML.h"
@@ -387,12 +388,12 @@ static const int ListControlIndexNearby = 2;
     }
     
     Guide *p = [self.guides objectAtIndex:[indexPath row]];
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView unsetImage];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
-    imageView.defaultImage = [UIImage imageNamed:@"guides"];
-    imageView.urlPath = p.iconURL;
+    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
+                 placeholderImage:[UIImage imageNamed:@"guides"]];
     
     return cell;
 }

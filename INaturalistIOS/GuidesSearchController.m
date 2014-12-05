@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "GuidesSearchController.h"
 #import "Guide.h"
 
@@ -36,12 +37,13 @@ static NSString *CellIdentifier = @"GuideCell";
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView unsetImage];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = g.title;
-    imageView.defaultImage = [UIImage imageNamed:@"guides"];
-    imageView.urlPath = g.iconURL;
+    
+    [imageView sd_setImageWithURL:[NSURL URLWithString:g.iconURL]
+                 placeholderImage:[UIImage imageNamed:@"guides"]];
     return cell;
 }
 

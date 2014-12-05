@@ -6,7 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "ProjectsSearchController.h"
 #import "Project.h"
 
@@ -36,12 +37,12 @@ static NSString *CellIdentifier = @"ProjectCell";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     Project *p = [self.searchResults objectAtIndex:indexPath.row];
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView unsetImage];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = p.title;
-    imageView.defaultImage = [UIImage imageNamed:@"projects"];
-    imageView.urlPath = p.iconURL;
+    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
+                 placeholderImage:[UIImage imageNamed:@"projects"]];
     return cell;
 }
 

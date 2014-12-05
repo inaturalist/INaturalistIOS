@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"
@@ -172,16 +172,17 @@ static const int TaxonCellSubtitleTag = 3;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.accessoryView = addButton;
     
-    TTImageView *imageView = (TTImageView *)[cell viewWithTag:TaxonCellImageTag];
-    [imageView unsetImage];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
     titleLabel.text = t.defaultName;
-    imageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
+    UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
+    imageView.image = iconicTaxonImage;
+    
     TaxonPhoto *tp = [t.taxonPhotos firstObject];
     if (tp) {
-        imageView.urlPath = tp.squareURL;
-    } else {
-        imageView.urlPath = nil;
+        [imageView sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
+                     placeholderImage:iconicTaxonImage];
     }
     if ([t.name isEqualToString:t.defaultName]) {
         if (t.rankLevel.intValue >= 30) {

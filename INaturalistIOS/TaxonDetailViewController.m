@@ -7,6 +7,8 @@
 //
 
 #import <TapkuLibrary/TapkuLibrary.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
 #import "Observation.h"
@@ -35,7 +37,7 @@ static const int TaxonDescTag = 1;
 
 - (void)scaleHeaderView:(BOOL)animated
 {
-    TTImageView *taxonImage = (TTImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
+    UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
     float width = [UIScreen mainScreen].bounds.size.width;
     float height = fminf(width * taxonImage.image.size.height / taxonImage.image.size.width, width);
     [self.tableView beginUpdates];
@@ -93,7 +95,7 @@ static const int TaxonDescTag = 1;
     UILabel *defaultNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:DefaultNameTag];
     UILabel *taxonNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonNameTag];
     UILabel *attributionLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonImageAttributionTag];
-    TTImageView *taxonImage = (TTImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
+    UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
     
     defaultNameLabel.text = self.taxon.defaultName;
     if (self.taxon.rankLevel.intValue >= 20) {
@@ -102,16 +104,16 @@ static const int TaxonDescTag = 1;
     } else {
         taxonNameLabel.text = self.taxon.name;
     }
-    taxonImage.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+    taxonImage.image = nil;
     if (self.taxon.taxonPhotos.count > 0) {
         TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
-        taxonImage.urlPath = tp.mediumURL;
-        taxonImage.delegate = self;
+        [taxonImage sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 [self scaleHeaderView:YES];
+                             }];
         attributionLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Photo %@",nil), tp.attribution];
-        if ([taxonImage isLoaded]) {
-            [self scaleHeaderView:NO];
-        }
     } else {
+        taxonImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
         attributionLabel.text = @"";
     }
 }
@@ -236,12 +238,6 @@ static const int TaxonDescTag = 1;
     } else if (scrollView.contentOffset.y>=sectionHeaderHeight) {
         scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
     }
-}
-
-#pragma mark - TTImageViewDelegate
-- (void)imageView:(TTImageView *)imageView didLoadImage:(UIImage *)image
-{
-    [self scaleHeaderView:YES];
 }
 
 #pragma mark - UIActionSheetDelegate

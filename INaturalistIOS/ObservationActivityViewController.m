@@ -9,6 +9,7 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ObservationActivityViewController.h"
 #import "Observation.h"
@@ -361,19 +362,21 @@ static const int IdentificationCellBodyTag = 11;
 	UITableViewCell *cell;
 	if ([activity isKindOfClass:[Comment class]]) {
 		cell = [tableView dequeueReusableCellWithIdentifier:CommentCellIdentifier forIndexPath:indexPath];
-		TTImageView *imageView = (TTImageView *)[cell viewWithTag:CommentCellImageTag];
+		UIImageView *imageView = (UIImageView *)[cell viewWithTag:CommentCellImageTag];
 		UILabel *body = (UILabel *)[cell viewWithTag:CommentCellBodyTag];
 		UILabel *byline = (UILabel *)[cell viewWithTag:CommentCellBylineTag];
 		Comment *comment = (Comment *)activity;
-		[imageView unsetImage];
-		imageView.defaultImage = [UIImage imageNamed:@"usericon.png"];
-		imageView.urlPath = comment.user.userIconURL;
-		body.text = [comment.body stringByStrippingHTML];
+        
+        [imageView sd_cancelCurrentImageLoad];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:comment.user.userIconURL]
+                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
+
+        body.text = [comment.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
-		TTImageView *imageView = (TTImageView *)[cell viewWithTag:IdentificationCellImageTag];
-		TTImageView *taxonImageView = (TTImageView *)[cell viewWithTag:IdentificationCellTaxonImageTag];
+		UIImageView *imageView = (UIImageView *)[cell viewWithTag:IdentificationCellImageTag];
+		UIImageView *taxonImageView = (UIImageView *)[cell viewWithTag:IdentificationCellTaxonImageTag];
 		UILabel *title = (UILabel *)[cell viewWithTag:IdentificationCellTitleTag];
 		UILabel *taxonName = (UILabel *)[cell viewWithTag:IdentificationCellTaxonNameTag];
 		UILabel *taxonScientificName = (UILabel *)[cell viewWithTag:IdentificationCellTaxonScientificNameTag];
@@ -383,16 +386,18 @@ static const int IdentificationCellBodyTag = 11;
 		
 		Identification *identification = (Identification *)activity;
 		
-		[imageView unsetImage];
-		imageView.defaultImage = [UIImage imageNamed:@"usericon.png"];
-		imageView.urlPath = identification.user.userIconURL;
+        [imageView sd_cancelCurrentImageLoad];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:identification.user.userIconURL]
+                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
 		
-		[taxonImageView unsetImage];
-		taxonImageView.defaultImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
+        taxonImageView.image = nil;
+        [taxonImageView sd_cancelCurrentImageLoad];
+		taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
 		if (identification.taxon) {
 			if (identification.taxon.taxonPhotos.count > 0) {
                 TaxonPhoto *tp = [identification.taxon.sortedTaxonPhotos objectAtIndex:0];
-				taxonImageView.urlPath = tp.squareURL;
+                [taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
+                                  placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName]];
 			}
 		}
         cell.contentView.alpha = identification.current.boolValue ? 1 : 0.5;
