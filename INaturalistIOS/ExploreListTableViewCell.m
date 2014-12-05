@@ -358,15 +358,32 @@ static NSDateFormatter *shortFormatter;
                                        }];
     }
     
-    commonNameLabel.text = observation.commonName;
-    if (!commonNameLabel.text || [commonNameLabel.text isEqualToString:@""])
+    if (observation.commonName && ![observation.commonName isEqualToString:@""]) {
+        commonNameLabel.text = observation.commonName;
+        commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
+    } else if (observation.speciesGuess && ![observation.speciesGuess isEqualToString:@""]) {
         commonNameLabel.text = observation.speciesGuess;
-    if (!commonNameLabel.text || [commonNameLabel.text isEqualToString:@""])
+        if ([observation.speciesGuess isEqualToString:observation.taxonName]) {
+            commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+                                                         ofSize:commonNameLabel.font.pointSize];
+        } else {
+            commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
+        }
+    } else if (observation.taxonName && ![observation.taxonName isEqualToString:@""]) {
+        commonNameLabel.text = observation.taxonName;
+        commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+                                                     ofSize:commonNameLabel.font.pointSize];
+    } else {
         commonNameLabel.text = @"Something...";
+        commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
+    }
     commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
-    scientificNameLabel.text = observation.taxonName;
+    // don't show the same name twice
+    if (![observation.taxonName isEqualToString:commonNameLabel.text])
+        scientificNameLabel.text = observation.taxonName;
     scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:14.0f];
+    
     observerNameLabel.text = observation.observerName;
     
     NSDate *date = [observation timeObservedAt];
