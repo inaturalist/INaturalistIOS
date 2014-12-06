@@ -121,22 +121,29 @@ static const int TaxonCellSubtitleTag = 3;
     
     // be defensive
     if (indexPath) {
+        
         Taxon *t;
         
-        // be more defensive
         @try {
-            t = (Taxon *)[fetchedResultsController objectAtIndexPath:indexPath];
-            
+            // either of these paths could throw an exception
+            // if something isn't found at this index path
+            // in that case, silently do nothing
+            if (self.searchDisplayController.active) {
+                t = [targetTaxa objectAtIndex:indexPath.row];
+            } else {
+                t = [fetchedResultsController objectAtIndexPath:indexPath];
+            }
+        } @catch (NSException *e) {
+
+        }
+        
+        if (t) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
                 [self.delegate taxaSearchViewControllerChoseTaxon:t];
             } else {
                 [self showTaxon:t];
             }
-        } @catch (NSException *exception) {
-            // silently do nothing
-            return;
         }
-        
     }
 }
 
