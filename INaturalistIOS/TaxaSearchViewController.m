@@ -52,6 +52,8 @@ static const int TaxonCellSubtitleTag = 3;
                                                         loader.objectMapping = [Taxon mapping];
                                                         
                                                         loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            // update timestamps on us and taxa objects
                                                             NSDate *now = [NSDate date];
                                                             self.lastRequestAt = now;
                                                             [objects enumerateObjectsUsingBlock:^(INatModel *o,
@@ -69,6 +71,7 @@ static const int TaxonCellSubtitleTag = 3;
                                                                 }
                                                             }
                                                             
+                                                            // save into core data
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
@@ -76,6 +79,7 @@ static const int TaxonCellSubtitleTag = 3;
                                                                 return;
                                                             }
                                                             
+                                                            // update the UI with the merged results
                                                             NSError *fetchError;
                                                             [fetchedResultsController performFetch:&fetchError];
                                                             if (fetchError) {
