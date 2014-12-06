@@ -83,8 +83,12 @@ static const int TaxonCellSubtitleTag = 3;
                                                                 return;
                                                             }
                                                             
-                                                            if (modal && objects.count > 0)
-                                                                [SVProgressHUD showSuccessWithStatus:nil];
+                                                            if (modal) {
+                                                                if (objects.count > 0)
+                                                                    [SVProgressHUD showSuccessWithStatus:nil];
+                                                                else
+                                                                    [SVProgressHUD showErrorWithStatus:nil];
+                                                            }
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
