@@ -19,7 +19,6 @@
 @interface TaxaSearchViewController : UITableViewController <RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
 @property (nonatomic, strong) TaxaSearchController *taxaSearchController;
 @property (nonatomic, strong) Taxon *taxon;
-@property (nonatomic, strong) NSMutableArray *taxa;
 @property (nonatomic, strong) NSDate *lastRequestAt;
 @property (nonatomic, strong) id <TaxaSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *query;

@@ -27,7 +27,6 @@ static const int TaxonCellSubtitleTag = 3;
 @implementation TaxaSearchViewController
 @synthesize taxaSearchController = _taxaSearchController;
 @synthesize taxon = _taxon;
-@synthesize taxa = _taxa;
 @synthesize lastRequestAt = _lastRequestAt;
 @synthesize delegate = _delegate;
 @synthesize query = _query;
@@ -116,19 +115,28 @@ static const int TaxonCellSubtitleTag = 3;
         targetTaxa = self.taxaSearchController.searchResults;
     } else {
         targetTableView = self.tableView;
-        targetTaxa = self.taxa;
     }
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:targetTableView];
     NSIndexPath *indexPath = [targetTableView indexPathForRowAtPoint:currentTouchPosition];
     
     // be defensive
-    if (indexPath && targetTaxa.count > indexPath.row) {
-        Taxon *t = (Taxon *)[fetchedResultsController objectAtIndexPath:indexPath];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
-            [self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:t];
-        } else {
-            [self showTaxon:t];
+    if (indexPath) {
+        Taxon *t;
+        
+        // be more defensive
+        @try {
+            t = (Taxon *)[fetchedResultsController objectAtIndexPath:indexPath];
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
+                [self.delegate taxaSearchViewControllerChoseTaxon:t];
+            } else {
+                [self showTaxon:t];
+            }
+        } @catch (NSException *exception) {
+            // silently do nothing
+            return;
         }
+        
     }
 }
 
@@ -186,10 +194,12 @@ static const int TaxonCellSubtitleTag = 3;
     
     // perform the remote fetch for these taxa
     if (self.taxon) {
+        // fetch children
         self.navigationItem.title = self.taxon.defaultName;
         [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue]];
     } else {
-        if (self.taxa.count < 10 && !self.lastRequestAt) {
+        // iconic taxa fetch
+        if ([((id <NSFetchedResultsSectionInfo>)[fetchedResultsController sections].firstObject) numberOfObjects] < 10 && !self.lastRequestAt) {
             [self loadRemoteTaxaWithURL:@"/taxa"];
         }
     }
