@@ -54,7 +54,12 @@
         return;
     }
     self.started = YES;
-    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSMutableDictionary *current = self.queue.firstObject;
+    if (!current) {
+        [self stop];
+        return;
+    }
+
     id model = [current objectForKey:@"model"];
     NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
     NSArray *recordsToSync = [model needingSync];
@@ -66,7 +71,7 @@
     }
     
     if (recordsToSync.count == 0) {
-        [self.queue removeObjectAtIndex:0];
+        [self.queue removeObject:current];
         if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
             [self.delegate performSelector:@selector(syncQueueFinishedSyncFor:) withObject:model];
         }
@@ -99,7 +104,11 @@
 
 - (void)startDelete
 {
-    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSMutableDictionary *current = self.queue.firstObject;
+    if (!current) {
+        [self stop];
+        return;
+    }
     id model = [current objectForKey:@"model"];
     NSArray *deletedRecords = [DeletedRecord objectsWithPredicate:
                                [NSPredicate predicateWithFormat:
@@ -140,7 +149,12 @@
 - (void)objectLoader:(RKObjectLoader*)objectLoader didLoadObjects:(NSArray*)objects {
     if (objects.count == 0) return;
     
-    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSMutableDictionary *current = self.queue.firstObject;
+    if (!current) {
+        [self stop];
+        return;
+    }
+    
     NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
     
@@ -218,7 +232,12 @@
 
 - (void)next
 {
-    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSMutableDictionary *current = self.queue.firstObject;
+    if (!current) {
+        [self stop];
+        return;
+    }
+    
     NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
     [current setValue:[NSNumber numberWithInt:[syncedCount intValue] + 1]
@@ -248,7 +267,12 @@
     if (request.method != RKRequestMethodDELETE) return;
     if (!self.started) return;
     
-    NSMutableDictionary *current = (NSMutableDictionary *)[self.queue objectAtIndex:0];
+    NSMutableDictionary *current = self.queue.firstObject;
+    if (!current) {
+        [self stop];
+        return;
+    }
+
     id model = [current objectForKey:@"model"];
     NSNumber *deletedRecordCount = [current objectForKey:@"deletedRecordCount"];
     [current setValue:[NSNumber numberWithInt:[deletedRecordCount intValue] - 1] 

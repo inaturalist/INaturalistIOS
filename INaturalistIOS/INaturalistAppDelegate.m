@@ -71,7 +71,9 @@
     }
     
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
-    
+    // tiny bit offwhite, so it stands up with or without the gradient mask
+    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
+
     return YES;
 }
 

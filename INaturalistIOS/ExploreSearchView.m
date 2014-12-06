@@ -325,6 +325,10 @@
 - (void)tappedAway {
     if ([self optionSearchIsActive])
         [self hideOptionSearch];
+    
+    if ([self.activeSearchTextDelegate activeSearchText] != nil &&
+        ![[self.activeSearchTextDelegate activeSearchText] isEqualToString:@""])
+        [self showActiveSearch];
 }
 
 @end

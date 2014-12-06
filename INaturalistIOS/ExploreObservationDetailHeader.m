@@ -401,15 +401,26 @@ static UIImage *userIconPlaceholder;
         self.photoImageView.contentMode = UIViewContentModeScaleAspectFill;
     }
     
-    
-    self.commonNameLabel.text = observation.commonName;
-    if (!self.commonNameLabel.text || [self.commonNameLabel.text isEqualToString:@""])
+    if (observation.commonName && ![observation.commonName isEqualToString:@""]) {
+        self.commonNameLabel.text = observation.commonName;
+    } else if (observation.speciesGuess && ![observation.speciesGuess isEqualToString:@""]) {
         self.commonNameLabel.text = observation.speciesGuess;
-    if (!self.commonNameLabel.text || [self.commonNameLabel.text isEqualToString:@""])
+        if ([observation.speciesGuess isEqualToString:observation.taxonName]) {
+            self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+                                                              ofSize:self.commonNameLabel.font.pointSize];
+        }
+    } else if (observation.taxonName && ![observation.taxonName isEqualToString:@""]) {
+        self.commonNameLabel.text = observation.taxonName;
+        self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+                                                          ofSize:self.commonNameLabel.font.pointSize];
+    } else {
         self.commonNameLabel.text = @"Something...";
+    }
     self.commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
-    self.scientificNameLabel.text = observation.taxonName;
+    // don't show the same name twice
+    if (![observation.taxonName isEqualToString:self.commonNameLabel.text])
+        self.scientificNameLabel.text = observation.taxonName;
     self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:12.0f];
     
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
@@ -464,7 +475,7 @@ static UIImage *userIconPlaceholder;
         observedDate = observation.timeObservedAt;
         // we can handle time
         @synchronized(shortTimeFormatter) {
-            observedTimeLabel.text = [shortTimeFormatter stringFromDate:observation.observedOn];
+            observedTimeLabel.text = [shortTimeFormatter stringFromDate:observedDate];
         }
         observedTimeLabel.hidden = NO;
     } else {

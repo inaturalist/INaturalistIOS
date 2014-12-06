@@ -84,7 +84,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
                  animated:YES];
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
@@ -802,7 +802,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSString *modelName = NSStringFromClass(model).humanize.pluralize;
         activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
     }
-    [SVProgressHUD showWithStatus:activityMsg];
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
@@ -810,7 +810,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                              number, 
                              total, 
                              NSStringFromClass(record.class).humanize.pluralize];
-    [SVProgressHUD showWithStatus:activityMsg];
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 
 - (void)syncQueueFinished
