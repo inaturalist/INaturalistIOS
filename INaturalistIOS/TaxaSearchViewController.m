@@ -54,11 +54,11 @@ static const int TaxonCellSubtitleTag = 3;
                                                         loader.onDidLoadObjects = ^(NSArray *objects) {
                                                             NSDate *now = [NSDate date];
                                                             self.lastRequestAt = now;
-                                                            INatModel *o;
-                                                            for (int i = 0; i < objects.count; i++) {
-                                                                o = [objects objectAtIndex:i];
+                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                                                                                  NSUInteger idx,
+                                                                                                  BOOL *stop) {
                                                                 [o setSyncedAt:now];
-                                                            }
+                                                            }];
                                                             
                                                             // /taxa/{id}/children API endpoint is comprehensive.
                                                             // delete any child taxa that core data already had,
