@@ -60,6 +60,15 @@ static const int TaxonCellSubtitleTag = 3;
                                                                 [o setSyncedAt:now];
                                                             }
                                                             
+                                                            // /taxa/{id}/children API endpoint is comprehensive.
+                                                            // delete any child taxa that core data already had,
+                                                            // that weren't returned from the API.
+                                                            for (Taxon *t in fetchedResultsController.fetchedObjects) {
+                                                                if (![objects containsObject:t]) {
+                                                                    [t deleteEntity];
+                                                                }
+                                                            }
+                                                            
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
