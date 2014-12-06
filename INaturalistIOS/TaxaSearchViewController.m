@@ -133,9 +133,7 @@ static const int TaxonCellSubtitleTag = 3;
             } else {
                 t = [fetchedResultsController objectAtIndexPath:indexPath];
             }
-        } @catch (NSException *e) {
-
-        }
+        } @catch (NSException *e) { }   // silently do nothing
         
         if (t) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
