@@ -10,6 +10,7 @@
 #import "INatModel.h"
 #import "DeletedRecord.h"
 #import "Observation.h"
+#import "Analytics.h"
 
 @implementation SyncQueue
 @synthesize queue = _queue;
@@ -41,7 +42,8 @@
                               [NSNumber numberWithInt:[model deletedRecordCount]], @"deletedRecordCount",
                               nil];
     if (syncSelector) [d setValue:NSStringFromSelector(syncSelector) forKey:@"syncSelector"];
-    [self.queue addObject:d];    
+    
+    [self.queue addObject:d];
 }
 
 - (void)start
@@ -61,9 +63,13 @@
     }
 
     id model = [current objectForKey:@"model"];
+    
     NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
     NSArray *recordsToSync = [model needingSync];
     
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start %@, %d to upload, %d to delete",
+                                        model, recordsToSync.count, deletedRecordCount]];
+
     // delete objects first
     if (deletedRecordCount > 0) {
         [self startDelete];
@@ -71,6 +77,7 @@
     }
     
     if (recordsToSync.count == 0) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC finished %@", model]];
         [self.queue removeObject:current];
         if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
             [self.delegate performSelector:@selector(syncQueueFinishedSyncFor:) withObject:model];
@@ -78,6 +85,8 @@
         [self start];
         return;
     }
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start uploading %@", model]];
     
     if ([self.delegate respondsToSelector:@selector(syncQueueStartedSyncFor:)]) {
         [self.delegate performSelector:@selector(syncQueueStartedSyncFor:) withObject:model];
@@ -88,14 +97,21 @@
     // deal with using the name of the model it just posted.
     for (INatModel *record in recordsToSync) {
         if ([current objectForKey:@"syncSelector"]) {
+            
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via syncSelector", model]];
+            
             SEL syncSelector = NSSelectorFromString([current objectForKey:@"syncSelector"]);
             if ([self.delegate respondsToSelector:syncSelector]) {
                 [self.delegate performSelector:syncSelector withObject:record];
             }
         } else {
             if (record.syncedAt) {
+                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via PUT", model]];
+
                 [[RKObjectManager sharedManager] putObject:record mapResponseWith:[model mapping] delegate:self];
             } else {
+                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via POST", model]];
+
                 [[RKObjectManager sharedManager] postObject:record mapResponseWith:[model mapping] delegate:self];
             }
         }
@@ -110,11 +126,16 @@
         return;
     }
     id model = [current objectForKey:@"model"];
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start deleting %@", model]];
+
     NSArray *deletedRecords = [DeletedRecord objectsWithPredicate:
                                [NSPredicate predicateWithFormat:
                                 @"modelName = %@", NSStringFromClass(model)]];
     for (DeletedRecord *dr in deletedRecords) {
-        [[RKClient sharedClient] delete:[NSString stringWithFormat:@"/%@/%d", 
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleting one %@", model]];
+
+        [[RKClient sharedClient] delete:[NSString stringWithFormat:@"/%@/%d",
                                          dr.modelName.underscore.pluralize, 
                                          dr.recordID.intValue] 
                                delegate:self];
@@ -124,6 +145,8 @@
 
 - (void)stop
 {
+    [[Analytics sharedClient] debugLog:@"SYNC stopped"];
+
     self.started = NO;
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     // sleep is ok now
@@ -132,6 +155,8 @@
 
 - (void)finish
 {
+    [[Analytics sharedClient] debugLog:@"SYNC finished"];
+
     [self stop];
     if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
         [self.delegate performSelector:@selector(syncQueueFinished)];
@@ -154,6 +179,8 @@
         [self stop];
         return;
     }
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC completed upload of %@", current[@"model"]]];
     
     NSNumber *needingSyncCount = [current objectForKey:@"needingSyncCount"];
     NSNumber *syncedCount = [current objectForKey:@"syncedCount"];
@@ -189,6 +216,9 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC failed upload with %@", error.localizedDescription]];
+    
     // was running into a bug in release build config where the object loader was 
     // getting deallocated after handling an error.  This is a kludge.
     self.loader = objectLoader;
@@ -259,6 +289,9 @@
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
     if (request.method != RKRequestMethodDELETE) return;
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC failed delete with %@", error.localizedDescription]];
+    
     [self stop];
 }
 
@@ -274,12 +307,18 @@
     }
 
     id model = [current objectForKey:@"model"];
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted one %@", model]];
+    
     NSNumber *deletedRecordCount = [current objectForKey:@"deletedRecordCount"];
     [current setValue:[NSNumber numberWithInt:[deletedRecordCount intValue] - 1] 
                forKey:@"deletedRecordCount"];
     
     // if we're done deleting
     if ([[current objectForKey:@"deletedRecordCount"] intValue] <= 0) {
+        
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC finished deleting %@", model]];
+        
         // remove all deleted records
         NSArray *deletedRecords = [DeletedRecord objectsWithPredicate:
                                    [NSPredicate predicateWithFormat:

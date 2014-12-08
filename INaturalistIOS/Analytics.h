@@ -21,6 +21,8 @@
 - (void)endTimedEvent:(NSString *)name;
 - (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
 
+- (void)debugLog:(NSString *)logMessage;
+
 @end
 
 #pragma mark Event Names For Analytics

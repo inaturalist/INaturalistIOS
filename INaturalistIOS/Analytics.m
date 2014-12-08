@@ -62,6 +62,11 @@
     [Flurry endTimedEvent:name withParameters:properties];
 }
 
+- (void)debugLog:(NSString *)logMessage {
+#ifdef INatCrashlyticsKey
+    CLS_LOG(@"%@", logMessage);
+#endif
+}
 
 @end
 
