@@ -291,6 +291,8 @@
     if (request.method != RKRequestMethodDELETE) return;
     
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC failed delete with %@", error.localizedDescription]];
+    if ([self.delegate respondsToSelector:@selector(syncQueue:nonLoaderRequestFailedWithError:)])
+        [self.delegate syncQueue:self nonLoaderRequestFailedWithError:error];
     
     [self stop];
 }

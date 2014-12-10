@@ -17,6 +17,7 @@
 - (void)syncQueueFinishedSyncFor:(id)model;
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total;
 - (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error;
+- (void)syncQueue:(SyncQueue *)syncQueue nonLoaderRequestFailedWithError:(NSError *)error;
 - (void)syncQueueUnexpectedResponse;
 - (void)syncQueueAuthRequired;
 - (void)syncQueueFinished;

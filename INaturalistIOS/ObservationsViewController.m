@@ -875,6 +875,29 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
+- (void)syncQueue:(SyncQueue *)syncQueue nonLoaderRequestFailedWithError:(NSError *)error {
+    if ([self isSyncing]) {
+        [SVProgressHUD dismiss];
+
+        NSString *alertTitle;
+        NSString *alertMessage;
+        if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
+            alertTitle = NSLocalizedString(@"Request timed out",nil);
+            alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
+        } else {
+            alertTitle = NSLocalizedString(@"Whoops!",nil);
+            alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
+        }
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                     message:alertMessage
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+    [self stopSync];
+}
+
 - (void)syncQueueUnexpectedResponse
 {
     [self stopSync];
