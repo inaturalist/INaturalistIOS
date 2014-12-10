@@ -817,6 +817,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     [self stopSync];
     if (self.syncErrors && self.syncErrors.count > 0) {
+        [SVProgressHUD dismiss];
+
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
                                                      message:[self.syncErrors componentsJoinedByString:@"\n\n"]
                                                     delegate:self 
@@ -835,6 +837,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)syncQueueAuthRequired
 {
+    [SVProgressHUD dismiss];
+    
     [self stopSync];
     [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
 }
@@ -854,6 +858,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [po deleteEntity];
     } else {
         if ([self isSyncing]) {
+            [SVProgressHUD dismiss];
+            
             NSString *alertTitle;
             NSString *alertMessage;
             if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
@@ -900,6 +906,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)syncQueueUnexpectedResponse
 {
+    [SVProgressHUD dismiss];
+    
     [self stopSync];
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                  message:NSLocalizedString(@"There was an unexpected error.",nil)
