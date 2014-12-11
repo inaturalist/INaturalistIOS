@@ -8,7 +8,7 @@ pod 'Bolts', '1.1.3'
 pod 'FontAwesomeKit', '2.1.8'
 pod 'HexColors', '2.2.1'
 pod 'BlocksKit', '2.2.5'
-pod 'SVProgressHUD', :head
+pod 'SVProgressHUD', '1.1.1'
 pod 'GeoJSONSerialization', '0.0.4'
 pod 'AFNetworking', '1.3.4'
 pod 'MHVideoPhotoGallery', '1.6.6'
