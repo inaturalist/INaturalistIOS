@@ -81,9 +81,10 @@ extern NSString *kAnalyticsEventExploreAddIdentification;
 // share in explore
 extern NSString *kAnalyticsEventExploreObservationShare;
 
-// create observation
+// observations activites
 extern NSString *kAnalyticsEventCreateObservation;
 extern NSString *kAnalyticsEventSyncObservation;
+extern NSString *kAnalyticsEventObservationsPullToRefresh;
 
 // login
 extern NSString *kAnalyticsEventLogin;

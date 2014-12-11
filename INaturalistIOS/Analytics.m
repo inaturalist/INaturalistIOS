@@ -126,9 +126,10 @@ NSString *kAnalyticsEventExploreAddIdentification =             @"Explore - Add 
 // share in explore
 NSString *kAnalyticsEventExploreObservationShare =              @"Explore - Observation - Share";
 
-// create observation
+// observation activities
 NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
+NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refresh Observations";
 
 // login
 NSString *kAnalyticsEventLogin =                                @"Login";

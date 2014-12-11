@@ -189,9 +189,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     // make sure -itemsToSyncCount is current
     [self checkSyncStatus];
     if ([self itemsToSyncCount] > 0) {
+        [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
+                         withProperties:@{ @"ActionTaken" : @"Sync" }];
         [self.refreshControl endRefreshing];
         [self sync:nil];
     } else {
+        [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
+                         withProperties:@{ @"ActionTaken" : @"RefreshData" }];
         [self refreshData];
     }
 }
