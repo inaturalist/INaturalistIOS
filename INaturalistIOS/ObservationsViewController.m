@@ -107,11 +107,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
 	[self.syncQueue start];
+    
+    // temporarily disable user interaction with the tableview
+    self.tableView.userInteractionEnabled = NO;
 }
 
 - (void)stopSync
 {
     [SVProgressHUD dismiss];
+    // re-enable user interaction with the tableview
+    self.tableView.userInteractionEnabled = YES;
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
@@ -850,6 +855,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         self.syncErrors = nil;
     } else {
         [SVProgressHUD showSuccessWithStatus:nil];
+        // re-enable user interaction with the tableview
+        self.tableView.userInteractionEnabled = YES;
     }
     
     // make sure any deleted records get gone
