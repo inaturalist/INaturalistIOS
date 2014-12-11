@@ -178,6 +178,24 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self checkSyncStatus];
 }
 
+/**
+ If sync is pending, -pullToRefresh should sync rather than refreshData.
+ The app will always treat the server as the ultimate source of truth for 
+ observations. If sync is pending on a local observation, fetching
+ from the server would over-write locally changed values. Avoid that by
+ always finishing sync before refresh.
+ */
+- (void)pullToRefresh {
+    // make sure -itemsToSyncCount is current
+    [self checkSyncStatus];
+    if ([self itemsToSyncCount] > 0) {
+        [self.refreshControl endRefreshing];
+        [self sync:nil];
+    } else {
+        [self refreshData];
+    }
+}
+
 - (void)refreshData
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
@@ -564,7 +582,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
 		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)];
-		[refresh addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
+		[refresh addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl = refresh;
 	} else {
 		self.refreshControl = nil;
