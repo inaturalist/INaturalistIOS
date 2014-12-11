@@ -28,6 +28,7 @@ static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
 static const int TutorialActionCellTag = 2;
 static const int ContactActionCellTag = 3;
+static const int RateUsCellTag = 4;
 static const int VersionCellTag = 4;
 
 @implementation SettingsViewController
@@ -42,11 +43,13 @@ static const int VersionCellTag = 4;
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
     UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     tutorialActionCell.tag = TutorialActionCellTag;
     contactActionCell.tag = ContactActionCellTag;
+    rateUsActionCell.tag = RateUsCellTag;
     creditsCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
@@ -143,6 +146,23 @@ static const int VersionCellTag = 4;
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
 }
 
+- (void)launchRateUs {
+#ifdef INatAppStoreURL
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
+    } else {
+        [self networkUnreachableAlert];
+    }
+#else
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot rate", nil)
+                                                    message:NSLocalizedString(@"No App Store URL configured", nil)
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    [alert show];
+#endif
+}
+
 - (void)networkUnreachableAlert
 {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
@@ -213,6 +233,10 @@ static const int VersionCellTag = 4;
             break;
         case ContactActionCellTag:
             [self sendSupportEmail];
+            break;
+        case RateUsCellTag:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            [self launchRateUs];
             break;
         default:
             break;

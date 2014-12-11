@@ -101,6 +101,9 @@
 /* Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev"; */
 "IvC-UJ-yev.text" = "Contact support";
 
+/* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
+"r3a-dI-zLW.text" = "Love iNat? Rate Us";
+
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Choose projects";
 

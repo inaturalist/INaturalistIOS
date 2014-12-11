@@ -77,6 +77,9 @@
 /* Class = "IBUILabel"; text = "Contactar soporte"; ObjectID = "IvC-UJ-yev"; */
 "IvC-UJ-yev.text" = "Contactar soporte";
 
+/* Class = "IBUILabel"; text = "Amor iNat? Tasa de nosotros"; ObjectID = "r3a-dI-zLW"; */
+"r3a-dI-zLW.text" = "Amor iNat? Tasa de nosotros";
+
 /* Class = "IBUILabel"; text = "Elegir proyectos"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Elegir proyectos";
 
