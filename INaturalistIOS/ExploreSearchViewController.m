@@ -111,7 +111,7 @@
         view.translatesAutoresizingMaskIntoConstraints = NO;
           
         // autocomplete items
-        AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:@"critters"
+        AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:@"organisms"
                                                                               action:^(NSString *searchText) {
                                                                                   [self searchForTaxon:searchText];
                                                                                   [searchMenu hideOptionSearch];
@@ -342,7 +342,7 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Searching for critters..."];
+    [SVProgressHUD showWithStatus:@"Searching for organisms..."];
     
     [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
         if (error) {
@@ -353,7 +353,7 @@
 
             if (results.count == 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:@"No such critters found. :("];
+                    [SVProgressHUD showErrorWithStatus:@"No such organisms found. :("];
                 });
             } else if (results.count == 1) {
                 // dismiss the HUD
