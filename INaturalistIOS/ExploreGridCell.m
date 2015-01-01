@@ -135,7 +135,7 @@
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
         observationNameLabel.text = observation.speciesGuess;
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
-        observationNameLabel.text = @"Something...";    
+        observationNameLabel.text = NSLocalizedString(@"Something...", nil);
 }
 
 @end

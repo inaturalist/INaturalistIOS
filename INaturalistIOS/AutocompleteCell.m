@@ -35,7 +35,7 @@
     _searchText = [searchText copy];
     
     // use an attributed string to make the text vary
-    NSString *str = [NSString stringWithFormat:@"Find %@ named '", self.predicate];
+    NSString *str = [NSString stringWithFormat:NSLocalizedString(@"Find %@ named '", nil), self.predicate];     // un-localizable in this format
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:str];
     [attr addAttributes:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:14.0f] }
                   range:[str rangeOfString:self.predicate]];

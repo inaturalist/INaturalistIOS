@@ -59,7 +59,7 @@
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithTableViewStyle:UITableViewStyleGrouped]) {
-        self.title = @"Details";
+        self.title = NSLocalizedString(@"Details", nil);
         share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                target:self
                                                                                action:@selector(action)];
@@ -110,7 +110,7 @@
 
 - (void)showTaxonDetailsForTaxonId:(NSInteger)taxonId {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
         return;
     }
     
@@ -127,11 +127,11 @@
         };
         
         loader.onDidFailLoadWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
         };
         
         loader.onDidFailWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:@"Couldn't load Taxon Details"];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
         };
     }];
     
@@ -142,18 +142,20 @@
 - (void)action {
     shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                    delegate:self
-                                          cancelButtonTitle:@"Cancel"
+                                          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                      destructiveButtonTitle:nil
-                                          otherButtonTitles:@"Open in Safari", @"Share", nil];
+                                          otherButtonTitles:NSLocalizedString(@"Open in Safari", nil),
+                                                            NSLocalizedString(@"Share", nil),
+                                                            nil];
     [shareActionSheet showInView:self.view];
 }
 
 - (void)tag {
     if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-        [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
-                                    message:@"No anonymous identifications!"
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
+                                    message:NSLocalizedString(@"No anonymous identifications!", nil)
                                    delegate:nil
-                          cancelButtonTitle:@"OK"
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
         return;
     }
@@ -195,10 +197,10 @@
                                      withProperties:@{ @"Via": @"Agree" }];
                     [self addIdentificationWithTaxonId:selectedIdentification.identificationTaxonId];
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
-                                                message:@"No anonymous identifications!"
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
+                                                message:NSLocalizedString(@"No anonymous identifications!", nil)
                                                delegate:nil
-                                      cancelButtonTitle:@"OK"
+                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                       otherButtonTitles:nil] show];
                 }
                 break;
@@ -271,9 +273,11 @@
         // present action sheet allowing user to agree or view taxon details
         identifyActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                           delegate:self
-                                                 cancelButtonTitle:@"Cancel"
+                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                             destructiveButtonTitle:nil
-                                                 otherButtonTitles:@"View Taxon Details", @"Agree", nil];
+                                                 otherButtonTitles:NSLocalizedString(@"View Taxon Details", nil),
+                                                                    NSLocalizedString(@"Agree", nil),
+                                                                    nil];
         [identifyActionSheet showInView:self.view];
     }
 }
@@ -392,10 +396,10 @@
     if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
         [self addComment:self.textView.text];
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"You must be logged in"
-                                    message:@"No anonymous comments!"
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
+                                    message:NSLocalizedString(@"No anonymous comments!", nil)
                                    delegate:nil
-                          cancelButtonTitle:@"OK"
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
     }
     
@@ -407,24 +411,24 @@
 - (void)addIdentificationWithTaxonId:(NSInteger)taxonId {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot add identification"];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add identification", nil)];
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Adding Identification..."];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Identification...", nil)];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:@"Identification failed :("];
+                [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Identification failed :(", nil)];
             });
         } else {
             // if it wasn't an "agree" id, then we need to pop back through the taxon chooser to this VC
             [self.navigationController popToRootViewControllerAnimated:YES];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:@"Added!"];
+                [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
             });
             [self fetchObservationCommentsAndIds];
         }
@@ -434,11 +438,11 @@
 - (void)addComment:(NSString *)commentBody {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:@"Network unavailable, cannot add comment"];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add comment", nil)];
         return;
     }
 
-    [SVProgressHUD showWithStatus:@"Adding Comment..."];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Comment...", nil)];
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addComment:commentBody
@@ -446,13 +450,13 @@
          completionHandler:^(RKResponse *response, NSError *error) {
              if (error) {
                  dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showErrorWithStatus:@"Comment failed :("];
+                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Comment failed :(", nil)];
                  });
              } else {
                  [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
                  // update the UI
                  dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showSuccessWithStatus:@"Added!"];
+                     [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
                  });
                  [self fetchObservationCommentsAndIds];
              }

@@ -414,7 +414,7 @@ static UIImage *userIconPlaceholder;
         self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
                                                           ofSize:self.commonNameLabel.font.pointSize];
     } else {
-        self.commonNameLabel.text = @"Something...";
+        self.commonNameLabel.text = NSLocalizedString(@"Something...", nil);
     }
     self.commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
@@ -434,13 +434,14 @@ static UIImage *userIconPlaceholder;
     observerNameLabel.text = observation.observerName;
     
     if (observation.coordinatesObscured) {
-        observedLocationLabel.text = @"Location obscured";
+        observedLocationLabel.text = NSLocalizedString(@"Location obscured", nil);
         observedLocationLabel.textColor = [UIColor inatGray];
         observedAccuracyLabel.text = @"";
     } else {
         // if there is a positional accuracy for the observation, display it
         if (observation.publicPositionalAccuracy > 0)
-            observedAccuracyLabel.text = [NSString stringWithFormat:@"%ldm accuracy", (long)observation.publicPositionalAccuracy];
+            observedAccuracyLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%ldm accuracy", nil),
+                                          (long)observation.publicPositionalAccuracy];
         
         if (observation.placeGuess && ![observation.placeGuess isEqualToString:@""]) {
             observedLocationLabel.text = observation.placeGuess;

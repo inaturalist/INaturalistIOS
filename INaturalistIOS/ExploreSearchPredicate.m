@@ -18,22 +18,22 @@
     switch (self.type) {
         case ExploreSearchPredicateTypeCritter:
             if (self.searchTaxon.defaultName && ![self.searchTaxon.defaultName isEqualToString:@""]) {
-                return [NSString stringWithFormat:@"named '%@ (%@)'", self.searchTaxon.name, self.searchTaxon.defaultName];
+                return [NSString stringWithFormat:NSLocalizedString(@"named '%@ (%@)'", nil), self.searchTaxon.name, self.searchTaxon.defaultName];
             } else {
-                return [NSString stringWithFormat:@"named '%@'", self.searchTaxon.name];
+                return [NSString stringWithFormat:NSLocalizedString(@"named '%@'", nil), self.searchTaxon.name];
             }
             break;
         case ExploreSearchPredicateTypePerson:
             if (self.searchPerson.name && ![self.searchPerson.name isEqualToString:@""])
-                return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.name];
+                return [NSString stringWithFormat:NSLocalizedString(@"seen by '%@'", nil), self.searchPerson.name];
             else
-                return [NSString stringWithFormat:@"seen by '%@'", self.searchPerson.login];
+                return [NSString stringWithFormat:NSLocalizedString(@"seen by '%@'", nil), self.searchPerson.login];
             break;
         case ExploreSearchPredicateTypeLocation:
-            return [NSString stringWithFormat:@"seen at '%@'", self.searchLocation.name];
+            return [NSString stringWithFormat:NSLocalizedString(@"seen at '%@'", nil), self.searchLocation.name];
             break;
         case ExploreSearchPredicateTypeProject:
-            return [NSString stringWithFormat:@"in project '%@'", self.searchProject.title];
+            return [NSString stringWithFormat:NSLocalizedString(@"in project '%@'", nil), self.searchProject.title];
             break;
         default:
             break;

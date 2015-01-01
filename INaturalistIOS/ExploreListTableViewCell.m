@@ -374,7 +374,7 @@ static NSDateFormatter *shortFormatter;
         commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
                                                      ofSize:commonNameLabel.font.pointSize];
     } else {
-        commonNameLabel.text = @"Something...";
+        commonNameLabel.text = NSLocalizedString(@"Something...", nil);
         commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
     }
     commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
@@ -395,12 +395,12 @@ static NSDateFormatter *shortFormatter;
     }
     
     if (observation.idPlease) {
-        observationAttrLabel.text = @"ID PLEASE";
+        observationAttrLabel.text = NSLocalizedString(@"ID PLEASE", nil);
         observationAttrLabel.textColor = [UIColor colorForIdPleaseNotice];
         observationAttrLabel.backgroundColor = [UIColor secondaryColorForIdPleaseNotice];
         observationAttrLabel.hidden = NO;
     } else if ([observation.qualityGrade isEqualToString:@"research"]) {
-        observationAttrLabel.text = @"RESEARCH";
+        observationAttrLabel.text = NSLocalizedString(@"RESEARCH", nil);
         observationAttrLabel.textColor = [UIColor colorForResearchGradeNotice];
         observationAttrLabel.backgroundColor = [UIColor secondaryColorForResearchGradeNotice];
         observationAttrLabel.hidden = NO;

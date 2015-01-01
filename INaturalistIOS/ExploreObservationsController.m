@@ -230,14 +230,14 @@
         if (self.activeSearchPredicates.count > 0) {
             // searching
             if (self.limitingRegion)
-                statusMessage = @"Searching for recent observations in map area";
+                statusMessage = NSLocalizedString(@"Searching for recent observations in map area", nil);
             else
-                statusMessage = @"Searching for recent observations worldwide";
+                statusMessage = NSLocalizedString(@"Searching for recent observations worldwide", nil);
         } else {
             if (self.limitingRegion)
-                statusMessage = @"Fetching recent observations in map area";
+                statusMessage = NSLocalizedString(@"Fetching recent observations in map area", nil);
             else
-                statusMessage = @"Fetching recent observations worldwide";
+                statusMessage = NSLocalizedString(@"Fetching recent observations worldwide", nil);
         }
         
         [self.notificationDelegate startedObservationFetch];
@@ -297,7 +297,7 @@
         if ([self.activeSearchPredicates indexOfObject:predicate] == 0)
             [colloquial appendString:predicate.colloquialSearchPhrase];
         else
-            [colloquial appendFormat:@" and %@", predicate.colloquialSearchPhrase];
+            [colloquial appendFormat:NSLocalizedString(@" and %@", nil), predicate.colloquialSearchPhrase]; // unlocalizable way to build sentances
     }
     
     // Capitalize the first character of the combined search phrase.

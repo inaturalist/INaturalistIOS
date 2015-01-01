@@ -183,7 +183,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion]) {
         RestrictedListHeader *header = (RestrictedListHeader *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:ExploreListHeaderId];
     
-        header.titleLabel.text = @"Restricted to current map area";
+        header.titleLabel.text = NSLocalizedString(@"Restricted to current map area", nil);
         [header.clearButton addTarget:self
                                action:@selector(tappedClearMapRestriction:)
                      forControlEvents:UIControlEventTouchUpInside];

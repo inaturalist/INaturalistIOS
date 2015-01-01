@@ -162,7 +162,7 @@ static UIImage *userIconPlaceholder;
     @synchronized(shortDateFormatter) {
         dateString = [shortDateFormatter stringFromDate:comment.commentedDate];
     }
-    commenterAndDateLabel.text = [NSString stringWithFormat:@"Added by %@ on %@",
+    commenterAndDateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Added by %1$@ on %2$@", @"$1 is username, $2 is datetime"),
                                   comment.commenterName, dateString];
 
     

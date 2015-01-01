@@ -187,7 +187,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
                                                                                                               withReuseIdentifier:ExploreGridHeaderId
                                                                                                                      forIndexPath:indexPath];
         
-        header.titleLabel.text = @"Restricted to current map area";
+        header.titleLabel.text = NSLocalizedString(@"Restricted to current map area", nil);
         [header.clearButton addTarget:self
                                action:@selector(tappedClearMapRestriction:)
                      forControlEvents:UIControlEventTouchUpInside];

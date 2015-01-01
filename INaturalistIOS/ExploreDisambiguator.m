@@ -32,7 +32,7 @@
     alert = [[UIAlertView alloc] initWithTitle:self.title
                                        message:self.message
                                       delegate:self
-                             cancelButtonTitle:@"Cancel"
+                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                              otherButtonTitles:nil];
     
     CGRect tableViewRect = CGRectMake(0, 0, 275.0f, 180.0f);
