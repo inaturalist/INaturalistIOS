@@ -136,4 +136,4 @@ NSString *kAnalyticsEventLogin =                                @"Login";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
 
 // model integrity
-NSString *kAnalyticsEventObservationLessOFVSaved =              @"Observationless OFV Created";
+NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";

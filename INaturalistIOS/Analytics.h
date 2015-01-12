@@ -91,4 +91,4 @@ extern NSString *kAnalyticsEventLogin;
 extern NSString *kAnalyticsEventSignup;
 
 // model integrity
-extern NSString *kAnalyticsEventObservationLessOFVSaved;
+extern NSString *kAnalyticsEventObservationlessOFVSaved;

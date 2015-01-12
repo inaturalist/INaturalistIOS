@@ -124,7 +124,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     [super willSave];
     if (!self.observation) {
-        [[Analytics sharedClient] event:kAnalyticsEventObservationLessOFVSaved
+        [[Analytics sharedClient] event:kAnalyticsEventObservationlessOFVSaved
                          withProperties:[NSDictionary dictionaryWithKeysAndObjects:@"stacktrace", [NSThread callStackSymbols], nil]];
     }
 }
