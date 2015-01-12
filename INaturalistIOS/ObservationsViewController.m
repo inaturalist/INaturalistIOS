@@ -624,7 +624,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
         [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
-        [self refreshData];
+        [self pullToRefresh];
         [self checkForDeleted];
         [self checkNewActivity];
     }
