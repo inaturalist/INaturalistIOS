@@ -90,3 +90,5 @@ extern NSString *kAnalyticsEventObservationsPullToRefresh;
 extern NSString *kAnalyticsEventLogin;
 extern NSString *kAnalyticsEventSignup;
 
+// model integrity
+extern NSString *kAnalyticsEventObservationLessOFVSaved;

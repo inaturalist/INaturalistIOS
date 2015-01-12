@@ -885,6 +885,15 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                     po.project.title,
                                     error.localizedDescription]];
         [po deleteEntity];
+    } else if ([objectLoader.targetObject isKindOfClass:ObservationFieldValue.class]) {
+        // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
+        // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
+        // kueda 20140112
+        ObservationFieldValue *ofv = (ObservationFieldValue *)objectLoader.targetObject;
+        if (!ofv.observation) {
+            NSLog(@"ERROR: deleted mysterious ofv: %@", ofv);
+            [ofv deleteEntity];
+        }
     } else {
         if ([self isSyncing]) {
             [SVProgressHUD dismiss];

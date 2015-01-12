@@ -9,6 +9,7 @@
 #import "ObservationFieldValue.h"
 #import "Observation.h"
 #import "ObservationField.h"
+#import "Analytics.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -117,6 +118,15 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [self setPrimitiveValue:[newValue stringByTrimmingCharactersInSet:
                              [NSCharacterSet whitespaceCharacterSet]]];
     [self didChangeValueForKey:@"value"];
+}
+
+- (void)willSave
+{
+    [super willSave];
+    if (!self.observation) {
+        [[Analytics sharedClient] event:kAnalyticsEventObservationLessOFVSaved
+                         withProperties:[NSDictionary dictionaryWithKeysAndObjects:@"stacktrace", [NSThread callStackSymbols], nil]];
+    }
 }
 
 @end
