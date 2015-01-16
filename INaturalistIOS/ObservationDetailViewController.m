@@ -511,7 +511,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 #pragma mark UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self dismissModalViewControllerAnimated:YES];
+    // workaround for a crash in Apple's didHideZoomSlider
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
     NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
@@ -534,7 +537,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    // workaround for a crash in Apple's didHideZoomSlider
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
 }
 
 - (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
