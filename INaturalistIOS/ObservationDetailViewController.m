@@ -1420,7 +1420,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)save
 {
     if (self.observation.isNew) {
-        [[Analytics sharedClient] event:kAnalyticsEventCreateObservation];
+        [[Analytics sharedClient] event:kAnalyticsEventCreateObservation
+                         withProperties:@{ @"Project": @(self.observation.projectObservations.count > 0) }];
     }
     
     [self uiToObservation];
