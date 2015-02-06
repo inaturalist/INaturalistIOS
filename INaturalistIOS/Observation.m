@@ -169,14 +169,20 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return defaultSerializationMapping;
 }
 
-- (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
-{
-    self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
+- (void)awakeFromInsert {
+    [super awakeFromInsert];
+    
+    // unsafe to fetch in -awakeFromInsert
+    [self performSelector:@selector(computeLocalObservedOn)
+               withObject:nil
+               afterDelay:0];
+}
+
+- (void)computeLocalObservedOn {
     if (!self.localObservedOn) {
         if (self.timeObservedAt) self.localObservedOn = self.timeObservedAt;
         else if (self.observedOn) self.localObservedOn = self.observedOn;
     }
-    return self;
 }
 
 - (NSArray *)sortedObservationPhotos
