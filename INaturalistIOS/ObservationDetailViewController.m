@@ -824,6 +824,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)deleteActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
+        // no point in querying location anymore
+        [self.locationManager stopUpdatingLocation];
+
         [self.observation destroy];
         self.observation = nil;
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
@@ -880,26 +883,36 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     if (!self.locationUpdatesOn) return;
     
-    self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
-    self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
-    self.observation.privateLatitude = nil;
-    self.observation.privateLongitude = nil;
-    self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
-    self.observation.positioningMethod = @"gps";
-    
-    if (self.latitudeLabel) {
-        self.latitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
-        self.longitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
-        self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d", 
-                                             [self.observation.positionalAccuracy intValue]];
-    }
-    
-    if (newLocation.horizontalAccuracy < 10) {
-        [self stopUpdatingLocation];
-    }
-    
-    if (self.observation.placeGuess.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
-        [self reverseGeocodeCoordinates];
+    @try {
+        self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
+        self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
+        self.observation.privateLatitude = nil;
+        self.observation.privateLongitude = nil;
+        self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
+        self.observation.positioningMethod = @"gps";
+        
+        if (self.latitudeLabel) {
+            self.latitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
+            self.longitudeLabel.text = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
+            self.positionalAccuracyLabel.text = [NSString stringWithFormat:@"%d",
+                                                 [self.observation.positionalAccuracy intValue]];
+        }
+        
+        if (newLocation.horizontalAccuracy < 10) {
+            [self stopUpdatingLocation];
+        }
+        
+        if (self.observation.placeGuess.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
+            [self reverseGeocodeCoordinates];
+        }
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if self.observation has been deleted or is otherwise inaccessible, do nothing
+            return;
+        } else {
+            // unanticpated exception
+            @throw(exception);
+        }
     }
 }
 
