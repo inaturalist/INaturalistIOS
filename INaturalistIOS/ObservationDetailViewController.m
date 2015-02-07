@@ -808,13 +808,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    // can't declare even anonymous blocks in switch statements
+    void(^segueBlock)() = ^ {
+        [self performSegueWithIdentifier:@"EditLocationSegue" sender:self];
+    };
+    
     switch (buttonIndex) {
         case 0:
             [self startUpdatingLocation];
             break;
         case 1:
-            [self performSegueWithIdentifier:@"EditLocationSegue" sender:self];
-            break;            
+            // can only -presentViewController once at a time
+            // on iOS 8/iPad, this action sheet was presented
+            // so perform the segue after the sheet has dismissed
+            dispatch_async(dispatch_get_main_queue(), segueBlock);
+            break;
         default:
             break;
     }
