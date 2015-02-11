@@ -13,6 +13,7 @@
 #import "Project.h"
 #import "ProjectUser.h"
 #import "Analytics.h"
+#import "TutorialSinglePageViewController.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -322,6 +323,20 @@ static const int ListControlIndexNearby = 2;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjects];
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenProjects]) {
+        
+        TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
+        vc.tutorialImage = [UIImage imageNamed:@"tutorial6en.png"];
+        vc.tutorialTitle = NSLocalizedString(@"About Projects", @"Title for projects tutorial screen");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self presentViewController:vc animated:YES completion:nil];
+        });
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenProjects];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {

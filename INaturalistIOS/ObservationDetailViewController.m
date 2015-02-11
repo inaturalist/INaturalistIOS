@@ -33,6 +33,7 @@
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
+#import "TutorialSinglePageViewController.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -424,8 +425,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenEditObs]) {
+        
+        TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
+        vc.tutorialImage = [UIImage imageNamed:@"tutorial3en.png"];
+        vc.tutorialTitle = NSLocalizedString(@"Make A Detailed Observation", @"Title for observation details tutorial screen");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self presentViewController:vc animated:YES completion:nil];
+        });
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenEditObs];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     [self initUI];
     if (self.observation.isNew && 
         (

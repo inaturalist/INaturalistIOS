@@ -26,6 +26,7 @@
 #import "UIColor+INaturalist.h"
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
+#import "TutorialSinglePageViewController.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -330,16 +331,42 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (BOOL)autoLaunchTutorial
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    if ([settings objectForKey:@"tutorialSeen"]) {
+    
+    if ([settings objectForKey:kDefaultsKeyOldTutorialSeen]) {
         return NO;
     }
-    TutorialViewController *vc = [[TutorialViewController alloc] initWithDefaultTutorial];
-    UINavigationController *modalNavController = [[UINavigationController alloc]
-                                                    initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:YES completion:nil];
-    [settings setObject:[NSNumber numberWithBool:YES] forKey:@"tutorialSeen"];
-    [settings synchronize];
-    return YES;
+        
+    if ([settings boolForKey:kDefaultsKeyTutorialNeverAgain]) {
+        return NO;
+    }
+    
+    if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObs]) {
+        if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObsCommunity]) {
+            return NO;
+        } else {
+            [self showTutorialImage:[UIImage imageNamed:@"tutorial4en.png"]
+                              title:NSLocalizedString(@"Connect With Other Nature Lovers", @"Title for community tutorial screen")];
+            [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObsCommunity];
+            [settings synchronize];
+            return YES;
+        }
+    } else {
+        [self showTutorialImage:[UIImage imageNamed:@"tutorial2en.png"]
+                          title:NSLocalizedString(@"Record What You See", @"Title for new observation tutorial screen")];
+        [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObs];
+        [settings synchronize];
+        return YES;
+    }
+}
+
+- (void)showTutorialImage:(UIImage *)image title:(NSString *)title {
+    TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
+    vc.tutorialImage = image;
+    vc.tutorialTitle = title;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self presentViewController:vc animated:YES completion:nil];
+    });
+
 }
 
 - (BOOL)autoLaunchSignIn
