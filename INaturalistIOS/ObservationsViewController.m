@@ -624,12 +624,17 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		self.refreshControl = nil;
 	}
     [self reload];
+    
+    // observation detail view controller has a different toolbar tint color
+    [[[self navigationController] toolbar] setBarTintColor:[UIColor inatTint]];
+    [[[self navigationController] toolbar] setTintColor:[UIColor whiteColor]];
+    self.syncButton.tintColor = [UIColor whiteColor];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
+    
     [self setSyncToolbarItems:[NSArray arrayWithObjects:
                                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
                                self.syncButton, 

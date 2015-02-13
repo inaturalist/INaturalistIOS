@@ -433,6 +433,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
+    self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+    self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
+    self.navigationController.toolbar.tintColor = [UIColor inatTint];
+
     [super viewWillAppear:animated];
 }
 
