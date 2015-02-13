@@ -255,8 +255,19 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         navItem = self.navigationItem;
     }
-    navItem.title = [self.observation isNew] ? NSLocalizedString(@"Add observation",nil) : NSLocalizedString(@"Edit observation",nil);
     
+    // first access of self.observation in -initUI
+    // be defensive about self.observation being able to be faulted
+    @try {
+        navItem.title = [self.observation isNew] ? NSLocalizedString(@"Add observation",nil) : NSLocalizedString(@"Edit observation",nil);
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if self.observation has been deleted or is otherwise inaccessible, pop to observations
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
+    }
+
     if (!self.saveButton) {
         self.saveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save",nil)
                                                            style:UIBarButtonItemStyleDone 
