@@ -344,8 +344,8 @@
 - (void)mapShouldZoomToCoordinates:(CLLocationCoordinate2D)coords andShowUserLocation:(BOOL)showUserLocation {
     MKCoordinateRegion mapRegion;
     mapRegion.center = coords;
-    mapRegion.span.latitudeDelta = 0.2;
-    mapRegion.span.longitudeDelta = 0.2;
+    mapRegion.span.latitudeDelta = 0.014;       // ~ 1 mile radius
+    mapRegion.span.longitudeDelta = 0.014;      // ~ 1 mile radius
     [mapView setRegion:mapRegion animated: YES];
     
     mapView.showsUserLocation = showUserLocation;

@@ -238,6 +238,8 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenExplore];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
+    [self startLookingForCurrentLocationNotify:NO];
 }
 
 
@@ -334,11 +336,11 @@
     // get observations near current location
     switch ([CLLocationManager authorizationStatus]) {
         case kCLAuthorizationStatusNotDetermined:
-            [self startLookingForCurrentLocation];
+            [self startLookingForCurrentLocationNotify:YES];
             break;
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
-            [self startLookingForCurrentLocation];
+            [self startLookingForCurrentLocationNotify:YES];
             break;
             
         case kCLAuthorizationStatusDenied:
@@ -588,7 +590,10 @@
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    }
+
     isFetchingLocation = NO;
 }
 
@@ -606,7 +611,10 @@
     // one location fetch per user interaction with the "find observations near me" menu item
     if (!hasFulfilledLocationFetch) {
         hasFulfilledLocationFetch = YES;
-        [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found you!", nil)];
+        
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found you!", nil)];
+        }
         
         [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate andShowUserLocation:YES];
     }
@@ -622,7 +630,7 @@
             break;
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
-            [self startLookingForCurrentLocation];
+            [self startLookingForCurrentLocationNotify:NO];
             break;
         case kCLAuthorizationStatusDenied:
         case kCLAuthorizationStatusRestricted:
@@ -638,7 +646,7 @@
 
 #pragma mark - Location Manager helpers
 
-- (void)startLookingForCurrentLocation {
+- (void)startLookingForCurrentLocationNotify:(BOOL)shouldNotify {
     if (isFetchingLocation)
         return;
     
@@ -657,10 +665,16 @@
     [locationManager stopUpdatingLocation];
     [locationManager startUpdatingLocation];
     // this may take a moment
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Finding your location...", nil)];
+    if (shouldNotify) {
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Finding your location...", nil)];
+    }
+    
     locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
                                                               block:^(NSTimer *timer) {
-                                                                  [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Unable to find location", nil)];
+                                                                  if (shouldNotify) {
+                                                                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Unable to find location", nil)];
+                                                                  }
+                                                                  
                                                                   [locationManager stopUpdatingLocation];
                                                                   locationManager = nil;
                                                                   isFetchingLocation = NO;
