@@ -44,8 +44,8 @@ static NSDateFormatter *shortFormatter;
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
-            iv.contentMode = UIViewContentModeScaleAspectFit;
-            // TODO: need a default image
+            iv.contentMode = UIViewContentModeScaleAspectFill;
+            iv.clipsToBounds = YES;
             
             iv;
         });
@@ -352,7 +352,7 @@ static NSDateFormatter *shortFormatter;
     if (observation.observationPhotos.count > 0) {
         ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
         
-        [observationImageView sd_setImageWithURL:[NSURL URLWithString:photo.squareURL]
+        [observationImageView sd_setImageWithURL:[NSURL URLWithString:photo.smallURL]
                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                            [observationImageView setNeedsDisplay];
                                        }];
