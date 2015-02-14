@@ -341,13 +341,16 @@
 
 #pragma mark - Allow location search to update map location
 
-- (void)mapShouldZoomToCoordinates:(CLLocationCoordinate2D)coords andShowUserLocation:(BOOL)showUserLocation {
+- (void)mapShouldZoomToCoordinates:(CLLocationCoordinate2D)coords showUserLocation:(BOOL)showUserLocation {
     MKCoordinateRegion mapRegion;
     mapRegion.center = coords;
-    mapRegion.span.latitudeDelta = 0.014;       // ~ 1 mile radius
-    mapRegion.span.longitudeDelta = 0.014;      // ~ 1 mile radius
-    [mapView setRegion:mapRegion animated: YES];
     
+    // totally approximate, degree of latitude in a mile in meters
+    CLLocationDegrees degreesRadius = 1609.0 / 111694.0;
+    mapRegion.span.latitudeDelta = degreesRadius;
+    mapRegion.span.longitudeDelta = degreesRadius;
+    
+    [mapView setRegion:mapRegion animated: YES];
     mapView.showsUserLocation = showUserLocation;
 }
 

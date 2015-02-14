@@ -11,6 +11,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <CoreLocation/CoreLocation.h>
 
 #import "ExploreSearchViewController.h"
 
@@ -493,9 +494,23 @@
             }];
             
             if (validPlaces.count == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such place found. :(", nil)];
-                });
+                CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+                [geocoder geocodeAddressString:text
+                                      inRegion:nil  // if we're auth'd for location svcs, uses the user's location as the region
+                             completionHandler:^(NSArray *placemarks, NSError *error) {
+                                 if (error.code == kCLErrorNetwork) {
+                                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Please try again in a few moments.",
+                                                                                          @"Error message for the user, when the geocoder is telling us to slow down.")];
+                                 } else {
+                                     if (placemarks.count == 0) {
+                                         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such place found. :(", nil)];
+                                     } else {
+                                         CLPlacemark *place = placemarks.firstObject;
+                                         [SVProgressHUD showSuccessWithStatus:place.name];
+                                         [mapVC mapShouldZoomToCoordinates:place.location.coordinate showUserLocation:YES];
+                                     }
+                                 }
+                             }];
             } else if (validPlaces.count == 1) {
                 // dismiss the HUD
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -616,7 +631,7 @@
             [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found you!", nil)];
         }
         
-        [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate andShowUserLocation:YES];
+        [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate showUserLocation:YES];
     }
 }
 
