@@ -7,6 +7,9 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <BlocksKit/BlocksKit.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -27,6 +30,8 @@
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "User.h"
+#import "SettingsViewController.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -37,15 +42,18 @@ static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate,UINavigationControllerDelegate> {
+    NSFetchedResultsController *fetchedResultsController;
+}
+@end
+
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
-@synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
 @synthesize syncedObservationsCount = _syncedObservationsCount;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
-@synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize noContentLabel = _noContentLabel;
 @synthesize syncQueue = _syncQueue;
@@ -178,8 +186,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)stopEditing
 {
-    [self.editButton setTitle:NSLocalizedString(@"Edit",nil)];
-    [self.editButton setStyle:UIBarButtonItemStyleBordered];
     [self setEditing:NO animated:YES];
     [self checkSyncStatus];
 }
@@ -245,7 +251,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)loadData
 {
-    [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
+    NSError *fetchError;
+    [fetchedResultsController performFetch:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+    }
     [self setObservationsToSyncCount:0];
 }
 
@@ -253,7 +263,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     [self loadData];
 	[self checkEmpty];
-    [[self tableView] reloadData];
 }
 
 - (void)checkSyncStatus
@@ -293,9 +302,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     self.syncedObservationsCount = 0;
 }
 
-- (void)checkEmpty
-{
-    if (self.observations.count == 0) {
+- (void)checkEmpty {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];
+    if ([sectionInfo numberOfObjects] == 0) {
         if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.text = NSLocalizedString(@"You don't have any observations yet.",nil);
@@ -321,8 +330,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     return self.observationsToSyncCount + self.observationPhotosToSyncCount;
 }
 
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
-{
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
     if (self.view && ![[UIApplication sharedApplication] isIdleTimerDisabled]) {
         [self reload];
     }
@@ -450,8 +458,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)clickedActivity:(id)sender event:(UIEvent *)event {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    Observation *o = [self.observations
-                      objectAtIndex:indexPath.row];
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = o;
@@ -467,7 +474,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	
 	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-	Observation *observation = self.observations[indexPath.row];
+    Observation *observation = [fetchedResultsController objectAtIndexPath:indexPath];
 	
 	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
@@ -476,14 +483,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 # pragma mark TableViewController methods
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.observations count];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    Observation *o = [self.observations objectAtIndex:[indexPath row]];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
     UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
@@ -557,18 +563,121 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		
 		// RWTODO: delete from server
 		
-        Observation *o = [self.observations objectAtIndex:indexPath.row];
-        [self.observations removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
         [o destroy];
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        }
+        
         [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
         if (!self.isEditing) {
             [self checkSyncStatus];
         }
-        if (self.observations.count == 0) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];
+        if ([sectionInfo numberOfObjects] == 0) {
             [self stopEditing];
         }
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100)];
+    header.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 80, 80)];
+    iv.layer.cornerRadius = 40.0f;
+    iv.layer.borderColor = [UIColor grayColor].CGColor;
+    iv.layer.borderWidth = 0.5f;
+    iv.clipsToBounds = YES;
+    [header addSubview:iv];
+    
+    UILabel *userRealNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 10, tableView.frame.size.width - 130, 20)];
+    userRealNameLabel.textAlignment = NSTextAlignmentCenter;
+    userRealNameLabel.font = [UIFont systemFontOfSize:14.0f];
+    userRealNameLabel.textColor = [UIColor grayColor];
+    [header addSubview:userRealNameLabel];
+    
+    UILabel *obsCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 45, tableView.frame.size.width - 130, 10)];
+    obsCountLabel.textAlignment = NSTextAlignmentCenter;
+    obsCountLabel.font = [UIFont systemFontOfSize:11.0f];
+    obsCountLabel.textColor = [UIColor grayColor];
+    [header addSubview:obsCountLabel];
+
+    UILabel *taxaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 60, tableView.frame.size.width - 130, 10)];
+    taxaCountLabel.textAlignment = NSTextAlignmentCenter;
+    taxaCountLabel.font = [UIFont systemFontOfSize:11.0f];
+    taxaCountLabel.textColor = [UIColor grayColor];
+    [header addSubview:taxaCountLabel];
+
+    UILabel *idCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 75, tableView.frame.size.width - 130, 10)];
+    idCountLabel.textAlignment = NSTextAlignmentCenter;
+    idCountLabel.font = [UIFont systemFontOfSize:11.0f];
+    idCountLabel.textColor = [UIColor grayColor];
+    [header addSubview:idCountLabel];
+    
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+    fetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+    fetch.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"login" ascending:YES] ];
+    
+    NSError *fetchError;
+    NSArray *users = [[Observation managedObjectContext] executeFetchRequest:fetch error:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+    }
+    if (users.count == 0) {
+        // need to fetch from server
+    } else if (users.count == 1) {
+        User *me = users.firstObject;
+        
+        self.title = me.login;
+        self.navigationController.tabBarItem.title = @"Me";
+        
+        if (me.userIconURL && ![me.userIconURL isEqualToString:@""])
+            [iv sd_setImageWithURL:[NSURL URLWithString:[me.userIconURL stringByReplacingOccurrencesOfString:@"thumb" withString:@"medium"]]];
+        
+        if (me.name && ![me.name isEqualToString:@""])
+            userRealNameLabel.text = me.name;
+        
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.inaturalist.org/users/%@.json", username]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                   NSLog(@"completion is %@", response);
+                                   if (connectionError) {
+                                       [SVProgressHUD showErrorWithStatus:connectionError.localizedDescription];
+                                       return;
+                                   }
+                                   NSError *jsonError;
+                                   NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
+                                                                                        options:nil
+                                                                                          error:&jsonError];
+                                   
+                                   if (jsonError) {
+                                       [SVProgressHUD showErrorWithStatus:jsonError.localizedDescription];
+                                   }
+                                   NSNumber *obsCount = [dict objectForKey:@"observations_count"];
+                                   NSNumber *idCount = [dict objectForKey:@"identifications_count"];
+                                   NSNumber *taxaCount = [dict objectForKey:@"life_list_taxa_count"];
+                                   
+                                   obsCountLabel.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount.integerValue];
+                                   idCountLabel.text = [NSString stringWithFormat:@"Identifications: %ld", (long)idCount.integerValue];
+                                   taxaCountLabel.text = [NSString stringWithFormat:@"Distinct: %ld", (long)taxaCount.integerValue];
+                               }];
+        
+        
+    } else {
+        [SVProgressHUD showErrorWithStatus:@"Got too many users"];
+    }
+    
+    return header;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 100.0f;
 }
 
 # pragma mark memory management
@@ -578,27 +687,111 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     // Release any cached data, images, etc that aren't in use.
 }
 
+#pragma mark uibarbutton targets
+
+- (void)settings {
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    SettingsViewController *settings = [mainStoryboard instantiateViewControllerWithIdentifier:@"settings"];
+    [self.navigationController pushViewController:settings animated:YES];
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
+    FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:32.0f];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[settings imageWithSize:CGSizeMake(32, 32)]
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(settings)];
 //    // if you need to test syncing lots of obs
 //    [Observation deleteAll];
 //    for (int i = 0; i < 50; i++) {
 //        [self.observations addObject:[Observation stub]];
 //    }
 //    [[[RKObjectManager sharedManager] objectStore] save];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
+    fetchRequest.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"sortable"
+                                                                  ascending:NO] ];
+    fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                   managedObjectContext:[Observation managedObjectContext]
+                                                                     sectionNameKeyPath:nil
+                                                                              cacheName:nil];
+    fetchedResultsController.delegate = self;
     
-	// Do any additional setup after loading the view, typically from a nib.
-    if (!self.observations) {
-        [self loadData];
+    NSString *login = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (login) {
+        NSFetchRequest *userFetch = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+        userFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", login];
+        userFetch.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"login" ascending:YES] ];
+        NSError *fetchError;
+        NSArray *users = [[Observation managedObjectContext] executeFetchRequest:userFetch error:&fetchError];
+        if (users.count == 0) {
+            // need to fetch from server
+            NSLog(@"didn't find local user");
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%@.json", login]
+                                                            usingBlock:^(RKObjectLoader *loader) {
+                                                                loader.objectMapping = [User mapping];
+                                                                
+                                                                loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                                    NSError *saveError;
+                                                                    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                                    if (saveError) {
+                                                                        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                    } else {
+                                                                        NSError *fetchError;
+                                                                        NSArray *users = [[Observation managedObjectContext] executeFetchRequest:userFetch
+                                                                                                                                           error:&fetchError];
+                                                                        if (fetchError) {
+                                                                            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                        } else {
+                                                                            User *user = [users firstObject];
+
+                                                                            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"userID == %ld",
+                                                                                                      (long)user.recordID.integerValue];
+                                                                            [fetchedResultsController performFetch:&fetchError];
+                                                                            if (fetchError) {
+                                                                                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                };
+                                                                
+                                                                loader.onDidFailLoadWithError = ^(NSError *error) {
+                                                                    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                                };
+                                                            }];
+        } else {
+            User *user = [users firstObject];
+            //fetchRequest.predicate = [NSPredicate predicateWithFormat:@"userID == %ld",
+            //                          (long)user.recordID.integerValue];
+            NSError *fetchError;
+            [fetchedResultsController performFetch:&fetchError];
+            if (fetchError) {
+                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            }
+        }
+    } else {
+        // not logged in, so any fetch request is good as is
+        // any observations belong to the user
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        }
     }
     
     self.title = NSLocalizedString(@"Observations", nil);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
+    FAKIcon *personOutline = [FAKIonIcons ios7PersonOutlineIconWithSize:35];
+    self.navigationController.tabBarItem.image = [personOutline imageWithSize:CGSizeMake(34,45)];
+    
+    FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:35];
+    self.navigationController.tabBarItem.selectedImage = [person imageWithSize:CGSizeMake(34,45)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
 }
@@ -698,9 +891,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         ObservationPageViewController *pvc = [segue destinationViewController];
         [ovc setDelegate:self];
-        Observation *o = [self.observations 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
+        Observation *o = [fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
         [ovc setObservation:o];
         [pvc setViewControllers:[NSArray arrayWithObject:ovc]
                        direction:UIPageViewControllerNavigationDirectionForward
@@ -987,5 +1178,49 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                        otherButtonTitles:nil];
     [av show];
 }
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationNone];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [self.tableView moveRowAtIndexPath:indexPath
+                                   toIndexPath:newIndexPath];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+
 
 @end

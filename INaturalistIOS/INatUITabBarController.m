@@ -6,10 +6,17 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <FontAwesomeKit/FAKIonIcons.h>
+
 #import "INatUITabBarController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "INatWebController.h"
+
+@interface INatUITabBarController () <UITabBarDelegate, UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+    
+}
+@end
 
 @implementation INatUITabBarController
 
@@ -34,7 +41,51 @@
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         self.tabBar.translucent = NO;
     }
+    
+    self.delegate = self;
+    
+    UIViewController *vc = [[UIViewController alloc] initWithNibName:nil bundle:nil];
+    FAKIcon *camera = [FAKIonIcons ios7CameraIconWithSize:55];
+    vc.tabBarItem.image = [camera imageWithSize:CGSizeMake(55, 55)];
+    
+    NSMutableArray *vcs = [self.viewControllers mutableCopy];
+    [vcs insertObject:vc atIndex:2];
+    [self setViewControllers:vcs animated:NO];
+    
+    self.selectedIndex = 4;
+    
     [super viewDidLoad];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 NSLog(@"dismissed");
+                             }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 NSLog(@"cancelled, dismissed.");
+                             }];
+}
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    
+    if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [tabBarController presentViewController:picker
+                                       animated:YES
+                                     completion:^{
+                                         NSLog(@"done presenting");
+                                     }];
+        return NO;
+    }
+
+    return YES;
 }
 
 // make sure view controllers in the tabs can autorotate

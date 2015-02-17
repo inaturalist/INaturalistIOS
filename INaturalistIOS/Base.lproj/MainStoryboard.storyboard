@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D72i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
@@ -328,10 +328,10 @@
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="ObservationsViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" id="1W6-6t-1lE">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="1W6-6t-1lE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationTableCell" rowHeight="54" id="XTh-7E-mmV">
                                 <rect key="frame" x="0.0" y="86" width="320" height="54"/>
@@ -398,21 +398,8 @@
                             <outlet property="delegate" destination="2" id="H1f-PQ-aEK"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf">
-                        <barButtonItem key="leftBarButtonItem" title="Edit" id="0Fk-rY-9h1">
-                            <connections>
-                                <action selector="edit:" destination="2" id="uXk-xm-Qpf"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="31c-qh-A6S">
-                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
-                            <connections>
-                                <segue destination="x2g-xK-zHb" kind="push" identifier="AddObservationSegue" id="nqN-gg-ATR"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf"/>
                     <connections>
-                        <outlet property="editButton" destination="0Fk-rY-9h1" id="mdZ-o7-jWm"/>
                         <outlet property="syncButton" destination="r7b-jc-Kqj" id="ZEM-2s-eAN"/>
                         <segue destination="Mzf-VH-evH" kind="modal" identifier="LoginSegue" id="Iwt-4E-pF9"/>
                     </connections>
@@ -447,11 +434,10 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
                         <segue destination="2go-53-3Kx" kind="relationship" relationship="viewControllers" id="V7G-f9-DCP"/>
                         <segue destination="t06-UC-YUc" kind="relationship" relationship="viewControllers" id="i8C-Km-UsP"/>
                         <segue destination="2Xz-Sc-ScK" kind="relationship" relationship="viewControllers" id="Fw8-Wc-oOq"/>
-                        <segue destination="ydS-en-xrb" kind="relationship" relationship="viewControllers" id="ILD-eE-B2s"/>
+                        <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9h-gt-HSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -541,7 +527,7 @@
         <!--Settings-->
         <scene sceneID="D7K-6M-lYV">
             <objects>
-                <tableViewController id="ydS-en-xrb" customClass="SettingsViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="settings" id="ydS-en-xrb" customClass="SettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="YUr-BE-ndz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2392,10 +2378,10 @@ This app uses numerous open source and Creative Common-licensed materials, inclu
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="hvR-ND-N81"/>
         <segue reference="8j7-c4-5Sv"/>
-        <segue reference="Q4H-Ck-yCo"/>
         <segue reference="sKu-Sy-oMc"/>
+        <segue reference="hvR-ND-N81"/>
+        <segue reference="Q4H-Ck-yCo"/>
         <segue reference="6Re-on-nUT"/>
     </inferredMetricsTieBreakers>
 </document>
