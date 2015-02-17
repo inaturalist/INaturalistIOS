@@ -79,6 +79,14 @@ static const int IdentificationCellBodyTag = 11;
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+    self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
+    self.navigationController.toolbar.tintColor = [UIColor inatTint];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
