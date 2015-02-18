@@ -665,7 +665,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                    
                                    obsCountLabel.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount.integerValue];
                                    idCountLabel.text = [NSString stringWithFormat:@"Identifications: %ld", (long)idCount.integerValue];
-                                   taxaCountLabel.text = [NSString stringWithFormat:@"Distinct: %ld", (long)taxaCount.integerValue];
+                                   taxaCountLabel.text = [NSString stringWithFormat:@"Distinct Taxa: %ld", (long)taxaCount.integerValue];
                                }];
         
         
