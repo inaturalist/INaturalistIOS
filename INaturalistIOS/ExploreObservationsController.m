@@ -383,6 +383,106 @@
     }];
 }
 
+- (NSURL *)urlForLeaderboardSpan:(ExploreLeaderboardSpan)span searchPredicates:(NSArray *)predicates {
+    
+    NSString *d1, *d2;
+    
+    NSDate *date = [NSDate date];
+    NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
+    monthFormatter.dateFormat = @"MM";
+    NSString *month = [monthFormatter stringFromDate:date];
+    
+    NSDateFormatter *yearFormatter = [[NSDateFormatter alloc] init];
+    yearFormatter.dateFormat = @"yyyy";
+    NSString *year = [yearFormatter stringFromDate:date];
+    
+    NSDateFormatter *ymdFormatter = [[NSDateFormatter alloc] init];
+    ymdFormatter.dateFormat = @"yyyy-MM-dd";
+    NSString *today = [ymdFormatter stringFromDate:date];
+    
+    if (span == ExploreLeaderboardSpanYear) {
+        d1 = [NSString stringWithFormat:@"%@-01-01", year];
+    } else {
+        d1 = [NSString stringWithFormat:@"%@-%@-01", year, month];
+    }
+    d2 = today;
+
+    
+    NSString *url = @"http://www.inaturalist.org/observations/user_stats.json";
+    NSString *query = [NSString stringWithFormat:@"?d1=%@&d2=%@", d1, d2];
+    
+    // apply active search predicates to the query
+    if (predicates.count > 0) {
+        for (ExploreSearchPredicate *predicate in predicates) {
+            if (predicate.type == ExploreSearchPredicateTypePerson) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&user_id=%ld", (long)predicate.searchPerson.personId]];
+            } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
+            } else if (predicate.type == ExploreSearchPredicateTypeLocation) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
+            } else if (predicate.type == ExploreSearchPredicateTypeProject) {
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
+            }
+        }
+    }
+    
+    return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, query]];
+}
+
+
+- (void)loadLeaderboardSpan:(ExploreLeaderboardSpan)span completion:(FetchCompletionHandler)handler {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[self urlForLeaderboardSpan:span searchPredicates:self.activeSearchPredicates]];
+
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               if (connectionError) {
+                                   handler(nil, connectionError);
+                                   return;
+                               }
+                               
+                               NSError *jsonError;
+                               NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
+                                                                                    options:nil
+                                                                                      error:&jsonError];
+                               if (jsonError) {
+                                   handler(nil, jsonError);
+                                   return;
+                               }
+                               
+                               NSArray *mostObservations = [json valueForKeyPath:@"most_observations"];
+                               NSArray *mostSpecies = [json valueForKeyPath:@"most_species"];
+                               
+                               NSMutableDictionary *list = [NSMutableDictionary dictionary];
+                               [mostObservations bk_each:^(NSDictionary *obsEntry) {
+                                   list[[[obsEntry valueForKeyPath:@"user.id"] stringValue]] = [@{
+                                                                                                  @"user_id": [obsEntry valueForKeyPath:@"user.id"],
+                                                                                                  @"user_login": [obsEntry valueForKeyPath:@"user.login"],
+                                                                                                  @"user_icon": [obsEntry valueForKeyPath:@"user.user_icon_url"],
+                                                                                                  @"observations_count": [obsEntry valueForKeyPath:@"count"],
+                                                                                                  @"species_count": @(0),
+                                                                                                  } mutableCopy];
+                               }];
+                               
+                               [mostSpecies bk_each:^(NSDictionary *speciesEntry) {
+                                   NSMutableDictionary *user = list[[[speciesEntry valueForKeyPath:@"user.id"] stringValue]];
+                                   if (user) {
+                                       user[@"species_count"] = [speciesEntry valueForKeyPath:@"count"];
+                                   } else {
+                                       list[[speciesEntry valueForKeyPath:@"user.id"]] = [@{
+                                                                                            @"user_id": [speciesEntry valueForKeyPath:@"user.id"],
+                                                                                            @"user_login": [speciesEntry valueForKeyPath:@"user.login"],
+                                                                                            @"user_icon": [speciesEntry valueForKeyPath:@"user.user_icon_url"],
+                                                                                            @"observations_count": @(0),
+                                                                                            @"species_count": [speciesEntry valueForKeyPath:@"count"],
+                                                                                            } mutableCopy];
+                                   }
+                               }];
+                               
+                               handler(list.allValues, nil);
+                           }];
+
+}
 
 #pragma mark - Notification
 

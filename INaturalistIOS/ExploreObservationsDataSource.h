@@ -12,6 +12,11 @@
 #import "ExploreSearchPredicate.h"
 #import "ExploreRegion.h"
 
+typedef NS_ENUM(NSInteger, ExploreLeaderboardSpan) {
+    ExploreLeaderboardSpanMonth,
+    ExploreLeaderboardSpanYear
+};
+
 /**
  A class that implements this protocol wishes to receive notifications about
  the success and/or failure of observation fetch requests.
@@ -62,5 +67,7 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 - (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
 - (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
 - (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler;
+
+- (void)loadLeaderboardSpan:(ExploreLeaderboardSpan)span completion:(FetchCompletionHandler)handler;
 
 @end

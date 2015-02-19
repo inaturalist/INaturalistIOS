@@ -36,6 +36,7 @@
 #import "AutocompleteSearchItem.h"
 #import "ShortcutSearchItem.h"
 #import "TutorialSinglePageViewController.h"
+#import "ExploreLeaderboardViewController.h"
 
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
@@ -55,7 +56,7 @@
     
     ExploreSearchController *searchController;
     
-    UIBarButtonItem *refreshItem;
+    UIBarButtonItem *leaderboardItem;
     UIBarButtonItem *spinnerItem;
     UIActivityIndicatorView *spinner;
 }
@@ -87,11 +88,12 @@
                                                                                 target:self
                                                                                 action:@selector(searchPressed)];
         self.navigationItem.leftBarButtonItem = search;
-
-        refreshItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                    target:self
-                                                                    action:@selector(refreshPressed)];
-        self.navigationItem.rightBarButtonItem = refreshItem;
+        
+        leaderboardItem = [[UIBarButtonItem alloc] initWithTitle:@"Stats"
+                                                           style:UIBarButtonItemStylePlain
+                                                          target:self
+                                                          action:@selector(leaderboardPressed)];
+        self.navigationItem.rightBarButtonItem = leaderboardItem;
         
         spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
@@ -246,8 +248,11 @@
 
 #pragma mark - UIControl targets
 
-- (void)refreshPressed {
-    [observationsController reload];
+- (void)leaderboardPressed {
+    ExploreLeaderboardViewController *vc = [[ExploreLeaderboardViewController alloc] initWithNibName:nil bundle:nil];
+    vc.observationsController = observationsController;
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)removeSearchPressed {
@@ -715,7 +720,7 @@
 - (void)finishedObservationFetch {
     if (!observationsController.isFetching) {
         // set the right bar button item to the reload button
-        self.navigationItem.rightBarButtonItem = refreshItem;
+        self.navigationItem.rightBarButtonItem = leaderboardItem;
         // stop the progress view
         [spinner stopAnimating];
     }
@@ -724,7 +729,7 @@
 - (void)failedObservationFetch:(NSError *)error {
     [SVProgressHUD showErrorWithStatus:error.localizedDescription];
     // set the right bar button item to the reload button
-    self.navigationItem.rightBarButtonItem = refreshItem;
+    self.navigationItem.rightBarButtonItem = leaderboardItem;
     // stop the progress view
     [spinner stopAnimating];
 }
