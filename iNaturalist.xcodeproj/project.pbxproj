@@ -269,6 +269,7 @@
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
+		FAE446461A96CCFB007E4847 /* ObservationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE446451A96CCFB007E4847 /* ObservationTableCell.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -857,6 +858,8 @@
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
+		FAE446441A96CCFB007E4847 /* ObservationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationTableCell.h; sourceTree = "<group>"; };
+		FAE446451A96CCFB007E4847 /* ObservationTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationTableCell.m; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1335,6 +1338,8 @@
 		19F621A3150ECD8000C58F28 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				FAE446441A96CCFB007E4847 /* ObservationTableCell.h */,
+				FAE446451A96CCFB007E4847 /* ObservationTableCell.m */,
 				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
 				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
 				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
@@ -2106,6 +2111,7 @@
 				1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */,
 				1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
+				FAE446461A96CCFB007E4847 /* ObservationTableCell.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,

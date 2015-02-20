@@ -10,6 +10,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <BlocksKit/BlocksKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <FontAwesomeKit/FAKFoundationIcons.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -32,6 +33,7 @@
 #import "TutorialSinglePageViewController.h"
 #import "User.h"
 #import "SettingsViewController.h"
+#import "ObservationTableCell.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -489,7 +491,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    
+    ObservationTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"obs_cell"];
+    [self configureCell:cell forIndexPath:indexPath];
+    return cell;
+    
+    /*
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
     UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
@@ -555,6 +563,53 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     syncImage.hidden = !o.needsSync;
     
     return cell;
+     */
+}
+
+- (void)configureCell:(ObservationTableCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+
+    if (o.sortedObservationPhotos.count > 0) {
+        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
+        if (op.photoKey == nil) {
+            [cell.obsImageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
+        } else {
+            cell.obsImageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        }
+        
+    } else {
+        cell.obsImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+    }
+    
+    if (o.speciesGuess && o.speciesGuess.length > 0) {
+        cell.title.text = o.speciesGuess;
+    } else {
+        cell.title.text = NSLocalizedString(@"Something...",nil);
+    }
+    
+    if (o.placeGuess && o.placeGuess.length > 0) {
+        cell.subtitle.text = o.placeGuess;
+    } else if (o.latitude) {
+        cell.subtitle.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+    } else {
+        cell.subtitle.text = NSLocalizedString(@"Somewhere...",nil);
+    }
+    
+    if (o.hasUnviewedActivity.boolValue) {
+        // make bubble red
+        [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+    } else {
+        // make bubble grey
+        [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+    }
+    
+    [cell.activityButton setTitle:[NSString stringWithFormat:@"%d", o.activityCount] forState:UIControlStateNormal];
+
+    NSLog(@"observed on string is %@", o.observedOnShortString);
+    
+    cell.upperRight.text = o.observedOnShortString;
+    cell.syncImage.hidden = !o.needsSync;
+
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -680,6 +735,14 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     return 100.0f;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 54.0f;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"EditObservationSegue" sender:nil];
+}
+
 # pragma mark memory management
 - (void)didReceiveMemoryWarning
 {
@@ -700,6 +763,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     [super viewDidLoad];
 
+    [self.tableView registerClass:[ObservationTableCell class] forCellReuseIdentifier:@"obs_cell"];
+    
     FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:32.0f];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[settings imageWithSize:CGSizeMake(32, 32)]
                                                                               style:UIBarButtonItemStylePlain
