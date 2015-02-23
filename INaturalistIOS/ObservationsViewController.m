@@ -11,6 +11,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>
+#import <PDKTStickySectionHeadersCollectionViewLayout/PDKTStickySectionHeadersCollectionViewLayout.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -44,8 +45,10 @@ static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate,UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate,UINavigationControllerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     NSFetchedResultsController *fetchedResultsController;
+    
+    UICollectionView *obsCollectionView;
 }
 @end
 
@@ -205,7 +208,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if ([self itemsToSyncCount] > 0) {
         [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
                          withProperties:@{ @"ActionTaken" : @"Sync" }];
-        [self.refreshControl endRefreshing];
+        //[self.refreshControl endRefreshing];
         [self sync:nil];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
@@ -638,7 +641,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100)];
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 140)];
     header.backgroundColor = [UIColor whiteColor];
     
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 80, 80)];
@@ -676,6 +679,30 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"User"];
     fetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
     fetch.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"login" ascending:YES] ];
+    
+    UIButton *listButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    listButton.frame = CGRectMake(0, 100, tableView.frame.size.width / 2, 40);
+    [listButton setTitle:@"List" forState:UIControlStateNormal];
+    [listButton addTarget:self action:@selector(listSelected) forControlEvents:UIControlEventTouchUpInside];
+    listButton.enabled = NO;
+    listButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    listButton.backgroundColor = [UIColor grayColor];
+    listButton.tintColor = [UIColor whiteColor];
+    listButton.layer.borderWidth = 0.5f;
+    [header addSubview:listButton];
+    
+    UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    gridButton.frame = CGRectMake(tableView.frame.size.width / 2, 100, tableView.frame.size.width / 2, 40);
+    [gridButton setTitle:@"Grid" forState:UIControlStateNormal];
+    [gridButton addTarget:self action:@selector(gridSelected) forControlEvents:UIControlEventTouchUpInside];
+    gridButton.enabled = YES;
+    gridButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    gridButton.layer.borderWidth = 0.5f;
+    gridButton.backgroundColor = [UIColor inatTint];
+    gridButton.tintColor = [UIColor whiteColor];
+
+    [header addSubview:gridButton];
+
     
     NSError *fetchError;
     NSArray *users = [[Observation managedObjectContext] executeFetchRequest:fetch error:&fetchError];
@@ -732,7 +759,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 100.0f;
+    return 140.0f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -740,8 +767,190 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"EditObservationSegue" sender:nil];
+    [self performSegueWithIdentifier:@"EditObservationSegue" sender:indexPath];
 }
+
+#pragma mark - UICollectionView data source / delegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"EditObservationSegue" sender:indexPath];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    return [sectionInfo numberOfObjects];
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"obs_collection_cell" forIndexPath:indexPath];
+    
+    /*
+    if (indexPath.item % 2 == 0)
+        cell.contentView.backgroundColor = [UIColor orangeColor];
+    else
+        cell.contentView.backgroundColor = [UIColor blueColor];
+     */
+    
+    [[cell viewWithTag:0x09] removeFromSuperview];
+    
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:cell.bounds];
+    iv.clipsToBounds = YES;
+    iv.contentMode = UIViewContentModeScaleAspectFill;
+    iv.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    iv.tag = 0x09;
+    [cell.contentView addSubview:iv];
+
+    if (o.sortedObservationPhotos.count > 0) {
+        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
+        [iv sd_setImageWithURL:[NSURL URLWithString:op.smallURL]
+                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                         //[iv sd_setImageWithURL:[NSURL URLWithString:op.smallURL]];
+                     }];
+        
+    } else {
+        iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+    }
+    
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(collectionView.frame.size.width, 140);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        
+        UICollectionReusableView *reusableHeader = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"collection_header" forIndexPath:indexPath];
+        
+        UIView *header = [[UIView alloc] initWithFrame:reusableHeader.bounds];
+        [reusableHeader addSubview:header];
+        
+        header.backgroundColor = [UIColor whiteColor];
+        
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 80, 80)];
+        iv.layer.cornerRadius = 40.0f;
+        iv.layer.borderColor = [UIColor grayColor].CGColor;
+        iv.layer.borderWidth = 0.5f;
+        iv.clipsToBounds = YES;
+        [header addSubview:iv];
+        
+        UILabel *userRealNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 10, collectionView.frame.size.width - 130, 20)];
+        userRealNameLabel.textAlignment = NSTextAlignmentCenter;
+        userRealNameLabel.font = [UIFont systemFontOfSize:14.0f];
+        userRealNameLabel.textColor = [UIColor grayColor];
+        [header addSubview:userRealNameLabel];
+        
+        UILabel *obsCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 45, collectionView.frame.size.width - 130, 10)];
+        obsCountLabel.textAlignment = NSTextAlignmentCenter;
+        obsCountLabel.font = [UIFont systemFontOfSize:11.0f];
+        obsCountLabel.textColor = [UIColor grayColor];
+        [header addSubview:obsCountLabel];
+        
+        UILabel *taxaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 60, collectionView.frame.size.width - 130, 10)];
+        taxaCountLabel.textAlignment = NSTextAlignmentCenter;
+        taxaCountLabel.font = [UIFont systemFontOfSize:11.0f];
+        taxaCountLabel.textColor = [UIColor grayColor];
+        [header addSubview:taxaCountLabel];
+        
+        UILabel *idCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 75, collectionView.frame.size.width - 130, 10)];
+        idCountLabel.textAlignment = NSTextAlignmentCenter;
+        idCountLabel.font = [UIFont systemFontOfSize:11.0f];
+        idCountLabel.textColor = [UIColor grayColor];
+        [header addSubview:idCountLabel];
+        
+        NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+        NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+        fetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+        fetch.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"login" ascending:YES] ];
+        
+        UIButton *listButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        listButton.frame = CGRectMake(0, 100, collectionView.frame.size.width / 2, 40);
+        [listButton setTitle:@"List" forState:UIControlStateNormal];
+        listButton.titleLabel.font = [UIFont boldSystemFontOfSize:listButton.titleLabel.font.pointSize];
+        [listButton addTarget:self action:@selector(listSelected) forControlEvents:UIControlEventTouchUpInside];
+        listButton.enabled = YES;
+        listButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        listButton.backgroundColor = [UIColor inatTint];
+        listButton.tintColor = [UIColor whiteColor];
+
+        listButton.layer.borderWidth = 0.5f;
+        [header addSubview:listButton];
+        
+        UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        gridButton.frame = CGRectMake(collectionView.frame.size.width / 2, 100, collectionView.frame.size.width / 2, 40);
+        [gridButton setTitle:@"Grid" forState:UIControlStateNormal];
+        gridButton.titleLabel.font = [UIFont boldSystemFontOfSize:gridButton.titleLabel.font.pointSize];
+        [gridButton addTarget:self action:@selector(gridSelected) forControlEvents:UIControlEventTouchUpInside];
+        gridButton.backgroundColor = [UIColor grayColor];
+        gridButton.tintColor = [UIColor whiteColor];
+        gridButton.enabled = NO;
+        gridButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        gridButton.layer.borderWidth = 0.5f;
+        [header addSubview:gridButton];
+        
+        
+        NSError *fetchError;
+        NSArray *users = [[Observation managedObjectContext] executeFetchRequest:fetch error:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        }
+        if (users.count == 0) {
+            // need to fetch from server
+        } else if (users.count == 1) {
+            User *me = users.firstObject;
+            
+            self.title = me.login;
+            self.navigationController.tabBarItem.title = @"Me";
+            
+            if (me.userIconURL && ![me.userIconURL isEqualToString:@""])
+                [iv sd_setImageWithURL:[NSURL URLWithString:[me.userIconURL stringByReplacingOccurrencesOfString:@"thumb" withString:@"medium"]]];
+            
+            if (me.name && ![me.name isEqualToString:@""])
+                userRealNameLabel.text = me.name;
+            
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.inaturalist.org/users/%@.json", username]];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                       NSLog(@"completion is %@", response);
+                                       if (connectionError) {
+                                           [SVProgressHUD showErrorWithStatus:connectionError.localizedDescription];
+                                           return;
+                                       }
+                                       NSError *jsonError;
+                                       NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
+                                                                                            options:nil
+                                                                                              error:&jsonError];
+                                       
+                                       if (jsonError) {
+                                           [SVProgressHUD showErrorWithStatus:jsonError.localizedDescription];
+                                       }
+                                       NSNumber *obsCount = [dict objectForKey:@"observations_count"];
+                                       NSNumber *idCount = [dict objectForKey:@"identifications_count"];
+                                       NSNumber *taxaCount = [dict objectForKey:@"life_list_taxa_count"];
+                                       
+                                       obsCountLabel.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount.integerValue];
+                                       idCountLabel.text = [NSString stringWithFormat:@"Identifications: %ld", (long)idCount.integerValue];
+                                       taxaCountLabel.text = [NSString stringWithFormat:@"Distinct Taxa: %ld", (long)taxaCount.integerValue];
+                                   }];
+            
+            
+        } else {
+            [SVProgressHUD showErrorWithStatus:@"Got too many users"];
+        }
+        
+        return reusableHeader;
+    }
+}
+
 
 # pragma mark memory management
 - (void)didReceiveMemoryWarning
@@ -758,11 +967,64 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController pushViewController:settings animated:YES];
 }
 
+#pragma mark - Tab Selectors
+
+- (void)listSelected {
+    [UIView animateWithDuration:1.0f
+                     animations:^{
+                         obsCollectionView.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         [obsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+                                                   atScrollPosition:UICollectionViewScrollPositionBottom
+                                                           animated:NO];
+                         obsCollectionView.hidden = YES;
+                     }];
+}
+
+- (void)gridSelected {
+    obsCollectionView.alpha = 0.0f;
+    obsCollectionView.hidden = NO;
+    [UIView animateWithDuration:1.0f
+                     animations:^{
+                         obsCollectionView.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                               atScrollPosition:UITableViewScrollPositionTop
+                                                       animated:NO];
+                     }];
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    UICollectionViewFlowLayout *layout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
+    float numberOfCellsPerRow = 3;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        numberOfCellsPerRow = 5;
+    }
+    float shortestSide = 320.0f;
+    float itemWidth = (shortestSide / numberOfCellsPerRow) - 2.0f;
+    layout.itemSize = CGSizeMake(itemWidth, itemWidth);
+    layout.minimumInteritemSpacing = 2.0f;
+    layout.minimumLineSpacing = 2.0f;
 
+    obsCollectionView = [[UICollectionView alloc] initWithFrame:self.tableView.frame
+                                        collectionViewLayout:layout];
+    obsCollectionView.backgroundColor = [UIColor whiteColor];
+    obsCollectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    [obsCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"obs_collection_cell"];
+    [obsCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"collection_header"];
+    obsCollectionView.hidden = YES;
+    obsCollectionView.delegate = self;
+    obsCollectionView.dataSource = self;
+    
+    [self.view addSubview:obsCollectionView];
+
+    
     [self.tableView registerClass:[ObservationTableCell class] forCellReuseIdentifier:@"obs_cell"];
     
     FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:32.0f];
@@ -877,9 +1139,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		RefreshControl *refresh = [[RefreshControl alloc] init];
 		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)];
 		[refresh addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
-		self.refreshControl = refresh;
+		//self.refreshControl = refresh;
 	} else {
-		self.refreshControl = nil;
+		//self.refreshControl = nil;
 	}
     [self reload];
     
@@ -945,18 +1207,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"AddObservationSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
-        Observation *o = [Observation object];
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        [vc setObservation:o];
-    } else if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
+    if ([segue.identifier isEqualToString:@"EditObservationSegue"]) {
+        NSIndexPath *indexPath = (NSIndexPath *)sender;
+        
         ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         ObservationPageViewController *pvc = [segue destinationViewController];
         [ovc setDelegate:self];
-        Observation *o = [fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+        Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
         [ovc setObservation:o];
         [pvc setViewControllers:[NSArray arrayWithObject:ovc]
                        direction:UIPageViewControllerNavigationDirectionForward
@@ -977,7 +1234,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-	[self.refreshControl endRefreshing];
+	//[self.refreshControl endRefreshing];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
@@ -1041,6 +1298,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             errorMsg = error.localizedDescription;
     }
     
+    /*
     if (self.isSyncing || self.refreshControl.isRefreshing) {
         NSString *msg, *title;
         if (error.code == -1004 || ([error.domain isEqualToString:@"org.restkit.RestKit.ErrorDomain"] && error.code == 2)) {
@@ -1058,6 +1316,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [av show];
     }
     [self.refreshControl endRefreshing];
+     */
 }
 
 #pragma mark - RKRequestDelegate
@@ -1264,21 +1523,26 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         case NSFetchedResultsChangeInsert:
             [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
+            [obsCollectionView insertItemsAtIndexPaths:@[ newIndexPath ]];
             break;
             
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
+            [obsCollectionView deleteItemsAtIndexPaths:@[ indexPath ]];
             break;
             
         case NSFetchedResultsChangeUpdate:
             [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                   withRowAnimation:UITableViewRowAnimationNone];
+            [obsCollectionView reloadItemsAtIndexPaths:@[ indexPath ]];
             break;
             
         case NSFetchedResultsChangeMove:
             [self.tableView moveRowAtIndexPath:indexPath
                                    toIndexPath:newIndexPath];
+            [obsCollectionView moveItemAtIndexPath:indexPath
+                                       toIndexPath:newIndexPath];
             break;
             
         default:

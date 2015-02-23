@@ -12,8 +12,9 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "INatWebController.h"
+#import "ObservationDetailViewController.h"
 
-@interface INatUITabBarController () <UITabBarDelegate, UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface INatUITabBarController () <UITabBarDelegate, UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
     
 }
 @end
@@ -54,6 +55,8 @@
     
     self.selectedIndex = 4;
     
+    [self setObservationsTabBadge];
+    
     [super viewDidLoad];
 }
 
@@ -71,9 +74,34 @@
                              }];
 }
 
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self setSelectedIndex:4];
+}
+
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
+        
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        ObservationDetailViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+        vc.delegate = self;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+
+        //[vc setDelegate:self];
+        Observation *o = [Observation object];
+        o.localObservedOn = [NSDate date];
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+        [vc setObservation:o];
+
+        [tabBarController presentViewController:nav animated:YES completion:nil];
+        
+        /*
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
@@ -82,6 +110,8 @@
                                      completion:^{
                                          NSLog(@"done presenting");
                                      }];
+         */
+        
         return NO;
     }
 
@@ -114,7 +144,11 @@
     NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:0];
+    if (self.tabBar.items.count < 5) {
+        return;
+    }
+    
+    UITabBarItem *item = [self.tabBar.items objectAtIndex:4];
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%d", theCount];
     } else {

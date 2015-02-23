@@ -17,7 +17,7 @@
 @class ObservationStore;
 
 
-@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
+@interface ObservationsViewController : UIViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
 @property (nonatomic, assign) int observationsToSyncCount;
 @property (nonatomic, assign) int syncedObservationsCount;
 @property (nonatomic, assign) int observationPhotosToSyncCount;
@@ -29,6 +29,7 @@
 @property (nonatomic, strong) SyncQueue *syncQueue;
 @property (nonatomic, strong) NSMutableArray *syncErrors;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
+@property IBOutlet UITableView *tableView;
 
 - (IBAction)sync:(id)sender;
 - (IBAction)viewActivity:(id)sender;
