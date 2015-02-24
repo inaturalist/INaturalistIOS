@@ -1,5 +1,5 @@
 PODS:
-  - ActionSheetPicker-3.0 (1.3.7)
+  - ActionSheetPicker-3.0 (1.3.12)
   - AFNetworking (1.3.4)
   - BlocksKit (2.2.5):
     - BlocksKit/All (= 2.2.5)
@@ -59,7 +59,7 @@ PODS:
   - UIColor-HTMLColors (1.0.0)
 
 DEPENDENCIES:
-  - ActionSheetPicker-3.0 (= 1.3.7)
+  - ActionSheetPicker-3.0 (= 1.3.12)
   - AFNetworking (= 1.3.4)
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
@@ -82,7 +82,7 @@ DEPENDENCIES:
   - UIColor-HTMLColors (= 1.0.0)
 
 SPEC CHECKSUMS:
-  ActionSheetPicker-3.0: f0cd35cbafd5534a9100549eac092ae198450b85
+  ActionSheetPicker-3.0: e49127271ec833864f3235ba7261b1f0d093a503
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
