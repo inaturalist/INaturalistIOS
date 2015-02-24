@@ -24,52 +24,80 @@
             self.backgroundColor = [UIColor whiteColor];
         }
         
-        self.title = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.title.translatesAutoresizingMaskIntoConstraints = NO;
-        self.title.textAlignment = NSTextAlignmentCenter;
-        self.title.textColor = [UIColor darkGrayColor];
-        self.title.font = [UIFont boldSystemFontOfSize:16.0f];
+        self.title = ({
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+            label.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [UIColor darkGrayColor];
+            label.font = [UIFont boldSystemFontOfSize:16.0f];
+            
+            label;
+        });
         [self addSubview:self.title];
         
-        UILabel *spanLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        spanLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        spanLabel.textAlignment = NSTextAlignmentCenter;
-        spanLabel.text = NSLocalizedString(@"Time Period", @"Label for the time period selector in the explore leaderboard header.");
-        spanLabel.textColor = [UIColor grayColor];
-        spanLabel.font = [UIFont systemFontOfSize:12.0f];
+        UILabel *spanLabel = ({
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+            label.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            label.textAlignment = NSTextAlignmentCenter;
+            label.text = NSLocalizedString(@"Time Period", @"Label for the time period selector in the explore leaderboard header.");
+            label.textColor = [UIColor grayColor];
+            label.font = [UIFont systemFontOfSize:12.0f];
+            
+            label;
+        });
         [self addSubview:spanLabel];
         
-        UILabel *sortLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        sortLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        sortLabel.textAlignment = NSTextAlignmentCenter;
-        sortLabel.text = NSLocalizedString(@"Sort", @"Label for the sort selector in the explore leaderboard header.");
-        sortLabel.textColor = [UIColor grayColor];
-        sortLabel.font = [UIFont systemFontOfSize:12.0f];
+        UILabel *sortLabel = ({
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+            label.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            label.textAlignment = NSTextAlignmentCenter;
+            label.text = NSLocalizedString(@"Sort", @"Label for the sort selector in the explore leaderboard header.");
+            label.textColor = [UIColor grayColor];
+            label.font = [UIFont systemFontOfSize:12.0f];
+            
+            label;
+        });
         [self addSubview:sortLabel];
         
-        NSDate *date = [NSDate date];
         
-        NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
-        monthFormatter.dateFormat = @"MMM";
-        NSString *month = [monthFormatter stringFromDate:date];
-        
-        NSDateFormatter *yearFormatter = [[NSDateFormatter alloc] init];
-        yearFormatter.dateFormat = @"yyyy";
-        NSString *year = [yearFormatter stringFromDate:date];
-        
-        self.spanSelector = [[UISegmentedControl alloc] initWithItems:@[month, year]];
-        self.spanSelector.translatesAutoresizingMaskIntoConstraints = NO;
+        self.spanSelector = ({
+            NSDate *date = [NSDate date];
+            
+            NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
+            monthFormatter.dateFormat = @"MMM";
+            NSString *month = [monthFormatter stringFromDate:date];
+            
+            NSDateFormatter *yearFormatter = [[NSDateFormatter alloc] init];
+            yearFormatter.dateFormat = @"yyyy";
+            NSString *year = [yearFormatter stringFromDate:date];
+            
+            UISegmentedControl *control = [[UISegmentedControl alloc] initWithItems:@[month, year]];
+            control.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            control;
+        });
         [self addSubview:self.spanSelector];
         
-        self.sortSelector = [[UISegmentedControl alloc] initWithItems:@[@"Obs", @"Species"]];
-        self.sortSelector.translatesAutoresizingMaskIntoConstraints = NO;
+        self.sortSelector = ({
+            UISegmentedControl *control = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"Obs", @"Observation option for explore leaderboard sorting. Must be short."),
+                                                                                       NSLocalizedString(@"Species", @"Species optino for explore leaderboard sorting. Must be short.")] ];
+            control.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            control;
+        });
         [self addSubview:self.sortSelector];
         
-        UIView *bottomEdge = [[UIView alloc] initWithFrame:CGRectZero];
-        bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
-        bottomEdge.backgroundColor = [UIColor grayColor];
+        UIView *bottomEdge = ({
+            UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            view.backgroundColor = [UIColor grayColor];
+            view;
+        });
         [self addSubview:bottomEdge];
-        
+
         NSDictionary *views = @{
                                 @"title": self.title,
                                 @"spanLabel": spanLabel,
