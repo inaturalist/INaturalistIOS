@@ -14,6 +14,7 @@
 #import "ExploreObservationsController.h"
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
+#import "Taxon.h"
 
 static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
@@ -36,6 +37,8 @@ static NSString *kSortSpeciesKey = @"species_count";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Leaderboard", @"Title for leaderboard page.");
     
     leaderboardTableView = ({
         UITableView *tv =[[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -210,14 +213,49 @@ static NSString *kSortSpeciesKey = @"species_count";
                                 action:@selector(spanned)
                       forControlEvents:UIControlEventValueChanged];
         
-        if (self.observationsController.activeSearchPredicates.count > 0) {
-            header.title.text = [NSString stringWithFormat:NSLocalizedString(@"Leaderboard for %@", @"Title for specific leaderboard. The substituted string are parameters for the leaderboard."),
-                                 self.observationsController.combinedColloquialSearchPhrase];
+        __block NSString *titleText = @"";      // location and/or project
+        __block NSString *subTitleText = @"";   // organism and/or person
+        
+        [self.observationsController.activeSearchPredicates bk_each:^(ExploreSearchPredicate *predicate) {
+            BOOL predicateTakesTitle = NO;
+            
+            switch (predicate.type) {
+                case ExploreSearchPredicateTypeLocation:
+                case ExploreSearchPredicateTypeProject:
+                    predicateTakesTitle = YES;
+                case ExploreSearchPredicateTypeCritter:
+                case ExploreSearchPredicateTypePerson:
+                default:
+                    break;
+            }
+            
+            NSString *str = predicateTakesTitle ? titleText : subTitleText;
+            
+            if ([str isEqualToString:@""]) {
+                str = [predicate.searchTerm copy];
+            } else {
+                str = [str stringByAppendingFormat:@" %@", predicate.searchTerm];
+            }
+            
+            if (predicateTakesTitle) {
+                titleText = str;
+            } else {
+                subTitleText = str;
+            }
+        }];
+        
+        if (titleText && ![titleText isEqualToString:@""]) {
+            header.title.text = titleText;
         } else {
-            header.title.text = NSLocalizedString(@"Global Leaderboard", @"Leaderboard title for global leaderboards");
+            header.title.text = NSLocalizedString(@"Worldwide", @"Indicator that the leaderboard is global, not specific to a project or a place");
+        }
+        
+        if (subTitleText && ![subTitleText isEqualToString:@""]) {
+            header.subTitle.text = subTitleText;
+        } else {
+            header.subTitle.text = NSLocalizedString(@"All Species", @"Indicator that the leaderboard applies to all species, not just a specific taxon.");
         }
     }
-    
     
     return header;
 }

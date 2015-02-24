@@ -11,6 +11,8 @@
 @interface ExploreLeaderboardHeader : UIView
 
 @property UILabel *title;
+@property UILabel *subTitle;
+
 @property UISegmentedControl *spanSelector, *sortSelector;
 
 @end
