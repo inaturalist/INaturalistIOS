@@ -293,7 +293,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     if (![userIconUrl isEqual:[NSNull null]] && ![userIconUrl isEqualToString:@""]) {
         [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:userIconUrl]];
     } else {
-        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:@"http://www.inaturalist.org/attachment_defaults/users/icons/defaults/thumb.png"]];
+        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/attachment_defaults/users/icons/defaults/thumb.png",
+                                                                INatMediaBaseURL]]];
     }
     
     [cell.sortControl addTarget:self action:@selector(sorted) forControlEvents:UIControlEventTouchUpInside];

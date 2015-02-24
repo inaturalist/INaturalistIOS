@@ -277,8 +277,8 @@
 
 - (void)addOverlaysForLocationId:(NSInteger)locationId {
     // fetch the geometry file
-    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.inaturalist.org/places/geometry/%ld.geojson",
-                                       (long)locationId]];
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/places/geometry/%ld.geojson",
+                                       INatBaseURL, (long)locationId]];
     NSData *data = [NSData dataWithContentsOfURL:URL];
     
     // don't do any overlay work if we can't get a geometry file from inat.org

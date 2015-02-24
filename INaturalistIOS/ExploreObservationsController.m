@@ -185,7 +185,7 @@
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    NSString *baseURL = @"http://www.inaturalist.org/observations.json";
+    NSString *baseURL = [NSString stringWithFormat:@"%@/observations.json", INatBaseURL];
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
@@ -197,7 +197,7 @@
         for (ExploreSearchPredicate *predicate in predicates) {
             if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
-                baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
+                baseURL = [NSString stringWithFormat:@"%@/observations/%@.json", INatBaseURL, predicate.searchPerson.login];
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
@@ -408,7 +408,7 @@
     d2 = today;
 
     
-    NSString *url = @"http://www.inaturalist.org/observations/user_stats.json";
+    NSString *url = [NSString stringWithFormat:@"%@/observations/user_stats.json", INatBaseURL];
     NSString *query = [NSString stringWithFormat:@"?d1=%@&d2=%@", d1, d2];
     
     // apply active search predicates to the query

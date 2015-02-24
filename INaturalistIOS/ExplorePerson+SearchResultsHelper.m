@@ -31,7 +31,8 @@ static UIImage *userIconPlaceholder;
 
 - (NSURL *)searchResult_ThumbnailUrl {
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg", (long)self.personId]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
+                                 INatMediaBaseURL, (long)self.personId]];
 }
 
 - (UIImage *)searchResult_PlaceholderImage {

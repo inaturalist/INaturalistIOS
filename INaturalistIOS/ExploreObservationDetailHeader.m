@@ -424,8 +424,8 @@ static UIImage *userIconPlaceholder;
     self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:12.0f];
     
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
-    NSString *observerAvatarUrlString = [NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg",
-                                         (long)observation.observerId];
+    NSString *observerAvatarUrlString = [NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
+                                         INatMediaBaseURL, (long)observation.observerId];
     [observerAvatarImageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
                                placeholderImage:userIconPlaceholder
                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
