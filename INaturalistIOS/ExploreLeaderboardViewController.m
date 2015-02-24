@@ -213,23 +213,23 @@ static NSString *kSortSpeciesKey = @"species_count";
                                 action:@selector(spanned)
                       forControlEvents:UIControlEventValueChanged];
         
-        __block NSString *titleText = @"";      // location and/or project
-        __block NSString *subTitleText = @"";   // organism and/or person
+        __block NSString *locationProject = @"";        // location and/or project
+        __block NSString *taxonPerson = @"";            // organism and/or person
         
         [self.observationsController.activeSearchPredicates bk_each:^(ExploreSearchPredicate *predicate) {
-            BOOL predicateTakesTitle = NO;
+            BOOL predicateIsLocative = NO;
             
             switch (predicate.type) {
                 case ExploreSearchPredicateTypeLocation:
                 case ExploreSearchPredicateTypeProject:
-                    predicateTakesTitle = YES;
+                    predicateIsLocative = YES;
                 case ExploreSearchPredicateTypeCritter:
                 case ExploreSearchPredicateTypePerson:
                 default:
                     break;
             }
             
-            NSString *str = predicateTakesTitle ? titleText : subTitleText;
+            NSString *str = predicateIsLocative ? locationProject : taxonPerson;
             
             if ([str isEqualToString:@""]) {
                 str = [predicate.searchTerm copy];
@@ -237,31 +237,29 @@ static NSString *kSortSpeciesKey = @"species_count";
                 str = [str stringByAppendingFormat:@" %@", predicate.searchTerm];
             }
             
-            if (predicateTakesTitle) {
-                titleText = str;
+            if (predicateIsLocative) {
+                locationProject = str;
             } else {
-                subTitleText = str;
+                taxonPerson = str;
             }
         }];
         
-        if (titleText && ![titleText isEqualToString:@""]) {
-            header.title.text = titleText;
-        } else {
-            header.title.text = NSLocalizedString(@"Worldwide", @"Indicator that the leaderboard is global, not specific to a project or a place");
+        if (!locationProject || [locationProject isEqualToString:@""]) {
+            locationProject = NSLocalizedString(@"Worldwide", @"Indicator that the leaderboard is global, not specific to a project or a place");
+        }
+        if (!taxonPerson || [taxonPerson isEqualToString:@""]) {
+            taxonPerson = NSLocalizedString(@"All Species", @"Indicator that the leaderboard applies to all species, not just a specific taxon.");
         }
         
-        if (subTitleText && ![subTitleText isEqualToString:@""]) {
-            header.subTitle.text = subTitleText;
-        } else {
-            header.subTitle.text = NSLocalizedString(@"All Species", @"Indicator that the leaderboard applies to all species, not just a specific taxon.");
-        }
+        header.title.text = [NSString stringWithFormat:@"%@, %@", locationProject, taxonPerson];
+    
     }
     
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 120.0f;
+    return 100.0f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

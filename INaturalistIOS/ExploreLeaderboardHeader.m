@@ -31,23 +31,12 @@
             label.textAlignment = NSTextAlignmentCenter;
             label.textColor = [UIColor darkGrayColor];
             label.font = [UIFont boldSystemFontOfSize:12.0f];
+            label.numberOfLines = 0; // wrap for long titles
             
             label;
         });
         [self addSubview:self.title];
         
-        self.subTitle = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.textAlignment = NSTextAlignmentCenter;
-            label.textColor = [UIColor darkGrayColor];
-            label.font = [UIFont boldSystemFontOfSize:12.0f];
-            
-            label;
-        });
-        [self addSubview:self.subTitle];
-
         
         UILabel *spanLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -113,7 +102,6 @@
 
         NSDictionary *views = @{
                                 @"title": self.title,
-                                @"subTitle": self.subTitle,
                                 @"spanLabel": spanLabel,
                                 @"sortLabel": sortLabel,
                                 @"span": self.spanSelector,
@@ -122,10 +110,6 @@
                                 };
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[title]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[subTitle]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -142,11 +126,11 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[subTitle]-[spanLabel]-[span]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[spanLabel]-[span]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[subTitle]-[sortLabel]-[sort]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[sortLabel]-[sort]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
