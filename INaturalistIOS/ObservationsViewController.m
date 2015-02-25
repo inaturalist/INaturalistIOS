@@ -7,6 +7,10 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <DBCamera/DBCameraViewController.h>
+#import <DBCamera/DBCameraContainerViewController.h>
+#import <DBCamera/DBCameraView.h>
+#import <QBImagePickerController/QBImagePickerController.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -27,6 +31,8 @@
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "ObsCameraViewController.h"
+#import "ObsCameraView.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -36,6 +42,9 @@ static const int ObservationCellUpperRightTag = 3;
 static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
+
+@interface ObservationsViewController () <DBCameraViewControllerDelegate, QBImagePickerControllerDelegate>
+@end
 
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
@@ -473,6 +482,98 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = observation;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (IBAction)addNewObservation:(id)sender {
+    
+    ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
+    [camera buildInterface];
+    
+    ObsCameraViewController *cameraVC = [[ObsCameraViewController alloc] initWithDelegate:self cameraView:camera];
+    [cameraVC setUseCameraSegue:NO];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
+    [nav setNavigationBarHidden:YES];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+
+#pragma mark - DBCamera delegate
+
+- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
+    
+    UIViewController *vc = [[UIViewController alloc] initWithNibName:nil bundle:nil];
+    vc.view.backgroundColor = [UIColor orangeColor];
+    UIImageView *iv = [[UIImageView alloc] initWithImage:image];
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    iv.frame = CGRectMake(50, 50, 200, 200);
+    [vc.view addSubview:iv];
+    
+    [cameraViewController.navigationController pushViewController:vc animated:YES];
+    [cameraViewController.navigationController setNavigationBarHidden:NO];
+    //[self dismissViewControllerAnimated:YES completion:nil];
+    [cameraViewController restoreFullScreenMode];
+    /*
+    DetailViewController *detail = [[DetailViewController alloc] init];
+    [detail setDetailImage:image];
+    [self.navigationController pushViewController:detail animated:NO];
+    [cameraViewController restoreFullScreenMode];
+    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+     */
+}
+
+- (void) dismissCamera:(id)cameraViewController{
+    NSLog(@"dismissing...");
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [cameraViewController restoreFullScreenMode];
+}
+
+- (void)openLibrary {
+    // qbimagepicker for library multi-select
+    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    imagePickerController.showsCancelButton = NO;           // so we get a back button
+    
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:imagePickerController animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+}
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset {
+    NSLog(@"Picked 1");
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    NSLog(@"Picked %d", assets.count);
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
+    NSLog(@"Cancelled");
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark - UIImagePicker delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 NSLog(@"picked - dismissed");
+                             }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 NSLog(@"cancelled - dismissed");
+                             }];
 }
 
 # pragma mark TableViewController methods

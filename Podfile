@@ -22,3 +22,6 @@ pod 'ActionSheetPicker-3.0', '1.3.7'
 pod 'NXOAuth2Client', '1.2.8'
 pod 'RaptureXML', '1.0.1'
 pod 'DCRoundSwitch', '0.0.1'
+pod 'DBCamera', '2.3.11'
+pod 'QBImagePickerController'
+

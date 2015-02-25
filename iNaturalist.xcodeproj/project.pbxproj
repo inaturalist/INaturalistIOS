@@ -266,6 +266,8 @@
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
+		FAC0F0891A9D49C0000F20C4 /* ObsCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F0881A9D49C0000F20C4 /* ObsCameraViewController.m */; };
+		FAC0F08C1A9D4D41000F20C4 /* ObsCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F08B1A9D4D41000F20C4 /* ObsCameraView.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
@@ -852,6 +854,10 @@
 		FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlusAuthViewController.h; sourceTree = "<group>"; };
 		FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlusAuthViewController.m; sourceTree = "<group>"; };
 		FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GooglePlusAuthViewController.xib; sourceTree = "<group>"; };
+		FAC0F0871A9D49C0000F20C4 /* ObsCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraViewController.h; sourceTree = "<group>"; };
+		FAC0F0881A9D49C0000F20C4 /* ObsCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraViewController.m; sourceTree = "<group>"; };
+		FAC0F08A1A9D4D41000F20C4 /* ObsCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraView.h; sourceTree = "<group>"; };
+		FAC0F08B1A9D4D41000F20C4 /* ObsCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraView.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
@@ -1328,6 +1334,8 @@
 				1909EA1315AB752800A6EF6E /* TutorialViewController.m */,
 				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
+				FAC0F0871A9D49C0000F20C4 /* ObsCameraViewController.h */,
+				FAC0F0881A9D49C0000F20C4 /* ObsCameraViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1347,6 +1355,8 @@
 				19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */,
 				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
 				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
+				FAC0F08A1A9D4D41000F20C4 /* ObsCameraView.h */,
+				FAC0F08B1A9D4D41000F20C4 /* ObsCameraView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2048,9 +2058,11 @@
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
+				FAC0F08C1A9D4D41000F20C4 /* ObsCameraView.m in Sources */,
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				FAC0F0891A9D49C0000F20C4 /* ObsCameraViewController.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
@@ -2267,9 +2279,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 22DD1D8B5E5FE5F54289AE42 /* Pods.debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Vendor/Facebook/build\"",
@@ -2303,10 +2315,9 @@
 					"$(inherited)",
 				);
 				PRODUCT_NAME = iNaturalist;
-				SDKROOT = iphoneos8.0;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2315,9 +2326,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45329ED8F6D98DC739CC54AE /* Pods.release.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2351,10 +2362,9 @@
 				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos8.0;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(SOURCE_ROOT)/Vendor/tapkulibrary/src\" \"$(SOURCE_ROOT)/Vendor/RestKit/Build\" \"$(BUILT_PRODUCTS_DIR)/../three20\" \"$(BUILT_PRODUCTS_DIR)/../../three20\" \"$(SOURCE_ROOT)/Vendor/DCRoundSwitch/DCRoundSwitch\"";
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

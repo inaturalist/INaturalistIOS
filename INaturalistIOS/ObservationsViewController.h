@@ -48,4 +48,7 @@
 - (BOOL)isSyncing;
 - (BOOL)autoLaunchTutorial;
 - (void)refreshData;
+
+- (IBAction)addNewObservation:(id)sender;
+
 @end
