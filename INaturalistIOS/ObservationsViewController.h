@@ -18,7 +18,6 @@
 
 
 @interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
-@property (nonatomic, strong) NSMutableArray *observations;
 @property (nonatomic, assign) int observationsToSyncCount;
 @property (nonatomic, assign) int syncedObservationsCount;
 @property (nonatomic, assign) int observationPhotosToSyncCount;

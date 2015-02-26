@@ -11,6 +11,7 @@
 #import <DBCamera/DBCameraContainerViewController.h>
 #import <DBCamera/DBCameraView.h>
 #import <QBImagePickerController/QBImagePickerController.h>
+#import <ImageIO/ImageIO.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -43,12 +44,13 @@ static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
-@interface ObservationsViewController () <DBCameraViewControllerDelegate, QBImagePickerControllerDelegate>
+@interface ObservationsViewController () <DBCameraViewControllerDelegate, QBImagePickerControllerDelegate, NSFetchedResultsControllerDelegate> {
+    NSFetchedResultsController *fetchedResultsController;
+}
 @end
 
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
-@synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
@@ -252,9 +254,14 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
 }
 
-- (void)loadData
-{
-    [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
+- (void)loadData {
+    // perform the iniital local fetch
+    NSError *fetchError;
+    [fetchedResultsController performFetch:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+    }
+    
     [self setObservationsToSyncCount:0];
 }
 
@@ -304,7 +311,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)checkEmpty
 {
-    if (self.observations.count == 0) {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section of observations in our tableview
+
+    if ([sectionInfo numberOfObjects] == 0) {
         if (!self.noContentLabel) {
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.text = NSLocalizedString(@"You don't have any observations yet.",nil);
@@ -459,8 +468,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)clickedActivity:(id)sender event:(UIEvent *)event {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    Observation *o = [self.observations
-                      objectAtIndex:indexPath.row];
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = o;
@@ -476,13 +484,15 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	
 	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-	Observation *observation = self.observations[indexPath.row];
+    Observation *observation = [fetchedResultsController objectAtIndexPath:indexPath];
 	
 	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = observation;
     [self.navigationController pushViewController:vc animated:YES];
 }
+
+#pragma mark - Add New Observation methods
 
 - (IBAction)addNewObservation:(id)sender {
     
@@ -498,37 +508,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-
-#pragma mark - DBCamera delegate
-
-- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
-    
-    UIViewController *vc = [[UIViewController alloc] initWithNibName:nil bundle:nil];
-    vc.view.backgroundColor = [UIColor orangeColor];
-    UIImageView *iv = [[UIImageView alloc] initWithImage:image];
-    iv.contentMode = UIViewContentModeScaleAspectFit;
-    iv.frame = CGRectMake(50, 50, 200, 200);
-    [vc.view addSubview:iv];
-    
-    [cameraViewController.navigationController pushViewController:vc animated:YES];
-    [cameraViewController.navigationController setNavigationBarHidden:NO];
-    //[self dismissViewControllerAnimated:YES completion:nil];
-    [cameraViewController restoreFullScreenMode];
-    /*
-    DetailViewController *detail = [[DetailViewController alloc] init];
-    [detail setDetailImage:image];
-    [self.navigationController pushViewController:detail animated:NO];
-    [cameraViewController restoreFullScreenMode];
-    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-     */
-}
-
-- (void) dismissCamera:(id)cameraViewController{
-    NSLog(@"dismissing...");
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [cameraViewController restoreFullScreenMode];
-}
-
 - (void)openLibrary {
     // qbimagepicker for library multi-select
     QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
@@ -542,49 +521,229 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [nav setNavigationBarHidden:NO animated:YES];
 }
 
-#pragma mark - QBImagePicker delegate
+- (void)noPhoto {
+    Observation *o = [Observation object];
 
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset {
-    NSLog(@"Picked 1");
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        NSError *saveError;
+        [[Observation managedObjectContext] save:&saveError];
+        if (saveError) {
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        }
+        
+        // re-fetch
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            NSLog(@"FETCH ERROR: %@", fetchError);
+        }
+    }];
 }
 
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
-    NSLog(@"Picked %d", assets.count);
+#pragma mark - DBCamera delegate
+
+- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
+    
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving photo...", @"Notice when we're saving a new photo for a new observation")
+                         maskType:SVProgressHUDMaskTypeGradient];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        // embed geo
+        NSMutableDictionary *mutableMetadata = [metadata mutableCopy];
+        CLLocationManager *loc = [[CLLocationManager alloc] init];
+        if (loc.location) {
+            
+            double latitude = fabs(loc.location.coordinate.latitude);
+            double longitude = fabs(loc.location.coordinate.longitude);
+            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
+            
+            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
+            
+            mutableMetadata[@"{GPS}"] = gps;
+        }
+        
+        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
+        [lib writeImageToSavedPhotosAlbum:image.CGImage
+                                 metadata:mutableMetadata
+                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                              if (error) {
+                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                  NSLog(@"ERROR: %@", error.localizedDescription);
+                              }
+                          }];
+
+        NSDate *now = [NSDate date];
+        Observation *o = [Observation object];
+        o.observedOn = now;
+        
+        if (loc.location) {
+            o.latitude = @(loc.location.coordinate.latitude);
+            o.longitude = @(loc.location.coordinate.longitude);
+            o.positionalAccuracy = @(loc.location.horizontalAccuracy);
+        }
+        
+        ObservationPhoto *op = [ObservationPhoto object];
+        op.position = @(0);
+        [op setObservation:o];
+        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+        [ImageStore.sharedImageStore store:image
+                                    forKey:op.photoKey];
+        op.localCreatedAt = now;
+        op.localUpdatedAt = now;
+        
+        NSError *saveError;
+        [[Observation managedObjectContext] save:&saveError];
+        if (saveError) {
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        }
+        
+        // re-fetch
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            NSLog(@"FETCH ERROR: %@", fetchError);
+        }
+        
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD showSuccessWithStatus:nil];
+        }
+
+    }];
+    
+    [cameraViewController restoreFullScreenMode];
+}
+
+- (void) dismissCamera:(id)cameraViewController{
     [self dismissViewControllerAnimated:YES completion:nil];
+    [cameraViewController restoreFullScreenMode];
+}
+
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    [self dismissViewControllerAnimated:YES completion:^{
+        [SVProgressHUD showWithStatus:@"Loading..."];
+        
+        Observation *o = [Observation object];
+        ALAsset *firstAsset = (ALAsset *)assets.firstObject;
+        o.observedOn = [firstAsset valueForProperty:ALAssetPropertyDate];
+        
+        NSDictionary *metadata = firstAsset.defaultRepresentation.metadata;
+        if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
+            double latitude, longitude;
+            if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
+                latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+            } else {
+                latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+            }
+            
+            if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
+                longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+            } else {
+                longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+            }
+            o.latitude = @(latitude);
+            o.longitude = @(longitude);
+        }
+        
+        [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
+            ObservationPhoto *op = [ObservationPhoto object];
+            op.position = @(idx);
+            [op setObservation:o];
+            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
+                                            forKey:op.photoKey];
+            });
+            op.localCreatedAt = [asset valueForProperty:ALAssetPropertyDate];
+            op.localUpdatedAt = [asset valueForProperty:ALAssetPropertyDate];
+        }];
+        
+        NSError *saveError;
+        [[Observation managedObjectContext] save:&saveError];
+        if (saveError) {
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        }
+        
+        // re-fetch
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            NSLog(@"FETCH ERROR: %@", fetchError);
+        }
+        
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD showSuccessWithStatus:nil];
+        }
+    }];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
-    NSLog(@"Cancelled");
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - NSFetchedResultsControllerDelegate
 
-#pragma mark - UIImagePicker delegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [self dismissViewControllerAnimated:YES
-                             completion:^{
-                                 NSLog(@"picked - dismissed");
-                             }];
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self dismissViewControllerAnimated:YES
-                             completion:^{
-                                 NSLog(@"cancelled - dismissed");
-                             }];
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
+    
+    // now is a good time to check that we're displaying up to date sync info
+    [self checkSyncStatus];
 }
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationNone];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [self.tableView moveRowAtIndexPath:indexPath
+                                   toIndexPath:newIndexPath];
+            break;
+            
+        default:
+            break;
+    }
+}
+
 
 # pragma mark TableViewController methods
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.observations count];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    Observation *o = [self.observations objectAtIndex:[indexPath row]];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
     UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
@@ -599,6 +758,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             [imageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
 		} else {
 			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+            
+            // if we can't find a square image...
+            if (!imageView.image) {
+                // ...try again a few times, it's probably a new image in the process of being cut-down
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
+                        [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                });
+            }
 		}
         
     } else {
@@ -658,16 +827,25 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		
 		// RWTODO: delete from server
 		
-        Observation *o = [self.observations objectAtIndex:indexPath.row];
-        [self.observations removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
         [o destroy];
+
         [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
         if (!self.isEditing) {
             [self checkSyncStatus];
         }
-        if (self.observations.count == 0) {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section in our observation tableview
+        if ([sectionInfo numberOfObjects] == 0) {
             [self stopEditing];
+        }
+        
+        // re-fetch
+        NSError *fetchError;
+        [fetchedResultsController performFetch:&fetchError];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            NSLog(@"FETCH ERROR: %@", fetchError);
         }
     }
 }
@@ -684,16 +862,41 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     [super viewDidLoad];
 
-//    // if you need to test syncing lots of obs
+// if you need to test syncing lots of obs with the fetched results controller, do:
 //    [Observation deleteAll];
 //    for (int i = 0; i < 50; i++) {
-//        [self.observations addObject:[Observation stub]];
+//        [Observation object];
 //    }
-//    [[[RKObjectManager sharedManager] objectStore] save];
+//    NSError *error;
+//    [[[RKObjectManager sharedManager] objectStore] save:&error];
+//    if (error) {
+//        NSLog(@"ALERT: %@", error.localizedDescription);
+//    }
     
-	// Do any additional setup after loading the view, typically from a nib.
-    if (!self.observations) {
-        [self loadData];
+    
+    
+    // NSFetchedResultsController request for my observations
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
+    
+    // sort by common name, if available
+    request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO] ];
+    
+    // no request predicate yet, all Observations in core data are "mine"
+    
+    // setup our fetched results controller
+    fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                   managedObjectContext:[NSManagedObjectContext defaultContext]
+                                                                     sectionNameKeyPath:nil
+                                                                              cacheName:nil];
+    // update our tableview based on changes in the fetched results
+    fetchedResultsController.delegate = self;
+    
+    // perform the iniital local fetch
+    NSError *fetchError;
+    [fetchedResultsController performFetch:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        NSLog(@"FETCH ERROR: %@", fetchError);
     }
     
     self.title = NSLocalizedString(@"Observations", nil);
@@ -799,9 +1002,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         ObservationPageViewController *pvc = [segue destinationViewController];
         [ovc setDelegate:self];
-        Observation *o = [self.observations 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
+        Observation *o = [fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
         [ovc setObservation:o];
         [pvc setViewControllers:[NSArray arrayWithObject:ovc]
                        direction:UIPageViewControllerNavigationDirectionForward

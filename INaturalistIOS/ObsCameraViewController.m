@@ -26,7 +26,8 @@
 }
 
 - (void)noPhoto {
-    NSLog(@"no photo!");
+    if ([self.delegate respondsToSelector:@selector(noPhoto)])
+        [self.delegate performSelector:@selector(noPhoto)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
