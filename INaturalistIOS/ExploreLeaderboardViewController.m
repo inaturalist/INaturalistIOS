@@ -14,6 +14,7 @@
 #import "ExploreObservationsController.h"
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
+#import "Taxon.h"
 
 static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
@@ -36,6 +37,8 @@ static NSString *kSortSpeciesKey = @"species_count";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Leaderboard", @"Title for leaderboard page.");
     
     leaderboardTableView = ({
         UITableView *tv =[[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -210,20 +213,53 @@ static NSString *kSortSpeciesKey = @"species_count";
                                 action:@selector(spanned)
                       forControlEvents:UIControlEventValueChanged];
         
-        if (self.observationsController.activeSearchPredicates.count > 0) {
-            header.title.text = [NSString stringWithFormat:NSLocalizedString(@"Leaderboard for %@", @"Title for specific leaderboard. The substituted string are parameters for the leaderboard."),
-                                 self.observationsController.combinedColloquialSearchPhrase];
-        } else {
-            header.title.text = NSLocalizedString(@"Global Leaderboard", @"Leaderboard title for global leaderboards");
+        __block NSString *locationProject = @"";        // location and/or project
+        __block NSString *taxonPerson = @"";            // organism and/or person
+        
+        [self.observationsController.activeSearchPredicates bk_each:^(ExploreSearchPredicate *predicate) {
+            BOOL predicateIsLocative = NO;
+            
+            switch (predicate.type) {
+                case ExploreSearchPredicateTypeLocation:
+                case ExploreSearchPredicateTypeProject:
+                    predicateIsLocative = YES;
+                case ExploreSearchPredicateTypeCritter:
+                case ExploreSearchPredicateTypePerson:
+                default:
+                    break;
+            }
+            
+            NSString *str = predicateIsLocative ? locationProject : taxonPerson;
+            
+            if ([str isEqualToString:@""]) {
+                str = [predicate.searchTerm copy];
+            } else {
+                str = [str stringByAppendingFormat:@" %@", predicate.searchTerm];
+            }
+            
+            if (predicateIsLocative) {
+                locationProject = str;
+            } else {
+                taxonPerson = str;
+            }
+        }];
+        
+        if (!locationProject || [locationProject isEqualToString:@""]) {
+            locationProject = NSLocalizedString(@"Worldwide", @"Indicator that the leaderboard is global, not specific to a project or a place");
         }
-    }
+        if (!taxonPerson || [taxonPerson isEqualToString:@""]) {
+            taxonPerson = NSLocalizedString(@"All Species", @"Indicator that the leaderboard applies to all species, not just a specific taxon.");
+        }
+        
+        header.title.text = [NSString stringWithFormat:@"%@, %@", locationProject, taxonPerson];
     
+    }
     
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 120.0f;
+    return 100.0f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -257,7 +293,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     if (![userIconUrl isEqual:[NSNull null]] && ![userIconUrl isEqualToString:@""]) {
         [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:userIconUrl]];
     } else {
-        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:@"http://www.inaturalist.org/attachment_defaults/users/icons/defaults/thumb.png"]];
+        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/attachment_defaults/users/icons/defaults/thumb.png",
+                                                                INatMediaBaseURL]]];
     }
     
     [cell.sortControl addTarget:self action:@selector(sorted) forControlEvents:UIControlEventTouchUpInside];

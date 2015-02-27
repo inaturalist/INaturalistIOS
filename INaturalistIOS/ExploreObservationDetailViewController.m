@@ -174,8 +174,8 @@
         switch (buttonIndex) {
             case 0:
                 // open in safari
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld",
-                                                                                 (long)self.observation.observationId]]];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
+                                                                                 INatWebBaseURL, (long)self.observation.observationId]]];
                 break;
             case 1:
                 // share
@@ -222,7 +222,8 @@
 #pragma mark - ActionSheet targets
 
 - (void)shareObservation:(ExploreObservation *)observation {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld", (long)self.observation.observationId]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
+                                       INatWebBaseURL, (long)self.observation.observationId]];
     UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                            applicationActivities:nil];
     activity.completionHandler = ^(NSString *activityType, BOOL completed) {

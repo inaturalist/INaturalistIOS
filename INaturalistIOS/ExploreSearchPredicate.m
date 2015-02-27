@@ -40,6 +40,32 @@
     }
 }
 
+- (NSString *)searchTerm {
+    switch (self.type) {
+        case ExploreSearchPredicateTypeCritter:
+            if (self.searchTaxon.defaultName && ![self.searchTaxon.defaultName isEqualToString:@""]) {
+                return self.searchTaxon.defaultName;
+            } else {
+                return self.searchTaxon.name;
+            }
+            break;
+        case ExploreSearchPredicateTypePerson:
+            if (self.searchPerson.name && ![self.searchPerson.name isEqualToString:@""])
+                return  self.searchPerson.name;
+            else
+                return self.searchPerson.login;
+            break;
+        case ExploreSearchPredicateTypeLocation:
+            return self.searchLocation.name;
+            break;
+        case ExploreSearchPredicateTypeProject:
+            return self.searchProject.title;
+            break;
+        default:
+            break;
+    }
+}
+
 + (instancetype)predicateForTaxon:(Taxon *)taxon {
     ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
     predicate.type = ExploreSearchPredicateTypeCritter;

@@ -179,6 +179,13 @@ static RKObjectMapping *defaultSerializationMapping = nil;
                afterDelay:0];
 }
 
+- (void)awakeFromFetch {
+    [super awakeFromFetch];
+    
+    // safe to use getters & setters in -awakeFromFetch
+    [self computeLocalObservedOn];
+}
+
 - (void)computeLocalObservedOn {
     if (!self.localObservedOn) {
         if (self.timeObservedAt) self.localObservedOn = self.timeObservedAt;
