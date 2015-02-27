@@ -34,6 +34,7 @@
 #import "TutorialSinglePageViewController.h"
 #import "ObsCameraViewController.h"
 #import "ObsCameraView.h"
+#import "ConfirmPhotoViewController.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -519,6 +520,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:imagePickerController animated:YES];
     [nav setNavigationBarHidden:NO animated:YES];
+    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
+                                                                                               style:UIBarButtonItemStylePlain
+                                                                                              target:imagePickerController
+                                                                                              action:@selector(done:)];
 }
 
 - (void)noPhoto {
@@ -543,78 +548,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 #pragma mark - DBCamera delegate
 
-- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving photo...", @"Notice when we're saving a new photo for a new observation")
-                         maskType:SVProgressHUDMaskTypeGradient];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        // embed geo
-        NSMutableDictionary *mutableMetadata = [metadata mutableCopy];
-        CLLocationManager *loc = [[CLLocationManager alloc] init];
-        if (loc.location) {
-            
-            double latitude = fabs(loc.location.coordinate.latitude);
-            double longitude = fabs(loc.location.coordinate.longitude);
-            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-            
-            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-            
-            mutableMetadata[@"{GPS}"] = gps;
-        }
-        
-        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-        [lib writeImageToSavedPhotosAlbum:image.CGImage
-                                 metadata:mutableMetadata
-                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                              if (error) {
-                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                  NSLog(@"ERROR: %@", error.localizedDescription);
-                              }
-                          }];
-
-        NSDate *now = [NSDate date];
-        Observation *o = [Observation object];
-        o.observedOn = now;
-        
-        if (loc.location) {
-            o.latitude = @(loc.location.coordinate.latitude);
-            o.longitude = @(loc.location.coordinate.longitude);
-            o.positionalAccuracy = @(loc.location.horizontalAccuracy);
-        }
-        
-        ObservationPhoto *op = [ObservationPhoto object];
-        op.position = @(0);
-        [op setObservation:o];
-        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        [ImageStore.sharedImageStore store:image
-                                    forKey:op.photoKey];
-        op.localCreatedAt = now;
-        op.localUpdatedAt = now;
-        
-        NSError *saveError;
-        [[Observation managedObjectContext] save:&saveError];
-        if (saveError) {
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-        }
-        
-        // re-fetch
-        NSError *fetchError;
-        [fetchedResultsController performFetch:&fetchError];
-        if (fetchError) {
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-            NSLog(@"FETCH ERROR: %@", fetchError);
-        }
-        
-        if ([SVProgressHUD isVisible]) {
-            [SVProgressHUD showSuccessWithStatus:nil];
-        }
-
-    }];
-    
-    [cameraViewController restoreFullScreenMode];
+- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {    
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.image = image;
+    confirm.metadata = metadata;
+    [cameraViewController.navigationController pushViewController:confirm animated:YES];
 }
 
 - (void) dismissCamera:(id)cameraViewController{
@@ -626,6 +564,12 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - QBImagePicker delegate
 
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.assets = assets;
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:confirm animated:YES];
+
+    /*
     [self dismissViewControllerAnimated:YES completion:^{
         [SVProgressHUD showWithStatus:@"Loading..."];
         
@@ -682,6 +626,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             [SVProgressHUD showSuccessWithStatus:nil];
         }
     }];
+     */
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {

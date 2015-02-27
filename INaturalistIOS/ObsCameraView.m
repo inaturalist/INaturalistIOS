@@ -146,38 +146,52 @@
     [self.previewLayer addSublayer:self.focusBox];
     [self.previewLayer addSublayer:self.exposeBox];
     
+    // create the standard DBcamera gestures
     [self createGesture];
+    // remove the separate tap to focus / tap to expose gestures
+    [self removeGestureRecognizer:self.singleTap];
+    [self removeGestureRecognizer:self.doubleTap];
+    
+    // add a tap to focus and expose gesture, to match the native iOS camera & imagepicker behavior
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToFocusAndExpose:)];
+    [singleTap setDelaysTouchesEnded:NO];
+    [singleTap setNumberOfTapsRequired:1];
+    [singleTap setNumberOfTouchesRequired:1];
+    [self addGestureRecognizer:singleTap];
 }
-
 
 - (void)noPhoto {
     if ([self.delegate respondsToSelector:@selector(noPhoto)])
         [self.delegate performSelector:@selector(noPhoto)];
 }
 
+- (void)tapToFocusAndExpose:(UIGestureRecognizer *)recognizer {
+    CGPoint tempPoint = (CGPoint)[recognizer locationInView:self];
+    if ([self.delegate respondsToSelector:@selector(cameraView:focusAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, tempPoint)) {
+        [self.delegate cameraView:self focusAtPoint:(CGPoint){ tempPoint.x, tempPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
+    }
+    if ([self.delegate respondsToSelector:@selector(cameraView:exposeAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, tempPoint)) {
+        [self.delegate cameraView:self exposeAtPoint:(CGPoint){ tempPoint.x, tempPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
+    }
+    [self drawExposeBoxAtPointOfInterest:tempPoint andRemove:YES];
+}
+
 #pragma mark - Focus / Expose Box
 
 - (CALayer *) focusBox {
-    if ( !_focusBox ) {
-        _focusBox = [[CALayer alloc] init];
-        [_focusBox setCornerRadius:45.0f];
-        [_focusBox setBounds:CGRectMake(0.0f, 0.0f, 90, 90)];
-        [_focusBox setBorderWidth:5.f];
-        [_focusBox setBorderColor:[[UIColor whiteColor] CGColor]];
-        [_focusBox setOpacity:0];
-    }
-    
-    return _focusBox;
+    // only draw the expose box
+    return [CALayer new];
 }
 
 - (CALayer *) exposeBox {
-    if ( !_exposeBox ) {
+    if (!_exposeBox) {
         _exposeBox = [[CALayer alloc] init];
-        [_exposeBox setCornerRadius:55.0f];
-        [_exposeBox setBounds:CGRectMake(0.0f, 0.0f, 110, 110)];
-        [_exposeBox setBorderWidth:5.f];
+        [_exposeBox setCornerRadius:50.0f];
+        [_exposeBox setBounds:CGRectMake(0.0f, 0.0f, 100.0f, 100.0f)];
+        [_exposeBox setBorderWidth:4.0f];
         [_exposeBox setBorderColor:[[UIColor inatGreen] CGColor]];
         [_exposeBox setOpacity:0];
+        
     }
     
     return _exposeBox;
