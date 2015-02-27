@@ -1104,6 +1104,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
                                     datePickerMode:UIDatePickerModeDateAndTime
                                       selectedDate:self.observation.localObservedOn ? self.observation.localObservedOn : [NSDate date]
+                                       minimumDate: [NSDate distantPast]
+                                       maximumDate: [NSDate date]
                                             target:self
                                             action:@selector(doneDatePicker:element:)
                                             origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
