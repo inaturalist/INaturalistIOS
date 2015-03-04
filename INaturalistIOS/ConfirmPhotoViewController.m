@@ -18,7 +18,6 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "MultiImageView.h"
-#import "ConfirmNewObservationViewController.h"
 #import "ObservationDetailViewController.h"
 
 #define CHICLETWIDTH 100.0f
@@ -263,58 +262,6 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     
     ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-    
-    /*
-    
-    ConfirmNewObservationViewController *confirmNewObs = [[ConfirmNewObservationViewController alloc] initWithNibName:nil bundle:nil];
-    
-    if (self.image) {
-        // save the image, add the asset to confirmNewObs, then push confirmNewObs
-        // embed geo
-        
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving photo...", @"Notice when we're saving a photo for a new observation")];
-        
-        CLLocationManager *loc = [[CLLocationManager alloc] init];
-        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-        if (loc.location) {
-            double latitude = fabs(loc.location.coordinate.latitude);
-            double longitude = fabs(loc.location.coordinate.longitude);
-            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-            
-            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-            
-            mutableMetadata[@"{GPS}"] = gps;
-        }
-        
-        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-        [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                 metadata:mutableMetadata
-                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                              if (error) {
-                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                  NSLog(@"ERROR: %@", error.localizedDescription);
-                              } else {
-                                  [SVProgressHUD showSuccessWithStatus:nil];
-                                  confirmNewObs.assetURLs = @[ newAssetUrl ];
-                                  confirmNewObs.taxon = iconicTaxa[control.tag];
-                                  confirmNewObs.location = loc.location;
-                                  
-                                  [self.navigationController pushViewController:confirmNewObs animated:YES];
-                              }
-                          }];
-
-    } else if (self.assets) {
-        confirmNewObs.assetURLs = [self.assets bk_map:^id(ALAsset *asset) {
-            return [asset valueForProperty:ALAssetPropertyAssetURL];
-        }];
-        confirmNewObs.taxon = iconicTaxa[control.tag];
-        confirmNewObs.location = nil;
-        [self.navigationController pushViewController:confirmNewObs animated:YES];
-    }
-    
-    */
     
      [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating observation...", @"Notice when we're saving a new photo for a new observation")
                           maskType:SVProgressHUDMaskTypeGradient];
