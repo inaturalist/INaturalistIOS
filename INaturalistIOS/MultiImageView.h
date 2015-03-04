@@ -11,5 +11,6 @@
 @interface MultiImageView : UIView
 
 @property NSArray *images;
+@property CGFloat borderWidth;
 
 @end

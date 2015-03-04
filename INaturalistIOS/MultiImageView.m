@@ -10,6 +10,7 @@
 
 @interface MultiImageView () {
     NSArray *_images;
+    CGFloat _borderWidth;
     
     UIImageView *one;
     UIImageView *two;
@@ -21,20 +22,38 @@
 @implementation MultiImageView
 
 - (void)setImages:(NSArray *)images {
-    NSAssert(images.count > 0, @"MultiImageView must display at least one image.");
     NSAssert(images.count < 5, @"MultiImageView can display at most four images.");
     
     _images = images;
     
-    [self layoutIfNeeded];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setNeedsLayout];
+    });
 }
 
 - (NSArray *)images {
     return _images;
 }
 
+- (void)setBorderWidth:(CGFloat)borderWidth {
+    if (_borderWidth == borderWidth)
+        return;
+    
+    _borderWidth = borderWidth;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setNeedsLayout];
+    });
+}
+
+- (CGFloat)borderWidth {
+    return _borderWidth;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        
+        _borderWidth = 1.0f;    // default
         
         one = [[UIImageView alloc] initWithFrame:frame];
         two = [[UIImageView alloc] initWithFrame:frame];
@@ -48,7 +67,7 @@
             iv.clipsToBounds = YES;
             
             iv.layer.borderColor = [UIColor grayColor].CGColor;
-            iv.layer.borderWidth = 1.0f;
+            iv.layer.borderWidth = _borderWidth;
             
             [self addSubview:iv];
         }];
@@ -59,6 +78,10 @@
 }
 
 - (void)layoutSubviews {
+    
+    [@[one,two,three,four] enumerateObjectsUsingBlock:^(UIImageView *iv, NSUInteger idx, BOOL *stop) {
+        iv.layer.borderWidth = _borderWidth;
+    }];
     
     if (self.images.count == 1) {
         one.hidden = NO;
@@ -73,10 +96,10 @@
         
         one.frame = CGRectMake(self.frame.origin.x, self.bounds.origin.y,
                                self.bounds.size.width, self.bounds.size.height / 2);
-        one.image = self.images[0];
-        
         two.frame = CGRectMake(self.frame.origin.x, self.bounds.size.height / 2,
                                self.bounds.size.width, self.bounds.size.height / 2);
+        
+        one.image = self.images[0];
         two.image = self.images[1];
         
     } else if (self.images.count == 3) {
@@ -85,33 +108,30 @@
         
         one.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
                                self.bounds.size.width, self.bounds.size.height / 2);
-        one.image = self.images[0];
-        
         two.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height / 2,
                                self.bounds.size.width / 2, self.bounds.size.height / 2);
-        two.image = self.images[1];
-        
         three.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
                                  self.bounds.size.width / 2, self.bounds.size.height / 2);
+        
+        one.image = self.images[0];
+        two.image = self.images[1];
         three.image = self.images[2];
-
+        
     } else if (self.images.count == 4) {
         one.hidden = two.hidden = three.hidden = four.hidden = NO;
         
         one.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
                                self.bounds.size.width / 2, self.bounds.size.height / 2);
-        one.image = self.images[0];
-        
         two.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.origin.y,
                                self.bounds.size.width / 2, self.bounds.size.height / 2);
-        two.image = self.images[1];
-        
         three.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height / 2,
-                               self.bounds.size.width / 2, self.bounds.size.height / 2);
-        three.image = self.images[2];
-        
-        four.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
                                  self.bounds.size.width / 2, self.bounds.size.height / 2);
+        four.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
+                                self.bounds.size.width / 2, self.bounds.size.height / 2);
+        
+        one.image = self.images[0];
+        two.image = self.images[1];
+        three.image = self.images[2];
         four.image = self.images[3];
     }
     

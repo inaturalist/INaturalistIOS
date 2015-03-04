@@ -18,13 +18,14 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "MultiImageView.h"
-
+#import "ConfirmNewObservationViewController.h"
+#import "ObservationDetailViewController.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
-@interface ConfirmPhotoViewController () {
+@interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate> {
     NSArray *iconicTaxa;
     NSFetchRequest *iconicTaxaFetchRequest;
     
@@ -130,6 +131,8 @@
     iconicTaxaFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
     iconicTaxaFetchRequest.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
     [iconicTaxaFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
+    
+    [self loadRemoteIconicTaxa];
 }
 
 
@@ -156,68 +159,79 @@
         [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
     }
 
-    // Thumbnail scrollview content size. Horizontal scrolling only.
-    chicletScrollView.contentSize = CGSizeMake((iconicTaxa.count * CHICLETWIDTH) + ((iconicTaxa.count - 1) * CHICLETPADDING + 4.0f), 100);
-    chicletScrollView.contentOffset = CGPointZero;
+    [self configureScrollView];
+}
 
-    // Remove the old content view, in case there was one
-    [chicletScrollView.subviews enumerateObjectsUsingBlock:^(UIView *subView, NSUInteger idx, BOOL *stop) {
-        [subView removeFromSuperview];
-    }];
-    
-    // Content view for the chiclet scrollview to scroll in
-    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, chicletScrollView.contentSize.width, chicletScrollView.contentSize.height)];
-    
-    [chicletScrollView addSubview:contentView];
-    
-    // add chiclets to the content view
-    
-    [iconicTaxa enumerateObjectsUsingBlock:^(Taxon *taxon, NSUInteger idx, BOOL *stop) {
-        UIControl *chiclet = [[UIControl alloc] initWithFrame:CGRectMake((idx * CHICLETWIDTH + idx * CHICLETPADDING + 2.0f), 1,
-                                                                         CHICLETWIDTH, CHICLETHEIGHT)];
-        chiclet.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        chiclet.layer.borderWidth = 1.0f;
-        chiclet.layer.cornerRadius = 10.0f;
-        chiclet.clipsToBounds = YES;
+- (void)configureScrollView {
+
+    @synchronized(chicletScrollView) {
         
-        UIView *scrim = [[UIView alloc] initWithFrame:CGRectMake(0, CHICLETHEIGHT - 20 - 1, CHICLETWIDTH, 20)];
-        scrim.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
-        [chiclet addSubview:scrim];
+        if ([chicletScrollView viewWithTag:0x09].subviews.count == iconicTaxa.count)
+            return;
+
+        // Thumbnail scrollview content size. Horizontal scrolling only.
+        chicletScrollView.contentSize = CGSizeMake((iconicTaxa.count * CHICLETWIDTH) + ((iconicTaxa.count - 1) * CHICLETPADDING + 4.0f), 100);
+        chicletScrollView.contentOffset = CGPointZero;
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CHICLETHEIGHT - 20 + 1, CHICLETWIDTH, 20)];
-        label.text = taxon.defaultName;
-        label.font = [UIFont systemFontOfSize:11.0f];
-        label.textColor = [UIColor whiteColor];
-        label.textAlignment = NSTextAlignmentCenter;
-        [chiclet addSubview:label];
+        // Remove the old content view, in case there was one
+        [chicletScrollView.subviews enumerateObjectsUsingBlock:^(UIView *subView, NSUInteger idx, BOOL *stop) {
+            [subView removeFromSuperview];
+        }];
         
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 1, CHICLETWIDTH, CHICLETHEIGHT - 20.0f)];
-        iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.name];
-        iv.contentMode = UIViewContentModeScaleAspectFit;
-        [chiclet addSubview:iv];
+        // Content view for the chiclet scrollview to scroll in
+        UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, chicletScrollView.contentSize.width, chicletScrollView.contentSize.height)];
+        contentView.tag = 0x09;
         
-        chiclet.alpha = 0.0f;
-        [contentView addSubview:chiclet];
+        [chicletScrollView addSubview:contentView];
         
-        chiclet.tag = idx;
+        // add chiclets to the content view
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((iconicTaxa.count - idx) * 0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:0.2f animations:^{
-                chiclet.alpha = 1.0f;
+        [iconicTaxa enumerateObjectsUsingBlock:^(Taxon *taxon, NSUInteger idx, BOOL *stop) {
+            UIControl *chiclet = [[UIControl alloc] initWithFrame:CGRectMake((idx * CHICLETWIDTH + idx * CHICLETPADDING + 2.0f), 1,
+                                                                             CHICLETWIDTH, CHICLETHEIGHT)];
+            chiclet.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            chiclet.layer.borderWidth = 1.0f;
+            chiclet.layer.cornerRadius = 10.0f;
+            chiclet.clipsToBounds = YES;
+            
+            UIView *scrim = [[UIView alloc] initWithFrame:CGRectMake(0, CHICLETHEIGHT - 20 - 1, CHICLETWIDTH, 20)];
+            scrim.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+            [chiclet addSubview:scrim];
+            
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CHICLETHEIGHT - 20 + 1, CHICLETWIDTH, 20)];
+            label.text = taxon.defaultName;
+            label.font = [UIFont systemFontOfSize:11.0f];
+            label.textColor = [UIColor whiteColor];
+            label.textAlignment = NSTextAlignmentCenter;
+            [chiclet addSubview:label];
+            
+            UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 1, CHICLETWIDTH, CHICLETHEIGHT - 20.0f)];
+            iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.name];
+            iv.contentMode = UIViewContentModeScaleAspectFit;
+            [chiclet addSubview:iv];
+            
+            chiclet.alpha = 0.0f;
+            [contentView addSubview:chiclet];
+            
+            chiclet.tag = idx;
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((iconicTaxa.count - idx) * 0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.2f animations:^{
+                    chiclet.alpha = 1.0f;
+                }];
+            });
+            
+            [chiclet addTarget:self action:@selector(tappedControl:) forControlEvents:UIControlEventTouchUpInside];
+        }];
+        
+        chicletScrollView.contentOffset = CGPointMake(chicletScrollView.contentSize.width - CHICLETWIDTH, 0.0f);
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:2.0f animations:^{
+                chicletScrollView.contentOffset = CGPointMake(0.0f, 0.0f);
             }];
         });
-        
-        [chiclet addTarget:self action:@selector(tappedControl:) forControlEvents:UIControlEventTouchUpInside];
-    }];
-    
-    chicletScrollView.contentOffset = CGPointMake(chicletScrollView.contentSize.width - CHICLETWIDTH, 0.0f);
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:2.0f animations:^{
-            chicletScrollView.contentOffset = CGPointMake(0.0f, 0.0f);
-        }];
-    });
-
+    }
 }
 
 - (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
@@ -245,131 +259,269 @@
 }
 
 - (void)tappedControl:(UIControl *)control {
-     [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving observation...", @"Notice when we're saving a new photo for a new observation")
-                          maskType:SVProgressHUDMaskTypeGradient];
     
-    [self dismissViewControllerAnimated:YES completion:^{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    
+    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+    
+    /*
+    
+    ConfirmNewObservationViewController *confirmNewObs = [[ConfirmNewObservationViewController alloc] initWithNibName:nil bundle:nil];
+    
+    if (self.image) {
+        // save the image, add the asset to confirmNewObs, then push confirmNewObs
+        // embed geo
+        
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving photo...", @"Notice when we're saving a photo for a new observation")];
         
         CLLocationManager *loc = [[CLLocationManager alloc] init];
-        
-        if (self.image) {
-            // embed geo
-            NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-            if (loc.location) {
-                
-                double latitude = fabs(loc.location.coordinate.latitude);
-                double longitude = fabs(loc.location.coordinate.longitude);
-                NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-                NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-                
-                NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                       @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-                
-                mutableMetadata[@"{GPS}"] = gps;
-            }
+        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+        if (loc.location) {
+            double latitude = fabs(loc.location.coordinate.latitude);
+            double longitude = fabs(loc.location.coordinate.longitude);
+            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
             
+            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
             
-            ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-            [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                     metadata:mutableMetadata
-                              completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                                  if (error) {
-                                      [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                      NSLog(@"ERROR: %@", error.localizedDescription);
-                                  }
-                              }];
+            mutableMetadata[@"{GPS}"] = gps;
         }
         
-        NSDate *now = [NSDate date];
-        Observation *o = [Observation object];
-        
-        Taxon *taxon = [iconicTaxa objectAtIndex:control.tag];
-        o.taxon = taxon;
-        o.taxonID = taxon.recordID;
-        o.iconicTaxonName = taxon.iconicTaxonName;
-        o.iconicTaxonID = taxon.iconicTaxonID;
-        o.speciesGuess = taxon.defaultName;
-        
-        if (self.image) {
-            o.observedOn = now;
+        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
+        [lib writeImageToSavedPhotosAlbum:self.image.CGImage
+                                 metadata:mutableMetadata
+                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                              if (error) {
+                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                  NSLog(@"ERROR: %@", error.localizedDescription);
+                              } else {
+                                  [SVProgressHUD showSuccessWithStatus:nil];
+                                  confirmNewObs.assetURLs = @[ newAssetUrl ];
+                                  confirmNewObs.taxon = iconicTaxa[control.tag];
+                                  confirmNewObs.location = loc.location;
+                                  
+                                  [self.navigationController pushViewController:confirmNewObs animated:YES];
+                              }
+                          }];
+
+    } else if (self.assets) {
+        confirmNewObs.assetURLs = [self.assets bk_map:^id(ALAsset *asset) {
+            return [asset valueForProperty:ALAssetPropertyAssetURL];
+        }];
+        confirmNewObs.taxon = iconicTaxa[control.tag];
+        confirmNewObs.location = nil;
+        [self.navigationController pushViewController:confirmNewObs animated:YES];
+    }
+    
+    */
+    
+     [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating observation...", @"Notice when we're saving a new photo for a new observation")
+                          maskType:SVProgressHUDMaskTypeGradient];
+    
+    
+    CLLocationManager *loc = [[CLLocationManager alloc] init];
+    
+    if (self.image) {
+        // embed geo
+        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+        if (loc.location) {
             
-            if (loc.location) {
-                o.latitude = @(loc.location.coordinate.latitude);
-                o.longitude = @(loc.location.coordinate.longitude);
-                o.positionalAccuracy = @(loc.location.horizontalAccuracy);
-            }
+            double latitude = fabs(loc.location.coordinate.latitude);
+            double longitude = fabs(loc.location.coordinate.longitude);
+            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
             
+            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
+            
+            mutableMetadata[@"{GPS}"] = gps;
+        }
+        
+        
+        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
+        [lib writeImageToSavedPhotosAlbum:self.image.CGImage
+                                 metadata:mutableMetadata
+                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                              if (error) {
+                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                  NSLog(@"ERROR: %@", error.localizedDescription);
+                              }
+                          }];
+    }
+    
+    NSDate *now = [NSDate date];
+    Observation *o = [Observation object];
+    
+    Taxon *taxon = [iconicTaxa objectAtIndex:control.tag];
+    o.taxon = taxon;
+    o.taxonID = taxon.recordID;
+    o.iconicTaxonName = taxon.iconicTaxonName;
+    o.iconicTaxonID = taxon.iconicTaxonID;
+    o.speciesGuess = taxon.defaultName;
+    
+    if (self.image) {
+        o.observedOn = now;
+        
+        if (loc.location) {
+            o.latitude = @(loc.location.coordinate.latitude);
+            o.longitude = @(loc.location.coordinate.longitude);
+            o.positionalAccuracy = @(loc.location.horizontalAccuracy);
+        }
+        
+        ObservationPhoto *op = [ObservationPhoto object];
+        op.position = @(0);
+        [op setObservation:o];
+        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+        [ImageStore.sharedImageStore store:self.image
+                                    forKey:op.photoKey];
+        op.localCreatedAt = now;
+        op.localUpdatedAt = now;
+    } else if (self.assets) {
+        
+        __block BOOL hasDate = NO;
+        __block BOOL hasLocation = NO;
+        [self.assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
             ObservationPhoto *op = [ObservationPhoto object];
-            op.position = @(0);
+            op.position = @(idx);
             [op setObservation:o];
             [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-            [ImageStore.sharedImageStore store:self.image
+            [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
                                         forKey:op.photoKey];
             op.localCreatedAt = now;
             op.localUpdatedAt = now;
-        } else if (self.assets) {
             
-            __block BOOL hasDate = NO;
-            __block BOOL hasLocation = NO;
-            [self.assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
-                ObservationPhoto *op = [ObservationPhoto object];
-                op.position = @(idx);
-                [op setObservation:o];
-                [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-                [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
-                                            forKey:op.photoKey];
-                op.localCreatedAt = now;
-                op.localUpdatedAt = now;
-                
-                if (!hasDate) {
-                    if ([asset valueForProperty:ALAssetPropertyDate]) {
-                        hasDate = YES;
-                        o.observedOn = [asset valueForProperty:ALAssetPropertyDate];
+            if (!hasDate) {
+                if ([asset valueForProperty:ALAssetPropertyDate]) {
+                    hasDate = YES;
+                    o.observedOn = [asset valueForProperty:ALAssetPropertyDate];
+                }
+            }
+            
+            if (!hasLocation) {
+                NSDictionary *metadata = asset.defaultRepresentation.metadata;
+                if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
+                    hasLocation = YES;
+                    
+                    double latitude, longitude;
+                    if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
+                        latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+                    } else {
+                        latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
                     }
+                    
+                    if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
+                        longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                    } else {
+                        longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                    }
+                    
+                    o.latitude = @(latitude);
+                    o.longitude = @(longitude);
+                    
+                    [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
+                                                                            longitude:longitude]
+                                  forObservation:o];
                 }
                 
-                if (!hasLocation) {
-                    NSDictionary *metadata = asset.defaultRepresentation.metadata;
-                    if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
-                        hasLocation = YES;
-                        
-                        double latitude, longitude;
-                        if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
-                            latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                        } else {
-                            latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                        }
-                        
-                        if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
-                            longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                        } else {
-                            longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                        }
-                        
-                        o.latitude = @(latitude);
-                        o.longitude = @(longitude);
-                        
-                        [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
-                                                                                longitude:longitude]
-                                      forObservation:o];
-                    }
+            }
+            
+        }];
+    }
+    
+    
+    
+    NSError *saveError;
+    [[Observation managedObjectContext] save:&saveError];
+    if (saveError) {
+        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+    }
+    
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD showSuccessWithStatus:nil];
+    }
+    
+    detail.observation = o;
+    detail.delegate = self;
+    [self.navigationController pushViewController:detail animated:YES];
+    
+}
 
-                }
-                
-            }];
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
+    
+    NSError *saveError;
+    [[Observation managedObjectContext] save:&saveError];
+    if (saveError) {
+        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
+    
+    @try {
+        [controller.observation destroy];
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if observation has been deleted or is otherwise inaccessible, do nothing
+            return;
         }
-        
-        NSError *saveError;
-        [[Observation managedObjectContext] save:&saveError];
-        if (saveError) {
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-        }
-        
-        if ([SVProgressHUD isVisible]) {
-            [SVProgressHUD showSuccessWithStatus:nil];
-        }
-        
-    }];
+    }
+    
+}
+
+
+- (void)loadRemoteIconicTaxa {
+    // silently do nothing if we're offline
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        
+                                                        loader.objectMapping = [Taxon mapping];
+                                                        
+                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            // update timestamps on us and taxa objects
+                                                            NSDate *now = [NSDate date];
+                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                                                                                  NSUInteger idx,
+                                                                                                  BOOL *stop) {
+                                                                [o setSyncedAt:now];
+                                                            }];
+                                                            
+                                                            // save into core data
+                                                            NSError *saveError = nil;
+                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                            if (saveError) {
+                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                return;
+                                                            }
+                                                            
+                                                            // update the UI with the merged results
+                                                            NSError *fetchError;
+                                                            iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:iconicTaxaFetchRequest
+                                                                                                                                error:&fetchError];
+                                                            if (fetchError) {
+                                                                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                            }
+                                                            
+                                                            [self configureScrollView];
+                                                        };
+                                                        
+                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
+                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                        };
+                                                        
+                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
+                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                        };
+                                                        
+                                                    }];
+
 }
 
 @end

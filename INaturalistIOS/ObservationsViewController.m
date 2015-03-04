@@ -516,6 +516,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     imagePickerController.allowsMultipleSelection = YES;
     imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
     imagePickerController.showsCancelButton = NO;           // so we get a back button
+    imagePickerController.groupTypes = @[
+                                         @(ALAssetsGroupSavedPhotos),
+                                         @(ALAssetsGroupAlbum)
+                                         ];
+
     
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:imagePickerController animated:YES];
@@ -568,65 +573,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     confirm.assets = assets;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:confirm animated:YES];
-
-    /*
-    [self dismissViewControllerAnimated:YES completion:^{
-        [SVProgressHUD showWithStatus:@"Loading..."];
-        
-        Observation *o = [Observation object];
-        ALAsset *firstAsset = (ALAsset *)assets.firstObject;
-        o.observedOn = [firstAsset valueForProperty:ALAssetPropertyDate];
-        
-        NSDictionary *metadata = firstAsset.defaultRepresentation.metadata;
-        if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
-            double latitude, longitude;
-            if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
-                latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-            } else {
-                latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-            }
-            
-            if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
-                longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-            } else {
-                longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-            }
-            o.latitude = @(latitude);
-            o.longitude = @(longitude);
-        }
-        
-        [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
-            ObservationPhoto *op = [ObservationPhoto object];
-            op.position = @(idx);
-            [op setObservation:o];
-            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
-                                            forKey:op.photoKey];
-            });
-            op.localCreatedAt = [asset valueForProperty:ALAssetPropertyDate];
-            op.localUpdatedAt = [asset valueForProperty:ALAssetPropertyDate];
-        }];
-        
-        NSError *saveError;
-        [[Observation managedObjectContext] save:&saveError];
-        if (saveError) {
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-        }
-        
-        // re-fetch
-        NSError *fetchError;
-        [fetchedResultsController performFetch:&fetchError];
-        if (fetchError) {
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-            NSLog(@"FETCH ERROR: %@", fetchError);
-        }
-        
-        if ([SVProgressHUD isVisible]) {
-            [SVProgressHUD showSuccessWithStatus:nil];
-        }
-    }];
-     */
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {

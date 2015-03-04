@@ -15,7 +15,9 @@
 - (void)createGesture;
 @end
 
-@interface ObsCameraView ()
+@interface ObsCameraView () {
+    UIButton *noPhoto;
+}
 @property (nonatomic, strong) CALayer *focusBox, *exposeBox;
 @end
 
@@ -50,7 +52,7 @@
     [flash addTarget:self action:@selector(flashTriggerAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:flash];
     
-    UIButton *noPhoto = [UIButton buttonWithType:UIButtonTypeSystem];
+    noPhoto = [UIButton buttonWithType:UIButtonTypeSystem];
     noPhoto.translatesAutoresizingMaskIntoConstraints = NO;
     noPhoto.frame = CGRectZero;
     noPhoto.backgroundColor = [UIColor blueColor];
@@ -158,6 +160,12 @@
     [singleTap setNumberOfTapsRequired:1];
     [singleTap setNumberOfTouchesRequired:1];
     [self addGestureRecognizer:singleTap];
+}
+
+- (void)buildInterfaceShowNoPhoto:(BOOL)showsNoPhoto {
+    [self buildInterface];
+    
+    noPhoto.hidden = !showsNoPhoto;
 }
 
 - (void)noPhoto {

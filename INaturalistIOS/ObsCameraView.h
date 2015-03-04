@@ -10,4 +10,5 @@
 
 @interface ObsCameraView : DBCameraView
 - (void)buildInterface;
+- (void)buildInterfaceShowNoPhoto:(BOOL)showsNoPhoto;
 @end

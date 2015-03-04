@@ -9,6 +9,8 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <QBImagePickerController/QBImagePickerController.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -34,6 +36,8 @@
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "ObsCameraView.h"
+#import "ObsCameraViewController.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -75,6 +79,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 @end
 
+@interface ObservationDetailViewController () <DBCameraViewControllerDelegate,QBImagePickerControllerDelegate>
+@end
 
 @implementation ObservationDetailViewController
 
@@ -1099,7 +1105,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Edit location",nil)];
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [locationActionSheet setCancelButtonIndex:2];
-        [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        if (self.tabBarController)
+            [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [locationActionSheet showInView:self.view];
     } else if (indexPath.section == ObservedOnTableViewSection) {
         [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
                                     datePickerMode:UIDatePickerModeDateAndTime
@@ -1121,7 +1130,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                             NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        if (self.tabBarController)
+            [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [actionSheet showInView:self.view];
     } else if (indexPath.section == MoreSection && indexPath.row > 1) {
         [self didSelectObservationFieldValueRow:indexPath];
     } else {
@@ -1510,25 +1522,164 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - DBCamera delegate
+
+- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
+    // save image to library, add to observation
+    
+    ObservationPhoto *op = [ObservationPhoto object];
+    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
+    [op setObservation:self.observation];
+    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
+    [self addPhoto:op];
+    op.localCreatedAt = [NSDate date];
+    op.localUpdatedAt = [NSDate date];
+    
+    ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                 longitude:[self.observation.visibleLongitude doubleValue]];
+    
+    NSMutableDictionary *meta = [metadata mutableCopy];
+    [meta setValue:[self getGPSDictionaryForLocation:loc]
+            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+    [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
+                                   metadata:meta
+                            completionBlock:nil];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void) dismissCamera:(id)cameraViewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [cameraViewController restoreFullScreenMode];
+}
+
+- (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
+    static CLGeocoder *geoCoder;
+    if (!geoCoder)
+        geoCoder = [[CLGeocoder alloc] init];
+    
+    [geoCoder cancelGeocode];       // cancel anything in flight
+    
+    [geoCoder reverseGeocodeLocation:loc
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       CLPlacemark *placemark = [placemarks firstObject];
+                       if (placemark) {
+                           obs.placeGuess = [ @[ placemark.name,
+                                                 placemark.locality,
+                                                 placemark.administrativeArea,
+                                                 placemark.ISOcountryCode ] componentsJoinedByString:@", "];
+                       }
+                   }];
+    
+}
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    // add to observation
+    
+    NSDate *now = [NSDate date];
+    
+    __block BOOL hasDate = self.observation.observedOn != nil;
+    __block BOOL hasLocation = self.observation.latitude != nil;
+    
+    [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
+        
+        ObservationPhoto *op = [ObservationPhoto object];
+        op.position = @(idx);
+        [op setObservation:self.observation];
+        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+        [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
+                                    forKey:op.photoKey];
+        [self addPhoto:op];
+        op.localCreatedAt = now;
+        op.localUpdatedAt = now;
+        
+        if (!hasDate) {
+            if ([asset valueForProperty:ALAssetPropertyDate]) {
+                hasDate = YES;
+                self.observation.observedOn = [asset valueForProperty:ALAssetPropertyDate];
+            }
+        }
+        
+        if (!hasLocation) {
+            NSDictionary *metadata = asset.defaultRepresentation.metadata;
+            if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
+                hasLocation = YES;
+                
+                double latitude, longitude;
+                if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
+                    latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+                } else {
+                    latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+                }
+                
+                if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
+                    longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                } else {
+                    longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                }
+                
+                self.observation.latitude = @(latitude);
+                self.observation.longitude = @(longitude);
+                
+                [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
+                                                                        longitude:longitude]
+                              forObservation:self.observation];
+            }
+            
+        }
+        
+    }];
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (void)openLibrary {
+    // qbimagepicker for library multi-select
+    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    imagePickerController.showsCancelButton = NO;           // so we get a back button
+    imagePickerController.groupTypes = @[
+                                         @(ALAssetsGroupSavedPhotos),
+                                         @(ALAssetsGroupAlbum)
+                                         ];
+    
+    
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:imagePickerController animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
+                                                                                               style:UIBarButtonItemStylePlain
+                                                                                              target:imagePickerController
+                                                                                              action:@selector(done:)];
+}
+
+
 - (IBAction)clickedAddPhoto:(id)sender {
-    UIActionSheet *photoChoice = [[UIActionSheet alloc] init];
-    photoChoice.tag = PhotoActionSheetTag;
-    [photoChoice setDelegate:self];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Take a photo",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:2];
-    } else {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:1];
-    }
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        [photoChoice showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
-    } else {
-        [photoChoice showFromTabBar:self.tabBarController.tabBar];
-    }
+    ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
+    [camera buildInterfaceShowNoPhoto:NO];
+    
+    ObsCameraViewController *cameraVC = [[ObsCameraViewController alloc] initWithDelegate:self cameraView:camera];
+    [cameraVC setUseCameraSegue:NO];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
+    [nav setNavigationBarHidden:YES];
+    
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
