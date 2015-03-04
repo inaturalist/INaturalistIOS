@@ -533,22 +533,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)noPhoto {
     Observation *o = [Observation object];
-
-    [self dismissViewControllerAnimated:YES completion:^{
-        NSError *saveError;
-        [[Observation managedObjectContext] save:&saveError];
-        if (saveError) {
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-        }
-        
-        // re-fetch
-        NSError *fetchError;
-        [fetchedResultsController performFetch:&fetchError];
-        if (fetchError) {
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-            NSLog(@"FETCH ERROR: %@", fetchError);
-        }
-    }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+    detail.observation = o;
+    
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:detail animated:YES];
 }
 
 #pragma mark - DBCamera delegate
