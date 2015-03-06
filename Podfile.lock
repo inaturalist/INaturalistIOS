@@ -18,7 +18,7 @@ PODS:
     - BlocksKit/DynamicDelegate
   - Bolts (1.1.3)
   - CrashlyticsFramework (2.2.5.1)
-  - DBCamera (2.3.11):
+  - DBCamera (2.3.13):
     - GPUImage (~> 0.1)
   - DCRoundSwitch (0.0.1)
   - Facebook-iOS-SDK (3.20.0):
@@ -68,7 +68,7 @@ DEPENDENCIES:
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
   - CrashlyticsFramework (= 2.2.5.1)
-  - DBCamera (= 2.3.11)
+  - DBCamera (= 2.3.13)
   - DCRoundSwitch (= 0.0.1)
   - Facebook-iOS-SDK (= 3.20.0)
   - FlurrySDK (= 5.4.0)
@@ -93,7 +93,7 @@ SPEC CHECKSUMS:
   BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
   CrashlyticsFramework: 195dfef587ade7a3954ce8effd483a3879d35877
-  DBCamera: bfc526822c53d6e52695924635ac8781a69d3ef4
+  DBCamera: 9339a4bea04a34212c09a9339f7deee4ccc931fe
   DCRoundSwitch: df465861ed880ee8d3c44ac8d3459faf1abaa6a9
   Facebook-iOS-SDK: 5854404b4b651f612a8ef79ca06d766858f4cb8e
   FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
