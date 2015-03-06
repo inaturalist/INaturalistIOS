@@ -548,6 +548,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = image;
     confirm.metadata = metadata;
+    confirm.shouldContinueUpdatingLocation = YES;
     [cameraViewController.navigationController pushViewController:confirm animated:YES];
 }
 

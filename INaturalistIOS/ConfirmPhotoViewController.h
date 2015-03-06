@@ -13,5 +13,6 @@
 @property UIImage *image;
 @property NSArray *assets;
 @property NSDictionary *metadata;
+@property BOOL shouldContinueUpdatingLocation;
 
 @end

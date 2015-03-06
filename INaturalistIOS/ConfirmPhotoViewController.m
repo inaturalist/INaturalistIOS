@@ -391,6 +391,8 @@
     detail.observation = o;
     detail.delegate = self;
     [self.navigationController pushViewController:detail animated:YES];
+    if (self.shouldContinueUpdatingLocation)
+        [detail startUpdatingLocation];
     
 }
 
