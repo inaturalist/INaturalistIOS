@@ -128,6 +128,18 @@
                                                     multiplier:1.0f
                                                       constant:0.0f]];
 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[close(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[flash(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[camera(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
 
 
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==60)]-|"
