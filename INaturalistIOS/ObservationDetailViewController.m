@@ -80,6 +80,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @end
 
 @interface ObservationDetailViewController () <DBCameraViewControllerDelegate,QBImagePickerControllerDelegate>
+@property UIBarButtonItem *bigSave;
 @end
 
 @implementation ObservationDetailViewController
@@ -324,6 +325,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self.activityButton setHidden:YES];
     }
     
+    UIButton *bigSaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    bigSaveButton.frame = CGRectMake(0, 0, 150, 44);
+    bigSaveButton.tintColor = [UIColor whiteColor];
+    [bigSaveButton setTitle:@"SAVE" forState:UIControlStateNormal];
+    bigSaveButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:44];
+    [bigSaveButton addTarget:self action:@selector(clickedSave) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.bigSave = [[UIBarButtonItem alloc] initWithCustomView:bigSaveButton];
+    self.bigSave.tintColor = [UIColor whiteColor];
+    
     UIBarButtonItem *flex = [[UIBarButtonItem alloc]
                              initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                              target:nil
@@ -335,18 +347,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	fixed.width = self.activityButton.frame.size.width;
     
     UIViewController *tbvc = [self getToolbarViewController];
-    [tbvc setToolbarItems:[NSArray arrayWithObjects:
-                           self.deleteButton,
-                           flex,
-                           fixed,
-                           flex,
-                           self.saveButton, 
-                           flex,
-						   self.activityBarButton,
-                           flex,
-						   self.viewButton,
-                           nil]
-                 animated:NO];
+    if (self.shouldShowBigSaveButton) {
+        [tbvc setToolbarItems:@[
+                                flex,
+                                self.bigSave,
+                                flex
+                                ]];
+    } else {
+        [tbvc setToolbarItems:[NSArray arrayWithObjects:
+                               self.deleteButton,
+                               flex,
+                               fixed,
+                               flex,
+                               self.saveButton,
+                               flex,
+                               self.activityBarButton,
+                               flex,
+                               self.viewButton,
+                               nil]
+                     animated:NO];
+    }
     [tbvc.navigationController setToolbarHidden:NO animated:YES];
     
     if (!self.keyboardToolbar) {
@@ -439,9 +459,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
-    self.navigationController.toolbar.barStyle = UIBarStyleDefault;
-    self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
-    self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    
+    if (self.shouldShowBigSaveButton) {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.barTintColor = [UIColor inatTint];
+        self.navigationController.toolbar.tintColor = [UIColor whiteColor];
+    } else {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
+        self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    }
 
     [super viewWillAppear:animated];
 }

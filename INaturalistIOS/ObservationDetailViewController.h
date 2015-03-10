@@ -85,6 +85,8 @@
 @property (nonatomic, strong) TaxonLoader *taxonLoader;
 @property (nonatomic, assign) BOOL didClickCancel;
 
+@property (nonatomic, assign) BOOL shouldShowBigSaveButton;
+
 - (void)focusOnPrevField;
 - (void)focusOnNextField;
 - (BOOL)focusOnFieldAtIndexPath:(NSIndexPath *)indexPath;

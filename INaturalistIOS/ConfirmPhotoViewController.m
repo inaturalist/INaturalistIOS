@@ -11,20 +11,24 @@
 #import <CoreLocation/CoreLocation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <BlocksKit/BlocksKit.h>
+#import <FontAwesomeKit/FAKFontAwesome.h>
 
 #import "ConfirmPhotoViewController.h"
 #import "Taxon.h"
+#import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "MultiImageView.h"
 #import "ObservationDetailViewController.h"
+#import "TaxaSearchViewController.h"
+#import "UIColor+ExploreColors.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
-@interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate> {
+@interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
     NSArray *iconicTaxa;
     NSFetchRequest *iconicTaxaFetchRequest;
     
@@ -138,6 +142,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.navigationController setToolbarHidden:YES animated:NO];
     
     if (self.image) {
         confirmImageView.image = self.image;
@@ -165,11 +170,11 @@
 
     @synchronized(chicletScrollView) {
         
-        if ([chicletScrollView viewWithTag:0x09].subviews.count == iconicTaxa.count)
+        if ([chicletScrollView viewWithTag:0x09].subviews.count == iconicTaxa.count + 2)
             return;
 
         // Thumbnail scrollview content size. Horizontal scrolling only.
-        chicletScrollView.contentSize = CGSizeMake((iconicTaxa.count * CHICLETWIDTH) + ((iconicTaxa.count - 1) * CHICLETPADDING + 4.0f), 100);
+        chicletScrollView.contentSize = CGSizeMake(((iconicTaxa.count + 2) * CHICLETWIDTH) + ((iconicTaxa.count + 1) * CHICLETPADDING + 4.0f), 100);
         chicletScrollView.contentOffset = CGPointZero;
         
         // Remove the old content view, in case there was one
@@ -184,9 +189,9 @@
         [chicletScrollView addSubview:contentView];
         
         // add chiclets to the content view
-        
-        [iconicTaxa enumerateObjectsUsingBlock:^(Taxon *taxon, NSUInteger idx, BOOL *stop) {
-            UIControl *chiclet = [[UIControl alloc] initWithFrame:CGRectMake((idx * CHICLETWIDTH + idx * CHICLETPADDING + 2.0f), 1,
+        for (int i = 0; i < iconicTaxa.count + 2; i++) {
+            
+            UIControl *chiclet = [[UIControl alloc] initWithFrame:CGRectMake((i * CHICLETWIDTH + i * CHICLETPADDING + 2.0f), 1,
                                                                              CHICLETWIDTH, CHICLETHEIGHT)];
             chiclet.layer.borderColor = [UIColor lightGrayColor].CGColor;
             chiclet.layer.borderWidth = 1.0f;
@@ -198,30 +203,47 @@
             [chiclet addSubview:scrim];
             
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CHICLETHEIGHT - 20 + 1, CHICLETWIDTH, 20)];
-            label.text = taxon.defaultName;
             label.font = [UIFont systemFontOfSize:11.0f];
             label.textColor = [UIColor whiteColor];
             label.textAlignment = NSTextAlignmentCenter;
             [chiclet addSubview:label];
             
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 1, CHICLETWIDTH, CHICLETHEIGHT - 20.0f)];
-            iv.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.name];
             iv.contentMode = UIViewContentModeScaleAspectFit;
             [chiclet addSubview:iv];
             
             chiclet.alpha = 0.0f;
             [contentView addSubview:chiclet];
             
-            chiclet.tag = idx;
+            chiclet.tag = i;
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((iconicTaxa.count - idx) * 0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(((iconicTaxa.count + 2) - i) * 0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.2f animations:^{
                     chiclet.alpha = 1.0f;
                 }];
             });
             
             [chiclet addTarget:self action:@selector(tappedControl:) forControlEvents:UIControlEventTouchUpInside];
-        }];
+
+            if (i == 0) {
+                // i know exactly
+                FAKIcon *bullsEye = [FAKFontAwesome bullseyeIconWithSize:100];
+                [bullsEye addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
+                iv.image = [bullsEye imageWithSize:CGSizeMake(100, 100)];
+                label.text = NSLocalizedString(@"I Know Exactly", @"Label for the I Know Exactly button when ID'ing a new observation");
+            } else if (i == iconicTaxa.count + 1) {
+                // i have no idea
+                iv.image = [UIImage imageNamed:@"unknown-200px.png"];
+                label.text = NSLocalizedString(@"No Idea", @"Label for I don't know button when ID'ing a new observation");
+            } else {
+                Taxon *taxon = [iconicTaxa objectAtIndex:i - 1];
+                label.text = taxon.defaultName;
+                UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@-200px.png", taxon.name]];
+                if (!img)
+                    img = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.name];
+                iv.image = img;
+            }
+        }
         
         chicletScrollView.contentOffset = CGPointMake(chicletScrollView.contentSize.width - CHICLETWIDTH, 0.0f);
         
@@ -256,8 +278,23 @@
                    }];
 
 }
-
 - (void)tappedControl:(UIControl *)control {
+    if (control.tag == 0) {
+        // i know
+        TaxaSearchViewController *taxaSearch = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
+                                                instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
+        taxaSearch.hidesDoneButton = YES;
+        taxaSearch.delegate = self;
+        [self.navigationController pushViewController:taxaSearch animated:YES];
+    } else if (control.tag == iconicTaxa.count + 1) {
+        // no idea
+        [self choseTaxon:nil needId:YES];
+    } else {
+        [self choseTaxon:[iconicTaxa objectAtIndex:control.tag - 1] needId:YES];
+    }
+}
+
+- (void)choseTaxon:(Taxon *)taxon needId:(BOOL)needId {
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     
@@ -300,16 +337,22 @@
     NSDate *now = [NSDate date];
     Observation *o = [Observation object];
     
-    Taxon *taxon = [iconicTaxa objectAtIndex:control.tag];
-    o.taxon = taxon;
-    o.taxonID = taxon.recordID;
-    o.iconicTaxonName = taxon.iconicTaxonName;
-    o.iconicTaxonID = taxon.iconicTaxonID;
-    o.speciesGuess = taxon.defaultName;
+    o.idPlease = @(needId);
+    
+    if (taxon) {
+        o.taxon = taxon;
+        o.taxonID = taxon.recordID;
+        o.iconicTaxonName = taxon.iconicTaxonName;
+        o.iconicTaxonID = taxon.iconicTaxonID;
+        o.speciesGuess = taxon.defaultName;
+    }
     
     if (self.image) {
         o.observedOn = now;
-        
+        o.localObservedOn = now;
+        o.observedOn = now;
+        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+
         if (loc.location) {
             o.latitude = @(loc.location.coordinate.latitude);
             o.longitude = @(loc.location.coordinate.longitude);
@@ -390,11 +433,14 @@
     
     detail.observation = o;
     detail.delegate = self;
+    detail.shouldShowBigSaveButton = YES;
     [self.navigationController pushViewController:detail animated:YES];
     if (self.shouldContinueUpdatingLocation)
         [detail startUpdatingLocation];
     
 }
+
+#pragma mark - ObservationDetailViewController delegate
 
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
     
@@ -417,9 +463,17 @@
             return;
         }
     }
-    
 }
 
+#pragma mark - TaxaSearchViewControllerDelegate
+
+- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
+    [self.navigationController popViewControllerAnimated:NO];
+    
+    [self choseTaxon:taxon needId:NO];
+}
+
+#pragma mark - iNat API Request
 
 - (void)loadRemoteIconicTaxa {
     // silently do nothing if we're offline
