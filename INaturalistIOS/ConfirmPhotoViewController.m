@@ -275,10 +275,17 @@
                    completionHandler:^(NSArray *placemarks, NSError *error) {
                        CLPlacemark *placemark = [placemarks firstObject];
                        if (placemark) {
+                           @try {
                            obs.placeGuess = [ @[ placemark.name,
                                                  placemark.locality,
                                                  placemark.administrativeArea,
                                                  placemark.ISOcountryCode ] componentsJoinedByString:@", "];
+                           } @catch (NSException *exception) {
+                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                   return;
+                               else
+                                   @throw exception;
+                           }
                        }
                    }];
 
