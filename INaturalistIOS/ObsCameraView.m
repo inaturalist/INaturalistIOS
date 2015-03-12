@@ -17,6 +17,8 @@
 
 @interface ObsCameraView () {
     UIButton *noPhoto;
+    UIView *topBar, *bottomBar;
+    UIButton *close, *camera, *flash, *shutter, *library;
 }
 @property (nonatomic, strong) CALayer *focusBox, *exposeBox;
 @end
@@ -26,27 +28,40 @@
 
 - (void) buildInterface {
     
-    UIButton *close = [UIButton buttonWithType:UIButtonTypeSystem];
+    topBar = [[UIView alloc] initWithFrame:CGRectZero];
+    topBar.translatesAutoresizingMaskIntoConstraints = NO;
+    topBar.backgroundColor = [UIColor blackColor];
+    [self addSubview:topBar];
+    
+    bottomBar = [[UIView alloc] initWithFrame:CGRectZero];
+    bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
+    bottomBar.backgroundColor = [UIColor blackColor];
+    [self addSubview:bottomBar];
+    
+    close = [UIButton buttonWithType:UIButtonTypeSystem];
     close.translatesAutoresizingMaskIntoConstraints = NO;
     close.frame = CGRectZero;
-    close.backgroundColor = [UIColor blueColor];
+    close.backgroundColor = [UIColor blackColor];
+    close.tintColor = [UIColor whiteColor];
     [close setTitle:@"Close" forState:UIControlStateNormal];
     [close addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:close];
     
-    UIButton *camera = [UIButton buttonWithType:UIButtonTypeSystem];
+    camera = [UIButton buttonWithType:UIButtonTypeSystem];
     camera.translatesAutoresizingMaskIntoConstraints = NO;
     camera.frame = CGRectZero;
-    camera.backgroundColor = [UIColor blueColor];
+    camera.backgroundColor = [UIColor blackColor];
+    camera.tintColor = [UIColor whiteColor];
     [camera setTitle:@"Front Camera" forState:UIControlStateNormal];
     [camera setTitle:@"Back Camera" forState:UIControlStateSelected];
     [camera addTarget:self action:@selector(changeCamera:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:camera];
     
-    UIButton *flash = [UIButton buttonWithType:UIButtonTypeSystem];
+    flash = [UIButton buttonWithType:UIButtonTypeSystem];
     flash.translatesAutoresizingMaskIntoConstraints = NO;
     flash.frame = CGRectZero;
-    flash.backgroundColor = [UIColor blueColor];
+    flash.backgroundColor = [UIColor blackColor];
+    flash.tintColor = [UIColor whiteColor];
     [flash setTitle:@"Flash On" forState:UIControlStateNormal];
     [flash setTitle:@"Flash Off" forState:UIControlStateSelected];
     [flash addTarget:self action:@selector(flashTriggerAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -55,29 +70,47 @@
     noPhoto = [UIButton buttonWithType:UIButtonTypeSystem];
     noPhoto.translatesAutoresizingMaskIntoConstraints = NO;
     noPhoto.frame = CGRectZero;
-    noPhoto.backgroundColor = [UIColor blueColor];
-    [noPhoto setTitle:@"No Photo" forState:UIControlStateNormal];
+    noPhoto.backgroundColor = [UIColor blackColor];
+    noPhoto.tintColor = [UIColor whiteColor];
+    noPhoto.titleLabel.numberOfLines = 2;
+    //noPhoto.titleLabel.font = [UIFont boldSystemFontOfSize:noPhoto.titleLabel.font.pointSize];
+    noPhoto.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [noPhoto setTitle:@"NO\nPHOTO" forState:UIControlStateNormal];
     [noPhoto addTarget:self action:@selector(noPhoto) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:noPhoto];
     
-    UIButton *shutter = [UIButton buttonWithType:UIButtonTypeSystem];
+    shutter = [UIButton buttonWithType:UIButtonTypeSystem];
     shutter.translatesAutoresizingMaskIntoConstraints = NO;
     shutter.frame = CGRectZero;
-    shutter.backgroundColor = [UIColor blueColor];
-    [shutter setTitle:@"SHUTTER" forState:UIControlStateNormal];
+    shutter.backgroundColor = [UIColor blackColor];
+    
+    FAKIcon *circleIcon = [FAKIonIcons ios7CircleFilledIconWithSize:75.0f];
+    [circleIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
+    FAKIcon *circleOutline = [FAKIonIcons ios7CircleOutlineIconWithSize:75.0f];
+    [circleOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+    UIImage *shutterImage = [[UIImage imageWithStackedIcons:@[ circleIcon, circleOutline ] imageSize:CGSizeMake(75.0f, 75.0f)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [shutter setImage:shutterImage
+             forState:UIControlStateNormal];
+    
+    //[shutter setTitle:@"SHUTTER" forState:UIControlStateNormal];
     [shutter addTarget:self action:@selector(triggerAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:shutter];
     
-    UIButton *library = [UIButton buttonWithType:UIButtonTypeSystem];
+    library = [UIButton buttonWithType:UIButtonTypeSystem];
     library.translatesAutoresizingMaskIntoConstraints = NO;
     library.frame = CGRectZero;
-    library.backgroundColor = [UIColor blueColor];
-    [library setTitle:@"Library" forState:UIControlStateNormal];
+    library.tintColor = [UIColor whiteColor];
+    library.backgroundColor = [UIColor blackColor];
+    FAKIcon *libIcon = [FAKIonIcons imagesIconWithSize:45.0f];
+    [library setAttributedTitle:libIcon.attributedString forState:UIControlStateNormal];
     [library addTarget:self action:@selector(libraryAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:library];
-
+    
+    
     
     NSDictionary *views = @{
+                            @"topBar": topBar,
+                            @"bottomBar": bottomBar,
                             @"close": close,
                             @"camera": camera,
                             @"flash": flash,
@@ -86,6 +119,16 @@
                             @"library": library,
                             };
     
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[topBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[bottomBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+
+
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[close(==100)]"
                                                                  options:0
                                                                  metrics:0
@@ -128,29 +171,38 @@
                                                     multiplier:1.0f
                                                       constant:0.0f]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[close(==40)]"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topBar(==40)]"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[flash(==40)]"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomBar(==80)]-0-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[camera(==40)]"
+
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[close(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[flash(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[camera(==40)]"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
 
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==60)]-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==80)]-0-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==60)]-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==80)]-0-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==60)]-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==80)]-0-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
@@ -186,14 +238,16 @@
 }
 
 - (void)tapToFocusAndExpose:(UIGestureRecognizer *)recognizer {
-    CGPoint tempPoint = (CGPoint)[recognizer locationInView:self];
-    if ([self.delegate respondsToSelector:@selector(cameraView:focusAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, tempPoint)) {
-        [self.delegate cameraView:self focusAtPoint:(CGPoint){ tempPoint.x, tempPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
+    CGPoint tempPoint = [recognizer locationInView:self];
+    CGPoint convertedPoint = [self.previewLayer convertPoint:tempPoint fromLayer:self.layer];
+
+    if ([self.delegate respondsToSelector:@selector(cameraView:focusAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, convertedPoint)) {
+        [self.delegate cameraView:self focusAtPoint:(CGPoint){ convertedPoint.x, convertedPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
     }
-    if ([self.delegate respondsToSelector:@selector(cameraView:exposeAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, tempPoint)) {
-        [self.delegate cameraView:self exposeAtPoint:(CGPoint){ tempPoint.x, tempPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
+    if ([self.delegate respondsToSelector:@selector(cameraView:exposeAtPoint:)] && CGRectContainsPoint(self.previewLayer.frame, convertedPoint)) {
+        [self.delegate cameraView:self exposeAtPoint:(CGPoint){ convertedPoint.x, convertedPoint.y - CGRectGetMinY(self.previewLayer.frame) }];
     }
-    [self drawExposeBoxAtPointOfInterest:tempPoint andRemove:YES];
+    [self drawExposeBoxAtPointOfInterest:convertedPoint andRemove:YES];
 }
 
 #pragma mark - Focus / Expose Box
@@ -223,6 +277,213 @@
 
 - (void) drawExposeBoxAtPointOfInterest:(CGPoint)point andRemove:(BOOL)remove {
     [super draw:_exposeBox atPointOfInterest:point andRemove:remove];
+}
+
+#pragma mark - orientation
+- (void)layoutForPortrait {
+    [self removeConstraints:self.constraints];
+    
+    NSDictionary *views = @{
+                            @"topBar": topBar,
+                            @"bottomBar": bottomBar,
+                            @"close": close,
+                            @"camera": camera,
+                            @"flash": flash,
+                            @"noPhoto": noPhoto,
+                            @"shutter": shutter,
+                            @"library": library,
+                            };
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[topBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[bottomBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[close(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[flash(==100)]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[camera(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:camera
+                                                     attribute:NSLayoutAttributeCenterX
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterX
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noPhoto(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[library(==100)]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[shutter(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:shutter
+                                                     attribute:NSLayoutAttributeCenterX
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterX
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topBar(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomBar(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[close(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[flash(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[camera(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+}
+
+- (void)layoutForLandscape {
+    [self removeConstraints:self.constraints];
+    
+    NSDictionary *views = @{
+                            @"topBar": topBar,
+                            @"bottomBar": bottomBar,
+                            @"close": close,
+                            @"camera": camera,
+                            @"flash": flash,
+                            @"noPhoto": noPhoto,
+                            @"shutter": shutter,
+                            @"library": library,
+                            };
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[bottomBar]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[close(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[flash(==100)]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[camera(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:camera
+                                                     attribute:NSLayoutAttributeCenterY
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterY
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[noPhoto(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==100)]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==100)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:shutter
+                                                     attribute:NSLayoutAttributeCenterY
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterY
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[topBar(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[bottomBar(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[close(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[flash(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[camera(==40)]"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[noPhoto(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[library(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[shutter(==80)]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
 }
 
 
