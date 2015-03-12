@@ -1935,15 +1935,24 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
-            self.observation.placeGuess = [[NSArray arrayWithObjects:
-                                            pm.name, 
-                                            pm.locality, 
-                                            pm.administrativeArea, 
-                                            pm.ISOcountryCode, 
-                                            nil] 
-                                           componentsJoinedByString:@", "];
-            if (self.placeGuessField) {
-                self.placeGuessField.text = self.observation.placeGuess;
+            // self.observation may not be accessible
+            // if it's been deleted for example
+            @try {
+                self.observation.placeGuess = [[NSArray arrayWithObjects:
+                                                pm.name,
+                                                pm.locality,
+                                                pm.administrativeArea,
+                                                pm.ISOcountryCode,
+                                                nil]
+                                               componentsJoinedByString:@", "];
+                if (self.placeGuessField) {
+                    self.placeGuessField.text = self.observation.placeGuess;
+                }
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSObjectNotAvailableException])
+                    return;
+                else
+                    @throw exception;
             }
         }
     }];
