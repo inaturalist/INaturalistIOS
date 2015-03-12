@@ -47,6 +47,11 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Skip", @"Skip button when picking a species during new photo/new observation confirmation")
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(skip)];
+    
     // disable bevel swipe, because it conflicts with the side-scrolling of the iconic taxa chiclets
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
@@ -278,6 +283,12 @@
                    }];
 
 }
+
+- (void)skip {
+    // the kueda case
+    [self choseTaxon:nil needId:NO];
+}
+
 - (void)tappedControl:(UIControl *)control {
     if (control.tag == 0) {
         // i know
