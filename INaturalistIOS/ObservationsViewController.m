@@ -12,6 +12,7 @@
 #import <DBCamera/DBCameraView.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -35,6 +36,9 @@
 #import "ObsCameraViewController.h"
 #import "ObsCameraView.h"
 #import "ConfirmPhotoViewController.h"
+#import "User.h"
+#import "MeHeaderView.h"
+#import "AnonHeaderView.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -733,6 +737,73 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 54.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 100.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username && ![username isEqualToString:@""]) {
+        MeHeaderView *header = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        
+        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+        NSError *fetchError;
+        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        }
+        
+        if (me) {
+            [self configureHeaderView:header forUser:me];
+        }
+        
+        return header;
+        
+    } else {
+        AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        return header;
+    }
+}
+
+- (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
+    
+    // icon
+    if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""])
+        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]];
+    else if (user.userIconURL && ![user.userIconURL isEqualToString:@""])
+        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
+    else {
+        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:80.0f];
+        [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
+    }
+    
+    // name
+    if (user.name && ![user.name isEqualToString:@""]) {
+        view.nameLabel.text = user.name;
+    }
+    
+    // observation count
+    if (user.observationsCount) {
+        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
+                                   user.observationsCount.integerValue];
+    }
+    
+    // identification count
+    if (user.identifications) {
+        view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
+                                   user.identificationsCount.integerValue];
+    }
+
+    
+}
+
 # pragma mark memory management
 - (void)didReceiveMemoryWarning
 {
@@ -784,10 +855,70 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     self.title = NSLocalizedString(@"Observations", nil);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    self.navigationController.tabBarItem.image = ({
+        FAKIcon *meOutline = [FAKIonIcons ios7PersonOutlineIconWithSize:35];
+        [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        [meOutline imageWithSize:CGSizeMake(34, 45)];
+    });
+    
+    self.navigationController.tabBarItem.selectedImage =({
+        FAKIcon *meFilled = [FAKIonIcons ios7PersonIconWithSize:35];
+        [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        [meFilled imageWithSize:CGSizeMake(34, 45)];
+    });
+    
+    self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
+    
+    self.navigationItem.leftBarButtonItem = nil;
+    FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:30];
+    UIImage *settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
+    settings.iconFontSize = 20;
+    UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:settingsImage
+                                                                landscapeImagePhone:settingsLandscapeImage
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(settings)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
+        
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username) {
+        
+        self.navigationItem.title = username;
+        
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [User mapping];
+                                                            loader.onDidLoadObject = ^(User *user) {
+                                                                NSError *saveError;
+                                                                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                                if (saveError) {
+                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                }
+                                                                
+                                                                if (fetchError) {
+                                                                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                }
+                                                                
+                                                                [self.tableView reloadData];
+                                                            };
+                                                            
+                                                            loader.onDidFailWithError = ^(NSError *error) {
+                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            };
+                                                        }];
+    }
+}
+
+- (void)settings {
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    UIViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"Settings"];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewDidUnload
