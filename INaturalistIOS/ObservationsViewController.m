@@ -812,6 +812,27 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 #pragma mark - View lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *meOutline = [FAKIonIcons ios7PersonOutlineIconWithSize:35];
+            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [meOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *meFilled = [FAKIonIcons ios7PersonIconWithSize:35];
+            [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [meFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -851,23 +872,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (fetchError) {
         [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
         NSLog(@"FETCH ERROR: %@", fetchError);
-    }
-    
-    self.title = NSLocalizedString(@"Observations", nil);
-    
-    self.navigationController.tabBarItem.image = ({
-        FAKIcon *meOutline = [FAKIonIcons ios7PersonOutlineIconWithSize:35];
-        [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        [meOutline imageWithSize:CGSizeMake(34, 45)];
-    });
-    
-    self.navigationController.tabBarItem.selectedImage =({
-        FAKIcon *meFilled = [FAKIonIcons ios7PersonIconWithSize:35];
-        [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        [meFilled imageWithSize:CGSizeMake(34, 45)];
-    });
-    
-    self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
+    }    
     
     self.navigationItem.leftBarButtonItem = nil;
     FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:30];
@@ -912,6 +917,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                                                 [SVProgressHUD showErrorWithStatus:error.localizedDescription];
                                                             };
                                                         }];
+    } else {
+        self.navigationItem.title = NSLocalizedString(@"Not Logged In", @"Placeholder text for not logged title on me tab.");
     }
 }
 
