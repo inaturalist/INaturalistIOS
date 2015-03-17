@@ -6,9 +6,10 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <DBCamera/DBCameraViewController.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <AVFoundation/AVFoundation.h>
+#import <BlocksKit+UIKit.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -19,8 +20,9 @@
 #import "ObsCameraViewController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
+#import "ObsCameraOverlay.h"
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, DBCameraViewControllerDelegate, QBImagePickerControllerDelegate>
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @end
 
@@ -75,20 +77,81 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
         
+        
         ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
         [camera buildInterface];
         
-        ObsCameraViewController *cameraVC = [[ObsCameraViewController alloc] initWithDelegate:self cameraView:camera];
-        [cameraVC setUseCameraSegue:NO];
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.showsCameraControls = NO;
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
         
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
-        [nav setNavigationBarHidden:YES];
+        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         
-        [self presentViewController:nav animated:YES completion:nil];
+        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+        
+        [overlay.close bk_addEventHandler:^(id sender) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // need to hide this based on available modes
+        [overlay.flash bk_addEventHandler:^(id sender) {
+            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+            }
+            [overlay configureFlashForMode:picker.cameraFlashMode];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // need to hide this based on available modes
+        [overlay.camera bk_addEventHandler:^(id sender) {
+            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+            } else {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.noPhoto bk_addEventHandler:^(id sender) {
+            [self noPhoto];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.shutter bk_addEventHandler:^(id sender) {
+            [picker takePicture];
+        } forControlEvents:UIControlEventTouchUpInside];
 
+        [overlay.library bk_addEventHandler:^(id sender) {
+            [self openLibrary];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        picker.cameraOverlayView = overlay;
+        
+        [self presentViewController:picker animated:YES completion:nil];
+        
         return NO;
     }
     return YES;
+}
+
+#pragma mark - UIImagePickerController delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
+    confirm.shouldContinueUpdatingLocation = YES;
+    [picker pushViewController:confirm animated:YES];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Add New Observation methods
@@ -125,22 +188,6 @@
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:detail animated:YES];
 }
-
-#pragma mark - DBCamera delegate
-
-- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.image = image;
-    confirm.metadata = metadata;
-    confirm.shouldContinueUpdatingLocation = YES;
-    [cameraViewController.navigationController pushViewController:confirm animated:YES];
-}
-
-- (void) dismissCamera:(id)cameraViewController{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [cameraViewController restoreFullScreenMode];
-}
-
 
 #pragma mark - QBImagePicker delegate
 
