@@ -449,13 +449,15 @@
                     </tabBar>
                     <connections>
                         <segue destination="2go-53-3Kx" kind="relationship" relationship="viewControllers" id="V7G-f9-DCP"/>
+                        <segue destination="t06-UC-YUc" kind="relationship" relationship="viewControllers" id="7mk-Fd-g5s"/>
                         <segue destination="KXh-FQ-rNL" kind="relationship" relationship="viewControllers" id="bGc-0o-aaw"/>
+                        <segue destination="2Xz-Sc-ScK" kind="relationship" relationship="viewControllers" id="1JF-6E-FKN"/>
                         <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="epf-G4-4bq"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9h-gt-HSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2047" y="1201"/>
+            <point key="canvasLocation" x="-2099" y="1209"/>
         </scene>
         <!--Item-->
         <scene sceneID="LIE-wk-Ao0">
