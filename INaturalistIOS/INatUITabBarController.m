@@ -60,12 +60,12 @@
     [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
     UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline] imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
-    ((UIViewController *)[self.viewControllers objectAtIndex:1]).tabBarItem.image = img;
-    ((UIViewController *)[self.viewControllers objectAtIndex:1]).tabBarItem.title = NSLocalizedString(@"New Observation", @"Title for New Observation Tab Bar Button");
-    [((UIViewController *)[self.viewControllers objectAtIndex:1]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
+    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.image = img;
+    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
+    [((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
                                                                                            forState:UIControlStateNormal];
     
-    self.selectedIndex = 2;
+    self.selectedIndex = 4;
     
     [super viewDidLoad];
 }
@@ -73,7 +73,7 @@
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-    if ([tabBarController.viewControllers indexOfObject:viewController] == 1) {
+    if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
         
         ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
         [camera buildInterface];
