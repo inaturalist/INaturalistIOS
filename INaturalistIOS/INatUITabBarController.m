@@ -191,8 +191,10 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
     detail.observation = o;
+    detail.shouldShowBigSaveButton = YES;
     
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav setNavigationBarHidden:NO];
     [nav pushViewController:detail animated:YES];
 }
 
