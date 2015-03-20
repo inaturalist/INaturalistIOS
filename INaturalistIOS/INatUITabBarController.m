@@ -17,8 +17,6 @@
 #import "ObservationPhoto.h"
 #import "INatWebController.h"
 #import "ObservationDetailViewController.h"
-#import "ObsCameraView.h"
-#import "ObsCameraViewController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
@@ -80,65 +78,80 @@
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    
+    // intercept selection of the "observe" tab
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
         
-        
-        ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
-        [camera buildInterface];
-        
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.delegate = self;
-        picker.allowsEditing = NO;
-        picker.showsCameraControls = NO;
-        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
-        
-        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-        [overlay configureFlashForMode:picker.cameraFlashMode];
-        
-        [overlay.close bk_addEventHandler:^(id sender) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        // need to hide this based on available modes
-        [overlay.flash bk_addEventHandler:^(id sender) {
-            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
-                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
-            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
-                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
-                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-            }
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            picker.delegate = self;
+            picker.allowsEditing = NO;
+            picker.showsCameraControls = NO;
+            picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+            
+            ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
             [overlay configureFlashForMode:picker.cameraFlashMode];
-        } forControlEvents:UIControlEventTouchUpInside];
+            
+            [overlay.close bk_addEventHandler:^(id sender) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            // need to hide this based on available modes
+            [overlay.flash bk_addEventHandler:^(id sender) {
+                if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+                } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+                } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+                }
+                [overlay configureFlashForMode:picker.cameraFlashMode];
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            // need to hide this based on available modes
+            [overlay.camera bk_addEventHandler:^(id sender) {
+                if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                    picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+                } else {
+                    picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+                }
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            [overlay.noPhoto bk_addEventHandler:^(id sender) {
+                [self noPhoto];
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            [overlay.shutter bk_addEventHandler:^(id sender) {
+                [picker takePicture];
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            [overlay.library bk_addEventHandler:^(id sender) {
+                [self openLibrary];
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            picker.cameraOverlayView = overlay;
+            
+            [self presentViewController:picker animated:YES completion:nil];
+        } else {
+            // no camera available
+            QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+            imagePickerController.delegate = self;
+            imagePickerController.allowsMultipleSelection = YES;
+            imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+            imagePickerController.showsCancelButton = NO;           // so we get a back button
+            imagePickerController.groupTypes = @[
+                                                 @(ALAssetsGroupSavedPhotos),
+                                                 @(ALAssetsGroupAlbum)
+                                                 ];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
         
-        // need to hide this based on available modes
-        [overlay.camera bk_addEventHandler:^(id sender) {
-            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-            } else {
-                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-            }
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        [overlay.noPhoto bk_addEventHandler:^(id sender) {
-            [self noPhoto];
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        [overlay.shutter bk_addEventHandler:^(id sender) {
-            [picker takePicture];
-        } forControlEvents:UIControlEventTouchUpInside];
-
-        [overlay.library bk_addEventHandler:^(id sender) {
-            [self openLibrary];
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        picker.cameraOverlayView = overlay;
-        
-        [self presentViewController:picker animated:YES completion:nil];
         
         return NO;
     }
