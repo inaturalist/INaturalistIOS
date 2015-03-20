@@ -435,6 +435,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // user prefs determine autocorrection/spellcheck behavior of the species guess field
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeDefault];
+    } else {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeNone];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeNo];
+    }
+
     // Do any additional setup after loading the view from its nib.
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
