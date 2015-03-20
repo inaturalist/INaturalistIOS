@@ -10,6 +10,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AVFoundation/AVFoundation.h>
 #import <BlocksKit+UIKit.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -21,6 +22,7 @@
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
+#import "Taxon.h"
 
 @interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -68,6 +70,9 @@
                                                                                            forState:UIControlStateNormal];
     
     self.selectedIndex = 4;
+    
+    // we'll use the iconic taxa during the new observation flow
+    [self fetchIconicTaxa];
     
     [super viewDidLoad];
 }
@@ -255,4 +260,32 @@
     }
     return NO;
 }
+
+#pragma mark - Fetch Iconic Taxa
+
+- (void)fetchIconicTaxa {
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        
+                                                        loader.objectMapping = [Taxon mapping];
+                                                        
+                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            // update timestamps on taxa objects
+                                                            NSDate *now = [NSDate date];
+                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                                                                                  NSUInteger idx,
+                                                                                                  BOOL *stop) {
+                                                                [o setSyncedAt:now];
+                                                            }];
+                                                            
+                                                            NSError *saveError = nil;
+                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                            if (saveError) {
+                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                            }
+                                                        };
+                                                    }];
+}
+
 @end
