@@ -180,6 +180,12 @@ static const int CreditsCellTag = 6;
 }
 
 #pragma mark - lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
+}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
