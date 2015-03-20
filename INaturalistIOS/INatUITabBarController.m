@@ -47,13 +47,15 @@
     [camera addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
     FAKIcon *cameraOutline = [FAKIonIcons ios7CameraOutlineIconWithSize:45];
     [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
-    UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline] imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline]
+                                         imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.image = img;
     ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
     [((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
                                                                                            forState:UIControlStateNormal];
     
+    // Me tab
     self.selectedIndex = 4;
     
     // we'll use the iconic taxa during the new observation flow
@@ -215,6 +217,7 @@
     if (toInterfaceOrientation == UIDeviceOrientationPortrait)
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
+
 - (NSUInteger)supportedInterfaceOrientations
 {
     if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
