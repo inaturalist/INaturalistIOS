@@ -11,6 +11,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -36,8 +37,7 @@
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
-#import "ObsCameraView.h"
-#import "ObsCameraViewController.h"
+#import "ObsCameraOverlay.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -79,7 +79,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 @end
 
-@interface ObservationDetailViewController () <DBCameraViewControllerDelegate,QBImagePickerControllerDelegate>
+@interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate>
 @property UIBarButtonItem *bigSave;
 @end
 
@@ -1559,39 +1559,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark - DBCamera delegate
-
-- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {
-    // save image to library, add to observation
-    
-    ObservationPhoto *op = [ObservationPhoto object];
-    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
-    [op setObservation:self.observation];
-    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
-    [self addPhoto:op];
-    op.localCreatedAt = [NSDate date];
-    op.localUpdatedAt = [NSDate date];
-    
-    ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
-                                                 longitude:[self.observation.visibleLongitude doubleValue]];
-    
-    NSMutableDictionary *meta = [metadata mutableCopy];
-    [meta setValue:[self getGPSDictionaryForLocation:loc]
-            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-    [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
-                                   metadata:meta
-                            completionBlock:nil];
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void) dismissCamera:(id)cameraViewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [cameraViewController restoreFullScreenMode];
-}
-
 - (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;
@@ -1707,16 +1674,74 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 
 - (IBAction)clickedAddPhoto:(id)sender {
-    ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
-    [camera buildInterfaceShowNoPhoto:NO];
     
-    ObsCameraViewController *cameraVC = [[ObsCameraViewController alloc] initWithDelegate:self cameraView:camera];
-    [cameraVC setUseCameraSegue:NO];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
-    [nav setNavigationBarHidden:YES];
-    
-    [self presentViewController:nav animated:YES completion:nil];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.showsCameraControls = NO;
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+        
+        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+        
+        [overlay.close bk_addEventHandler:^(id sender) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // need to hide this based on available modes
+        [overlay.flash bk_addEventHandler:^(id sender) {
+            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+            }
+            [overlay configureFlashForMode:picker.cameraFlashMode];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // need to hide this based on available modes
+        [overlay.camera bk_addEventHandler:^(id sender) {
+            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+            } else {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        overlay.noPhoto.hidden = YES;
+        
+        [overlay.shutter bk_addEventHandler:^(id sender) {
+            [picker takePicture];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.library bk_addEventHandler:^(id sender) {
+            [self openLibrary];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        picker.cameraOverlayView = overlay;
+        
+        [self presentViewController:picker animated:YES completion:nil];
+    } else {
+        // no camera available
+        QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.allowsMultipleSelection = YES;
+        imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.showsCancelButton = NO;           // so we get a back button
+        imagePickerController.groupTypes = @[
+                                             @(ALAssetsGroupSavedPhotos),
+                                             @(ALAssetsGroupAlbum)
+                                             ];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {

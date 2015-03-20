@@ -34,7 +34,6 @@
 - (IBAction)sync:(id)sender;
 - (IBAction)viewActivity:(id)sender;
 - (void)stopSync;
-- (IBAction)edit:(id)sender;
 - (void)stopEditing;
 
 - (void)syncObservationPhoto:(ObservationPhoto *)op;
@@ -47,7 +46,5 @@
 - (BOOL)isSyncing;
 - (BOOL)autoLaunchTutorial;
 - (void)refreshData;
-
-- (IBAction)addNewObservation:(id)sender;
 
 @end

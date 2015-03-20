@@ -7,9 +7,6 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <DBCamera/DBCameraViewController.h>
-#import <DBCamera/DBCameraContainerViewController.h>
-#import <DBCamera/DBCameraView.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
@@ -33,9 +30,6 @@
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
-#import "ObsCameraViewController.h"
-#import "ObsCameraView.h"
-#import "ConfirmPhotoViewController.h"
 #import "User.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
@@ -49,7 +43,7 @@ static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
-@interface ObservationsViewController () <DBCameraViewControllerDelegate, QBImagePickerControllerDelegate, NSFetchedResultsControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
 }
 @end
@@ -517,84 +511,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = observation;
     [self.navigationController pushViewController:vc animated:YES];
-}
-
-#pragma mark - Add New Observation methods
-
-- (IBAction)addNewObservation:(id)sender {
-    
-    ObsCameraView *camera = [ObsCameraView initWithFrame:[[UIScreen mainScreen] bounds]];
-    [camera buildInterface];
-    
-    ObsCameraViewController *cameraVC = [[ObsCameraViewController alloc] initWithDelegate:self cameraView:camera];
-    [cameraVC setUseCameraSegue:NO];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:cameraVC];
-    [nav setNavigationBarHidden:YES];
-    
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)openLibrary {
-    // qbimagepicker for library multi-select
-    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
-    imagePickerController.delegate = self;
-    imagePickerController.allowsMultipleSelection = YES;
-    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-    imagePickerController.showsCancelButton = NO;           // so we get a back button
-    imagePickerController.groupTypes = @[
-                                         @(ALAssetsGroupSavedPhotos),
-                                         @(ALAssetsGroupAlbum)
-                                         ];
-
-    
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:imagePickerController animated:YES];
-    [nav setNavigationBarHidden:NO animated:YES];
-    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
-                                                                                               style:UIBarButtonItemStylePlain
-                                                                                              target:imagePickerController
-                                                                                              action:@selector(done:)];
-}
-
-- (void)noPhoto {
-    Observation *o = [Observation object];
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-    detail.observation = o;
-    
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:detail animated:YES];
-}
-
-#pragma mark - DBCamera delegate
-
-- (void)camera:(UIViewController *)cameraViewController didFinishWithImage:(UIImage *)image withMetadata:(NSDictionary *)metadata {    
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.image = image;
-    confirm.metadata = metadata;
-    confirm.shouldContinueUpdatingLocation = YES;
-    [cameraViewController.navigationController pushViewController:confirm animated:YES];
-}
-
-- (void) dismissCamera:(id)cameraViewController{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [cameraViewController restoreFullScreenMode];
-}
-
-
-#pragma mark - QBImagePicker delegate
-
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.assets = assets;
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:confirm animated:YES];
-}
-
-- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
