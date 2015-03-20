@@ -29,7 +29,8 @@ static const int AccountActionCellTag = 1;
 static const int TutorialActionCellTag = 2;
 static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
-static const int VersionCellTag = 4;
+static const int VersionCellTag = 5;
+static const int CreditsCellTag = 6;
 
 @implementation SettingsViewController
 
@@ -41,15 +42,16 @@ static const int VersionCellTag = 4;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
-    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
-    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
+    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     tutorialActionCell.tag = TutorialActionCellTag;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
+    creditsCell.tag = CreditsCellTag;
     creditsCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
@@ -163,6 +165,10 @@ static const int VersionCellTag = 4;
 #endif
 }
 
+- (void)launchCredits {
+    NSLog(@"launch credits.");
+}
+
 - (void)networkUnreachableAlert
 {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
@@ -237,6 +243,10 @@ static const int VersionCellTag = 4;
         case RateUsCellTag:
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             [self launchRateUs];
+            break;
+        case CreditsCellTag:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            [self launchCredits];
             break;
         default:
             break;
