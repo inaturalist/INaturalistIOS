@@ -39,20 +39,7 @@
     TTNavigator* navigator = [TTNavigator navigator];
     navigator.delegate = self;
     
-    /*
-    // guides gone entirely for now
-    // make sure tabs fit OS version
-    if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
-        NSMutableArray * vcs = [NSMutableArray
-                                arrayWithArray:[self viewControllers]];
-        [vcs removeObjectAtIndex:3]; // remove guides tab
-        [self setViewControllers:vcs];
-    }
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.tabBar.translucent = NO;
-    }
-     */
-    
+    // tab bar delegate to intercept selection of the "observe" tab
     self.delegate = self;
     
     // configure camera VC
