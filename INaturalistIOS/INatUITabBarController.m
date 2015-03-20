@@ -240,7 +240,7 @@
     NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:2];
+    UITabBarItem *item = [self.tabBar.items objectAtIndex:4];       // Me tab
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%d", theCount];
     } else {
