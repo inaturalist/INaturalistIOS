@@ -32,6 +32,9 @@ static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
 static const int CreditsCellTag = 6;
 
+static const int AutomaticallyUploadSwitchTag = 10;
+static const int AutocompleteNamesSwitchTag = 11;
+
 @implementation SettingsViewController
 
 @synthesize versionText = _versionText;
@@ -202,19 +205,76 @@ static const int CreditsCellTag = 6;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
 }
 
+#pragma mark - UISwitch target
+
+- (void)settingSwitched:(UISwitch *)switcher {
+    if (switcher.tag == AutomaticallyUploadSwitchTag) {
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
+                                                forKey:kINatAutomaticallyUploadPrefKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (switcher.tag == AutocompleteNamesSwitchTag) {
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
+                                                forKey:kINatAutocompleteNamesPrefKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 #pragma mark - UITableView
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 3 && indexPath.row == 0) {
+    if (indexPath.section == 4 && indexPath.row == 0) {
         cell.textLabel.text = self.versionText;
         cell.backgroundView = nil;
         cell.tag = VersionCellTag;
+        
+    } else if (indexPath.section == 1) {
+        cell.userInteractionEnabled = YES;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        UISwitch *switcher;
+        if (![cell viewWithTag:10 + indexPath.item]) {
+            
+            switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+            switcher.translatesAutoresizingMaskIntoConstraints = NO;
+            switcher.tag = 10 + indexPath.item;
+            switcher.enabled = YES;
+            [switcher addTarget:self
+                         action:@selector(settingSwitched:)
+               forControlEvents:UIControlEventValueChanged];
+            
+            [cell.contentView addSubview:switcher];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
+                                                                         options:0
+                                                                         metrics:0
+                                                                           views:@{ @"switcher": switcher }]];
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
+                                                             attribute:NSLayoutAttributeCenterY
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:cell.contentView
+                                                             attribute:NSLayoutAttributeCenterY
+                                                            multiplier:1.0f
+                                                              constant:0.0f]];
+        } else {
+            switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+        }
+        
+        if (switcher.tag == AutomaticallyUploadSwitchTag)
+            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey];
+        else if (switcher.tag == AutocompleteNamesSwitchTag)
+            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+        
     }
 }
 
 #pragma mark - UITableViewDataSource
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // do nothing when tapping app settings
+    if (indexPath.section == 1) {
+        return;
+    }
+    
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (cell.tag) {
