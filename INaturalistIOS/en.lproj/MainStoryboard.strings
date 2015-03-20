@@ -102,7 +102,7 @@
 "IvC-UJ-yev.text" = "Contact support";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "Love iNat? Rate Us";
+"r3a-dI-zLW.text" = "Love iNat? Rate us";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Choose projects";
@@ -340,3 +340,10 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Edit Location";
+
+/* Class = "IBUILabel"; text = = "Automatically upload"; ObjectID = "kUQ-Cu-TLr"; */
+"kUQ-Cu-TLr.text" = "Automatically upload"
+
+/* Class = "IBUILabel"; text = = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Autocomplete names"
+
