@@ -174,7 +174,7 @@ static const int AutocompleteNamesSwitchTag = 11;
     
     NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@",
                          NSLocalizedString(@"Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life. ", @"funding thank yous"),
-                         NSLocalizedString(@"iNaturalist is made by Joelle Belmonte, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
+                         NSLocalizedString(@"iNaturalist is made by every single person who participates in our community. The people who build the software, maintain our infrastructure, and foster collaborations are Joelle Belmonte, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
                          NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain and ionicons by Ben Sperry. In addition, iNaturalist is deeply grateful to the Cocoapods community.", @"open source contributions"),
                          @"IUCN category II places provided by IUCN and UNEP-WCMC (2015), The World Database on Protected Areas (WDPA) [On-line], [11/2014], Cambridge, UK: UNEP-WCMC. Available at: www.protectedplanet.net."];
 
