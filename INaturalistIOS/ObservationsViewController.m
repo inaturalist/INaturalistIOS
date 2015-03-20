@@ -730,35 +730,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-		
-		// RWTODO: delete from server
-		
-        Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
-        [o destroy];
-
-        [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
-        if (!self.isEditing) {
-            [self checkSyncStatus];
-        }
-        
-        id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section in our observation tableview
-        if ([sectionInfo numberOfObjects] == 0) {
-            [self stopEditing];
-        }
-        
-        // re-fetch
-        NSError *fetchError;
-        [fetchedResultsController performFetch:&fetchError];
-        if (fetchError) {
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-            NSLog(@"FETCH ERROR: %@", fetchError);
-        }
-    }
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 54.0f;
 }
