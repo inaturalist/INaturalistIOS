@@ -89,19 +89,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         return;
     }
     
-    if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
-                                                               style:UIBarButtonItemStyleBordered 
-                                                              target:self 
-                                                              action:@selector(stopSync)];
-        self.stopSyncButton.tintColor = [UIColor redColor];
-    }
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self.navigationController setToolbarHidden:NO];
-    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
-                 animated:YES];
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
@@ -125,8 +112,27 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
 	[self.syncQueue start];
     
-    // temporarily disable user interaction with the tableview
-    self.tableView.userInteractionEnabled = NO;
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
+        
+        if (!self.stopSyncButton) {
+            self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:self
+                                                                  action:@selector(stopSync)];
+            self.stopSyncButton.tintColor = [UIColor redColor];
+        }
+        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        [self.navigationController setToolbarHidden:NO];
+        [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
+                     animated:YES];
+        
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
+
+        // temporarily disable user interaction with the tableview
+        self.tableView.userInteractionEnabled = NO;
+    } else {
+        [self.navigationController setToolbarHidden:YES];
+    }
 }
 
 - (void)stopSync
@@ -304,9 +310,19 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         }
     }
     [self.syncButton setTitle:msg];
+    
+    
+    
     if (self.itemsToSyncCount > 0) {
-        [self.navigationController setToolbarHidden:NO];
-        [self setToolbarItems:self.syncToolbarItems animated:YES];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey] &&
+            [[[RKClient sharedClient] reachabilityObserver]isNetworkReachable] &&
+            self.navigationController.visibleViewController == self) {
+            
+            [self sync:nil];
+        } else {
+            [self.navigationController setToolbarHidden:NO];
+            [self setToolbarItems:self.syncToolbarItems animated:YES];
+        }
     } else {
         [self.navigationController setToolbarHidden:YES];
         [self setToolbarItems:nil animated:YES];
@@ -398,11 +414,18 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if ([settings objectForKey:@"firstSignInSeen"]) {
         return NO;
     }
+    
+    // new users default to auto upload
+    [settings setBool:@(YES) forKey:kINatAutomaticallyUploadPrefKey];
+    
+    // new users default to autocomplete on
+    [settings setBool:@(YES) forKey:kINatAutocompleteNamesPrefKey];
+    
     LoginViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]
                                instantiateViewControllerWithIdentifier:@"LoginViewController"];
     UINavigationController *modalNavController = [[UINavigationController alloc]
                                                   initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:YES completion:nil];
+    [self presentViewController:modalNavController animated:NO completion:nil];
     [settings setObject:[NSNumber numberWithBool:YES] forKey:@"firstSignInSeen"];
     [settings synchronize];
     return YES;
@@ -1178,22 +1201,26 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - SyncQueueDelegate
 - (void)syncQueueStartedSyncFor:(id)model
 {
-    NSString *activityMsg;
-    if (model == ObservationPhoto.class) {
-        activityMsg = NSLocalizedString(@"Syncing photos...",nil);
-    } else {
-        NSString *modelName = NSStringFromClass(model).humanize.pluralize;
-        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
+        NSString *activityMsg;
+        if (model == ObservationPhoto.class) {
+            activityMsg = NSLocalizedString(@"Syncing photos...",nil);
+        } else {
+            NSString *modelName = NSStringFromClass(model).humanize.pluralize;
+            activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
+        }
+        [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
     }
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
-    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
-                             number, 
-                             total, 
-                             NSStringFromClass(record.class).humanize.pluralize];
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
+        NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
+                                 number,
+                                 total,
+                                 NSStringFromClass(record.class).humanize.pluralize];
+        [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+    }
 }
 
 - (void)syncQueueFinished
@@ -1210,9 +1237,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [av show];
         self.syncErrors = nil;
     } else {
-        [SVProgressHUD showSuccessWithStatus:nil];
-        // re-enable user interaction with the tableview
-        self.tableView.userInteractionEnabled = YES;
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
+            [SVProgressHUD showSuccessWithStatus:nil];
+            // re-enable user interaction with the tableview
+            self.tableView.userInteractionEnabled = YES;
+        }
     }
     
     // make sure any deleted records get gone
