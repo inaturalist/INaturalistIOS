@@ -1652,6 +1652,7 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */,
 				FA63FA2919E4D40F007306F9 /* ShellScript */,
+				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2053,6 +2054,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Crashlytics.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
+		};
+		FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods/Pods-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
