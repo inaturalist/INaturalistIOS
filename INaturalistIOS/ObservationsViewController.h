@@ -44,7 +44,6 @@
 - (void)clickedActivity:(id)sender event:(UIEvent *)event;
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 - (BOOL)isSyncing;
-- (BOOL)autoLaunchTutorial;
 - (void)refreshData;
 
 @end

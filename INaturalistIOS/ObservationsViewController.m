@@ -360,37 +360,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
-- (BOOL)autoLaunchTutorial
-{
-    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    
-    if ([settings objectForKey:kDefaultsKeyOldTutorialSeen]) {
-        return NO;
-    }
-        
-    if ([settings boolForKey:kDefaultsKeyTutorialNeverAgain]) {
-        return NO;
-    }
-    
-    if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObs]) {
-        if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObsCommunity]) {
-            return NO;
-        } else {
-            [self showTutorialImage:[UIImage imageNamed:@"tutorial4en.png"]
-                              title:NSLocalizedString(@"Connect With Other Nature Lovers", @"Title for community tutorial screen")];
-            [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObsCommunity];
-            [settings synchronize];
-            return YES;
-        }
-    } else {
-        [self showTutorialImage:[UIImage imageNamed:@"tutorial2en.png"]
-                          title:NSLocalizedString(@"Record What You See", @"Title for new observation tutorial screen")];
-        [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObs];
-        [settings synchronize];
-        return YES;
-    }
-}
-
 - (void)showTutorialImage:(UIImage *)image title:(NSString *)title {
     TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
     vc.tutorialImage = image;
@@ -401,6 +370,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 }
 
+/*
 - (BOOL)autoLaunchSignIn
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
@@ -423,6 +393,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [settings synchronize];
     return YES;
 }
+ */
 
 - (BOOL)autoLaunchNewFeatures
 {
@@ -876,11 +847,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                nil]];
     if (!self.isSyncing) {
         [self checkSyncStatus];
-    }
-    if ([self autoLaunchTutorial]) {
-        // rad
-    } else if (![self autoLaunchSignIn]) {
-        [self autoLaunchNewFeatures];
     }
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
