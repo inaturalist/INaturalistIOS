@@ -170,10 +170,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
                                     serializedObject:&error];
         RKParams* params = [RKParams paramsWithDictionary:dictionary];
-        NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
         
         [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                          forSize:imageSize]
+                                                          forSize:ImageStoreLargeSize]
                forParam:@"file"];
         loader.params = params;
         loader.objectMapping = [ObservationPhoto mapping];
