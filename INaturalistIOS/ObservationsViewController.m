@@ -221,6 +221,29 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
+- (void)refreshHeader {
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+    if (username.length) {
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%@.json", username]
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [User mapping];
+                                                            loader.onDidLoadObject = ^(User *me) {
+                                                                NSError *saveError;
+                                                                [[User managedObjectContext] save:&saveError];
+                                                                if (saveError) {
+                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                }
+                                                                
+                                                                [self.tableView reloadData];
+                                                            };
+                                                            
+                                                            loader.onDidFailWithError = ^(NSError *error) {
+                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            };
+                                                        }];
+    }
+}
+
 - (void)refreshData
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
@@ -228,6 +251,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
+        
+        [self refreshHeader];
         self.lastRefreshAt = [NSDate date];
 	}
 }
@@ -1099,6 +1124,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     // make sure any deleted records get gone
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    
+    [self refreshHeader];
 }
 
 - (void)syncQueueAuthRequired
