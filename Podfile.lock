@@ -44,7 +44,6 @@ PODS:
   - HexColors (2.2.1)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
-  - MMMarkdown (0.4.1)
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - QBImagePickerController (2.2.2)
@@ -75,17 +74,16 @@ DEPENDENCIES:
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
   - MHVideoPhotoGallery (= 1.6.6)
-  - MMMarkdown
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController
+  - QBImagePickerController (= 2.2.2)
   - RaptureXML (= 1.0.1)
   - SlackTextViewController (= 1.3.2)
   - SSZipArchive (= 0.3.2)
   - SVProgressHUD (= 1.1.1)
   - SVPullToRefresh (= 0.4.1)
   - UIColor-HTMLColors (= 1.0.0)
-  - VTAcknowledgementsViewController
+  - VTAcknowledgementsViewController (= 0.13)
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: e49127271ec833864f3235ba7261b1f0d093a503
@@ -101,7 +99,6 @@ SPEC CHECKSUMS:
   googleplus-ios-sdk: b0f6cd8aa29c51d0048cace8dc3bd8f4ae0806bb
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
-  MMMarkdown: c82c9024dd80f088312909023dd6d6d013bd668f
   NXOAuth2Client: fa81be68c9ce628202028ae037c9c92cfbb37865
   PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f
   QBImagePickerController: f5498a84e86a171bf9266c91feb659bf9fc91f4b
