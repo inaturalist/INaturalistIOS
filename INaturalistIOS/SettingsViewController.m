@@ -204,6 +204,9 @@ static const int AutocompleteNamesSwitchTag = 11;
 {
     [super viewWillAppear:animated];
     [self initUI];
+    
+    // don't show a toolbar in Settings
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
