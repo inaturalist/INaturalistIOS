@@ -333,6 +333,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     if (self.itemsToSyncCount > 0) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey] &&
+            [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey] &&
             [[[RKClient sharedClient] reachabilityObserver]isNetworkReachable] &&
             self.navigationController.visibleViewController == self) {
             
