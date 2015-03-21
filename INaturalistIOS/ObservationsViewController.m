@@ -396,31 +396,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 }
 
-/*
-- (BOOL)autoLaunchSignIn
-{
-    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    if ([settings objectForKey:@"firstSignInSeen"]) {
-        return NO;
-    }
-    
-    // new users default to auto upload
-    [settings setBool:@(YES) forKey:kINatAutomaticallyUploadPrefKey];
-    
-    // new users default to autocomplete on
-    [settings setBool:@(YES) forKey:kINatAutocompleteNamesPrefKey];
-    
-    LoginViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]
-                               instantiateViewControllerWithIdentifier:@"LoginViewController"];
-    UINavigationController *modalNavController = [[UINavigationController alloc]
-                                                  initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:NO completion:nil];
-    [settings setObject:[NSNumber numberWithBool:YES] forKey:@"firstSignInSeen"];
-    [settings synchronize];
-    return YES;
-}
- */
-
 - (BOOL)autoLaunchNewFeatures
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
@@ -843,6 +818,25 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    
+    // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
+    // when the user saw the login prompt for the first time. existing users will
+    // have these new settings default to NO, new users will hae these settings set to YES
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstSignInSeen"]) {
+        // new users default to auto upload
+        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+                                                forKey:kINatAutomaticallyUploadPrefKey];
+        
+        // new users default to autocomplete on
+        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+                                                forKey:kINatAutocompleteNamesPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+                                                  forKey:@"firstSignInSeen"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
