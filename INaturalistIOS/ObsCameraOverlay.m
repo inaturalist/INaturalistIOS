@@ -31,7 +31,7 @@
     if (self = [super initWithFrame:frame]) {
         
         flashOn = ({
-            FAKIcon *flash = [FAKIonIcons ios7BoltIconWithSize:30.0f];
+            FAKIcon *flash = [FAKIonIcons iosBoltIconWithSize:30.0f];
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
@@ -45,7 +45,7 @@
         });
         
         flashOff = ({
-            FAKIcon *flash = [FAKIonIcons ios7BoltIconWithSize:30.0f];
+            FAKIcon *flash = [FAKIonIcons iosBoltIconWithSize:30.0f];
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
@@ -60,7 +60,7 @@
         });
 
         flashAuto = ({
-            FAKIcon *flash = [FAKIonIcons ios7BoltIconWithSize:30.0f];
+            FAKIcon *flash = [FAKIonIcons iosBoltIconWithSize:30.0f];
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
@@ -85,7 +85,7 @@
             button.backgroundColor = [UIColor blackColor];
             button.tintColor = [UIColor whiteColor];
             button.titleLabel.textAlignment = NSTextAlignmentLeft;
-            FAKIcon *close = [FAKIonIcons ios7CloseEmptyIconWithSize:35.0f];
+            FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:35.0f];
             [close addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [button setAttributedTitle:close.attributedString forState:UIControlStateNormal];
             button;
@@ -100,7 +100,7 @@
             button.tintColor = [UIColor whiteColor];
             button.titleLabel.textAlignment = NSTextAlignmentCenter;
 
-            FAKIcon *camera = [FAKIonIcons ios7ReverseCameraOutlineIconWithSize:30.0f];
+            FAKIcon *camera = [FAKIonIcons iosReverseCameraOutlineIconWithSize:30.0f];
             [camera addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [button setAttributedTitle:camera.attributedString forState:UIControlStateNormal];
             button;
@@ -138,9 +138,9 @@
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
             
-            FAKIcon *circleIcon = [FAKIonIcons ios7CircleFilledIconWithSize:75.0f];
+            FAKIcon *circleIcon = [FAKIonIcons iosCircleFilledIconWithSize:75.0f];
             [circleIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
-            FAKIcon *circleOutline = [FAKIonIcons ios7CircleOutlineIconWithSize:75.0f];
+            FAKIcon *circleOutline = [FAKIonIcons iosCircleOutlineIconWithSize:75.0f];
             [circleOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             UIImage *shutterImage = [[UIImage imageWithStackedIcons:@[ circleIcon, circleOutline ] imageSize:CGSizeMake(75.0f, 75.0f)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
             [button setImage:shutterImage

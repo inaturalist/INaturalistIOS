@@ -51,7 +51,7 @@ static NSDateFormatter *shortDateFormatter = nil;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         //self.contentView.backgroundColor = [UIColor whiteColor];
         
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:20.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:20.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(20.0f, 20.0f)];
 

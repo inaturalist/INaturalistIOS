@@ -684,7 +684,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     else if (user.userIconURL && ![user.userIconURL isEqualToString:@""])
         [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
     else {
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:80.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
         [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
     }
@@ -721,13 +721,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *meOutline = [FAKIonIcons ios7PersonOutlineIconWithSize:35];
+            FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
             [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [meOutline imageWithSize:CGSizeMake(34, 45)];
         });
         
         self.navigationController.tabBarItem.selectedImage =({
-            FAKIcon *meFilled = [FAKIonIcons ios7PersonIconWithSize:35];
+            FAKIcon *meFilled = [FAKIonIcons iosPersonIconWithSize:35];
             [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [meFilled imageWithSize:CGSizeMake(34, 45)];
         });
@@ -780,7 +780,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }    
     
     self.navigationItem.leftBarButtonItem = nil;
-    FAKIcon *settings = [FAKIonIcons ios7GearOutlineIconWithSize:30];
+    FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
     UIImage *settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
     settings.iconFontSize = 20;
     UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];

@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "GuidesViewController.h"
 #import "Guide.h"
@@ -310,6 +311,27 @@ static const int ListControlIndexNearby = 2;
 }
 
 #pragma mark - View lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *bookOutline = [FAKIonIcons iosBookOutlineIconWithSize:35];
+            [bookOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [bookOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *bookFilled = [FAKIonIcons iosBookIconWithSize:35];
+            [bookFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [bookFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+    }
+    
+    return self;
+}
+
 
 - (void)viewDidLoad
 {

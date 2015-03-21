@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
 #import "ProjectListViewController.h"
@@ -275,6 +276,26 @@ static const int ListControlIndexNearby = 2;
 }
 
 #pragma mark - View lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
+            [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *briefcaseFilled = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [briefcaseFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad
 {

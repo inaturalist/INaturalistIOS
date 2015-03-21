@@ -43,9 +43,9 @@
     self.delegate = self;
     
     // configure camera VC
-    FAKIcon *camera = [FAKIonIcons ios7CameraIconWithSize:45];
+    FAKIcon *camera = [FAKIonIcons iosCameraIconWithSize:45];
     [camera addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    FAKIcon *cameraOutline = [FAKIonIcons ios7CameraOutlineIconWithSize:45];
+    FAKIcon *cameraOutline = [FAKIonIcons iosCameraOutlineIconWithSize:45];
     [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
     UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline]
                                          imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];

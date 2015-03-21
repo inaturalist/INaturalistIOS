@@ -37,7 +37,7 @@ static UIImage *userIconPlaceholder;
 
 - (UIImage *)searchResult_PlaceholderImage {
     if (!userIconPlaceholder) {
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:30.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:30.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
     }

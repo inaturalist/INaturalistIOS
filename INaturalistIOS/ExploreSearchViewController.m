@@ -71,13 +71,13 @@
     if (self = [super initWithCoder:aDecoder]) {
         
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *worldOutline = [FAKIonIcons ios7WorldOutlineIconWithSize:35];
+            FAKIcon *worldOutline = [FAKIonIcons iosWorldOutlineIconWithSize:35];
             [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [worldOutline imageWithSize:CGSizeMake(34, 45)];
         });
         
         self.navigationController.tabBarItem.selectedImage =({
-            FAKIcon *worldFilled = [FAKIonIcons ios7WorldIconWithSize:35];
+            FAKIcon *worldFilled = [FAKIonIcons iosWorldIconWithSize:35];
             [worldFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             [worldFilled imageWithSize:CGSizeMake(34, 45)];
         });

@@ -47,7 +47,7 @@ static UIImage *userIconPlaceholder;
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:30.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:30.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
 
@@ -145,7 +145,7 @@ static UIImage *userIconPlaceholder;
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
-            FAKIcon *mapPin = [FAKIonIcons ios7LocationIconWithSize:12.0f];
+            FAKIcon *mapPin = [FAKIonIcons iosLocationIconWithSize:12.0f];
             [mapPin addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
             label.attributedText = mapPin.attributedString;
             

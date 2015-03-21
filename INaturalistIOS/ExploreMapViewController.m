@@ -219,10 +219,10 @@
     }
     
     // style for iconic taxon of the observation
-    FAKIcon *mapMarker = [FAKIonIcons ios7LocationIconWithSize:25.0f];
+    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
     ExploreObservation *observation = (ExploreObservation *)annotation;
     [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
-    FAKIcon *mapOutline = [FAKIonIcons ios7LocationOutlineIconWithSize:25.0f];
+    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:25.0f];
     [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:observation.iconicTaxonName] darkerColor]];
     
     // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
@@ -258,7 +258,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
     
     // close icon
-    FAKIcon *closeIcon = [FAKIonIcons ios7CloseEmptyIconWithSize:34.0f];
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
     [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
     UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
     

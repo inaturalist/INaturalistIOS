@@ -24,20 +24,20 @@ PODS:
   - FlurrySDK (5.4.0):
     - FlurrySDK/FlurrySDK (= 5.4.0)
   - FlurrySDK/FlurrySDK (5.4.0)
-  - FontAwesomeKit (2.1.8):
-    - FontAwesomeKit/Core (= 2.1.8)
-    - FontAwesomeKit/FontAwesome (= 2.1.8)
-    - FontAwesomeKit/FoundationIcons (= 2.1.8)
-    - FontAwesomeKit/IonIcons (= 2.1.8)
-    - FontAwesomeKit/Zocial (= 2.1.8)
-  - FontAwesomeKit/Core (2.1.8)
-  - FontAwesomeKit/FontAwesome (2.1.8):
+  - FontAwesomeKit (2.2.0):
+    - FontAwesomeKit/Core (= 2.2.0)
+    - FontAwesomeKit/FontAwesome (= 2.2.0)
+    - FontAwesomeKit/FoundationIcons (= 2.2.0)
+    - FontAwesomeKit/IonIcons (= 2.2.0)
+    - FontAwesomeKit/Zocial (= 2.2.0)
+  - FontAwesomeKit/Core (2.2.0)
+  - FontAwesomeKit/FontAwesome (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/FoundationIcons (2.1.8):
+  - FontAwesomeKit/FoundationIcons (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/IonIcons (2.1.8):
+  - FontAwesomeKit/IonIcons (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/Zocial (2.1.8):
+  - FontAwesomeKit/Zocial (2.2.0):
     - FontAwesomeKit/Core
   - GeoJSONSerialization (0.0.4)
   - googleplus-ios-sdk (1.7.1)
@@ -69,7 +69,7 @@ DEPENDENCIES:
   - DCRoundSwitch (= 0.0.1)
   - Facebook-iOS-SDK (= 3.20.0)
   - FlurrySDK (= 5.4.0)
-  - FontAwesomeKit (= 2.1.8)
+  - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
@@ -94,7 +94,7 @@ SPEC CHECKSUMS:
   DCRoundSwitch: df465861ed880ee8d3c44ac8d3459faf1abaa6a9
   Facebook-iOS-SDK: 5854404b4b651f612a8ef79ca06d766858f4cb8e
   FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
-  FontAwesomeKit: a2edea3111dab107b4cc43b85881b404eb063385
+  FontAwesomeKit: 61f0b4f12f1b11b7489bc7d1507a8692547f3857
   GeoJSONSerialization: 87d7a81f770d111506e690980ef192fba3966d01
   googleplus-ios-sdk: b0f6cd8aa29c51d0048cace8dc3bd8f4ae0806bb
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
