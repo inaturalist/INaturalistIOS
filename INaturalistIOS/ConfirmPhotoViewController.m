@@ -368,7 +368,6 @@
     if (self.image) {
         o.observedOn = now;
         o.localObservedOn = now;
-        o.observedOn = now;
         o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
 
         if (loc.location) {
