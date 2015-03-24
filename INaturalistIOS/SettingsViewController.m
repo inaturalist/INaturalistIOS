@@ -33,8 +33,7 @@ static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
 static const int CreditsCellTag = 6;
 
-static const int AutomaticallyUploadSwitchTag = 10;
-static const int AutocompleteNamesSwitchTag = 11;
+static const int AutocompleteNamesSwitchTag = 10;
 
 @implementation SettingsViewController
 
@@ -96,11 +95,13 @@ static const int AutocompleteNamesSwitchTag = 11;
 - (void)signOut
 {
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
+        
     for (UIViewController *vc in self.tabBarController.viewControllers) {
         if ([vc isKindOfClass:UINavigationController.class]) {
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
         }
     }
+    
 	[Comment deleteAll];
 	[Identification deleteAll];
 	[User deleteAll];
@@ -222,11 +223,7 @@ static const int AutocompleteNamesSwitchTag = 11;
 #pragma mark - UISwitch target
 
 - (void)settingSwitched:(UISwitch *)switcher {
-    if (switcher.tag == AutomaticallyUploadSwitchTag) {
-        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
-                                                forKey:kINatAutomaticallyUploadPrefKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } else if (switcher.tag == AutocompleteNamesSwitchTag) {
+    if (switcher.tag == AutocompleteNamesSwitchTag) {
         [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
                                                 forKey:kINatAutocompleteNamesPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -273,9 +270,7 @@ static const int AutocompleteNamesSwitchTag = 11;
             switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
         }
         
-        if (switcher.tag == AutomaticallyUploadSwitchTag)
-            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey];
-        else if (switcher.tag == AutocompleteNamesSwitchTag)
+        if (switcher.tag == AutocompleteNamesSwitchTag)
             switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
         
     }

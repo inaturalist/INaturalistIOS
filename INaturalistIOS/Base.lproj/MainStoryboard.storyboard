@@ -612,26 +612,6 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="App Settings" id="LbD-zB-zU2">
                                 <cells>
-                                    <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="kUQ-Cu-TLr" style="IBUITableViewCellStyleDefault" id="ejC-9W-H9l">
-                                        <rect key="frame" x="0.0" y="513" width="320" height="37"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ejC-9W-H9l" id="blr-zF-bO6">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="36"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Automatically upload" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kUQ-Cu-TLr" userLabel="Automatically Upload">
-                                                    <rect key="frame" x="15" y="0.0" width="290" height="36"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <color key="textColor" red="0.16862745100000001" green="0.33725490200000002" blue="0.84705882349999995" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="shadowColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
-                                                    <size key="shadowOffset" width="0.0" height="1"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    </tableViewCell>
                                     <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="M0h-Eg-gr3" style="IBUITableViewCellStyleDefault" id="c1s-lv-5Le">
                                         <rect key="frame" x="0.0" y="513" width="320" height="37"/>
                                         <autoresizingMask key="autoresizingMask"/>
@@ -2462,10 +2442,10 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="pIq-2G-oJw"/>
         <segue reference="8j7-c4-5Sv"/>
         <segue reference="Q4H-Ck-yCo"/>
         <segue reference="i4O-ab-ts2"/>
+        <segue reference="sKu-Sy-oMc"/>
         <segue reference="6Re-on-nUT"/>
     </inferredMetricsTieBreakers>
 </document>
