@@ -402,6 +402,7 @@
                 if ([asset valueForProperty:ALAssetPropertyDate]) {
                     hasDate = YES;
                     o.observedOn = [asset valueForProperty:ALAssetPropertyDate];
+                    o.localObservedOn = o.observedOn;
                     o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
                 }
             }
