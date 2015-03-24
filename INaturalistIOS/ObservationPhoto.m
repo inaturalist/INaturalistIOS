@@ -32,6 +32,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic observation;
 @dynamic photoKey;
 @dynamic nativePhotoID;
+@dynamic uuid;
 
 @synthesize photoSource = _photoSource;
 @synthesize index = _index;
@@ -71,6 +72,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
          @"photo.native_username", @"nativeUsername",
          @"photo.native_realname", @"nativeRealName",
          @"photo.license_code", @"licenseCode",
+         @"uuid", @"uuid",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -85,6 +87,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         [defaultSerializationMapping mapKeyPathsToAttributes:
          @"observationID", @"observation_photo[observation_id]",
          @"position", @"observation_photo[position]",
+         @"uuid", @"observation_photo[uuid]",
          nil];
     }
     return defaultSerializationMapping;
@@ -173,6 +176,14 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
         _caption = [NSString stringWithFormat:@"Added at %@", [fmt stringFromDate:self.localCreatedAt]];
     }
     return _caption;
+}
+
+- (void)willSave {
+    [super willSave];
+    
+    if (!self.uuid && !self.recordID) {
+        [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+    }
 }
 
 @end

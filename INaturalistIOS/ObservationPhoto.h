@@ -30,6 +30,7 @@
 @property (nonatomic, retain) Observation *observation;
 @property (nonatomic, retain) NSString * photoKey;
 @property (nonatomic, retain) NSString * nativePhotoID;
+@property (nonatomic, retain) NSString * uuid;
 
 // TTPhoto attributes
 @property (nonatomic, assign) id<TTPhotoSource> photoSource;
