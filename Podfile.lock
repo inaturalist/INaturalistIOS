@@ -42,6 +42,7 @@ PODS:
   - GeoJSONSerialization (0.0.4)
   - googleplus-ios-sdk (1.7.1)
   - HexColors (2.2.1)
+  - JDFTooltips (1.0)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
   - NXOAuth2Client (1.2.8)
@@ -73,6 +74,7 @@ DEPENDENCIES:
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
+  - JDFTooltips (= 1.0)
   - MHVideoPhotoGallery (= 1.6.6)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
@@ -98,6 +100,7 @@ SPEC CHECKSUMS:
   GeoJSONSerialization: 87d7a81f770d111506e690980ef192fba3966d01
   googleplus-ios-sdk: b0f6cd8aa29c51d0048cace8dc3bd8f4ae0806bb
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
+  JDFTooltips: 423d80b196868a4023df130bddd91e14ac86ffce
   MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
   NXOAuth2Client: fa81be68c9ce628202028ae037c9c92cfbb37865
   PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f

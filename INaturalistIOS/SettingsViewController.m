@@ -8,6 +8,8 @@
 
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
+#import <JDFTooltips/JDFTooltips.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "SettingsViewController.h"
 #import "LoginViewController.h"
@@ -34,6 +36,12 @@ static const int VersionCellTag = 5;
 static const int CreditsCellTag = 6;
 
 static const int AutocompleteNamesSwitchTag = 10;
+
+@interface SettingsViewController () {
+    UITapGestureRecognizer *tapAway;
+    JDFTooltipView *tooltip;
+}
+@end
 
 @implementation SettingsViewController
 
@@ -281,6 +289,32 @@ static const int AutocompleteNamesSwitchTag = 10;
 {
     // do nothing when tapping app settings
     if (indexPath.section == 1) {
+        // show popover
+        NSString *tooltipText;
+        if (indexPath.item == 0) {
+            // autocorrect
+            tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
+        }
+        
+        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:10+indexPath.item]
+                                                    hostView:tableView
+                                                 tooltipText:tooltipText
+                                              arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                       width:200.0f
+                                         showCompletionBlock:^{
+                                             if (!tapAway) {
+                                                 tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                                                     [tooltip hideAnimated:YES];
+                                                 }];
+                                                 [self.view addGestureRecognizer:tapAway];
+                                             }
+                                             tapAway.enabled = YES;
+                                         } hideCompletionBlock:^{
+                                             tapAway.enabled = NO;
+                                         }];
+        [tooltip show];
+        
+        
         return;
     }
     
