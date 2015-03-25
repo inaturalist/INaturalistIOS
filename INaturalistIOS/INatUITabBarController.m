@@ -89,7 +89,11 @@
                 [self dismissViewControllerAnimated:YES completion:nil];
             } forControlEvents:UIControlEventTouchUpInside];
             
-            // need to hide this based on available modes
+            // hide flash if it's not available for the default camera
+            if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
+                overlay.flash.hidden = YES;
+            }
+
             [overlay.flash bk_addEventHandler:^(id sender) {
                 if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
                     picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
@@ -101,13 +105,20 @@
                 [overlay configureFlashForMode:picker.cameraFlashMode];
             } forControlEvents:UIControlEventTouchUpInside];
             
-            // need to hide this based on available modes
+            // hide camera selector unless both front and rear cameras are available
+            if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
+                ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+                overlay.camera.hidden = YES;
+            }
+            
             [overlay.camera bk_addEventHandler:^(id sender) {
                 if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
                     picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
                 } else {
                     picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
                 }
+                // hide flash button if flash isn't available for the chosen camera
+                overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
             } forControlEvents:UIControlEventTouchUpInside];
             
             [overlay.noPhoto bk_addEventHandler:^(id sender) {
