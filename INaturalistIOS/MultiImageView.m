@@ -11,6 +11,7 @@
 @interface MultiImageView () {
     NSArray *_images;
     CGFloat _borderWidth;
+    UIColor *_borderColor;
     
     UIImageView *one;
     UIImageView *two;
@@ -50,10 +51,22 @@
     return _borderWidth;
 }
 
+- (void)setBorderColor:(UIColor *)borderColor {
+    if ([_borderColor isEqual:borderColor])
+        return;
+    
+    _borderColor = borderColor;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setNeedsLayout];
+    });
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
         _borderWidth = 1.0f;    // default
+        _borderColor = [UIColor grayColor];
         
         one = [[UIImageView alloc] initWithFrame:frame];
         two = [[UIImageView alloc] initWithFrame:frame];
@@ -66,7 +79,7 @@
             iv.contentMode = UIViewContentModeScaleAspectFill;
             iv.clipsToBounds = YES;
             
-            iv.layer.borderColor = [UIColor grayColor].CGColor;
+            iv.layer.borderColor = _borderColor.CGColor;
             iv.layer.borderWidth = _borderWidth;
             
             [self addSubview:iv];
@@ -81,6 +94,7 @@
     
     [@[one,two,three,four] enumerateObjectsUsingBlock:^(UIImageView *iv, NSUInteger idx, BOOL *stop) {
         iv.layer.borderWidth = _borderWidth;
+        iv.layer.borderColor = _borderColor.CGColor;
     }];
     
     if (self.images.count == 1) {

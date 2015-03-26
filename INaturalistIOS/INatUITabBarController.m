@@ -165,7 +165,7 @@
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
     confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
     confirm.shouldContinueUpdatingLocation = YES;
-    [picker pushViewController:confirm animated:YES];
+    [picker pushViewController:confirm animated:NO];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

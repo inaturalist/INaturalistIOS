@@ -12,5 +12,6 @@
 
 @property NSArray *images;
 @property CGFloat borderWidth;
+@property UIColor *borderColor;
 
 @end
