@@ -98,6 +98,8 @@
     }];
     
     if (self.images.count == 1) {
+        one.contentMode = UIViewContentModeScaleAspectFit;
+
         one.hidden = NO;
         two.hidden = three.hidden = four.hidden = YES;
         
@@ -105,6 +107,8 @@
         one.image = self.images[0];
         
     } else if (self.images.count == 2) {
+        one.contentMode = UIViewContentModeScaleAspectFill;
+
         one.hidden = two.hidden = NO;
         three.hidden = four.hidden = YES;
         
@@ -117,6 +121,8 @@
         two.image = self.images[1];
         
     } else if (self.images.count == 3) {
+        one.contentMode = UIViewContentModeScaleAspectFit;
+
         one.hidden = two.hidden = three.hidden = NO;
         four.hidden = YES;
         
@@ -132,6 +138,8 @@
         three.image = self.images[2];
         
     } else if (self.images.count == 4) {
+        one.contentMode = UIViewContentModeScaleAspectFit;
+
         one.hidden = two.hidden = three.hidden = four.hidden = NO;
         
         one.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
