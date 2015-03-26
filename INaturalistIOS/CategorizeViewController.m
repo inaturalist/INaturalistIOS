@@ -353,14 +353,13 @@ static NSArray *ICONIC_TAXON_ORDER;
 
     __block BOOL hasDate = NO;
     __block BOOL hasLocation = NO;
-
-    [self.assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
+    
+    [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
         ObservationPhoto *op = [ObservationPhoto object];
         op.position = @(idx);
         [op setObservation:o];
         [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
-                                    forKey:op.photoKey];
+        [ImageStore.sharedImageStore storeAsset:asset forKey:op.photoKey];
         op.localCreatedAt = now;
         op.localUpdatedAt = now;
         
