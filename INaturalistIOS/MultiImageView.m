@@ -121,7 +121,7 @@
         two.image = self.images[1];
         
     } else if (self.images.count == 3) {
-        one.contentMode = UIViewContentModeScaleAspectFit;
+        one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = NO;
         four.hidden = YES;
@@ -138,7 +138,7 @@
         three.image = self.images[2];
         
     } else if (self.images.count == 4) {
-        one.contentMode = UIViewContentModeScaleAspectFit;
+        one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = four.hidden = NO;
         
