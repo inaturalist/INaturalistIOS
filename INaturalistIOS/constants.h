@@ -15,7 +15,7 @@
 #define INatLastDeletedSync @"INatLastDeletedSync"
 #define kINatAuthServiceExtToken @"INatAuthServiceExtToken"
 #define kINatAuthService @"INatAuthService"
-
+#define kINatAutocompleteNamesPrefKey @"INatAutocompleteNamesPrefKey"
 
 #ifdef DEBUG
     #define INatBaseURL @"http://localhost:3000"
