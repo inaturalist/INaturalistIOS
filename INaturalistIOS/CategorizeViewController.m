@@ -409,7 +409,7 @@ static NSArray *ICONIC_TAXON_ORDER;
     }
     
     if ([SVProgressHUD isVisible]) {
-        [SVProgressHUD showSuccessWithStatus:nil];
+        [SVProgressHUD dismiss];
     }
     
     detail.observation = o;
