@@ -85,6 +85,8 @@ static NSArray *ICONIC_TAXON_ORDER;
     
     self.title = NSLocalizedString(@"Categorize", @"Title for the categorize page, which also asks the observer to try making an initial ID.");
     
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
     unblurredMultiImageView = ({
         MultiImageView *miv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         miv.translatesAutoresizingMaskIntoConstraints = NO;
