@@ -215,7 +215,7 @@
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.assets = assets;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:confirm animated:YES];
+    [nav pushViewController:confirm animated:NO];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
