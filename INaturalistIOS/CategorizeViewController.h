@@ -10,7 +10,6 @@
 
 @interface CategorizeViewController : UIViewController
 
-@property NSURL *assetURL;
 @property NSArray *assets;
 @property NSDictionary *metadata;
 @property BOOL shouldContinueUpdatingLocation;

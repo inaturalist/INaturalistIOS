@@ -28,12 +28,16 @@ static NSArray *ICONIC_TAXON_ORDER;
     UIVisualEffectView  *blurView;
     UIView *scrim;
     
-    MultiImageView *bgMultiImageView;
-    MultiImageView *multiImageView;
+    // can't animate a blurview alpha, so make two containers, one blurred, one not
+    // animate the alpha of the blurred one exactly over the unblurred one
+    MultiImageView *unblurredMultiImageView;
+    MultiImageView *blurredMultiImageView;
 
     NSArray *iconicTaxa;
     NSFetchRequest *iconicTaxaFetchRequest;
     UIView *categories;
+    
+    NSArray *_assets;
 }
 @end
 
@@ -81,21 +85,21 @@ static NSArray *ICONIC_TAXON_ORDER;
     
     self.title = NSLocalizedString(@"Categorize", @"Title for the categorize page, which also asks the observer to try making an initial ID.");
     
-    bgMultiImageView = ({
+    unblurredMultiImageView = ({
         MultiImageView *miv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         miv.translatesAutoresizingMaskIntoConstraints = NO;
         
         miv;
     });
-    [self.view addSubview:bgMultiImageView];
+    [self.view addSubview:unblurredMultiImageView];
     
-    multiImageView = ({
+    blurredMultiImageView = ({
         MultiImageView *miv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         miv.translatesAutoresizingMaskIntoConstraints = NO;
         
         miv;
     });
-    [self.view addSubview:multiImageView];
+    [self.view addSubview:blurredMultiImageView];
     
     blurView = ({
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
@@ -117,10 +121,10 @@ static NSArray *ICONIC_TAXON_ORDER;
     self.navigationItem.backBarButtonItem.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
-    blurView.frame = multiImageView.bounds;
-    vibrancy.frame = multiImageView.bounds;
+    blurView.frame = blurredMultiImageView.bounds;
+    vibrancy.frame = blurredMultiImageView.bounds;
     
-    [multiImageView addSubview:blurView];
+    [blurredMultiImageView addSubview:blurView];
     
     categories = ({
         UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
@@ -132,8 +136,8 @@ static NSArray *ICONIC_TAXON_ORDER;
     
     NSDictionary *views = @{
                             @"blur": blurView,
-                            @"images": multiImageView,
-                            @"bgImages": bgMultiImageView,
+                            @"images": blurredMultiImageView,
+                            @"bgImages": unblurredMultiImageView,
                             @"vibrancy": vibrancy,
                             @"categories": categories,
                             @"topLayoutGuide": self.topLayoutGuide,
@@ -173,6 +177,8 @@ static NSArray *ICONIC_TAXON_ORDER;
 
 }
 
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -181,36 +187,26 @@ static NSArray *ICONIC_TAXON_ORDER;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     [self.navigationController setToolbarHidden:YES animated:NO];
     
     if (self.assets.count > 0) {
-        NSArray *images = [self.assets bk_map:^id(ALAsset *asset) {
-            return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-        }];
-        multiImageView.images = images;
-        bgMultiImageView.images = images;
-    } else if (self.assetURL) {
-        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-        [lib assetForURL:self.assetURL
-             resultBlock:^(ALAsset *asset) {
-                 multiImageView.images = @[ [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage] ];
-                 bgMultiImageView.images = multiImageView.images;
-             } failureBlock:^(NSError *error) {
-                 [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-             }];
+        [self configureMultiImageView:blurredMultiImageView forAssets:self.assets];
+        [self configureMultiImageView:unblurredMultiImageView forAssets:self.assets];
     }
     
-    multiImageView.alpha = 0.0f;
-    
     [self configureCategories];
+
+    blurredMultiImageView.alpha = 0.0f;
+    categories.alpha = 0.0f;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [UIView animateWithDuration:1.0f
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [UIView animateWithDuration:0.4f
                      animations:^{
-                         multiImageView.alpha = 1.0f;
+                         blurredMultiImageView.alpha = 1.0f;
+                         categories.alpha = 1.0f;
                      }];
 }
 
@@ -308,6 +304,30 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                                        metrics:0
                                                                          views:views]];
 }
+
+- (void)configureMultiImageView:(MultiImageView *)miv forAssets:(NSArray *)assets {
+    NSArray *images = [assets bk_map:^id(ALAsset *asset) {
+        return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+    }];
+    miv.images = images;
+}
+
+- (void)configureMultiImageView:(MultiImageView *)miv forAssetURL:(NSURL *)assetURL {
+    static ALAssetsLibrary *lib;
+    
+    if (!lib)
+        lib = [[ALAssetsLibrary alloc] init];
+    
+    [lib assetForURL:assetURL
+         resultBlock:^(ALAsset *asset) {
+             [self configureMultiImageView:miv forAssets:@[ asset ]];
+         } failureBlock:^(NSError *error) {
+             [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+         }];
+
+}
+
+#pragma mark Geolocation helper
 
 - (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -440,16 +460,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         o.idPlease = @(YES);
     }
     
-    if (self.assetURL) {
-        ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-        [lib assetForURL:self.assetURL
-             resultBlock:^(ALAsset *asset) {
-                 [self saveObservation:o withAssets:@[ asset ]];
-             } failureBlock:^(NSError *error) {
-                 [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-             }];
-        
-    } else if (self.assets && self.assets.count > 0) {
+    if (self.assets && self.assets.count > 0) {
         [self saveObservation:o withAssets:self.assets];
     }
 }
@@ -530,6 +541,25 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                         
                                                     }];
     
+}
+
+#pragma mark Asset(s) setter/getters
+
+- (void)setAssets:(NSArray *)assets {
+    if ([_assets isEqual:assets])
+        return;
+    
+    _assets = assets;
+    
+    if (blurredMultiImageView)
+        [self configureMultiImageView:blurredMultiImageView forAssets:assets];
+    
+    if (unblurredMultiImageView)
+        [self configureMultiImageView:unblurredMultiImageView forAssets:assets];
+}
+
+- (NSArray *)assets {
+    return _assets;
 }
 
 @end

@@ -32,6 +32,8 @@
 
 @interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
     MultiImageView *multiImageView;
+    ALAssetsLibrary *lib;
+    UIButton *retake, *confirm;
 }
 @end
 
@@ -39,6 +41,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    lib = [[ALAssetsLibrary alloc] init];
     
     multiImageView = ({
         MultiImageView *iv = [[MultiImageView alloc] initWithFrame:CGRectZero];
@@ -50,7 +54,7 @@
     });
     [self.view addSubview:multiImageView];
     
-    UIButton *retake = ({
+    retake = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.frame = CGRectZero;
         button.translatesAutoresizingMaskIntoConstraints = NO;
@@ -74,7 +78,7 @@
     });
     [self.view addSubview:retake];
 
-    UIButton *confirm = ({
+    confirm = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.frame = CGRectZero;
         button.translatesAutoresizingMaskIntoConstraints = NO;
@@ -117,7 +121,6 @@
                     mutableMetadata[@"{GPS}"] = gps;
                 }
                 
-                ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
                 [lib writeImageToSavedPhotosAlbum:self.image.CGImage
                                          metadata:mutableMetadata
                                   completionBlock:^(NSURL *newAssetUrl, NSError *error) {
@@ -125,12 +128,20 @@
                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
                                           NSLog(@"ERROR: %@", error.localizedDescription);
                                       } else {
-                                          [SVProgressHUD showSuccessWithStatus:nil];
+                                          [SVProgressHUD dismiss];
+                                          
+                                          [lib assetForURL:newAssetUrl
+                                               resultBlock:^(ALAsset *asset) {
+                                                   categorize.assets = @[ asset ];
+                                                   categorize.shouldContinueUpdatingLocation = YES;
+                                                   
+                                                   [self transitionToCategorize:categorize];
 
-                                          categorize.assetURL = newAssetUrl;
-                                          categorize.shouldContinueUpdatingLocation = YES;
-                                          [self.navigationController pushViewController:categorize
-                                                                               animated:NO];
+                                               } failureBlock:^(NSError *error) {
+                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+
+                                               }];
+                                          
                                       }
                                   }];
                 
@@ -138,24 +149,8 @@
                 // from photo library
                 categorize.assets = self.assets;
                 categorize.shouldContinueUpdatingLocation = NO;
-                [UIView animateWithDuration:0.1f
-                                 animations:^{
-                                     button.center = CGPointMake(button.center.x,
-                                                                 self.view.bounds.size.height + (button.frame.size.height / 2));
-                                     retake.center = CGPointMake(button.center.x,
-                                                                 self.view.bounds.size.height + (button.frame.size.height / 2));
-                                     multiImageView.frame = self.view.bounds;
-                                 } completion:^(BOOL finished) {
-                                     [self.navigationController pushViewController:categorize
-                                                                          animated:NO];
-                                     
-                                     button.center = CGPointMake(button.center.x,
-                                                                 self.view.bounds.size.height - (button.frame.size.height / 2));
-                                     retake.center = CGPointMake(button.center.x,
-                                                                 self.view.bounds.size.height - (button.frame.size.height / 2));
-
-                                 }];
-                                 
+                
+                [self transitionToCategorize:categorize];
             }
         } forControlEvents:UIControlEventTouchUpInside];
 
@@ -203,6 +198,26 @@
         multiImageView.images = images;
         multiImageView.hidden = NO;
     }
+}
+
+- (void)transitionToCategorize:(CategorizeViewController *)categorizeVC {
+    [UIView animateWithDuration:0.1f
+                     animations:^{
+                         confirm.center = CGPointMake(confirm.center.x,
+                                                     self.view.bounds.size.height + (confirm.frame.size.height / 2));
+                         retake.center = CGPointMake(retake.center.x,
+                                                     self.view.bounds.size.height + (retake.frame.size.height / 2));
+                         multiImageView.frame = self.view.bounds;
+                     } completion:^(BOOL finished) {
+                         [self.navigationController pushViewController:categorizeVC
+                                                              animated:NO];
+                         
+                         confirm.center = CGPointMake(confirm.center.x,
+                                                     self.view.bounds.size.height - (confirm.frame.size.height / 2));
+                         retake.center = CGPointMake(retake.center.x,
+                                                     self.view.bounds.size.height - (retake.frame.size.height / 2));
+                         
+                     }];
 }
 
 @end
