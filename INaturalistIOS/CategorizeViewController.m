@@ -436,8 +436,9 @@ static NSArray *ICONIC_TAXON_ORDER;
         o.iconicTaxonName = taxon.iconicTaxonName;
         o.iconicTaxonID = taxon.iconicTaxonID;
         o.speciesGuess = taxon.defaultName;
+        // if we got an iconic taxon here, we should ask for a further ID
+        o.idPlease = @(YES);
     }
-    
     
     if (self.assetURL) {
         ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
