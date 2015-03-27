@@ -267,7 +267,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         chiclet.layer.cornerRadius = 2.0f;
         
         [chiclet bk_addEventHandler:^(id sender) {
-            [self choseTaxon:t needId:YES];
+            [self choseTaxon:t];
         } forControlEvents:UIControlEventTouchUpInside];
         
         [categories addSubview:chiclet];
@@ -453,7 +453,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         [detail startUpdatingLocation];
 }
 
-- (void)choseTaxon:(Taxon *)taxon needId:(BOOL)needId {
+- (void)choseTaxon:(Taxon *)taxon {
     
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating observation...", @"Notice when we're saving a new photo for a new observation")
                          maskType:SVProgressHUDMaskTypeGradient];
@@ -461,16 +461,12 @@ static NSArray *ICONIC_TAXON_ORDER;
     
     Observation *o = [Observation object];
     
-    o.idPlease = @(needId);
-    
     if (taxon) {
         o.taxon = taxon;
         o.taxonID = taxon.recordID;
         o.iconicTaxonName = taxon.iconicTaxonName;
         o.iconicTaxonID = taxon.iconicTaxonID;
         o.speciesGuess = taxon.defaultName;
-        // if we got an iconic taxon here, we should ask for a further ID
-        o.idPlease = @(YES);
     }
     
     if (self.assets && self.assets.count > 0) {
