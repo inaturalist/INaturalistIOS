@@ -46,7 +46,7 @@
                                                                         options:0
                                                                         metrics:0
                                                                           views:views]];
-        [chiclet addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-|"
+        [chiclet addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[label]-5-|"
                                                                         options:0
                                                                         metrics:0
                                                                           views:views]];
@@ -54,7 +54,7 @@
                                                                         options:0
                                                                         metrics:0
                                                                           views:views]];
-        [chiclet addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-|"
+        [chiclet addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[label]-8-|"
                                                                         options:0
                                                                         metrics:0
                                                                           views:views]];
