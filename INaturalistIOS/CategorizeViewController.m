@@ -11,6 +11,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <HexColors/HexColor.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "CategorizeViewController.h"
 #import "MultiImageView.h"
@@ -20,6 +21,7 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
+#import "Observation+AddAssets.h"
 
 static NSDictionary *ICONIC_TAXON_NAMES;
 static NSArray *ICONIC_TAXON_ORDER;
@@ -35,6 +37,9 @@ static NSArray *ICONIC_TAXON_ORDER;
     NSArray *iconicTaxa;
     NSFetchRequest *iconicTaxaFetchRequest;
     UIView *categories;
+    
+    UIButton *skipThisStep;
+    UIButton *alwaysSkipThisStep;
     
     NSArray *_assets;
 }
@@ -145,10 +150,100 @@ static NSArray *ICONIC_TAXON_ORDER;
     });
     [self.view addSubview:categories];
     
+    skipThisStep = ({
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectZero;
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        
+        button.tintColor = [UIColor whiteColor];
+
+        button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:18.0f];
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
+        button.contentEdgeInsets = UIEdgeInsetsMake(0, 17.0, 0, 17.0);
+        
+        [button setTitle:NSLocalizedString(@"Skip for now", @"Button to skip categorizing new observations into iconic taxa")
+                forState:UIControlStateNormal];
+
+        // start hidden
+        button.alpha = 0.0f;
+        
+        button.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        button.layer.borderColor = [UIColor colorWithHexString:@"7a7a7a" alpha:0.5f].CGColor;
+        button.layer.borderWidth = 2.0f;
+        button.layer.cornerRadius = 2.0f;
+        
+        [button bk_addEventHandler:^(id sender) {
+            [self choseTaxon:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        button;
+    });
+    [self.view addSubview:skipThisStep];
+    
+    
+    alwaysSkipThisStep = ({
+        FAKIcon *empty = [FAKIonIcons androidCheckboxOutlineBlankIconWithSize:16.0f];
+        [empty addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        FAKIcon *checked = [FAKIonIcons androidCheckboxOutlineIconWithSize:16.0f];
+        [checked addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        NSString *alwaysSkipText = NSLocalizedString(@"Always skip this step", @"Button to always skip categorizing new observations into iconic taxa");
+        
+        NSMutableAttributedString *alwaysSkipEmpty = [[NSMutableAttributedString alloc] init];
+        [alwaysSkipEmpty appendAttributedString:empty.attributedString];
+        [alwaysSkipEmpty appendAttributedString:[[NSAttributedString alloc] initWithString:@"  "]];
+        [alwaysSkipEmpty appendAttributedString:[[NSAttributedString alloc] initWithString:alwaysSkipText]];
+        
+        NSMutableAttributedString *alwaysSkipChecked = [[NSMutableAttributedString alloc] init];
+        [alwaysSkipChecked appendAttributedString:checked.attributedString];
+        [alwaysSkipChecked appendAttributedString:[[NSAttributedString alloc] initWithString:@"  "]];
+        [alwaysSkipChecked appendAttributedString:[[NSAttributedString alloc] initWithString:alwaysSkipText]];
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectZero;
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
+            [button setAttributedTitle:alwaysSkipEmpty forState:UIControlStateNormal];
+        } else {
+            [button setAttributedTitle:alwaysSkipChecked forState:UIControlStateNormal];
+        }
+
+        // start hidden
+        button.alpha = 0.0f;
+
+        button.tintColor = [UIColor whiteColor];
+        button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
+
+        [button bk_addEventHandler:^(id sender) {
+            // toggle
+            [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]
+                                                    forKey:kInatCategorizeNewObsPrefKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
+                [button setAttributedTitle:alwaysSkipEmpty forState:UIControlStateNormal];
+            } else {
+                [button setAttributedTitle:alwaysSkipChecked forState:UIControlStateNormal];
+            }
+            
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [button sizeToFit];
+        [button.titleLabel sizeToFit];
+        
+        button;
+    });
+    [self.view addSubview:alwaysSkipThisStep];
+
+    
     NSDictionary *views = @{
                             @"images": blurredMultiImageView,
                             @"bgImages": unblurredMultiImageView,
                             @"categories": categories,
+                            @"skip" : skipThisStep,
+                            @"alwaysSkip": alwaysSkipThisStep,
                             @"topLayoutGuide": self.topLayoutGuide,
                             };
 
@@ -170,7 +265,32 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                                       metrics:0
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-30-[categories]"
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:skipThisStep
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:alwaysSkipThisStep
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    
+    
+    // some combination of FAK and NSAttributedString and UIButton isn't setting intrinsic size correctly
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:alwaysSkipThisStep
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:[alwaysSkipThisStep.titleLabel.attributedText size].width + 10]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-30-[categories]-30-[skip(==36)]-[alwaysSkip(==36)]"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -216,6 +336,12 @@ static NSArray *ICONIC_TAXON_ORDER;
                      animations:^{
                          blurredMultiImageView.alpha = 1.0f;
                          categories.alpha = 1.0f;
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.2f
+                                          animations:^{
+                                              skipThisStep.alpha = 1.0f;
+                                              alwaysSkipThisStep.alpha = 1.0f;
+                                          }];
                      }];
 }
 
@@ -336,128 +462,10 @@ static NSArray *ICONIC_TAXON_ORDER;
 
 }
 
-#pragma mark Geolocation helper
-
-- (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        return;
-    }
-    
-    static CLGeocoder *geoCoder;
-    if (!geoCoder)
-        geoCoder = [[CLGeocoder alloc] init];
-    
-    [geoCoder cancelGeocode];       // cancel anything in flight
-    
-    [geoCoder reverseGeocodeLocation:loc
-                   completionHandler:^(NSArray *placemarks, NSError *error) {
-                       CLPlacemark *placemark = [placemarks firstObject];
-                       if (placemark) {
-                           @try {
-                               NSString *name = placemark.name ?: @"";
-                               NSString *locality = placemark.locality ?: @"";
-                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
-                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
-                               obs.placeGuess = [ @[ name,
-                                                     locality,
-                                                     administrativeArea,
-                                                     ISOcountryCode ] componentsJoinedByString:@", "];
-                           } @catch (NSException *exception) {
-                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
-                                   return;
-                               else
-                                   @throw exception;
-                           }
-                       }
-                   }];
-    
-}
-
 
 #pragma mark - Taxon Choice helper
 
-- (void)saveObservation:(Observation *)o withAssets:(NSArray *)assets {
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    
-    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-
-    NSDate *now = [NSDate date];
-
-    __block BOOL hasDate = NO;
-    __block BOOL hasLocation = NO;
-    
-    [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
-        ObservationPhoto *op = [ObservationPhoto object];
-        op.position = @(idx);
-        [op setObservation:o];
-        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        [ImageStore.sharedImageStore storeAsset:asset forKey:op.photoKey];
-        op.localCreatedAt = now;
-        op.localUpdatedAt = now;
-        
-        if (!hasDate) {
-            if ([asset valueForProperty:ALAssetPropertyDate]) {
-                hasDate = YES;
-                o.observedOn = [asset valueForProperty:ALAssetPropertyDate];
-                o.localObservedOn = o.observedOn;
-                o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-            }
-        }
-        
-        if (!hasLocation) {
-            NSDictionary *metadata = asset.defaultRepresentation.metadata;
-            if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
-                hasLocation = YES;
-                
-                double latitude, longitude;
-                if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
-                    latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                } else {
-                    latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                }
-                
-                if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
-                    longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                } else {
-                    longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                }
-                
-                o.latitude = @(latitude);
-                o.longitude = @(longitude);
-                
-                [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
-                                                                        longitude:longitude]
-                              forObservation:o];
-            }
-            
-        }
-        
-    }];
-    
-    NSError *saveError;
-    [[Observation managedObjectContext] save:&saveError];
-    if (saveError) {
-        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-    }
-    
-    if ([SVProgressHUD isVisible]) {
-        [SVProgressHUD dismiss];
-    }
-    
-    detail.observation = o;
-    detail.delegate = self;
-    detail.shouldShowBigSaveButton = YES;
-    [self.navigationController pushViewController:detail animated:YES];
-    if (self.shouldContinueUpdatingLocation)
-        [detail startUpdatingLocation];
-}
-
 - (void)choseTaxon:(Taxon *)taxon {
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating observation...", @"Notice when we're saving a new photo for a new observation")
-                         maskType:SVProgressHUDMaskTypeGradient];
-    
     
     Observation *o = [Observation object];
     
@@ -470,8 +478,19 @@ static NSArray *ICONIC_TAXON_ORDER;
     }
     
     if (self.assets && self.assets.count > 0) {
-        [self saveObservation:o withAssets:self.assets];
+        [o addAssets:self.assets];
     }
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+
+    detail.observation = o;
+    detail.delegate = self;
+    detail.shouldShowBigSaveButton = YES;
+    [self.navigationController pushViewController:detail animated:YES];
+    if (self.shouldContinueUpdatingLocation)
+        [detail startUpdatingLocation];
+
 }
 
 #pragma mark - ObservationDetailViewController delegate

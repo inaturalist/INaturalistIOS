@@ -25,6 +25,8 @@
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "CategorizeViewController.h"
+#import "Observation.h"
+#import "Observation+AddAssets.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -96,64 +98,85 @@
         [button bk_addEventHandler:^(id sender) {
 
             
-            CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
-
-            if (self.image) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
                 
-                [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"Message when we're saving your photo.")
-                                     maskType:SVProgressHUDMaskTypeGradient];
-
-                // save image to assets library
+                CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 
-                // embed geo
-                CLLocationManager *loc = [[CLLocationManager alloc] init];
-                NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-                if (loc.location) {
+                if (self.image) {
                     
-                    double latitude = fabs(loc.location.coordinate.latitude);
-                    double longitude = fabs(loc.location.coordinate.longitude);
-                    NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-                    NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
+                    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"Message when we're saving your photo.")
+                                         maskType:SVProgressHUDMaskTypeGradient];
                     
-                    NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                           @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
+                    // save image to assets library
                     
-                    mutableMetadata[@"{GPS}"] = gps;
+                    // embed geo
+                    CLLocationManager *loc = [[CLLocationManager alloc] init];
+                    NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+                    if (loc.location) {
+                        
+                        double latitude = fabs(loc.location.coordinate.latitude);
+                        double longitude = fabs(loc.location.coordinate.longitude);
+                        NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+                        NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
+                        
+                        NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                               @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
+                        
+                        mutableMetadata[@"{GPS}"] = gps;
+                    }
+                    
+                    [lib writeImageToSavedPhotosAlbum:self.image.CGImage
+                                             metadata:mutableMetadata
+                                      completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                                          if (error) {
+                                              [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                              NSLog(@"ERROR: %@", error.localizedDescription);
+                                          } else {
+                                              [SVProgressHUD dismiss];
+                                              
+                                              [lib assetForURL:newAssetUrl
+                                                   resultBlock:^(ALAsset *asset) {
+                                                       categorize.assets = @[ asset ];
+                                                       categorize.shouldContinueUpdatingLocation = YES;
+                                                       
+                                                       [self transitionToCategorize:categorize];
+                                                       
+                                                   } failureBlock:^(NSError *error) {
+                                                       [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                       
+                                                   }];
+                                              
+                                          }
+                                      }];
+                    
+                } else {
+                    // from photo library
+                    categorize.assets = self.assets;
+                    categorize.shouldContinueUpdatingLocation = NO;
+                    
+                    [self transitionToCategorize:categorize];
+                }
+            } else {
+                Observation *o = [Observation object];
+                
+                if (self.assets && self.assets.count > 0) {
+                    [o addAssets:self.assets];
                 }
                 
-                [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                         metadata:mutableMetadata
-                                  completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                                      if (error) {
-                                          [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                          NSLog(@"ERROR: %@", error.localizedDescription);
-                                      } else {
-                                          [SVProgressHUD dismiss];
-                                          
-                                          [lib assetForURL:newAssetUrl
-                                               resultBlock:^(ALAsset *asset) {
-                                                   categorize.assets = @[ asset ];
-                                                   categorize.shouldContinueUpdatingLocation = YES;
-                                                   
-                                                   [self transitionToCategorize:categorize];
-
-                                               } failureBlock:^(NSError *error) {
-                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-
-                                               }];
-                                          
-                                      }
-                                  }];
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+                ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+ 
+                detail.observation = o;
+                detail.delegate = self;
+                detail.shouldShowBigSaveButton = YES;
+                [self.navigationController setNavigationBarHidden:NO animated:YES];
+                [self.navigationController pushViewController:detail animated:YES];
+                if (self.shouldContinueUpdatingLocation)
+                    [detail startUpdatingLocation];
                 
-            } else {
-                // from photo library
-                categorize.assets = self.assets;
-                categorize.shouldContinueUpdatingLocation = NO;
-                
-                [self transitionToCategorize:categorize];
             }
         } forControlEvents:UIControlEventTouchUpInside];
-
+        
         button;
     });
     [self.view addSubview:confirm];
@@ -172,7 +195,7 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-
+    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[confirm(==60)]-0-|"
                                                                       options:0
                                                                       metrics:0
@@ -204,7 +227,7 @@
     [UIView animateWithDuration:0.1f
                      animations:^{
                          confirm.center = CGPointMake(confirm.center.x,
-                                                     self.view.bounds.size.height + (confirm.frame.size.height / 2));
+                                                      self.view.bounds.size.height + (confirm.frame.size.height / 2));
                          retake.center = CGPointMake(retake.center.x,
                                                      self.view.bounds.size.height + (retake.frame.size.height / 2));
                          multiImageView.frame = self.view.bounds;
@@ -213,11 +236,35 @@
                                                               animated:NO];
                          
                          confirm.center = CGPointMake(confirm.center.x,
-                                                     self.view.bounds.size.height - (confirm.frame.size.height / 2));
+                                                      self.view.bounds.size.height - (confirm.frame.size.height / 2));
                          retake.center = CGPointMake(retake.center.x,
                                                      self.view.bounds.size.height - (retake.frame.size.height / 2));
                          
                      }];
+}
+
+#pragma mark - ObservationDetailViewController delegate
+
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
+    
+    NSError *saveError;
+    [[Observation managedObjectContext] save:&saveError];
+    if (saveError) {
+        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
+    @try {
+        [controller.observation destroy];
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if observation has been deleted or is otherwise inaccessible, do nothing
+            return;
+        }
+    }
 }
 
 @end

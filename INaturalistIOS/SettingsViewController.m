@@ -36,6 +36,7 @@ static const int VersionCellTag = 5;
 static const int CreditsCellTag = 6;
 
 static const int AutocompleteNamesSwitchTag = 10;
+static const int CategorizeNewObsSwitchTag = 11;
 
 @interface SettingsViewController () {
     UITapGestureRecognizer *tapAway;
@@ -234,8 +235,12 @@ static const int AutocompleteNamesSwitchTag = 10;
     if (switcher.tag == AutocompleteNamesSwitchTag) {
         [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
                                                 forKey:kINatAutocompleteNamesPrefKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (switcher.tag == CategorizeNewObsSwitchTag) {
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
+                                                forKey:kInatCategorizeNewObsPrefKey];
     }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark - UITableView
@@ -280,6 +285,8 @@ static const int AutocompleteNamesSwitchTag = 10;
         
         if (switcher.tag == AutocompleteNamesSwitchTag)
             switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+        else if (switcher.tag == CategorizeNewObsSwitchTag)
+            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
         
     }
 }
@@ -294,6 +301,9 @@ static const int AutocompleteNamesSwitchTag = 10;
         if (indexPath.item == 0) {
             // autocorrect
             tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
+        } else if (indexPath.item == 1) {
+            // skip categorization
+            tooltipText = NSLocalizedString(@"Enable to make a quick, initial identification from high-level taxa when making a new observation.", @"tooltip text for skip categorization option.");
         }
         
         tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:10+indexPath.item]
