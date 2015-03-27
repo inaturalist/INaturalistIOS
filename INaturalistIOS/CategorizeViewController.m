@@ -25,8 +25,7 @@ static NSDictionary *ICONIC_TAXON_NAMES;
 static NSArray *ICONIC_TAXON_ORDER;
 
 @interface CategorizeViewController () <ObservationDetailViewControllerDelegate> {
-    UIVisualEffectView  *blurView;
-    UIView *scrim;
+    UIView *background;
     
     // can't animate a blurview alpha, so make two containers, one blurred, one not
     // animate the alpha of the blurred one exactly over the unblurred one
@@ -103,30 +102,40 @@ static NSArray *ICONIC_TAXON_ORDER;
     });
     [self.view addSubview:blurredMultiImageView];
     
-    blurView = ({
-        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        UIVisualEffectView *blur = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        blur.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    background = ({
+        UIView *view;
+        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            UIVisualEffectView *blur = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            blur.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+            UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+            vibrancyEffectView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            [blur.contentView addSubview:vibrancyEffectView];
+            
+            blur.frame = blurredMultiImageView.bounds;
+            vibrancyEffectView.frame = blurredMultiImageView.bounds;
+            
+
+            view = blur;
+        } else {
+            UIView *scrim = [[UIView alloc] initWithFrame:blurredMultiImageView.bounds];
+            scrim.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            scrim.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7f];
+            
+            view = scrim;
+        }
         
-        blur;
+        view;
     });
     
-    UIVisualEffectView *vibrancy = ({
-        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:(UIBlurEffect *)blurView.effect];
-        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-        vibrancyEffectView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        vibrancyEffectView;
-    });
-    [blurView.contentView addSubview:vibrancy];
     
     self.navigationItem.backBarButtonItem.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
-    blurView.frame = blurredMultiImageView.bounds;
-    vibrancy.frame = blurredMultiImageView.bounds;
-    
-    [blurredMultiImageView addSubview:blurView];
+    [blurredMultiImageView addSubview:background];
     
     categories = ({
         UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
@@ -137,10 +146,8 @@ static NSArray *ICONIC_TAXON_ORDER;
     [self.view addSubview:categories];
     
     NSDictionary *views = @{
-                            @"blur": blurView,
                             @"images": blurredMultiImageView,
                             @"bgImages": unblurredMultiImageView,
-                            @"vibrancy": vibrancy,
                             @"categories": categories,
                             @"topLayoutGuide": self.topLayoutGuide,
                             };
