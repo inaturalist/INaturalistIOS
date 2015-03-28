@@ -639,6 +639,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
+#pragma mark - Header helpers
+
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
     
     // icon
@@ -668,8 +670,40 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
                                    user.identificationsCount.integerValue];
     }
+}
 
-    
+- (void)loadUserForHeader {
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username) {
+        
+        self.navigationItem.title = username;
+        
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [User mapping];
+                                                            loader.onDidLoadObject = ^(User *user) {
+                                                                NSError *saveError;
+                                                                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                                if (saveError) {
+                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                }
+                                                                
+                                                                NSError *fetchError;
+                                                                if (fetchError) {
+                                                                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                }
+                                                                
+                                                                // triggers reconfiguration of the header
+                                                                [self.tableView reloadData];
+                                                            };
+                                                            
+                                                            loader.onDidFailWithError = ^(NSError *error) {
+                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            };
+                                                        }];
+    } else {
+        self.navigationItem.title = NSLocalizedString(@"Not Logged In", @"Placeholder text for not logged title on me tab.");
+    }
 }
 
 # pragma mark memory management
@@ -758,36 +792,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
-        
-    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
-    if (username) {
-        
-        self.navigationItem.title = username;
-        
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
-                                                        usingBlock:^(RKObjectLoader *loader) {
-                                                            loader.objectMapping = [User mapping];
-                                                            loader.onDidLoadObject = ^(User *user) {
-                                                                NSError *saveError;
-                                                                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                                if (saveError) {
-                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                                                                }
-                                                                
-                                                                if (fetchError) {
-                                                                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-                                                                }
-                                                                
-                                                                [self.tableView reloadData];
-                                                            };
-                                                            
-                                                            loader.onDidFailWithError = ^(NSError *error) {
-                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                            };
-                                                        }];
-    } else {
-        self.navigationItem.title = NSLocalizedString(@"Not Logged In", @"Placeholder text for not logged title on me tab.");
-    }
+    
+    
+    [self loadUserForHeader];
 }
 
 - (void)settings {
@@ -845,6 +852,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
+    
+    [self loadUserForHeader];
+    
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
@@ -854,6 +864,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	} else {
 		self.refreshControl = nil;
 	}
+    
     [self reload];
     
     // observation detail view controller has a different toolbar tint color
