@@ -199,6 +199,11 @@
 - (void)noPhoto {
     Observation *o = [Observation object];
     
+    // photoless observation defaults to now
+    o.observedOn = [NSDate date];
+    o.localObservedOn = o.observedOn;
+    o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
     detail.observation = o;
