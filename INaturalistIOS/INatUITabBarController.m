@@ -22,7 +22,7 @@
 #import "ObsCameraOverlay.h"
 #import "Taxon.h"
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate>
 
 @end
 
@@ -203,10 +203,36 @@
     ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
     detail.observation = o;
     detail.shouldShowBigSaveButton = YES;
-    
+    detail.delegate = self;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO];
     [nav pushViewController:detail animated:YES];
+}
+
+#pragma mark - ObservationDetailViewController delegate
+
+- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
+    
+    NSError *saveError;
+    [[Observation managedObjectContext] save:&saveError];
+    if (saveError) {
+        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
+    [controller.navigationController setToolbarHidden:YES animated:NO];
+
+    @try {
+        [controller.observation destroy];
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if observation has been deleted or is otherwise inaccessible, do nothing
+            return;
+        }
+    }
 }
 
 #pragma mark - QBImagePicker delegate
