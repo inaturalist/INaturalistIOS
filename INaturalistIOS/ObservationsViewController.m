@@ -811,16 +811,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstSignInSeen"]) {
         
         // completely new users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kInatCategorizeNewObsPrefKey];
         
         // completely new users default to autocomplete on
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatAutocompleteNamesPrefKey];
         
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                   forKey:@"firstSignInSeen"];
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:@"seenVersion254"];
 
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -830,14 +830,14 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"seenVersion254"]) {
         
         // existing users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kInatCategorizeNewObsPrefKey];
 
         // existing users default to autocomplete off
-        [[NSUserDefaults standardUserDefaults] setBool:@(NO)
+        [[NSUserDefaults standardUserDefaults] setBool:NO
                                                 forKey:kINatAutocompleteNamesPrefKey];
 
-        [[NSUserDefaults standardUserDefaults] setBool:@(YES)
+        [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:@"seenVersion254"];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
