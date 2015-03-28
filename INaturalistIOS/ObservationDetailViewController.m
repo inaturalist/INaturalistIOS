@@ -330,7 +330,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     bigSaveButton.tintColor = [UIColor whiteColor];
     [bigSaveButton setTitle:@"SAVE" forState:UIControlStateNormal];
     bigSaveButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:44];
+    bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:36];
     [bigSaveButton addTarget:self action:@selector(clickedSave) forControlEvents:UIControlEventTouchUpInside];
     
     self.bigSave = [[UIBarButtonItem alloc] initWithCustomView:bigSaveButton];
