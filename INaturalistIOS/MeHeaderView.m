@@ -21,7 +21,7 @@
             
             iv.contentMode = UIViewContentModeScaleAspectFill;
             iv.layer.borderColor = [UIColor grayColor].CGColor;
-            iv.layer.borderWidth = 0.5f;
+            iv.layer.borderWidth = 2.0f;
             iv.layer.cornerRadius = 40.0f;      // circular with an 80x80 frame
             
             iv.clipsToBounds = YES;
