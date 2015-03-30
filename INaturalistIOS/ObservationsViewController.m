@@ -10,6 +10,7 @@
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -33,6 +34,7 @@
 #import "User.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
+#import "INatWebController.h"
 
 
 static const int ObservationCellImageTag = 5;
@@ -635,6 +637,46 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     } else {
         AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        [header.signupButton setTitle:NSLocalizedString(@"Sign up", @"Title for button that allows users to sign up for a new iNat account")
+                             forState:UIControlStateNormal];
+        [header.signupButton bk_addEventHandler:^(id sender) {
+            
+            // replicate the pre-existing signup/login flow as much as possible
+            // until we have a chance to re-do the whole thing
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            login.delegate = self;
+            
+            INatWebController *webController = [[INatWebController alloc] init];
+            NSURL *url = [NSURL URLWithString:
+                          [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
+            [webController openURL:url];
+            webController.delegate = login;
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+            [nav pushViewController:webController animated:NO];
+            [self.navigationController presentViewController:nav animated:YES completion:nil];
+            
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        NSString *loginString = NSLocalizedString(@"Already have an account?", @"Title for button that allows users to login to their iNat account");
+        NSString *loginStringHighlight = NSLocalizedString(@"account", @"Portion of Already have an account? that should be highlighted.");
+        NSMutableAttributedString *loginAttrString = [[NSMutableAttributedString alloc] initWithString:loginString];
+        if ([loginString rangeOfString:loginStringHighlight].location != NSNotFound) {
+            [loginAttrString addAttribute:NSForegroundColorAttributeName
+                                    value:[UIColor blueColor]
+                                    range:[loginString rangeOfString:loginStringHighlight]];
+        }
+        [header.loginButton setAttributedTitle:loginAttrString forState:UIControlStateNormal];
+        [header.loginButton bk_addEventHandler:^(id sender) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            login.delegate = self;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+            [self.navigationController presentViewController:nav animated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
         return header;
     }
 }
@@ -950,7 +992,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark LoginControllerViewDelegate methods
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
-    [self sync:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    // trigger sync, if pending, or refresh from server, if sync isn't pending
+    [self pullToRefresh];
 }
 
 #pragma mark - RKObjectLoaderDelegate

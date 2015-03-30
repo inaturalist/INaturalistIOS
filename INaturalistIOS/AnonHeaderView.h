@@ -10,4 +10,7 @@
 
 @interface AnonHeaderView : UIView
 
+@property UIButton *loginButton;
+@property UIButton *signupButton;
+
 @end
