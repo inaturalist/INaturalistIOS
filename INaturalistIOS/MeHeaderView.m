@@ -19,6 +19,7 @@
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
+            iv.contentMode = UIViewContentModeScaleAspectFill;
             iv.layer.borderColor = [UIColor grayColor].CGColor;
             iv.layer.borderWidth = 0.5f;
             iv.layer.cornerRadius = 40.0f;      // circular with an 80x80 frame
