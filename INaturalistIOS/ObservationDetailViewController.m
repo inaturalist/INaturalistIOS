@@ -790,7 +790,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     vc.photoSource = photoSource;
     UIViewController *tbvc = self.getToolbarViewController;
     [tbvc.navigationController setToolbarHidden:YES];
-    [tbvc.navigationController pushViewController:vc animated:YES];
+    UINavigationController *photoNav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [tbvc.navigationController presentViewController:photoNav animated:YES completion:nil];
 }
 
 #pragma mark UIViewController
