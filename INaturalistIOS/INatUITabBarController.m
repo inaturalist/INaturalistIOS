@@ -334,6 +334,12 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     } else {
         item.badgeValue = nil;
     }
+    
+    // request permission to badge the app
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge
+                                                                             categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:theCount];
 }
 
