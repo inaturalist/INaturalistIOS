@@ -802,7 +802,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                                             };
                                                         }];
     } else {
-        self.navigationItem.title = NSLocalizedString(@"Not Logged In", @"Placeholder text for not logged title on me tab.");
+        self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
 }
 
