@@ -181,6 +181,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
     tutorialImageView.image = self.tutorialImage;
     titleLabel.text = self.tutorialTitle;
     subtitleOneLabel.text = self.tutorialSubtitleOne;
