@@ -64,6 +64,11 @@
         label.font = [UIFont systemFontOfSize:16];
         label.textColor = [UIColor grayColor];
         
+        // since we're using intrinsic height, on iOS7 UIImageView seems to
+        // have higher built-in priority than this label
+        [label setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                               forAxis:UILayoutConstraintAxisVertical];
+        
         label;
     });
     [self.view addSubview:subtitleOneLabel];
@@ -72,6 +77,8 @@
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
+        [iv setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh
+                                            forAxis:UILayoutConstraintAxisVertical];
         iv.contentMode = UIViewContentModeScaleAspectFit;
         
         iv;
@@ -86,6 +93,12 @@
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:16];
         label.textColor = [UIColor grayColor];
+        
+        // since we're using intrinsic height, on iOS7 UIImageView seems to
+        // have higher built-in priority than this label
+        [label setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                               forAxis:UILayoutConstraintAxisVertical];
+        
         
         label;
     });
