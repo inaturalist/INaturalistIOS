@@ -21,8 +21,14 @@
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
 #import "Taxon.h"
+#import "INatTooltipView.h"
+#import "LoginViewController.h"
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate>
+static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
+
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
+    INatTooltipView *makeFirstObsTooltip;
+}
 
 @end
 
@@ -34,6 +40,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleUserSavedObservationNotification:) 
                                                  name:INatUserSavedObservationNotification 
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userSignedIn)
+                                                 name:kUserLoggedInNotificationName
                                                object:nil];
     
     TTNavigator* navigator = [TTNavigator navigator];
@@ -55,8 +66,11 @@
     [((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
                                                                                            forState:UIControlStateNormal];
     
-    // Me tab
-    self.selectedIndex = 4;
+    // make the delegate call to make sure our side effects execute
+    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][4]]) {
+        // Me tab
+        self.selectedIndex = 4;
+    }
     
     // we'll use the iconic taxa during the new observation flow
     [self fetchIconicTaxa];
@@ -70,6 +84,12 @@
     
     // intercept selection of the "observe" tab
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
+        
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        [makeFirstObsTooltip hideAnimated:YES];
         
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -154,7 +174,33 @@
         
         
         return NO;
+    } else if ([tabBarController.viewControllers indexOfObject:viewController] == 4) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+            if (![Observation hasAtLeastOneEntity]) {
+                // show the "make your first" tooltip
+                
+                if (!makeFirstObsTooltip) {
+                    NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
+                    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[2]
+                                                                                      hostView:self.view
+                                                                                   tooltipText:firstObsText
+                                                                                arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                                                         width:200];
+                    makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
+                    makeFirstObsTooltip.shouldCenter = YES;
+                }
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (self.selectedIndex == 4)
+                        [makeFirstObsTooltip show];
+                });
+            }
+            
+        }
+        
+    } else {
+        [makeFirstObsTooltip hideAnimated:NO];
     }
+    
     return YES;
 }
 
@@ -289,6 +335,10 @@
         item.badgeValue = nil;
     }
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:theCount];
+}
+
+- (void)userSignedIn {
+    [makeFirstObsTooltip hideAnimated:NO];
 }
 
 #pragma mark - TTNagigatorDelegate

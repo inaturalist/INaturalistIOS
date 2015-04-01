@@ -258,6 +258,8 @@
 		FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
+		FA627B7A1ACB5A650079534E /* binocs.png in Resources */ = {isa = PBXBuildFile; fileRef = FA627B791ACB5A650079534E /* binocs.png */; };
+		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
@@ -845,6 +847,9 @@
 		FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationVisualizerViewController.m; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
+		FA627B791ACB5A650079534E /* binocs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binocs.png; sourceTree = "<group>"; };
+		FA627BA71ACB6A050079534E /* INatTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatTooltipView.h; sourceTree = "<group>"; };
+		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorizeViewController.h; sourceTree = "<group>"; };
@@ -1064,6 +1069,7 @@
 				19122E3E1512D3F4009BD3D0 /* add_button@2x.png */,
 				19122E3B1512D3F4009BD3D0 /* add_button_highlight.png */,
 				19122E3C1512D3F4009BD3D0 /* add_button_highlight@2x.png */,
+				FA627B791ACB5A650079534E /* binocs.png */,
 				191B0B48150197BC00F2508E /* current_location.png */,
 				191B0B49150197BC00F2508E /* current_location@2x.png */,
 				191B434C17E927AA00AF000E /* Default-568h@2x.png */,
@@ -1424,6 +1430,8 @@
 				FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */,
 				FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */,
 				FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */,
+				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
+				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1997,6 +2005,7 @@
 				19542F4A17D6624900B7CEE5 /* guides.png in Resources */,
 				19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
+				FA627B7A1ACB5A650079534E /* binocs.png in Resources */,
 				191B434917E927A300AF000E /* Default.png in Resources */,
 				191B434B17E927A700AF000E /* Default@2x.png in Resources */,
 				191B434D17E927AA00AF000E /* Default-568h@2x.png in Resources */,
@@ -2187,6 +2196,7 @@
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
+				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */,

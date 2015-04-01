@@ -11,6 +11,7 @@
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <JDFTooltips/JDFTooltips.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -35,7 +36,7 @@
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
-
+#import "INatTooltipView.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
@@ -46,6 +47,10 @@ static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate> {
+    UIView *noContentView;
+    INatTooltipView *makeFirstObservationTooltip;
+    
+
     NSFetchedResultsController *fetchedResultsController;
 }
 @end
@@ -59,7 +64,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
-@synthesize noContentLabel = _noContentLabel;
 @synthesize syncQueue = _syncQueue;
 @synthesize syncErrors = _syncErrors;
 @synthesize lastRefreshAt = _lastRefreshAt;
@@ -343,21 +347,75 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section of observations in our tableview
 
     if ([sectionInfo numberOfObjects] == 0) {
-        if (!self.noContentLabel) {
-            self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.text = NSLocalizedString(@"You don't have any observations yet.",nil);
-            self.noContentLabel.backgroundColor = [UIColor clearColor];
-            self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.numberOfLines = 0;
-            [self.noContentLabel sizeToFit];
-            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-            self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
-            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+
+        if (!noContentView) {
+            noContentView = ({
+                
+                
+                // leave room for the header
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 100.0f,
+                                                                        self.tableView.frame.size.width,
+                                                                        self.tableView.frame.size.height - 100.0f)];
+                view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+                
+                view.backgroundColor = [UIColor whiteColor];
+                
+                UILabel *noObservations = ({
+                    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+                    label.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    label.textColor = [UIColor grayColor];
+                    label.text = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
+                    label.font = [UIFont systemFontOfSize:14.0f];
+                    label.numberOfLines = 2;
+                    label.textAlignment = NSTextAlignmentCenter;
+                    
+                    label;
+                });
+                [view addSubview:noObservations];
+                
+                UIImageView *binocs = ({
+                    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+                    iv.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    iv.contentMode = UIViewContentModeScaleAspectFit;
+                    iv.image = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    iv.tintColor = [UIColor lightGrayColor];
+                    
+                    iv;
+                });
+                [view addSubview:binocs];
+                
+                NSDictionary *views = @{
+                                        @"bottomLayout": self.bottomLayoutGuide,
+                                        @"noObservations": noObservations,
+                                        @"binocs": binocs,
+                                        };
+                
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noObservations]-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[binocs]-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[noObservations(==20)]-0-[binocs]-100-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+
+                
+                view;
+            });
+            
         }
-        [self.view addSubview:self.noContentLabel];
-    } else if (self.noContentLabel) {
-        [self.noContentLabel removeFromSuperview];
+        [self.view insertSubview:noContentView aboveSubview:self.tableView];
+        [noContentView setNeedsLayout];
+
+    } else if (noContentView) {
+            [noContentView removeFromSuperview];
     }
 }
 
