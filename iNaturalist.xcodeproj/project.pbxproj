@@ -270,6 +270,8 @@
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FAA39B061ACB7C4E009D4665 /* tutorial_guides.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */; };
+		FAA39B071ACB7C4E009D4665 /* tutorial_projects.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
@@ -871,6 +873,8 @@
 		FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreObservationPhoto+BestAvailableURL.m"; sourceTree = "<group>"; };
 		FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraOverlay.h; sourceTree = "<group>"; };
 		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
+		FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_guides.png; sourceTree = "<group>"; };
+		FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_projects.png; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
@@ -1114,6 +1118,8 @@
 				197A60521511298D0061B83B /* projects@2x.png */,
 				19A5F62C14FB5B9300757636 /* settings-tab.png */,
 				19A5F64814FB655D00757636 /* settings-tab@2x.png */,
+				FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */,
+				FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */,
 				60A0E24816FD06C1003621FA /* tutorial1en.png */,
 				60A0E24E16FD0909003621FA /* tutorial1es.png */,
 				60A0E24916FD06C1003621FA /* tutorial2en.png */,
@@ -1938,6 +1944,7 @@
 				1953066C150592DC004951D8 /* iconic_taxon_aves.png in Resources */,
 				1953066D150592DC004951D8 /* iconic_taxon_fungi.png in Resources */,
 				1953066E150592DC004951D8 /* iconic_taxon_insecta.png in Resources */,
+				FAA39B061ACB7C4E009D4665 /* tutorial_guides.png in Resources */,
 				FA4E72A219FAC8A000A9AB5D /* animalia-200px.png in Resources */,
 				1953066F150592DC004951D8 /* iconic_taxon_mammalia.png in Resources */,
 				19530670150592DC004951D8 /* iconic_taxon_mollusca.png in Resources */,
@@ -1984,6 +1991,7 @@
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
+				FAA39B071ACB7C4E009D4665 /* tutorial_projects.png in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */,
 				60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */,

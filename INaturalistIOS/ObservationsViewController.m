@@ -433,16 +433,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
-- (void)showTutorialImage:(UIImage *)image title:(NSString *)title {
-    TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-    vc.tutorialImage = image;
-    vc.tutorialTitle = title;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self presentViewController:vc animated:YES completion:nil];
-    });
-
-}
-
 - (BOOL)autoLaunchNewFeatures
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];

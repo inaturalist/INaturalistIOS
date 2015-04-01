@@ -350,8 +350,10 @@ static const int ListControlIndexNearby = 2;
         ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenProjects]) {
         
         TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial6en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"About Projects", @"Title for projects tutorial screen");
+        vc.tutorialImage = [UIImage imageNamed:@"tutorial_projects"];
+        vc.tutorialTitle = NSLocalizedString(@"Projects are collections of observations with a common purpose", @"Title for projects tutorial screen");
+        vc.tutorialSubtitleOne = NSLocalizedString(@"Join projects to select them when you record observations", @"Subtitle above image for projects tutorial screen");
+        vc.tutorialSubtitleTwo = NSLocalizedString(@"Visit iNaturalist.org to create your own projects", @"Subtitle below image for projects tutorial screen");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self presentViewController:vc animated:YES completion:nil];
         });

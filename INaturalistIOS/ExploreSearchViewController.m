@@ -35,7 +35,6 @@
 #import "ExploreSearchView.h"
 #import "AutocompleteSearchItem.h"
 #import "ShortcutSearchItem.h"
-#import "TutorialSinglePageViewController.h"
 #import "ExploreLeaderboardViewController.h"
 
 
@@ -227,21 +226,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenExplore]) {
-        
-        TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial5en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"Explore Worldwide Nature Observations", @"Title for explore help tutorial screen");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self presentViewController:vc animated:YES completion:nil];
-        });
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenExplore];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
     [self startLookingForCurrentLocationNotify:NO];
 }
 

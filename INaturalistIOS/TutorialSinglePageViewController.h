@@ -12,6 +12,9 @@
 
 @property UIImage *tutorialImage;
 @property NSString *tutorialTitle;
+@property NSString *tutorialSubtitleOne;
+@property NSString *tutorialSubtitleTwo;
+
 @end
 
 extern NSString *kDefaultsKeyTutorialNeverAgain;

@@ -36,7 +36,6 @@
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
-#import "TutorialSinglePageViewController.h"
 #import "ObsCameraOverlay.h"
 
 static const int PhotoActionSheetTag = 0;
