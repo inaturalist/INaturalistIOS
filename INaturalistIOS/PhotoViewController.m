@@ -37,6 +37,14 @@
     // TTTPhotoViewController defaults to black nav and toolbars
     self.navigationBarStyle = UIBarStyleDefault;
     _toolbar.barStyle = UIBarStyleDefault;
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(close)];
+}
+
+- (void)close {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - TTPhotoView
@@ -87,6 +95,7 @@
     }
     
     if (self.photoSource.numberOfPhotos == 0) {
+        [self dismissViewControllerAnimated:YES completion:nil];
         [self.navigationController popViewControllerAnimated:YES];
     } else {
         [self invalidateView]; 

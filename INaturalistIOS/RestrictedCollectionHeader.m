@@ -33,7 +33,7 @@
         self.clearButton = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             
-            FAKIcon *clear = [FAKIonIcons ios7CloseEmptyIconWithSize:30.0f];
+            FAKIcon *clear = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
             [clear addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
             [button setAttributedTitle:clear.attributedString forState:UIControlStateNormal];
             

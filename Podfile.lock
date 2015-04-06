@@ -24,28 +24,30 @@ PODS:
   - FlurrySDK (5.4.0):
     - FlurrySDK/FlurrySDK (= 5.4.0)
   - FlurrySDK/FlurrySDK (5.4.0)
-  - FontAwesomeKit (2.1.8):
-    - FontAwesomeKit/Core (= 2.1.8)
-    - FontAwesomeKit/FontAwesome (= 2.1.8)
-    - FontAwesomeKit/FoundationIcons (= 2.1.8)
-    - FontAwesomeKit/IonIcons (= 2.1.8)
-    - FontAwesomeKit/Zocial (= 2.1.8)
-  - FontAwesomeKit/Core (2.1.8)
-  - FontAwesomeKit/FontAwesome (2.1.8):
+  - FontAwesomeKit (2.2.0):
+    - FontAwesomeKit/Core (= 2.2.0)
+    - FontAwesomeKit/FontAwesome (= 2.2.0)
+    - FontAwesomeKit/FoundationIcons (= 2.2.0)
+    - FontAwesomeKit/IonIcons (= 2.2.0)
+    - FontAwesomeKit/Zocial (= 2.2.0)
+  - FontAwesomeKit/Core (2.2.0)
+  - FontAwesomeKit/FontAwesome (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/FoundationIcons (2.1.8):
+  - FontAwesomeKit/FoundationIcons (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/IonIcons (2.1.8):
+  - FontAwesomeKit/IonIcons (2.2.0):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/Zocial (2.1.8):
+  - FontAwesomeKit/Zocial (2.2.0):
     - FontAwesomeKit/Core
   - GeoJSONSerialization (0.0.4)
   - googleplus-ios-sdk (1.7.1)
   - HexColors (2.2.1)
+  - JDFTooltips (1.0)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
+  - QBImagePickerController (2.2.2)
   - RaptureXML (1.0.1)
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
@@ -57,6 +59,7 @@ PODS:
   - SVProgressHUD (1.1.1)
   - SVPullToRefresh (0.4.1)
   - UIColor-HTMLColors (1.0.0)
+  - VTAcknowledgementsViewController (0.13)
 
 DEPENDENCIES:
   - ActionSheetPicker-3.0 (= 1.3.12)
@@ -67,42 +70,48 @@ DEPENDENCIES:
   - DCRoundSwitch (= 0.0.1)
   - Facebook-iOS-SDK (= 3.20.0)
   - FlurrySDK (= 5.4.0)
-  - FontAwesomeKit (= 2.1.8)
+  - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
+  - JDFTooltips (= 1.0)
   - MHVideoPhotoGallery (= 1.6.6)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
+  - QBImagePickerController (= 2.2.2)
   - RaptureXML (= 1.0.1)
   - SlackTextViewController (= 1.3.2)
   - SSZipArchive (= 0.3.2)
   - SVProgressHUD (= 1.1.1)
   - SVPullToRefresh (= 0.4.1)
   - UIColor-HTMLColors (= 1.0.0)
+  - VTAcknowledgementsViewController (= 0.13)
 
 SPEC CHECKSUMS:
-  ActionSheetPicker-3.0: e49127271ec833864f3235ba7261b1f0d093a503
-  AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
-  BlocksKit: 4439e7f30a9f90743462ca63545a15c1f4304cef
-  Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
-  CrashlyticsFramework: 195dfef587ade7a3954ce8effd483a3879d35877
-  DCRoundSwitch: df465861ed880ee8d3c44ac8d3459faf1abaa6a9
-  Facebook-iOS-SDK: 5854404b4b651f612a8ef79ca06d766858f4cb8e
-  FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
-  FontAwesomeKit: a2edea3111dab107b4cc43b85881b404eb063385
-  GeoJSONSerialization: 87d7a81f770d111506e690980ef192fba3966d01
-  googleplus-ios-sdk: b0f6cd8aa29c51d0048cace8dc3bd8f4ae0806bb
-  HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
-  MHVideoPhotoGallery: 54062f3b997d1353a43722c56b44022309877fef
-  NXOAuth2Client: fa81be68c9ce628202028ae037c9c92cfbb37865
-  PDKTStickySectionHeadersCollectionViewLayout: 96edf4348a7698f1c38e1ad4366847fcebf3868f
-  RaptureXML: b9b0aca9c68c684c189af73dd5e8f8fdeec74600
-  SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
-  SlackTextViewController: 113d3e4580fdcd77767da2a5fb71444554e57b26
-  SSZipArchive: 11299a4e89821bd4085b12f25edaa85853e0051c
-  SVProgressHUD: 11ef69ab2582c097479e76905ea916470371fc58
-  SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
-  UIColor-HTMLColors: fbf3e9648f1e699aa4cdb39d0cf348b7ef814be5
+  ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
+  AFNetworking: cf8e418e16f0c9c7e5c3150d019a3c679d015018
+  BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
+  Bolts: e431c88fd02115d4a34016c2100bbfa4d2d5b146
+  CrashlyticsFramework: 2d7f0c6ee2dcc404cde03eae44d2f90a3872820f
+  DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
+  Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
+  FlurrySDK: 7f929b68dea38ce735979fb039229f62c0b697b5
+  FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
+  GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
+  googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
+  HexColors: abfd172e329dab59888614ccba6f216cec59289d
+  JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
+  MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
+  NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
+  PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
+  QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
+  RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
+  SDWebImage: ed3095af2ff88b436426037444979b917f6c5575
+  SlackTextViewController: 3e48f288fd1ddbb4fb71a7e0b55c11d563cf4856
+  SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
+  SVProgressHUD: 90363c5e66aa08356bfe1a0923bd885fd3fbcb7c
+  SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
+  UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
+  VTAcknowledgementsViewController: f2391b007c3abafd3b3afccda7d8914a59b44309
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.36.0

@@ -7,6 +7,9 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
+#import <JDFTooltips/JDFTooltips.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "SettingsViewController.h"
 #import "LoginViewController.h"
@@ -29,7 +32,17 @@ static const int AccountActionCellTag = 1;
 static const int TutorialActionCellTag = 2;
 static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
-static const int VersionCellTag = 4;
+static const int VersionCellTag = 5;
+static const int CreditsCellTag = 6;
+
+static const int AutocompleteNamesSwitchTag = 10;
+static const int CategorizeNewObsSwitchTag = 11;
+
+@interface SettingsViewController () {
+    UITapGestureRecognizer *tapAway;
+    JDFTooltipView *tooltip;
+}
+@end
 
 @implementation SettingsViewController
 
@@ -41,15 +54,16 @@ static const int VersionCellTag = 4;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
-    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
-    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
+    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     tutorialActionCell.tag = TutorialActionCellTag;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
+    creditsCell.tag = CreditsCellTag;
     creditsCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
@@ -90,11 +104,13 @@ static const int VersionCellTag = 4;
 - (void)signOut
 {
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
+        
     for (UIViewController *vc in self.tabBarController.viewControllers) {
         if ([vc isKindOfClass:UINavigationController.class]) {
             [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
         }
     }
+    
 	[Comment deleteAll];
 	[Identification deleteAll];
 	[User deleteAll];
@@ -163,6 +179,20 @@ static const int VersionCellTag = 4;
 #endif
 }
 
+- (void)launchCredits {
+    VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
+    
+    NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@",
+                         NSLocalizedString(@"Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life. ", @"funding thank yous"),
+                         NSLocalizedString(@"iNaturalist is made by every single person who participates in our community. The people who build the software, maintain our infrastructure, and foster collaborations are Joelle Belmonte, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
+                         NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain, ionicons by Ben Sperry, and a Binoculars icon by Luis Prado from the Noun Project. iNaturalist is also deeply grateful to the Cocoapods community.", @"open source contributions"),
+                         @"IUCN category II places provided by IUCN and UNEP-WCMC (2015), The World Database on Protected Areas (WDPA) [On-line], [11/2014], Cambridge, UK: UNEP-WCMC. Available at: www.protectedplanet.net."];
+
+    creditsVC.headerText = credits;
+    
+    [self.navigationController pushViewController:creditsVC animated:YES];
+}
+
 - (void)networkUnreachableAlert
 {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
@@ -174,10 +204,19 @@ static const int VersionCellTag = 4;
 }
 
 #pragma mark - lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
+}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self initUI];
+    
+    // don't show a toolbar in Settings
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -190,19 +229,105 @@ static const int VersionCellTag = 4;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
 }
 
+#pragma mark - UISwitch target
+
+- (void)settingSwitched:(UISwitch *)switcher {
+    if (switcher.tag == AutocompleteNamesSwitchTag) {
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
+                                                forKey:kINatAutocompleteNamesPrefKey];
+    } else if (switcher.tag == CategorizeNewObsSwitchTag) {
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
+                                                forKey:kInatCategorizeNewObsPrefKey];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 #pragma mark - UITableView
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 3 && indexPath.row == 0) {
+    if (indexPath.section == 4 && indexPath.row == 0) {
         cell.textLabel.text = self.versionText;
         cell.backgroundView = nil;
         cell.tag = VersionCellTag;
+        
+    } else if (indexPath.section == 1) {
+        cell.userInteractionEnabled = YES;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        UISwitch *switcher;
+        if (![cell viewWithTag:10 + indexPath.item]) {
+            
+            switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+            switcher.translatesAutoresizingMaskIntoConstraints = NO;
+            switcher.tag = 10 + indexPath.item;
+            switcher.enabled = YES;
+            [switcher addTarget:self
+                         action:@selector(settingSwitched:)
+               forControlEvents:UIControlEventValueChanged];
+            
+            [cell.contentView addSubview:switcher];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
+                                                                         options:0
+                                                                         metrics:0
+                                                                           views:@{ @"switcher": switcher }]];
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
+                                                             attribute:NSLayoutAttributeCenterY
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:cell.contentView
+                                                             attribute:NSLayoutAttributeCenterY
+                                                            multiplier:1.0f
+                                                              constant:0.0f]];
+        } else {
+            switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+        }
+        
+        if (switcher.tag == AutocompleteNamesSwitchTag)
+            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+        else if (switcher.tag == CategorizeNewObsSwitchTag)
+            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
+        
     }
 }
 
 #pragma mark - UITableViewDataSource
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // do nothing when tapping app settings
+    if (indexPath.section == 1) {
+        // show popover
+        NSString *tooltipText;
+        if (indexPath.item == 0) {
+            // autocorrect
+            tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
+        } else if (indexPath.item == 1) {
+            // skip categorization
+            tooltipText = NSLocalizedString(@"Enable to make a quick, initial identification from high-level taxa when making a new observation.", @"tooltip text for skip categorization option.");
+        }
+        
+        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:10+indexPath.item]
+                                                    hostView:tableView
+                                                 tooltipText:tooltipText
+                                              arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                       width:200.0f
+                                         showCompletionBlock:^{
+                                             if (!tapAway) {
+                                                 tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                                                     [tooltip hideAnimated:YES];
+                                                 }];
+                                                 [self.view addGestureRecognizer:tapAway];
+                                             }
+                                             tapAway.enabled = YES;
+                                         } hideCompletionBlock:^{
+                                             tapAway.enabled = NO;
+                                         }];
+        [tooltip show];
+        
+        
+        return;
+    }
+    
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (cell.tag) {
@@ -237,6 +362,10 @@ static const int VersionCellTag = 4;
         case RateUsCellTag:
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             [self launchRateUs];
+            break;
+        case CreditsCellTag:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            [self launchCredits];
             break;
         default:
             break;

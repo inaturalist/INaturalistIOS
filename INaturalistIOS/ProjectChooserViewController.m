@@ -8,6 +8,7 @@
 
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectChooserViewController.h"
 #import "Project.h"

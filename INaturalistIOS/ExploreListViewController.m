@@ -135,7 +135,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
     
     // close icon
-    FAKIcon *closeIcon = [FAKIonIcons ios7CloseEmptyIconWithSize:34.0f];
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
     [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
     UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
     

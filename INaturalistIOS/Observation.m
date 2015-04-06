@@ -116,6 +116,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"uuid", @"uuid",
          @"id_please", @"idPlease",
          @"geoprivacy", @"geoprivacy",
+         @"user_id", @"userID",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 

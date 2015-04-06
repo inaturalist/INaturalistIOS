@@ -131,6 +131,9 @@ static const NSInteger GoogleAssertionType = 2;
             [self.delegate loginViewControllerDidLogIn:self];
         }
         [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                            object:nil];
     } else {
         [self failedLogin];
     }
@@ -327,6 +330,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
              assertion:ExternalAccessToken];
             [[Analytics sharedClient] event:kAnalyticsEventLogin
                              withProperties:@{ @"Via": @"Facebook" }];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                object:nil];
             break;
         case FBSessionStateClosed:
 //            NSLog(@"session FBSessionStateClosed");
@@ -411,6 +416,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
          assertionType:[NSURL URLWithString:@"http://google.com"]
          assertion:ExternalAccessToken];
         tryingGoogleReauth = NO;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                            object:nil];
     }
 }
 
@@ -468,6 +476,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
         [self removeOAuth2Observers];
         [[RKClient sharedClient] get:@"/users/edit.json" delegate:self];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                            object:nil];
     }
     else [self failedLogin];
 }
@@ -478,3 +489,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 @end
+
+#pragma mark - NSNotification names
+
+NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";

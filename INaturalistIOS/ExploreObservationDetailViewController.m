@@ -63,8 +63,8 @@
         share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                target:self
                                                                                action:@selector(action)];
-        FAKIcon *tagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:30.0f];
-        FAKIcon *smallTagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:25.0f];
+        FAKIcon *tagIcon = [FAKIonIcons iosPricetagOutlineIconWithSize:30.0f];
+        FAKIcon *smallTagIcon = [FAKIonIcons iosPricetagOutlineIconWithSize:25.0f];
         [tagIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
         UIBarButtonItem *tag = [[UIBarButtonItem alloc] initWithImage:[tagIcon imageWithSize:CGSizeMake(30, 30)]
                                                   landscapeImagePhone:[smallTagIcon imageWithSize:CGSizeMake(25, 25)]

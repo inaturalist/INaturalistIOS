@@ -9,6 +9,8 @@
 //  Second Edition by Joe Conway and Aaron Hillegass.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "ImageStore.h"
 
 static ImageStore *sharedImageStore = nil;
@@ -64,6 +66,75 @@ static ImageStore *sharedImageStore = nil;
         }
     }
     return image;
+}
+
+- (void)storeAsset:(ALAsset *)asset forKey:(NSString *)key {
+    NSString *filePath = [self pathForKey:key];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:filePath])
+        [fileManager createFileAtPath:filePath contents:nil attributes:nil];
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+    if (!fileHandle) {
+        NSLog(@"No filehandle :(");
+    }
+    long long assetSize = asset.defaultRepresentation.size;
+
+    @autoreleasepool {
+        uint8_t buffer[64<<10];
+        for (long long offset=0; offset<assetSize; offset+=sizeof(buffer)) {
+            NSUInteger length = MIN(sizeof(buffer), assetSize-offset);
+            NSError *error = nil;
+            [asset.defaultRepresentation getBytes:buffer
+                                       fromOffset:offset
+                                           length:length
+                                            error:&error];
+            if (error) {
+                fileHandle = nil;
+                break;
+            }
+            @try {
+                [fileHandle writeData:[NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:NO]];
+            }
+            @catch (NSException *exception) {
+                fileHandle = nil;
+                break;
+            }
+        }
+    }
+    
+    [fileHandle truncateFileAtOffset:assetSize];
+    [fileHandle closeFile];
+
+    float screenMax = MAX([UIScreen mainScreen].bounds.size.width,
+                          [UIScreen mainScreen].bounds.size.height);
+    
+    // generate small
+    NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
+    [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
+                                   key, @"key",
+                                   [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
+                                   longEdge, @"longEdge",
+                                   [NSNumber numberWithFloat:1.0], @"compression",
+                                   nil]];
+    
+    // generate large
+    [self performSelectorInBackground:@selector(generateImageWithParams:)
+                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
+                                       key, @"key",
+                                       [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
+                                       [NSNumber numberWithFloat:2.0 * screenMax], @"longEdge",
+                                       [NSNumber numberWithFloat:1.0], @"compression",
+                                       nil]];
+    
+    // generate square
+    [self performSelectorInBackground:@selector(generateImageWithParams:)
+                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
+                                       key, @"key",
+                                       [NSNumber numberWithInt:ImageStoreSquareSize], @"size",
+                                       [NSNumber numberWithFloat:0.5], @"compression",
+                                       nil]];
+
 }
 
 - (void)store:(UIImage *)image forKey:(NSString *)key

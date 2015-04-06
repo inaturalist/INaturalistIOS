@@ -20,6 +20,9 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic userIconURL;
 @dynamic comments;
 @dynamic identifications;
+@dynamic observationsCount;
+@dynamic identificationsCount;
+@dynamic mediumUserIconURL;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -31,6 +34,9 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"login", @"login",
          @"name", @"name",
 		 @"user_icon_url", @"userIconURL",
+         @"observations_count", @"observationsCount",
+         @"identifications_count", @"identificationsCount",
+         @"medium_user_icon_url", @"mediumUserIconURL",
          nil];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }

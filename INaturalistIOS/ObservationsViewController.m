@@ -7,6 +7,11 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <QBImagePickerController/QBImagePickerController.h>
+#import <ImageIO/ImageIO.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+#import <JDFTooltips/JDFTooltips.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -27,7 +32,11 @@
 #import "CustomIOS7AlertView.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
-
+#import "User.h"
+#import "MeHeaderView.h"
+#import "AnonHeaderView.h"
+#import "INatWebController.h"
+#import "INatTooltipView.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
@@ -37,9 +46,17 @@ static const int ObservationCellLowerRightTag = 4;
 static const int ObservationCellActivityButtonTag = 6;
 static const int ObservationCellActivityInteractiveButtonTag = 7;
 
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate> {
+    UIView *noContentView;
+    INatTooltipView *makeFirstObservationTooltip;
+    
+
+    NSFetchedResultsController *fetchedResultsController;
+}
+@end
+
 @implementation ObservationsViewController
 @synthesize syncButton = _syncButton;
-@synthesize observations = _observations;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
@@ -47,7 +64,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
-@synthesize noContentLabel = _noContentLabel;
 @synthesize syncQueue = _syncQueue;
 @synthesize syncErrors = _syncErrors;
 @synthesize lastRefreshAt = _lastRefreshAt;
@@ -73,19 +89,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         return;
     }
     
-    if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
-                                                               style:UIBarButtonItemStyleBordered 
-                                                              target:self 
-                                                              action:@selector(stopSync)];
-        self.stopSyncButton.tintColor = [UIColor redColor];
-    }
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self.navigationController setToolbarHidden:NO];
-    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil] 
-                 animated:YES];
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
@@ -108,6 +111,20 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
 	[self.syncQueue start];
+    
+    if (!self.stopSyncButton) {
+        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
+                                                               style:UIBarButtonItemStyleBordered
+                                                              target:self
+                                                              action:@selector(stopSync)];
+        self.stopSyncButton.tintColor = [UIColor redColor];
+    }
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self.navigationController setToolbarHidden:NO];
+    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
+                 animated:YES];
+    
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
     
     // temporarily disable user interaction with the tableview
     self.tableView.userInteractionEnabled = NO;
@@ -148,10 +165,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
                                     serializedObject:&error];
         RKParams* params = [RKParams paramsWithDictionary:dictionary];
-        NSInteger imageSize = [[[RKClient sharedClient] reachabilityObserver] isReachableViaWiFi] ? ImageStoreLargeSize : ImageStoreSmallSize;
         
         [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                          forSize:imageSize]
+                                                          forSize:ImageStoreLargeSize]
                forParam:@"file"];
         loader.params = params;
         loader.objectMapping = [ObservationPhoto mapping];
@@ -206,6 +222,29 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
+- (void)refreshHeader {
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+    if (username.length) {
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%@.json", username]
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [User mapping];
+                                                            loader.onDidLoadObject = ^(User *me) {
+                                                                NSError *saveError;
+                                                                [[User managedObjectContext] save:&saveError];
+                                                                if (saveError) {
+                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                }
+                                                                
+                                                                [self.tableView reloadData];
+                                                            };
+                                                            
+                                                            loader.onDidFailWithError = ^(NSError *error) {
+                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            };
+                                                        }];
+    }
+}
+
 - (void)refreshData
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
@@ -213,6 +252,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
+        
+        [self refreshHeader];
         self.lastRefreshAt = [NSDate date];
 	}
 }
@@ -243,9 +284,14 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
 }
 
-- (void)loadData
-{
-    [self setObservations:[[NSMutableArray alloc] initWithArray:[Observation all]]];
+- (void)loadData {
+    // perform the iniital local fetch
+    NSError *fetchError;
+    [fetchedResultsController performFetch:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+    }
+    
     [self setObservationsToSyncCount:0];
 }
 
@@ -283,6 +329,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         }
     }
     [self.syncButton setTitle:msg];
+    
+    
+    
     if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
         [self setToolbarItems:self.syncToolbarItems animated:YES];
@@ -295,22 +344,78 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)checkEmpty
 {
-    if (self.observations.count == 0) {
-        if (!self.noContentLabel) {
-            self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.text = NSLocalizedString(@"You don't have any observations yet.",nil);
-            self.noContentLabel.backgroundColor = [UIColor clearColor];
-            self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.numberOfLines = 0;
-            [self.noContentLabel sizeToFit];
-            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-            self.noContentLabel.center = CGPointMake(self.view.center.x, 
-                                                     self.tableView.rowHeight * 2 + (self.tableView.rowHeight / 2));
-            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section of observations in our tableview
+
+    if ([sectionInfo numberOfObjects] == 0) {
+
+        if (!noContentView) {
+            noContentView = ({
+                
+                
+                // leave room for the header
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 100.0f,
+                                                                        self.tableView.frame.size.width,
+                                                                        self.tableView.frame.size.height - 100.0f)];
+                view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+                
+                view.backgroundColor = [UIColor whiteColor];
+                
+                UILabel *noObservations = ({
+                    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+                    label.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    label.textColor = [UIColor grayColor];
+                    label.text = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
+                    label.font = [UIFont systemFontOfSize:14.0f];
+                    label.numberOfLines = 2;
+                    label.textAlignment = NSTextAlignmentCenter;
+                    
+                    label;
+                });
+                [view addSubview:noObservations];
+                
+                UIImageView *binocs = ({
+                    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+                    iv.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    iv.contentMode = UIViewContentModeScaleAspectFit;
+                    iv.image = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    iv.tintColor = [UIColor lightGrayColor];
+                    
+                    iv;
+                });
+                [view addSubview:binocs];
+                
+                NSDictionary *views = @{
+                                        @"bottomLayout": self.bottomLayoutGuide,
+                                        @"noObservations": noObservations,
+                                        @"binocs": binocs,
+                                        };
+                
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noObservations]-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[binocs]-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[noObservations(==20)]-0-[binocs]-100-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:views]];
+
+                
+                view;
+            });
+            
         }
-        [self.view addSubview:self.noContentLabel];
-    } else if (self.noContentLabel) {
-        [self.noContentLabel removeFromSuperview];
+        [self.view insertSubview:noContentView aboveSubview:self.tableView];
+        [noContentView setNeedsLayout];
+
+    } else if (noContentView) {
+            [noContentView removeFromSuperview];
     }
 }
 
@@ -326,63 +431,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (self.view && ![[UIApplication sharedApplication] isIdleTimerDisabled]) {
         [self reload];
     }
-}
-
-- (BOOL)autoLaunchTutorial
-{
-    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    
-    if ([settings objectForKey:kDefaultsKeyOldTutorialSeen]) {
-        return NO;
-    }
-        
-    if ([settings boolForKey:kDefaultsKeyTutorialNeverAgain]) {
-        return NO;
-    }
-    
-    if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObs]) {
-        if ([settings boolForKey:kDefaultsKeyTutorialSeenNewObsCommunity]) {
-            return NO;
-        } else {
-            [self showTutorialImage:[UIImage imageNamed:@"tutorial4en.png"]
-                              title:NSLocalizedString(@"Connect With Other Nature Lovers", @"Title for community tutorial screen")];
-            [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObsCommunity];
-            [settings synchronize];
-            return YES;
-        }
-    } else {
-        [self showTutorialImage:[UIImage imageNamed:@"tutorial2en.png"]
-                          title:NSLocalizedString(@"Record What You See", @"Title for new observation tutorial screen")];
-        [settings setBool:YES forKey:kDefaultsKeyTutorialSeenNewObs];
-        [settings synchronize];
-        return YES;
-    }
-}
-
-- (void)showTutorialImage:(UIImage *)image title:(NSString *)title {
-    TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-    vc.tutorialImage = image;
-    vc.tutorialTitle = title;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self presentViewController:vc animated:YES completion:nil];
-    });
-
-}
-
-- (BOOL)autoLaunchSignIn
-{
-    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    if ([settings objectForKey:@"firstSignInSeen"]) {
-        return NO;
-    }
-    LoginViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil]
-                               instantiateViewControllerWithIdentifier:@"LoginViewController"];
-    UINavigationController *modalNavController = [[UINavigationController alloc]
-                                                  initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:YES completion:nil];
-    [settings setObject:[NSNumber numberWithBool:YES] forKey:@"firstSignInSeen"];
-    [settings synchronize];
-    return YES;
 }
 
 - (BOOL)autoLaunchNewFeatures
@@ -450,8 +498,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)clickedActivity:(id)sender event:(UIEvent *)event {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    Observation *o = [self.observations
-                      objectAtIndex:indexPath.row];
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = o;
@@ -467,7 +514,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	
 	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-	Observation *observation = self.observations[indexPath.row];
+    Observation *observation = [fetchedResultsController objectAtIndexPath:indexPath];
 	
 	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
@@ -475,15 +522,62 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-# pragma mark TableViewController methods
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.observations count];
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    Observation *o = [self.observations objectAtIndex:[indexPath row]];
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
+    
+    // now is a good time to check that we're displaying up to date sync info
+    [self checkSyncStatus];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationNone];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [self.tableView moveRowAtIndexPath:indexPath
+                                   toIndexPath:newIndexPath];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+
+# pragma mark TableViewController methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    return [sectionInfo numberOfObjects];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
     UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
@@ -498,6 +592,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             [imageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
 		} else {
 			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+            
+            // if we can't find a square image...
+            if (!imageView.image) {
+                // ...try again a few times, it's probably a new image in the process of being cut-down
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
+                        [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                });
+            }
 		}
         
     } else {
@@ -551,23 +655,144 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-		
-		// RWTODO: delete from server
-		
-        Observation *o = [self.observations objectAtIndex:indexPath.row];
-        [self.observations removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-        [o destroy];
-        [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
-        if (!self.isEditing) {
-            [self checkSyncStatus];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 54.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 100.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username && ![username isEqualToString:@""]) {
+        MeHeaderView *header = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        
+        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+        NSError *fetchError;
+        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
+        if (fetchError) {
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
         }
-        if (self.observations.count == 0) {
-            [self stopEditing];
+        
+        if (me) {
+            [self configureHeaderView:header forUser:me];
         }
+        
+        return header;
+        
+    } else {
+        AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        [header.signupButton setTitle:NSLocalizedString(@"Sign up", @"Title for button that allows users to sign up for a new iNat account")
+                             forState:UIControlStateNormal];
+        [header.signupButton bk_addEventHandler:^(id sender) {
+            
+            // replicate the pre-existing signup/login flow as much as possible
+            // until we have a chance to re-do the whole thing
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            login.delegate = self;
+            
+            INatWebController *webController = [[INatWebController alloc] init];
+            NSURL *url = [NSURL URLWithString:
+                          [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
+            [webController openURL:url];
+            webController.delegate = login;
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+            [nav pushViewController:webController animated:NO];
+            [self.navigationController presentViewController:nav animated:YES completion:nil];
+            
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        NSString *loginString = NSLocalizedString(@"Already have an account?", @"Title for button that allows users to login to their iNat account");
+        NSString *loginStringHighlight = NSLocalizedString(@"account", @"Portion of Already have an account? that should be highlighted.");
+        NSMutableAttributedString *loginAttrString = [[NSMutableAttributedString alloc] initWithString:loginString];
+        if ([loginString rangeOfString:loginStringHighlight].location != NSNotFound) {
+            [loginAttrString addAttribute:NSForegroundColorAttributeName
+                                    value:[UIColor blueColor]
+                                    range:[loginString rangeOfString:loginStringHighlight]];
+        }
+        [header.loginButton setAttributedTitle:loginAttrString forState:UIControlStateNormal];
+        [header.loginButton bk_addEventHandler:^(id sender) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            login.delegate = self;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+            [self.navigationController presentViewController:nav animated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        return header;
+    }
+}
+
+#pragma mark - Header helpers
+
+- (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
+    
+    // icon
+    if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""])
+        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]];
+    else if (user.userIconURL && ![user.userIconURL isEqualToString:@""])
+        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
+    else {
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
+        [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
+    }
+    
+    // name
+    if (user.name && ![user.name isEqualToString:@""]) {
+        view.nameLabel.text = user.name;
+    }
+    
+    // observation count
+    if (user.observationsCount) {
+        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
+                                   user.observationsCount.integerValue];
+    }
+    
+    // identification count
+    if (user.identifications) {
+        view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
+                                   user.identificationsCount.integerValue];
+    }
+}
+
+- (void)loadUserForHeader {
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username) {
+        
+        self.navigationItem.title = username;
+        
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [User mapping];
+                                                            loader.onDidLoadObject = ^(User *user) {
+                                                                NSError *saveError;
+                                                                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                                if (saveError) {
+                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                }
+                                                                
+                                                                NSError *fetchError;
+                                                                if (fetchError) {
+                                                                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                }
+                                                                
+                                                                // triggers reconfiguration of the header
+                                                                [self.tableView reloadData];
+                                                            };
+                                                            
+                                                            loader.onDidFailWithError = ^(NSError *error) {
+                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            };
+                                                        }];
+    } else {
+        self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
 }
 
@@ -579,28 +804,93 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 #pragma mark - View lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
+            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [meOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *meFilled = [FAKIonIcons iosPersonIconWithSize:35];
+            [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [meFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-//    // if you need to test syncing lots of obs
+// if you need to test syncing lots of obs with the fetched results controller, do:
 //    [Observation deleteAll];
 //    for (int i = 0; i < 50; i++) {
-//        [self.observations addObject:[Observation stub]];
+//        [Observation object];
 //    }
-//    [[[RKObjectManager sharedManager] objectStore] save];
+//    NSError *error;
+//    [[[RKObjectManager sharedManager] objectStore] save:&error];
+//    if (error) {
+//        NSLog(@"ALERT: %@", error.localizedDescription);
+//    }
     
-	// Do any additional setup after loading the view, typically from a nib.
-    if (!self.observations) {
-        [self loadData];
-    }
     
-    self.title = NSLocalizedString(@"Observations", nil);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    // NSFetchedResultsController request for my observations
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
+    
+    // sort by common name, if available
+    request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO] ];
+    
+    // no request predicate yet, all Observations in core data are "mine"
+    
+    // setup our fetched results controller
+    fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                   managedObjectContext:[NSManagedObjectContext defaultContext]
+                                                                     sectionNameKeyPath:nil
+                                                                              cacheName:nil];
+    // update our tableview based on changes in the fetched results
+    fetchedResultsController.delegate = self;
+    
+    // perform the iniital local fetch
+    NSError *fetchError;
+    [fetchedResultsController performFetch:&fetchError];
+    if (fetchError) {
+        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        NSLog(@"FETCH ERROR: %@", fetchError);
+    }    
+    
+    self.navigationItem.leftBarButtonItem = nil;
+    FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
+    UIImage *settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
+    settings.iconFontSize = 20;
+    UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:settingsImage
+                                                                landscapeImagePhone:settingsLandscapeImage
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(settings)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
+    
+    
+    [self loadUserForHeader];
+}
+
+- (void)settings {
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    UIViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"Settings"];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewDidUnload
@@ -612,8 +902,49 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+    
+    // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
+    // when the user saw the login prompt for the first time.
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstSignInSeen"]) {
+        
+        // completely new users default to categorization on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kInatCategorizeNewObsPrefKey];
+        
+        // completely new users default to autocomplete on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatAutocompleteNamesPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                  forKey:@"firstSignInSeen"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:@"seenVersion254"];
+
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    // new settings as of 2.5.4, for existing users
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"seenVersion254"]) {
+        
+        // existing users default to categorization on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kInatCategorizeNewObsPrefKey];
+
+        // existing users default to autocomplete off
+        [[NSUserDefaults standardUserDefaults] setBool:NO
+                                                forKey:kINatAutocompleteNamesPrefKey];
+
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:@"seenVersion254"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
+    
+    [self loadUserForHeader];
+    
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
@@ -623,6 +954,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	} else {
 		self.refreshControl = nil;
 	}
+    
     [self reload];
     
     // observation detail view controller has a different toolbar tint color
@@ -642,11 +974,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                nil]];
     if (!self.isSyncing) {
         [self checkSyncStatus];
-    }
-    if ([self autoLaunchTutorial]) {
-        // rad
-    } else if (![self autoLaunchSignIn]) {
-        [self autoLaunchNewFeatures];
     }
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
@@ -698,9 +1025,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
         ObservationPageViewController *pvc = [segue destinationViewController];
         [ovc setDelegate:self];
-        Observation *o = [self.observations 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
+        Observation *o = [fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
         [ovc setObservation:o];
         [pvc setViewControllers:[NSArray arrayWithObject:ovc]
                        direction:UIPageViewControllerNavigationDirectionForward
@@ -715,7 +1040,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark LoginControllerViewDelegate methods
 - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
-    [self sync:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    // trigger sync, if pending, or refresh from server, if sync isn't pending
+    [self pullToRefresh];
 }
 
 #pragma mark - RKObjectLoaderDelegate
@@ -867,8 +1195,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
 {
     NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
-                             number, 
-                             total, 
+                             number,
+                             total,
                              NSStringFromClass(record.class).humanize.pluralize];
     [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
@@ -895,6 +1223,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     // make sure any deleted records get gone
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    
+    [self refreshHeader];
 }
 
 - (void)syncQueueAuthRequired

@@ -15,9 +15,10 @@
 #define INatLastDeletedSync @"INatLastDeletedSync"
 #define kINatAuthServiceExtToken @"INatAuthServiceExtToken"
 #define kINatAuthService @"INatAuthService"
+#define kINatAutocompleteNamesPrefKey @"INatAutocompleteNamesPrefKey"
+#define kInatCategorizeNewObsPrefKey @"INatCategorizeNewObsPrefKey"
 
-
-#ifdef DEBUG
+#ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"
     #define INatMediaBaseURL @"http://127.0.0.1:3000"
     #define INatWebBaseURL @"http://127.0.0.1:3000"

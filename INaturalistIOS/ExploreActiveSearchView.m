@@ -41,7 +41,7 @@
             [view addSubview:self.activeSearchLabel];
 
             self.removeActiveSearchButton = ({
-                FAKIcon *close = [FAKIonIcons ios7CloseEmptyIconWithSize:30.0f];
+                FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
                 [close addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
                 
                 UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 enum {
     ImageStoreOriginalSize = 0,
@@ -24,6 +25,7 @@ enum {
 + (UIImage*)imageWithImage:(UIImage*)sourceImage scaledToSizeWithSameAspectRatio:(CGSize)targetSize;
 - (UIImage *)find:(NSString *)key;
 - (UIImage *)find:(NSString *)key forSize:(int)size;
+- (void)storeAsset:(ALAsset *)asset forKey:(NSString *)key;
 - (void)store:(UIImage *)image forKey:(NSString *)key;
 - (void)destroy:(NSString *)key;
 - (NSString *)createKey;

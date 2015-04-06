@@ -10,6 +10,7 @@
 #import <Three20/Three20.h>
 #import "GPPSignIn.h"
 
+extern NSString *kUserLoggedInNotificationName;
 
 @class LoginViewController;
 

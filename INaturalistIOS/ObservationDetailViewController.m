@@ -9,6 +9,9 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <QBImagePickerController/QBImagePickerController.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -33,7 +36,7 @@
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
-#import "TutorialSinglePageViewController.h"
+#import "ObsCameraOverlay.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -75,6 +78,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 @end
 
+@interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate>
+@property UIBarButtonItem *bigSave;
+@end
 
 @implementation ObservationDetailViewController
 
@@ -318,6 +324,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self.activityButton setHidden:YES];
     }
     
+    UIButton *bigSaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    bigSaveButton.frame = CGRectMake(0, 0, 150, 44);
+    bigSaveButton.tintColor = [UIColor whiteColor];
+    [bigSaveButton setTitle:@"SAVE" forState:UIControlStateNormal];
+    bigSaveButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:36];
+    [bigSaveButton addTarget:self action:@selector(clickedSave) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.bigSave = [[UIBarButtonItem alloc] initWithCustomView:bigSaveButton];
+    self.bigSave.tintColor = [UIColor whiteColor];
+    
     UIBarButtonItem *flex = [[UIBarButtonItem alloc]
                              initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                              target:nil
@@ -329,18 +346,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	fixed.width = self.activityButton.frame.size.width;
     
     UIViewController *tbvc = [self getToolbarViewController];
-    [tbvc setToolbarItems:[NSArray arrayWithObjects:
-                           self.deleteButton,
-                           flex,
-                           fixed,
-                           flex,
-                           self.saveButton, 
-                           flex,
-						   self.activityBarButton,
-                           flex,
-						   self.viewButton,
-                           nil]
-                 animated:NO];
+    if (self.shouldShowBigSaveButton) {
+        [tbvc setToolbarItems:@[
+                                flex,
+                                self.bigSave,
+                                flex
+                                ]];
+    } else {
+        [tbvc setToolbarItems:[NSArray arrayWithObjects:
+                               self.deleteButton,
+                               flex,
+                               fixed,
+                               flex,
+                               self.saveButton,
+                               flex,
+                               self.activityBarButton,
+                               flex,
+                               self.viewButton,
+                               nil]
+                     animated:NO];
+    }
     [tbvc.navigationController setToolbarHidden:NO animated:YES];
     
     if (!self.keyboardToolbar) {
@@ -409,6 +434,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // user prefs determine autocorrection/spellcheck behavior of the species guess field
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeDefault];
+    } else {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeNone];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeNo];
+    }
+
     // Do any additional setup after loading the view from its nib.
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
@@ -433,28 +468,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
-    self.navigationController.toolbar.barStyle = UIBarStyleDefault;
-    self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
-    self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    
+    if (self.shouldShowBigSaveButton) {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.barTintColor = [UIColor inatTint];
+        self.navigationController.toolbar.tintColor = [UIColor whiteColor];
+    } else {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
+        self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    }
 
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenEditObs]) {
-        
-        TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial3en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"Make A Detailed Observation", @"Title for observation details tutorial screen");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self presentViewController:vc animated:YES completion:nil];
-        });
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenEditObs];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
+- (void)viewDidAppear:(BOOL)animated {    
     [self initUI];
     if (self.observation.isNew && 
         (
@@ -762,7 +790,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     vc.photoSource = photoSource;
     UIViewController *tbvc = self.getToolbarViewController;
     [tbvc.navigationController setToolbarHidden:YES];
-    [tbvc.navigationController pushViewController:vc animated:YES];
+    UINavigationController *photoNav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [tbvc.navigationController presentViewController:photoNav animated:YES completion:nil];
 }
 
 #pragma mark UIViewController
@@ -1099,7 +1128,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Edit location",nil)];
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [locationActionSheet setCancelButtonIndex:2];
-        [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        if (self.tabBarController)
+            [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [locationActionSheet showInView:self.view];
     } else if (indexPath.section == ObservedOnTableViewSection) {
         [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
                                     datePickerMode:UIDatePickerModeDateAndTime
@@ -1121,7 +1153,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                             NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        if (self.tabBarController)
+            [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [actionSheet showInView:self.view];
     } else if (indexPath.section == MoreSection && indexPath.row > 1) {
         [self didSelectObservationFieldValueRow:indexPath];
     } else {
@@ -1510,24 +1545,199 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)clickedAddPhoto:(id)sender {
-    UIActionSheet *photoChoice = [[UIActionSheet alloc] init];
-    photoChoice.tag = PhotoActionSheetTag;
-    [photoChoice setDelegate:self];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Take a photo",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:2];
-    } else {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:1];
+- (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
     }
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        [photoChoice showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+    
+    static CLGeocoder *geoCoder;
+    if (!geoCoder)
+        geoCoder = [[CLGeocoder alloc] init];
+    
+    [geoCoder cancelGeocode];       // cancel anything in flight
+    
+    [geoCoder reverseGeocodeLocation:loc
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       CLPlacemark *placemark = [placemarks firstObject];
+                       if (placemark) {
+                           obs.placeGuess = [ @[ placemark.name,
+                                                 placemark.locality,
+                                                 placemark.administrativeArea,
+                                                 placemark.ISOcountryCode ] componentsJoinedByString:@", "];
+                       }
+                   }];
+    
+}
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    // add to observation
+    
+    NSDate *now = [NSDate date];
+    
+    __block BOOL hasDate = self.observation.observedOn != nil;
+    __block BOOL hasLocation = self.observation.latitude != nil;
+    
+    [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
+        
+        ObservationPhoto *op = [ObservationPhoto object];
+        op.position = @(idx);
+        [op setObservation:self.observation];
+        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+        [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
+                                    forKey:op.photoKey];
+        [self addPhoto:op];
+        op.localCreatedAt = now;
+        op.localUpdatedAt = now;
+        
+        if (!hasDate) {
+            if ([asset valueForProperty:ALAssetPropertyDate]) {
+                hasDate = YES;
+                self.observation.observedOn = [asset valueForProperty:ALAssetPropertyDate];
+            }
+        }
+        
+        if (!hasLocation) {
+            NSDictionary *metadata = asset.defaultRepresentation.metadata;
+            if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
+                hasLocation = YES;
+                
+                double latitude, longitude;
+                if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
+                    latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+                } else {
+                    latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
+                }
+                
+                if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
+                    longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                } else {
+                    longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
+                }
+                
+                self.observation.latitude = @(latitude);
+                self.observation.longitude = @(longitude);
+                
+                [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
+                                                                        longitude:longitude]
+                              forObservation:self.observation];
+            }
+            
+        }
+        
+    }];
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (void)openLibrary {
+    // qbimagepicker for library multi-select
+    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    imagePickerController.showsCancelButton = NO;           // so we get a back button
+    imagePickerController.groupTypes = @[
+                                         @(ALAssetsGroupSavedPhotos),
+                                         @(ALAssetsGroupAlbum)
+                                         ];
+    
+    
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:imagePickerController animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
+                                                                                               style:UIBarButtonItemStylePlain
+                                                                                              target:imagePickerController
+                                                                                              action:@selector(done:)];
+}
+
+
+- (IBAction)clickedAddPhoto:(id)sender {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.showsCameraControls = NO;
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+        
+        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+        
+        [overlay.close bk_addEventHandler:^(id sender) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide flash if it's not available for the default camera
+        if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
+            overlay.flash.hidden = YES;
+        }
+
+        [overlay.flash bk_addEventHandler:^(id sender) {
+            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+            }
+            [overlay configureFlashForMode:picker.cameraFlashMode];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide camera selector unless both front and rear cameras are available
+        if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
+            ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+            overlay.camera.hidden = YES;
+        }
+
+        [overlay.camera bk_addEventHandler:^(id sender) {
+            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+            } else {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
+            // hide flash button if flash isn't available for the chosen camera
+            overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        overlay.noPhoto.hidden = YES;
+        
+        [overlay.shutter bk_addEventHandler:^(id sender) {
+            [picker takePicture];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.library bk_addEventHandler:^(id sender) {
+            [self openLibrary];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        picker.cameraOverlayView = overlay;
+        
+        [self presentViewController:picker animated:YES completion:nil];
     } else {
-        [photoChoice showFromTabBar:self.tabBarController.tabBar];
+        // no camera available
+        QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.allowsMultipleSelection = YES;
+        imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.showsCancelButton = NO;           // so we get a back button
+        imagePickerController.groupTypes = @[
+                                             @(ALAssetsGroupSavedPhotos),
+                                             @(ALAssetsGroupAlbum)
+                                             ];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -1757,15 +1967,24 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
-            self.observation.placeGuess = [[NSArray arrayWithObjects:
-                                            pm.name, 
-                                            pm.locality, 
-                                            pm.administrativeArea, 
-                                            pm.ISOcountryCode, 
-                                            nil] 
-                                           componentsJoinedByString:@", "];
-            if (self.placeGuessField) {
-                self.placeGuessField.text = self.observation.placeGuess;
+            // self.observation may not be accessible
+            // if it's been deleted for example
+            @try {
+                self.observation.placeGuess = [[NSArray arrayWithObjects:
+                                                pm.name,
+                                                pm.locality,
+                                                pm.administrativeArea,
+                                                pm.ISOcountryCode,
+                                                nil]
+                                               componentsJoinedByString:@", "];
+                if (self.placeGuessField) {
+                    self.placeGuessField.text = self.observation.placeGuess;
+                }
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSObjectNotAvailableException])
+                    return;
+                else
+                    @throw exception;
             }
         }
     }];
