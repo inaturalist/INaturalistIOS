@@ -82,6 +82,8 @@ NSString *kAnalyticsEventNavigateExploreList =                  @"Explore - Navi
 NSString *kAnalyticsEventNavigateExploreObsDetails =            @"Explore - Navigate - Obs Details";
 NSString *kAnalyticsEventNavigateExploreTaxonDetails =          @"Explore - Navigate - Taxon Details";
 
+NSString *kAnalyticsEventNavigateExploreLeaderboard =           @"Navigate - Explore - Leaderboard";
+
 NSString *kAnalyticsEventNavigateGuides =                       @"Navigate - Guides - List";
 NSString *kAnalyticsEventNavigateGuideCollection =              @"Navigate - Guides - Collection";
 NSString *kAnalyticsEventNavigateGuideMenu =                    @"Navigate - Guides - Menu";
@@ -91,6 +93,8 @@ NSString *kAnalyticsEventNavigateGuidePhoto =                   @"Navigate - Gui
 NSString *kAnalyticsEventNavigateSettings =                     @"Navigate - Settings";
 NSString *kAnalyticsEventNavigateTutorial =                     @"Navigate - Tutorial";
 NSString *kAnalyticsEventNavigateLogin =                        @"Navigate - Login";
+NSString *kAnalyticsEventNavigateSignup =                       @"Navigate - Signup";
+NSString *kAnalyticsEventNavigateAcknowledgements =             @"Navigate - Acknowledgements";
 
 NSString *kAnalyticsEventNavigateMap =                          @"Navigate - Map";
 
@@ -137,3 +141,19 @@ NSString *kAnalyticsEventSignup =                               @"Create Account
 
 // model integrity
 NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";
+
+// new observation flow
+NSString *kAnalyticsEventNewObservationStart =                  @"New Obs - Start";
+NSString *kAnalyticsEventNewObservationShutter =                @"New Obs - Shutter";
+NSString *kAnalyticsEventNewObservationLibraryStart =           @"New Obs - Library Start";
+NSString *kAnalyticsEventNewObservationLibraryPicked =          @"New Obs - Library Picked";
+NSString *kAnalyticsEventNewObservationNoPhoto =                @"New Obs - No Photo";
+NSString *kAnalyticsEventNewObservationCancel =                 @"New Obs - Cancel";
+NSString *kAnalyticsEventNewObservationConfirmPhotos =          @"New Obs - Confirm Photos";
+NSString *kAnalyticsEventNewObservationRetakePhotos =           @"New Obs - Retake Photos";
+NSString *kAnalyticsEventNewObservationCategorizeTaxon =        @"New Obs - Categorize Taxon";
+NSString *kAnalyticsEventNewObservationSkipCategorize =         @"New Obs - Skip Categorize";
+NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save New Observation";
+
+// settings
+NSString *kAnalyticsEventSettingChanged =                       @"Setting Changed";

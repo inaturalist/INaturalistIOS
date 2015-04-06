@@ -86,6 +86,8 @@ static const int CategorizeNewObsSwitchTag = 11;
 {
     NSLog(@"%@ %@ %@",segue, segue.identifier , [segue identifier]);
     if ([segue.identifier compare: @"SignInFromSettingsSegue"] == NSOrderedSame) {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
+                         withProperties:@{ @"from": @"Settings" }];
         LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
     }
@@ -103,6 +105,8 @@ static const int CategorizeNewObsSwitchTag = 11;
 
 - (void)signOut
 {
+    [[Analytics sharedClient] event:kAnalyticsEventLogout];
+    
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
         
     for (UIViewController *vc in self.tabBarController.viewControllers) {
@@ -180,6 +184,8 @@ static const int CategorizeNewObsSwitchTag = 11;
 }
 
 - (void)launchCredits {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateAcknowledgements];
+    
     VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
     
     NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@",
@@ -232,15 +238,22 @@ static const int CategorizeNewObsSwitchTag = 11;
 #pragma mark - UISwitch target
 
 - (void)settingSwitched:(UISwitch *)switcher {
-    if (switcher.tag == AutocompleteNamesSwitchTag) {
-        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
-                                                forKey:kINatAutocompleteNamesPrefKey];
-    } else if (switcher.tag == CategorizeNewObsSwitchTag) {
-        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn
-                                                forKey:kInatCategorizeNewObsPrefKey];
-    }
+    NSString *key;
     
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (switcher.tag == AutocompleteNamesSwitchTag)
+        key = kINatAutocompleteNamesPrefKey;
+    else if (switcher.tag == CategorizeNewObsSwitchTag)
+        key = kInatCategorizeNewObsPrefKey;
+    
+    if (key) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingChanged
+                         withProperties:@{
+                                          @"setting": key,
+                                          @"newValue": @(switcher.isOn),
+                                          }];
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 #pragma mark - UITableView

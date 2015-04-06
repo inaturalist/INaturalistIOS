@@ -22,6 +22,7 @@
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
 #import "Observation+AddAssets.h"
+#import "Analytics.h"
 
 static NSDictionary *ICONIC_TAXON_NAMES;
 static NSArray *ICONIC_TAXON_ORDER;
@@ -174,6 +175,8 @@ static NSArray *ICONIC_TAXON_ORDER;
         button.layer.cornerRadius = 2.0f;
         
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationSkipCategorize
+                             withProperties:@{ @"Always": @([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) }];
             [self choseTaxon:nil];
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -393,6 +396,8 @@ static NSArray *ICONIC_TAXON_ORDER;
         chiclet.layer.cornerRadius = 2.0f;
         
         [chiclet bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationCategorizeTaxon
+                             withProperties:@{ @"taxon": t.name }];
             [self choseTaxon:t];
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -496,7 +501,8 @@ static NSArray *ICONIC_TAXON_ORDER;
 #pragma mark - ObservationDetailViewController delegate
 
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
+
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {

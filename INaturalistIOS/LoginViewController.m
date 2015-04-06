@@ -251,6 +251,9 @@ static const NSInteger GoogleAssertionType = 2;
         [self.navigationController pushViewController:vc animated:YES];
     }
     else if (indexPath.section == 3) {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
+                         withProperties:@{ @"from": @"Login" }];
+        
         lastAssertionType = 0;
         UINavigationController *nc = self.navigationController;
         INatWebController *webController = [[INatWebController alloc] init];

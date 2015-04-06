@@ -36,6 +36,8 @@ extern NSString *kAnalyticsEventNavigateExploreList;
 extern NSString *kAnalyticsEventNavigateExploreObsDetails;
 extern NSString *kAnalyticsEventNavigateExploreTaxonDetails;
 
+extern NSString *kAnalyticsEventNavigateExploreLeaderboard;
+
 extern NSString *kAnalyticsEventNavigateGuides;             // list of guides
 extern NSString *kAnalyticsEventNavigateGuideCollection;    // collection of taxa photos in guide
 extern NSString *kAnalyticsEventNavigateGuideMenu;          // guide details menu
@@ -45,6 +47,8 @@ extern NSString *kAnalyticsEventNavigateGuidePhoto;         // custom photo view
 extern NSString *kAnalyticsEventNavigateSettings;
 extern NSString *kAnalyticsEventNavigateTutorial;
 extern NSString *kAnalyticsEventNavigateLogin;
+extern NSString *kAnalyticsEventNavigateSignup;
+extern NSString *kAnalyticsEventNavigateAcknowledgements;
 
 extern NSString *kAnalyticsEventNavigateMap;
 
@@ -89,6 +93,24 @@ extern NSString *kAnalyticsEventObservationsPullToRefresh;
 // login
 extern NSString *kAnalyticsEventLogin;
 extern NSString *kAnalyticsEventSignup;
+extern NSString *kAnalyticsEventLogout;
 
 // model integrity
 extern NSString *kAnalyticsEventObservationlessOFVSaved;
+
+// new observation flow
+extern NSString *kAnalyticsEventNewObservationStart;
+extern NSString *kAnalyticsEventNewObservationShutter;
+extern NSString *kAnalyticsEventNewObservationLibraryStart;
+extern NSString *kAnalyticsEventNewObservationLibraryPicked;
+extern NSString *kAnalyticsEventNewObservationNoPhoto;
+extern NSString *kAnalyticsEventNewObservationCancel;
+extern NSString *kAnalyticsEventNewObservationConfirmPhotos;
+extern NSString *kAnalyticsEventNewObservationRetakePhotos;
+extern NSString *kAnalyticsEventNewObservationCategorizeTaxon;
+extern NSString *kAnalyticsEventNewObservationSkipCategorize;
+extern NSString *kAnalyticsEventNewObservationSaveObservation;
+
+// settings
+extern NSString *kAnalyticsEventSettingChanged;
+

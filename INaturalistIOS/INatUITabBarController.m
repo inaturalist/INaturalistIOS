@@ -23,6 +23,7 @@
 #import "Taxon.h"
 #import "INatTooltipView.h"
 #import "LoginViewController.h"
+#import "Analytics.h"
 
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 
@@ -85,6 +86,8 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     // intercept selection of the "observe" tab
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
         
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart];
+        
         if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -106,6 +109,7 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
             [overlay configureFlashForMode:picker.cameraFlashMode];
             
             [overlay.close bk_addEventHandler:^(id sender) {
+                [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
                 [self dismissViewControllerAnimated:YES completion:nil];
             } forControlEvents:UIControlEventTouchUpInside];
             
@@ -142,14 +146,17 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
             } forControlEvents:UIControlEventTouchUpInside];
             
             [overlay.noPhoto bk_addEventHandler:^(id sender) {
+                [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
                 [self noPhoto];
             } forControlEvents:UIControlEventTouchUpInside];
             
             [overlay.shutter bk_addEventHandler:^(id sender) {
+                [[Analytics sharedClient] event:kAnalyticsEventNewObservationShutter];
                 [picker takePicture];
             } forControlEvents:UIControlEventTouchUpInside];
             
             [overlay.library bk_addEventHandler:^(id sender) {
+                [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
                 [self openLibrary];
             } forControlEvents:UIControlEventTouchUpInside];
             
@@ -157,6 +164,8 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
             
             [self presentViewController:picker animated:YES completion:nil];
         } else {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
+            
             // no camera available
             QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
             imagePickerController.delegate = self;
@@ -263,7 +272,7 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 #pragma mark - ObservationDetailViewController delegate
 
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {
@@ -289,6 +298,8 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 #pragma mark - QBImagePicker delegate
 
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryPicked
+                     withProperties:@{ @"numPics": @(assets.count) }];
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.assets = assets;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;

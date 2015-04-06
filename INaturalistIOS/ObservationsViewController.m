@@ -690,6 +690,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                              forState:UIControlStateNormal];
         [header.signupButton bk_addEventHandler:^(id sender) {
             
+            [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
+                             withProperties:@{ @"from": @"AnonMeHeader" }];
+            
             // replicate the pre-existing signup/login flow as much as possible
             // until we have a chance to re-do the whole thing
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
@@ -718,6 +721,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         }
         [header.loginButton setAttributedTitle:loginAttrString forState:UIControlStateNormal];
         [header.loginButton bk_addEventHandler:^(id sender) {
+            
+            [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
+                             withProperties:@{ @"from": @"AnonMeHeader" }];
+
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
             LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
             login.delegate = self;

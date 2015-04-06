@@ -15,6 +15,7 @@
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
 #import "Taxon.h"
+#import "Analytics.h"
 
 static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
@@ -87,6 +88,9 @@ static NSString *kSortSpeciesKey = @"species_count";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateExploreLeaderboard];
+    
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading leaderboard", @"Loading message while a leaderboard is being downloaded from the web")];
 
     [self.observationsController loadLeaderboardSpan:ExploreLeaderboardSpanMonth

@@ -27,6 +27,7 @@
 #import "CategorizeViewController.h"
 #import "Observation.h"
 #import "Observation+AddAssets.h"
+#import "Analytics.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -71,6 +72,7 @@
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationRetakePhotos];
             [self.navigationController popViewControllerAnimated:YES];
             if (self.assets)
                 [self.navigationController setNavigationBarHidden:NO];
@@ -96,7 +98,8 @@
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         [button bk_addEventHandler:^(id sender) {
-
+            
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
                 
@@ -295,7 +298,7 @@
 #pragma mark - ObservationDetailViewController delegate
 
 - (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {
