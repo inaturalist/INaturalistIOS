@@ -138,6 +138,7 @@ NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refres
 // login
 NSString *kAnalyticsEventLogin =                                @"Login";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
+NSString *kAnalyticsEventLogout =                               @"Logout";
 
 // model integrity
 NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";
