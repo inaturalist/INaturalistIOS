@@ -208,6 +208,22 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
  always finishing sync before refresh.
  */
 - (void)pullToRefresh {
+    [self refreshRequestedNotify:YES];
+}
+
+- (void)refreshRequestedNotify:(BOOL)notify {
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
+        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
+        
+        if (notify) {
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)];
+            [self.refreshControl endRefreshing];
+        }
+        
+        return;
+    }
+    
     // make sure -itemsToSyncCount is current
     [self checkSyncStatus];
     if ([self itemsToSyncCount] > 0) {
@@ -232,14 +248,16 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                                                 NSError *saveError;
                                                                 [[User managedObjectContext] save:&saveError];
                                                                 if (saveError) {
-                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving user: %@",
+                                                                                                        saveError.localizedDescription]];
                                                                 }
                                                                 
                                                                 [self.tableView reloadData];
                                                             };
                                                             
                                                             loader.onDidFailWithError = ^(NSError *error) {
-                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error refreshing header: %@",
+                                                                                                    error.localizedDescription]];
                                                             };
                                                         }];
     }
@@ -289,6 +307,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     NSError *fetchError;
     [fetchedResultsController performFetch:&fetchError];
     if (fetchError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error fetching: %@",
+                                            fetchError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
     }
     
@@ -673,6 +693,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSError *fetchError;
         User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
         if (fetchError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
+                                                fetchError.localizedDescription]];
             [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
         }
         
@@ -775,29 +797,39 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         
         self.navigationItem.title = username;
         
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
-                                                        usingBlock:^(RKObjectLoader *loader) {
-                                                            loader.objectMapping = [User mapping];
-                                                            loader.onDidLoadObject = ^(User *user) {
-                                                                NSError *saveError;
-                                                                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                                if (saveError) {
-                                                                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                                                                }
+        if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
+            [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
+                                                            usingBlock:^(RKObjectLoader *loader) {
+                                                                loader.objectMapping = [User mapping];
+                                                                loader.onDidLoadObject = ^(User *user) {
+                                                                    NSError *saveError;
+                                                                    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                                    if (saveError) {
+                                                                        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
+                                                                                                            saveError.localizedDescription]];
+                                                                        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                    }
+                                                                    
+                                                                    NSError *fetchError;
+                                                                    if (fetchError) {
+                                                                        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
+                                                                                                            fetchError.localizedDescription]];
+                                                                        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                    }
+                                                                    
+                                                                    // triggers reconfiguration of the header
+                                                                    [self.tableView reloadData];
+                                                                };
                                                                 
-                                                                NSError *fetchError;
-                                                                if (fetchError) {
-                                                                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-                                                                }
-                                                                
-                                                                // triggers reconfiguration of the header
-                                                                [self.tableView reloadData];
-                                                            };
-                                                            
-                                                            loader.onDidFailWithError = ^(NSError *error) {
-                                                                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                            };
-                                                        }];
+                                                                loader.onDidFailWithError = ^(NSError *error) {
+                                                                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load error: %@",
+                                                                                                        error.localizedDescription]];
+                                                                };
+                                                            }];
+        }
+        
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
@@ -869,9 +901,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     NSError *fetchError;
     [fetchedResultsController performFetch:&fetchError];
     if (fetchError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
+                                            fetchError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-        NSLog(@"FETCH ERROR: %@", fetchError);
-    }    
+    }
     
     self.navigationItem.leftBarButtonItem = nil;
     FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
@@ -991,7 +1024,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds) &&
         self.itemsToSyncCount == 0) {
-        [self pullToRefresh];
+        [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
     }
@@ -1050,7 +1083,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self dismissViewControllerAnimated:YES completion:nil];
     
     // trigger sync, if pending, or refresh from server, if sync isn't pending
-    [self pullToRefresh];
+    [self refreshRequestedNotify:YES];
 }
 
 #pragma mark - RKObjectLoaderDelegate
