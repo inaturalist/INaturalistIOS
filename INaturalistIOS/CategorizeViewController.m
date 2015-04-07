@@ -362,6 +362,7 @@ static NSArray *ICONIC_TAXON_ORDER;
     iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:iconicTaxaFetchRequest
                                                                         error:&fetchError];
     if (fetchError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching categories: %@", fetchError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
     }
     
@@ -462,7 +463,7 @@ static NSArray *ICONIC_TAXON_ORDER;
          resultBlock:^(ALAsset *asset) {
              [self configureMultiImageView:miv forAssets:@[ asset ]];
          } failureBlock:^(NSError *error) {
-             [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error reading from AssetsLib: %@", error.localizedDescription]];
          }];
 
 }
@@ -506,6 +507,8 @@ static NSArray *ICONIC_TAXON_ORDER;
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
+                                            saveError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
     }
     
@@ -527,7 +530,9 @@ static NSArray *ICONIC_TAXON_ORDER;
 
 - (void)loadRemoteIconicTaxa {
     // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
+        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        
         return;
     }
     
@@ -550,6 +555,8 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
+                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
+                                                                                                    saveError.localizedDescription]];
                                                                 [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
                                                                 return;
                                                             }
@@ -559,6 +566,8 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                             iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:iconicTaxaFetchRequest
                                                                                                                                 error:&fetchError];
                                                             if (fetchError) {
+                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
+                                                                                                    fetchError.localizedDescription]];
                                                                 [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
                                                             }
                                                             
@@ -566,11 +575,13 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
+                                                                                                error.localizedDescription]];
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
+                                                                                                error.localizedDescription]];
                                                         };
                                                         
                                                     }];

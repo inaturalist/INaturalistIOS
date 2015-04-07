@@ -132,8 +132,9 @@
                                              metadata:mutableMetadata
                                       completionBlock:^(NSURL *newAssetUrl, NSError *error) {
                                           if (error) {
+                                              [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                                                  error.localizedDescription]];
                                               [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                              NSLog(@"ERROR: %@", error.localizedDescription);
                                           } else {
                                               [SVProgressHUD dismiss];
                                               
@@ -145,8 +146,9 @@
                                                        [self transitionToCategorize:categorize];
                                                        
                                                    } failureBlock:^(NSError *error) {
+                                                       [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
+                                                                                           error.localizedDescription]];
                                                        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                       
                                                    }];
                                               
                                           }
@@ -197,8 +199,9 @@
                                              metadata:mutableMetadata
                                       completionBlock:^(NSURL *newAssetUrl, NSError *error) {
                                           if (error) {
+                                              [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                                                  error.localizedDescription]];
                                               [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                              NSLog(@"ERROR: %@", error.localizedDescription);
                                           } else {
                                               [SVProgressHUD dismiss];
                                               
@@ -210,8 +213,9 @@
                                                        [self.navigationController setNavigationBarHidden:NO animated:YES];
                                                        [self.navigationController pushViewController:detail animated:YES];
                                                    } failureBlock:^(NSError *error) {
+                                                       [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading asset: %@",
+                                                                                           error.localizedDescription]];
                                                        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                       
                                                    }];
                                               
                                           }
@@ -302,6 +306,8 @@
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving observation: %@",
+                                            saveError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
     }
     

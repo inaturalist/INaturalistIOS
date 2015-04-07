@@ -96,6 +96,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     [self.observationsController loadLeaderboardSpan:ExploreLeaderboardSpanMonth
                                           completion:^(NSArray *results, NSError *error) {
                                               if (error) {
+                                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
+                                                                                      error.localizedDescription]];
                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
                                                   return;
                                               }
@@ -125,6 +127,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     [self.observationsController loadLeaderboardSpan:span
                                           completion:^(NSArray *results, NSError *error) {
                                               if (error) {
+                                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
+                                                                                      error.localizedDescription]];
                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
                                                   return;
                                               }

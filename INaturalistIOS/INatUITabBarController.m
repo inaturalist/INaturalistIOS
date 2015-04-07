@@ -276,6 +276,8 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     NSError *saveError;
     [[Observation managedObjectContext] save:&saveError];
     if (saveError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving new obs: %@",
+                                            saveError.localizedDescription]];
         [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
     }
     
@@ -398,7 +400,8 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
-                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
+                                                                                                    saveError.localizedDescription]];
                                                             }
                                                         };
                                                     }];
