@@ -15,4 +15,7 @@
 @property NSDictionary *metadata;
 @property BOOL shouldContinueUpdatingLocation;
 
+@property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
+
+
 @end

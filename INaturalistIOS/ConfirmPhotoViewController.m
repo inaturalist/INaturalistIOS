@@ -45,6 +45,38 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    if (!self.confirmFollowUpAction) {
+        __weak __typeof__(self) weakSelf = self;
+        self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
+                // categorize the new observation before making it
+                CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
+                categorize.assets = confirmedAssets;
+                categorize.shouldContinueUpdatingLocation = YES;
+                [weakSelf transitionToCategorize:categorize];
+            } else {
+                // go straight to making the observation
+                Observation *o = [Observation object];
+                
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+                ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
+                
+                detail.delegate = weakSelf;
+                detail.shouldShowBigSaveButton = YES;
+                if (weakSelf.shouldContinueUpdatingLocation)
+                    [detail startUpdatingLocation];
+                
+                [o addAssets:confirmedAssets];
+                detail.observation = o;
+                
+                [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
+                [weakSelf.navigationController pushViewController:detail animated:YES];
+            }
+        };
+    }
+    
     lib = [[ALAssetsLibrary alloc] init];
     
     multiImageView = ({
@@ -81,7 +113,7 @@
         button;
     });
     [self.view addSubview:retake];
-
+    
     confirm = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.frame = CGRectZero;
@@ -101,136 +133,53 @@
             
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
+            if (self.image) {
+                // we need to save to the AssetsLibrary...
                 
-                CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
-                
-                if (self.image) {
+                // embed geo
+                CLLocationManager *loc = [[CLLocationManager alloc] init];
+                NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+                if (loc.location) {
                     
-                    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"Message when we're saving your photo.")
-                                         maskType:SVProgressHUDMaskTypeGradient];
+                    double latitude = fabs(loc.location.coordinate.latitude);
+                    double longitude = fabs(loc.location.coordinate.longitude);
+                    NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+                    NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
                     
-                    // save image to assets library
+                    NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                           @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
                     
-                    // embed geo
-                    CLLocationManager *loc = [[CLLocationManager alloc] init];
-                    NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-                    if (loc.location) {
-                        
-                        double latitude = fabs(loc.location.coordinate.latitude);
-                        double longitude = fabs(loc.location.coordinate.longitude);
-                        NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-                        NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-                        
-                        NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                               @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-                        
-                        mutableMetadata[@"{GPS}"] = gps;
-                    }
-                    
-                    [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                             metadata:mutableMetadata
-                                      completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                                          if (error) {
-                                              [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                                                  error.localizedDescription]];
-                                              [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                          } else {
-                                              [SVProgressHUD dismiss];
-                                              
-                                              [lib assetForURL:newAssetUrl
-                                                   resultBlock:^(ALAsset *asset) {
-                                                       categorize.assets = @[ asset ];
-                                                       categorize.shouldContinueUpdatingLocation = YES;
-                                                       
-                                                       [self transitionToCategorize:categorize];
-                                                       
-                                                   } failureBlock:^(NSError *error) {
-                                                       [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
-                                                                                           error.localizedDescription]];
-                                                       [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                   }];
-                                              
-                                          }
-                                      }];
-                    
-                } else {
-                    // from photo library
-                    categorize.assets = self.assets;
-                    categorize.shouldContinueUpdatingLocation = NO;
-                    
-                    [self transitionToCategorize:categorize];
-                }
-            } else {
-                Observation *o = [Observation object];
-                
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-                ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
- 
-                
-                detail.delegate = self;
-                detail.shouldShowBigSaveButton = YES;
-                if (self.shouldContinueUpdatingLocation)
-                    [detail startUpdatingLocation];
-
-                if (self.image) {
-                    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"Message when we're saving your photo.")
-                                         maskType:SVProgressHUDMaskTypeGradient];
-                    
-                    // save image to assets library
-                    
-                    // embed geo
-                    CLLocationManager *loc = [[CLLocationManager alloc] init];
-                    NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-                    if (loc.location) {
-                        
-                        double latitude = fabs(loc.location.coordinate.latitude);
-                        double longitude = fabs(loc.location.coordinate.longitude);
-                        NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-                        NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-                        
-                        NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                               @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-                        
-                        mutableMetadata[@"{GPS}"] = gps;
-                    }
-                    
-                    [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                             metadata:mutableMetadata
-                                      completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                                          if (error) {
-                                              [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                                                  error.localizedDescription]];
-                                              [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                          } else {
-                                              [SVProgressHUD dismiss];
-                                              
-                                              [lib assetForURL:newAssetUrl
-                                                   resultBlock:^(ALAsset *asset) {
-                                                       [o addAssets:@[ asset ]];
-                                                       detail.observation = o;
-                                                       
-                                                       [self.navigationController setNavigationBarHidden:NO animated:YES];
-                                                       [self.navigationController pushViewController:detail animated:YES];
-                                                   } failureBlock:^(NSError *error) {
-                                                       [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading asset: %@",
-                                                                                           error.localizedDescription]];
-                                                       [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                                   }];
-                                              
-                                          }
-                                      }];
-                } else {
-                    if (self.assets && self.assets.count > 0) {
-                        [o addAssets:self.assets];
-                    }
-                    detail.observation = o;
-
-                    [self.navigationController setNavigationBarHidden:NO animated:YES];
-                    [self.navigationController pushViewController:detail animated:YES];
+                    mutableMetadata[@"{GPS}"] = gps;
                 }
                 
+                [lib writeImageToSavedPhotosAlbum:self.image.CGImage
+                                         metadata:mutableMetadata
+                                  completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                                      if (error) {
+                                          [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                                              error.localizedDescription]];
+                                          [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                      } else {
+                                          [SVProgressHUD dismiss];
+                                          
+                                          [lib assetForURL:newAssetUrl
+                                               resultBlock:^(ALAsset *asset) {
+                                                   
+                                                   self.confirmFollowUpAction(@[ asset ]);
+                                                   
+                                               } failureBlock:^(NSError *error) {
+                                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
+                                                                                       error.localizedDescription]];
+                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                               }];
+                                          
+                                      }
+                                  }];
+            } else if (self.assets) {
+                // can proceed directly to followup
+                self.confirmFollowUpAction(self.assets);
             }
+            
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;

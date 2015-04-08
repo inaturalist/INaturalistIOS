@@ -37,6 +37,7 @@
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "ObsCameraOverlay.h"
+#import "ConfirmPhotoViewController.h"
 
 static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
@@ -568,12 +569,39 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 #pragma mark UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    // add metadata with geo
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                 longitude:[self.observation.visibleLongitude doubleValue]];
+    NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
+    [meta setValue:[self getGPSDictionaryForLocation:loc]
+            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+    confirm.metadata = meta;
+    
+    // set the follow up action
+    confirm.confirmFollowUpAction = ^(NSArray *assets) {
+        for (ALAsset *asset in assets) {
+            ObservationPhoto *op = [ObservationPhoto object];
+            op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
+            [op setObservation:self.observation];
+            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+            [[ImageStore sharedImageStore] storeAsset:asset forKey:op.photoKey];
+            [self addPhoto:op];
+            op.localCreatedAt = [NSDate date];
+            op.localUpdatedAt = [NSDate date];
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
+    };
+    
+    [picker pushViewController:confirm animated:YES];
+    
+    /*
     // workaround for a crash in Apple's didHideZoomSlider
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:nil];
     });
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
     if (image) {
         [self pickedImage:image withInfo:info];
@@ -591,6 +619,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         NSLog(@"ERROR: no image specified.");
     }
+     */
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
