@@ -76,6 +76,10 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     // we'll use the iconic taxa during the new observation flow
     [self fetchIconicTaxa];
     
+    
+    // 7.1 and greater can handle translucent tab bars correctly
+    [self.tabBar setTranslucent:SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")];
+    
     [super viewDidLoad];
 }
 
