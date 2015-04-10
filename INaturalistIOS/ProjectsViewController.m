@@ -313,6 +313,14 @@ static const int ListControlIndexNearby = 2;
         self.locationManager.delegate = self;
         self.locationManager.distanceFilter = 1000;
     }
+    
+    // try to sync "featured" projects automatically
+    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
+        self.navigationItem.rightBarButtonItem = self.syncActivityItem;
+        [self syncFeaturedProjects];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
