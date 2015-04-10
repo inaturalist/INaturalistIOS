@@ -501,6 +501,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             // isn't valid. only safe thing to do is get out of the observation
             // detail view controller.
             [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            @throw exception;
         }
     }
     [self.getToolbarViewController.navigationController setToolbarHidden:NO
