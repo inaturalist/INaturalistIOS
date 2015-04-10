@@ -1900,6 +1900,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="wse-tJ-yO9" kind="modal" identifier="LoginSegue" id="ZJQ-Ad-VOu"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P33-Yu-EhD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
