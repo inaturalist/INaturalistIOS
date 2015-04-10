@@ -163,28 +163,32 @@ static const int GutterWidth  = 5;
     img.image = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
     img.contentMode = UIViewContentModeCenter;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
-    NSString *size = [self currentImageSize];
-    NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
-    if (localImagePath) {
-        img.image = [UIImage imageWithContentsOfFile:localImagePath];
-        img.contentMode = UIViewContentModeScaleAspectFill;
-    } else {
-        NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
-        if (remoteImageURL) {
-            [img sd_setImageWithURL:[NSURL URLWithString:remoteImageURL]
-                   placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
+    
+    if (guideTaxon) {
+        NSString *size = [self currentImageSize];
+        NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
+        if (localImagePath) {
+            img.image = [UIImage imageWithContentsOfFile:localImagePath];
             img.contentMode = UIViewContentModeScaleAspectFill;
+        } else {
+            NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
+            if (remoteImageURL) {
+                [img sd_setImageWithURL:[NSURL URLWithString:remoteImageURL]
+                       placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
+                img.contentMode = UIViewContentModeScaleAspectFill;
+            }
+        }
+        
+        UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
+        if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
+            label.font = [UIFont italicSystemFontOfSize:12.0];
+            label.text = guideTaxon.name;
+        } else {
+            label.font = [UIFont systemFontOfSize:12.0];
+            label.text = guideTaxon.displayName;
         }
     }
     
-    UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
-    if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
-        label.font = [UIFont italicSystemFontOfSize:12.0];
-        label.text = guideTaxon.name;
-    } else {
-        label.font = [UIFont systemFontOfSize:12.0];
-        label.text = guideTaxon.displayName;
-    }
     return cell;
 }
 
@@ -412,7 +416,17 @@ static const int GutterWidth  = 5;
 
 - (GuideTaxonXML *)guideTaxonAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [items objectAtIndex:indexPath.row];
+    GuideTaxonXML *guideTaxon = nil;
+    @try {
+        guideTaxon = [items objectAtIndex:indexPath.row];
+    } @catch (NSException *exception) {
+        // return nil in case of range exceptions
+        if (![exception.name isEqualToString:NSRangeException]) {
+            @throw exception;
+        }
+    } @finally {
+        return guideTaxon;
+    }
 }
 
 // http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
