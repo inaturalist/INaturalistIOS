@@ -63,7 +63,7 @@
     }
 
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [self fetchObservationsShouldNotify:YES];
+        [self fetchObservationsShouldNotify:NO];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
                                              code:-1008
