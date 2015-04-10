@@ -485,14 +485,24 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewDidAppear:(BOOL)animated {    
     [self initUI];
-    if (self.observation.isNew && 
-        (
-         self.observation.latitude == nil || // observation has no coordinates yet
-         self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
-         )) {
-        [self startUpdatingLocation];
-    }
     [super viewDidAppear:animated];
+
+    @try {
+        if (self.observation.isNew &&
+            (
+             self.observation.latitude == nil || // observation has no coordinates yet
+             self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
+             )) {
+                [self startUpdatingLocation];
+            }
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // for whatever reason (deleted via sync? deleted?) this observation
+            // isn't valid. only safe thing to do is get out of the observation
+            // detail view controller.
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
     [self.getToolbarViewController.navigationController setToolbarHidden:NO
                                                                 animated:animated];
     
