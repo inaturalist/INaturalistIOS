@@ -39,7 +39,6 @@
 #import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 
-static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
 static const int ObservedOnActionSheetTag = 2;
 static const int DeleteActionSheetTag = 3;
@@ -846,9 +845,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     switch (actionSheet.tag) {
-        case PhotoActionSheetTag:
-            [self photoActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
-            break;
         case DeleteActionSheetTag:
             [self deleteActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
             break;
@@ -861,47 +857,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         default:
             [self locationActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
             break;
-    }
-}
-
-- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSInteger sourceType;
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        switch (buttonIndex) {
-            case 0:
-                sourceType = UIImagePickerControllerSourceTypeCamera;
-                break;
-            case 1:
-                sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                break;
-            default:
-                return;
-        }
-    } else {
-        if (buttonIndex == 0) {
-            sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        } else {
-            return;
-        }
-    }
-    
-    [self uiToObservation];
-    UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
-    [ipc setDelegate:self];
-    [ipc setSourceType:sourceType];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-                                permittedArrowDirections:UIPopoverArrowDirectionAny
-                                                animated:YES];
-            });
-        });
-        self.popOver = popover;
-    } else {
-        [self presentViewController:ipc animated:YES completion:nil];
     }
 }
 
