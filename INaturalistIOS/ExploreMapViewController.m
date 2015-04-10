@@ -31,6 +31,7 @@
     ExploreLocation *centerLocation;
     MKMapView *mapView;
     NSTimer *mapChangedTimer;
+    BOOL mapViewHasRenderedTiles;
 }
 
 @end
@@ -59,8 +60,10 @@
             if (container.selectedViewController == self) {
                 
                 // if the limiting region was cleared, then re-apply it once the map returns
-                if (!self.observationDataSource.limitingRegion)
+                // avoid doing this if the map hasn't rendered at least once (ie a fresh launch)
+                if (!self.observationDataSource.limitingRegion && mapViewHasRenderedTiles) {
                     self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+                }
             }
         }
     }
@@ -81,6 +84,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    mapViewHasRenderedTiles = NO;
     
     mapView = ({
         // use autolayout
@@ -186,6 +190,11 @@
 }
 
 #pragma mark - MKMapViewDelegate
+
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered {
+    //sentinal that the mapview has rendered at least once
+    mapViewHasRenderedTiles = YES;
+}
 
 - (void)mapView:(MKMapView *)mv regionWillChangeAnimated:(BOOL)animated {
     [mapChangedTimer invalidate];
