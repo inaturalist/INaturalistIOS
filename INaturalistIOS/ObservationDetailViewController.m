@@ -1556,10 +1556,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                    completionHandler:^(NSArray *placemarks, NSError *error) {
                        CLPlacemark *placemark = [placemarks firstObject];
                        if (placemark) {
-                           obs.placeGuess = [ @[ placemark.name,
-                                                 placemark.locality,
-                                                 placemark.administrativeArea,
-                                                 placemark.ISOcountryCode ] componentsJoinedByString:@", "];
+                           @try {
+                               NSString *name = placemark.name ?: @"";
+                               NSString *locality = placemark.locality ?: @"";
+                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
+                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
+                               obs.placeGuess = [ @[ name,
+                                                     locality,
+                                                     administrativeArea,
+                                                     ISOcountryCode ] componentsJoinedByString:@", "];
+                           } @catch (NSException *exception) {
+                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                   return;
+                               else
+                                   @throw exception;
+                           }
                        }
                    }];
     
