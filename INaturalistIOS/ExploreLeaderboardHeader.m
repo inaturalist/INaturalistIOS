@@ -33,6 +33,9 @@
             label.font = [UIFont boldSystemFontOfSize:12.0f];
             label.numberOfLines = 0; // wrap for long titles
             
+            [label setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                   forAxis:UILayoutConstraintAxisVertical];
+            
             label;
         });
         [self addSubview:self.title];
@@ -47,6 +50,9 @@
             label.textColor = [UIColor grayColor];
             label.font = [UIFont systemFontOfSize:12.0f];
             
+            [label setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                   forAxis:UILayoutConstraintAxisVertical];
+            
             label;
         });
         [self addSubview:spanLabel];
@@ -59,6 +65,9 @@
             label.text = NSLocalizedString(@"Sort", @"Label for the sort selector in the explore leaderboard header.");
             label.textColor = [UIColor grayColor];
             label.font = [UIFont systemFontOfSize:12.0f];
+            
+            [label setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                   forAxis:UILayoutConstraintAxisVertical];
             
             label;
         });
@@ -79,6 +88,10 @@
             UISegmentedControl *control = [[UISegmentedControl alloc] initWithItems:@[month, year]];
             control.translatesAutoresizingMaskIntoConstraints = NO;
             
+            [control setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                     forAxis:UILayoutConstraintAxisVertical];
+
+            
             control;
         });
         [self addSubview:self.spanSelector];
@@ -88,6 +101,9 @@
                                                                                        NSLocalizedString(@"Species", @"Species optino for explore leaderboard sorting. Must be short.")] ];
             control.translatesAutoresizingMaskIntoConstraints = NO;
             
+            [control setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                     forAxis:UILayoutConstraintAxisVertical];
+
             control;
         });
         [self addSubview:self.sortSelector];
@@ -126,11 +142,11 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[spanLabel]-[span]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[spanLabel]-5-[span]-10-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[sortLabel]-[sort]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[sortLabel]-5-[sort]-10-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
