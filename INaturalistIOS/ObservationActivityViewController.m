@@ -325,38 +325,46 @@ static const int IdentificationCellBodyTag = 11;
 {
     INatModel *activity = self.activities[indexPath.row];
     int defaultHeight = [activity isKindOfClass:[Identification class]] ? 80 : 60;
-	if (self.rowHeights[indexPath.row] == [NSNull null]) {
-		NSString *body;
-		float margin = 31.0; // sort of a buffer to capture metadata line height and some uncertainty with text height calc
-		if ([activity isKindOfClass:[Identification class]]) {
-			body = [((Identification *)activity).body stringByStrippingHTML];
-            margin = defaultHeight + 20;
-		} else {
-			body = [((Comment *)activity).body stringByStrippingHTML];
-            margin = 31;
-		}
-		
-		if (body.length == 0) {
-			self.rowHeights[indexPath.row] = @(defaultHeight);
-			return defaultHeight;
-		} else {
-            float fontSize;
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                fontSize = 9;
+    
+    // be defensive
+    @try {
+        if (self.rowHeights[indexPath.row] == [NSNull null]) {
+            NSString *body;
+            float margin = 31.0; // sort of a buffer to capture metadata line height and some uncertainty with text height calc
+            if ([activity isKindOfClass:[Identification class]]) {
+                body = [((Identification *)activity).body stringByStrippingHTML];
+                margin = defaultHeight + 20;
             } else {
-                fontSize = 13;
+                body = [((Comment *)activity).body stringByStrippingHTML];
+                margin = 31;
             }
-			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:fontSize]
-                           constrainedToSize:CGSizeMake(252.0, 10000.0)
-                               lineBreakMode:NSLineBreakByWordWrapping];
-			float height = MAX(defaultHeight, size.height+margin);
-			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
-			return height;
-		}
-	} else {
-		NSNumber *height = self.rowHeights[indexPath.row];
-		return height.floatValue;
-	}
+            
+            if (body.length == 0) {
+                self.rowHeights[indexPath.row] = @(defaultHeight);
+                return defaultHeight;
+            } else {
+                float fontSize;
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                    fontSize = 9;
+                } else {
+                    fontSize = 13;
+                }
+                CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:fontSize]
+                               constrainedToSize:CGSizeMake(252.0, 10000.0)
+                                   lineBreakMode:NSLineBreakByWordWrapping];
+                float height = MAX(defaultHeight, size.height+margin);
+                self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
+                return height;
+            }
+        } else {
+            NSNumber *height = self.rowHeights[indexPath.row];
+            return height.floatValue;
+        }
+    } @catch (NSException *exception) {
+        if (![exception.name isEqualToString:NSRangeException]) {
+            @throw exception;
+        }
+    }
 	return defaultHeight;
 }
 
