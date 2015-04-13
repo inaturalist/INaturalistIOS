@@ -27,13 +27,15 @@
 #import "NXOAuth2.h"
 #import "Analytics.h"
 
+
+static const int CreditsSection = 3;
+
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
 static const int TutorialActionCellTag = 2;
 static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
-static const int CreditsCellTag = 6;
 
 static const int AutocompleteNamesSwitchTag = 10;
 static const int CategorizeNewObsSwitchTag = 11;
@@ -57,14 +59,11 @@ static const int CategorizeNewObsSwitchTag = 11;
     UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
     UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
     UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
-    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     tutorialActionCell.tag = TutorialActionCellTag;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
-    creditsCell.tag = CreditsCellTag;
-    creditsCell.backgroundView = nil;
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
         usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
@@ -339,6 +338,10 @@ static const int CategorizeNewObsSwitchTag = 11;
         
         
         return;
+    } else if (indexPath.section == CreditsSection) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self launchCredits];
+        return;
     }
     
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -375,10 +378,6 @@ static const int CategorizeNewObsSwitchTag = 11;
         case RateUsCellTag:
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             [self launchRateUs];
-            break;
-        case CreditsCellTag:
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            [self launchCredits];
             break;
         default:
             break;
