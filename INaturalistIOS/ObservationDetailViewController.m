@@ -1129,14 +1129,27 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         else
             [locationActionSheet showInView:self.view];
     } else if (indexPath.section == ObservedOnTableViewSection) {
-        [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
+        
+        [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date", nil)
                                     datePickerMode:UIDatePickerModeDateAndTime
-                                      selectedDate:self.observation.localObservedOn ? self.observation.localObservedOn : [NSDate date]
-                                       minimumDate: [NSDate distantPast]
-                                       maximumDate: [NSDate date]
-                                            target:self
-                                            action:@selector(doneDatePicker:element:)
-                                            origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
+                                      selectedDate:self.observation.localObservedOn ?: [NSDate date]
+                                         doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+                                             
+                                             self.observation.localObservedOn = selectedDate;
+                                             self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
+                                             self.observedAtLabel.text = [self.observation observedOnPrettyString];
+                                             
+                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                                 [self.getToolbarViewController.navigationController setToolbarHidden:NO animated:YES];
+                                             });
+                                             [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+                                         } cancelBlock:^(ActionSheetDatePicker *picker) {
+                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                                 [self.getToolbarViewController.navigationController setToolbarHidden:NO animated:YES];
+                                             });
+                                             [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+                                         } origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
+        
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == MoreSection && indexPath.row == 1) {
@@ -2002,14 +2015,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (!self.currentActionSheet) return;
     [self.currentActionSheet dismissWithClickedButtonIndex:0 animated:YES];
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-}
-
-- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element
-{
-    self.observation.localObservedOn = selectedDate;
-    self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
-    self.observedAtLabel.text = [self.observation observedOnPrettyString];
-    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (NSArray *)projectsRequireField:(ObservationField *)observationField
