@@ -324,6 +324,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)checkSyncStatus
 {
+    if (self.navigationController.topViewController != self)
+        return;
+        
     self.observationsToSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     if (self.observationsToSyncCount == 0) {
         self.observationsToSyncCount = [[NSSet setWithArray:[[ObservationFieldValue needingSync] valueForKey:@"observationID"]] count];
