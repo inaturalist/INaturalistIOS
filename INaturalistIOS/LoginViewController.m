@@ -469,9 +469,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
-        [[NSUserDefaults standardUserDefaults]
-         setValue:INatAccessToken
-         forKey:INatTokenPrefKey];
+        [[NSUserDefaults standardUserDefaults] setValue:INatAccessToken
+                                                 forKey:INatTokenPrefKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
         [RKClient.sharedClient setValue:INatAccessToken forHTTPHeaderField:@"Authorization"];
         [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
