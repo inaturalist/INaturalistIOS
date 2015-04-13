@@ -83,7 +83,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.bounces = YES;
-    self.undoShakingEnabled = NO;
     self.keyboardPanningEnabled = YES;
     self.inverted = NO;
     
