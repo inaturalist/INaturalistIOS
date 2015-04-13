@@ -1988,7 +1988,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                     self.placeGuessField.text = self.observation.placeGuess;
                 }
             } @catch (NSException *exception) {
-                if ([exception.name isEqualToString:NSObjectNotAvailableException])
+                if ([exception.name isEqualToString:NSObjectInaccessibleException])
                     return;
                 else
                     @throw exception;
