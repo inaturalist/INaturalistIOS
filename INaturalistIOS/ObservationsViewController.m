@@ -463,6 +463,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         return NO;
     }
     [[NSUserDefaults standardUserDefaults] setValue:versionString forKey:@"lastVersion"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     CustomIOS7AlertView *alertView = [[CustomIOS7AlertView alloc] init];
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
