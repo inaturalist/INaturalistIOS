@@ -135,7 +135,7 @@
             
             if (self.image) {
                 // we need to save to the AssetsLibrary...
-                
+                [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving new photo...", @"status while saving your image")];
                 // embed geo
                 CLLocationManager *loc = [[CLLocationManager alloc] init];
                 NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
