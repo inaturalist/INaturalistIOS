@@ -63,6 +63,10 @@ static NSDateFormatter *jsDateFormatter = nil;
         jsDateFormatter = [[NSDateFormatter alloc] init];
         [jsDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
         [jsDateFormatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
+        
+        // per #128 and https://groups.google.com/d/topic/inaturalist/8tE0QTT_kzc/discussion
+        // the server doesn't want the observed_on field to be localized
+        [jsDateFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en-US"]];
     }
     return jsDateFormatter;
 }
