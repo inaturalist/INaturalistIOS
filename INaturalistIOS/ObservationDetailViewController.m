@@ -182,16 +182,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)uiToObservation
 {
     if (!self.speciesGuessTextField) return;
-    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]
-        && self.observation.speciesGuess.length != self.speciesGuessTextField.text.length) {
+    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]) {
         [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     }
-    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text]
-        && self.observation.inatDescription.length != self.descriptionTextView.text.length) {
+    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text]) {
         [self.observation setInatDescription:[descriptionTextView text]];
     }
-    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]
-        && self.observation.placeGuess.length != self.placeGuessField.text.length) {
+    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]) {
         [self.observation setPlaceGuess:[self.placeGuessField text]];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
