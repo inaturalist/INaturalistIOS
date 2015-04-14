@@ -61,7 +61,10 @@ static const int ListControlIndexNearby = 2;
     [self checkEmpty];
     [self.tableView reloadData];
     
-    if (syncNeeded && RKClient.sharedClient.reachabilityObserver.isNetworkReachable) {
+    if (syncNeeded &&
+        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
         [self sync:NO];
     } else {
         [self stopSync];
@@ -115,16 +118,18 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
+        [self sync:YES];
+    } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
                                                      message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
                                                     delegate:self
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-        return;
     }
-    [self sync:YES];
 }
 
 - (void)checkEmpty
