@@ -158,3 +158,9 @@ NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save
 
 // settings
 NSString *kAnalyticsEventSettingChanged =                       @"Setting Changed";
+
+// guides
+NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";
+NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide Download - Complete";
+NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download - Delete";
+
