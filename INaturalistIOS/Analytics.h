@@ -92,6 +92,7 @@ extern NSString *kAnalyticsEventObservationsPullToRefresh;
 
 // login
 extern NSString *kAnalyticsEventLogin;
+extern NSString *kAnalyticsEventLoginFailed;
 extern NSString *kAnalyticsEventSignup;
 extern NSString *kAnalyticsEventLogout;
 

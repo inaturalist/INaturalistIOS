@@ -137,6 +137,7 @@ NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refres
 
 // login
 NSString *kAnalyticsEventLogin =                                @"Login";
+NSString *kAnalyticsEventLoginFailed =                          @"Login Failed";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
 NSString *kAnalyticsEventLogout =                               @"Logout";
 

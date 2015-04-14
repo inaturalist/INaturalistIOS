@@ -116,6 +116,10 @@ static const NSInteger GoogleAssertionType = 2;
         NSDictionary *parsedData = [parser objectFromString:jsonString error:&error];
         if (parsedData == nil && error) {
             // Parser error...
+            
+            [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                             withProperties:@{ @"from": @"RKRequest Parser" }];
+            
             [self failedLogin];
             return;
         }
@@ -135,6 +139,10 @@ static const NSInteger GoogleAssertionType = 2;
         [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                             object:nil];
     } else {
+        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                         withProperties:@{ @"from": @"Unknown Status Code",
+                                           @"code": @(response.statusCode) }];
+
         [self failedLogin];
     }
 }
@@ -350,6 +358,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     }
     
     if (error) {
+        
+        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                         withProperties:@{ @"from": @"Facebook",
+                                           @"code": @(error.code) }];
         if (error.code == 2) {
             [self failedLogin:NSLocalizedString(@"Either you didn't grant access to your Facebook account, or the request timed out. Try again if you want to sign in using your Facebook account, and make sure to grant access.", nil)];
         } else {
@@ -402,6 +414,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         if (!msg) {
             msg = NSLocalizedString(@"Google sign in failed", nil);
         }
+
+        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                         withProperties:@{ @"from": @"Google" }];
+
         [self failedLogin:msg];
         tryingGoogleReauth = NO;
     } else if (!auth.accessToken && !tryingGoogleReauth) {
@@ -443,6 +459,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                                   usingBlock:^(NSNotification *aNotification){
                                                       // Do something with the error
                                                       if (!isLoginCompleted) {
+                                                          
+                                                          [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                                           withProperties:@{ @"from": NXOAuth2AccountStoreDidFailToRequestAccessNotification }];
+                                                          
                                                           if (lastAssertionType != 0) {
                                                               [self failedLogin:NSLocalizedString(@"Authentication credentials were invalid. This can happen if you recently disconnected your acount from the 3rd party provider (e.g. Facebook). Please try again in a few minutes. You can also check the Settings app, where there may be additional 3rd party permissions to review.", nil)];
                                                           } else {
@@ -465,7 +485,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
             loginSucceeded = YES;
         }
     }
-    if (loginSucceeded){
+    if (loginSucceeded) {
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
@@ -482,8 +502,11 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                             object:nil];
+    } else {
+        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                         withProperties:@{ @"from": @"iNaturalist" }];
+        [self failedLogin];
     }
-    else [self failedLogin];
 }
 
 -(void) removeOAuth2Observers{
