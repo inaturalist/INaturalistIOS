@@ -182,13 +182,18 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)uiToObservation
 {
     if (!self.speciesGuessTextField) return;
-    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]) {
+    
+    // if observation text is nil, and textfield/view text is @"", they're equivalent and don't need saving.
+    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text] &&
+        !(self.observation.speciesGuess == nil && [self.speciesGuessTextField.text isEqualToString:@""])) {
         [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     }
-    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text]) {
+    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text] &&
+        !(self.observation.inatDescription == nil && [self.descriptionTextView.text isEqualToString:@""])) {
         [self.observation setInatDescription:[descriptionTextView text]];
     }
-    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]) {
+    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text] &&
+        !(self.observation.placeGuess == nil && [self.placeGuessField.text isEqualToString:@""])) {
         [self.observation setPlaceGuess:[self.placeGuessField text]];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
