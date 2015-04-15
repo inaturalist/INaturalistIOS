@@ -142,7 +142,7 @@ static const int CategorizeNewObsSwitchTag = 11;
     [RKClient.sharedClient setUsername:nil];
     [RKClient.sharedClient setPassword:nil];
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
-    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {
+    for (NXOAuth2Account *account in sharedStore.accounts) {
         [sharedStore removeAccount:account];
     }
     [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
