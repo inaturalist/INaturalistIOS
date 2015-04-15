@@ -47,7 +47,7 @@ PODS:
     - SDWebImage
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
-  - QBImagePickerController (2.2.2)
+  - QBImagePickerController (2.2.3)
   - RaptureXML (1.0.1)
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
@@ -78,7 +78,7 @@ DEPENDENCIES:
   - MHVideoPhotoGallery (= 1.6.6)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController (= 2.2.2)
+  - QBImagePickerController (= 2.2.3)
   - RaptureXML (= 1.0.1)
   - SlackTextViewController (= 1.5)
   - SSZipArchive (= 0.3.2)
@@ -104,7 +104,7 @@ SPEC CHECKSUMS:
   MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
-  QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
+  QBImagePickerController: 36f7193313f39a4bb2bdbfef930dc90813c56c1d
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   SDWebImage: ed3095af2ff88b436426037444979b917f6c5575
   SlackTextViewController: 4a1797ac2f3616dbd37435fc62da655e61399cdd
