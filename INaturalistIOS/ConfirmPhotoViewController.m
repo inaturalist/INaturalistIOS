@@ -54,7 +54,7 @@
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
-                categorize.shouldContinueUpdatingLocation = YES;
+                categorize.shouldContinueUpdatingLocation = weakSelf.shouldContinueUpdatingLocation;
                 [weakSelf transitionToCategorize:categorize];
             } else {
                 // go straight to making the observation
