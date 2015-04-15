@@ -609,30 +609,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     };
     
     [picker pushViewController:confirm animated:YES];
-    
-    /*
-    // workaround for a crash in Apple's didHideZoomSlider
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:YES completion:nil];
-    });
-    
-    if (image) {
-        [self pickedImage:image withInfo:info];
-    } else if (referenceURL) {
-        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        [assetsLib assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef iref = [rep fullResolutionImage];
-            if (iref) {
-                [self pickedImage:[UIImage imageWithCGImage:iref] withInfo:info];
-            }
-        } failureBlock:^(NSError *error) {
-            NSLog(@"error: %@", error);
-        }];
-    } else {
-        NSLog(@"ERROR: no image specified.");
-    }
-     */
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
