@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="ObservationDetailViewController" id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -1455,7 +1455,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view tag="1" contentMode="scaleToFill" id="cbR-bK-HpK" customClass="TTStyledTextLabel">
+                                                <view tag="1" contentMode="scaleToFill" id="cbR-bK-HpK" customClass="UILabel">
                                                     <rect key="frame" x="10" y="10" width="301" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2465,10 +2465,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="8j7-c4-5Sv"/>
-        <segue reference="Q4H-Ck-yCo"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="i4O-ab-ts2"/>
-        <segue reference="sKu-Sy-oMc"/>
+        <segue reference="Q4H-Ck-yCo"/>
+        <segue reference="ZJQ-Ad-VOu"/>
+        <segue reference="Iwt-4E-pF9"/>
         <segue reference="6Re-on-nUT"/>
     </inferredMetricsTieBreakers>
 </document>

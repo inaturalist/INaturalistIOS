@@ -155,10 +155,12 @@ static const int TaxonDescTag = 1;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        CGSize s = [[self.taxon.wikipediaSummary stringByRemovingHTML] sizeWithFont:[UIFont systemFontOfSize:15] 
-                                                                  constrainedToSize:CGSizeMake(320, 320) 
-                                                                      lineBreakMode:NSLineBreakByWordWrapping];
-        return s.height + 10;
+        NSAttributedString *summary = [[NSAttributedString alloc] initWithData:[self.taxon.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding]
+                                                                       options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding) }
+                                                            documentAttributes:nil
+                                                                         error:nil];
+        return [summary boundingRectWithSize:CGSizeMake(320, 320) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -203,13 +205,16 @@ static const int TaxonDescTag = 1;
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.section == 0 && indexPath.row == 0) {
-        TTStyledTextLabel *descLabel = (TTStyledTextLabel *)[cell viewWithTag:TaxonDescTag];
-        descLabel.text = [TTStyledText textFromXHTML:self.taxon.wikipediaSummary
-                                          lineBreaks:NO 
-                                                URLs:YES];
-        [descLabel sizeToFit];
-        descLabel.textColor = [UIColor blackColor];
-        descLabel.backgroundColor = [UIColor whiteColor];
+        UILabel *label = (UILabel *)[cell viewWithTag:TaxonDescTag];
+        label.attributedText = [[NSAttributedString alloc] initWithData:[self.taxon.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding]
+                                                                options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                           NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding) }
+                                                     documentAttributes:nil
+                                                                  error:nil];
+        label.numberOfLines = 0;
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor whiteColor];
+        [label sizeToFit];
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         UILabel *title = (UILabel *)[cell viewWithTag:1];
         if (self.taxon.conservationStatusName) {
