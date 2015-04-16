@@ -35,7 +35,7 @@
 
 - (void)searchForLocation:(NSString *)location completionHandler:(SearchCompletionHandler)handler {
     NSString *pathPattern = @"/places/search.json";
-    NSString *queryBase = @"?per_page=25&q=%@";
+    NSString *queryBase = @"?per_page=25&with_geom=true&q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, location];
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
 

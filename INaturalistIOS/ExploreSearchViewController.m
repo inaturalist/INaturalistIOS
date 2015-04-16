@@ -474,8 +474,8 @@
 
             // filter out garbage locations
             NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
-                // all administrative places, except towns, are valid
-                if (location.adminLevel && location.adminLevel.integerValue != 3) { return YES; }
+                // all administrative places are valid
+                if (location.adminLevel) { return YES; }
                 // all open spaces (parks) are valid
                 if (location.type == 100) { return YES; }
                 // everything else is invalid
