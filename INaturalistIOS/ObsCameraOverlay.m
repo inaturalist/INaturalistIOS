@@ -35,7 +35,8 @@
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
-            [str appendAttributedString:[[NSAttributedString alloc] initWithString:@"   On"
+            NSString *on = NSLocalizedString(@"On", @"On state for flash button in the camera. Will be padded to sit beside a flash/bolt icon.");
+            [str appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"   %@", on]
                                                                         attributes:@{
                                                                                      NSForegroundColorAttributeName: [UIColor inatGreen],
                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
@@ -49,7 +50,8 @@
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
-            [str appendAttributedString:[[NSAttributedString alloc] initWithString:@"   Off"
+            NSString *off = NSLocalizedString(@"Off", @"Off state for flash button in the camera. Will be padded to sit beside a flash/bolt icon.");
+            [str appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"   %@", off]
                                                                         attributes:@{
                                                                                      NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
@@ -64,7 +66,8 @@
             [flash addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithAttributedString:flash.attributedString];
             
-            [str appendAttributedString:[[NSAttributedString alloc] initWithString:@"   Auto"
+            NSString *automatic = NSLocalizedString(@"Auto", @"Auto state for flash button in the camera. Will be padded to sit beside a flash/bolt icon.");
+            [str appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"   %@", automatic]
                                                                         attributes:@{
                                                                                      NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
@@ -127,7 +130,8 @@
             button.tintColor = [UIColor whiteColor];
             button.titleLabel.numberOfLines = 2;
             button.titleLabel.textAlignment = NSTextAlignmentCenter;
-            [button setTitle:@"NO\nPHOTO" forState:UIControlStateNormal];
+            [button setTitle:NSLocalizedString(@"NO\nPHOTO", @"Title for no photo button in the camera when making a new observation. Can support two very short lines of text.")
+                    forState:UIControlStateNormal];
             button;
         });
         [self addSubview:self.noPhoto];

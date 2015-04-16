@@ -88,7 +88,7 @@
                                                                                 action:@selector(searchPressed)];
         self.navigationItem.leftBarButtonItem = search;
         
-        leaderboardItem = [[UIBarButtonItem alloc] initWithTitle:@"Stats"
+        leaderboardItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stats", @"Title for button in the explore tab that leads to the stats leaderboard.")
                                                            style:UIBarButtonItemStylePlain
                                                           target:self
                                                           action:@selector(leaderboardPressed)];

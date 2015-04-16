@@ -341,9 +341,12 @@
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Edit Location";
 
-/* Class = "IBUILabel"; text = = "Automatically upload"; ObjectID = "kUQ-Cu-TLr"; */
-"kUQ-Cu-TLr.text" = "Automatically upload"
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Categorize new observations"
 
-/* Class = "IBUILabel"; text = = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Autocomplete names"
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Acknowledgements"
 
