@@ -83,7 +83,15 @@
             
             NSDateFormatter *yearFormatter = [[NSDateFormatter alloc] init];
             yearFormatter.dateFormat = @"yyyy";
-            NSString *year = [yearFormatter stringFromDate:date];
+            yearFormatter.locale = [NSLocale systemLocale];
+            NSString *year;
+            if ([[NSLocale currentLocale].localeIdentifier isEqualToString:@"ja_JP"]) {
+                // NSDateFormatter provides the correct formatting for month in japanese, but
+                // not for the year. wtf? should probably just switch to YLMoment...
+                year = [NSString stringWithFormat:@"%@年", [yearFormatter stringFromDate:date]];
+            } else {
+                year = [yearFormatter stringFromDate:date];
+            }
             
             UISegmentedControl *control = [[UISegmentedControl alloc] initWithItems:@[month, year]];
             control.translatesAutoresizingMaskIntoConstraints = NO;
