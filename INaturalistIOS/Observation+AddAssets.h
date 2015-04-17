@@ -8,6 +8,9 @@
 
 #import "Observation.h"
 
+@class ObservationPhoto;
+
 @interface Observation (AddAssets)
 - (void)addAssets:(NSArray *)assets;
+- (void)addAssets:(NSArray *)assets afterEach:(void(^)(ObservationPhoto *))afterEachBlock;
 @end

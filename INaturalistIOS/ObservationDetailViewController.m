@@ -38,6 +38,7 @@
 #import "Analytics.h"
 #import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
+#import "Observation+AddAssets.h"
 
 static const int LocationActionSheetTag = 1;
 static const int ObservedOnActionSheetTag = 2;
@@ -1572,60 +1573,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
     // add to observation
     
-    NSDate *now = [NSDate date];
-    
-    __block BOOL hasDate = self.observation.observedOn != nil;
-    __block BOOL hasLocation = self.observation.latitude != nil;
-    
-    [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
-        
-        ObservationPhoto *op = [ObservationPhoto object];
-        op.position = @(idx);
-        [op setObservation:self.observation];
-        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        [ImageStore.sharedImageStore store:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]
-                                    forKey:op.photoKey];
-        [self addPhoto:op];
-        op.localCreatedAt = now;
-        op.localUpdatedAt = now;
-        
-        if (!hasDate) {
-            if ([asset valueForProperty:ALAssetPropertyDate]) {
-                hasDate = YES;
-                self.observation.observedOn = [asset valueForProperty:ALAssetPropertyDate];
-            }
-        }
-        
-        if (!hasLocation) {
-            NSDictionary *metadata = asset.defaultRepresentation.metadata;
-            if ([metadata valueForKeyPath:@"{GPS}.Latitude"] && [metadata valueForKeyPath:@"{GPS}.Longitude"]) {
-                hasLocation = YES;
-                
-                double latitude, longitude;
-                if ([[metadata valueForKeyPath:@"{GPS}.LatitudeRef"] isEqualToString:@"N"]) {
-                    latitude = [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                } else {
-                    latitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Latitude"] doubleValue];
-                }
-                
-                if ([[metadata valueForKeyPath:@"{GPS}.LongitudeRef"] isEqualToString:@"E"]) {
-                    longitude = [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                } else {
-                    longitude = -1 * [[metadata valueForKeyPath:@"{GPS}.Longitude"] doubleValue];
-                }
-                
-                self.observation.latitude = @(latitude);
-                self.observation.longitude = @(longitude);
-                
-                [self reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:latitude
-                                                                        longitude:longitude]
-                              forObservation:self.observation];
-            }
-            
-        }
-        
-    }];
-
+    __weak __typeof__(self) weakSelf = self;
+    [self.observation addAssets:assets
+                      afterEach:^(ObservationPhoto *op) {
+                          __typeof__(self) strongSelf = weakSelf;
+                          if (strongSelf) {
+                              [strongSelf addPhoto:op];
+                          }
+                      }];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

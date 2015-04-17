@@ -15,11 +15,11 @@
 
 @implementation Observation (AddAssets)
 
-- (void)addAssets:(NSArray *)assets {
+- (void)addAssets:(NSArray *)assets afterEach:(void (^)(ObservationPhoto *))afterEachBlock {
     NSDate *now = [NSDate date];
     
-    __block BOOL hasDate = NO;
-    __block BOOL hasLocation = NO;
+    __block BOOL hasDate = self.observedOn != nil;
+    __block BOOL hasLocation = self.latitude != nil;
     
     [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
         ObservationPhoto *op = [ObservationPhoto object];
@@ -66,6 +66,10 @@
             
         }
         
+        if (afterEachBlock) {
+            afterEachBlock(op);
+        }
+        
     }];
     
     NSError *saveError;
@@ -73,7 +77,10 @@
     if (saveError) {
         NSLog(@"SAVE ERROR: %@", saveError);
     }
+}
 
+- (void)addAssets:(NSArray *)assets {
+    [self addAssets:assets afterEach:nil];
 }
 
 - (void)reverseGeocodeLocation:(CLLocation *)loc {
