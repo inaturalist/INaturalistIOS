@@ -101,7 +101,7 @@
 "IvC-UJ-yev.text" = "サポートへのお問い合わせ";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "iNatが大好きですか？私たちを是非評価してください";
+"r3a-dI-zLW.text" = "iNatが大好きですか？評価してください";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "プロジェクトの選択";

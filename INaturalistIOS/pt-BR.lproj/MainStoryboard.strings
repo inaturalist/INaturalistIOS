@@ -17,7 +17,7 @@
 "1yP-Oa-9Kj.title" = "Entre";
 
 /* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S"; */
-"31c-qh-A6S.title" = "Adicione";
+"31c-qh-A6S.title" = "Adicionar";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
 "3DS-CL-NMe.headerTitle" = "Entre com sua conta do Facebook";
@@ -101,7 +101,7 @@
 "IvC-UJ-yev.text" = "Contatar o Suporte";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "Adora o iNaturalist? Faça uma avaliação";
+"r3a-dI-zLW.text" = "Adorou o iNat? Faça uma avaliação";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Escolha Projetos";
@@ -209,7 +209,7 @@
 "bKM-7Q-aRA.text" = "Título do projeto é muito longo";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF"; */
-"bTy-8i-NnF.text" = "Nome";
+"bTy-8i-NnF.text" = "Etiqueta";
 
 /* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9"; */
 "bW0-Pb-mB9.text" = "Nomes cinetíficos";
