@@ -150,7 +150,7 @@ static NSDateFormatter *shortFormatter;
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeLeft
-                                                        multiplier:0.0f
+                                                        multiplier:1.0f
                                                           constant:4.0f]];
         // imageview is perfectly square
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observationImageView
