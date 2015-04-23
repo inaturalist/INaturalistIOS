@@ -48,7 +48,6 @@
 		1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */; };
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
 		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
-		19389224191D5D5000CF62D3 /* CustomIOS7AlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */; };
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
 		193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD57B14F42351005209CA /* libTapkuLibrary.a */; };
 		194D8E0618DE58850098E28C /* 121-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0418DE58850098E28C /* 121-landscape.png */; };
@@ -524,8 +523,6 @@
 		1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INaturalistAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObservationsViewController.h; sourceTree = "<group>"; };
 		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
-		19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomIOS7AlertView.h; sourceTree = "<group>"; };
-		19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomIOS7AlertView.m; sourceTree = "<group>"; };
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TapkuLibrary.xcodeproj; path = Vendor/tapkulibrary/src/TapkuLibrary.xcodeproj; sourceTree = "<group>"; };
 		194D8E0418DE58850098E28C /* 121-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape.png"; sourceTree = "<group>"; };
@@ -1194,8 +1191,6 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				19389222191D5D5000CF62D3 /* CustomIOS7AlertView.h */,
-				19389223191D5D5000CF62D3 /* CustomIOS7AlertView.m */,
 				19570CAB17EB8D10000C800A /* SWRevealViewController */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
 				198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */,
@@ -2231,7 +2226,6 @@
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
-				19389224191D5D5000CF62D3 /* CustomIOS7AlertView.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,

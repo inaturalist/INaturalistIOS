@@ -12,6 +12,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <JDFTooltips/JDFTooltips.h>
+#import <CustomIOSAlertView/CustomIOSAlertView.h>
 
 #import "ObservationsViewController.h"
 #import "LoginViewController.h"
@@ -29,7 +30,6 @@
 #import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
-#import "CustomIOS7AlertView.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "User.h"
@@ -467,7 +467,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
     [[NSUserDefaults standardUserDefaults] setValue:versionString forKey:@"lastVersion"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    CustomIOS7AlertView *alertView = [[CustomIOS7AlertView alloc] init];
+    CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -504,7 +504,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [popup addSubview:webView];
         [alertView setContainerView:popup];
         [alertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"OK",nil), nil]];
-        [alertView setOnButtonTouchUpInside:^(CustomIOS7AlertView *alertView, int buttonIndex) {
+        [alertView setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
             [alertView close];
         }];
         [alertView setUseMotionEffects:true];
