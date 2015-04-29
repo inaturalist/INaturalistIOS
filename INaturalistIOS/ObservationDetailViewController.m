@@ -1163,19 +1163,22 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             index = 0;
         }
         UITableViewCell *cell = [self tableView:self.tableView observationFieldValueCellForRowAtIndexPath:indexPath];
-        [ActionSheetStringPicker showPickerWithTitle:ofv.observationField.name
-                                                rows:ofv.observationField.allowedValuesArray
-                                    initialSelection:index
-                                           doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                               UILabel *label = (UILabel *)[cell viewWithTag:2];
-                                               label.text = selectedValue;
-                                               ofv.value = selectedValue;
-                                               [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                           }
-                                         cancelBlock:^(ActionSheetStringPicker *picker) {
-                                             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                         }
-                                              origin:cell];
+        // be defensive
+        if (self.view.window) {
+            [ActionSheetStringPicker showPickerWithTitle:ofv.observationField.name
+                                                    rows:ofv.observationField.allowedValuesArray
+                                        initialSelection:index
+                                               doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                   UILabel *label = (UILabel *)[cell viewWithTag:2];
+                                                   label.text = selectedValue;
+                                                   ofv.value = selectedValue;
+                                                   [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                               }
+                                             cancelBlock:^(ActionSheetStringPicker *picker) {
+                                                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                             }
+                                                  origin:cell];
+        }
     } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
         [self performSegueWithIdentifier:@"OFVTaxonSegue" sender:self];
     } else {
