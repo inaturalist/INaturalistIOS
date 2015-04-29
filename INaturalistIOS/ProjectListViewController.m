@@ -326,12 +326,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
             errorMsg = error.localizedDescription;
     }
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                 message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]];
 }
 
 @end
