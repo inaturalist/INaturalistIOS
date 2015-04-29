@@ -75,7 +75,8 @@
                                                     cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:NSLocalizedString(@"Delete photo",nil)
                                                     otherButtonTitles:nil];
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    
+    [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
 }
 
 - (void)deleteCenterPhoto
