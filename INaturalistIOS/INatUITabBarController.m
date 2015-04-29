@@ -83,6 +83,23 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     [super viewDidLoad];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    BOOL mustRelocateTooltip = NO;
+    if ([makeFirstObsTooltip superview]) {
+        mustRelocateTooltip = YES;
+        [makeFirstObsTooltip hideAnimated:NO];
+    }
+    
+    [coordinator animateAlongsideTransition:nil
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                                     if (mustRelocateTooltip) {
+                                         [self makeAndShowFirstObsTooltip];
+                                     }
+                                 }];
+}
+
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -191,30 +208,36 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
         if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             if (![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
-                
-                if (!makeFirstObsTooltip) {
-                    NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
-                    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[2]
-                                                                                      hostView:self.view
-                                                                                   tooltipText:firstObsText
-                                                                                arrowDirection:JDFTooltipViewArrowDirectionDown
-                                                                                         width:200];
-                    makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
-                    makeFirstObsTooltip.shouldCenter = YES;
-                }
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (self.selectedIndex == 4)
-                        [makeFirstObsTooltip show];
-                });
+                [self makeAndShowFirstObsTooltip];
             }
-            
         }
-        
     } else {
         [makeFirstObsTooltip hideAnimated:NO];
     }
     
     return YES;
+}
+
+#pragma mark - Tooltip Helper
+
+- (void)makeAndShowFirstObsTooltip {
+    if ([makeFirstObsTooltip superview]) {
+        [makeFirstObsTooltip hideAnimated:NO];
+    }
+    
+    NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
+    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[2]
+                                                                      hostView:self.view
+                                                                   tooltipText:firstObsText
+                                                                arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                                         width:200];
+    makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
+    makeFirstObsTooltip.shouldCenter = YES;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (self.selectedIndex == 4)
+            [makeFirstObsTooltip show];
+    });
 }
 
 #pragma mark - UIImagePickerController delegate
