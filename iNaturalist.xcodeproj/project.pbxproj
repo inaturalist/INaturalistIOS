@@ -552,8 +552,6 @@
 		1955FCFC17F102FA004F57F2 /* GuideXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideXML.m; sourceTree = "<group>"; };
 		1955FD0217F21602004F57F2 /* 258-checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "258-checkmark.png"; sourceTree = "<group>"; };
 		1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "258-checkmark@2x.png"; sourceTree = "<group>"; };
-		19570CAC17EB8D10000C800A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
-		19570CAD17EB8D10000C800A /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		19570CC217EB92D8000C800A /* GuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewController.h; sourceTree = "<group>"; };
 		19570CC317EB92D8000C800A /* GuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideViewController.m; sourceTree = "<group>"; };
 		19570CC517EBB624000C800A /* GuideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideMenuViewController.h; sourceTree = "<group>"; };
@@ -1141,16 +1139,6 @@
 			name = images;
 			sourceTree = "<group>";
 		};
-		19570CAB17EB8D10000C800A /* SWRevealViewController */ = {
-			isa = PBXGroup;
-			children = (
-				19570CAC17EB8D10000C800A /* SWRevealViewController.h */,
-				19570CAD17EB8D10000C800A /* SWRevealViewController.m */,
-			);
-			name = SWRevealViewController;
-			path = Vendor/SWRevealViewController/SWRevealViewController;
-			sourceTree = "<group>";
-		};
 		198CF87014F5AC420064DF05 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1190,7 +1178,6 @@
 		198CF8E014F5B0F40064DF05 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				19570CAB17EB8D10000C800A /* SWRevealViewController */,
 				198CF8E914F5C03B0064DF05 /* libThree20UI.a */,
 				198CF8EA14F5C03B0064DF05 /* libThree20UICommon.a */,
 				198CF8EB14F5C03B0064DF05 /* libThree20UINavigator.a */,
