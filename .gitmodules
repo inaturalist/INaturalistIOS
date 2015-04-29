@@ -7,6 +7,3 @@
 [submodule "Vendor/three20"]
 	path = Vendor/three20
 	url = git://github.com/facebook/three20.git
-[submodule "Vendor/SWRevealViewController"]
-	path = Vendor/SWRevealViewController
-	url = https://github.com/John-Lluch/SWRevealViewController.git
