@@ -183,7 +183,14 @@
                                           [lib assetForURL:newAssetUrl
                                                resultBlock:^(ALAsset *asset) {
                                                    
-                                                   self.confirmFollowUpAction(@[ asset ]);
+                                                   // be defensive
+                                                   if (asset) {
+                                                       self.confirmFollowUpAction(@[ asset ]);
+                                                   } else {
+                                                       [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
+                                                       [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Error using newly saved image!",
+                                                                                                            @"Error message when we can't load a newly saved image")];
+                                                   }
                                                    
                                                } failureBlock:^(NSError *error) {
                                                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
