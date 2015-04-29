@@ -108,7 +108,6 @@ static const NSInteger GoogleAssertionType = 2;
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
     if (response.statusCode == 200 || response.statusCode == 304) {
-        [SVProgressHUD dismiss];
         NSString *jsonString = [[NSString alloc] initWithData:response.body
                                                      encoding:NSUTF8StringEncoding];
         NSError* error = nil;
@@ -116,13 +115,15 @@ static const NSInteger GoogleAssertionType = 2;
         NSDictionary *parsedData = [parser objectFromString:jsonString error:&error];
         if (parsedData == nil && error) {
             // Parser error...
-            
             [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                              withProperties:@{ @"from": @"RKRequest Parser" }];
             
             [self failedLogin];
             return;
         }
+        
+        [SVProgressHUD showSuccessWithStatus:nil];
+        
         NSString *userName = [parsedData objectForKey:@"login"];
         [[NSUserDefaults standardUserDefaults] setValue:userName
                                                  forKey:INatUsernamePrefKey];
@@ -154,15 +155,9 @@ static const NSInteger GoogleAssertionType = 2;
     bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
     if (jsonParsingError || authFailure) {
         [self failedLogin];
-    } else if (!av){
-        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                        message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]
-                                       delegate:self 
-                              cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                              otherButtonTitles:nil];
-        [av show];
+    } else {
+        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]];
     }
-    [SVProgressHUD dismiss];
 }
 
 - (void)failedLogin
@@ -187,19 +182,12 @@ static const NSInteger GoogleAssertionType = 2;
         [self.delegate loginViewControllerFailedToLogIn:self];
     }
     
-    if (!av){
-        if (!msg) {
-            msg = NSLocalizedString(@"Username or password were invalid.", nil);
-        }
-        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sign in failed",nil)
-                                    message:msg
-                                   delegate:self 
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil];
-        [av show];
+    if (!msg) {
+        msg = NSLocalizedString(@"Username or password were invalid.", nil);
     }
+
+    [SVProgressHUD showErrorWithStatus:msg];
     isLoginCompleted = YES;
-    [SVProgressHUD dismiss];
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -474,7 +462,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 
 -(void) finishWithAuth2Login{
-    [SVProgressHUD dismiss];
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:AccountType]) {
@@ -486,6 +473,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         }
     }
     if (loginSucceeded) {
+        [SVProgressHUD showSuccessWithStatus:nil];
+        
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
