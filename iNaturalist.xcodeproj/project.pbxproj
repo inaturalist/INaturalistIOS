@@ -77,7 +77,6 @@
 		1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0217F21602004F57F2 /* 258-checkmark.png */; };
 		1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0317F21602004F57F2 /* 258-checkmark@2x.png */; };
 		1955FD2B17F230E9004F57F2 /* libRestKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19D9B53D14F612270017B70A /* libRestKit.a */; };
-		19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CAD17EB8D10000C800A /* SWRevealViewController.m */; };
 		19570CC417EB92D8000C800A /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideViewController.m */; };
 		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
 		19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 19570CCC17ECD0B0000C800A /* guides-menu.png */; };
@@ -2222,7 +2221,6 @@
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
-				19570CAE17EB8D10000C800A /* SWRevealViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
