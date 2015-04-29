@@ -304,9 +304,6 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                           attribute:NSLayoutAttributeCenterX
                                                          multiplier:1.0f
                                                            constant:0.0f]];
-    
-    [self loadRemoteIconicTaxa];
-
 }
 
 
@@ -406,6 +403,16 @@ static NSArray *ICONIC_TAXON_ORDER;
         return chiclet;
     }];
     
+    if (buttons.count < 9) {
+        // didn't get iconic taxa, presumably
+        // skip ahead to obs detail view
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (self.navigationController.topViewController == self)
+                [self choseTaxon:nil];
+        });
+        
+        return;
+    }
     
     NSDictionary *views = @{
                             @"one":     buttons[0],
@@ -526,67 +533,6 @@ static NSArray *ICONIC_TAXON_ORDER;
     }
 }
 
-#pragma mark - iNat API Request
-
-- (void)loadRemoteIconicTaxa {
-    // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
-        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        
-        return;
-    }
-    
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            // update timestamps on us and taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            // save into core data
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
-                                                                                                    saveError.localizedDescription]];
-                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                                                                return;
-                                                            }
-                                                            
-                                                            // update the UI with the merged results
-                                                            NSError *fetchError;
-                                                            iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:iconicTaxaFetchRequest
-                                                                                                                                error:&fetchError];
-                                                            if (fetchError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                                                                    fetchError.localizedDescription]];
-                                                                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-                                                            }
-                                                            
-                                                            [self configureCategories];
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                                                                                error.localizedDescription]];
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                                                                                error.localizedDescription]];
-                                                        };
-                                                        
-                                                    }];
-    
-}
 
 #pragma mark Asset(s) setter/getters
 
