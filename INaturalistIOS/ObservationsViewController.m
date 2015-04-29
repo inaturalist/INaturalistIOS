@@ -11,7 +11,6 @@
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <JDFTooltips/JDFTooltips.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
 
 #import "ObservationsViewController.h"
@@ -36,7 +35,6 @@
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
-#import "INatTooltipView.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
@@ -48,8 +46,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate> {
     UIView *noContentView;
-    INatTooltipView *makeFirstObservationTooltip;
-    
 
     NSFetchedResultsController *fetchedResultsController;
 }
