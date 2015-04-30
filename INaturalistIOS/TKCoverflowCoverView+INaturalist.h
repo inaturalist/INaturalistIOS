@@ -11,7 +11,5 @@
 #import "UIImageView+WebCache.h"
 
 @interface TKCoverflowCoverView (INaturalist)
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletedBlock)completedBlock;
-- (void)setRemotelyLoadedImage:(UIImage *)img;
-- (void)setIsReflected:(bool)isReflected;
+- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completion;
 @end

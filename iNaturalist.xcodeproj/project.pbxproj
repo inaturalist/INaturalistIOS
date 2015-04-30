@@ -49,7 +49,6 @@
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
 		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
-		193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD57B14F42351005209CA /* libTapkuLibrary.a */; };
 		194D8E0618DE58850098E28C /* 121-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0418DE58850098E28C /* 121-landscape.png */; };
 		194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0518DE58850098E28C /* 121-landscape@2x.png */; };
 		194D8E1D18DFEC9E0098E28C /* 184-warning.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1B18DFEC9E0098E28C /* 184-warning.png */; };
@@ -283,27 +282,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		193BD57A14F42351005209CA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = TapkuLibrary;
-		};
-		193BD57C14F42351005209CA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3B45DDF1134C736600D24C1A;
-			remoteInfo = LogicTests;
-		};
-		193BD57E14F42358005209CA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = TapkuLibrary;
-		};
 		198CF89A14F5AC420064DF05 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 198CF86F14F5AC420064DF05 /* Three20.xcodeproj */;
@@ -523,7 +501,6 @@
 		1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObservationsViewController.h; sourceTree = "<group>"; };
 		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TapkuLibrary.xcodeproj; path = Vendor/tapkulibrary/src/TapkuLibrary.xcodeproj; sourceTree = "<group>"; };
 		194D8E0418DE58850098E28C /* 121-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape.png"; sourceTree = "<group>"; };
 		194D8E0518DE58850098E28C /* 121-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape@2x.png"; sourceTree = "<group>"; };
 		194D8E1B18DFEC9E0098E28C /* 184-warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning.png"; sourceTree = "<group>"; };
@@ -916,7 +893,6 @@
 				198CF8EC14F5C03C0064DF05 /* libThree20UI.a in Frameworks */,
 				198CF8ED14F5C03C0064DF05 /* libThree20UICommon.a in Frameworks */,
 				198CF8EE14F5C03C0064DF05 /* libThree20UINavigator.a in Frameworks */,
-				193BD58014F4235E005209CA /* libTapkuLibrary.a in Frameworks */,
 				193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */,
 				198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */,
 				198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */,
@@ -1056,15 +1032,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		193BD57314F42351005209CA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				193BD57B14F42351005209CA /* libTapkuLibrary.a */,
-				193BD57D14F42351005209CA /* LogicTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1191,7 +1158,6 @@
 				198CF8A314F5AE180064DF05 /* Three20UINavigator.xcodeproj */,
 				198CF8A414F5AE180064DF05 /* Three20UI.xcodeproj */,
 				198CF86F14F5AC420064DF05 /* Three20.xcodeproj */,
-				193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -1676,7 +1642,6 @@
 			dependencies = (
 				19DA9F5C161D4AA900DCCB5B /* PBXTargetDependency */,
 				19DA9F52161D441E00DCCB5B /* PBXTargetDependency */,
-				193BD57F14F42358005209CA /* PBXTargetDependency */,
 			);
 			name = iNaturalist;
 			productName = INaturalistIOS;
@@ -1715,10 +1680,6 @@
 					ProjectRef = 198551E114EC931900DB55C5 /* RestKit.xcodeproj */;
 				},
 				{
-					ProductGroup = 193BD57314F42351005209CA /* Products */;
-					ProjectRef = 193BD57214F42351005209CA /* TapkuLibrary.xcodeproj */;
-				},
-				{
 					ProductGroup = 198CF87014F5AC420064DF05 /* Products */;
 					ProjectRef = 198CF86F14F5AC420064DF05 /* Three20.xcodeproj */;
 				},
@@ -1755,20 +1716,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		193BD57B14F42351005209CA /* libTapkuLibrary.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libTapkuLibrary.a;
-			remoteRef = 193BD57A14F42351005209CA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		193BD57D14F42351005209CA /* LogicTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = LogicTests.octest;
-			remoteRef = 193BD57C14F42351005209CA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		198CF89B14F5AC420064DF05 /* libThree20.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2231,11 +2178,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		193BD57F14F42358005209CA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = TapkuLibrary;
-			targetProxy = 193BD57E14F42358005209CA /* PBXContainerItemProxy */;
-		};
 		19DA9F52161D441E00DCCB5B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Three20;

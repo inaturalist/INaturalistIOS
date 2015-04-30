@@ -60,6 +60,7 @@ PODS:
   - SVProgressHUD (1.1.3)
   - SVPullToRefresh (0.4.1)
   - SWRevealViewController (1.0.5)
+  - TapkuLibrary (0.3.8)
   - UIColor-HTMLColors (1.0.0)
   - VTAcknowledgementsViewController (0.13)
 
@@ -88,6 +89,7 @@ DEPENDENCIES:
   - SVProgressHUD (= 1.1.3)
   - SVPullToRefresh (= 0.4.1)
   - SWRevealViewController (= 1.0.5)
+  - TapkuLibrary (= 0.3.8)
   - UIColor-HTMLColors (= 1.0.0)
   - VTAcknowledgementsViewController (= 0.13)
 
@@ -117,6 +119,7 @@ SPEC CHECKSUMS:
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   SWRevealViewController: 9101150b102803f882ffa3ddfef7ad2d861bc278
+  TapkuLibrary: 7a406dac46eff8595e191557eba88959f97f69b7
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
   VTAcknowledgementsViewController: f2391b007c3abafd3b3afccda7d8914a59b44309
 

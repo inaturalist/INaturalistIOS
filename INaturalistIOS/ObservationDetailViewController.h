@@ -106,9 +106,7 @@
 
 - (void)addPhoto:(ObservationPhoto *)op;
 - (void)removePhoto:(ObservationPhoto *)op;
-- (void)initCoverflowView;
 - (void)refreshCoverflowView;
-- (void)resizeHeaderView;
 - (void)reverseGeocodeCoordinates;
 
 - (void)startUpdatingLocation;

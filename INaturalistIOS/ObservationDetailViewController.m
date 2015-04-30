@@ -488,7 +488,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidAppear:(BOOL)animated {    
     [self initUI];
     [super viewDidAppear:animated];
-
+    
     @try {
         if (self.observation.isNew &&
             (
@@ -716,71 +716,42 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark TKCoverflowViewDelegate methods
-- (void)initCoverflowView
-{
-    float width = [UIScreen mainScreen].bounds.size.width,
-          height = width / 1.342,
-          coverDim = height - 10,
-          coverWidth = coverDim,
-          coverHeight = coverDim;
-    CGRect r = CGRectMake(0, 0, width, height);
-    self.coverflowView = [[TKCoverflowView alloc] initWithFrame:r];
-	self.coverflowView.coverflowDelegate = self;
-	self.coverflowView.dataSource = self;
-    self.coverflowView.coverSize = CGSizeMake(coverWidth, coverHeight);
-    [self.coverflowView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-    [self.tableView.tableHeaderView addSubview:self.coverflowView];
-}
 
 - (void)refreshCoverflowView
 {
-    if (!self.coverflowView) {
-        [self initCoverflowView];
-    }
-    if (self.coverflowView.superview != self.tableView.tableHeaderView) {
-        [self.tableView.tableHeaderView addSubview:self.coverflowView];
-    }
-    self.coverflowView.numberOfCovers = [self.observationPhotos count];
-    if (self.coverflowView.numberOfCovers == 0) {
-        [self.coverflowView setHidden:YES];
-    } else {
-        [self.coverflowView setHidden:NO];
-    }
+    [self.tableView reloadData];
+    [self.coverflowView reloadData];
+    
     [self.coverflowView setNeedsDisplay];
     [self.coverflowView setNeedsLayout];
-    [self resizeHeaderView];
 }
 
-- (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverAtIndex:(int)index
-{
+- (NSInteger)numberOfCoversInCoverflowView:(TKCoverflowView *)coverflowView {
+    return self.observationPhotos.count;
+}
+
+- (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverForIndex:(NSInteger)index {
     TKCoverflowCoverView *cover = [coverflowView dequeueReusableCoverView];
-    CGRect r = CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height);
-    if (cover) {
-        cover.frame = r;
-    } else {
-        cover = [[TKCoverflowCoverView alloc] initWithFrame:r];
+    
+    if (!cover) {
+        cover = [[TKCoverflowCoverView alloc] initWithFrame:CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height)
+                                                 reflection:YES];
     }
-    cover.baseline = coverflowView.frame.size.height - 20;
+
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
 	if (op.photoKey == nil) {
         TKCoverflowCoverView *boundCover = cover;
         cover.imageView.contentMode = UIViewContentModeCenter;
-        NSString *imageURL;
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            imageURL = op.mediumURL ? op.mediumURL : op.smallURL;
-        } else {
-            imageURL = op.smallURL;
-        }
-        [cover setImageWithURL:[NSURL URLWithString:imageURL]
-              placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
-                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                         if (error) {
-                             boundCover.image = [UIImage imageNamed:@"184-warning.png"];
-                             [boundCover setIsReflected:NO];
-                         } else {
-                             boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
-                         }
-                     }];
+        
+        [cover.imageView sd_setImageWithURL:[NSURL URLWithString:op.mediumURL ?: op.smallURL]
+                           placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
+                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                      if (error) {
+                                          boundCover.image = [UIImage imageNamed:@"184-warning.png"];
+                                      } else {
+                                          boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
+                                      }
+                                  }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
 		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
@@ -794,15 +765,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	// required but not required
 }
 
-- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasSingleTapped:(int)index
-{
+- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasTappedInFront:(NSInteger)index tapCount:(NSInteger)tapCount {
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
     if (!op) return;
-    NSString *photoSourceTitle = [NSString 
-                                  stringWithFormat:@"Photos for %@", 
+    NSString *photoSourceTitle = [NSString
+                                  stringWithFormat:@"Photos for %@",
                                   (self.observation.speciesGuess ? self.observation.speciesGuess : @"Something")];
-    PhotoSource *photoSource = [[PhotoSource alloc] 
-                                initWithPhotos:self.observationPhotos 
+    PhotoSource *photoSource = [[PhotoSource alloc]
+                                initWithPhotos:self.observationPhotos
                                 title:photoSourceTitle];
     PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
     vc.delegate = self;
@@ -1220,6 +1190,36 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return MAX(defaultHeight, size.height);
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        if (self.observationPhotos.count == 0) {
+            return nil;
+        } else {
+            CGRect r = CGRectMake(0, 0, tableView.bounds.size.width, [tableView.delegate tableView:tableView heightForHeaderInSection:section]);
+            self.coverflowView = [[TKCoverflowView alloc] initWithFrame:r];
+            self.coverflowView.coverflowDelegate = self;
+            self.coverflowView.coverflowDataSource = self;
+            self.coverflowView.coverSize = CGSizeMake(r.size.width - 80, r.size.height - 40);
+            self.coverflowView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            return self.coverflowView;
+        }
+    }
+    
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        if (self.observationPhotos.count == 0) {
+            return 44;
+        } else {
+            return tableView.bounds.size.width / 1.342;
+        }
+    } else {
+        return 44;
     }
 }
 
@@ -1782,33 +1782,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     [self.observationPhotos addObject:op];
     [self refreshCoverflowView];
-    [self.coverflowView setCurrentIndex:self.coverflowView.numberOfCovers-1];
+    [self.coverflowView setCurrentCoverIndex:[self.coverflowView.coverflowDataSource numberOfCoversInCoverflowView:self.coverflowView] - 1];
 }
 
 - (void)removePhoto:(ObservationPhoto *)op
 {
     [self.observationPhotos removeObject:op];
-    self.coverflowView.numberOfCovers = self.observationPhotos.count;
-    [self resizeHeaderView];
-}
-
-- (void)resizeHeaderView
-{
-    if (!self.coverflowView) return;
-    UIView *headerView = self.tableView.tableHeaderView;
-    CGRect r = headerView.bounds;
-    if (self.observationPhotos.count > 0) {
-        [headerView setBounds:
-         CGRectMake(0, 0, r.size.width, self.coverflowView.bounds.size.height)];
-    } else {
-        [headerView setBounds:
-         CGRectMake(0, 0, r.size.width, 0)];
-    }
-    [self.tableView setNeedsLayout];
-    [self.tableView setNeedsDisplay];
-    [headerView setNeedsLayout];
-    [headerView setNeedsDisplay];
-    [self.tableView setTableHeaderView:headerView];
+    [self refreshCoverflowView];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
