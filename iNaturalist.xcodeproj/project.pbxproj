@@ -16,7 +16,6 @@
 		190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 190619BC152A3D3C0001A307 /* AssetsLibrary.framework */; };
 		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
 		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
-		1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1315AB752800A6EF6E /* TutorialViewController.m */; };
 		1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 1909EA1615AB75BB00A6EF6E /* PhotoStub.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */; };
@@ -446,8 +445,6 @@
 		190687C6151BF71F00D5B6E4 /* DeletedRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedRecord.m; sourceTree = "<group>"; };
 		190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonDetailViewController.h; sourceTree = "<group>"; };
 		190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonDetailViewController.m; sourceTree = "<group>"; };
-		1909EA1215AB752800A6EF6E /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialViewController.h; sourceTree = "<group>"; };
-		1909EA1315AB752800A6EF6E /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialViewController.m; sourceTree = "<group>"; };
 		1909EA1515AB75BB00A6EF6E /* PhotoStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoStub.h; sourceTree = "<group>"; };
 		1909EA1615AB75BB00A6EF6E /* PhotoStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoStub.m; sourceTree = "<group>"; };
 		190AF2D514FC258F00F73F2B /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -1317,8 +1314,6 @@
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
-				1909EA1215AB752800A6EF6E /* TutorialViewController.h */,
-				1909EA1315AB752800A6EF6E /* TutorialViewController.m */,
 				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
 				FAC0F1671A9EAE3B000F20C4 /* ConfirmPhotoViewController.h */,
@@ -2117,7 +2112,6 @@
 				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
-				1909EA1415AB752800A6EF6E /* TutorialViewController.m in Sources */,
 				1909EA1715AB75BB00A6EF6E /* PhotoStub.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,

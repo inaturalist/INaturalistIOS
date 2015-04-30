@@ -10,6 +10,9 @@
 #import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
 #import <JDFTooltips/JDFTooltips.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 
 #import "SettingsViewController.h"
 #import "LoginViewController.h"
@@ -21,7 +24,6 @@
 #import "Identification.h"
 #import "User.h"
 #import "DeletedRecord.h"
-#import "TutorialViewController.h"
 #import "INatUITabBarController.h"
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
@@ -151,10 +153,47 @@ static const int CategorizeNewObsSwitchTag = 11;
 
 - (void)launchTutorial
 {
-    TutorialViewController *vc = [[TutorialViewController alloc] initWithDefaultTutorial];
-    UINavigationController *modalNavController = [[UINavigationController alloc]
-                                                  initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:YES completion:nil];
+    NSString *curLang = [[NSLocale preferredLanguages] objectAtIndex:0];
+
+    NSMutableArray *tutorialImages = [NSMutableArray array];
+    for (int i = 1; i <= 7; i++) {
+        NSURL *tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%d%@", i, curLang]
+                                                         withExtension:@"png"];
+        if (!tutorialItemUrl) {
+            // if we don't have tutorial files for the user's preferred language,
+            // default to english
+            tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%den", i]
+                                                      withExtension:@"png"];
+        }
+        
+        // be defensive
+        if (tutorialItemUrl) {
+            [tutorialImages addObject:tutorialItemUrl];
+        }
+    }
+    NSArray *galleryData = [tutorialImages bk_map:^id(NSURL *url) {
+        return [MHGalleryItem itemWithURL:url.absoluteString galleryType:MHGalleryTypeImage];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = YES;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = 0;
+    gallery.UICustomization = customization;
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
 }
 
 - (void)sendSupportEmail
