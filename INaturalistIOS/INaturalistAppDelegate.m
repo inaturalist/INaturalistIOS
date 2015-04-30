@@ -214,13 +214,6 @@
     return managedObjectModel;
 }
 
-- (void)configureThree20
-{
-    [[TTURLRequestQueue mainQueue] setMaxContentLength:0];
-    TTNavigator* navigator = [TTNavigator navigator];
-    navigator.window = self.window;
-}
-
 -(void) configureOAuth2Client{
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {

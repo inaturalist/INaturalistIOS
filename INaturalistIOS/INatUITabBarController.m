@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <BlocksKit+UIKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <TapkuLibrary/TapkuLibrary.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -47,10 +48,7 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
                                                object:nil];
-    
-    TTNavigator* navigator = [TTNavigator navigator];
-    navigator.delegate = self;
-    
+        
     // tab bar delegate to intercept selection of the "observe" tab
     self.delegate = self;
     
@@ -387,23 +385,6 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 
 - (void)userSignedIn {
     [makeFirstObsTooltip hideAnimated:NO];
-}
-
-#pragma mark - TTNagigatorDelegate
-// http://stackoverflow.com/questions/8771176/ttnavigator-not-pushing-onto-navigation-stack
-- (BOOL)navigator: (TTBaseNavigator *)navigator shouldOpenURL:(NSURL *)url {
-    UINavigationController *nc;
-    if ([self.selectedViewController.presentedViewController isKindOfClass:UINavigationController.class]) {
-        nc = (UINavigationController *)self.selectedViewController.presentedViewController;
-    } else if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
-        nc = (UINavigationController *)self.selectedViewController;
-    }
-    if (nc) {
-        INatWebController *webController = [[INatWebController alloc] init];
-        [webController openURL:url];
-        [nc pushViewController:webController animated:YES];
-    }
-    return NO;
 }
 
 #pragma mark - Fetch Iconic Taxa

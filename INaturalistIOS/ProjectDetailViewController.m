@@ -58,8 +58,9 @@ static const int LeaveProjectAlertViewTag = 1;
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"%@/projects/%@?locale=%@-%@",
                     INatWebBaseURL, self.project.cachedSlug, language, countryCode];
-    TTNavigator* navigator = [TTNavigator navigator];
-    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
+    
+    TKWebViewController *web = [[TKWebViewController alloc] initWithURL:[NSURL URLWithString:url]];
+    [self.navigationController pushViewController:web animated:YES];
 }
 
 - (IBAction)clickedJoin:(id)sender {

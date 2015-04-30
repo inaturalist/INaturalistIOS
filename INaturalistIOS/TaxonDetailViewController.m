@@ -269,8 +269,9 @@ static const int TaxonDescTag = 1;
     } else {
         return;
     }
-    TTNavigator* navigator = [TTNavigator navigator];
-    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
+    
+    TKWebViewController *web = [[TKWebViewController alloc] initWithURL:[NSURL URLWithString:url]];
+    [self.navigationController pushViewController:web animated:YES];
 }
 
 #pragma - RKObjectLoaderDelegate

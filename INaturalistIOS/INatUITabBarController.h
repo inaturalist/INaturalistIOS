@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Three20/Three20.h>
 
-@interface INatUITabBarController : UITabBarController <TTNavigatorDelegate>
+@interface INatUITabBarController : UITabBarController
 - (void)handleUserSavedObservationNotification:(NSNotification *)notification;
 - (void)setObservationsTabBadge;
 @end
