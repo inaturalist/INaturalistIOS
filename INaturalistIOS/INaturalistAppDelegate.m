@@ -24,7 +24,6 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "User.h"
-#import <Three20/Three20.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
@@ -56,7 +55,6 @@
 
     // Override point for customization after application launch.
     [self configureRestKit];
-    [self configureThree20];
     [self configureOAuth2Client];
     
     // set global styles

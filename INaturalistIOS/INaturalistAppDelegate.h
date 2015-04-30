@@ -16,7 +16,6 @@
 @property (strong, nonatomic) RKObjectManager *photoObjectManager;
 
 - (void)configureRestKit;
-- (void)configureThree20;
 - (BOOL)loggedIn;
 - (NSManagedObjectModel *)getManagedObjectModel;
 @end
