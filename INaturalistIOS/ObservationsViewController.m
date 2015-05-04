@@ -96,13 +96,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	[self.syncQueue addModel:ObservationFieldValue.class];
 	[self.syncQueue addModel:ProjectObservation.class];
     if ([ObservationPhoto needingSyncCount] > 0) {
-        for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
-            // check to see if for some reason a LocalPhoto was created without files. If so, destroy it and move on.
-            NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey forSize:ImageStoreSmallSize];
-            if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                [op destroy];
-            }
-        }
         [[[RKObjectManager sharedManager] objectStore] save:nil];
     }
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
@@ -153,6 +146,18 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [op destroy];
         return;
     }
+    
+    // if we don't have a file for this obs photo, most likely it's still saving
+    // into the ImageStore. don't crash in Restkit, just skip this obs photo.
+    NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey
+                                                       forSize:ImageStoreLargeSize];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (!path || ![fm fileExistsAtPath:path]) {
+        // bail on the sync. this sucks, but is better than crashing.
+        NSLog(@"can't upload photo, we don't have it yet.");
+        [self stopSync];
+    }
+
     void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
         loader.delegate = self.syncQueue;
         RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
@@ -161,9 +166,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
                                     serializedObject:&error];
         RKParams* params = [RKParams paramsWithDictionary:dictionary];
-        
-        [params setFile:[[ImageStore sharedImageStore] pathForKey:op.photoKey 
-                                                          forSize:ImageStoreLargeSize]
+
+        [params setFile:path
                forParam:@"file"];
         loader.params = params;
         loader.objectMapping = [ObservationPhoto mapping];
