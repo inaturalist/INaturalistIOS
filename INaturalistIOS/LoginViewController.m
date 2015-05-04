@@ -22,7 +22,7 @@
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
 
-@interface LoginViewController(){
+@interface LoginViewController () {
     NSString    *ExternalAccessToken;
     NSString    *INatAccessToken;
     NSString    *AccountType;
@@ -255,8 +255,8 @@ static const NSInteger GoogleAssertionType = 2;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
                       [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-        [webController openURL:url];
-        webController.delegate = self;
+        [webController setUrl:url];
+        webController.delegate =self;
         [nc pushViewController:webController animated:YES];
      }
     else if (indexPath.section == 4) {
@@ -264,7 +264,7 @@ static const NSInteger GoogleAssertionType = 2;
         INatWebController *webController = [[INatWebController alloc] init];
         NSURL *url = [NSURL URLWithString:
                       [NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
-        [webController openURL:url];
+        [webController setUrl:url];
         webController.delegate = self;
         [nc pushViewController:webController animated:YES];
     }
@@ -281,12 +281,8 @@ static const NSInteger GoogleAssertionType = 2;
     [[UIApplication sharedApplication] openURL:url];
 }
 
-#pragma mark - TTWebControllerDelegate
-- (BOOL)webController:(TTWebController *)controller 
-              webView:(UIWebView *)webView 
-shouldStartLoadWithRequest:(NSURLRequest *)request 
-       navigationType:(UIWebViewNavigationType)navigationType
-{
+#pragma mark - UIWebViewDelegate
+- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
     if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"] || [request.URL.path hasPrefix:@"/forgot_password"]) {
         return YES;
     }
@@ -294,7 +290,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     if (av) [av dismissWithClickedButtonIndex:0 animated:YES];
     av = nil;
     NSString *title, *message;
-    if ([controller.URL.path hasPrefix:@"/forgot_password"]) {
+    if ([webView.request.URL.path hasPrefix:@"/forgot_password"]) {
         title = @"Check Your Email";
         message = @"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.";
     } else {

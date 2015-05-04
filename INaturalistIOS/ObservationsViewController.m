@@ -722,7 +722,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             INatWebController *webController = [[INatWebController alloc] init];
             NSURL *url = [NSURL URLWithString:
                           [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-            [webController openURL:url];
+            [webController setUrl:url];
             webController.delegate = login;
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];

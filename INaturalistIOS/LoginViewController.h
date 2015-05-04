@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
 #import "GPPSignIn.h"
+#import "INatWebController.h"
 
 extern NSString *kUserLoggedInNotificationName;
 
@@ -21,7 +22,7 @@ extern NSString *kUserLoggedInNotificationName;
 - (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
 @end
 
-@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, TTWebControllerDelegate,GPPSignInDelegate>
+@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, GPPSignInDelegate, INatWebControllerDelegate>
 
 @property (nonatomic, weak) id <LoginViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;

@@ -6,8 +6,17 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Three20/Three20.h>
+#import <UIKit/UIKit.h>
 
-@interface INatWebController : TTWebController
+@protocol INatWebControllerDelegate
+- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request;
+@end
+
+@interface INatWebController : UIViewController
+
+@property NSURL *url;
+@property UIWebView *webView;
+@property (weak) id <INatWebControllerDelegate> delegate;
+//@property (weak) id <UIWebViewDelegate> delegate;
 
 @end
