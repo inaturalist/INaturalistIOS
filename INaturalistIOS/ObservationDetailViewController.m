@@ -1465,10 +1465,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                destructiveButtonTitle:NSLocalizedString(@"Delete observation",nil)
                                                     otherButtonTitles:nil];
     actionSheet.tag = DeleteActionSheetTag;
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
-    } else {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
+    
+    // be defensive
+    if (self.view.window) {
+        [actionSheet showFromBarButtonItem:self.viewButton animated:YES];
     }
 }
 
@@ -1480,10 +1481,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
     actionSheet.tag = ViewActionSheetTag;
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+    
+    // be defensive
+    if (self.view.window) {
         [actionSheet showFromBarButtonItem:self.viewButton animated:YES];
-    } else {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
     }
 }
 
