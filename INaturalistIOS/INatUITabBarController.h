@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
 
+@class Taxon;
+
 @interface INatUITabBarController : UITabBarController <TTNavigatorDelegate>
 - (void)handleUserSavedObservationNotification:(NSNotification *)notification;
 - (void)setObservationsTabBadge;
+- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon;
 @end

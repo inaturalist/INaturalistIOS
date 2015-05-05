@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <BlocksKit+UIKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <objc/runtime.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -26,6 +27,7 @@
 #import "Analytics.h"
 
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
+static char TAXON_ASSOCIATED_KEY;
 
 @interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
@@ -100,6 +102,107 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                                  }];
 }
 
+- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon {
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    [makeFirstObsTooltip hideAnimated:YES];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.showsCameraControls = NO;
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+        
+        if (taxon) {
+            objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+        
+        [overlay.close bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide flash if it's not available for the default camera
+        if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
+            overlay.flash.hidden = YES;
+        }
+        
+        [overlay.flash bk_addEventHandler:^(id sender) {
+            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+            }
+            [overlay configureFlashForMode:picker.cameraFlashMode];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide camera selector unless both front and rear cameras are available
+        if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
+            ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+            overlay.camera.hidden = YES;
+        }
+        
+        [overlay.camera bk_addEventHandler:^(id sender) {
+            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+            } else {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
+            // hide flash button if flash isn't available for the chosen camera
+            overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.noPhoto bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
+            [self noPhotoTaxon:taxon];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.shutter bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationShutter];
+            [picker takePicture];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.library bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
+            [self openLibraryTaxon:taxon];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        picker.cameraOverlayView = overlay;
+        
+        [self presentViewController:picker animated:YES completion:nil];
+    } else {
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
+        
+        // no camera available
+        QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.allowsMultipleSelection = YES;
+        imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.showsCancelButton = NO;           // so we get a back button
+        imagePickerController.groupTypes = @[
+                                             @(ALAssetsGroupSavedPhotos),
+                                             @(ALAssetsGroupAlbum)
+                                             ];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+}
+
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -107,101 +210,9 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     // intercept selection of the "observe" tab
     if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
         
-        [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart];
-        
-        if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        [makeFirstObsTooltip hideAnimated:YES];
-        
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-            picker.delegate = self;
-            picker.allowsEditing = NO;
-            picker.showsCameraControls = NO;
-            picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
-            
-            ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            
-            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-            [overlay configureFlashForMode:picker.cameraFlashMode];
-            
-            [overlay.close bk_addEventHandler:^(id sender) {
-                [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
-                [self dismissViewControllerAnimated:YES completion:nil];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            // hide flash if it's not available for the default camera
-            if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
-                overlay.flash.hidden = YES;
-            }
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
 
-            [overlay.flash bk_addEventHandler:^(id sender) {
-                if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
-                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
-                } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
-                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-                } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
-                    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-                }
-                [overlay configureFlashForMode:picker.cameraFlashMode];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            // hide camera selector unless both front and rear cameras are available
-            if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
-                ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
-                overlay.camera.hidden = YES;
-            }
-            
-            [overlay.camera bk_addEventHandler:^(id sender) {
-                if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-                    picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-                } else {
-                    picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-                }
-                // hide flash button if flash isn't available for the chosen camera
-                overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            [overlay.noPhoto bk_addEventHandler:^(id sender) {
-                [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
-                [self noPhoto];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            [overlay.shutter bk_addEventHandler:^(id sender) {
-                [[Analytics sharedClient] event:kAnalyticsEventNewObservationShutter];
-                [picker takePicture];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            [overlay.library bk_addEventHandler:^(id sender) {
-                [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
-                [self openLibrary];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            picker.cameraOverlayView = overlay;
-            
-            [self presentViewController:picker animated:YES completion:nil];
-        } else {
-            [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
-            
-            // no camera available
-            QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
-            imagePickerController.delegate = self;
-            imagePickerController.allowsMultipleSelection = YES;
-            imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-            imagePickerController.showsCancelButton = NO;           // so we get a back button
-            imagePickerController.groupTypes = @[
-                                                 @(ALAssetsGroupSavedPhotos),
-                                                 @(ALAssetsGroupAlbum)
-                                                 ];
-            
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
-            [self presentViewController:nav animated:YES completion:nil];
-        }
-        
+        [self triggerNewObservationFlowForTaxon:nil];
         
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == 4) {
@@ -247,6 +258,12 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
     confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
     confirm.shouldContinueUpdatingLocation = YES;
+    
+    Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
+    if (taxon) {
+        confirm.taxon = taxon;
+    }
+
     [picker pushViewController:confirm animated:NO];
 }
 
@@ -256,7 +273,7 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 
 #pragma mark - Add New Observation methods
 
-- (void)openLibrary {
+- (void)openLibraryTaxon:(Taxon *)taxon {
     // qbimagepicker for library multi-select
     QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
     imagePickerController.delegate = self;
@@ -268,6 +285,9 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                                          @(ALAssetsGroupAlbum)
                                          ];
     
+    if (taxon) {
+        objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+    }
     
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:imagePickerController animated:YES];
@@ -278,14 +298,19 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                                                                                               action:@selector(done:)];
 }
 
-- (void)noPhoto {
+- (void)noPhotoTaxon:(Taxon *)taxon {
     Observation *o = [Observation object];
     
     // photoless observation defaults to now
     o.observedOn = [NSDate date];
     o.localObservedOn = o.observedOn;
     o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-
+    
+    if (taxon) {
+        o.taxon = taxon;
+        o.speciesGuess = taxon.defaultName;
+    }
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
     detail.observation = o;
@@ -331,6 +356,12 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
                      withProperties:@{ @"numPics": @(assets.count) }];
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.assets = assets;
+    
+    Taxon *taxon = objc_getAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY);
+    if (taxon) {
+        confirm.taxon = taxon;
+    }
+
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:confirm animated:NO];
 }

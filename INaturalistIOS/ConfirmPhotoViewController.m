@@ -68,7 +68,9 @@
         __weak __typeof__(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && iconicTaxa.count > 0) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && iconicTaxa.count > 0 && !self.taxon) {
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
@@ -77,6 +79,11 @@
             } else {
                 // go straight to making the observation
                 Observation *o = [Observation object];
+                
+                if (strongSelf.taxon) {
+                    o.taxon = strongSelf.taxon;
+                    o.speciesGuess = strongSelf.taxon.defaultName ?: strongSelf.taxon.name;
+                }
                 
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
                 ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];

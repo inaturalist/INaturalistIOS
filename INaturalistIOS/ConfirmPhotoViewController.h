@@ -8,12 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class Taxon;
+
 @interface ConfirmPhotoViewController : UIViewController
 
 @property UIImage *image;
 @property NSArray *assets;
 @property NSDictionary *metadata;
 @property BOOL shouldContinueUpdatingLocation;
+
+@property Taxon *taxon;
 
 @property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
 

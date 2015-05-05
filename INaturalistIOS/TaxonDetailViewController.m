@@ -17,6 +17,7 @@
 #import "ObservationDetailViewController.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "INatUITabBarController.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
@@ -73,20 +74,11 @@ static const int TaxonDescTag = 1;
         [self.delegate performSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:) 
                             withObject:self.taxon];
     } else {
-        [self performSegueWithIdentifier:@"AddObservationSegue" sender:nil];
-    }
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        Observation *o = [Observation object];
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        o.taxon = self.taxon;
-        o.speciesGuess = self.taxon.defaultName;
-        [vc setObservation:o];
+        // be defensive
+        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:)]) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TaxonDetails" }];
+            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:self.taxon];
+        }
     }
 }
 
