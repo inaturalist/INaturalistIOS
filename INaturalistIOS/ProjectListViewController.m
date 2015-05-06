@@ -74,16 +74,30 @@ static const int ListedTaxonCellSubtitleTag = 3;
     }
     
     // be defensive
-    if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:)]) {
+    if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"ProjectList" }];
-        [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:lt.taxon];
+        [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:lt.taxon
+                                                                                     project:self.project];
+    } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+        // can't present from the tab bar while it's out of the view hierarchy
+        // so dismiss the presented view (ie the parent of this taxon details VC)
+        // and then trigger the new observation flow once the tab bar is back
+        // in thei heirarchy.
+        INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+        [tabBar dismissViewControllerAnimated:YES
+                                   completion:^{
+                                       [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                        withProperties:@{ @"From": @"ProjectList" }];
+                                       [tabBar triggerNewObservationFlowForTaxon:lt.taxon
+                                                                         project:self.project];
+                                   }];
     }
 }
 
 - (void)sync
 {
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] 
+        self.stopSyncButton = [[UIBarButtonItem alloc]
                                initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                target:self 
                                action:@selector(stopSync)];

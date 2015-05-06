@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class Taxon;
+@class Project;
 
 @interface ConfirmPhotoViewController : UIViewController
 
@@ -18,6 +19,7 @@
 @property BOOL shouldContinueUpdatingLocation;
 
 @property Taxon *taxon;
+@property Project *project;
 
 @property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
 

@@ -25,9 +25,12 @@
 #import "INatTooltipView.h"
 #import "LoginViewController.h"
 #import "Analytics.h"
+#import "ProjectObservation.h"
+#import "Project.h"
 
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
+static char PROJECT_ASSOCIATED_KEY;
 
 @interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
@@ -102,7 +105,7 @@ static char TAXON_ASSOCIATED_KEY;
                                  }];
 }
 
-- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon {
+- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
@@ -120,6 +123,10 @@ static char TAXON_ASSOCIATED_KEY;
         
         if (taxon) {
             objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        if (project) {
+            objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
         }
         
         ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -167,7 +174,7 @@ static char TAXON_ASSOCIATED_KEY;
         
         [overlay.noPhoto bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
-            [self noPhotoTaxon:taxon];
+            [self noPhotoTaxon:taxon project:project];
         } forControlEvents:UIControlEventTouchUpInside];
         
         [overlay.shutter bk_addEventHandler:^(id sender) {
@@ -177,7 +184,7 @@ static char TAXON_ASSOCIATED_KEY;
         
         [overlay.library bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
-            [self openLibraryTaxon:taxon];
+            [self openLibraryTaxon:taxon project:project];
         } forControlEvents:UIControlEventTouchUpInside];
         
         picker.cameraOverlayView = overlay;
@@ -197,6 +204,15 @@ static char TAXON_ASSOCIATED_KEY;
                                              @(ALAssetsGroupAlbum)
                                              ];
         
+        if (taxon) {
+            objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        if (project) {
+            objc_setAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -212,7 +228,7 @@ static char TAXON_ASSOCIATED_KEY;
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
 
-        [self triggerNewObservationFlowForTaxon:nil];
+        [self triggerNewObservationFlowForTaxon:nil project:nil];
         
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == 4) {
@@ -263,6 +279,10 @@ static char TAXON_ASSOCIATED_KEY;
     if (taxon) {
         confirm.taxon = taxon;
     }
+    Project *project = objc_getAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY);
+    if (project) {
+        confirm.project = project;
+    }
 
     [picker pushViewController:confirm animated:NO];
 }
@@ -273,7 +293,7 @@ static char TAXON_ASSOCIATED_KEY;
 
 #pragma mark - Add New Observation methods
 
-- (void)openLibraryTaxon:(Taxon *)taxon {
+- (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
     // qbimagepicker for library multi-select
     QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
     imagePickerController.delegate = self;
@@ -289,6 +309,10 @@ static char TAXON_ASSOCIATED_KEY;
         objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
     }
     
+    if (project) {
+        objc_setAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+    }
+    
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:imagePickerController animated:YES];
     [nav setNavigationBarHidden:NO animated:YES];
@@ -298,7 +322,7 @@ static char TAXON_ASSOCIATED_KEY;
                                                                                               action:@selector(done:)];
 }
 
-- (void)noPhotoTaxon:(Taxon *)taxon {
+- (void)noPhotoTaxon:(Taxon *)taxon project:(Project *)project {
     Observation *o = [Observation object];
     
     // photoless observation defaults to now
@@ -309,6 +333,12 @@ static char TAXON_ASSOCIATED_KEY;
     if (taxon) {
         o.taxon = taxon;
         o.speciesGuess = taxon.defaultName;
+    }
+    
+    if (project) {
+        ProjectObservation *po = [ProjectObservation object];
+        po.observation = o;
+        po.project = project;
     }
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
@@ -360,6 +390,11 @@ static char TAXON_ASSOCIATED_KEY;
     Taxon *taxon = objc_getAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY);
     if (taxon) {
         confirm.taxon = taxon;
+    }
+    
+    Project *project = objc_getAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY);
+    if (project) {
+        confirm.project = project;
     }
 
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;

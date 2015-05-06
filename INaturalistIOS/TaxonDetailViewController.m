@@ -75,9 +75,23 @@ static const int TaxonDescTag = 1;
                             withObject:self.taxon];
     } else {
         // be defensive
-        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:)]) {
+        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TaxonDetails" }];
-            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:self.taxon];
+            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:self.taxon
+                                                                                         project:nil];
+        } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            // can't present from the tab bar while it's out of the view hierarchy
+            // so dismiss the presented view (ie the parent of this taxon details VC)
+            // and then trigger the new observation flow once the tab bar is back
+            // in thei heirarchy.
+            INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+            [tabBar dismissViewControllerAnimated:YES
+                                       completion:^{
+                                           [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                            withProperties:@{ @"From": @"TaxonDetails" }];
+                                           [tabBar triggerNewObservationFlowForTaxon:self.taxon
+                                                                             project:nil];
+                                       }];
         }
     }
 }

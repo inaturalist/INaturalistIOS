@@ -28,6 +28,8 @@
 #import "Observation.h"
 #import "Observation+AddAssets.h"
 #import "Analytics.h"
+#import "Project.h"
+#import "ProjectObservation.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -74,6 +76,9 @@
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
+                if (strongSelf.project) {
+                    categorize.project = strongSelf.project;
+                }
                 categorize.shouldContinueUpdatingLocation = weakSelf.shouldContinueUpdatingLocation;
                 [weakSelf transitionToCategorize:categorize];
             } else {
@@ -83,6 +88,12 @@
                 if (strongSelf.taxon) {
                     o.taxon = strongSelf.taxon;
                     o.speciesGuess = strongSelf.taxon.defaultName ?: strongSelf.taxon.name;
+                }
+                
+                if (strongSelf.project) {
+                    ProjectObservation *po = [ProjectObservation object];
+                    po.observation = o;
+                    po.project = strongSelf.project;
                 }
                 
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
