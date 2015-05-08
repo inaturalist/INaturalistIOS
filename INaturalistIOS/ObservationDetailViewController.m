@@ -12,6 +12,9 @@
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -20,8 +23,6 @@
 #import "ObservationField.h"
 #import "ObservationFieldValue.h"
 #import "ObservationPageViewController.h"
-#import "PhotoViewController.h"
-#import "PhotoSource.h"
 #import "Project.h"
 #import "ProjectObservation.h"
 #import "ProjectObservationField.h"
@@ -465,9 +466,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
-    self.getToolbarViewController.navigationController.navigationBar.translucent = NO;
-    self.getToolbarViewController.navigationController.toolbar.translucent = NO;
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
@@ -768,19 +766,31 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasTappedInFront:(NSInteger)index tapCount:(NSInteger)tapCount {
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
     if (!op) return;
-    NSString *photoSourceTitle = [NSString
-                                  stringWithFormat:@"Photos for %@",
-                                  (self.observation.speciesGuess ? self.observation.speciesGuess : @"Something")];
-    PhotoSource *photoSource = [[PhotoSource alloc]
-                                initWithPhotos:self.observationPhotos
-                                title:photoSourceTitle];
-    PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
-    vc.delegate = self;
-    vc.photoSource = photoSource;
-    UIViewController *tbvc = self.getToolbarViewController;
-    [tbvc.navigationController setToolbarHidden:YES];
-    UINavigationController *photoNav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [tbvc.navigationController presentViewController:photoNav animated:YES completion:nil];
+    
+    NSArray *galleryData = [self.observationPhotos bk_map:^id(ObservationPhoto *op) {
+        return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
+                              galleryType:MHGalleryTypeImage];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = YES;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = 0;
+    gallery.UICustomization = customization;
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
 }
 
 #pragma mark UIViewController
@@ -880,6 +890,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark PhotoViewControllerDelegate
+/*
+ TODO: need to re-implement delete photo
 - (void)photoViewControllerDeletePhoto:(id<TTPhoto>)photo
 {
     ObservationPhoto *op = (ObservationPhoto *)photo;
@@ -887,6 +899,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [op deleteEntity];
     [self refreshCoverflowView];
 }
+ */
 
 #pragma mark CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation

@@ -32,7 +32,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
 @synthesize listedTaxa = _listedTaxa;
 @synthesize projectIcon = _projectIcon;
 @synthesize projectTitle = _projectTitle;
-@synthesize projectSubtitle = _projectSubtitle;
 @synthesize loader = _loader;
 @synthesize lastSyncedAt = _lastSyncedAt;
 @synthesize syncButton = _syncButton;
@@ -211,7 +210,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
 - (void)viewDidUnload {
     [self setProjectIcon:nil];
     [self setProjectTitle:nil];
-    [self setProjectSubtitle:nil];
     [self setSyncButton:nil];
     [super viewDidUnload];
 }

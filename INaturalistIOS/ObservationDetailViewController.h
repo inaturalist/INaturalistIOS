@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
-#import "PhotoViewController.h"
 #import "EditLocationViewController.h"
 #import "ProjectChooserViewController.h"
 #import "TaxaSearchViewController.h"
@@ -44,7 +43,6 @@
     UIImagePickerControllerDelegate, 
     TKCoverflowViewDelegate, 
     TKCoverflowViewDataSource,
-    PhotoViewControllerDelegate, 
     CLLocationManagerDelegate, 
     EditLocationViewControllerDelegate,
     ProjectChooserViewControllerDelegate,

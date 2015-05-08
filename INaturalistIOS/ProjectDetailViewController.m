@@ -271,27 +271,39 @@ static const int LeaveProjectAlertViewTag = 1;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    TTStyledTextLabel *rowContent;
+    UILabel *rowContent;
     if (indexPath.section == 0 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        rowContent = (UILabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectDescription]]
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            NSString *htmlString = [NSString stringWithFormat:@"<div>%@</div>", [self projectDescription]];
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
         }
     } else if (indexPath.section == 1 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        rowContent = (UILabel *)[cell viewWithTag:1];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]]
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            
+            NSString *htmlString = [NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]];
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
         }
     } else if (indexPath.section == 2 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:2];
+        rowContent = (UILabel *)[cell viewWithTag:1];
+        
         if (!rowContent.text) {
             NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
             NSMutableString *termsString;
@@ -304,9 +316,14 @@ static const int LeaveProjectAlertViewTag = 1;
             } else {
                 termsString = [NSMutableString stringWithFormat:@"<div>%@.</div>", NSLocalizedString(@"No observation rules", nil)];
             }
-            rowContent.text = [TTStyledText textFromXHTML:termsString
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[termsString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
         }

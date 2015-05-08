@@ -15,7 +15,6 @@
 #import "Observation.h"
 #import "ObservationDetailViewController.h"
 #import "RXMLElement+Helpers.h"
-#import "PhotoSource.h"
 #import "GuideImageXML.h"
 #import "Analytics.h"
 

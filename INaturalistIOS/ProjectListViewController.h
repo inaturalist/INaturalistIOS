@@ -20,7 +20,6 @@
 @property (nonatomic, strong) NSMutableArray *listedTaxa;
 @property (weak, nonatomic) IBOutlet UIImageView *projectIcon;
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;
-@property (weak, nonatomic) IBOutlet TTStyledTextLabel *projectSubtitle;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *lastSyncedAt;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;

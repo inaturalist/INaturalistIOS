@@ -34,11 +34,6 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic nativePhotoID;
 @dynamic uuid;
 
-@synthesize photoSource = _photoSource;
-@synthesize index = _index;
-@synthesize size = _size;
-@synthesize caption = _caption;
-
 - (void)prepareForDeletion
 {
     [super prepareForDeletion];
@@ -104,78 +99,59 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return [self primitiveObservationID];
 }
 
-#pragma mark TTPhoto protocol methods
-- (NSString *)URLForVersion:(TTPhotoVersion)version
-{
-    NSString *url;
-    if (self.photoKey) {
-        switch (version) {
-            case TTPhotoVersionThumbnail:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
-                                                             forSize:ImageStoreSquareSize];
-                break;
-            case TTPhotoVersionSmall:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
-                                                             forSize:ImageStoreSmallSize];
-                break;
-            case TTPhotoVersionMedium:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
-                                                             forSize:ImageStoreSmallSize];
-                break;
-            case TTPhotoVersionLarge:
-                url = [[ImageStore sharedImageStore] urlStringForKey:self.photoKey 
-                                                             forSize:ImageStoreLargeSize];
-                break;
-            default:
-                url = nil;
-                break;
-        }
+#pragma mark - INatPhoto
+
+
+- (NSURL *)largePhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *localPath = [[ImageStore sharedImageStore] pathForKey:self.photoKey forSize:ImageStoreLargeSize];
+
+    if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
+        return [NSURL fileURLWithPath:localPath];
+    } else if (self.largeURL) {
+        return [NSURL URLWithString:self.largeURL];
     } else {
-        switch (version) {
-            case TTPhotoVersionThumbnail:
-                url = self.squareURL;
-                break;
-            case TTPhotoVersionSmall:
-                url = self.smallURL;
-                break;
-            case TTPhotoVersionMedium:
-                url = self.mediumURL;
-                break;
-            case TTPhotoVersionLarge:
-                url = self.largeURL;
-                break;
-            default:
-                url = nil;
-                break;
-        }
+        return [self mediumPhotoUrl];
     }
-    return url;
 }
 
-- (CGSize)size
-{
-    // since size is a struct, it sort of already has all its "attributes" in place, 
-    // but they have been initialized to zero, so this is the equivalent of a null check
-    if (_size.width == 0) {
-        UIImage *img = [[ImageStore sharedImageStore] find:self.photoKey forSize:ImageStoreLargeSize];
-        if (img) {
-            [self setSize:img.size];
-        } else {
-            // it'll just figure it out when the image loads
-        }
+- (NSURL *)mediumPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *localPath = [[ImageStore sharedImageStore] pathForKey:self.photoKey forSize:ImageStoreMediumSize];
+    
+    if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
+        return [NSURL fileURLWithPath:localPath];
+    } else if (self.mediumURL) {
+        return [NSURL URLWithString:self.mediumURL];
+    } else {
+        return [self smallPhotoUrl];
     }
-    return _size;
-
 }
 
-- (NSString *)caption
-{
-    if (!_caption) {
-        NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-        [fmt setDateFormat:@"hh:mm aaa MMM d, yyyy"];
-        _caption = [NSString stringWithFormat:@"Added at %@", [fmt stringFromDate:self.localCreatedAt]];
+- (NSURL *)smallPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *localPath = [[ImageStore sharedImageStore] pathForKey:self.photoKey forSize:ImageStoreSmallSize];
+
+    if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
+        return [NSURL fileURLWithPath:localPath];
+    } else if (self.smallURL) {
+        return [NSURL URLWithString:self.smallURL];
+    } else {
+        return [self thumbPhotoUrl];
     }
-    return _caption;
+}
+
+- (NSURL *)thumbPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *localPath = [[ImageStore sharedImageStore] pathForKey:self.photoKey forSize:ImageStoreSquareSize];
+
+    if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
+        return [NSURL fileURLWithPath:localPath];
+    } else if (self.squareURL) {
+        return [NSURL URLWithString:self.squareURL];
+    } else {
+        return nil;
+    }
 }
 
 - (void)willSave {

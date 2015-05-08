@@ -22,8 +22,6 @@
 #import "AddIdentificationViewController.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
-#import "PhotoViewController.h"
-#import "PhotoSource.h"
 #import "TaxonPhoto.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"

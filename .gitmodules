@@ -1,6 +1,3 @@
 [submodule "Vendor/RestKit"]
 	path = Vendor/RestKit
 	url = git://github.com/RestKit/RestKit.git
-[submodule "Vendor/three20"]
-	path = Vendor/three20
-	url = git://github.com/facebook/three20.git
