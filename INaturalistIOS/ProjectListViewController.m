@@ -20,6 +20,7 @@
 #import "TaxonDetailViewController.h"
 #import "ProjectDetailViewController.h"
 #import "Analytics.h"
+#import "INatUITabBarController.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
@@ -71,13 +72,32 @@ static const int ListedTaxonCellSubtitleTag = 3;
             lt = [self.listedTaxa objectAtIndex:indexPath.row-1];
         }
     }
-    [self performSegueWithIdentifier:@"AddObservationSegue" sender:lt];
+    
+    // be defensive
+    if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"ProjectList" }];
+        [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:lt.taxon
+                                                                                     project:self.project];
+    } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+        // can't present from the tab bar while it's out of the view hierarchy
+        // so dismiss the presented view (ie the parent of this taxon details VC)
+        // and then trigger the new observation flow once the tab bar is back
+        // in thei heirarchy.
+        INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+        [tabBar dismissViewControllerAnimated:YES
+                                   completion:^{
+                                       [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                        withProperties:@{ @"From": @"ProjectList" }];
+                                       [tabBar triggerNewObservationFlowForTaxon:lt.taxon
+                                                                         project:self.project];
+                                   }];
+    }
 }
 
 - (void)sync
 {
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] 
+        self.stopSyncButton = [[UIBarButtonItem alloc]
                                initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                target:self 
                                action:@selector(stopSync)];
@@ -120,22 +140,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"] || [segue.identifier isEqualToString:@"AddObservationRowSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
-        Observation *o = [Observation object];
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = o;
-        po.project = self.project;
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        if ([sender isKindOfClass:ListedTaxon.class]) {
-            ListedTaxon *lt = sender;
-            o.taxon = lt.taxon;
-            o.speciesGuess = lt.taxonDefaultName;
-        }
-        [vc setObservation:o];
-    } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
+    if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
         NSInteger row = [[self.tableView indexPathForSelectedRow] row];
         if (!self.project.observationsRestrictedToList) {
             row -= 1;

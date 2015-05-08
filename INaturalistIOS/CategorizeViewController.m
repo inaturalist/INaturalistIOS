@@ -23,6 +23,8 @@
 #import "ImageStore.h"
 #import "Observation+AddAssets.h"
 #import "Analytics.h"
+#import "Project.h"
+#import "ProjectObservation.h"
 
 static NSDictionary *ICONIC_TAXON_NAMES;
 static NSArray *ICONIC_TAXON_ORDER;
@@ -488,6 +490,12 @@ static NSArray *ICONIC_TAXON_ORDER;
         o.iconicTaxonName = taxon.iconicTaxonName;
         o.iconicTaxonID = taxon.iconicTaxonID;
         o.speciesGuess = taxon.defaultName;
+    }
+    
+    if (self.project) {
+        ProjectObservation *po = [ProjectObservation object];
+        po.observation = o;
+        po.project = self.project;
     }
     
     if (self.assets && self.assets.count > 0) {

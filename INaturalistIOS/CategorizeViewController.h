@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class Project;
+
 @interface CategorizeViewController : UIViewController
 
 @property NSArray *assets;
 @property NSDictionary *metadata;
 @property BOOL shouldContinueUpdatingLocation;
+
+@property Project *project;
 
 @end

@@ -28,6 +28,8 @@
 #import "Observation.h"
 #import "Observation+AddAssets.h"
 #import "Analytics.h"
+#import "Project.h"
+#import "ProjectObservation.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -68,15 +70,31 @@
         __weak __typeof__(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && iconicTaxa.count > 0) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && iconicTaxa.count > 0 && !self.taxon) {
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
+                if (strongSelf.project) {
+                    categorize.project = strongSelf.project;
+                }
                 categorize.shouldContinueUpdatingLocation = weakSelf.shouldContinueUpdatingLocation;
                 [weakSelf transitionToCategorize:categorize];
             } else {
                 // go straight to making the observation
                 Observation *o = [Observation object];
+                
+                if (strongSelf.taxon) {
+                    o.taxon = strongSelf.taxon;
+                    o.speciesGuess = strongSelf.taxon.defaultName ?: strongSelf.taxon.name;
+                }
+                
+                if (strongSelf.project) {
+                    ProjectObservation *po = [ProjectObservation object];
+                    po.observation = o;
+                    po.project = strongSelf.project;
+                }
                 
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
                 ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
