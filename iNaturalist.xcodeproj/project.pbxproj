@@ -102,7 +102,6 @@
 		197A60531511298D0061B83B /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60511511298D0061B83B /* projects.png */; };
 		197A60541511298D0061B83B /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60521511298D0061B83B /* projects@2x.png */; };
 		197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectListViewController.m */; };
-		197FD41317FD29B30099BDE6 /* GuidePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41217FD29B30099BDE6 /* GuidePhotoViewController.m */; };
 		197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */; };
 		197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */; };
 		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
@@ -564,8 +563,6 @@
 		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		197A6055151155DE0061B83B /* ProjectListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectListViewController.h; sourceTree = "<group>"; };
 		197A6056151155DE0061B83B /* ProjectListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectListViewController.m; sourceTree = "<group>"; };
-		197FD41117FD29B30099BDE6 /* GuidePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidePhotoViewController.h; sourceTree = "<group>"; };
-		197FD41217FD29B30099BDE6 /* GuidePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidePhotoViewController.m; sourceTree = "<group>"; };
 		197FD41717FD2DAE0099BDE6 /* GuideImageXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideImageXML.h; sourceTree = "<group>"; };
 		197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideImageXML.m; sourceTree = "<group>"; };
 		197FD41A17FE13CD0099BDE6 /* GuideTaxonXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideTaxonXML.h; sourceTree = "<group>"; };
@@ -847,6 +844,7 @@
 		FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreObservationPhoto+BestAvailableURL.m"; sourceTree = "<group>"; };
 		FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraOverlay.h; sourceTree = "<group>"; };
 		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
+		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_guides.png; sourceTree = "<group>"; };
 		FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_projects.png; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
@@ -1272,8 +1270,6 @@
 				19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */,
 				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
 				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
-				197FD41117FD29B30099BDE6 /* GuidePhotoViewController.h */,
-				197FD41217FD29B30099BDE6 /* GuidePhotoViewController.m */,
 				19D9B54414F62B840017B70A /* INatUITabBarController.h */,
 				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
 				19F874821522E58E00A65F9A /* INatWebController.h */,
@@ -1386,6 +1382,7 @@
 				FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */,
 				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
 				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
+				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2160,7 +2157,6 @@
 				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
-				197FD41317FD29B30099BDE6 /* GuidePhotoViewController.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
