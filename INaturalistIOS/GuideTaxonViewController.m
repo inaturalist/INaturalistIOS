@@ -6,12 +6,16 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+
 #import "GuideTaxonViewController.h"
 #import "Observation.h"
 #import "ObservationDetailViewController.h"
 #import "RXMLElement+Helpers.h"
 #import "PhotoSource.h"
-#import "GuidePhotoViewController.h"
 #import "GuideImageXML.h"
 #import "Analytics.h"
 
@@ -152,15 +156,32 @@ static const int WebViewTag = 1;
     if (!name) {
         name = [self.guideTaxon.xml atXPath:@"name"].text;
     }
-    NSString *title = [NSString stringWithFormat:NSLocalizedString(@"Photos for %@", nil), name];
-    PhotoSource *photoSource = [[PhotoSource alloc]
-                                initWithPhotos:self.guideTaxon.guidePhotos
-                                title:title];
-    GuidePhotoViewController *vc = [[GuidePhotoViewController alloc] init];
-    vc.photoSource = photoSource;
-    vc.currentURL = url;
-    [self.navigationController setToolbarHidden:YES];
-    [self.navigationController pushViewController:vc animated:YES];
+    
+    NSArray *galleryData = [self.guideTaxon.guidePhotos bk_map:^id(GuideImageXML *image) {
+        return [MHGalleryItem itemWithURL:image.mediumPhotoUrl.absoluteString
+                              galleryType:MHGalleryTypeImage];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = YES;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = 0;
+    gallery.UICustomization = customization;
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
+
 }
 
 @end

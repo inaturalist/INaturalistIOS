@@ -12,11 +12,6 @@
 @synthesize guideTaxon = _guideTaxon;
 @synthesize xml = _xml;
 
-@synthesize photoSource = _photoSource;
-@synthesize index = _index;
-@synthesize size = _size;
-@synthesize caption = _caption;
-
 - (id)initWithGuideTaxon:(GuideTaxonXML *)guideTaxon andXML:(RXMLElement *)xml
 {
     self = [super init];
@@ -98,100 +93,49 @@
     return [self.xml atXPath:@"descendant::href[@type='remote' and @size='large']"].text;
 }
 
-#pragma mark - TTPhoto protocol methods
-- (NSString *)URLForVersion:(TTPhotoVersion)version
-{
-    NSString *url;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.localMediumPath]) {
-        switch (version) {
-            case TTPhotoVersionThumbnail:
-                url = self.localThumbURL;
-                if (!url) {
-                    url = self.localSmallURL;
-                }
-                break;
-            case TTPhotoVersionSmall:
-                url = self.localSmallURL;
-                if (!url) {
-                    url = self.localMediumURL;
-                }
-                break;
-            case TTPhotoVersionMedium:
-                url = self.localMediumURL;
-                break;
-            case TTPhotoVersionLarge:
-                url = self.localLargeURL;
-                if (!url) {
-                    url = self.localMediumURL;
-                }
-                break;
-            default:
-                url = nil;
-                break;
-        }
-    } else {
-        switch (version) {
-            case TTPhotoVersionThumbnail:
-                url = self.remoteThumbURL;
-                if (!url) {
-                    url = self.remoteSmallURL;
-                }
-                break;
-            case TTPhotoVersionSmall:
-                url = self.remoteSmallURL;
-                if (!url) {
-                    url = self.remoteMediumURL;
-                }
-                break;
-            case TTPhotoVersionMedium:
-                url = self.remoteMediumURL;
-                break;
-            case TTPhotoVersionLarge:
-                url = self.remoteLargeURL;
-                if (!url) {
-                    url = self.remoteMediumURL;
-                }
-                break;
-            default:
-                url = nil;
-                break;
-        }
-    }
-    return url;
+
+
+#pragma mark - INatPhoto
+
+- (NSURL *)largePhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localLargePath]])
+        return [NSURL URLWithString:[self localLargePath]];
+    else if ([self remoteLargeURL])
+        return [NSURL URLWithString:[self remoteLargeURL]];
+    else
+        return [self mediumPhotoUrl];
 }
 
-- (CGSize)size
-{
-    // since size is a struct, it sort of already has all its "attributes" in place,
-    // but they have been initialized to zero, so this is the equivalent of a null check
-    if (_size.width == 0) {
-        UIImage *img = [UIImage imageWithContentsOfFile:self.localLargeURL];
-        if (img) {
-            [self setSize:img.size];
-        } else {
-            [self setSize:CGSizeMake(0,0)];
-        }
-    }
-    return _size;
+- (NSURL *)mediumPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localMediumPath]])
+        return [NSURL URLWithString:[self localMediumPath]];
+    else if ([self remoteMediumURL])
+        return [NSURL URLWithString:[self remoteMediumURL]];
+    else
+        return [self smallPhotoUrl];
 }
 
-- (NSString *)caption
-{
-    if (!_caption) {
-        NSString *desc = [self.xml atXPath:@"dc:description"].text;
-        NSString *attribution = [self.xml atXPath:@"attribution"].text;
-        if (desc) {
-            if (attribution) {
-                _caption = [NSString stringWithFormat:@"%@\n%@", desc, attribution];
-            } else {
-                _caption = desc;
-            }
-        } else if (attribution) {
-            _caption = attribution;
-        } else {
-            _caption = nil;
-        }
-    }
-    return _caption;
+- (NSURL *)smallPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localSmallPath]])
+        return [NSURL URLWithString:[self localSmallPath]];
+    else if ([self remoteSmallURL])
+        return [NSURL URLWithString:[self remoteSmallURL]];
+    else
+        return [self thumbPhotoUrl];
 }
+
+- (NSURL *)thumbPhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localThumbPath]])
+        return [NSURL URLWithString:[self localThumbPath]];
+    else if ([self remoteThumbURL])
+        return [NSURL URLWithString:[self remoteThumbURL]];
+    else
+        return nil;
+}
+
+
 @end
