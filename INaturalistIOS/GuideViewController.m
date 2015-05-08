@@ -22,7 +22,6 @@
     }
 }
 
-// Override to set guide. Not too thrilled about this approach
 - (void)prepareForSegue:(SWRevealViewControllerSegueSetController *)segue sender:(id)sender
 {
     NSString *identifier = segue.identifier;

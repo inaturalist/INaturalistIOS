@@ -161,23 +161,11 @@ static const int GutterWidth  = 5;
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
     [img sd_cancelCurrentImageLoad];
     img.image = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
-    img.contentMode = UIViewContentModeCenter;
+    img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
-        NSString *size = [self currentImageSize];
-        NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
-        if (localImagePath) {
-            img.image = [UIImage imageWithContentsOfFile:localImagePath];
-            img.contentMode = UIViewContentModeScaleAspectFill;
-        } else {
-            NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
-            if (remoteImageURL) {
-                [img sd_setImageWithURL:[NSURL URLWithString:remoteImageURL]
-                       placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
-                img.contentMode = UIViewContentModeScaleAspectFill;
-            }
-        }
+        [img sd_setImageWithURL:guideTaxon.smallPhotoUrl];
         
         UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
         if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
