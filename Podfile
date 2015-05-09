@@ -30,3 +30,12 @@ pod 'TapkuLibrary', '0.3.8'
 pod 'SWRevealViewController', '2.3.0'
 pod 'RestKit', '0.10.3'
 pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
+
+# Append to your Podfile
+post_install do |installer_representation|
+    installer_representation.project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+        end
+    end
+end
