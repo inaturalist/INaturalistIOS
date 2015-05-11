@@ -129,6 +129,7 @@ DEPENDENCIES:
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
   - JDFTooltips (= 1.0)
+  - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
   - MHVideoPhotoGallery (= 1.6.6)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
@@ -148,11 +149,17 @@ EXTERNAL SOURCES:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
     :git: https://github.com/JoeKun/FileMD5Hash.git
+  JSONKit:
+    :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
+    :git: https://github.com/alexshepard/JSONKit.git
 
 CHECKOUT OPTIONS:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
     :git: https://github.com/JoeKun/FileMD5Hash.git
+  JSONKit:
+    :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
+    :git: https://github.com/alexshepard/JSONKit.git
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
@@ -172,7 +179,7 @@ SPEC CHECKSUMS:
   HexColors: abfd172e329dab59888614ccba6f216cec59289d
   ISO8601DateFormatter: ab926648eebe497f4d167c0fd083992f959f1274
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
-  JSONKit: bae313ce6a6c444f40489a6c0b023f399888871f
+  JSONKit: f4f4870c9e91926a56352680e3a3f5f78bccf187
   LibComponentLogging-Core: 769c6f596b96348911fe75f9825728213d334941
   LibComponentLogging-NSLog: ae0ad111653e6c955e3f93b95386285fcdf94ab3
   MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
