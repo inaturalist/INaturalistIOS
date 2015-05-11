@@ -80,7 +80,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 @end
 
-@interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate>
+@interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate,MHGalleryDelegate>
 @property UIBarButtonItem *bigSave;
 @end
 
@@ -775,13 +775,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     MHUICustomization *customization = [[MHUICustomization alloc] init];
     customization.showOverView = NO;
     customization.showMHShareViewInsteadOfActivityViewController = NO;
-    customization.hideShare = YES;
+    customization.hideShare = NO;
     customization.useCustomBackButtonImageOnImageViewer = NO;
     
     MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
     gallery.galleryItems = galleryData;
     gallery.presentationIndex = 0;
     gallery.UICustomization = customization;
+    
+    gallery.galleryDelegate = self;
     
     __weak MHGalleryController *blockGallery = gallery;
     
@@ -790,7 +792,44 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [blockGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
-    [self presentMHGalleryController:gallery animated:YES completion:nil];
+    
+    [self presentMHGalleryController:gallery animated:YES completion:^{
+        // add a delete button
+        NSMutableArray *toolbarItems = [gallery.imageViewerViewController.toolbar.items mutableCopy];
+        [toolbarItems removeLastObject];
+        [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                                handler:^(id sender) {
+                                                                                    [blockGallery dismissViewControllerAnimated:YES
+                                                                                                               dismissImageView:nil
+                                                                                                                     completion:nil];
+                                                                                    ObservationPhoto *op = self.observationPhotos[blockGallery.presentationIndex];
+                                                                                    [self.observationPhotos removeObject:op];
+                                                                                    [op deleteEntity];
+                                                                                    [self refreshCoverflowView];
+                                                                                }]];
+        gallery.imageViewerViewController.toolbar.items = toolbarItems;
+    }];
+}
+
+// need to re-add the delete button each time the user goes forward or backward
+- (void)galleryController:(MHGalleryController *)galleryController didShowIndex:(NSInteger)index {
+    __weak MHGalleryController *blockGallery = galleryController;
+
+    NSMutableArray *toolbarItems = [galleryController.imageViewerViewController.toolbar.items mutableCopy];
+    [toolbarItems removeLastObject];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                            handler:^(id sender) {
+                                                                                [blockGallery dismissViewControllerAnimated:YES
+                                                                                                           dismissImageView:nil
+                                                                                                                 completion:nil];
+                                                                                ObservationPhoto *op = self.observationPhotos[blockGallery.presentationIndex];
+                                                                                [self.observationPhotos removeObject:op];
+                                                                                [op deleteEntity];
+                                                                                [self refreshCoverflowView];
+                                                                            }]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        galleryController.imageViewerViewController.toolbar.items = toolbarItems;
+    });
 }
 
 #pragma mark UIViewController
