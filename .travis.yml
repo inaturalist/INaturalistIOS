@@ -1,3 +1,3 @@
 language: objective-c
-xcode_project: iNaturalist.xcworkspace
+xcode_workspace: iNaturalist.xcworkspace
 xcode_scheme: iNaturalist
