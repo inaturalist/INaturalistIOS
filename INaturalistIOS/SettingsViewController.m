@@ -287,11 +287,17 @@ static const int CategorizeNewObsSwitchTag = 11;
         key = kInatCategorizeNewObsPrefKey;
     
     if (key) {
-        [[Analytics sharedClient] event:kAnalyticsEventSettingChanged
-                         withProperties:@{
-                                          @"setting": key,
-                                          @"newValue": @(switcher.isOn),
-                                          }];
+        NSString *analyticsEvent;
+        
+        if (switcher.isOn) {
+            analyticsEvent = kAnalyticsEventSettingEnabled;
+        } else {
+            analyticsEvent = kAnalyticsEventSettingDisabled;
+        }
+        
+        [[Analytics sharedClient] event:analyticsEvent
+                         withProperties:@{ @"setting": key }];
+        
         [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }

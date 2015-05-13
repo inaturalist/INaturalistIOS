@@ -113,7 +113,8 @@ extern NSString *kAnalyticsEventNewObservationSkipCategorize;
 extern NSString *kAnalyticsEventNewObservationSaveObservation;
 
 // settings
-extern NSString *kAnalyticsEventSettingChanged;
+extern NSString *kAnalyticsEventSettingEnabled;
+extern NSString *kAnalyticsEventSettingDisabled;
 
 // guides
 extern NSString *kAnalyticsEventDownloadGuideStarted;

@@ -158,7 +158,8 @@ NSString *kAnalyticsEventNewObservationSkipCategorize =         @"New Obs - Skip
 NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save New Observation";
 
 // settings
-NSString *kAnalyticsEventSettingChanged =                       @"Setting Changed";
+NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
+NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabled";
 
 // guides
 NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";
