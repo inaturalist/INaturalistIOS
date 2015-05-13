@@ -700,8 +700,6 @@
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
-		FADE28A41B02D5B400CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FADE28A51B02D5B400CA55FF /* iNaturalist_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalist_Tests.m; sourceTree = "<group>"; };
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
@@ -793,7 +791,6 @@
 			isa = PBXGroup;
 			children = (
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
-				FADE28A21B02D5B400CA55FF /* iNaturalist Tests */,
 				FADE28B11B02D9AA00CA55FF /* iNaturalistTests */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
 				1927513414E9CCC9000ABAC4 /* Products */,
@@ -1361,23 +1358,6 @@
 				FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */,
 			);
 			name = "Detail View";
-			sourceTree = "<group>";
-		};
-		FADE28A21B02D5B400CA55FF /* iNaturalist Tests */ = {
-			isa = PBXGroup;
-			children = (
-				FADE28A51B02D5B400CA55FF /* iNaturalist_Tests.m */,
-				FADE28A31B02D5B400CA55FF /* Supporting Files */,
-			);
-			path = "iNaturalist Tests";
-			sourceTree = "<group>";
-		};
-		FADE28A31B02D5B400CA55FF /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				FADE28A41B02D5B400CA55FF /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
