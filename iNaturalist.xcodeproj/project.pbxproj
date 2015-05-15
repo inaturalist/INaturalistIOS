@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15FD479DF25C4C90950EE4A2 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FDA5EFF9EFA47B2B6919DBE /* libPods.a */; };
 		166DE656E2ACFA4E159E2AB1 /* libPods-iNaturalistTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 791192251A65553AF8BDAFFD /* libPods-iNaturalistTests.a */; };
 		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
@@ -730,7 +729,6 @@
 				1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */,
 				1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
 				1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
-				15FD479DF25C4C90950EE4A2 /* libPods.a in Frameworks */,
 				87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
