@@ -22,6 +22,7 @@ PODS:
   - CrashlyticsFramework (2.2.10)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
+  - Expecta (1.0.0)
   - Facebook-iOS-SDK (3.20.0):
     - Bolts (~> 1.0)
   - FileMD5Hash (0.0.1)
@@ -122,6 +123,7 @@ DEPENDENCIES:
   - CrashlyticsFramework (= 2.2.10)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
+  - Expecta
   - Facebook-iOS-SDK (= 3.20.0)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - FlurrySDK (= 6.2.0)
@@ -172,6 +174,7 @@ SPEC CHECKSUMS:
   CrashlyticsFramework: 2f7c515a2d74c8636bf47e761621f2f68193747e
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
+  Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
   Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
   FileMD5Hash: d96615de89074573f05b8106441e15ac6241cfae
   FlurrySDK: 6d8cc2f898589214ed72e481cf59cffa55b88fe0
