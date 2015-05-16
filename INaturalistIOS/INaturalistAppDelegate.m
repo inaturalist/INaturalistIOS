@@ -29,6 +29,9 @@
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "LoginController.h"
+#import "SignupSplashViewController.h"
+#import "INatUITabBarController.h"
 
 @implementation INaturalistAppDelegate
 
@@ -57,6 +60,8 @@
     [self configureRestKit];
     [self configureOAuth2Client];
     
+    self.loginController = [[LoginController alloc] init];
+    
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [[UITabBar appearance] setTintColor:[UIColor inatTint]];
@@ -71,7 +76,19 @@
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
     // tiny bit offwhite, so it stands up with or without the gradient mask
     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
-
+    
+    if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.skippable = YES;
+        splash.cancellable = NO;
+        splash.animateIn = YES;
+        splash.skipAction = ^{
+            [self showMainUI];
+        };
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        [self.window setRootViewController:nav];        
+    }
+    
     return YES;
 }
 
@@ -246,6 +263,14 @@
     //return (username && username.length > 0);
     NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
     return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+}
+
+- (void)showMainUI {
+    if (![self.window.rootViewController isKindOfClass:[INatUITabBarController class]]) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        UIViewController *vc = [storyboard instantiateInitialViewController];
+        [self.window setRootViewController:vc];
+    }
 }
 
 @end

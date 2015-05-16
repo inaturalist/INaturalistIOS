@@ -28,6 +28,7 @@
 #import "Analytics.h"
 #import "ProjectObservation.h"
 #import "Project.h"
+#import "SignupSplashViewController.h"
 
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
@@ -450,6 +451,11 @@ static char PROJECT_ASSOCIATED_KEY;
 }
 
 - (void)userSignedIn {
+    if (self.presentedViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else if (self.selectedViewController.presentedViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
     [makeFirstObsTooltip hideAnimated:NO];
 }
 

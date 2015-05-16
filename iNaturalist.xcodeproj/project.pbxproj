@@ -245,6 +245,11 @@
 		FA627B7A1ACB5A650079534E /* binocs.png in Resources */ = {isa = PBXBuildFile; fileRef = FA627B791ACB5A650079534E /* binocs.png */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
+		FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */; };
+		FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */; };
+		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
+		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
+		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
 		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
@@ -262,6 +267,7 @@
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
+		FAC4FEAE1B0580DC00C61E97 /* signup_iphone6_test_01.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
@@ -661,6 +667,14 @@
 		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
+		FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+InatHelpers.h"; sourceTree = "<group>"; };
+		FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+InatHelpers.m"; sourceTree = "<group>"; };
+		FA6D69571B06A6CD000983F8 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
+		FA6D69581B06A6CD000983F8 /* LoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginController.m; sourceTree = "<group>"; };
+		FA6D695A1B06B026000983F8 /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
+		FA6D695B1B06B026000983F8 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
+		FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextFieldCell.h; sourceTree = "<group>"; };
+		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
 		FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorizeViewController.h; sourceTree = "<group>"; };
 		FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorizeViewController.m; sourceTree = "<group>"; };
 		FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.5.xcdatamodel; sourceTree = "<group>"; };
@@ -694,6 +708,9 @@
 		FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmPhotoViewController.m; sourceTree = "<group>"; };
 		FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiImageView.h; sourceTree = "<group>"; };
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
+		FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupSplashViewController.h; sourceTree = "<group>"; };
+		FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupSplashViewController.m; sourceTree = "<group>"; };
+		FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = signup_iphone6_test_01.jpg; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
@@ -873,6 +890,7 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */,
 				FA4E72AE19FAC8A900A9AB5D /* iconic taxa */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,
 				19122E3E1512D3F4009BD3D0 /* add_button@2x.png */,
@@ -1049,6 +1067,10 @@
 				19F87491152670B000A65F9A /* RecordSearchController.h */,
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */,
+				FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */,
+				FA6D695A1B06B026000983F8 /* SignupViewController.h */,
+				FA6D695B1B06B026000983F8 /* SignupViewController.m */,
 				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
 				19F874941526763D00A65F9A /* TaxaSearchController.h */,
 				19F874951526763E00A65F9A /* TaxaSearchController.m */,
@@ -1091,6 +1113,8 @@
 				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
 				FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */,
 				FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */,
+				FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */,
+				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1125,6 +1149,10 @@
 				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
 				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
 				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
+				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
+				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
+				FA6D69571B06A6CD000983F8 /* LoginController.h */,
+				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1566,6 +1594,7 @@
 				19AC33CB17EEC46B00B663BD /* 265-download.png in Resources */,
 				19AC33CC17EEC46B00B663BD /* 265-download@2x.png in Resources */,
 				1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */,
+				FAC4FEAE1B0580DC00C61E97 /* signup_iphone6_test_01.jpg in Resources */,
 				1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
@@ -1699,6 +1728,7 @@
 				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
+				FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
@@ -1718,10 +1748,12 @@
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
 				FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */,
 				1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
+				FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */,
 				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
 				19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */,
+				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */,
@@ -1734,6 +1766,7 @@
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
+				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
@@ -1772,6 +1805,7 @@
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
+				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
 				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,

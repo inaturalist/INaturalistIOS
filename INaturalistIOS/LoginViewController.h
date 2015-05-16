@@ -9,8 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GPPSignIn.h"
 #import "INatWebController.h"
-
-extern NSString *kUserLoggedInNotificationName;
+#import "LoginController.h"
 
 @class LoginViewController;
 

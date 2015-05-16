@@ -429,6 +429,7 @@ static const NSInteger GoogleAssertionType = 2;
 #pragma mark - OAuth2 methods
 
 -(void) initOAuth2Service{
+    return;
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreAccountsDidChangeNotification
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
@@ -500,7 +501,3 @@ static const NSInteger GoogleAssertionType = 2;
 }
 
 @end
-
-#pragma mark - NSNotification names
-
-NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";

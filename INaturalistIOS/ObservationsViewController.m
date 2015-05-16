@@ -33,6 +33,7 @@
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
+#import "SignupSplashViewController.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
@@ -717,21 +718,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
                              withProperties:@{ @"from": @"AnonMeHeader" }];
             
-            // replicate the pre-existing signup/login flow as much as possible
-            // until we have a chance to re-do the whole thing
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
-            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
-            login.delegate = self;
-            
-            INatWebController *webController = [[INatWebController alloc] init];
-            NSURL *url = [NSURL URLWithString:
-                          [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-            [webController setUrl:url];
-            webController.delegate = login;
-            
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
-            [nav pushViewController:webController animated:NO];
-            [self.navigationController presentViewController:nav animated:YES completion:nil];
+            SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+            signup.cancellable = YES;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+            [self presentViewController:nav animated:YES completion:nil];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -881,7 +871,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 //        NSLog(@"ALERT: %@", error.localizedDescription);
 //    }
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userSignedIn)
+                                                 name:kUserLoggedInNotificationName
+                                               object:nil];
     
     // NSFetchedResultsController request for my observations
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
@@ -927,6 +920,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     
     [self loadUserForHeader];
+}
+
+- (void)userSignedIn {
+    [self.tableView reloadData];
 }
 
 - (void)settings {
