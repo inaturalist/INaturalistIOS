@@ -508,6 +508,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.getToolbarViewController.navigationController setToolbarHidden:NO
                                                                 animated:animated];
     
+    [self.coverflowView setCurrentCoverAtIndex:0 animated:YES];
+
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
@@ -739,15 +741,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
 	if (op.photoKey == nil) {
         TKCoverflowCoverView *boundCover = cover;
-        cover.imageView.contentMode = UIViewContentModeCenter;
+        cover.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         [cover.imageView sd_setImageWithURL:[NSURL URLWithString:op.mediumURL ?: op.smallURL]
                            placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                       if (error) {
                                           boundCover.image = [UIImage imageNamed:@"184-warning.png"];
-                                      } else {
-                                          boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
                                       }
                                   }];
 	} else {
