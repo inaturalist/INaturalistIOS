@@ -758,11 +758,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     return cover;
 }
 
-- (void)coverflowView:(TKCoverflowView*)coverflowView coverAtIndexWasBroughtToFront:(int)index
-{
-	// required but not required
-}
-
 - (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasTappedInFront:(NSInteger)index tapCount:(NSInteger)tapCount {
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
     if (!op) return;
