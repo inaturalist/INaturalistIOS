@@ -77,14 +77,11 @@ NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
                                    return;
                                }
                                
-                               accountType = nil;
-                               accountType = kINatAuthService;
-                               isLoginCompleted = NO;
-                               [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
-                                                                                         username:username
-                                                                                         password:password];
+                               [self loginWithUsername:username
+                                              password:password
+                                               success:successBlock
+                                               failure:failureBlock];
                                
-                               successBlock(nil);
                            };
                            
                            request.onDidFailLoadWithError = ^(NSError *error) {
@@ -94,6 +91,19 @@ NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
                        }];
 }
 
+- (void)loginWithUsername:(NSString *)username
+                 password:(NSString *)password
+                  success:(LoginSuccessBlock)successBlock
+                  failure:(LoginErrorBlock)failureBlock {
+
+    accountType = nil;
+    accountType = kINatAuthService;
+    isLoginCompleted = NO;
+    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+                                                              username:username
+                                                              password:password];
+
+}
 
 - (void)loginWithFacebookSuccess:(LoginSuccessBlock)successBlock failure:(LoginErrorBlock)failBlock {
     NSArray *perms = @[@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups"];
@@ -166,6 +176,7 @@ NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
 
 
 -(void)finishWithAuth2Login{
+    
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:accountType]) {

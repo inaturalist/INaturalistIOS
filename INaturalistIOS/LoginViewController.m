@@ -18,6 +18,7 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "GooglePlusAuthViewController.h"
+#import "LoginController.h"
 
 static const NSInteger FacebookAssertionType = 1;
 static const NSInteger GoogleAssertionType = 2;
@@ -94,14 +95,15 @@ static const NSInteger GoogleAssertionType = 2;
 
 
 - (IBAction)signIn:(id)sender {
-    //INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
-    AccountType = nil;
-    AccountType = kINatAuthService;
-    isLoginCompleted = NO;
-    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:AccountType
-                                                              username:[usernameField text]
-                                                              password:[passwordField text]];
+    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
+    [app.loginController loginWithUsername:[usernameField text]
+                                  password:[passwordField text]
+                                   success:^(NSDictionary *info) {
+                                       NSLog(@"sign in success: %@", info);
+                                   }
+                                   failure:^(NSError *error) {
+                                       NSLog(@"sign in error: %@", error);
+                                   }];
 }
 
 #pragma mark - RKRequestDelegate methods

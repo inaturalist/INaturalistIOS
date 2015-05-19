@@ -923,7 +923,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)userSignedIn {
-    [self.tableView reloadData];
+    [self refreshRequestedNotify:YES];
 }
 
 - (void)settings {
