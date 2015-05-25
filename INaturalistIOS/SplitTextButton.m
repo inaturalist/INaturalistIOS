@@ -104,14 +104,10 @@
                          self.leftTitleLabel.highlighted = highlighted;
                          self.rightTitleLabel.highlighted = highlighted;
                      }];
-    
-    NSLog(@"highlighted is %d", highlighted);
 }
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
-    
-    NSLog(@"selected is %d", selected);
 }
 
 @end
