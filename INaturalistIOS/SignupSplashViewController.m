@@ -19,24 +19,31 @@
 #import "SignupViewController.h"
 #import "GooglePlusAuthViewController.h"
 #import "UIColor+INaturalist.h"
+#import "SplitTextButton.h"
+#import "FAKInaturalist.h"
 
 @interface SignupSplashViewController () {
+    UIImage *orangeFlower, *moth, *purpleFlower;
     UIImageView *backgroundImageView;
+    NSTimer *backgroundCycleTimer;
     
-    UIButton *loginFaceButton;
-    UIButton *loginGButton;
-    UIButton *signupEmailButton;
+    UILabel *logoLabel;
+    UILabel *reasonLabel;
+    
+    SplitTextButton *loginFaceButton;
+    SplitTextButton *loginGButton;
+    SplitTextButton *signupEmailButton;
     UIButton *skipButton;
     
     UIButton *signinEmailButton;
         
     BOOL _skippable;
     BOOL _cancellable;
+    NSString *_reason;
 }
 @end
 
 @implementation SignupSplashViewController
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -48,7 +55,7 @@
     // white button tint
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     
-    // completely clear background
+    // completely clear navbar background
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
     [self.navigationController.navigationBar setTranslucent:YES];
@@ -60,6 +67,34 @@
         signinEmailButton.alpha = 0.0f;
         signupEmailButton.alpha = 0.0f;
     }
+    
+    if (backgroundImageView && orangeFlower)
+        [backgroundImageView setImage:orangeFlower];
+    
+    backgroundCycleTimer = [NSTimer bk_scheduledTimerWithTimeInterval:5.0f
+                                                                block:^(NSTimer *timer) {
+                                                                    UIImage *newImage;
+                                                                    if (backgroundImageView.image == orangeFlower) {
+                                                                        newImage = moth;
+                                                                    } else if (backgroundImageView.image == moth) {
+                                                                        newImage = purpleFlower;
+                                                                    } else {
+                                                                        newImage = orangeFlower;
+                                                                    }
+                                                                    [UIView transitionWithView:backgroundImageView
+                                                                                      duration:0.5f
+                                                                                       options:UIViewAnimationOptionTransitionCrossDissolve
+                                                                                    animations:^{
+                                                                                        backgroundImageView.image = newImage;
+                                                                                    }
+                                                                                    completion:NULL];
+                                                                }
+                                                              repeats:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [backgroundCycleTimer invalidate];
+    backgroundCycleTimer = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -95,31 +130,66 @@
                                                                                              }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
+    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
+    moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
+    purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
+    
     backgroundImageView = ({
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
         iv.contentMode = UIViewContentModeScaleAspectFill;
-        iv.image = [UIImage imageNamed:@"signup_iphone6_test_01.jpg"];
+        iv.image = orangeFlower;
         
         iv;
     });
     [self.view addSubview:backgroundImageView];
     
+    logoLabel = ({
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:200];
+        [logo addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        
+        label.textAlignment = NSTextAlignmentCenter;
+        label.attributedText = logo.attributedString;
+        
+        label;
+    });
+    [self.view addSubview:logoLabel];
+    
+    reasonLabel = ({
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        label.numberOfLines = 0;
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont italicSystemFontOfSize:15.0f];
+        label.textAlignment = NSTextAlignmentCenter;
+        
+        if (self.reason && self.reason.length > 0) {
+            label.text = self.reason;
+        } else {
+            label.hidden = YES;
+        }
+        
+        label;
+    });
+    [self.view addSubview:reasonLabel];
     
     loginFaceButton = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
-
-        button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.4f];
-        button.tintColor = [UIColor whiteColor];
-        button.layer.cornerRadius = 2.0f;
-
-        [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
-                                                                     baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
-                                                                      emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
-                                                                       emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }]
-                          forState:UIControlStateNormal];
+        
+        button.leftTitleLabel.attributedText = ({
+            FAKIcon *face = [FAKIonIcons socialFacebookIconWithSize:25.0f];
+            face.attributedString;
+        });
+        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                   emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
@@ -146,18 +216,17 @@
     [self.view addSubview:loginFaceButton];
     
     loginGButton = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
-        button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.4f];
-        button.tintColor = [UIColor whiteColor];
-        button.layer.cornerRadius = 2.0f;
-
-        [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
-                                                                     baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
-                                                                      emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
-                                                                       emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }]
-                          forState:UIControlStateNormal];
+        button.leftTitleLabel.attributedText = ({
+            FAKIcon *face = [FAKIonIcons socialGoogleplusIconWithSize:25.0f];
+            face.attributedString;
+        });
+        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                   emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
@@ -197,17 +266,17 @@
     [self.view addSubview:loginGButton];
     
     signupEmailButton = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
-        button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.4f];
-        button.tintColor = [UIColor whiteColor];
-        button.layer.cornerRadius = 2.0f;
-        [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
-                                                                     baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
-                                                                      emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
-                                                                       emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }]
-                          forState:UIControlStateNormal];
+        button.leftTitleLabel.attributedText = ({
+            FAKIcon *face = [FAKIonIcons emailIconWithSize:25.0f];
+            face.attributedString;
+        });
+        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                   emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
@@ -225,10 +294,17 @@
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
-        [button setTitle:NSLocalizedString(@"Skip for Now >", @"title for skip for now button during signup prompt")
+        
+        [button setTitle:NSLocalizedString(@"Skip ›", @"title for skip button during signup prompt")
                 forState:UIControlStateNormal];
         
         button.hidden = !self.skippable;
+        button.layer.borderColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f].CGColor;
+        button.layer.borderWidth = 1.0f;
+        button.layer.cornerRadius = 15;
+        
+        button.contentEdgeInsets = UIEdgeInsetsMake(-5, 15, -5, 15);
+        button.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
         
         [button bk_addEventHandler:^(id sender) {
             if (self.skipAction) {
@@ -246,24 +322,38 @@
         
         button.tintColor = [UIColor whiteColor];
         [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Already have an account? Sign in", "@base text for email sign in button")
-                                                                     baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:14.0f] }
+                                                                     baseAttrs:@{
+                                                                                 NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                                                                 NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.5f],
+                                                                                 }
                                                                       emSubstr:NSLocalizedString(@"Sign in", @"portion of the base text for email sign in button that is bold. must be a substring of the base test.")
-                                                                       emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:14.0f] }]
+                                                                       emAttrs:@{
+                                                                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:14.0f],
+                                                                                 NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:1.0f],
+                                                                                 }]
                           forState:UIControlStateNormal];
+        
+        button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.1f];
         
         button;
     });
     [self.view addSubview:signinEmailButton];
     
     NSDictionary *views = @{
+                            @"logo": logoLabel,
                             @"bg": backgroundImageView,
                             @"face": loginFaceButton,
                             @"g": loginGButton,
                             @"emailSignup": signupEmailButton,
                             @"skip": skipButton,
                             @"emailSignin": signinEmailButton,
+                            @"reason": reasonLabel,
                             };
     
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[logo]-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[bg]-0-|"
                                                                       options:0
                                                                       metrics:0
@@ -273,6 +363,10 @@
                                                                       metrics:0
                                                                         views:views]];
     
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[reason]-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[face]-|"
                                                                       options:0
                                                                       metrics:0
@@ -285,21 +379,24 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[skip]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[emailSignin]-|"
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:skipButton
+                                                         attribute:NSLayoutAttributeCenterX
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:self.view
+                                                         attribute:NSLayoutAttributeCenterX
+                                                        multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[emailSignin]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
 
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[face]-[g]-[emailSignup]-[skip]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[logo]-[reason]"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[emailSignin]-20-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[face(==44)]-[g(==44)]-[emailSignup(==44)]-20-[skip(==30)]-20-[emailSignin(==44)]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -313,7 +410,6 @@
                                                            constant:0.0f]];
 
 }
-
 
 #pragma mark - setters/getters
 
@@ -339,6 +435,26 @@
 
 - (BOOL)cancellable {
     return _cancellable;
+}
+
+- (void)setReason:(NSString *)reason {
+    if (_reason == reason)
+        return;
+    
+    _reason = reason;
+    reasonLabel.text = _reason;
+    reasonLabel.hidden = (reason && reason.length > 0);
+    if (self.reason && self.reason.length > 0) {
+        reasonLabel.text = self.reason;
+    } else {
+        reasonLabel.hidden = YES;
+    }
+
+    [self.view setNeedsLayout];
+}
+
+- (NSString *)reason {
+    return _reason;
 }
 
 @end

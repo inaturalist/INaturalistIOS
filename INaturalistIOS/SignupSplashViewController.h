@@ -10,6 +10,7 @@
 
 @interface SignupSplashViewController : UIViewController
 
+@property NSString *reason;
 @property BOOL skippable;
 @property BOOL cancellable;
 @property BOOL animateIn;

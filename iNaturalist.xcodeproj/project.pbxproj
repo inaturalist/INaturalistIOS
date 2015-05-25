@@ -251,6 +251,10 @@
 		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
 		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
+		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
+		FA6F875F1B0E7E000019B157 /* SignUp_Moth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA6F875C1B0E7E000019B157 /* SignUp_Moth.jpg */; };
+		FA6F87601B0E7E000019B157 /* SignUp_OrangeFlower.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA6F875D1B0E7E000019B157 /* SignUp_OrangeFlower.jpg */; };
+		FA6F87611B0E7E000019B157 /* SignUp_PurpleFlower.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA6F875E1B0E7E000019B157 /* SignUp_PurpleFlower.jpg */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
@@ -269,7 +273,6 @@
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
-		FAC4FEAE1B0580DC00C61E97 /* signup_iphone6_test_01.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
@@ -679,6 +682,11 @@
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
 		FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorizeViewController.h; sourceTree = "<group>"; };
 		FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorizeViewController.m; sourceTree = "<group>"; };
+		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
+		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
+		FA6F875C1B0E7E000019B157 /* SignUp_Moth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SignUp_Moth.jpg; sourceTree = "<group>"; };
+		FA6F875D1B0E7E000019B157 /* SignUp_OrangeFlower.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SignUp_OrangeFlower.jpg; sourceTree = "<group>"; };
+		FA6F875E1B0E7E000019B157 /* SignUp_PurpleFlower.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SignUp_PurpleFlower.jpg; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
 		FA6F87681B0E99A20019B157 /* FAKINaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAKINaturalist.h; sourceTree = "<group>"; };
 		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
@@ -715,7 +723,6 @@
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
 		FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupSplashViewController.h; sourceTree = "<group>"; };
 		FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupSplashViewController.m; sourceTree = "<group>"; };
-		FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = signup_iphone6_test_01.jpg; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
@@ -896,7 +903,7 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				FAC4FEAD1B0580DC00C61E97 /* signup_iphone6_test_01.jpg */,
+				FA6F87621B0E7E020019B157 /* Signup Carousel */,
 				FA4E72AE19FAC8A900A9AB5D /* iconic taxa */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,
 				19122E3E1512D3F4009BD3D0 /* add_button@2x.png */,
@@ -1121,6 +1128,8 @@
 				FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */,
 				FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */,
 				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
+				FA6F87591B0E72C60019B157 /* SplitTextButton.h */,
+				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1340,6 +1349,16 @@
 			name = "View Controllers";
 			sourceTree = "<group>";
 		};
+		FA6F87621B0E7E020019B157 /* Signup Carousel */ = {
+			isa = PBXGroup;
+			children = (
+				FA6F875C1B0E7E000019B157 /* SignUp_Moth.jpg */,
+				FA6F875D1B0E7E000019B157 /* SignUp_OrangeFlower.jpg */,
+				FA6F875E1B0E7E000019B157 /* SignUp_PurpleFlower.jpg */,
+			);
+			name = "Signup Carousel";
+			sourceTree = "<group>";
+		};
 		FA6F87661B0E996B0019B157 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1511,6 +1530,7 @@
 				1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
 				19A5F62D14FB5B9300757636 /* settings-tab.png in Resources */,
 				19A5F63D14FB61E600757636 /* header-logo.png in Resources */,
+				FA6F87611B0E7E000019B157 /* SignUp_PurpleFlower.jpg in Resources */,
 				FA4E72AC19FAC8A000A9AB5D /* reptilia-200px.png in Resources */,
 				19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */,
 				19A5F64114FB644A00757636 /* notebook-tab.png in Resources */,
@@ -1571,6 +1591,7 @@
 				FA4E72A419FAC8A000A9AB5D /* aves-200px.png in Resources */,
 				195F325A151AE6140019CB85 /* 298-circlex.png in Resources */,
 				194D8E0618DE58850098E28C /* 121-landscape.png in Resources */,
+				FA6F87601B0E7E000019B157 /* SignUp_OrangeFlower.jpg in Resources */,
 				195F325B151AE6140019CB85 /* 298-circlex@2x.png in Resources */,
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
@@ -1606,12 +1627,12 @@
 				191B434B17E927A700AF000E /* Default@2x.png in Resources */,
 				191B434D17E927AA00AF000E /* Default-568h@2x.png in Resources */,
 				19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */,
+				FA6F875F1B0E7E000019B157 /* SignUp_Moth.jpg in Resources */,
 				FA4E72A019FAC8A000A9AB5D /* actinopterygii-200px.png in Resources */,
 				19570CCF17ECD0B0000C800A /* guides-menu@2x.png in Resources */,
 				19AC33CB17EEC46B00B663BD /* 265-download.png in Resources */,
 				19AC33CC17EEC46B00B663BD /* 265-download@2x.png in Resources */,
 				1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */,
-				FAC4FEAE1B0580DC00C61E97 /* signup_iphone6_test_01.jpg in Resources */,
 				1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
@@ -1740,6 +1761,7 @@
 				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
+				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
