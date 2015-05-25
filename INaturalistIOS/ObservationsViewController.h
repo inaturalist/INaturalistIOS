@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ObservationDetailViewController.h"
-#import "LoginViewController.h"
 #import "SyncQueue.h"
 #import "DeletedRecord.h"
 
@@ -17,7 +16,7 @@
 @class ObservationStore;
 
 
-@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, LoginViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
+@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
 @property (nonatomic, assign) int observationsToSyncCount;
 @property (nonatomic, assign) int syncedObservationsCount;
 @property (nonatomic, assign) int observationPhotosToSyncCount;

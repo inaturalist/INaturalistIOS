@@ -63,6 +63,15 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize syncErrors = _syncErrors;
 @synthesize lastRefreshAt = _lastRefreshAt;
 
+- (void)presentSignupSplashWithReason:(NSString *)reason {
+    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    splash.cancellable = YES;
+    splash.reason = reason;
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+    [self.tabBarController presentViewController:nav animated:YES completion:nil];
+}
+
 - (IBAction)sync:(id)sender {
     if (self.isSyncing) {
         return;
@@ -80,7 +89,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults objectForKey:INatTokenPrefKey]) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
+        [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to sync.", @"This is an explanation for why the sync button triggers a login prompt.")];
         return;
     }
     
@@ -718,10 +727,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
                              withProperties:@{ @"from": @"AnonMeHeader" }];
             
-            SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-            signup.cancellable = YES;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-            [self presentViewController:nav animated:YES completion:nil];
+            [self presentSignupSplashWithReason:nil];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -1271,7 +1277,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [SVProgressHUD dismiss];
     
     [self stopSync];
-    [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
+    [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to sync.", @"This is an explanation for why the sync button triggers a login prompt.")];
 }
 
 - (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
