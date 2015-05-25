@@ -251,6 +251,8 @@
 		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
 		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
+		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
+		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
@@ -677,6 +679,9 @@
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
 		FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorizeViewController.h; sourceTree = "<group>"; };
 		FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorizeViewController.m; sourceTree = "<group>"; };
+		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
+		FA6F87681B0E99A20019B157 /* FAKINaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAKINaturalist.h; sourceTree = "<group>"; };
+		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
 		FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.5.xcdatamodel; sourceTree = "<group>"; };
 		FA724ADE1AB150BD00D01773 /* MeHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeHeaderView.h; sourceTree = "<group>"; };
 		FA724ADF1AB150BD00D01773 /* MeHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeHeaderView.m; sourceTree = "<group>"; };
@@ -873,6 +878,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA6F87661B0E996B0019B157 /* fonts */,
 				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
@@ -1153,6 +1159,8 @@
 				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
+				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
+				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1330,6 +1338,14 @@
 				FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */,
 			);
 			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		FA6F87661B0E996B0019B157 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */,
+			);
+			name = fonts;
 			sourceTree = "<group>";
 		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
@@ -1538,6 +1554,7 @@
 				19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */,
 				19122E411512D3F4009BD3D0 /* add_button.png in Resources */,
 				FA4E72A519FAC8A000A9AB5D /* chromista-200px.png in Resources */,
+				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
 				19122E421512D3F4009BD3D0 /* add_button@2x.png in Resources */,
 				195F324D151AC3BA0019CB85 /* 06-magnify.png in Resources */,
 				FA4E72A319FAC8A000A9AB5D /* arachnida-200px.png in Resources */,
@@ -1739,6 +1756,7 @@
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
+				FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
 				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
