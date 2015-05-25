@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LoginViewController.h"
 #import "GuidesSearchController.h"
 #import "GuideViewController.h"
 
-@interface GuidesViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate, GuideViewControllerDelegate>
+@interface GuidesViewController : UITableViewController <RKObjectLoaderDelegate, CLLocationManagerDelegate, GuideViewControllerDelegate>
 @property (nonatomic, strong) NSArray *guides;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *guideUsersSyncedAt;

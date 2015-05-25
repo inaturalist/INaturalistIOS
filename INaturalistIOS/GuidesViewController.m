@@ -17,6 +17,8 @@
 #import "INaturalistAppDelegate.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "SignupSplashViewController.h"
+#import "LoginController.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -309,9 +311,6 @@ static const int ListControlIndexNearby = 2;
         vc.guide = gx;
         vc.title = g.title;
         vc.guideDelegate = self;
-    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        vc.delegate = self;
     }
 }
 
@@ -493,7 +492,21 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        // signup for login notifications
+        __block __weak typeof(self) weakSelf = self;
+        [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
+                                                          object:self
+                                                           queue:nil
+                                                      usingBlock:^(NSNotification *note) {
+                                                          weakSelf.guideUsersSyncedAt = nil;
+                                                          [weakSelf sync];
+                                                      }];
+        
+        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        [self.tabBarController presentViewController:nav
+                                            animated:YES
+                                          completion:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
@@ -502,13 +515,6 @@ static const int ListControlIndexNearby = 2;
                                            otherButtonTitles:nil];
         [av show];
     }
-}
-
-#pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    self.guideUsersSyncedAt = nil;
-    [self sync];
 }
 
 #pragma mark - CLLocationManagerDelegate
