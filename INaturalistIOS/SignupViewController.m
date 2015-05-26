@@ -273,9 +273,12 @@
         
         [cell.textField bk_addEventHandler:^(id sender) {
             [((UILabel *)cell.textField.leftView) setAttributedText:mailOutline.attributedString];
-            // just in case this scrolls off the screen
-            email = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingDidEnd];
+        
+        [cell.textField bk_addEventHandler:^(id sender) {
+            // in case this cell scrolls off screen
+            email = [cell.textField.text copy];
+        } forControlEvents:UIControlEventEditingChanged];
 
 
     } else if (indexPath.item == 1) {
@@ -337,8 +340,6 @@
         
         [cell.textField bk_addEventHandler:^(id sender) {
             configureLockIcon(cell.textField.secureTextEntry, NO);
-            // just in case this scrolls off the screen
-            password = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingDidEnd];
         
         [cell.textField bk_addEventHandler:^(id sender) {
@@ -347,6 +348,8 @@
             } else {
                 cell.textField.rightViewMode = UITextFieldViewModeAlways;
             }
+            // just in case this cell scrolls off the screen
+            password = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
         cell.textField.leftView = ({
@@ -404,10 +407,12 @@
         
         [cell.textField bk_addEventHandler:^(id sender) {
             [((UILabel *)cell.textField.leftView) setAttributedText:personOutline.attributedString];
-            // just in case this scrolls off the screen
-            username = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingDidEnd];
-
+        
+        [cell.textField bk_addEventHandler:^(id sender) {
+            // just in case this cell scrolls off the screen
+            username = [cell.textField.text copy];
+        } forControlEvents:UIControlEventEditingChanged];
     }
 }
 
