@@ -64,16 +64,29 @@
     });
     [self.view addSubview:background];
     
-    UIVisualEffectView *blurView = ({
-        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        
-        UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
-        view.frame = self.view.bounds;
-        view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        view;
-    });
-    [self.view addSubview:blurView];
+    
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+        UIVisualEffectView *blurView = ({
+            UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            
+            UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
+            view.frame = self.view.bounds;
+            view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            view;
+        });
+        [self.view addSubview:blurView];
+    } else {
+        UIView *scrim = ({
+            UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
+            view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6f];
+            
+            view;
+        });
+        [self.view addSubview:scrim];
+    }
     
     self.signupTableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
