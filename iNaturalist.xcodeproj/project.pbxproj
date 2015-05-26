@@ -267,6 +267,8 @@
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
 		FAA39B061ACB7C4E009D4665 /* tutorial_guides.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */; };
 		FAA39B071ACB7C4E009D4665 /* tutorial_projects.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */; };
+		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
+		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
@@ -710,6 +712,10 @@
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_guides.png; sourceTree = "<group>"; };
 		FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_projects.png; sourceTree = "<group>"; };
+		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
+		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
+		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
+		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
@@ -1128,8 +1134,12 @@
 				FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */,
 				FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */,
 				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
+				FAA872CB1B13989D00366521 /* RoundedButtonCell.h */,
+				FAA872CC1B13989D00366521 /* RoundedButtonCell.m */,
 				FA6F87591B0E72C60019B157 /* SplitTextButton.h */,
 				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
+				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
+				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1775,6 +1785,7 @@
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
+				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
@@ -1854,6 +1865,7 @@
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
+				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,

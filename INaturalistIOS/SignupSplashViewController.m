@@ -54,6 +54,10 @@
     // setup custom navigation bar style
     // white button tint
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+                                                                      NSForegroundColorAttributeName:
+                                                                      [UIColor whiteColor]
+                                                                      }];
     
     // completely clear navbar background
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
@@ -281,6 +285,7 @@
         [button bk_addEventHandler:^(id sender) {
             
             SignupViewController *signupVC = [[SignupViewController alloc] initWithNibName:nil bundle:nil];
+            signupVC.backgroundImage = backgroundImageView.image;
             [self.navigationController pushViewController:signupVC animated:YES];
             
         } forControlEvents:UIControlEventTouchUpInside];

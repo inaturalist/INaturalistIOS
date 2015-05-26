@@ -15,11 +15,14 @@
 #import "EditableTextFieldCell.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "RoundedButtonCell.h"
+#import "CheckboxCell.h"
 
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
     UITableView *signupTableView;
     
     NSString *email, *password, *username;
+    BOOL shareData;
 }
 @end
 
@@ -36,14 +39,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // inat green button tint
-    [self.navigationController.navigationBar setTintColor:[UIColor inatTint]];
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     
-    // standard navigation bar
-    [self.navigationController.navigationBar setBackgroundImage:nil
-                                                  forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:nil];
-    [self.navigationController.navigationBar setTranslucent:YES];
     [self.navigationController setNavigationBarHidden:NO];
 }
 
@@ -57,33 +54,72 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.automaticallyAdjustsScrollViewInsets = YES;
+    //self.automaticallyAdjustsScrollViewInsets = YES;
+    
+    UIImageView *background = ({
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+        iv.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        iv.image = self.backgroundImage;
+        
+        iv;
+    });
+    [self.view addSubview:background];
+    
+    UIVisualEffectView *blurView = ({
+        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        
+        UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
+        view.frame = self.view.bounds;
+        view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        view;
+    });
+    [self.view addSubview:blurView];
     
     signupTableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
         
-        tv.backgroundColor = [UIColor whiteColor];
+        tv.backgroundColor = [UIColor clearColor];
         tv.separatorColor = [UIColor clearColor];
         
         tv.dataSource = self;
         tv.delegate = self;
         [tv registerClass:[EditableTextFieldCell class] forCellReuseIdentifier:@"EditableText"];
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Signup"];
+        [tv registerClass:[RoundedButtonCell class] forCellReuseIdentifier:@"Button"];
+        [tv registerClass:[CheckboxCell class] forCellReuseIdentifier:@"Checkbox"];
+        
+        tv.tableHeaderView = ({
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 40)];
+            
+            view;
+        });
         
         tv;
     });
     [self.view addSubview:signupTableView];
     
     NSDictionary *views = @{
+                            @"bg": background,
                             @"tv": signupTableView,
+                            @"top": self.topLayoutGuide,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[tv]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[bg]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[bg]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[tv]-|"
                                                                      options:0
                                                                      metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-0-[tv]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -105,56 +141,101 @@
         EditableTextFieldCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EditableText"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
+        cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
+        cell.textField.tintColor = [UIColor whiteColor];
+        cell.textField.textColor = [UIColor whiteColor];
+        cell.backgroundColor = [UIColor clearColor];
+        
         [self configureEditableTextCell:cell forIndexPath:indexPath];
         
         return cell;
     } else if (indexPath.item == 3) {
-        // TBD: checkmark
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Signup"];
-        cell.textLabel.text = @"checkbox TBD";
+        CheckboxCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Checkbox"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor clearColor];
+        cell.tintColor = [UIColor whiteColor];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        });        
+        cell.checkText.text = @"License your contributions to share your data with scientists?";
         return cell;
     } else {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Signup"];
+        RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Button"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        [cell.contentView addSubview:({
-            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(15, 0, cell.bounds.size.width - 30, cell.bounds.size.height)];
-            button.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            
-            button.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.4];
-            button.tintColor = [UIColor whiteColor];
-            
-            [button setTitle:NSLocalizedString(@"SIGN UP", @"text for sign up button on sign up screen")
-                    forState:UIControlStateNormal];
-            button.titleLabel.font = [UIFont systemFontOfSize:32.0f];
-            button.layer.cornerRadius = 2.0f;
-            
-            [button bk_addEventHandler:^(id sender) {
-                if (!email || !password || !username) {
-                    [SVProgressHUD showErrorWithStatus:@"A Field is Missing"];
-                    return;
-                }
-                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-                [appDelegate.loginController createAccountWithEmail:email
-                                                           password:password
-                                                           username:username
-                                                            success:^(NSDictionary *info) {
-                                                                NSLog(@"success: %@", info);
-                                                            }
-                                                            failure:^(NSError *error) {
-                                                                NSLog(@"failed: %@", error);
-                                                            }];
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            button;
-        })];
+        [cell.roundedButton setTitle:NSLocalizedString(@"Sign up", @"text for sign up button on sign up screen")
+                            forState:UIControlStateNormal];
+        cell.roundedButton.tintColor = [UIColor whiteColor];
+        cell.roundedButton.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.6f];
+        cell.roundedButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+        
+        // TODO: extract shareData and submit it here?
+        
+        [cell.roundedButton bk_addEventHandler:^(id sender) {
+            if (!email || !password || !username) {
+                [SVProgressHUD showErrorWithStatus:@"A Field is Missing"];
+                return;
+            }
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            [appDelegate.loginController createAccountWithEmail:email
+                                                       password:password
+                                                       username:username
+                                                        success:^(NSDictionary *info) {
+                                                            NSLog(@"success: %@", info);
+                                                        }
+                                                        failure:^(NSError *error) {
+                                                            NSLog(@"failed: %@", error);
+                                                        }];
+        } forControlEvents:UIControlEventTouchUpInside];
         
         return cell;
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 3) {
+        return 55.0f;
+    } else {
+        return 44.0f;
+    }
+}
+
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 3) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        if (cell.selected) {
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            // don't follow through with selection
+            return nil;
+        }
+    }
+    // follow through with selection
+    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 3)
+        shareData = YES;
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 3) {
+        shareData = NO;
+    }
+}
+
 - (void)configureEditableTextCell:(EditableTextFieldCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    
+    UIColor *placeholderTint = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
+    NSDictionary *placeholderAttrs = @{
+                                       NSForegroundColorAttributeName: placeholderTint,
+                                       };
+
     if (indexPath.item == 0) {
-        cell.textField.placeholder = NSLocalizedString(@"Email", @"Placeholder text for the email text field in signup");
+        NSString *placeholderText = NSLocalizedString(@"Email", @"Placeholder text for the email text field in signup");
+        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                               attributes:placeholderAttrs];
         
         cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -169,6 +250,7 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
             
             label.attributedText = mailOutline.attributedString;
+            label.textColor = [UIColor whiteColor];
             label.textAlignment = NSTextAlignmentCenter;
             
             label;
@@ -186,7 +268,10 @@
 
 
     } else if (indexPath.item == 1) {
-        cell.textField.placeholder = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
+        NSString *placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
+        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                               attributes:placeholderAttrs];
+
         cell.textField.secureTextEntry = YES;
         
         cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -198,7 +283,8 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
             
             label.font = [UIFont systemFontOfSize:13.0f];
-            label.tintColor = [UIColor grayColor];
+            label.textColor = [UIColor whiteColor];
+
             label.text = NSLocalizedString(@"Min. 6 characters", @"Minimum six characters help text on signup");
             
             label;
@@ -256,6 +342,8 @@
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             button.frame = CGRectMake(0, 0, 60, 44);
             
+            button.tintColor = [UIColor whiteColor];
+            
             [button bk_addEventHandler:^(id sender) {
                 // toggle secure text entry
                 cell.textField.secureTextEntry = !cell.textField.secureTextEntry;
@@ -276,8 +364,10 @@
         configureLockIcon(cell.textField.secureTextEntry, NO);
         
     } else {
-        cell.textField.placeholder = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
-        
+        NSString *placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
+        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                               attributes:placeholderAttrs];
+
         cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
         cell.textField.keyboardType = UIKeyboardTypeDefault;
@@ -292,6 +382,7 @@
             
             label.attributedText = personOutline.attributedString;
             label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [UIColor whiteColor];
             
             label;
         });

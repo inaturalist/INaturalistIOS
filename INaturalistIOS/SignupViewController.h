@@ -10,4 +10,6 @@
 
 @interface SignupViewController : UIViewController
 
+@property UIImage *backgroundImage;
+
 @end
