@@ -90,7 +90,7 @@
                                                             toItem:nil
                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                         multiplier:1.0f
-                                                          constant:1.0f]];
+                                                          constant:0.5f]];
     }
     
     return self;
