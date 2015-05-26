@@ -142,7 +142,7 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
-        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:200];
+        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:160];
         [logo addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
         
         label.textAlignment = NSTextAlignmentCenter;
