@@ -116,11 +116,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                             handler:^(id sender) {
-                                                                                                 [self dismissViewControllerAnimated:YES
-                                                                                                                          completion:nil];
-                                                                                             }];
+    UIImage *closeImage = ({
+        FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:40];
+        [close addAttribute:NSForegroundColorAttributeName
+                      value:self.navigationController.navigationBar.tintColor];
+        [close imageWithSize:CGSizeMake(40, 40)];
+    });
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
+                                                                                 style:UIBarButtonItemStylePlain
+                                                                               handler:^(id sender) {
+                                                                                   [self dismissViewControllerAnimated:YES
+                                                                                                            completion:nil];
+                                                                               }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
     orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
