@@ -69,6 +69,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     splash.reason = reason;
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [self.tabBarController presentViewController:nav animated:YES completion:nil];
 }
 

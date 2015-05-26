@@ -24,19 +24,8 @@
 
 @interface SignupSplashViewController () {
     UIImage *orangeFlower, *moth, *purpleFlower;
-    UIImageView *backgroundImageView;
     NSTimer *backgroundCycleTimer;
     
-    UILabel *logoLabel;
-    UILabel *reasonLabel;
-    
-    SplitTextButton *loginFaceButton;
-    SplitTextButton *loginGButton;
-    SplitTextButton *signupEmailButton;
-    UIButton *skipButton;
-    
-    UIButton *signinEmailButton;
-        
     BOOL _skippable;
     BOOL _cancellable;
     NSString *_reason;
@@ -65,31 +54,31 @@
     [self.navigationController.navigationBar setTranslucent:YES];
     
     if (self.animateIn) {
-        loginFaceButton.alpha = 0.0f;
-        loginGButton.alpha = 0.0f;
-        skipButton.alpha = 0.0f;
-        signinEmailButton.alpha = 0.0f;
-        signupEmailButton.alpha = 0.0f;
+        self.loginFaceButton.alpha = 0.0f;
+        self.loginGButton.alpha = 0.0f;
+        self.skipButton.alpha = 0.0f;
+        self.signinEmailButton.alpha = 0.0f;
+        self.signupEmailButton.alpha = 0.0f;
     }
     
-    if (backgroundImageView && orangeFlower)
-        [backgroundImageView setImage:orangeFlower];
+    if (self.backgroundImageView && orangeFlower)
+        [self.backgroundImageView setImage:orangeFlower];
     
     backgroundCycleTimer = [NSTimer bk_scheduledTimerWithTimeInterval:5.0f
                                                                 block:^(NSTimer *timer) {
                                                                     UIImage *newImage;
-                                                                    if (backgroundImageView.image == orangeFlower) {
+                                                                    if (self.backgroundImageView.image == orangeFlower) {
                                                                         newImage = moth;
-                                                                    } else if (backgroundImageView.image == moth) {
+                                                                    } else if (self.backgroundImageView.image == moth) {
                                                                         newImage = purpleFlower;
                                                                     } else {
                                                                         newImage = orangeFlower;
                                                                     }
-                                                                    [UIView transitionWithView:backgroundImageView
+                                                                    [UIView transitionWithView:self.backgroundImageView
                                                                                       duration:0.5f
                                                                                        options:UIViewAnimationOptionTransitionCrossDissolve
                                                                                     animations:^{
-                                                                                        backgroundImageView.image = newImage;
+                                                                                        self.backgroundImageView.image = newImage;
                                                                                     }
                                                                                     completion:NULL];
                                                                 }
@@ -110,15 +99,15 @@
         
         [UIView animateWithDuration:0.3f
                          animations:^{
-                             loginFaceButton.alpha = 1.0f;
-                             loginGButton.alpha = 1.0f;
-                             signupEmailButton.alpha = 1.0f;
-                             signinEmailButton.alpha = 1.0f;
+                             self.loginFaceButton.alpha = 1.0f;
+                             self.loginGButton.alpha = 1.0f;
+                             self.signupEmailButton.alpha = 1.0f;
+                             self.signinEmailButton.alpha = 1.0f;
                          }];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3f
                              animations:^{
-                                 skipButton.alpha = 1.0f;
+                                 self.skipButton.alpha = 1.0f;
                              }];
         });
     }
@@ -138,7 +127,7 @@
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
     purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
     
-    backgroundImageView = ({
+    self.backgroundImageView = ({
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -147,9 +136,9 @@
         
         iv;
     });
-    [self.view addSubview:backgroundImageView];
+    [self.view addSubview:self.backgroundImageView];
     
-    logoLabel = ({
+    self.logoLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -161,9 +150,9 @@
         
         label;
     });
-    [self.view addSubview:logoLabel];
+    [self.view addSubview:self.logoLabel];
     
-    reasonLabel = ({
+    self.reasonLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -180,9 +169,9 @@
         
         label;
     });
-    [self.view addSubview:reasonLabel];
+    [self.view addSubview:self.reasonLabel];
     
-    loginFaceButton = ({
+    self.loginFaceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -217,9 +206,9 @@
         
         button;
     });
-    [self.view addSubview:loginFaceButton];
+    [self.view addSubview:self.loginFaceButton];
     
-    loginGButton = ({
+    self.loginGButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -267,9 +256,9 @@
 
         button;
     });
-    [self.view addSubview:loginGButton];
+    [self.view addSubview:self.loginGButton];
     
-    signupEmailButton = ({
+    self.signupEmailButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -285,16 +274,16 @@
         [button bk_addEventHandler:^(id sender) {
             
             SignupViewController *signupVC = [[SignupViewController alloc] initWithNibName:nil bundle:nil];
-            signupVC.backgroundImage = backgroundImageView.image;
+            signupVC.backgroundImage = self.backgroundImageView.image;
             [self.navigationController pushViewController:signupVC animated:YES];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;
     });
-    [self.view addSubview:signupEmailButton];
+    [self.view addSubview:self.signupEmailButton];
     
-    skipButton = ({
+    self.skipButton = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -319,9 +308,9 @@
         
         button;
     });
-    [self.view addSubview:skipButton];
+    [self.view addSubview:self.skipButton];
     
-    signinEmailButton = ({
+    self.signinEmailButton = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -342,17 +331,17 @@
         
         button;
     });
-    [self.view addSubview:signinEmailButton];
+    [self.view addSubview:self.signinEmailButton];
     
     NSDictionary *views = @{
-                            @"logo": logoLabel,
-                            @"bg": backgroundImageView,
-                            @"face": loginFaceButton,
-                            @"g": loginGButton,
-                            @"emailSignup": signupEmailButton,
-                            @"skip": skipButton,
-                            @"emailSignin": signinEmailButton,
-                            @"reason": reasonLabel,
+                            @"logo": self.logoLabel,
+                            @"bg": self.backgroundImageView,
+                            @"face": self.loginFaceButton,
+                            @"g": self.loginGButton,
+                            @"emailSignup": self.signupEmailButton,
+                            @"skip": self.skipButton,
+                            @"emailSignin": self.signinEmailButton,
+                            @"reason": self.reasonLabel,
                             };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[logo]-|"
@@ -384,7 +373,7 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:skipButton
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.skipButton
                                                          attribute:NSLayoutAttributeCenterX
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self.view
@@ -406,7 +395,7 @@
                                                                       metrics:0
                                                                         views:views]];
 
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:loginFaceButton
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginFaceButton
                                                           attribute:NSLayoutAttributeTop
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:self.view
@@ -423,7 +412,7 @@
         return;
     
     _skippable = skippable;
-    skipButton.hidden = !skippable;
+    self.skipButton.hidden = !skippable;
 }
 
 - (BOOL)skippable {
@@ -447,12 +436,12 @@
         return;
     
     _reason = reason;
-    reasonLabel.text = _reason;
-    reasonLabel.hidden = (reason && reason.length > 0);
+    self.reasonLabel.text = _reason;
+    self.reasonLabel.hidden = (reason && reason.length > 0);
     if (self.reason && self.reason.length > 0) {
-        reasonLabel.text = self.reason;
+        self.reasonLabel.text = self.reason;
     } else {
-        reasonLabel.hidden = YES;
+        self.reasonLabel.hidden = YES;
     }
 
     [self.view setNeedsLayout];

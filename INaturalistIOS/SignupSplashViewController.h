@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class SplitTextButton;
+
 @interface SignupSplashViewController : UIViewController
 
 @property NSString *reason;
@@ -16,5 +18,17 @@
 @property BOOL animateIn;
 
 @property (nonatomic, copy) void(^skipAction)();
+
+
+// expose UI elements for transition animator
+@property UILabel *logoLabel;
+@property UILabel *reasonLabel;
+@property SplitTextButton *loginFaceButton;
+@property SplitTextButton *loginGButton;
+@property SplitTextButton *signupEmailButton;
+@property UIButton *signinEmailButton;
+@property UIButton *skipButton;
+@property UIImageView *backgroundImageView;
+
 
 @end

@@ -269,6 +269,8 @@
 		FAA39B071ACB7C4E009D4665 /* tutorial_projects.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
+		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
+		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
@@ -716,6 +718,10 @@
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
 		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
+		FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashToSignupTransitionAnimator.h; sourceTree = "<group>"; };
+		FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashToSignupTransitionAnimator.m; sourceTree = "<group>"; };
+		FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupToSplashTransitionAnimator.h; sourceTree = "<group>"; };
+		FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupToSplashTransitionAnimator.m; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
@@ -881,6 +887,7 @@
 				19F621A3150ECD8000C58F28 /* Views */,
 				19F621A2150ECD3000C58F28 /* Controllers */,
 				19F621A4150ECDC700C58F28 /* Helpers */,
+				FAA872D21B15124D00366521 /* Sizzle */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 			);
@@ -1431,6 +1438,17 @@
 			name = "Detail View";
 			sourceTree = "<group>";
 		};
+		FAA872D21B15124D00366521 /* Sizzle */ = {
+			isa = PBXGroup;
+			children = (
+				FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */,
+				FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */,
+				FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */,
+				FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */,
+			);
+			name = Sizzle;
+			sourceTree = "<group>";
+		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1818,6 +1836,7 @@
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
+				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
@@ -1857,6 +1876,7 @@
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
 				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
+				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
 				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,

@@ -12,4 +12,6 @@
 
 @property UIImage *backgroundImage;
 
+@property UITableView *signupTableView;
+
 @end

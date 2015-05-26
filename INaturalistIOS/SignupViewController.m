@@ -19,8 +19,6 @@
 #import "CheckboxCell.h"
 
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
-    UITableView *signupTableView;
-    
     NSString *email, *password, *username;
     BOOL shareData;
 }
@@ -47,7 +45,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    EditableTextFieldCell *cell = (EditableTextFieldCell *)[signupTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    EditableTextFieldCell *cell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [cell.textField becomeFirstResponder];
 }
 
@@ -77,7 +75,7 @@
     });
     [self.view addSubview:blurView];
     
-    signupTableView = ({
+    self.signupTableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -98,11 +96,11 @@
         
         tv;
     });
-    [self.view addSubview:signupTableView];
+    [self.view addSubview:self.signupTableView];
     
     NSDictionary *views = @{
                             @"bg": background,
-                            @"tv": signupTableView,
+                            @"tv": self.signupTableView,
                             @"top": self.topLayoutGuide,
                             };
     

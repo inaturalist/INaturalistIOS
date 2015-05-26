@@ -504,6 +504,8 @@ static const int ListControlIndexNearby = 2;
         
         SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        // for sizzle
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
         [self.tabBarController presentViewController:nav
                                             animated:YES
                                           completion:nil];
