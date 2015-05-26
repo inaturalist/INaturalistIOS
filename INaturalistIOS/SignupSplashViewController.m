@@ -119,7 +119,7 @@
     UIImage *closeImage = ({
         FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:40];
         [close addAttribute:NSForegroundColorAttributeName
-                      value:self.navigationController.navigationBar.tintColor];
+                      value:[UIColor whiteColor]];
         [close imageWithSize:CGSizeMake(40, 40)];
     });
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
