@@ -29,6 +29,6 @@
 @property UIButton *signinEmailButton;
 @property UIButton *skipButton;
 @property UIImageView *backgroundImageView;
-
+@property UIView *blurView;
 
 @end
