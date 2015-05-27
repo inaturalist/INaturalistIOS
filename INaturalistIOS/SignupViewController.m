@@ -9,6 +9,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <JDFTooltips/JDFTooltips.h>
 
 #import "SignupViewController.h"
 #import "UIColor+INaturalist.h"
@@ -17,10 +18,14 @@
 #import "LoginController.h"
 #import "RoundedButtonCell.h"
 #import "CheckboxCell.h"
+#import "NSAttributedString+InatHelpers.h"
+#import "UITapGestureRecognizer+InatHelpers.h"
 
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
     NSString *email, *password, *username;
     BOOL shareData;
+    JDFTooltipView *tooltip;
+    UITapGestureRecognizer *tapAway;
 }
 @end
 
@@ -167,8 +172,59 @@
         cell.tintColor = [UIColor whiteColor];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-        });        
-        cell.checkText.text = @"License your contributions to share your data with scientists?";
+        });
+        NSString *base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
+        NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
+        cell.checkText.attributedText = [NSAttributedString inat_attrStrWithBaseStr:base
+                                                                          baseAttrs:@{
+                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:12.0f]
+                                                                                      }
+                                                                           emSubstr:emphasis
+                                                                            emAttrs:@{
+                                                                                      NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0f]
+                                                                                      }];
+        NSRange emphasisRange = [base rangeOfString:emphasis];
+        if (emphasisRange.location != NSNotFound) {
+            cell.checkText.userInteractionEnabled = YES;
+            UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
+                                                                                            UIGestureRecognizerState state,
+                                                                                            CGPoint location) {
+                
+                if (tooltip && tooltip.superview)
+                    return;
+                
+                UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
+                if ([tapSender didTapAttributedTextInLabel:cell.checkText inRange:emphasisRange]) {
+                    
+                    NSString *tooltipText = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Tooltip text for the license content checkbox during create account.");
+                    
+                    tooltip = [[JDFTooltipView alloc] initWithTargetView:cell.checkIcon
+                                                                hostView:self.view
+                                                             tooltipText:tooltipText
+                                                          arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                                   width:300.0f
+                                                     showCompletionBlock:^{
+                                                         if (!tapAway) {
+                                                             tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                                                                 [tooltip hideAnimated:YES];
+                                                             }];
+                                                             [self.view addGestureRecognizer:tapAway];
+                                                         }
+                                                         tapAway.enabled = YES;
+                                                     } hideCompletionBlock:^{
+                                                         tapAway.enabled = NO;
+                                                     }];
+                    tooltip.tooltipBackgroundColour = [UIColor whiteColor];
+                    tooltip.textColour = [UIColor blackColor];
+                    
+                    [tooltip show];
+                }
+                
+            }];
+            
+            [cell.checkText addGestureRecognizer:tap];
+        }
+
         return cell;
     } else {
         RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Button"];
