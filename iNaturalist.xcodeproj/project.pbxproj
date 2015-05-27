@@ -242,6 +242,7 @@
 		FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
 		FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */; };
 		FA58E8D719E8581B00A4E8E0 /* tutorial6es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */; };
+		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA627B7A1ACB5A650079534E /* binocs.png in Resources */ = {isa = PBXBuildFile; fileRef = FA627B791ACB5A650079534E /* binocs.png */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -671,6 +672,8 @@
 		FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationVisualizerViewController.m; sourceTree = "<group>"; };
 		FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6en.png; sourceTree = "<group>"; };
 		FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial6es.png; sourceTree = "<group>"; };
+		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
+		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
 		FA627B791ACB5A650079534E /* binocs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binocs.png; sourceTree = "<group>"; };
 		FA627BA71ACB6A050079534E /* INatTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatTooltipView.h; sourceTree = "<group>"; };
 		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
@@ -1093,11 +1096,11 @@
 				19F87491152670B000A65F9A /* RecordSearchController.h */,
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
 				FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */,
 				FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */,
 				FA6D695A1B06B026000983F8 /* SignupViewController.h */,
 				FA6D695B1B06B026000983F8 /* SignupViewController.m */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
 				19F874941526763D00A65F9A /* TaxaSearchController.h */,
 				19F874951526763E00A65F9A /* TaxaSearchController.m */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
@@ -1187,6 +1190,8 @@
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
+				FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */,
+				FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1805,6 +1810,7 @@
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
+				FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */,
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
