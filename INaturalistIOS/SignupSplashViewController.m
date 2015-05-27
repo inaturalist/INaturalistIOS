@@ -148,7 +148,7 @@
     
     if (self.reason) {
         if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
-            UIVisualEffectView *blurView = ({
+            self.blurView = ({
                 UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
                 
                 UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
@@ -157,9 +157,8 @@
                 
                 view;
             });
-            [self.view addSubview:blurView];
         } else {
-            UIView *scrim = ({
+            self.blurView = ({
                 UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
                 view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
                 
@@ -167,8 +166,8 @@
                 
                 view;
             });
-            [self.view addSubview:scrim];
         }
+        [self.view addSubview:self.blurView];
     }
 
     
