@@ -47,13 +47,6 @@
     [self.navigationController setNavigationBarHidden:NO];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    EditableTextFieldCell *cell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    [cell.textField becomeFirstResponder];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
