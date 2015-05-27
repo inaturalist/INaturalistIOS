@@ -102,7 +102,7 @@
     else if ([self remoteImageURLForSize:size])
         return [NSURL URLWithString:[self remoteImageURLForSize:size]];
     else
-        return [self mediumPhotoUrl];
+        return [self smallPhotoUrl];
 }
 
 - (NSURL *)smallPhotoUrl {
@@ -113,7 +113,7 @@
     else if ([self remoteImageURLForSize:size])
         return [NSURL URLWithString:[self remoteImageURLForSize:size]];
     else
-        return [self mediumPhotoUrl];
+        return [self thumbPhotoUrl];
 }
 
 - (NSURL *)thumbPhotoUrl {
@@ -124,7 +124,7 @@
     else if ([self remoteImageURLForSize:size])
         return [NSURL URLWithString:[self remoteImageURLForSize:size]];
     else
-        return [self mediumPhotoUrl];
+        return nil;
 }
 
 
