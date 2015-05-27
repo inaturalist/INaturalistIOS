@@ -27,6 +27,10 @@
     
     CGFloat width = signup.view.frame.size.width;
     
+    if (splash.blurView) {
+        // hide the splash blurview until animation is complete
+        splash.blurView.alpha = 0.0f;
+    }
     // splash screen backgrond starts invisible
     splash.backgroundImageView.alpha = 0.0f;
     splash.backgroundImageView.image = signup.backgroundImage;
@@ -46,8 +50,10 @@
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                      animations:^{
                          
-                         // animate the non-blurred image to 1, effectively animating out the blur
-                         splash.backgroundImageView.alpha = 1.0f;
+                         if (!splash.blurView) {
+                             // animate the non-blurred image to 1, effectively animating out the blur
+                             splash.backgroundImageView.alpha = 1.0f;
+                         }
 
                          // migrate all the splash screen stuff in from the right
                          splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, width, 0);
@@ -67,6 +73,11 @@
                      }
                      completion:^(BOOL finished) {
                          
+                         if (splash.blurView) {
+                             splash.backgroundImageView.alpha = 1.0f;
+                             splash.blurView.alpha = 1.0f;
+                         }
+
                          [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                          
                          // reset the signup screen

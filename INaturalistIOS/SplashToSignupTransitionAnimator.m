@@ -33,11 +33,19 @@
     signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, width, 0);
     signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, width, 0);
     
+    if (splash.blurView) {
+        // hide the splash background to show the underlying content
+        splash.blurView.alpha = 0.0f;
+        splash.backgroundImageView.alpha = 0.0f;
+    }
+
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                      animations:^{
                          
-                         // animate the non-blurred image to zero, effectively animating in the blur
-                         splash.backgroundImageView.alpha = 0.0f;
+                         if (!splash.blurView) {
+                             // animate the non-blurred image to zero, effectively animating in the blur
+                             splash.backgroundImageView.alpha = 0.0f;
+                         }
                          
                          // migrate all the splash screen stuff off to the left
                          splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, -width, 0);
@@ -58,6 +66,7 @@
                          [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                          
                          // reset the splash screen
+                         splash.blurView.alpha = 1.0f;
                          splash.backgroundImageView.alpha = 1.0f;
                          
                          splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, width, 0);
