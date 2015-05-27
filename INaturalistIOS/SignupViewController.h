@@ -13,5 +13,6 @@
 @property UIImage *backgroundImage;
 
 @property UITableView *signupTableView;
+@property UILabel *termsLabel;
 
 @end

@@ -66,6 +66,7 @@
                          
                          // migrate the signup screen stuff off from the right
                          signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, width, 0);
+                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, width, 0);
                          
                          if (!splash.cancellable)
                              signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, width, 0);
@@ -82,7 +83,7 @@
                          
                          // reset the signup screen
                          signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, -width, 0);
-                         
+                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, -width, 0);
                          if (!splash.cancellable)
                              signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, -width, 0);
                          

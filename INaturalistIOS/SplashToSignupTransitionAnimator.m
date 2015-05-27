@@ -31,6 +31,7 @@
     
     // signup screen stuff starts off-screen to the right
     signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, width, 0);
+    signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, width, 0);
     signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, width, 0);
     
     if (splash.blurView) {
@@ -58,6 +59,8 @@
                          
                          // migrate the signup screen stuff in from the right
                          signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, -width, 0);
+                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, -width, 0);
+
                          signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, -width, 0);
 
                      }

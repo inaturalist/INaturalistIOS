@@ -109,10 +109,60 @@
     });
     [self.view addSubview:self.signupTableView];
     
+    self.termsLabel = ({
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+
+        label.numberOfLines = 0;
+        label.textAlignment = NSTextAlignmentLeft;
+        label.textColor = [UIColor whiteColor];
+        
+        NSString *base = NSLocalizedString(@"By using iNaturalist you agree to the Terms of Service and Privacy Policy.", @"Base text for terms of service and privacy policy notice when creating an iNat account.");
+        NSString *terms = NSLocalizedString(@"Terms of Service", @"Emphasized part of the terms of service base text.");
+        NSString *privacy = NSLocalizedString(@"Privacy Policy", @"Emphasized part of the privacy base text.");
+        
+        NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:base
+                                                                                 attributes:@{
+                                                                                              NSFontAttributeName: [UIFont systemFontOfSize:13]
+                                                                                              }];
+        NSRange termsRange = [base rangeOfString:terms];
+        if (termsRange.location != NSNotFound) {
+            [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:termsRange];
+        }
+        
+        NSRange privacyRange = [base rangeOfString:privacy];
+        if (privacyRange.location != NSNotFound) {
+            [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:privacyRange];
+        }
+
+        label.attributedText = attr;
+
+        
+        UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
+                                                                                        UIGestureRecognizerState state,
+                                                                                        CGPoint location) {
+            
+            UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
+            if ([tapSender didTapAttributedTextInLabel:label inRange:termsRange]) {
+                NSURL *termsURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/terms"];
+                [[UIApplication sharedApplication] openURL:termsURL];
+            } else if ([tapSender didTapAttributedTextInLabel:label inRange:privacyRange]) {
+                NSURL *privacyURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/privacy"];
+                [[UIApplication sharedApplication] openURL:privacyURL];
+            }
+        }];
+        label.userInteractionEnabled = YES;
+        [label addGestureRecognizer:tap];
+        
+        label;
+    });
+    [self.view addSubview:self.termsLabel];
+    
     NSDictionary *views = @{
                             @"bg": background,
                             @"tv": self.signupTableView,
                             @"top": self.topLayoutGuide,
+                            @"terms": self.termsLabel,
                             };
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[bg]-0-|"
@@ -120,6 +170,11 @@
                                                                       metrics:0
                                                                         views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[bg]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[terms]-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -132,6 +187,12 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[terms]-20-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+
 
 }
 
