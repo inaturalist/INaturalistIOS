@@ -117,15 +117,7 @@ static NSArray *ICONIC_TAXON_ORDER;
             UIVisualEffectView *blur = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             blur.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
             
-            UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
-            UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-            vibrancyEffectView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            
-            [blur.contentView addSubview:vibrancyEffectView];
-            
             blur.frame = blurredMultiImageView.bounds;
-            vibrancyEffectView.frame = blurredMultiImageView.bounds;
-            
 
             view = blur;
         } else {
