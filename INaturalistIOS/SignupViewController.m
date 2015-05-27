@@ -9,7 +9,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <JDFTooltips/JDFTooltips.h>
 
 #import "SignupViewController.h"
 #import "UIColor+INaturalist.h"
@@ -24,8 +23,6 @@
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
     NSString *email, *password, *username;
     BOOL shareData;
-    JDFTooltipView *tooltip;
-    UITapGestureRecognizer *tapAway;
 }
 @end
 
@@ -244,35 +241,14 @@
                                                                                             UIGestureRecognizerState state,
                                                                                             CGPoint location) {
                 
-                if (tooltip && tooltip.superview)
-                    return;
-                
-                UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
-                if ([tapSender didTapAttributedTextInLabel:cell.checkText inRange:emphasisRange]) {
-                    
-                    NSString *tooltipText = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Tooltip text for the license content checkbox during create account.");
-                    
-                    tooltip = [[JDFTooltipView alloc] initWithTargetView:cell.checkIcon
-                                                                hostView:self.view
-                                                             tooltipText:tooltipText
-                                                          arrowDirection:JDFTooltipViewArrowDirectionDown
-                                                                   width:300.0f
-                                                     showCompletionBlock:^{
-                                                         if (!tapAway) {
-                                                             tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-                                                                 [tooltip hideAnimated:YES];
-                                                             }];
-                                                             [self.view addGestureRecognizer:tapAway];
-                                                         }
-                                                         tapAway.enabled = YES;
-                                                     } hideCompletionBlock:^{
-                                                         tapAway.enabled = NO;
-                                                     }];
-                    tooltip.tooltipBackgroundColour = [UIColor whiteColor];
-                    tooltip.textColour = [UIColor blackColor];
-                    
-                    [tooltip show];
-                }
+                NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                                message:creativeCommons
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
                 
             }];
             
