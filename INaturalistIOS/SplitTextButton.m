@@ -80,10 +80,10 @@
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftTitleLabel
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeWidth
-                                                        multiplier:0.18f
-                                                          constant:0.0f]];
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1.0f
+                                                          constant:40.0f]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
