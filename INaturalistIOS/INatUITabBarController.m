@@ -24,11 +24,11 @@
 #import "ObsCameraOverlay.h"
 #import "Taxon.h"
 #import "INatTooltipView.h"
-#import "LoginViewController.h"
 #import "Analytics.h"
 #import "ProjectObservation.h"
 #import "Project.h"
 #import "SignupSplashViewController.h"
+#import "LoginController.h"
 
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;

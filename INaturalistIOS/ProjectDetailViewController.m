@@ -14,6 +14,7 @@
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "SignupSplashViewController.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -85,7 +86,13 @@ static const int LeaveProjectAlertViewTag = 1;
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
         } else {
-            [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+            SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+            signup.reason = NSLocalizedString(@"You must be signed in to join a project.", @"Reason text for signup prompt while trying to join a project.");
+            signup.cancellable = YES;
+            signup.skippable = NO;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+            nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            [self presentViewController:nav animated:YES completion:nil];
         }
     }
 }
@@ -116,14 +123,6 @@ static const int LeaveProjectAlertViewTag = 1;
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
     }];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        [vc setDelegate:self];
-    }
 }
 
 - (NSString *)projectDescription
@@ -360,7 +359,13 @@ static const int LeaveProjectAlertViewTag = 1;
 {
     [SVProgressHUD dismiss];
     if (objectLoader.response.statusCode == 401) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.reason = NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.");
+        signup.cancellable = YES;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
@@ -372,7 +377,8 @@ static const int LeaveProjectAlertViewTag = 1;
 }
 
 #pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
+/*
+ - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
 {
     [self clickedJoin:nil];
 }
@@ -383,6 +389,7 @@ static const int LeaveProjectAlertViewTag = 1;
         [self.projectUser destroy];
     }
 }
+ */
 
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

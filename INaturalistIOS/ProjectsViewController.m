@@ -15,6 +15,8 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -212,7 +214,14 @@ static const int ListControlIndexNearby = 2;
                                                           delegate:self];
     } else {
         [self stopSync];
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        self.projectUsersSyncedAt = nil;
+
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.reason = NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.");
+        splash.skippable = NO;
+        splash.cancellable = YES;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     }
     self.projectUsersSyncedAt = [NSDate date];
 }
@@ -269,9 +278,6 @@ static const int ListControlIndexNearby = 2;
                                           indexPathForSelectedRow] row]];
             [vc setProject:p];
         }
-    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        vc.delegate = self;
     }
 }
 
@@ -470,7 +476,15 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        // force signin
+        self.projectUsersSyncedAt = nil;
+
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.reason = NSLocalizedString(@"You must be logged in to do that.", @"Signup prompt reason when project network fails due to auth.");
+        splash.skippable = NO;
+        splash.cancellable = YES;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
@@ -479,13 +493,6 @@ static const int ListControlIndexNearby = 2;
                                            otherButtonTitles:nil];
         [av show];
     }
-}
-
-#pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    self.projectUsersSyncedAt = nil;
-    [self sync];
 }
 
 #pragma mark - CLLocationManagerDelegate

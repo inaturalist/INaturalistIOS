@@ -21,6 +21,7 @@
 #import "UIColor+INaturalist.h"
 #import "SplitTextButton.h"
 #import "FAKInaturalist.h"
+#import "LoginViewController.h"
 
 @interface SignupSplashViewController () {
     UIImage *orangeFlower, *moth, *purpleFlower;
@@ -128,7 +129,6 @@
                                                                                    [self dismissViewControllerAnimated:YES
                                                                                                             completion:nil];
                                                                                }];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
     orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
@@ -361,6 +361,12 @@
                           forState:UIControlStateNormal];
         
         button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.1f];
+        
+        [button bk_addEventHandler:^(id sender) {
+            LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
+            login.cancellable = NO;
+            [self.navigationController pushViewController:login animated:YES];
+        } forControlEvents:UIControlEventTouchUpInside];
         
         button;
     });

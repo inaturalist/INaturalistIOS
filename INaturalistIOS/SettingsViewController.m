@@ -13,9 +13,9 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <googleplus-ios-sdk/GPPSignIn.h>
 
 #import "SettingsViewController.h"
-#import "LoginViewController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ProjectUser.h"
@@ -28,6 +28,8 @@
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate.h"
 
 
 static const int CreditsSection = 3;
@@ -81,17 +83,6 @@ static const int CategorizeNewObsSwitchTag = 11;
                         [info objectForKey:@"CFBundleVersion"]];
     
     [self.tableView reloadData];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    NSLog(@"%@ %@ %@",segue, segue.identifier , [segue identifier]);
-    if ([segue.identifier compare: @"SignInFromSettingsSegue"] == NSOrderedSame) {
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
-                         withProperties:@{ @"from": @"Settings" }];
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        [vc setDelegate:self];
-    }
 }
 
 - (void)clickedSignOut
@@ -400,7 +391,7 @@ static const int CategorizeNewObsSwitchTag = 11;
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                    [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
                 }
@@ -411,7 +402,7 @@ static const int CategorizeNewObsSwitchTag = 11;
                 [self clickedSignOut];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                    [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
                 }
@@ -432,6 +423,14 @@ static const int CategorizeNewObsSwitchTag = 11;
     }
 }
 
+- (void)presentSignup {
+    SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    signup.cancellable = YES;
+    signup.skippable = NO;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self presentViewController:nav animated:YES completion:nil];
+}
 
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -440,16 +439,6 @@ static const int CategorizeNewObsSwitchTag = 11;
         [self signOut];
     } else {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    }
-}
-
-#pragma mark - loginViewController Delegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controlle{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        [self.tableView reloadData];
     }
 }
 

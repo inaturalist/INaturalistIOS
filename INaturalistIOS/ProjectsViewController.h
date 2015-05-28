@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LoginViewController.h"
 #import "ProjectsSearchController.h"
 
-@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate>
+@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, CLLocationManagerDelegate>
 @property (nonatomic, strong) NSMutableArray *projects;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *projectUsersSyncedAt;

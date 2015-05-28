@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LoginViewController.h"
 
-@interface SettingsViewController : UITableViewController <LoginViewControllerDelegate, UIAlertViewDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSString *versionText;
 - (void)initUI;

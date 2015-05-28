@@ -14,7 +14,7 @@
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
 
 #import "ObservationsViewController.h"
-#import "LoginViewController.h"
+#import "LoginController.h"
 #import "Observation.h"
 #import "ObservationFieldValue.h"
 #import "ObservationPageViewController.h"
@@ -34,6 +34,7 @@
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
 #import "SignupSplashViewController.h"
+#import "LoginViewController.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;
@@ -746,12 +747,12 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             
             [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
                              withProperties:@{ @"from": @"AnonMeHeader" }];
-
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
-            LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
-            login.delegate = self;
+            
+            LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
+            login.cancellable = YES;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
-            [self.navigationController presentViewController:nav animated:YES completion:nil];
+            [self presentViewController:nav animated:YES completion:nil];
+
         } forControlEvents:UIControlEventTouchUpInside];
         
         return header;
@@ -1078,19 +1079,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                        direction:UIPageViewControllerNavigationDirectionForward
                         animated:YES
                       completion:nil];
-    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        [vc setDelegate:self];
     }
-}
-
-#pragma mark LoginControllerViewDelegate methods
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    // trigger sync, if pending, or refresh from server, if sync isn't pending
-    [self refreshRequestedNotify:YES];
 }
 
 #pragma mark - RKObjectLoaderDelegate
