@@ -736,12 +736,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (!cover) {
         cover = [[TKCoverflowCoverView alloc] initWithFrame:CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height)
                                                  reflection:YES];
+        cover.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
 
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
+
 	if (op.photoKey == nil) {
         TKCoverflowCoverView *boundCover = cover;
-        cover.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         [cover.imageView sd_setImageWithURL:[NSURL URLWithString:op.mediumURL ?: op.smallURL]
                            placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
