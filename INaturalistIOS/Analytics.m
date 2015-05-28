@@ -140,6 +140,7 @@ NSString *kAnalyticsEventLogin =                                @"Login";
 NSString *kAnalyticsEventLoginFailed =                          @"Login Failed";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
 NSString *kAnalyticsEventLogout =                               @"Logout";
+NSString *kAnalyticsEventForgotPassword =                       @"Forgot Password";
 
 // model integrity
 NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";

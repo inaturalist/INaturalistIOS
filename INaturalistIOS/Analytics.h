@@ -95,6 +95,7 @@ extern NSString *kAnalyticsEventLogin;
 extern NSString *kAnalyticsEventLoginFailed;
 extern NSString *kAnalyticsEventSignup;
 extern NSString *kAnalyticsEventLogout;
+extern NSString *kAnalyticsEventForgotPassword;
 
 // model integrity
 extern NSString *kAnalyticsEventObservationlessOFVSaved;
