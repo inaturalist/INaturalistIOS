@@ -29,7 +29,7 @@
  */
 @interface SyncQueue : NSObject <RKObjectLoaderDelegate, RKRequestQueueDelegate, RKRequestDelegate>
 @property (nonatomic, strong) NSMutableArray *queue;
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) id <SyncQueueDelegate> delegate;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, assign) BOOL started;
 
