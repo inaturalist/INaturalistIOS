@@ -47,7 +47,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //self.automaticallyAdjustsScrollViewInsets = YES;
+    self.automaticallyAdjustsScrollViewInsets = YES;
     
     UIImageView *background = ({
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -206,12 +206,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item < 3) {
         EditableTextFieldCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EditableText"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
-        cell.textField.tintColor = [UIColor whiteColor];
-        cell.textField.textColor = [UIColor whiteColor];
-        cell.backgroundColor = [UIColor clearColor];
         
         [self configureEditableTextCell:cell forIndexPath:indexPath];
         
@@ -269,20 +263,7 @@
         // TODO: extract shareData and submit it here?
         
         [cell.roundedButton bk_addEventHandler:^(id sender) {
-            if (!email || !password || !username) {
-                [SVProgressHUD showErrorWithStatus:@"A Field is Missing"];
-                return;
-            }
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            [appDelegate.loginController createAccountWithEmail:email
-                                                       password:password
-                                                       username:username
-                                                        success:^(NSDictionary *info) {
-                                                            NSLog(@"success: %@", info);
-                                                        }
-                                                        failure:^(NSError *error) {
-                                                            NSLog(@"failed: %@", error);
-                                                        }];
+            [self signupAction];
         } forControlEvents:UIControlEventTouchUpInside];
         
         return cell;
@@ -324,182 +305,175 @@
 
 - (void)configureEditableTextCell:(EditableTextFieldCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
+    cell.textField.tintColor = [UIColor whiteColor];
+    cell.textField.textColor = [UIColor whiteColor];
+    cell.backgroundColor = [UIColor clearColor];
+
+    cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    cell.textField.keyboardType = UIKeyboardTypeDefault;
+    cell.textField.returnKeyType = UIReturnKeyNext;
+
+    NSString *placeholderText;
     UIColor *placeholderTint = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
     NSDictionary *placeholderAttrs = @{
                                        NSForegroundColorAttributeName: placeholderTint,
                                        };
 
     if (indexPath.item == 0) {
-        NSString *placeholderText = NSLocalizedString(@"Email", @"Placeholder text for the email text field in signup");
-        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
-                                                                               attributes:placeholderAttrs];
+        placeholderText = NSLocalizedString(@"Email", @"Placeholder text for the email text field in signup");
         
-        cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
         cell.textField.keyboardType = UIKeyboardTypeEmailAddress;
-
-        cell.textField.leftViewMode = UITextFieldViewModeAlways;
         
-        FAKIcon *mailOutline = [FAKIonIcons iosEmailOutlineIconWithSize:30];
-        FAKIcon *mailFilled = [FAKIonIcons iosEmailIconWithSize:30];
-        
-        cell.textField.leftView = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
-            
-            label.attributedText = mailOutline.attributedString;
-            label.textColor = [UIColor whiteColor];
-            label.textAlignment = NSTextAlignmentCenter;
-            
-            label;
-        });
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:mailFilled.attributedString];
-        } forControlEvents:UIControlEventEditingDidBegin];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:mailOutline.attributedString];
-        } forControlEvents:UIControlEventEditingDidEnd];
+        // icons for left view
+        cell.activeLeftAttributedString = [FAKIonIcons iosEmailIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosEmailOutlineIconWithSize:30].attributedString;
         
         [cell.textField bk_addEventHandler:^(id sender) {
             // in case this cell scrolls off screen
             email = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
-
+        
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            // scroll to make password field visible
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
+                                                             inSection:indexPath.section];
+            [self.signupTableView scrollToRowAtIndexPath:nextIndexPath
+                                        atScrollPosition:UITableViewScrollPositionTop
+                                                animated:YES];
+            
+            // switch keyboard focus to password field
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:nextIndexPath];
+            if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
+                [nextCell.textField becomeFirstResponder];
+            }
+            
+            // don't hide keyboard
+            return NO;
+        };
 
     } else if (indexPath.item == 1) {
-        NSString *placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
-        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
-                                                                               attributes:placeholderAttrs];
+        placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
 
         cell.textField.secureTextEntry = YES;
         
-        cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-        cell.textField.keyboardType = UIKeyboardTypeDefault;
+        // icons for left view
+        cell.activeLeftAttributedString = [FAKIonIcons iosLockedIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosLockedOutlineIconWithSize:30].attributedString;
         
+        // right view
         cell.textField.rightViewMode = UITextFieldViewModeAlways;
         cell.textField.rightView = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
             
             label.font = [UIFont systemFontOfSize:13.0f];
             label.textColor = [UIColor whiteColor];
-
-            label.text = NSLocalizedString(@"Min. 6 characters", @"Minimum six characters help text on signup");
+            
+            NSString *base = NSLocalizedString(@"Min. %d characters", @"Help text for password during create account.");
+            label.text = [NSString stringWithFormat:base, INatMinPasswordLength];
             
             label;
         });
-        
-        cell.textField.leftViewMode = UITextFieldViewModeAlways;
-        
-        FAKIcon *lockedOutline = [FAKIonIcons iosLockedOutlineIconWithSize:30];
-        FAKIcon *lockedFilled = [FAKIonIcons iosLockedIconWithSize:30];
-        FAKIcon *unlockedOutline = [FAKIonIcons iosUnlockedOutlineIconWithSize:30];
-        FAKIcon *unlockedFilled = [FAKIonIcons iosUnlockedIconWithSize:30];
-        
-        void(^configureLockIcon)(BOOL, BOOL) = ^(BOOL isTextEntrySecure, BOOL isEditing) {
-            NSAttributedString *newIconAttrString;
-            if (isEditing) {
-                if (cell.textField.secureTextEntry) {
-                    newIconAttrString = lockedFilled.attributedString;
-                } else {
-                    newIconAttrString = unlockedFilled.attributedString;
-                }
-            } else {
-                if (cell.textField.secureTextEntry) {
-                    newIconAttrString = lockedOutline.attributedString;
-                } else {
-                    newIconAttrString = unlockedOutline.attributedString;
-                }
-            }
+        [cell.textField bk_addEventHandler:^(id sender) {
+            // in case this cell scrolls off the screen
+            password = [cell.textField.text copy];
             
-            [UIView performWithoutAnimation:^{
-                [((UIButton *)cell.textField.leftView) setAttributedTitle:newIconAttrString
-                                                                 forState:UIControlStateNormal];
-                [cell.textField.leftView layoutIfNeeded];
-            }];
-        };
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            configureLockIcon(cell.textField.secureTextEntry, YES);
-        } forControlEvents:UIControlEventEditingDidBegin];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            configureLockIcon(cell.textField.secureTextEntry, NO);
-        } forControlEvents:UIControlEventEditingDidEnd];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            if (cell.textField.text.length > 0) {
+            // right view hides once minimum # of characters are entered
+            if (cell.textField.text.length >= INatMinPasswordLength) {
                 cell.textField.rightViewMode = UITextFieldViewModeNever;
             } else {
                 cell.textField.rightViewMode = UITextFieldViewModeAlways;
             }
-            // just in case this cell scrolls off the screen
-            password = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
-        cell.textField.leftView = ({
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-            button.frame = CGRectMake(0, 0, 60, 44);
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            // scroll to make username field visible
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
+                                                             inSection:indexPath.section];
+            [self.signupTableView scrollToRowAtIndexPath:nextIndexPath
+                                        atScrollPosition:UITableViewScrollPositionTop
+                                                animated:YES];
             
-            button.tintColor = [UIColor whiteColor];
+            // switch keyboard focux to username field
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:nextIndexPath];
+            if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
+                [nextCell.textField becomeFirstResponder];
+            }
             
-            [button bk_addEventHandler:^(id sender) {
-                // toggle secure text entry
-                cell.textField.secureTextEntry = !cell.textField.secureTextEntry;
-                
-                // fake a change to the text so that the caret position
-                // updates. not sure why -setNeedsLayout shouldn't work here.
-                NSString *text = cell.textField.text;
-                cell.textField.text = [text stringByAppendingString:@" "];
-                cell.textField.text = text;
+            // don't hide keyboard
+            return NO;
+        };
 
-                // update lock icon
-                configureLockIcon(cell.textField.secureTextEntry, cell.textField.isFirstResponder);
-
-            } forControlEvents:UIControlEventTouchUpInside];
-            
-            button;
-        });
-        configureLockIcon(cell.textField.secureTextEntry, NO);
-        
     } else {
-        NSString *placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
-        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
-                                                                               attributes:placeholderAttrs];
+        placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
 
-        cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-        cell.textField.keyboardType = UIKeyboardTypeDefault;
-        
-        cell.textField.leftViewMode = UITextFieldViewModeAlways;
-        
-        FAKIcon *personOutline = [FAKIonIcons iosPersonOutlineIconWithSize:30];
-        FAKIcon *personFilled = [FAKIonIcons iosPersonIconWithSize:30];
-
-        cell.textField.leftView = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
-            
-            label.attributedText = personOutline.attributedString;
-            label.textAlignment = NSTextAlignmentCenter;
-            label.textColor = [UIColor whiteColor];
-            
-            label;
-        });
+        // icons for left view
+        cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
         
         [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:personFilled.attributedString];
-        } forControlEvents:UIControlEventEditingDidBegin];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:personOutline.attributedString];
-        } forControlEvents:UIControlEventEditingDidEnd];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            // just in case this cell scrolls off the screen
+            // in case this cell scrolls off the screen
             username = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
+        
+        cell.textField.returnKeyType = UIReturnKeyGo;
+        
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            [self signupAction];
+            
+            // hide the keyboard
+            [tf resignFirstResponder];
+            
+            return NO;
+        };
+
     }
+    
+    cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                           attributes:placeholderAttrs];
+
+}
+
+- (void)signupAction {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    // validators
+    if (!email || ![email containsString:@"@"]) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Email Address",
+                                                             "Error for bad email when making account.")];
+        return;
+    }
+    if (!password || password.length < INatMinPasswordLength) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Passwords must be six characters in length.",
+                                                             @"Error for bad password when making account")];
+        return;
+    }
+    if (!username) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Username",
+                                                             @"Error for bad username hwne making account.")];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.loginController createAccountWithEmail:email
+                                               password:password
+                                               username:username
+                                                success:^(NSDictionary *info) {
+                                                    NSLog(@"success: %@", info);
+                                                }
+                                                failure:^(NSError *error) {
+                                                    NSLog(@"failed: %@", error);
+                                                }];
 }
 
 @end

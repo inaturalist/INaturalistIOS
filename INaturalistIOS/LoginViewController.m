@@ -310,10 +310,6 @@
     if (indexPath.section == 0) {
         EditableTextFieldCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TextField"];
         
-        cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
-        cell.textField.tintColor = [UIColor whiteColor];
-        cell.textField.textColor = [UIColor whiteColor];
-        cell.backgroundColor = [UIColor clearColor];
 
         [self configureEditableTextCell:cell forIndexPath:indexPath];
         
@@ -329,28 +325,7 @@
                             forState:UIControlStateNormal];
         
         [cell.roundedButton bk_addEventHandler:^(id sender) {
-            
-            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                            message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:self
-                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                  otherButtonTitles:nil] show];
-                return;
-            }
-
-            if (!username || !password) {
-                [SVProgressHUD showErrorWithStatus:@"A Field is Missing"];
-                return;
-            }
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            [appDelegate.loginController loginWithUsername:username
-                                                  password:password
-                                                   success:^(NSDictionary *info) {
-                                                       NSLog(@"success: %@", info);
-                                                   } failure:^(NSError *error) {
-                                                       NSLog(@"error: %@", error);
-                                                   }];
+            [self loginAction];
         } forControlEvents:UIControlEventTouchUpInside];
         
         return cell;
@@ -359,62 +334,65 @@
     }
 }
 
+#pragma mark - Editable Text Cell config helper
 
 - (void)configureEditableTextCell:(EditableTextFieldCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     
+    cell.backgroundColor = [UIColor clearColor];
+    
+    cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
+    cell.textField.tintColor = [UIColor whiteColor];
+    cell.textField.textColor = [UIColor whiteColor];
+    
+    cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    cell.textField.keyboardType = UIKeyboardTypeDefault;
+    
+    NSString *placeholderText;
     UIColor *placeholderTint = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
     NSDictionary *placeholderAttrs = @{
                                        NSForegroundColorAttributeName: placeholderTint,
                                        };
     
     if (indexPath.item == 0) {
-        NSString *placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
-        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
-                                                                               attributes:placeholderAttrs];
+        placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
         
-        cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-        cell.textField.keyboardType = UIKeyboardTypeDefault;
-        
-        cell.textField.leftViewMode = UITextFieldViewModeAlways;
-        
-        FAKIcon *personOutline = [FAKIonIcons iosPersonOutlineIconWithSize:30];
-        FAKIcon *personFilled = [FAKIonIcons iosPersonIconWithSize:30];
-        
-        cell.textField.leftView = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
-            
-            label.attributedText = personOutline.attributedString;
-            label.textAlignment = NSTextAlignmentCenter;
-            label.textColor = [UIColor whiteColor];
-            
-            label;
-        });
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:personFilled.attributedString];
-        } forControlEvents:UIControlEventEditingDidBegin];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:personOutline.attributedString];
-        } forControlEvents:UIControlEventEditingDidEnd];
+        // left icons
+        cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
         
         [cell.textField bk_addEventHandler:^(id sender) {
             // just in case this cell scrolls off the screen
             username = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
-    } else {
+        
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            // scroll to make password field visible
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
+                                                             inSection:indexPath.section];
+            [loginTableView scrollToRowAtIndexPath:nextIndexPath
+                                  atScrollPosition:UITableViewScrollPositionTop
+                                          animated:YES];
+            
+            // switch keyboard focus to username field
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[loginTableView cellForRowAtIndexPath:nextIndexPath];
+            if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
+                [nextCell.textField becomeFirstResponder];
+            }
 
-        NSString *placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
-        cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
-                                                                               attributes:placeholderAttrs];
+            // don't hide the keyboard
+            return NO;
+        };
+    } else {
+        placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
         
         cell.textField.secureTextEntry = YES;
         
-        cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-        cell.textField.keyboardType = UIKeyboardTypeDefault;
-        
+        // left icons
+        cell.activeLeftAttributedString = [FAKIonIcons iosLockedIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosLockedOutlineIconWithSize:30].attributedString;
+
+        // right view
         cell.textField.rightViewMode = UITextFieldViewModeAlways;
         cell.textField.rightView = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -448,36 +426,63 @@
             button;
         });
         
-        cell.textField.leftViewMode = UITextFieldViewModeAlways;
-        
-        FAKIcon *lockedOutline = [FAKIonIcons iosLockedOutlineIconWithSize:30];
-        FAKIcon *lockedFilled = [FAKIonIcons iosLockedIconWithSize:30];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:lockedFilled.attributedString];
-        } forControlEvents:UIControlEventEditingDidBegin];
-        
-        [cell.textField bk_addEventHandler:^(id sender) {
-            [((UILabel *)cell.textField.leftView) setAttributedText:lockedOutline.attributedString];
-        } forControlEvents:UIControlEventEditingDidEnd];
-        
+
         [cell.textField bk_addEventHandler:^(id sender) {
             // just in case this cell scrolls off the screen
             password = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
-        cell.textField.leftView = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            [self loginAction];
             
-            label.attributedText = lockedOutline.attributedString;
-            label.textAlignment = NSTextAlignmentCenter;
-            label.textColor = [UIColor whiteColor];
-            
-            label;
-        });
+            // hide keyboard
+            [tf resignFirstResponder];
+
+            return NO;
+        };
+
     }
+    
+    cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                           attributes:placeholderAttrs];
+
 }
 
+#pragma mark - Login helper
+
+- (void)loginAction {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    // validators
+    if (!username) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Username",
+                                                             @"Error for bad username hwne making account.")];
+        return;
+    }
+    if (!password || password.length < INatMinPasswordLength) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Passwords must be six characters in length.",
+                                                             @"Error for bad password when making account")];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.loginController loginWithUsername:username
+                                          password:password
+                                           success:^(NSDictionary *info) {
+                                               NSLog(@"success: %@", info);
+                                           } failure:^(NSError *error) {
+                                               NSLog(@"error: %@", error);
+                                           }];
+}
+
+#pragma mark - INatWebViewController delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
     if ([request.URL.path hasPrefix:@"/forgot_password"]) {
@@ -485,6 +490,7 @@
     }
     [self.navigationController popViewControllerAnimated:YES];
     
+    // webviews may trigger their delegate methods more than once
     static UIAlertView *av;
     if (av) {
         [av dismissWithClickedButtonIndex:0 animated:YES];
@@ -503,207 +509,5 @@
     
     return NO;
 }
-
-
-/*
-#pragma mark - RKRequestDelegate methods
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-    if (response.statusCode == 200 || response.statusCode == 304) {
-        NSString *jsonString = [[NSString alloc] initWithData:response.body
-                                                     encoding:NSUTF8StringEncoding];
-        NSError* error = nil;
-        id<RKParser> parser = [[RKParserRegistry sharedRegistry] parserForMIMEType:@"application/json"];
-        NSDictionary *parsedData = [parser objectFromString:jsonString error:&error];
-        if (parsedData == nil && error) {
-            // Parser error...
-            [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                             withProperties:@{ @"from": @"RKRequest Parser" }];
-            
-            [self failedLogin];
-            return;
-        }
-        
-        [SVProgressHUD showSuccessWithStatus:nil];
-        
-        NSString *userName = [parsedData objectForKey:@"login"];
-        [[NSUserDefaults standardUserDefaults] setValue:userName
-                                                 forKey:INatUsernamePrefKey];
-        [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] 
-                                                 forKey:INatPasswordPrefKey];
-        [[NSUserDefaults standardUserDefaults] setValue:INatAccessToken
-                                                 forKey:INatTokenPrefKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
-            [self.delegate loginViewControllerDidLogIn:self];
-        }
-        [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                            object:nil];
-    } else {
-        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"Unknown Status Code",
-                                           @"code": @(response.statusCode) }];
-
-        [self failedLogin];
-    }
-}
- */
-
-/*
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-    if (jsonParsingError || authFailure) {
-        [self failedLogin];
-    } else {
-        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]];
-    }
-}
-
-- (void)failedLogin {
-    [self failedLogin:nil];
-}
-
-- (void)failedLogin:(NSString *)msg {
-    //[[RKClient sharedClient] setUsername:nil];
-    //[[RKClient sharedClient] setPassword:nil];
-    if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
-    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [RKClient.sharedClient setValue:nil forHTTPHeaderField:@"Authorization"];
-    [app.photoObjectManager.client setValue:nil forHTTPHeaderField:@"Authorization"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatUsernamePrefKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatPasswordPrefKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatTokenPrefKey];
-
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerFailedToLogIn:)]) {
-        [self.delegate loginViewControllerFailedToLogIn:self];
-    }
-    
-    if (!msg) {
-        msg = NSLocalizedString(@"Username or password were invalid.", nil);
-    }
-
-    [SVProgressHUD showErrorWithStatus:msg];
-    isLoginCompleted = YES;
-}
-
-#pragma mark UITextFieldDelegate methods
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    if (textField == usernameField) {
-        [passwordField becomeFirstResponder];
-    } else if (textField == passwordField) {
-        [self signIn:nil];
-    }
-    return YES;
-}
-
-#pragma mark UITableView delegate methods
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        if (!av){
-            av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                     message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-            [av show];
-        }
-        return;
-    }
-    if (indexPath.section == 1) { //Facebook
-        lastAssertionType = FacebookAssertionType;
-        isLoginCompleted = NO;
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
-        [self openFacebookSession];
-    }
-    else if (indexPath.section == 2) {// Google+
-        lastAssertionType = GoogleAssertionType;
-        isLoginCompleted = NO;
-        
-        GPPSignIn *signin = [GPPSignIn sharedInstance];
-        
-        // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
-        // @"plus.login plus.me userinfo.email"
-        __block NSString *scopes;
-        [signin.scopes enumerateObjectsUsingBlock:^(NSString *scope, NSUInteger idx, BOOL *stop) {
-            if (idx == 0)
-                scopes = [NSString stringWithString:scope];
-            else
-                scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
-        }];
-        
-        GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:scopes
-                                                                                    clientID:signin.clientID
-                                                                                clientSecret:nil
-                                                                            keychainItemName:nil
-                                                                                    delegate:self
-                                                                            finishedSelector:@selector(viewController:finishedAuth:error:)];
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    else if (indexPath.section == 3) {
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
-                         withProperties:@{ @"from": @"Login" }];
-        
-        lastAssertionType = 0;
-        UINavigationController *nc = self.navigationController;
-        INatWebController *webController = [[INatWebController alloc] init];
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-        [webController setUrl:url];
-        webController.delegate =self;
-        [nc pushViewController:webController animated:YES];
-     }
-    else if (indexPath.section == 4) {
-        UINavigationController *nc = self.navigationController;
-        INatWebController *webController = [[INatWebController alloc] init];
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
-        [webController setUrl:url];
-        webController.delegate = self;
-        [nc pushViewController:webController animated:YES];
-    }
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-}
-
-#pragma mark UIAlertViewDelegate methods
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    av = nil;
-    if (buttonIndex == 0) return;
-    NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-    [[UIApplication sharedApplication] openURL:url];
-}
-
-#pragma mark - UIWebViewDelegate
-- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
-    if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"] || [request.URL.path hasPrefix:@"/forgot_password"]) {
-        return YES;
-    }
-    [self.navigationController popViewControllerAnimated:YES];
-    if (av) [av dismissWithClickedButtonIndex:0 animated:YES];
-    av = nil;
-    NSString *title, *message;
-    if ([webView.request.URL.path hasPrefix:@"/forgot_password"]) {
-        title = @"Check Your Email";
-        message = @"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.";
-    } else {
-        [[Analytics sharedClient] event:kAnalyticsEventSignup];
-        title = NSLocalizedString(@"Welcome to iNaturalist!", nil);
-        message = NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil);
-    }
-    av = [[UIAlertView alloc] initWithTitle:title
-                                    message:message
-                                   delegate:self
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil];
-    [av show];
-    return NO;
-}
-*/
 
 @end

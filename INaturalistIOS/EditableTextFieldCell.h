@@ -12,4 +12,7 @@
 
 @property UITextField *textField;
 
+@property NSAttributedString *activeLeftAttributedString;
+@property NSAttributedString *inactiveLeftAttributedString;
+
 @end
