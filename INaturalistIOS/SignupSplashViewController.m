@@ -65,7 +65,7 @@
     if (self.backgroundImageView && orangeFlower)
         [self.backgroundImageView setImage:orangeFlower];
     
-    backgroundCycleTimer = [NSTimer bk_scheduledTimerWithTimeInterval:5.0f
+    backgroundCycleTimer = [NSTimer bk_scheduledTimerWithTimeInterval:4.0f
                                                                 block:^(NSTimer *timer) {
                                                                     UIImage *newImage;
                                                                     if (self.backgroundImageView.image == orangeFlower) {
@@ -76,7 +76,7 @@
                                                                         newImage = orangeFlower;
                                                                     }
                                                                     [UIView transitionWithView:self.backgroundImageView
-                                                                                      duration:0.5f
+                                                                                      duration:1.0f
                                                                                        options:UIViewAnimationOptionTransitionCrossDissolve
                                                                                     animations:^{
                                                                                         self.backgroundImageView.image = newImage;
