@@ -158,15 +158,40 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         return;
     }
     
-    // if we don't have a file for this obs photo, most likely it's still saving
-    // into the ImageStore. don't crash in Restkit, just skip this obs photo.
     NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey
                                                        forSize:ImageStoreLargeSize];
     NSFileManager *fm = [NSFileManager defaultManager];
+    
+    // if we don't have a file for this obs photo, it's not in the ImageStore
+    // remove the obsPhoto, and notify the user that we can't sync the photo.
     if (!path || ![fm fileExistsAtPath:path]) {
-        // bail on the sync. this sucks, but is better than crashing.
-        NSLog(@"can't upload photo, we don't have it yet.");
+        
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC Can't upload obs photo, no file for %@", path]];
+        
+        // human readable index
+        NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
+        NSString *obsName;
+        if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
+            obsName = op.observation.speciesGuess;
+        else
+            obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
+        
+        NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
+                                                                          @"error message when an obs photo doesn't have a file on disk."),
+                              index, obsName];
+        NSString *alertTitle = NSLocalizedString(@"Photo Upload Problem", @"error title during an obs photo problem.");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                        message:alertMsg
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        // bail on syncing this photo.
+        // this sucks, but is better than crashing.
+        [op destroy];
         [self stopSync];
+        return;
     }
 
     void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
