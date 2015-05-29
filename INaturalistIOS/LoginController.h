@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString *kUserLoggedInNotificationName;
+extern NSInteger INatMinPasswordLength;
 
 typedef void (^LoginSuccessBlock)(NSDictionary *info);
 typedef void (^LoginErrorBlock)(NSError *error);

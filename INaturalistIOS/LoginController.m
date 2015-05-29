@@ -30,6 +30,7 @@
 #pragma mark - NSNotification names
 
 NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
+NSInteger INatMinPasswordLength = 6;
 
 @implementation LoginController
 
