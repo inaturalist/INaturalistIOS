@@ -234,13 +234,8 @@ static ImageStore *sharedImageStore = nil;
     }
 }
 
-// http://stackoverflow.com/questions/8684551/generate-a-uuid-string-with-arc-enabled
-- (NSString *)createKey
-{
-    CFUUIDRef uuid = CFUUIDCreate(NULL);
-    NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, uuid);
-    CFRelease(uuid);
-    return uuidStr;
+- (NSString *)createKey {
+    return [[NSUUID UUID] UUIDString];
 }
 
 - (NSString *)pathForKey:(NSString *)key
