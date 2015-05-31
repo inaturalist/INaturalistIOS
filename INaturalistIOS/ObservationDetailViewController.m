@@ -619,40 +619,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     });
 }
 
-- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
-{
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
-    ObservationPhoto *op = [ObservationPhoto object];
-    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
-    [op setObservation:self.observation];
-    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
-    [self addPhoto:op];
-    op.localCreatedAt = [NSDate date];
-	op.localUpdatedAt = [NSDate date];
-    
-    if (referenceURL) {
-        self.lastImageReferenceURL = referenceURL;
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import metadata?", nil)
-                                                     message:NSLocalizedString(@"Do you want to set the date, time, and location of this observation from the photo's metadata?",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"No", nil)
-                                           otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
-        [av show];
-    } else {
-        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
-                                                     longitude:[self.observation.visibleLongitude doubleValue]];
-        
-        NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
-        [meta setValue:[self getGPSDictionaryForLocation:loc]
-                forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-        [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
-                                       metadata:meta
-                                completionBlock:nil];
-    }
-}
-
 // http://stackoverflow.com/a/5314634/720268
 - (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location {
     NSMutableDictionary *gps = [NSMutableDictionary dictionary];
