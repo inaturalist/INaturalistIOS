@@ -464,15 +464,30 @@
         return;
     }
     
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating iNaturalist account...", @"Notice while we're creating an iNat account for them")
+                         maskType:SVProgressHUDMaskTypeGradient];
+
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController createAccountWithEmail:email
                                                password:password
                                                username:username
                                                 success:^(NSDictionary *info) {
-                                                    NSLog(@"success: %@", info);
+                                                    [SVProgressHUD showSuccessWithStatus:nil];
+                                                    if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                        [appDelegate showMainUI];
+                                                    } else {
+                                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                                    }
                                                 }
                                                 failure:^(NSError *error) {
-                                                    NSLog(@"failed: %@", error);
+                                                    NSString *errMsg;
+                                                    if (error) {
+                                                        errMsg = error.localizedDescription;
+                                                    } else {
+                                                        errMsg = NSLocalizedString(@"Failed to create an iNat account. Please try again.",
+                                                                                   @"Uknown iNaturalist create account error");
+                                                    }
+                                                    [SVProgressHUD showErrorWithStatus:errMsg];
                                                 }];
 }
 

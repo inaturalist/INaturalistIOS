@@ -18,8 +18,9 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 - (void)loginWithFacebookSuccess:(LoginSuccessBlock)success
                          failure:(LoginErrorBlock)error;
-- (void)loginWithGoogleSuccess:(LoginSuccessBlock)success
-                       failure:(LoginErrorBlock)error;
+- (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
+                                  success:(LoginSuccessBlock)success
+                                  failure:(LoginErrorBlock)error;
 
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
@@ -33,12 +34,5 @@ typedef void (^LoginErrorBlock)(NSError *error);
                   failure:(LoginErrorBlock)failureBlock;
 
 - (void)logout;
-
-/*
- * the Google auth view controller needs these during its setup.
- * so we have to expose them for the VC hierarchy.
- */
-- (NSString *)scopesForGoogleSignin;
-- (NSString *)clientIdForGoogleSignin;
 
 @end

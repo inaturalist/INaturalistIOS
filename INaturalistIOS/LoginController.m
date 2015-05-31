@@ -14,6 +14,7 @@
 #import "Analytics.h"
 #import "INaturalistAppDelegate.h"
 #import "GooglePlusAuthViewController.h"
+#import "UIColor+INaturalist.h"
 
 
 @interface LoginController () {
@@ -24,6 +25,8 @@
     NSInteger   lastAssertionType;
     BOOL        tryingGoogleReauth;
 }
+@property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
+@property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
 
 @end
 
@@ -47,11 +50,76 @@ NSInteger INatMinPasswordLength = 6;
     
 }
 
+#pragma mark - Facebook
+
+- (void)loginWithFacebookSuccess:(LoginSuccessBlock)successBlock
+                         failure:(LoginErrorBlock)errorBlock {
+    
+    self.currentSuccessBlock = successBlock;
+    self.currentErrorBlock = errorBlock;
+    
+    NSArray *perms = @[@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups"];
+    FBSession *session = [[FBSession alloc] initWithAppID:nil
+                                              permissions:perms
+                                          urlSchemeSuffix:@"inat"
+                                       tokenCacheStrategy:nil];
+    [FBSession setActiveSession:session];
+    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
+            completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                
+                if (error) {
+                    [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                     withProperties:@{ @"from": @"Facebook",
+                                                       @"code": @(error.code) }];
+                    
+                    [self executeError:error];
+                    
+                    return;
+                }
+
+                switch (state) {
+                    case FBSessionStateOpen:
+                        externalAccessToken = [session.accessTokenData.accessToken copy];
+                        accountType = nil;
+                        accountType = kINatAuthServiceExtToken;
+                        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+                                                                             assertionType:[NSURL URLWithString:@"http://facebook.com"]
+                                                                                 assertion:externalAccessToken];
+                        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                                         withProperties:@{ @"Via": @"Facebook" }];
+                        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                            object:nil];
+                        
+                        [self executeSuccess:nil];
+                        
+                        break;
+                    case FBSessionStateClosed:
+                        NSLog(@"session FBSessionStateClosed");
+                    case FBSessionStateClosedLoginFailed:
+                        NSLog(@"session FBSessionStateClosedLoginFailed");
+                        [FBSession.activeSession closeAndClearTokenInformation];
+                        externalAccessToken = nil;
+                        
+                        [self executeError:nil];
+                        break;
+                    default:
+                        break;
+                }
+            }];
+    
+}
+
+#pragma mark - INat OAuth Login
+
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
                        success:(LoginSuccessBlock)successBlock
-                       failure:(LoginErrorBlock)failureBlock {
+                       failure:(LoginErrorBlock)errorBlock {
+    
+    self.currentSuccessBlock = successBlock;
+    self.currentErrorBlock = errorBlock;
     
     [[RKClient sharedClient] post:@"/users.json"
                        usingBlock:^(RKRequest *request) {
@@ -67,95 +135,48 @@ NSInteger INatMinPasswordLength = 6;
                                id respJson = [NSJSONSerialization JSONObjectWithData:response.body
                                                                              options:NSJSONReadingAllowFragments
                                                                                error:&error];
+                               
                                if (error) {
-                                   failureBlock(error);
+                                   [self executeError:error];
                                    return;
                                }
                                
                                if ([respJson valueForKey:@"errors"]) {
                                    // TODO: extract error from json and notify user
-                                   failureBlock(nil);
+                                   [self executeError:nil];
                                    return;
                                }
                                
                                [self loginWithUsername:username
                                               password:password
                                                success:successBlock
-                                               failure:failureBlock];
+                                               failure:errorBlock];
                                
                            };
                            
                            request.onDidFailLoadWithError = ^(NSError *error) {
-                               failureBlock(error);
+                               [self executeError:error];
                            };
-
+                           
                        }];
 }
 
 - (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password
                   success:(LoginSuccessBlock)successBlock
-                  failure:(LoginErrorBlock)failureBlock {
-
+                  failure:(LoginErrorBlock)errorBlock {
+    
+    self.currentSuccessBlock = successBlock;
+    self.currentErrorBlock = errorBlock;
+    
     accountType = nil;
     accountType = kINatAuthService;
     isLoginCompleted = NO;
     [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                               username:username
                                                               password:password];
-
-}
-
-- (void)loginWithFacebookSuccess:(LoginSuccessBlock)successBlock failure:(LoginErrorBlock)failBlock {
-    NSArray *perms = @[@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups"];
-    FBSession *session = [[FBSession alloc] initWithAppID:nil
-                                              permissions:perms
-                                          urlSchemeSuffix:@"inat"
-                                       tokenCacheStrategy:nil];
-    [FBSession setActiveSession:session];
-    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
-            completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-                
-                switch (state) {
-                    case FBSessionStateOpen:
-                        externalAccessToken = [session.accessTokenData.accessToken copy];
-                        accountType = nil;
-                        accountType = kINatAuthServiceExtToken;
-                        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
-                                                                             assertionType:[NSURL URLWithString:@"http://facebook.com"]
-                                                                                 assertion:externalAccessToken];
-                        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                                         withProperties:@{ @"Via": @"Facebook" }];
-                        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                            object:nil];
-                        
-                        break;
-                    case FBSessionStateClosed:
-                        NSLog(@"session FBSessionStateClosed");
-                    case FBSessionStateClosedLoginFailed:
-                        NSLog(@"session FBSessionStateClosedLoginFailed");
-                        // Once the user has logged in, we want them to
-                        // be looking at the root view.
-                        [FBSession.activeSession closeAndClearTokenInformation];
-                        externalAccessToken = nil;
-                        break;
-                    default:
-                        break;
-                }
-                
-                if (error) {
-                    
-                    [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                                     withProperties:@{ @"from": @"Facebook",
-                                                       @"code": @(error.code) }];
-                    
-                    failBlock(error);
-                }
-            }];
     
 }
-
 
 -(void)initOAuth2Service{
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreAccountsDidChangeNotification
@@ -171,7 +192,13 @@ NSInteger INatMinPasswordLength = 6;
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification) {
-                                                      NSLog(@"login failed");
+                                                      id err = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
+                                                      NSLog(@"err is %@", err);
+                                                      if (err && [err isKindOfClass:[NSError class]]) {
+                                                          [self executeError:err];
+                                                      } else {
+                                                          [self executeError:nil];
+                                                      }
                                                   }];
 }
 
@@ -188,22 +215,24 @@ NSInteger INatMinPasswordLength = 6;
             loginSucceeded = YES;
         }
     }
+    
     if (loginSucceeded) {
         
+        [self executeSuccess:nil];
+    
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
                                                  forKey:INatTokenPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-        [app showMainUI];
+        
+        INaturalistAppDelegate *app = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         [RKClient.sharedClient setValue:iNatAccessToken forHTTPHeaderField:@"Authorization"];
         [RKClient.sharedClient setAuthenticationType:RKRequestAuthenticationTypeNone];
         [app.photoObjectManager.client setValue:iNatAccessToken forHTTPHeaderField:@"Authorization"];
         [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
         [self removeOAuth2Observers];
-        
         
         [[RKClient sharedClient] get:@"/users/edit.json"
                           usingBlock:^(RKRequest *request) {
@@ -239,16 +268,48 @@ NSInteger INatMinPasswordLength = 6;
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"iNaturalist" }];
-        NSLog(@"login failed");
+        
+        [self executeError:nil];
     }
 }
 
 -(void) removeOAuth2Observers{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NXOAuth2AccountStoreAccountsDidChangeNotification object:[NXOAuth2AccountStore sharedStore]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NXOAuth2AccountStoreDidFailToRequestAccessNotification object:[NXOAuth2AccountStore sharedStore]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NXOAuth2AccountStoreAccountsDidChangeNotification
+                                                  object:[NXOAuth2AccountStore sharedStore]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NXOAuth2AccountStoreDidFailToRequestAccessNotification
+                                                  object:[NXOAuth2AccountStore sharedStore]];
 }
 
 #pragma mark - Google methods
+
+- (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
+                                  success:(LoginSuccessBlock)success
+                                  failure:(LoginErrorBlock)error {
+    
+    self.currentSuccessBlock = success;
+    self.currentErrorBlock = error;
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
+                                                                                clientID:self.clientIdForGoogleSignin
+                                                                            clientSecret:nil
+                                                                        keychainItemName:nil
+                                                                                delegate:self
+                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
+    [nav pushViewController:vc animated:YES];
+    
+    // inat green button tint
+    [nav.navigationBar setTintColor:[UIColor inatTint]];
+    
+    // standard navigation bar
+    [nav.navigationBar setBackgroundImage:nil
+                            forBarMetrics:UIBarMetricsDefault];
+    [nav.navigationBar setShadowImage:nil];
+    [nav.navigationBar setTranslucent:YES];
+    [nav setNavigationBarHidden:NO];
+}
 
 - (NSString *)scopesForGoogleSignin {
     GPPSignIn *signin = [GPPSignIn sharedInstance];
@@ -290,16 +351,13 @@ NSInteger INatMinPasswordLength = 6;
           finishedAuth:(GTMOAuth2Authentication *)auth
                  error:(NSError *)error {
     
-    if (error || (!auth.accessToken && tryingGoogleReauth)) {
-        NSString *msg = error.localizedDescription;
-        if (!msg) {
-            msg = NSLocalizedString(@"Google sign in failed", nil);
-        }
-        
+    if (error || (!auth.accessToken && tryingGoogleReauth)) {        
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"Google" }];
         
         tryingGoogleReauth = NO;
+        
+        [self executeError:error];
         
     } else if (!auth.accessToken && !tryingGoogleReauth) {
         tryingGoogleReauth = YES;
@@ -317,14 +375,32 @@ NSInteger INatMinPasswordLength = 6;
                                                                  assertion:externalAccessToken];
         tryingGoogleReauth = NO;
         
-        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                            object:nil];
-        [vc dismissViewControllerAnimated:YES completion:nil];
+        [self executeSuccess:nil];
     }
 }
 
+#pragma mark - Success / Failure helpers
 
+- (void)executeSuccess:(NSDictionary *)results {
+    @synchronized(self) {
+        if (self.currentSuccessBlock) {
+            self.currentSuccessBlock(results);
+        }
+        
+        self.currentSuccessBlock = nil;
+        self.currentErrorBlock = nil;
+    }
+}
 
+- (void)executeError:(NSError *)error {
+    @synchronized(self) {
+        if (self.currentErrorBlock) {
+            self.currentErrorBlock(error);
+        }
+        
+        self.currentSuccessBlock = nil;
+        self.currentErrorBlock = nil;
+    }
+}
 
 @end

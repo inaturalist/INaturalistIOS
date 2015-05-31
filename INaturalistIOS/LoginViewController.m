@@ -10,6 +10,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <FontAwesomeKit/FAKIonicons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <NXOAuth2Client/NXOAuth2.h>
 
 #import "LoginViewController.h"
 #import "LoginController.h"
@@ -20,8 +21,6 @@
 #import "RoundedButtonCell.h"
 #import "UIColor+INAturalist.h"
 #import "INatWebController.h"
-#import "GPPSignIn.h"
-#import "GooglePlusAuthViewController.h"
 
 
 @interface LoginViewController () <UITableViewDataSource, UITableViewDelegate, INatWebControllerDelegate> {
@@ -141,24 +140,22 @@
             }
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            
-            GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:appDelegate.loginController.scopesForGoogleSignin
-                                                                                        clientID:appDelegate.loginController.clientIdForGoogleSignin
-                                                                                    clientSecret:nil
-                                                                                keychainItemName:nil
-                                                                                        delegate:appDelegate.loginController
-                                                                                finishedSelector:@selector(viewController:finishedAuth:error:)];
-            [self.navigationController pushViewController:vc animated:YES];
-            
-            // inat green button tint
-            [self.navigationController.navigationBar setTintColor:[UIColor inatTint]];
-            
-            // standard navigation bar
-            [self.navigationController.navigationBar setBackgroundImage:nil
-                                                          forBarMetrics:UIBarMetricsDefault];
-            [self.navigationController.navigationBar setShadowImage:nil];
-            [self.navigationController.navigationBar setTranslucent:YES];
-            [self.navigationController setNavigationBarHidden:NO];
+            [appDelegate.loginController loginWithGoogleUsingNavController:self.navigationController
+                                                                   success:^(NSDictionary *info) {
+                                                                       if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                                           [appDelegate showMainUI];
+                                                                       } else {
+                                                                           
+                                                                           [self dismissViewControllerAnimated:YES completion:nil];
+                                                                       }
+                                                                   } failure:^(NSError *error) {
+                                                                       if (error) {
+                                                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                                       } else {
+                                                                           [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                                                @"Uknown google login error")];
+                                                                       }
+                                                                   }];
         
         } forControlEvents:UIControlEventTouchUpInside];
 
@@ -191,9 +188,18 @@
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
-                [self dismissViewControllerAnimated:YES completion:nil];
+                if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                    [appDelegate showMainUI];
+                } else {
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }
             } failure:^(NSError *error) {
-                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                if (error) {
+                    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                } else {
+                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+                                                                         @"Uknown facebook login error")];
+                }
             }];
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -472,13 +478,33 @@
         return;
     }
     
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
+                         maskType:SVProgressHUDMaskTypeGradient];
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:username
                                           password:password
                                            success:^(NSDictionary *info) {
-                                               NSLog(@"success: %@", info);
+                                               [SVProgressHUD showSuccessWithStatus:nil];
+                                               if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                   [appDelegate showMainUI];
+                                               } else {
+                                                   [self dismissViewControllerAnimated:YES completion:nil];
+                                               }
                                            } failure:^(NSError *error) {
-                                               NSLog(@"error: %@", error);
+                                               NSString *errMsg;
+                                               if (error) {
+                                                   if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
+                                                       errMsg = NSLocalizedString(@"Incorrect username or password.",
+                                                                                  @"Error msg when we get a 401 from the server");
+                                                   } else {
+                                                       errMsg = error.localizedDescription;
+                                                   }
+                                               } else {
+                                                   errMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
+                                                                              @"Uknown iNat login error");
+                                               }
+                                               [SVProgressHUD showErrorWithStatus:errMsg];
                                            }];
 }
 
