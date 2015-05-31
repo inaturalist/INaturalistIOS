@@ -26,7 +26,30 @@
         op.position = @(idx);
         [op setObservation:self];
         [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        [ImageStore.sharedImageStore storeAsset:asset forKey:op.photoKey];
+        
+        NSError *saveError = nil;
+        
+        BOOL saved = [[ImageStore sharedImageStore] storeAsset:asset
+                                                        forKey:op.photoKey
+                                                         error:&saveError];
+        if (saveError) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                        message:saveError.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+            [op destroy];
+            return;
+        } else if (!saved) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                        message:NSLocalizedString(@"Unknown error", @"Message body when we don't know the error")
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+            [op destroy];
+            return;
+        }
+
         op.localCreatedAt = now;
         op.localUpdatedAt = now;
         

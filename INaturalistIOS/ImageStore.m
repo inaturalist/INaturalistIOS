@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #import "ImageStore.h"
+#import "Analytics.h"
 
 static ImageStore *sharedImageStore = nil;
 
@@ -68,7 +69,9 @@ static ImageStore *sharedImageStore = nil;
     return image;
 }
 
-- (void)storeAsset:(ALAsset *)asset forKey:(NSString *)key {
+- (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError *__autoreleasing *)storeError {
+    [[Analytics sharedClient] debugLog:@"ASSET STORE: begin"];
+    
     NSString *filePath = [self pathForKey:key];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -76,7 +79,8 @@ static ImageStore *sharedImageStore = nil;
         [fileManager createFileAtPath:filePath contents:nil attributes:nil];
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
     if (!fileHandle) {
-        NSLog(@"No filehandle :(");
+        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal no filehandle"];
+        return NO;
     }
     long long assetSize = asset.defaultRepresentation.size;
 
@@ -90,6 +94,9 @@ static ImageStore *sharedImageStore = nil;
                                            length:length
                                             error:&error];
             if (error) {
+                NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: error %@", error.localizedDescription];
+                [[Analytics sharedClient] debugLog:debugMsg];
+                *storeError = [error copy];
                 fileHandle = nil;
                 break;
             }
@@ -103,6 +110,11 @@ static ImageStore *sharedImageStore = nil;
         }
     }
     
+    if (fileHandle == nil) {
+        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal no filehandle"];
+        return NO;
+    }
+    
     [fileHandle truncateFileAtOffset:assetSize];
     [fileHandle closeFile];
 
@@ -111,73 +123,53 @@ static ImageStore *sharedImageStore = nil;
     
     // generate small
     NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
-    [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                   key, @"key",
-                                   [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
-                                   longEdge, @"longEdge",
-                                   [NSNumber numberWithFloat:1.0], @"compression",
-                                   nil]];
+    NSError *generatorError = nil;
+    BOOL smallGenerated = [self generateImageWithParams:@{
+                                                          @"key": key,
+                                                          @"size": @(ImageStoreSmallSize),
+                                                          @"longEdge": longEdge,
+                                                          @"compression": @(1.0),
+                                                          }
+                                                  error:&generatorError];
     
-    // generate large
-    [self performSelectorInBackground:@selector(generateImageWithParams:)
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
-                                       [NSNumber numberWithFloat:2.0 * screenMax], @"longEdge",
-                                       [NSNumber numberWithFloat:1.0], @"compression",
-                                       nil]];
+    if (generatorError) {
+        *storeError = [generatorError copy];
+        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal generate small %@", generatorError.localizedDescription];
+        [[Analytics sharedClient] debugLog:debugMsg];
+        return NO;
+    }
     
-    // generate square
-    [self performSelectorInBackground:@selector(generateImageWithParams:)
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreSquareSize], @"size",
-                                       [NSNumber numberWithFloat:0.5], @"compression",
-                                       nil]];
-
+    if (!smallGenerated) {
+        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal generate small"];
+        return NO;
+    }
+    
+    // generate large & square off the main queue
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self generateImageWithParams:@{
+                                        @"key": key,
+                                        @"size": @(ImageStoreLargeSize),
+                                        @"longEdge": @(2.0 * screenMax),
+                                        @"compression": @(1.0),
+                                        }
+                                error:nil];
+        
+        [self generateImageWithParams:@{
+                                        @"key": key,
+                                        @"size": @(ImageStoreSquareSize),
+                                        @"compression": @(0.5),
+                                        }
+                                error:nil];
+    });
+    
+    [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
+    return YES;
 }
 
-- (void)store:(UIImage *)image forKey:(NSString *)key
-{
-    [self.dictionary setValue:image forKey:key];
-    NSString *filePath = [self pathForKey:key];
-    NSData *data = UIImageJPEGRepresentation(image, 0.8);
-    [data writeToFile:filePath atomically:YES];
-    
-    float screenMax = MAX([UIScreen mainScreen].bounds.size.width, 
-                          [UIScreen mainScreen].bounds.size.height);
-    
-    // generate small
-    NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
-    [self generateImageWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:
-       key, @"key",
-       [NSNumber numberWithInt:ImageStoreSmallSize], @"size",
-       longEdge, @"longEdge",
-       [NSNumber numberWithFloat:1.0], @"compression",
-       nil]];
-
-    // generate large
-    [self performSelectorInBackground:@selector(generateImageWithParams:) 
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreLargeSize], @"size",
-                                       [NSNumber numberWithFloat:2.0 * screenMax], @"longEdge",
-                                       [NSNumber numberWithFloat:1.0], @"compression",
-                                       nil]];
-    
-    // generate square
-    [self performSelectorInBackground:@selector(generateImageWithParams:) 
-                           withObject:[[NSDictionary alloc] initWithObjectsAndKeys:
-                                       key, @"key",
-                                       [NSNumber numberWithInt:ImageStoreSquareSize], @"size",
-                                       [NSNumber numberWithFloat:0.5], @"compression",
-                                       nil]];
-}
-
-- (void)generateImageWithParams:(NSDictionary *)params
-{
+- (BOOL)generateImageWithParams:(NSDictionary *)params error:(NSError **)generatorError {
     NSString *key = [params objectForKey:@"key"];
-    if (!key) return;
+    if (!key)
+        return NO;
     
     int size = [[params objectForKey:@"size"] intValue];
     if (!size) size = ImageStoreOriginalSize;
@@ -190,8 +182,8 @@ static ImageStore *sharedImageStore = nil;
     
     UIImage *image = [self find:key];
     if (!image) {
-        NSLog(@"Error: failed to generate image for %@: image not in store.", key);
-        return;
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"ASSET STORE: failed on size %d", size]];
+        return NO;
     }
     
     CGSize imgSize;
@@ -208,16 +200,35 @@ static ImageStore *sharedImageStore = nil;
         } else {
             newHeight = max;
             newWidth = newWidth * scaleFactor;
-        }   
+        }
         imgSize = CGSizeMake(newWidth, newHeight);
     }
     
     UIImage *newImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:imgSize];
+    if (!newImage) {
+        [[Analytics sharedClient] debugLog:@"ASSET STORE: couldn't scale"];
+        return NO;
+    }
     
     [self.dictionary setValue:newImage forKey:sizedKey];
     NSString *filePath = [self pathForKey:sizedKey];
     NSData *data = UIImageJPEGRepresentation(newImage, compression);
-    [data writeToFile:filePath atomically:YES];
+    
+    if (!data) {
+        [[Analytics sharedClient] debugLog:@"ASSET STORE: no jpeg representation"];
+        return NO;
+    }
+    
+    NSError *writeError;
+    [data writeToFile:filePath options:NSDataWritingAtomic error:&writeError];
+    if (writeError) {
+        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: write error %@", writeError.localizedDescription];
+        [[Analytics sharedClient] debugLog:debugMsg];
+        *generatorError = [writeError copy];
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (void)destroy:(NSString *)key

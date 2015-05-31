@@ -596,16 +596,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     // set the follow up action
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
-        for (ALAsset *asset in assets) {
-            ObservationPhoto *op = [ObservationPhoto object];
-            op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
-            [op setObservation:self.observation];
-            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-            [[ImageStore sharedImageStore] storeAsset:asset forKey:op.photoKey];
-            [self addPhoto:op];
-            op.localCreatedAt = [NSDate date];
-            op.localUpdatedAt = [NSDate date];
-        }
+        
+        __weak __typeof__(self) weakSelf = self;
+        [self.observation addAssets:assets afterEach:^(ObservationPhoto *op) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            [strongSelf addPhoto:op];
+        }];
+        
         [self dismissViewControllerAnimated:YES completion:nil];
     };
     
