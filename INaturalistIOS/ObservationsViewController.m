@@ -177,7 +177,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
         
         NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
-                                                                          @"error message when an obs photo doesn't have a file on disk."),
+                                                                          @"error message when an obs photo doesn't have a file on the phone."),
                               index, obsName];
         NSString *alertTitle = NSLocalizedString(@"Photo Upload Problem", @"error title during an obs photo problem.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
