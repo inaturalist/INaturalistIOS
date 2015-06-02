@@ -15,6 +15,7 @@
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "SignupSplashViewController.h"

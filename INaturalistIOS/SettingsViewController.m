@@ -30,7 +30,7 @@
 #import "Analytics.h"
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
-
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 static const int CreditsSection = 3;
 

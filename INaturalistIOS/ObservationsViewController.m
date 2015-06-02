@@ -35,6 +35,7 @@
 #import "INatWebController.h"
 #import "SignupSplashViewController.h"
 #import "LoginViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 static const int ObservationCellImageTag = 5;
 static const int ObservationCellTitleTag = 1;

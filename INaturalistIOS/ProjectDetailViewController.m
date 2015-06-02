@@ -15,6 +15,7 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 

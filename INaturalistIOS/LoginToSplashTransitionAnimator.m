@@ -1,17 +1,17 @@
 //
-//  SignupToSplashTransitionAnimator.m
+//  LoginToSplashTransitionAnimator.m
 //  iNaturalist
 //
-//  Created by Alex Shepard on 5/26/15.
+//  Created by Alex Shepard on 6/2/15.
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import "SignupToSplashTransitionAnimator.h"
+#import "LoginToSplashTransitionAnimator.h"
 #import "SignupSplashViewController.h"
-#import "SignupViewController.h"
+#import "LoginViewController.h"
 #import "SplitTextButton.h"
 
-@implementation SignupToSplashTransitionAnimator
+@implementation LoginToSplashTransitionAnimator
 
 - (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext {
     return .4f;
@@ -22,10 +22,10 @@
     SignupSplashViewController *splash = (SignupSplashViewController *)toViewController;
     
     UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    SignupViewController *signup = (SignupViewController *)fromViewController;
+    LoginViewController *login = (LoginViewController *)fromViewController;
     
     
-    CGFloat width = signup.view.frame.size.width;
+    CGFloat width = login.view.frame.size.width;
     
     if (splash.blurView) {
         // hide the splash blurview until animation is complete
@@ -33,8 +33,8 @@
     }
     // splash screen backgrond starts invisible
     splash.backgroundImageView.alpha = 0.0f;
-    splash.backgroundImageView.image = signup.backgroundImage;
-
+    splash.backgroundImageView.image = login.backgroundImage;
+    
     // splash screen UI elements start off-screen to the left
     splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, -width, 0);
     splash.reasonLabel.frame = CGRectOffset(splash.reasonLabel.frame, -width, 0);
@@ -44,9 +44,9 @@
     splash.skipButton.frame = CGRectOffset(splash.skipButton.frame, -width, 0);
     splash.signinEmailButton.frame = CGRectOffset(splash.signinEmailButton.frame, -width, 0);
     
-    // insert the splash view above the signup view in the transition context
+    // insert the splash view above the login view in the transition context
     [[transitionContext containerView] insertSubview:splash.view atIndex:1];
-
+    
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                      animations:^{
                          
@@ -54,7 +54,7 @@
                              // animate the non-blurred image to 1, effectively animating out the blur
                              splash.backgroundImageView.alpha = 1.0f;
                          }
-
+                         
                          // migrate all the splash screen stuff in from the right
                          splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, width, 0);
                          splash.reasonLabel.frame = CGRectOffset(splash.reasonLabel.frame, width, 0);
@@ -65,11 +65,12 @@
                          splash.signinEmailButton.frame = CGRectOffset(splash.signinEmailButton.frame, width, 0);
                          
                          // migrate the signup screen stuff off from the right
-                         signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, width, 0);
-                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, width, 0);
+                         login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, width, 0);
+                         login.gButton.frame = CGRectOffset(login.gButton.frame, width, 0);
+                         login.faceButton.frame = CGRectOffset(login.faceButton.frame, width, 0);
                          
                          if (!splash.cancellable)
-                             signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, width, 0);
+                             login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, width, 0);
                          
                      }
                      completion:^(BOOL finished) {
@@ -78,14 +79,16 @@
                              splash.backgroundImageView.alpha = 1.0f;
                              splash.blurView.alpha = 1.0f;
                          }
-
+                         
                          [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                          
                          // reset the signup screen
-                         signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, -width, 0);
-                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, -width, 0);
+                         login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, -width, 0);
+                         login.gButton.frame = CGRectOffset(login.gButton.frame, -width, 0);
+                         login.faceButton.frame = CGRectOffset(login.faceButton.frame, -width, 0);
+
                          if (!splash.cancellable)
-                             signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, -width, 0);
+                             login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, -width, 0);
                          
                      }];
     

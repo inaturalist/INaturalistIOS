@@ -1,17 +1,18 @@
 //
-//  SplashToSignupTransitionAnimator.m
+//  SplashToLoginTransitionAnimator.m
 //  iNaturalist
 //
-//  Created by Alex Shepard on 5/26/15.
+//  Created by Alex Shepard on 6/2/15.
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import "SplashToSignupTransitionAnimator.h"
+#import "SplashToLoginTransitionAnimator.h"
+
 #import "SignupSplashViewController.h"
-#import "SignupViewController.h"
+#import "LoginViewController.h"
 #import "SplitTextButton.h"
 
-@implementation SplashToSignupTransitionAnimator
+@implementation SplashToLoginTransitionAnimator
 
 - (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext {
     return .4f;
@@ -19,27 +20,28 @@
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
     UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    SignupViewController *signup = (SignupViewController *)toViewController;
+    LoginViewController *login = (LoginViewController *)toViewController;
     
     UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     SignupSplashViewController *splash = (SignupSplashViewController *)fromViewController;
     
-    // insert the signup view underneath the splash view in the transition context
-    [[transitionContext containerView] insertSubview:signup.view atIndex:0];
+    // insert the login view underneath the list view in the transition context
+    [[transitionContext containerView] insertSubview:login.view atIndex:0];
     
     CGFloat width = splash.view.frame.size.width;
     
-    // signup screen stuff starts off-screen to the right
-    signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, width, 0);
-    signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, width, 0);
-    signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, width, 0);
+    // login screen stuff starts off-screen to the right
+    login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, width, 0);
+    login.gButton.frame = CGRectOffset(login.gButton.frame, width, 0);
+    login.faceButton.frame = CGRectOffset(login.faceButton.frame, width, 0);
+    login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, width, 0);
     
     if (splash.blurView) {
         // hide the splash background to show the underlying content
         splash.blurView.alpha = 0.0f;
         splash.backgroundImageView.alpha = 0.0f;
     }
-
+    
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                      animations:^{
                          
@@ -57,12 +59,13 @@
                          splash.skipButton.frame = CGRectOffset(splash.skipButton.frame, -width, 0);
                          splash.signinEmailButton.frame = CGRectOffset(splash.signinEmailButton.frame, -width, 0);
                          
-                         // migrate the signup screen stuff in from the right
-                         signup.signupTableView.frame = CGRectOffset(signup.signupTableView.frame, -width, 0);
-                         signup.termsLabel.frame = CGRectOffset(signup.termsLabel.frame, -width, 0);
-
-                         signup.navigationController.navigationBar.frame = CGRectOffset(signup.navigationController.navigationBar.frame, -width, 0);
-
+                         // migrate the login screen stuff in from the right
+                         login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, -width, 0);
+                         login.gButton.frame = CGRectOffset(login.gButton.frame, -width, 0);
+                         login.faceButton.frame = CGRectOffset(login.faceButton.frame, -width, 0);
+                         
+                         login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, -width, 0);
+                         
                      }
                      completion:^(BOOL finished) {
                          
@@ -82,8 +85,7 @@
                          splash.signinEmailButton.frame = CGRectOffset(splash.signinEmailButton.frame, width, 0);
                          
                      }];
-
+    
 }
-
 
 @end

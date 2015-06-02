@@ -25,7 +25,6 @@
 
 @interface LoginViewController () <UITableViewDataSource, UITableViewDelegate, INatWebControllerDelegate> {
     NSString *username, *password;
-    UITableView *loginTableView;
 }
 @end
 
@@ -87,7 +86,7 @@
         [self.view addSubview:scrim];
     }
     
-    loginTableView = ({
+    self.loginTableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -102,7 +101,7 @@
 
         tv;
     });
-    [self.view addSubview:loginTableView];
+    [self.view addSubview:self.loginTableView];
     
     UILabel *orLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -116,7 +115,7 @@
     });
     [self.view addSubview:orLabel];
     
-    SplitTextButton *gButton = ({
+    self.gButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -161,9 +160,9 @@
 
         button;
     });
-    [self.view addSubview:gButton];
+    [self.view addSubview:self.gButton];
     
-    SplitTextButton *faceButton = ({
+    self.faceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -206,7 +205,7 @@
         button;
 
     });
-    [self.view addSubview:faceButton];
+    [self.view addSubview:self.faceButton];
     
     UIView *spacer = [UIView new];
     UIView *spacer2 = [UIView new];
@@ -218,12 +217,12 @@
     }];
     
     NSDictionary *views = @{
-                            @"tv": loginTableView,
+                            @"tv": self.loginTableView,
                             @"spacer": spacer,
                             @"spacer2": spacer2,
                             @"or": orLabel,
-                            @"g": gButton,
-                            @"face": faceButton,
+                            @"g": self.gButton,
+                            @"face": self.faceButton,
                             @"top": self.topLayoutGuide,
                             };
     
@@ -235,7 +234,7 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[g]-[face]-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[g]-[face(==g)]-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -376,12 +375,12 @@
             // scroll to make password field visible
             NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
                                                              inSection:indexPath.section];
-            [loginTableView scrollToRowAtIndexPath:nextIndexPath
-                                  atScrollPosition:UITableViewScrollPositionTop
-                                          animated:YES];
+            [self.loginTableView scrollToRowAtIndexPath:nextIndexPath
+                                       atScrollPosition:UITableViewScrollPositionTop
+                                               animated:YES];
             
             // switch keyboard focus to username field
-            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[loginTableView cellForRowAtIndexPath:nextIndexPath];
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.loginTableView cellForRowAtIndexPath:nextIndexPath];
             if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
                 [nextCell.textField becomeFirstResponder];
             }

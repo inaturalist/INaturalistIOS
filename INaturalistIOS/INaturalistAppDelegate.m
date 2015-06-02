@@ -30,11 +30,9 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "LoginController.h"
-#import "SignupSplashViewController.h"
-#import "SignupViewController.h"
 #import "INatUITabBarController.h"
-#import "SplashToSignupTransitionAnimator.h"
-#import "SignupToSplashTransitionAnimator.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 @interface INaturalistAppDelegate ()
 
@@ -281,20 +279,6 @@
     }
 }
 
-#pragma mark - Transition Animations / Sizzle
 
-- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                  animationControllerForOperation:(UINavigationControllerOperation)operation
-                                               fromViewController:(UIViewController *)fromVC
-                                                 toViewController:(UIViewController *)toVC {
-    
-    
-    if ([fromVC isKindOfClass:[SignupSplashViewController class]] && [toVC isKindOfClass:[SignupViewController class]])
-        return [[SplashToSignupTransitionAnimator alloc] init];
-    if ([fromVC isKindOfClass:[SignupViewController class]] && [toVC isKindOfClass:[SignupSplashViewController class]])
-        return [[SignupToSplashTransitionAnimator alloc] init];
-
-    return nil;
-}
 
 @end

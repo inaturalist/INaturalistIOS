@@ -282,6 +282,9 @@
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
+		FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */; };
+		FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
+		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -746,6 +749,12 @@
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
+		FAE924C61B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashToLoginTransitionAnimator.h; sourceTree = "<group>"; };
+		FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashToLoginTransitionAnimator.m; sourceTree = "<group>"; };
+		FAE924C91B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginToSplashTransitionAnimator.h; sourceTree = "<group>"; };
+		FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginToSplashTransitionAnimator.m; sourceTree = "<group>"; };
+		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
+		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
@@ -884,6 +893,8 @@
 			children = (
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
+				FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */,
+				FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */,
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
 				19F621A1150ECD0100C58F28 /* Models */,
@@ -1446,10 +1457,7 @@
 		FAA872D21B15124D00366521 /* Sizzle */ = {
 			isa = PBXGroup;
 			children = (
-				FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */,
-				FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */,
-				FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */,
-				FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */,
+				FAE924CC1B1E5B1000B43B46 /* Signup / Login Animators */,
 			);
 			name = Sizzle;
 			sourceTree = "<group>";
@@ -1469,6 +1477,21 @@
 				FADE28B31B02D9AA00CA55FF /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FAE924CC1B1E5B1000B43B46 /* Signup / Login Animators */ = {
+			isa = PBXGroup;
+			children = (
+				FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */,
+				FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */,
+				FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */,
+				FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */,
+				FAE924C61B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.h */,
+				FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */,
+				FAE924C91B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.h */,
+				FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */,
+			);
+			name = "Signup / Login Animators";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1838,6 +1861,7 @@
 				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
 				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
+				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
@@ -1882,6 +1906,7 @@
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
 				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
+				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
 				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
@@ -1901,6 +1926,7 @@
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
+				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
 				FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,

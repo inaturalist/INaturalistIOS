@@ -369,6 +369,7 @@
         [button bk_addEventHandler:^(id sender) {
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = NO;
+            login.backgroundImage = self.backgroundImageView.image;
             [self.navigationController pushViewController:login animated:YES];
         } forControlEvents:UIControlEventTouchUpInside];
         

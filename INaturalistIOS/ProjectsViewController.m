@@ -17,6 +17,7 @@
 #import "TutorialSinglePageViewController.h"
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;

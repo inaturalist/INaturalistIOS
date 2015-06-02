@@ -10,7 +10,7 @@
 
 @class LoginController;
 
-@interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate, UINavigationControllerDelegate>
+@interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
 {
     NSManagedObjectModel *managedObjectModel;
 }
