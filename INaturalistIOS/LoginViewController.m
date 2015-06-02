@@ -121,7 +121,7 @@
         
         NSString *google = NSLocalizedString(@"Google", @"Name of Google for the G+ signin button");
         NSDictionary *attrs = @{
-                                NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
+                                NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
                                 };
         
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google

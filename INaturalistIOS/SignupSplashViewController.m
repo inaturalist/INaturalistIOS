@@ -210,9 +210,9 @@
             face.attributedString;
         });
         button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
@@ -256,9 +256,9 @@
             face.attributedString;
         });
         button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
@@ -304,9 +304,9 @@
             face.attributedString;
         });
         button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:18.0f] }
+                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f] }];
+                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
         [button bk_addEventHandler:^(id sender) {
             
