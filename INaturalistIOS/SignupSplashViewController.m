@@ -62,21 +62,23 @@
     if (self.backgroundImageView && orangeFlower)
         [self.backgroundImageView setImage:orangeFlower];
     
+    __weak typeof(self)weakSelf = self;
     backgroundCycleTimer = [NSTimer bk_scheduledTimerWithTimeInterval:4.0f
                                                                 block:^(NSTimer *timer) {
+                                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
                                                                     UIImage *newImage;
-                                                                    if (self.backgroundImageView.image == orangeFlower) {
+                                                                    if (strongSelf.backgroundImageView.image == orangeFlower) {
                                                                         newImage = moth;
-                                                                    } else if (self.backgroundImageView.image == moth) {
+                                                                    } else if (strongSelf.backgroundImageView.image == moth) {
                                                                         newImage = purpleFlower;
                                                                     } else {
                                                                         newImage = orangeFlower;
                                                                     }
-                                                                    [UIView transitionWithView:self.backgroundImageView
+                                                                    [UIView transitionWithView:strongSelf.backgroundImageView
                                                                                       duration:1.0f
                                                                                        options:UIViewAnimationOptionTransitionCrossDissolve
                                                                                     animations:^{
-                                                                                        self.backgroundImageView.image = newImage;
+                                                                                        strongSelf.backgroundImageView.image = newImage;
                                                                                     }
                                                                                     completion:NULL];
                                                                 }
@@ -102,10 +104,13 @@
                              self.signupEmailButton.alpha = 1.0f;
                              self.signinEmailButton.alpha = 1.0f;
                          }];
+        
+        __weak typeof(self)weakSelf = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             [UIView animateWithDuration:0.3f
                              animations:^{
-                                 self.skipButton.alpha = 1.0f;
+                                 strongSelf.skipButton.alpha = 1.0f;
                              }];
         });
     }
@@ -120,11 +125,13 @@
                       value:[UIColor whiteColor]];
         [close imageWithSize:CGSizeMake(40, 40)];
     });
+    
+    __weak typeof(self)weakSelf = self;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
                                                                                  style:UIBarButtonItemStylePlain
                                                                                handler:^(id sender) {
-                                                                                   [self dismissViewControllerAnimated:YES
-                                                                                                            completion:nil];
+                                                                                   [weakSelf dismissViewControllerAnimated:YES
+                                                                                                                completion:nil];
                                                                                }];
     
     orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
@@ -214,12 +221,13 @@
                                                                                    emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
             
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                             message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:self
+                                           delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                   otherButtonTitles:nil] show];
                 return;
@@ -227,10 +235,11 @@
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
-                if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                     [appDelegate showMainUI];
                 } else {
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [weakSelf dismissViewControllerAnimated:YES completion:nil];
                 }
             } failure:^(NSError *error) {
                 if (error) {
@@ -260,25 +269,27 @@
                                                                                    emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                             message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:self
+                                           delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                   otherButtonTitles:nil] show];
                 return;
             }
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.loginController loginWithGoogleUsingNavController:self.navigationController
+            [appDelegate.loginController loginWithGoogleUsingNavController:strongSelf.navigationController
                                                                    success:^(NSDictionary *info) {
-                                                                       if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                                       if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                                            [appDelegate showMainUI];
                                                                        } else {
                                                                            
-                                                                           [self dismissViewControllerAnimated:YES completion:nil];
+                                                                           [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
                                                                        if (error) {
@@ -308,11 +319,12 @@
                                                                                    emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
-            
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             SignupViewController *signupVC = [[SignupViewController alloc] initWithNibName:nil bundle:nil];
-            signupVC.backgroundImage = self.backgroundImageView.image;
-            [self.navigationController pushViewController:signupVC animated:YES];
+            signupVC.backgroundImage = strongSelf.backgroundImageView.image;
+            [strongSelf.navigationController pushViewController:signupVC animated:YES];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -337,9 +349,11 @@
         button.contentEdgeInsets = UIEdgeInsetsMake(-5, 15, -5, 15);
         button.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
-            if (self.skipAction) {
-                self.skipAction();
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            if (strongSelf.skipAction) {
+                strongSelf.skipAction();
             }
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -366,11 +380,13 @@
         
         button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.1f];
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = NO;
-            login.backgroundImage = self.backgroundImageView.image;
-            [self.navigationController pushViewController:login animated:YES];
+            login.backgroundImage = strongSelf.backgroundImageView.image;
+            [strongSelf.navigationController pushViewController:login animated:YES];
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;

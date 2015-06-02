@@ -44,11 +44,13 @@
                           value:[UIColor whiteColor]];
             [close imageWithSize:CGSizeMake(40, 40)];
         });
+        __weak typeof(self)weakSelf = self;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
                                                                                      style:UIBarButtonItemStylePlain
                                                                                    handler:^(id sender) {
-                                                                                       [self dismissViewControllerAnimated:YES
-                                                                                                                completion:nil];
+                                                                                       __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                                       [strongSelf dismissViewControllerAnimated:YES
+                                                                                                                      completion:nil];
                                                                                    }];
         self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     }
@@ -132,20 +134,21 @@
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                             message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:self
+                                           delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                   otherButtonTitles:nil] show];
                 return;
             }
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            __weak typeof(self)weakSelf = self;
             [appDelegate.loginController loginWithGoogleUsingNavController:self.navigationController
                                                                    success:^(NSDictionary *info) {
-                                                                       if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                                       __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                       if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                                            [appDelegate showMainUI];
                                                                        } else {
-                                                                           
-                                                                           [self dismissViewControllerAnimated:YES completion:nil];
+                                                                           [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
                                                                        if (error) {
@@ -179,18 +182,20 @@
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                             message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:self
+                                           delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                   otherButtonTitles:nil] show];
                 return;
             }
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            __weak typeof(self)weakSelf = self;
             [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
-                if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                     [appDelegate showMainUI];
                 } else {
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
                 }
             } failure:^(NSError *error) {
                 if (error) {
@@ -210,10 +215,12 @@
     UIView *spacer = [UIView new];
     UIView *spacer2 = [UIView new];
     
+    __weak typeof(self)weakSelf = self;
     [@[spacer, spacer2] bk_each:^(UIView *view) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         view.frame = CGRectZero;
         view.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addSubview:view];
+        [strongSelf.view addSubview:view];
     }];
     
     NSDictionary *views = @{
@@ -329,11 +336,10 @@
         [cell.roundedButton setTitle:NSLocalizedString(@"Log in", @"Title for login button")
                             forState:UIControlStateNormal];
         
+        __weak typeof(self)weakSelf = self;
         [cell.roundedButton bk_addEventHandler:^(id sender) {
-            [self loginAction];
+            [weakSelf loginAction];
         } forControlEvents:UIControlEventTouchUpInside];
-        
-        return cell;
         
         return cell;
     }
@@ -371,16 +377,19 @@
             username = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
+        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            
             // scroll to make password field visible
             NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
                                                              inSection:indexPath.section];
-            [self.loginTableView scrollToRowAtIndexPath:nextIndexPath
-                                       atScrollPosition:UITableViewScrollPositionTop
-                                               animated:YES];
+            [strongSelf.loginTableView scrollToRowAtIndexPath:nextIndexPath
+                                             atScrollPosition:UITableViewScrollPositionTop
+                                                     animated:YES];
             
             // switch keyboard focus to username field
-            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.loginTableView cellForRowAtIndexPath:nextIndexPath];
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[strongSelf.loginTableView cellForRowAtIndexPath:nextIndexPath];
             if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
                 [nextCell.textField becomeFirstResponder];
             }
@@ -409,12 +418,13 @@
             [button setTitle:NSLocalizedString(@"Forgot?", @"Title for forgot password button.")
                     forState:UIControlStateNormal];
             
+            __weak typeof(self)weakSelf = self;
             [button bk_addEventHandler:^(id sender) {
-                
+                __strong typeof(weakSelf)strongSelf = weakSelf;
                 if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                 message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                               delegate:self
+                                               delegate:nil
                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                       otherButtonTitles:nil] show];
                     return;
@@ -423,8 +433,8 @@
                 INatWebController *webController = [[INatWebController alloc] init];
                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
                 [webController setUrl:url];
-                webController.delegate = self;
-                [self.navigationController pushViewController:webController animated:YES];
+                webController.delegate = strongSelf;
+                [strongSelf.navigationController pushViewController:webController animated:YES];
 
             } forControlEvents:UIControlEventTouchUpInside];
             
@@ -437,8 +447,9 @@
             password = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
+        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
-            [self loginAction];
+            [weakSelf loginAction];
             
             // hide keyboard
             [tf resignFirstResponder];
@@ -480,15 +491,17 @@
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
                          maskType:SVProgressHUDMaskTypeGradient];
     
+    __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:username
                                           password:password
                                            success:^(NSDictionary *info) {
+                                               __strong typeof(weakSelf)strongSelf = weakSelf;
                                                [SVProgressHUD showSuccessWithStatus:nil];
-                                               if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                               if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                    [appDelegate showMainUI];
                                                } else {
-                                                   [self dismissViewControllerAnimated:YES completion:nil];
+                                                   [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                }
                                            } failure:^(NSError *error) {
                                                NSString *errMsg;

@@ -67,7 +67,7 @@
     }
     
     if (!self.confirmFollowUpAction) {
-        __weak __typeof__(self) weakSelf = self;
+        __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             
             __strong typeof(weakSelf)strongSelf = weakSelf;

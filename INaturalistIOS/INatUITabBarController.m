@@ -134,7 +134,7 @@ static char PROJECT_ASSOCIATED_KEY;
         picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
         [overlay configureFlashForMode:picker.cameraFlashMode];
         
-        __weak __typeof__(self) weakSelf = self;
+        __weak typeof(self) weakSelf = self;
 
         [overlay.close bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
@@ -262,7 +262,7 @@ static char PROJECT_ASSOCIATED_KEY;
     makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
     makeFirstObsTooltip.shouldCenter = YES;
     
-    __weak __typeof__(self) weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         __strong typeof(weakSelf)strongSelf = weakSelf;
         if (strongSelf.selectedIndex == 4)

@@ -262,8 +262,9 @@
         
         // TODO: extract shareData and submit it here?
         
+        __weak typeof(self)weakSelf = self;
         [cell.roundedButton bk_addEventHandler:^(id sender) {
-            [self signupAction];
+            [weakSelf signupAction];
         } forControlEvents:UIControlEventTouchUpInside];
         
         return cell;
@@ -337,16 +338,18 @@
             email = [cell.textField.text copy];
         } forControlEvents:UIControlEventEditingChanged];
         
+        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             // scroll to make password field visible
             NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
                                                              inSection:indexPath.section];
-            [self.signupTableView scrollToRowAtIndexPath:nextIndexPath
+            [strongSelf.signupTableView scrollToRowAtIndexPath:nextIndexPath
                                         atScrollPosition:UITableViewScrollPositionTop
                                                 animated:YES];
             
             // switch keyboard focus to password field
-            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:nextIndexPath];
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[strongSelf.signupTableView cellForRowAtIndexPath:nextIndexPath];
             if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
                 [nextCell.textField becomeFirstResponder];
             }
@@ -389,16 +392,18 @@
             }
         } forControlEvents:UIControlEventEditingChanged];
         
+        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             // scroll to make username field visible
             NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
                                                              inSection:indexPath.section];
-            [self.signupTableView scrollToRowAtIndexPath:nextIndexPath
+            [strongSelf.signupTableView scrollToRowAtIndexPath:nextIndexPath
                                         atScrollPosition:UITableViewScrollPositionTop
                                                 animated:YES];
             
             // switch keyboard focux to username field
-            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[self.signupTableView cellForRowAtIndexPath:nextIndexPath];
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[strongSelf.signupTableView cellForRowAtIndexPath:nextIndexPath];
             if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
                 [nextCell.textField becomeFirstResponder];
             }
@@ -421,8 +426,9 @@
         
         cell.textField.returnKeyType = UIReturnKeyGo;
         
+        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
-            [self signupAction];
+            [weakSelf signupAction];
             
             // hide the keyboard
             [tf resignFirstResponder];
@@ -468,15 +474,17 @@
                          maskType:SVProgressHUDMaskTypeGradient];
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    __weak typeof(self)weakSelf = self;
     [appDelegate.loginController createAccountWithEmail:email
                                                password:password
                                                username:username
                                                 success:^(NSDictionary *info) {
+                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
                                                     [SVProgressHUD showSuccessWithStatus:nil];
-                                                    if ([appDelegate.window.rootViewController isEqual:self.navigationController]) {
+                                                    if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                         [appDelegate showMainUI];
                                                     } else {
-                                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                                        [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                     }
                                                 }
                                                 failure:^(NSError *error) {
