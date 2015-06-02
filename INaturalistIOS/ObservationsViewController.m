@@ -150,8 +150,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)syncObservationPhoto:(ObservationPhoto *)op
 {
-    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];//RKRequestAuthenticationTypeHTTPBasic;
+    INaturalistAppDelegate *app = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
     // in theory no observation photo should be without an observation, but...
     if (!op.observation) {
         [op destroy];
