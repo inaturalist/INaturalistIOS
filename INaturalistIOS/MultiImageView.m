@@ -42,8 +42,10 @@
     
     _borderWidth = borderWidth;
     
+    __weak __typeof__(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self setNeedsLayout];
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf setNeedsLayout];
     });
 }
 
@@ -57,8 +59,10 @@
     
     _borderColor = borderColor;
     
+    __weak __typeof__(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self setNeedsLayout];
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf setNeedsLayout];
     });
 }
 
@@ -77,7 +81,7 @@
         three = [[UIImageView alloc] initWithFrame:frame];
         four = [[UIImageView alloc] initWithFrame:frame];
         
-        [@[one,two,three,four] enumerateObjectsUsingBlock:^(UIImageView *iv, NSUInteger idx, BOOL *stop) {
+        for (UIImageView *iv in @[one, two, three, four]) {
             iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
             iv.hidden = YES;
             iv.contentMode = UIViewContentModeScaleAspectFill;
@@ -87,7 +91,7 @@
             iv.layer.borderWidth = _borderWidth;
             
             [self addSubview:iv];
-        }];
+        }
         
     }
     
@@ -96,12 +100,13 @@
 
 - (void)layoutSubviews {
     
-    [@[one,two,three,four] enumerateObjectsUsingBlock:^(UIImageView *iv, NSUInteger idx, BOOL *stop) {
+    for (UIImageView *iv in @[one, two, three, four]) {
         iv.layer.borderWidth = _borderWidth;
         iv.layer.borderColor = _borderColor.CGColor;
-    }];
+    }
     
     if (self.images.count == 1) {
+        // single photo, don't crop it
         one.contentMode = UIViewContentModeScaleAspectFit;
 
         one.hidden = NO;

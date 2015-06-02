@@ -168,10 +168,11 @@ static NSArray *ICONIC_TAXON_ORDER;
         button.layer.borderWidth = 2.0f;
         button.layer.cornerRadius = 2.0f;
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationSkipCategorize
                              withProperties:@{ @"Always": @([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) }];
-            [self choseTaxon:nil];
+            [weakSelf choseTaxon:nil];
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;
@@ -367,6 +368,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         [view removeFromSuperview];
     }];
     
+    __weak typeof(self)weakSelf = self;
     // skip fish, other animals, protozoa, chromista
     NSArray *buttons = [[iconicTaxa bk_reject:^BOOL(Taxon *t) {
         if ([t.name isEqualToString:@"Actinopterygii"]) { return YES; }
@@ -390,7 +392,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         [chiclet bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationCategorizeTaxon
                              withProperties:@{ @"taxon": t.name }];
-            [self choseTaxon:t];
+            [weakSelf choseTaxon:t];
         } forControlEvents:UIControlEventTouchUpInside];
         
         [categories addSubview:chiclet];
@@ -400,9 +402,11 @@ static NSArray *ICONIC_TAXON_ORDER;
     if (buttons.count < ICONIC_TAXON_ORDER.count) {
         // didn't get iconic taxa, presumably
         // skip ahead to obs detail view
+        __weak typeof(self)weakSelf = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (self.navigationController.topViewController == self)
-                [self choseTaxon:nil];
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            if (strongSelf.navigationController.topViewController == self)
+                [strongSelf choseTaxon:nil];
         });
         
         return;
@@ -460,9 +464,11 @@ static NSArray *ICONIC_TAXON_ORDER;
     if (!lib)
         lib = [[ALAssetsLibrary alloc] init];
     
+    __weak typeof(self)weakSelf = self;
     [lib assetForURL:assetURL
          resultBlock:^(ALAsset *asset) {
-             [self configureMultiImageView:miv forAssets:@[ asset ]];
+             [weakSelf configureMultiImageView:miv
+                                     forAssets:@[ asset ]];
          } failureBlock:^(NSError *error) {
              [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error reading from AssetsLib: %@", error.localizedDescription]];
          }];

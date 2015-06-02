@@ -134,9 +134,11 @@ static char PROJECT_ASSOCIATED_KEY;
         picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
         [overlay configureFlashForMode:picker.cameraFlashMode];
         
+        __weak __typeof__(self) weakSelf = self;
+
         [overlay.close bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
         } forControlEvents:UIControlEventTouchUpInside];
         
         // hide flash if it's not available for the default camera
@@ -173,7 +175,7 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [overlay.noPhoto bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
-            [self noPhotoTaxon:taxon project:project];
+            [weakSelf noPhotoTaxon:taxon project:project];
         } forControlEvents:UIControlEventTouchUpInside];
         
         [overlay.shutter bk_addEventHandler:^(id sender) {
@@ -183,7 +185,7 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [overlay.library bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
-            [self openLibraryTaxon:taxon project:project];
+            [weakSelf openLibraryTaxon:taxon project:project];
         } forControlEvents:UIControlEventTouchUpInside];
         
         picker.cameraOverlayView = overlay;
@@ -260,8 +262,10 @@ static char PROJECT_ASSOCIATED_KEY;
     makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
     makeFirstObsTooltip.shouldCenter = YES;
     
+    __weak __typeof__(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (self.selectedIndex == 4)
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        if (strongSelf.selectedIndex == 4)
             [makeFirstObsTooltip show];
     });
 }

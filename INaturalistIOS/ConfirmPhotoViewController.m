@@ -107,8 +107,8 @@
                 [o addAssets:confirmedAssets];
                 detail.observation = o;
                 
-                [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
-                [weakSelf.navigationController pushViewController:detail animated:YES];
+                [strongSelf.navigationController setNavigationBarHidden:NO animated:YES];
+                [strongSelf.navigationController pushViewController:detail animated:YES];
             }
         };
     }
@@ -139,11 +139,13 @@
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationRetakePhotos];
-            [self.navigationController popViewControllerAnimated:YES];
-            if (self.assets)
-                [self.navigationController setNavigationBarHidden:NO];
+            [strongSelf.navigationController popViewControllerAnimated:YES];
+            if (strongSelf.assets)
+                [strongSelf.navigationController setNavigationBarHidden:NO];
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;
@@ -165,11 +167,13 @@
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         
+        __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
-            
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
             
-            if (self.image) {
+            if (strongSelf.image) {
                 // we need to save to the AssetsLibrary...
                 [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving new photo...", @"status while saving your image")];
                 // embed geo
@@ -200,10 +204,10 @@
                                           
                                           [lib assetForURL:newAssetUrl
                                                resultBlock:^(ALAsset *asset) {
-                                                   
+                                                   __strong typeof(weakSelf)strongSelf = weakSelf;
                                                    // be defensive
                                                    if (asset) {
-                                                       self.confirmFollowUpAction(@[ asset ]);
+                                                       strongSelf.confirmFollowUpAction(@[ asset ]);
                                                    } else {
                                                        [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
                                                        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Error using newly saved image!",
@@ -218,9 +222,9 @@
                                           
                                       }
                                   }];
-            } else if (self.assets) {
+            } else if (strongSelf.assets) {
                 // can proceed directly to followup
-                self.confirmFollowUpAction(self.assets);
+                strongSelf.confirmFollowUpAction(strongSelf.assets);
             }
             
         } forControlEvents:UIControlEventTouchUpInside];
@@ -272,6 +276,8 @@
 }
 
 - (void)transitionToCategorize:(CategorizeViewController *)categorizeVC {
+    
+    UINavigationController *nav = self.navigationController;
     [UIView animateWithDuration:0.1f
                      animations:^{
                          confirm.center = CGPointMake(confirm.center.x,
@@ -280,8 +286,7 @@
                                                      self.view.bounds.size.height + (retake.frame.size.height / 2));
                          multiImageView.frame = self.view.bounds;
                      } completion:^(BOOL finished) {
-                         [self.navigationController pushViewController:categorizeVC
-                                                              animated:NO];
+                         [nav pushViewController:categorizeVC animated:NO];
                          
                          confirm.center = CGPointMake(confirm.center.x,
                                                       self.view.bounds.size.height - (confirm.frame.size.height / 2));
