@@ -62,6 +62,10 @@
     });
 }
 
+- (UIColor *)borderColor {
+    return _borderColor;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
