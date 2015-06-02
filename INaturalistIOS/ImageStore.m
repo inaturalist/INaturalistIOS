@@ -16,6 +16,11 @@
 
 static ImageStore *sharedImageStore = nil;
 
+@interface ImageStore () {
+    NSOperationQueue *resizeQueue;
+}
+@end
+
 @implementation ImageStore
 @synthesize dictionary;
 
@@ -41,9 +46,12 @@ static ImageStore *sharedImageStore = nil;
     if (self) {
         [self setDictionary:[[NSMutableDictionary alloc] init]];
         
-        [NSNotificationCenter.defaultCenter addObserver:self 
-                                               selector:@selector(clearCache:) 
-                                                   name:UIApplicationDidReceiveMemoryWarningNotification 
+        resizeQueue = [[NSOperationQueue alloc] init];
+        resizeQueue.maxConcurrentOperationCount = 1;
+        
+        [NSNotificationCenter.defaultCenter addObserver:self
+                                               selector:@selector(clearCache:)
+                                                   name:UIApplicationDidReceiveMemoryWarningNotification
                                                  object:nil];
     }
     return self;
@@ -121,46 +129,46 @@ static ImageStore *sharedImageStore = nil;
     float screenMax = MAX([UIScreen mainScreen].bounds.size.width,
                           [UIScreen mainScreen].bounds.size.height);
     
-    // generate small
-    NSNumber *longEdge = [NSNumber numberWithFloat:screenMax];
-    NSError *generatorError = nil;
-    BOOL smallGenerated = [self generateImageWithParams:@{
-                                                          @"key": key,
-                                                          @"size": @(ImageStoreSmallSize),
-                                                          @"longEdge": longEdge,
-                                                          @"compression": @(1.0),
-                                                          }
-                                                  error:&generatorError];
+    // "small" == asset fullscreen
+    @autoreleasepool {
+        UIImage *fullScreen = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+        NSData *data = UIImageJPEGRepresentation(fullScreen, 1.0f);
+        NSString *path = [self pathForKey:key forSize:ImageStoreSmallSize];
+        NSError *saveError = nil;
+        [data writeToFile:path options:NSDataWritingAtomic error:&saveError];
+        if (saveError) {
+            NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal save small %@", saveError.localizedDescription];
+            [[Analytics sharedClient] debugLog:debugMsg];
+            *storeError = [saveError copy];
+            return NO;
+        }
+    }
     
-    if (generatorError) {
-        *storeError = [generatorError copy];
-        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal generate small %@", generatorError.localizedDescription];
+    // "square" == asset square
+    UIImage *thumbnail = [UIImage imageWithCGImage:asset.thumbnail];
+    NSData *data = UIImageJPEGRepresentation(thumbnail, 1.0f);
+    NSString *path = [self pathForKey:key forSize:ImageStoreSquareSize];
+    NSError *saveError = nil;
+    [data writeToFile:path options:NSDataWritingAtomic error:&saveError];
+    if (saveError) {
+        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal save thumbnail %@", saveError.localizedDescription];
         [[Analytics sharedClient] debugLog:debugMsg];
+        *storeError = [saveError copy];
         return NO;
     }
     
-    if (!smallGenerated) {
-        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal generate small"];
-        return NO;
-    }
-    
-    // generate large & square off the main queue
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self generateImageWithParams:@{
-                                        @"key": key,
-                                        @"size": @(ImageStoreLargeSize),
-                                        @"longEdge": @(2.0 * screenMax),
-                                        @"compression": @(1.0),
-                                        }
-                                error:nil];
-        
-        [self generateImageWithParams:@{
-                                        @"key": key,
-                                        @"size": @(ImageStoreSquareSize),
-                                        @"compression": @(0.5),
-                                        }
-                                error:nil];
-    });
+    // generate "large" on a single-threaded background queue
+    [resizeQueue addOperationWithBlock:^{
+        @autoreleasepool {
+            [self generateImageWithParams:@{
+                                            @"key": key,
+                                            @"size": @(ImageStoreLargeSize),
+                                            @"longEdge": @(2.0 * screenMax),
+                                            @"compression": @(1.0),
+                                            }
+                                    error:nil];
+        }
+    }];
     
     [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
     return YES;
@@ -261,12 +269,12 @@ static ImageStore *sharedImageStore = nil;
     NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
         NSError *error;
-        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath 
-                                  withIntermediateDirectories:YES 
-                                                   attributes:nil 
+        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
                                                         error:&error];
     }
-    return [NSString stringWithFormat:@"%@.jpg", 
+    return [NSString stringWithFormat:@"%@.jpg",
             [photoDirPath stringByAppendingPathComponent:
              [self keyForKey:key forSize:size]]];
 }
@@ -409,6 +417,8 @@ static ImageStore *sharedImageStore = nil;
     
     CGContextRelease(bitmap);
     CGImageRelease(ref);
+    
+    CGColorSpaceRelease(colorSpaceInfo);
     
     return newImage; 
 }
