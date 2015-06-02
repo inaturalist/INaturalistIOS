@@ -14,8 +14,6 @@
 #import "ImageStore.h"
 #import "Analytics.h"
 
-static ImageStore *sharedImageStore = nil;
-
 @interface ImageStore () {
     NSOperationQueue *resizeQueue;
 }
@@ -24,26 +22,18 @@ static ImageStore *sharedImageStore = nil;
 @implementation ImageStore
 @synthesize dictionary;
 
-+ (id)allocWithZone:(NSZone *)zone
-{
-    return [self sharedImageStore];
+// singleton
++ (ImageStore *)sharedImageStore {
+    static ImageStore *_sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[ImageStore alloc] init];
+    });
+    return _sharedInstance;
 }
 
-+ (ImageStore *)sharedImageStore
-{
-    if (!sharedImageStore) {
-        sharedImageStore = [[super allocWithZone:NULL] init];
-    }
-    return sharedImageStore;
-}
-
-- (id)init
-{
-    if (sharedImageStore) {
-        return sharedImageStore;
-    }
-    self = [super init];
-    if (self) {
+- (instancetype)init {
+    if (self = [super init]) {
         [self setDictionary:[[NSMutableDictionary alloc] init]];
         
         resizeQueue = [[NSOperationQueue alloc] init];
