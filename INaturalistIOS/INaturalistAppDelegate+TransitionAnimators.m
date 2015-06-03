@@ -40,4 +40,19 @@
     return nil;
 }
 
+
+#pragma mark - Other NavControllerDelegate stuff
+- (NSUInteger)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
+
+    UIViewController *rootVC = navigationController.viewControllers.firstObject;
+    // signup & login are locked to portrait on iPhone
+    if ([rootVC isKindOfClass:[SignupSplashViewController class]] || [rootVC isKindOfClass:[LoginViewController class]]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationMaskPortrait;
+        }
+    }
+    
+    return UIInterfaceOrientationMaskAllButUpsideDown;
+}
+
 @end
