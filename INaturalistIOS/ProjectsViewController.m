@@ -487,7 +487,7 @@ static const int ListControlIndexNearby = 2;
         self.projectUsersSyncedAt = nil;
 
         SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        splash.reason = NSLocalizedString(@"You must be logged in to do that.", @"Signup prompt reason when project network fails due to auth.");
+        splash.reason = NSLocalizedString(@"You must be logged in to do that.", @"Unspecific signup prompt reason.");
         splash.skippable = NO;
         splash.cancellable = YES;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
