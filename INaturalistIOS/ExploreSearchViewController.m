@@ -36,6 +36,8 @@
 #import "AutocompleteSearchItem.h"
 #import "ShortcutSearchItem.h"
 #import "ExploreLeaderboardViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "SignupSplashViewController.h"
 
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
@@ -160,11 +162,15 @@
                                                                       if (observationsController.activeSearchPredicates.count > 0)
                                                                           [searchMenu showActiveSearch];
                                                                   } else {
-                                                                      [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in!", nil)
-                                                                                                  message:nil
-                                                                                                 delegate:nil
-                                                                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                                        otherButtonTitles:nil] show];
+                                                                      SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil
+                                                                                                                                                        bundle:nil];
+                                                                      UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+                                                                      splash.animateIn = NO;
+                                                                      splash.skippable = NO;
+                                                                      splash.cancellable = YES;
+                                                                      splash.reason = NSLocalizedString(@"You must be logged in to do that.",
+                                                                                                        @"Unspecific signup prompt reason.");
+                                                                      [self presentViewController:nav animated:YES completion:nil];
                                                                   }
                                                               }];
         view.shortcutItems = @[nearMe, mine];
