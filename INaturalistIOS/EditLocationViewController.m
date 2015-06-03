@@ -59,8 +59,14 @@
         region.span.longitudeDelta = accuracyInDegrees * 5;
         
         // be defensive
-        if (!isnan(region.span.latitudeDelta) && !isnan(region.span.longitudeDelta)) {
+        @try {
             [self.mapView setRegion:[self.mapView regionThatFits:region]];
+        } @catch (NSException *exception) {
+            if ([exception.name isEqualToString:NSInvalidArgumentException]) {
+                // do nothing
+            } else {
+                @throw exception;
+            }
         }
     } else {
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
