@@ -424,7 +424,7 @@
         cell.textField.rightViewMode = UITextFieldViewModeAlways;
         cell.textField.rightView = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-            button.frame = CGRectMake(0, 0, 80, 44);
+            button.frame = CGRectMake(0, 0, 65, 44);
             
             button.titleLabel.font = [UIFont systemFontOfSize:12.0f];
             button.tintColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
