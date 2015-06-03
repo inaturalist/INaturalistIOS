@@ -48,24 +48,6 @@
 		194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E0518DE58850098E28C /* 121-landscape@2x.png */; };
 		194D8E1D18DFEC9E0098E28C /* 184-warning.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1B18DFEC9E0098E28C /* 184-warning.png */; };
 		194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */; };
-		194D8E4E18E227C80098E28C /* usericon.png in Resources */ = {isa = PBXBuildFile; fileRef = 194D8E4D18E227C80098E28C /* usericon.png */; };
-		19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */; };
-		19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */; };
-		1953066A150592DC004951D8 /* iconic_taxon_animalia.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065D150592DB004951D8 /* iconic_taxon_animalia.png */; };
-		1953066B150592DC004951D8 /* iconic_taxon_arachnida.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065E150592DB004951D8 /* iconic_taxon_arachnida.png */; };
-		1953066C150592DC004951D8 /* iconic_taxon_aves.png in Resources */ = {isa = PBXBuildFile; fileRef = 1953065F150592DB004951D8 /* iconic_taxon_aves.png */; };
-		1953066D150592DC004951D8 /* iconic_taxon_fungi.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530660150592DB004951D8 /* iconic_taxon_fungi.png */; };
-		1953066E150592DC004951D8 /* iconic_taxon_insecta.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530661150592DB004951D8 /* iconic_taxon_insecta.png */; };
-		1953066F150592DC004951D8 /* iconic_taxon_mammalia.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530662150592DB004951D8 /* iconic_taxon_mammalia.png */; };
-		19530670150592DC004951D8 /* iconic_taxon_mollusca.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530663150592DB004951D8 /* iconic_taxon_mollusca.png */; };
-		19530671150592DC004951D8 /* iconic_taxon_plantae.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530664150592DB004951D8 /* iconic_taxon_plantae.png */; };
-		19530672150592DC004951D8 /* iconic_taxon_protozoa.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530665150592DB004951D8 /* iconic_taxon_protozoa.png */; };
-		19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530666150592DB004951D8 /* iconic_taxon_reptilia.png */; };
-		19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = 19530667150592DB004951D8 /* iconic_taxon_unknown.png */; };
-		19542F4217D65CB800B7CEE5 /* guides-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */; };
-		19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4117D65CB800B7CEE5 /* guides-tab.png */; };
-		19542F4A17D6624900B7CEE5 /* guides.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4817D6624900B7CEE5 /* guides.png */; };
-		19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19542F4917D6624900B7CEE5 /* guides@2x.png */; };
 		195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 195515F018470F1300FEE783 /* ObservationPageViewController.m */; };
 		1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FCFC17F102FA004F57F2 /* GuideXML.m */; };
 		1955FD0417F21602004F57F2 /* 258-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1955FD0217F21602004F57F2 /* 258-checkmark.png */; };
@@ -90,8 +72,6 @@
 		196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 196420B21506C0E6005ACB6E /* 83-calendar.png */; };
 		1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1964A99F1581DBB1005F2E0B /* ImageIO.framework */; };
 		196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */; };
-		197A60531511298D0061B83B /* projects.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60511511298D0061B83B /* projects.png */; };
-		197A60541511298D0061B83B /* projects@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 197A60521511298D0061B83B /* projects@2x.png */; };
 		197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectListViewController.m */; };
 		197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */; };
 		197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */; };
@@ -105,14 +85,6 @@
 		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
 		1997411115194E89006FBEA0 /* SyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* SyncQueue.m */; };
 		19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
-		19A5F62D14FB5B9300757636 /* settings-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F62C14FB5B9300757636 /* settings-tab.png */; };
-		19A5F63D14FB61E600757636 /* header-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F63C14FB61E600757636 /* header-logo.png */; };
-		19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F63E14FB622200757636 /* header-logo@2x.png */; };
-		19A5F64114FB644A00757636 /* notebook-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64014FB644A00757636 /* notebook-tab.png */; };
-		19A5F64314FB64B100757636 /* notebook-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64214FB64B100757636 /* notebook-tab@2x.png */; };
-		19A5F64614FB655200757636 /* map-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64414FB655200757636 /* map-tab.png */; };
-		19A5F64714FB655200757636 /* map-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64514FB655200757636 /* map-tab@2x.png */; };
-		19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19A5F64814FB655D00757636 /* settings-tab@2x.png */; };
 		19AC33CB17EEC46B00B663BD /* 265-download.png in Resources */ = {isa = PBXBuildFile; fileRef = 19AC33C917EEC46B00B663BD /* 265-download.png */; };
 		19AC33CC17EEC46B00B663BD /* 265-download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19AC33CA17EEC46B00B663BD /* 265-download@2x.png */; };
 		19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */; };
@@ -130,7 +102,6 @@
 		19AE89BC18DD0EA900505918 /* 08-chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19AE89B818DD0EA900505918 /* 08-chat@2x.png */; };
 		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
 		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
-		19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */ = {isa = PBXBuildFile; fileRef = 19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
 		19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
 		19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
@@ -144,8 +115,6 @@
 		19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A48017F4BAA90086455D /* 265-download-gray@2x.png */; };
 		19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F3AC7517E138A9005706E8 /* libz.dylib */; };
 		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
-		19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218D150ECA8300C58F28 /* projects-tab@2x.png */; };
-		19F62190150ECA8300C58F28 /* projects-tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 19F6218E150ECA8300C58F28 /* projects-tab.png */; };
 		19F62193150ECBEE00C58F28 /* List.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62192150ECBEE00C58F28 /* List.m */; };
 		19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62195150ECC0200C58F28 /* ListedTaxon.m */; };
 		19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
@@ -162,8 +131,6 @@
 		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
 		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24216FC0B23003621FA /* GoogleIcon.png */; };
-		60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24616FCBE54003621FA /* FacebookIcon.png */; };
 		60A0E24B16FD06C1003621FA /* tutorial1en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24816FD06C1003621FA /* tutorial1en.png */; };
 		60A0E24C16FD06C1003621FA /* tutorial2en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24916FD06C1003621FA /* tutorial2en.png */; };
 		60A0E24D16FD06C1003621FA /* tutorial3en.png in Resources */ = {isa = PBXBuildFile; fileRef = 60A0E24A16FD06C1003621FA /* tutorial3en.png */; };
@@ -359,24 +326,6 @@
 		194D8E0518DE58850098E28C /* 121-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "121-landscape@2x.png"; sourceTree = "<group>"; };
 		194D8E1B18DFEC9E0098E28C /* 184-warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning.png"; sourceTree = "<group>"; };
 		194D8E1C18DFEC9E0098E28C /* 184-warning@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "184-warning@2x.png"; sourceTree = "<group>"; };
-		194D8E4D18E227C80098E28C /* usericon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = usericon.png; sourceTree = "<group>"; };
-		1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_actinopterygii.png; sourceTree = "<group>"; };
-		1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_amphibia.png; sourceTree = "<group>"; };
-		1953065D150592DB004951D8 /* iconic_taxon_animalia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_animalia.png; sourceTree = "<group>"; };
-		1953065E150592DB004951D8 /* iconic_taxon_arachnida.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_arachnida.png; sourceTree = "<group>"; };
-		1953065F150592DB004951D8 /* iconic_taxon_aves.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_aves.png; sourceTree = "<group>"; };
-		19530660150592DB004951D8 /* iconic_taxon_fungi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_fungi.png; sourceTree = "<group>"; };
-		19530661150592DB004951D8 /* iconic_taxon_insecta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_insecta.png; sourceTree = "<group>"; };
-		19530662150592DB004951D8 /* iconic_taxon_mammalia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_mammalia.png; sourceTree = "<group>"; };
-		19530663150592DB004951D8 /* iconic_taxon_mollusca.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_mollusca.png; sourceTree = "<group>"; };
-		19530664150592DB004951D8 /* iconic_taxon_plantae.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_plantae.png; sourceTree = "<group>"; };
-		19530665150592DB004951D8 /* iconic_taxon_protozoa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_protozoa.png; sourceTree = "<group>"; };
-		19530666150592DB004951D8 /* iconic_taxon_reptilia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_reptilia.png; sourceTree = "<group>"; };
-		19530667150592DB004951D8 /* iconic_taxon_unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_unknown.png; sourceTree = "<group>"; };
-		19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab@2x.png"; sourceTree = "<group>"; };
-		19542F4117D65CB800B7CEE5 /* guides-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides-tab.png"; sourceTree = "<group>"; };
-		19542F4817D6624900B7CEE5 /* guides.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guides.png; sourceTree = "<group>"; };
-		19542F4917D6624900B7CEE5 /* guides@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guides@2x.png"; sourceTree = "<group>"; };
 		195515EF18470F1300FEE783 /* ObservationPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPageViewController.h; sourceTree = "<group>"; };
 		195515F018470F1300FEE783 /* ObservationPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPageViewController.m; sourceTree = "<group>"; };
 		1955FCFB17F102FA004F57F2 /* GuideXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideXML.h; sourceTree = "<group>"; };
@@ -413,8 +362,6 @@
 		1964A99F1581DBB1005F2E0B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+INaturalist.h"; sourceTree = "<group>"; };
 		196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+INaturalist.m"; sourceTree = "<group>"; };
-		197A60511511298D0061B83B /* projects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = projects.png; sourceTree = "<group>"; };
-		197A60521511298D0061B83B /* projects@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects@2x.png"; sourceTree = "<group>"; };
 		197A6055151155DE0061B83B /* ProjectListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectListViewController.h; sourceTree = "<group>"; };
 		197A6056151155DE0061B83B /* ProjectListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectListViewController.m; sourceTree = "<group>"; };
 		197FD41717FD2DAE0099BDE6 /* GuideImageXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideImageXML.h; sourceTree = "<group>"; };
@@ -437,14 +384,6 @@
 		1997411015194E89006FBEA0 /* SyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncQueue.m; sourceTree = "<group>"; };
 		19A219F11707B8A50042A889 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
 		19A5F60814FB289B00757636 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		19A5F62C14FB5B9300757636 /* settings-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-tab.png"; sourceTree = "<group>"; };
-		19A5F63C14FB61E600757636 /* header-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-logo.png"; sourceTree = "<group>"; };
-		19A5F63E14FB622200757636 /* header-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-logo@2x.png"; sourceTree = "<group>"; };
-		19A5F64014FB644A00757636 /* notebook-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notebook-tab.png"; sourceTree = "<group>"; };
-		19A5F64214FB64B100757636 /* notebook-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notebook-tab@2x.png"; sourceTree = "<group>"; };
-		19A5F64414FB655200757636 /* map-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map-tab.png"; sourceTree = "<group>"; };
-		19A5F64514FB655200757636 /* map-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map-tab@2x.png"; sourceTree = "<group>"; };
-		19A5F64814FB655D00757636 /* settings-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-tab@2x.png"; sourceTree = "<group>"; };
 		19AC33C917EEC46B00B663BD /* 265-download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "265-download.png"; sourceTree = "<group>"; };
 		19AC33CA17EEC46B00B663BD /* 265-download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "265-download@2x.png"; sourceTree = "<group>"; };
 		19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ObservationFieldValueSwitchCell.xib; sourceTree = "<group>"; };
@@ -473,7 +412,6 @@
 		19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UIViewHelpers.m"; sourceTree = "<group>"; };
 		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
 		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
-		19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconic_taxon_chromista.png; sourceTree = "<group>"; };
 		19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Helpers.h"; sourceTree = "<group>"; };
 		19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Helpers.m"; sourceTree = "<group>"; };
 		19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RXMLElement+Helpers.h"; sourceTree = "<group>"; };
@@ -491,8 +429,6 @@
 		19F3AC7517E138A9005706E8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		19F62186150EC6B700C58F28 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
 		19F62187150EC6B700C58F28 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
-		19F6218D150ECA8300C58F28 /* projects-tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab@2x.png"; sourceTree = "<group>"; };
-		19F6218E150ECA8300C58F28 /* projects-tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projects-tab.png"; sourceTree = "<group>"; };
 		19F62191150ECBEE00C58F28 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = List.h; sourceTree = "<group>"; };
 		19F62192150ECBEE00C58F28 /* List.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = List.m; sourceTree = "<group>"; };
 		19F62194150ECC0200C58F28 /* ListedTaxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListedTaxon.h; sourceTree = "<group>"; };
@@ -523,8 +459,6 @@
 		6098FD1416F3BE270053987E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		6098FD1616F3BE4C0053987E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		6098FD1816F3BE690053987E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		60A0E24216FC0B23003621FA /* GoogleIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoogleIcon.png; sourceTree = "<group>"; };
-		60A0E24616FCBE54003621FA /* FacebookIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FacebookIcon.png; sourceTree = "<group>"; };
 		60A0E24816FD06C1003621FA /* tutorial1en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial1en.png; sourceTree = "<group>"; };
 		60A0E24916FD06C1003621FA /* tutorial2en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial2en.png; sourceTree = "<group>"; };
 		60A0E24A16FD06C1003621FA /* tutorial3en.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial3en.png; sourceTree = "<group>"; };
@@ -916,6 +850,7 @@
 		1953065A150592AC004951D8 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FAE924D41B1FB7FF00B43B46 /* tutorial */,
 				FA6F87621B0E7E020019B157 /* Signup Carousel */,
 				FA4E72AE19FAC8A900A9AB5D /* iconic taxa */,
 				19122E3D1512D3F4009BD3D0 /* add_button.png */,
@@ -925,58 +860,9 @@
 				FA627B791ACB5A650079534E /* binocs.png */,
 				191B0B48150197BC00F2508E /* current_location.png */,
 				191B0B49150197BC00F2508E /* current_location@2x.png */,
-				60A0E24616FCBE54003621FA /* FacebookIcon.png */,
 				1912DA9215059C0E005555B8 /* glyphish */,
-				60A0E24216FC0B23003621FA /* GoogleIcon.png */,
 				19570CCC17ECD0B0000C800A /* guides-menu.png */,
 				19570CCD17ECD0B0000C800A /* guides-menu@2x.png */,
-				19542F4117D65CB800B7CEE5 /* guides-tab.png */,
-				19542F4017D65CB800B7CEE5 /* guides-tab@2x.png */,
-				19542F4817D6624900B7CEE5 /* guides.png */,
-				19542F4917D6624900B7CEE5 /* guides@2x.png */,
-				19A5F63C14FB61E600757636 /* header-logo.png */,
-				19A5F63E14FB622200757636 /* header-logo@2x.png */,
-				1953065B150592DB004951D8 /* iconic_taxon_actinopterygii.png */,
-				1953065C150592DB004951D8 /* iconic_taxon_amphibia.png */,
-				1953065D150592DB004951D8 /* iconic_taxon_animalia.png */,
-				1953065E150592DB004951D8 /* iconic_taxon_arachnida.png */,
-				1953065F150592DB004951D8 /* iconic_taxon_aves.png */,
-				19D04790150FD50600BB5DBC /* iconic_taxon_chromista.png */,
-				19530660150592DB004951D8 /* iconic_taxon_fungi.png */,
-				19530661150592DB004951D8 /* iconic_taxon_insecta.png */,
-				19530662150592DB004951D8 /* iconic_taxon_mammalia.png */,
-				19530663150592DB004951D8 /* iconic_taxon_mollusca.png */,
-				19530664150592DB004951D8 /* iconic_taxon_plantae.png */,
-				19530665150592DB004951D8 /* iconic_taxon_protozoa.png */,
-				19530666150592DB004951D8 /* iconic_taxon_reptilia.png */,
-				19530667150592DB004951D8 /* iconic_taxon_unknown.png */,
-				19A5F64414FB655200757636 /* map-tab.png */,
-				19A5F64514FB655200757636 /* map-tab@2x.png */,
-				19A5F64014FB644A00757636 /* notebook-tab.png */,
-				19A5F64214FB64B100757636 /* notebook-tab@2x.png */,
-				19F6218E150ECA8300C58F28 /* projects-tab.png */,
-				19F6218D150ECA8300C58F28 /* projects-tab@2x.png */,
-				197A60511511298D0061B83B /* projects.png */,
-				197A60521511298D0061B83B /* projects@2x.png */,
-				19A5F62C14FB5B9300757636 /* settings-tab.png */,
-				19A5F64814FB655D00757636 /* settings-tab@2x.png */,
-				FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */,
-				FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */,
-				60A0E24816FD06C1003621FA /* tutorial1en.png */,
-				60A0E24E16FD0909003621FA /* tutorial1es.png */,
-				60A0E24916FD06C1003621FA /* tutorial2en.png */,
-				60A0E24F16FD0909003621FA /* tutorial2es.png */,
-				60A0E24A16FD06C1003621FA /* tutorial3en.png */,
-				60A0E25016FD0909003621FA /* tutorial3es.png */,
-				60A0E25116FD0909003621FA /* tutorial4en.png */,
-				60A0E25216FD090A003621FA /* tutorial4es.png */,
-				60A0E25316FD090A003621FA /* tutorial5en.png */,
-				60A0E25416FD090A003621FA /* tutorial5es.png */,
-				FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */,
-				FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */,
-				FA133E001A02D54000700852 /* tutorial7en.png */,
-				FA133E011A02D54100700852 /* tutorial7es.png */,
-				194D8E4D18E227C80098E28C /* usericon.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -1473,6 +1359,37 @@
 			name = "Signup / Login Animators";
 			sourceTree = "<group>";
 		};
+		FAE924D41B1FB7FF00B43B46 /* tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				FAE924D51B1FB80C00B43B46 /* carousel */,
+				FAA39B041ACB7C4E009D4665 /* tutorial_guides.png */,
+				FAA39B051ACB7C4E009D4665 /* tutorial_projects.png */,
+			);
+			name = tutorial;
+			sourceTree = "<group>";
+		};
+		FAE924D51B1FB80C00B43B46 /* carousel */ = {
+			isa = PBXGroup;
+			children = (
+				60A0E24816FD06C1003621FA /* tutorial1en.png */,
+				60A0E24E16FD0909003621FA /* tutorial1es.png */,
+				60A0E24916FD06C1003621FA /* tutorial2en.png */,
+				60A0E24F16FD0909003621FA /* tutorial2es.png */,
+				60A0E24A16FD06C1003621FA /* tutorial3en.png */,
+				60A0E25016FD0909003621FA /* tutorial3es.png */,
+				60A0E25116FD0909003621FA /* tutorial4en.png */,
+				60A0E25216FD090A003621FA /* tutorial4es.png */,
+				60A0E25316FD090A003621FA /* tutorial5en.png */,
+				60A0E25416FD090A003621FA /* tutorial5es.png */,
+				FA58E8D419E8581B00A4E8E0 /* tutorial6en.png */,
+				FA58E8D519E8581B00A4E8E0 /* tutorial6es.png */,
+				FA133E001A02D54000700852 /* tutorial7en.png */,
+				FA133E011A02D54100700852 /* tutorial7es.png */,
+			);
+			name = carousel;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1563,48 +1480,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
-				19A5F62D14FB5B9300757636 /* settings-tab.png in Resources */,
-				19A5F63D14FB61E600757636 /* header-logo.png in Resources */,
 				FA6F87611B0E7E000019B157 /* SignUp_PurpleFlower.jpg in Resources */,
 				FA4E72AC19FAC8A000A9AB5D /* reptilia-200px.png in Resources */,
-				19A5F63F14FB622200757636 /* header-logo@2x.png in Resources */,
-				19A5F64114FB644A00757636 /* notebook-tab.png in Resources */,
-				19A5F64314FB64B100757636 /* notebook-tab@2x.png in Resources */,
 				194D8E0718DE58850098E28C /* 121-landscape@2x.png in Resources */,
-				19A5F64614FB655200757636 /* map-tab.png in Resources */,
-				19A5F64714FB655200757636 /* map-tab@2x.png in Resources */,
-				19A5F64914FB655D00757636 /* settings-tab@2x.png in Resources */,
 				191B0B4A150197BC00F2508E /* current_location.png in Resources */,
 				FA4E72AD19FAC8A000A9AB5D /* unknown-200px.png in Resources */,
 				FA58E8D619E8581B00A4E8E0 /* tutorial6en.png in Resources */,
 				191B0B4B150197BC00F2508E /* current_location@2x.png in Resources */,
-				19530668150592DB004951D8 /* iconic_taxon_actinopterygii.png in Resources */,
-				19530669150592DC004951D8 /* iconic_taxon_amphibia.png in Resources */,
-				1953066A150592DC004951D8 /* iconic_taxon_animalia.png in Resources */,
 				FA133E021A02D54100700852 /* tutorial7en.png in Resources */,
-				1953066B150592DC004951D8 /* iconic_taxon_arachnida.png in Resources */,
-				1953066C150592DC004951D8 /* iconic_taxon_aves.png in Resources */,
-				1953066D150592DC004951D8 /* iconic_taxon_fungi.png in Resources */,
-				1953066E150592DC004951D8 /* iconic_taxon_insecta.png in Resources */,
 				FAA39B061ACB7C4E009D4665 /* tutorial_guides.png in Resources */,
 				FA4E72A219FAC8A000A9AB5D /* animalia-200px.png in Resources */,
-				1953066F150592DC004951D8 /* iconic_taxon_mammalia.png in Resources */,
-				19530670150592DC004951D8 /* iconic_taxon_mollusca.png in Resources */,
-				19530671150592DC004951D8 /* iconic_taxon_plantae.png in Resources */,
-				19530672150592DC004951D8 /* iconic_taxon_protozoa.png in Resources */,
-				19530673150592DC004951D8 /* iconic_taxon_reptilia.png in Resources */,
-				19530674150592DC004951D8 /* iconic_taxon_unknown.png in Resources */,
 				1912DA9115059C08005555B8 /* 01-refresh.png in Resources */,
 				FA4E72A919FAC8A000A9AB5D /* mollusca-200px.png in Resources */,
 				196420B31506C0E6005ACB6E /* 83-calendar.png in Resources */,
-				19F6218F150ECA8300C58F28 /* projects-tab@2x.png in Resources */,
 				FA4E72A119FAC8A000A9AB5D /* amphibia-200px.png in Resources */,
 				FA4E72A719FAC8A000A9AB5D /* insecta-200px.png in Resources */,
-				19F62190150ECA8300C58F28 /* projects-tab.png in Resources */,
-				19D04791150FD50600BB5DBC /* iconic_taxon_chromista.png in Resources */,
 				19AE89BC18DD0EA900505918 /* 08-chat@2x.png in Resources */,
-				197A60531511298D0061B83B /* projects.png in Resources */,
-				197A60541511298D0061B83B /* projects@2x.png in Resources */,
 				19122E3F1512D3F4009BD3D0 /* add_button_highlight.png in Resources */,
 				19122E401512D3F4009BD3D0 /* add_button_highlight@2x.png in Resources */,
 				19122E411512D3F4009BD3D0 /* add_button.png in Resources */,
@@ -1637,8 +1528,6 @@
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FAA39B071ACB7C4E009D4665 /* tutorial_projects.png in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
-				60A0E24316FC0B24003621FA /* GoogleIcon.png in Resources */,
-				60A0E24716FCBE55003621FA /* FacebookIcon.png in Resources */,
 				19AE89B918DD0EA900505918 /* 08-chat-red.png in Resources */,
 				60A0E24B16FD06C1003621FA /* tutorial1en.png in Resources */,
 				60A0E24C16FD06C1003621FA /* tutorial2en.png in Resources */,
@@ -1651,11 +1540,7 @@
 				60A0E25916FD090B003621FA /* tutorial4es.png in Resources */,
 				60A0E25A16FD090B003621FA /* tutorial5en.png in Resources */,
 				60A0E25B16FD090B003621FA /* tutorial5es.png in Resources */,
-				19542F4217D65CB800B7CEE5 /* guides-tab@2x.png in Resources */,
-				19542F4317D65CB800B7CEE5 /* guides-tab.png in Resources */,
 				FA4E72AA19FAC8A000A9AB5D /* plantae-200px.png in Resources */,
-				19542F4A17D6624900B7CEE5 /* guides.png in Resources */,
-				19542F4B17D6624900B7CEE5 /* guides@2x.png in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				FA627B7A1ACB5A650079534E /* binocs.png in Resources */,
 				19570CCE17ECD0B0000C800A /* guides-menu.png in Resources */,
@@ -1668,7 +1553,6 @@
 				1955FD0517F21602004F57F2 /* 258-checkmark@2x.png in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				19F0A48117F4BAA90086455D /* 265-download-gray.png in Resources */,
-				194D8E4E18E227C80098E28C /* usericon.png in Resources */,
 				19F0A48217F4BAA90086455D /* 265-download-gray@2x.png in Resources */,
 				194D8E1E18DFEC9E0098E28C /* 184-warning@2x.png in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,

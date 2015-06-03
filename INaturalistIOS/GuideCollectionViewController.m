@@ -160,7 +160,7 @@ static const int GutterWidth  = 5;
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
     [img sd_cancelCurrentImageLoad];
-    img.image = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
+    img.image = [UIImage imageNamed:@"unknown-200px.png"];
     img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
