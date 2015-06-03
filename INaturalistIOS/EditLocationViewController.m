@@ -57,7 +57,11 @@
         double accuracyInDegrees = [self metersToDegrees:meters];
         region.span.latitudeDelta = accuracyInDegrees * 5;
         region.span.longitudeDelta = accuracyInDegrees * 5;
-        [self.mapView setRegion:[self.mapView regionThatFits:region]];
+        
+        // be defensive
+        if (!isnan(region.span.latitudeDelta) && !isnan(region.span.longitudeDelta)) {
+            [self.mapView setRegion:[self.mapView regionThatFits:region]];
+        }
     } else {
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
