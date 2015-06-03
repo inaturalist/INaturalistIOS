@@ -267,8 +267,10 @@ static const int ListControlIndexNearby = 2;
     return _syncActivityItem;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+
+#pragma mark - View lifecycle
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectListViewController *vc = [segue destinationViewController];
         if ([sender isKindOfClass:Project.class]) {
@@ -281,8 +283,6 @@ static const int ListControlIndexNearby = 2;
         }
     }
 }
-
-#pragma mark - View lifecycle
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
