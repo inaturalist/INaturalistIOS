@@ -95,6 +95,8 @@
         tv.dataSource = self;
         tv.delegate = self;
         
+        tv.scrollEnabled = NO;
+        
         tv.backgroundColor = [UIColor clearColor];
         tv.separatorColor = [UIColor clearColor];
         
@@ -246,7 +248,7 @@
                                                                       metrics:0
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-0-[tv]-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-20-[tv(==152)]"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -296,6 +298,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // if the VC catches a tap, it means nobody else did
+    // resign first responder from the textfield subviews
+    [self.view endEditing:YES];
+}
 
 #pragma mark TableView datasource/delegate
 
@@ -311,7 +318,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 20.0f;
+    if (section == 1)
+        return 20.0f;
+    else
+        return 0.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -340,6 +350,9 @@
         [cell.roundedButton bk_addEventHandler:^(id sender) {
             [weakSelf loginAction];
         } forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.roundedButton.enabled = NO;
+        cell.roundedButton.alpha = 0.5f;
         
         return cell;
     }
@@ -372,12 +385,13 @@
         cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
         cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
         
+        __weak typeof(self)weakSelf = self;
         [cell.textField bk_addEventHandler:^(id sender) {
             // just in case this cell scrolls off the screen
             username = [cell.textField.text copy];
+            [weakSelf validateLoginButton];
         } forControlEvents:UIControlEventEditingChanged];
         
-        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
             
@@ -441,13 +455,13 @@
             button;
         });
         
-
+        __weak typeof(self)weakSelf = self;
         [cell.textField bk_addEventHandler:^(id sender) {
             // just in case this cell scrolls off the screen
             password = [cell.textField.text copy];
+            [weakSelf validateLoginButton];
         } forControlEvents:UIControlEventEditingChanged];
         
-        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
             [weakSelf loginAction];
             
@@ -518,6 +532,21 @@
                                                }
                                                [SVProgressHUD showErrorWithStatus:errMsg];
                                            }];
+}
+
+- (void)validateLoginButton {
+    NSIndexPath *buttonIndexPath = [NSIndexPath indexPathForItem:0 inSection:1];
+    RoundedButtonCell *buttonCell = (RoundedButtonCell *)[self.loginTableView cellForRowAtIndexPath:buttonIndexPath];
+    
+    if (buttonCell && [buttonCell isKindOfClass:[RoundedButtonCell class]]) {
+        if (password.length > 2 && username.length > 2) {
+            buttonCell.roundedButton.enabled = YES;
+            buttonCell.roundedButton.alpha = 1.0f;
+        } else {
+            buttonCell.roundedButton.enabled = NO;
+            buttonCell.roundedButton.alpha = 0.5f;
+        }
+    }
 }
 
 #pragma mark - INatWebViewController delegate

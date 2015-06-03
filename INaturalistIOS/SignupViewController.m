@@ -90,17 +90,14 @@
         tv.backgroundColor = [UIColor clearColor];
         tv.separatorColor = [UIColor clearColor];
         
+        tv.scrollEnabled = NO;
+        
         tv.dataSource = self;
         tv.delegate = self;
+        
         [tv registerClass:[EditableTextFieldCell class] forCellReuseIdentifier:@"EditableText"];
         [tv registerClass:[RoundedButtonCell class] forCellReuseIdentifier:@"Button"];
         [tv registerClass:[CheckboxCell class] forCellReuseIdentifier:@"Checkbox"];
-        
-        tv.tableHeaderView = ({
-            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 40)];
-            
-            view;
-        });
         
         tv;
     });
@@ -180,7 +177,7 @@
                                                                      options:0
                                                                      metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-0-[tv]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-20-[tv(==230)]"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -191,6 +188,12 @@
                                                                         views:views]];
 
 
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // if the VC catches a tap, it means nobody else did
+    // resign first responder from the textfield subviews
+    [self.view endEditing:YES];
 }
 
 #pragma mark - UITableView delegate/datasource
@@ -267,6 +270,9 @@
             [weakSelf signupAction];
         } forControlEvents:UIControlEventTouchUpInside];
         
+        cell.roundedButton.enabled = NO;
+        cell.roundedButton.alpha = 0.5f;
+        
         return cell;
     }
 }
@@ -333,12 +339,14 @@
         cell.activeLeftAttributedString = [FAKIonIcons iosEmailIconWithSize:30].attributedString;
         cell.inactiveLeftAttributedString = [FAKIonIcons iosEmailOutlineIconWithSize:30].attributedString;
         
+        __weak typeof(self)weakSelf = self;
+        
         [cell.textField bk_addEventHandler:^(id sender) {
             // in case this cell scrolls off screen
             email = [cell.textField.text copy];
+            [weakSelf validateSignupButton];
         } forControlEvents:UIControlEventEditingChanged];
         
-        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
             // scroll to make password field visible
@@ -380,6 +388,9 @@
             
             label;
         });
+        
+        __weak typeof(self)weakSelf = self;
+
         [cell.textField bk_addEventHandler:^(id sender) {
             // in case this cell scrolls off the screen
             password = [cell.textField.text copy];
@@ -390,9 +401,10 @@
             } else {
                 cell.textField.rightViewMode = UITextFieldViewModeAlways;
             }
+            
+            [weakSelf validateSignupButton];
         } forControlEvents:UIControlEventEditingChanged];
         
-        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
             // scroll to make username field visible
@@ -419,14 +431,17 @@
         cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
         cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
         
+        __weak typeof(self)weakSelf = self;
+
         [cell.textField bk_addEventHandler:^(id sender) {
             // in case this cell scrolls off the screen
             username = [cell.textField.text copy];
+            // validate inputs for signup button
+            [weakSelf validateSignupButton];
         } forControlEvents:UIControlEventEditingChanged];
         
         cell.textField.returnKeyType = UIReturnKeyGo;
         
-        __weak typeof(self)weakSelf = self;
         cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
             [weakSelf signupAction];
             
@@ -497,6 +512,21 @@
                                                     }
                                                     [SVProgressHUD showErrorWithStatus:errMsg];
                                                 }];
+}
+
+- (void)validateSignupButton {
+    NSIndexPath *buttonIndexPath = [NSIndexPath indexPathForItem:4 inSection:0];
+    RoundedButtonCell *buttonCell = (RoundedButtonCell *)[self.signupTableView cellForRowAtIndexPath:buttonIndexPath];
+    
+    if (buttonCell && [buttonCell isKindOfClass:[RoundedButtonCell class]]) {
+        if (email.length > 2 && password.length > 2 && username.length > 2) {
+            buttonCell.roundedButton.enabled = YES;
+            buttonCell.roundedButton.alpha = 1.0f;
+        } else {
+            buttonCell.roundedButton.enabled = NO;
+            buttonCell.roundedButton.alpha = 0.5f;
+        }
+    }
 }
 
 @end
