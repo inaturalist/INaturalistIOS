@@ -47,6 +47,7 @@ PODS:
   - GeoJSONSerialization (0.0.4)
   - googleplus-ios-sdk (1.7.1)
   - HexColors (2.2.1)
+  - IFTTTLaunchImage (0.4.1)
   - ISO8601DateFormatter (0.7)
   - JDFTooltips (1.0)
   - JSONKit (1.5pre)
@@ -131,6 +132,7 @@ DEPENDENCIES:
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.2.1)
+  - IFTTTLaunchImage (= 0.4.1)
   - JDFTooltips (= 1.0)
   - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
   - MHVideoPhotoGallery (= 1.6.6)
@@ -182,6 +184,7 @@ SPEC CHECKSUMS:
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
   HexColors: abfd172e329dab59888614ccba6f216cec59289d
+  IFTTTLaunchImage: af0c8f2f366efcdb54cc971f54ccceed32dbf0a7
   ISO8601DateFormatter: ab926648eebe497f4d167c0fd083992f959f1274
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
   JSONKit: f4f4870c9e91926a56352680e3a3f5f78bccf187

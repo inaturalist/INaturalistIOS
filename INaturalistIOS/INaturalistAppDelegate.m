@@ -7,6 +7,8 @@
 //
 
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 
 #import "INaturalistAppDelegate.h"
 #import "List.h"
@@ -24,7 +26,6 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "User.h"
-#import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
@@ -92,7 +93,30 @@
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
         nav.delegate = self;
-        [self.window setRootViewController:nav];        
+        [self.window setRootViewController:nav];
+    } else {
+        // start with a launch image
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        UIViewController *mainVC = [storyboard instantiateInitialViewController];
+        UIImageView *launchImageView = ({
+            UIImageView *iv = [[UIImageView alloc] initWithFrame:mainVC.view.bounds];
+            iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            iv.image = [UIImage IFTTTDefaultLaunchImage];
+            iv;
+        });
+        [mainVC.view addSubview:launchImageView];
+        
+        [self.window setRootViewController:mainVC];
+        
+        // fade the launch image away
+        [UIView animateWithDuration:0.65f
+                         animations:^{
+                             launchImageView.alpha = 0.0f;
+                         }
+                         completion:^(BOOL finished) {
+                             [launchImageView removeFromSuperview];
+                         }];
     }
     
     return YES;
