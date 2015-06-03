@@ -273,14 +273,7 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectListViewController *vc = [segue destinationViewController];
-        if ([sender isKindOfClass:Project.class]) {
-            [vc setProject:sender];
-        } else {
-            Project *p = [self.projects 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
-            [vc setProject:p];
-        }
+        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
     }
 }
 
@@ -415,9 +408,22 @@ static const int ListControlIndexNearby = 2;
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self performSegueWithIdentifier:@"ProjectListSegue" sender:self];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Project *selectedProject = nil;
+    
+    // be defensive
+    @try {
+        selectedProject = [self.projects objectAtIndex:indexPath.item];
+    }
+    @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSRangeException])
+            selectedProject = nil;
+        else
+            @throw exception;
+    }
+    
+    if (selectedProject && [selectedProject isKindOfClass:[Project class]])
+        [self performSegueWithIdentifier:@"ProjectListSegue" sender:selectedProject];
 }
 
 #pragma mark - RKObjectLoaderDelegate
