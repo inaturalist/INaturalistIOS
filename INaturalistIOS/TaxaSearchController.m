@@ -11,10 +11,6 @@
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
 
-static const int TaxonCellImageTag = 1;
-static const int TaxonCellTitleTag = 2;
-static const int TaxonCellSubtitleTag = 3;
-
 @implementation TaxaSearchController
 - (id)initWithSearchDisplayController:(UISearchDisplayController *)searchDisplayController
 {

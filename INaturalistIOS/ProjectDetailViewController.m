@@ -160,11 +160,13 @@ static const int LeaveProjectAlertViewTag = 1;
     
     [self setupJoinButton];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([currentLanguage compare:@"es"] == NSOrderedSame){
-        [self.navigationController.navigationBar setTitleTextAttributes:
-         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:17] forKey:UITextAttributeFont]];
+    if ([currentLanguage isEqualToString:@"es"]) {
+        NSDictionary *attrs = @{
+                                NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
+                                };
+        self.navigationController.navigationBar.titleTextAttributes = attrs;
     }
-
+    
     [super viewDidLoad];
 }
 
@@ -239,7 +241,7 @@ static const int LeaveProjectAlertViewTag = 1;
     if (!self.sectionHeaderViews) {
         self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
     }
-    NSNumber *key = [NSNumber numberWithInt:section];
+    NSNumber *key = @(section);
     if ([self.sectionHeaderViews objectForKey:key]) {
         return [self.sectionHeaderViews objectForKey:key];
     }

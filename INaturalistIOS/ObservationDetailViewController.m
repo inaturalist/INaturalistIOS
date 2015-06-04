@@ -42,7 +42,6 @@
 #import "Observation+AddAssets.h"
 
 static const int LocationActionSheetTag = 1;
-static const int ObservedOnActionSheetTag = 2;
 static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
 static const int GeoprivacyActionSheetTag = 5;
@@ -318,7 +317,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         imageView.image = [UIImage imageNamed:@"08-chat.png"];
 	}
     [self.activityButton insertSubview:imageView atIndex:0];
-	[self.activityButton setTitle:[NSString stringWithFormat:@"%d", self.observation.activityCount] forState:UIControlStateNormal];
+	[self.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.observation.activityCount] forState:UIControlStateNormal];
 	
 	if (!self.activityBarButton) {
         self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
@@ -411,7 +410,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if (t && t.fullyLoaded) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-            NSString *url = [NSString stringWithFormat:@"%@/taxa/%d.json", INatBaseURL, taxonID];
+            NSString *url = [NSString stringWithFormat:@"%@/taxa/%ld.json", INatBaseURL, (long)taxonID];
             if (!self.taxonLoader) {
                 self.taxonLoader = [[TaxonLoader alloc] initWithViewController:self];
             }
@@ -451,9 +450,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     // Do any additional setup after loading the view from its nib.
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([currentLanguage compare:@"es"] == NSOrderedSame){
-        [self.navigationController.navigationBar setTitleTextAttributes:
-         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
+    if ([currentLanguage isEqualToString:@"es"]) {
+        NSDictionary *attrs = @{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18] };
+        self.navigationController.navigationBar.titleTextAttributes = attrs;
     }
     
     // add a black view to the top so pulling won't show whitespace
@@ -1284,7 +1283,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 #pragma mark - TaxaSearchViewControllerDelegate
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
 {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.observation.taxon = taxon;
     self.observation.taxonID = taxon.recordID;
     self.observation.iconicTaxonName = taxon.iconicTaxonName;
@@ -1360,14 +1359,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (cell) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
         // check prev siblings
-        for (int row = indexPath.row-1; row >= 0; row--) {
+        for (NSInteger row = indexPath.row-1; row >= 0; row--) {
             if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
                 return;
             }
         }
         // check prev sections
-        for (int section = indexPath.section-1; section >= 0; section--) {
-            for (int row = [self.tableView numberOfRowsInSection:section]-1; row >= 0; row--) {
+        for (NSInteger section = indexPath.section-1; section >= 0; section--) {
+            for (NSInteger row = [self.tableView numberOfRowsInSection:section]-1; row >= 0; row--) {
                 if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
                     return;
                 }
@@ -1386,13 +1385,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (cell) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
         // check next siblings
-        for (int row = indexPath.row+1; row < [self.tableView numberOfRowsInSection:indexPath.section]; row++) {
+        for (NSInteger row = indexPath.row+1; row < [self.tableView numberOfRowsInSection:indexPath.section]; row++) {
             if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
                 return;
             }
         }
         // check next sections
-        for (int section = indexPath.section+1; section < self.tableView.numberOfSections; section++) {
+        for (NSInteger section = indexPath.section+1; section < self.tableView.numberOfSections; section++) {
             for (int row = 0; row < [self.tableView numberOfRowsInSection:section]; row++) {
                 if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
                     return;

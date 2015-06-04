@@ -479,7 +479,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 }
 
-- (int)itemsToSyncCount
+- (NSInteger)itemsToSyncCount
 {
     if (!self.observationsToSyncCount) self.observationsToSyncCount = 0;
     if (!self.observationPhotosToSyncCount) self.observationPhotosToSyncCount = 0;
@@ -691,7 +691,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
 	}
 	
-	[activityButton setTitle:[NSString stringWithFormat:@"%d", o.activityCount] forState:UIControlStateNormal];
+	[activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
 	
 	if (o.activityCount > 0) {
 		activityButton.hidden = NO;
@@ -1233,7 +1233,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 			[[[RKObjectManager sharedManager] objectStore] save:&error];
 		}
 	} else {
-		NSLog(@"Received status code %d for %@", response.statusCode, request.resourcePath);
+		NSLog(@"Received status code %ld for %@", (long)response.statusCode, request.resourcePath);
 	}
 }
 

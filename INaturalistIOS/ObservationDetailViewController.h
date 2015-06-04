@@ -88,7 +88,6 @@
 - (void)focusOnPrevField;
 - (void)focusOnNextField;
 - (BOOL)focusOnFieldAtIndexPath:(NSIndexPath *)indexPath;
-- (void)clickedClear;
 - (void)keyboardDone;
 - (void)clickedSave;
 - (void)clickedDelete;
@@ -110,14 +109,12 @@
 - (void)startUpdatingLocation;
 - (void)stopUpdatingLocation;
 
-- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)deleteActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)geoprivacyActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 - (void)dismissActionSheet;
-- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element;
 - (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath;

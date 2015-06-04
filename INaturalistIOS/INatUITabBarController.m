@@ -411,9 +411,7 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark lifecycle
 
 // make sure view controllers in the tabs can autorotate
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    if (toInterfaceOrientation == UIDeviceOrientationPortrait)
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
@@ -439,7 +437,7 @@ static char PROJECT_ASSOCIATED_KEY;
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
     UITabBarItem *item = [self.tabBar.items objectAtIndex:4];       // Me tab
     if (theCount > 0) {
-        item.badgeValue = [NSString stringWithFormat:@"%d", theCount];
+        item.badgeValue = [NSString stringWithFormat:@"%ld", (long)theCount];
     } else {
         item.badgeValue = nil;
     }

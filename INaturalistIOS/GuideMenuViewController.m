@@ -226,7 +226,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
     CGSize labelSize = [self.guide.desc.stringByStrippingHTML sizeWithFont:[UIFont systemFontOfSize:15.0]
                                                          constrainedToSize:constraintSize
-                                                             lineBreakMode:UILineBreakModeWordWrap];
+                                                             lineBreakMode:NSLineBreakByWordWrapping];
     return labelSize.height + 20;
 }
 

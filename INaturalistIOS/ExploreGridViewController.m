@@ -193,6 +193,13 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
                      forControlEvents:UIControlEventTouchUpInside];
         
         return header;
+    } else {
+        // not supposed to return nil from this method
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                            withReuseIdentifier:@"Unused"
+                                                                                   forIndexPath:indexPath];
+        view.hidden = YES;
+        return view;
     }
 }
 

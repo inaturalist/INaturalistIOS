@@ -307,7 +307,7 @@ static NSString *kSortSpeciesKey = @"species_count";
     
     [cell.sortControl addTarget:self action:@selector(sorted) forControlEvents:UIControlEventTouchUpInside];
     
-    cell.rank.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
+    cell.rank.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row + 1];
 }
 
 @end

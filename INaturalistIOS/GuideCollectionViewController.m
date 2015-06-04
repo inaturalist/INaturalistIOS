@@ -369,9 +369,8 @@ static const int GutterWidth  = 5;
     }
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
     d.quiet = quietly;
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:r
-                                                                  delegate:d
-                                                          startImmediately:YES];
+    [[[NSURLConnection alloc] initWithRequest:r
+                                     delegate:d] start];
 }
 
 - (NSString *)currentXPath

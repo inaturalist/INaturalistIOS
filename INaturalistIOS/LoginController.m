@@ -17,7 +17,7 @@
 #import "UIColor+INaturalist.h"
 
 
-@interface LoginController () {
+@interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
     NSString    *iNatAccessToken;
     NSString    *accountType;
@@ -291,7 +291,6 @@ NSInteger INatMinPasswordLength = 6;
     self.currentSuccessBlock = success;
     self.currentErrorBlock = error;
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
                                                                                 clientID:self.clientIdForGoogleSignin
                                                                             clientSecret:nil
@@ -335,35 +334,32 @@ NSInteger INatMinPasswordLength = 6;
     return [GPPSignIn sharedInstance];
 }
 
--(void) initGoogleLogin{
+-(void) initGoogleLogin {
     // Google+ init
-    GPPSignIn   *googleSignIn = [GPPSignIn sharedInstance];
+    GPPSignIn *googleSignIn = [GPPSignIn sharedInstance];
     googleSignIn.clientID = GoogleClientId;
-    googleSignIn.scopes = [NSArray arrayWithObjects:
-                           kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
-                           kGTLAuthScopePlusMe,
-                           @"https://www.googleapis.com/auth/userinfo.email", nil];
+    googleSignIn.scopes = @[
+                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
+                            kGTLAuthScopePlusMe,
+                            @"https://www.googleapis.com/auth/userinfo.email",
+                            ];
     googleSignIn.delegate = self;
     [googleSignIn trySilentAuthentication];
 }
 
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
-          finishedAuth:(GTMOAuth2Authentication *)auth
-                 error:(NSError *)error {
+- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth
+                   error:(NSError *)error {
     
-    if (error || (!auth.accessToken && tryingGoogleReauth)) {        
+    if (error || (!auth.accessToken && tryingGoogleReauth)) {
+        
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"Google" }];
-        
         tryingGoogleReauth = NO;
-        
         [self executeError:error];
-        
     } else if (!auth.accessToken && !tryingGoogleReauth) {
         tryingGoogleReauth = YES;
         [[GPPSignIn sharedInstance] signOut];
         [self initGoogleLogin];
-        
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"Google+" }];
@@ -374,9 +370,14 @@ NSInteger INatMinPasswordLength = 6;
                                                              assertionType:[NSURL URLWithString:@"http://google.com"]
                                                                  assertion:externalAccessToken];
         tryingGoogleReauth = NO;
-        
         [self executeSuccess:nil];
     }
+}
+
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
+          finishedAuth:(GTMOAuth2Authentication *)auth
+                 error:(NSError *)error {
+    [self finishedWithAuth:auth error:error];
 }
 
 #pragma mark - Success / Failure helpers

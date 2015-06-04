@@ -181,7 +181,7 @@ static const int TaxonDescTag = 1;
     if (!self.sectionHeaderViews) {
         self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
     }
-    NSNumber *key = [NSNumber numberWithInt:section];
+    NSNumber *key = @(section);
     if ([self.sectionHeaderViews objectForKey:key]) {
         return [self.sectionHeaderViews objectForKey:key];
     }

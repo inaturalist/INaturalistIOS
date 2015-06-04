@@ -144,7 +144,6 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
-		CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF65CB014F5C55C003D63BB /* MapViewController.m */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA133E021A02D54100700852 /* tutorial7en.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E001A02D54000700852 /* tutorial7en.png */; };
 		FA133E031A02D54100700852 /* tutorial7es.png in Resources */ = {isa = PBXBuildFile; fileRef = FA133E011A02D54100700852 /* tutorial7es.png */; };
@@ -479,8 +478,6 @@
 		877B526621D376BBB82550CD /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
 		879E5037B10357A014B15064 /* Pods-iNaturalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist.debug.xcconfig"; sourceTree = "<group>"; };
 		9538BDDEB9B56A1D6B95F692 /* libPods-iNaturalist Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAF65CAF14F5C55B003D63BB /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
-		CAF65CB014F5C55C003D63BB /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
@@ -949,8 +946,6 @@
 				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				19640DE41508100A003BF888 /* MapTypeViewController.h */,
 				19640DE51508100A003BF888 /* MapTypeViewController.m */,
-				CAF65CAF14F5C55B003D63BB /* MapViewController.h */,
-				CAF65CB014F5C55C003D63BB /* MapViewController.m */,
 				19AE898018DD0AEB00505918 /* ObservationActivityViewController.h */,
 				19AE898118DD0AEB00505918 /* ObservationActivityViewController.m */,
 				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
@@ -1697,7 +1692,6 @@
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
 				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
-				CAF65CB114F5C55C003D63BB /* MapViewController.m in Sources */,
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
 				FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */,
@@ -1924,10 +1918,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Vendor/Facebook/build\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1966,10 +1957,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Vendor/Facebook/build\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

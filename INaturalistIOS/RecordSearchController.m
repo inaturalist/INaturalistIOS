@@ -68,7 +68,7 @@
     }
     self.isLoading = YES;
     NSString *url = [NSString stringWithFormat:self.searchURL, self.savedSearchTerm];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
                                                  objectMapping:[self.model mapping]
                                                       delegate:self];
     [self checkRemoteLoading];

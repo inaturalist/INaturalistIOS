@@ -22,7 +22,7 @@
 @property (nonatomic, retain) NSMutableArray *searchResults;
 @property (nonatomic, copy) NSString *savedSearchTerm;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
-@property (nonatomic, strong) id model;
+@property (nonatomic, strong) Class model;
 @property (nonatomic, strong) NSString *searchURL;
 @property (nonatomic, strong) NSTimer *requestTimer;
 @property (nonatomic, strong) UIViewController *delegate;

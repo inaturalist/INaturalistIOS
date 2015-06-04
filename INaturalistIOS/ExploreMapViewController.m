@@ -164,7 +164,7 @@
         [mapView removeOverlays:mapView.overlays];
         
         CLLocationCoordinate2D newCenter;
-        int overlayLocationId = 0;
+        NSInteger overlayLocationId = 0;
         for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
             if (predicate.type == ExploreSearchPredicateTypeLocation) {
                 newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,

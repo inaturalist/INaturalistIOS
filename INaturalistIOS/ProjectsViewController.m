@@ -21,7 +21,6 @@
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
-static const int ListControlIndexUser = 0;
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
@@ -244,12 +243,13 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"Joined",nil), NSLocalizedString(@"Featured",nil), NSLocalizedString(@"Nearby",nil), nil]];
-        _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        _listControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                   NSLocalizedString(@"Joined",nil),
+                                                                   NSLocalizedString(@"Featured",nil),
+                                                                   NSLocalizedString(@"Nearby",nil)
+                                                                   ]];
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        //NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+        NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
         
         [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];

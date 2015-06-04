@@ -35,13 +35,14 @@
 
 - (void)addModel:(id)model syncSelector:(SEL)syncSelector
 {
-    NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                              model, @"model", 
-                              [NSNumber numberWithInt:[model needingSyncCount]], @"needingSyncCount",
-                              [NSNumber numberWithInt:0], @"syncedCount",
-                              [NSNumber numberWithInt:[model deletedRecordCount]], @"deletedRecordCount",
-                              nil];
-    if (syncSelector) [d setValue:NSStringFromSelector(syncSelector) forKey:@"syncSelector"];
+    NSMutableDictionary *d = [@{
+                                @"model": model,
+                                @"needingSyncCount": @([model needingSyncCount]),
+                                @"syncedCount": @(0),
+                                @"deletedRecordCount": @([model deletedRecordCount]),
+                                } mutableCopy];
+    if (syncSelector)
+        d[@"syncSelector"] = NSStringFromSelector(syncSelector);
     
     [self.queue addObject:d];
 }
@@ -67,8 +68,8 @@
     NSInteger deletedRecordCount = [[current objectForKey:@"deletedRecordCount"] intValue];
     NSArray *recordsToSync = [model needingSync];
     
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start %@, %d to upload, %d to delete",
-                                        model, recordsToSync.count, deletedRecordCount]];
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start %@, %ld to upload, %ld to delete",
+                                        model, (long)recordsToSync.count, (long)deletedRecordCount]];
 
     // delete objects first
     if (deletedRecordCount > 0) {
@@ -196,7 +197,7 @@
                                       instanceMethodSignatureForSelector:@selector(syncQueueSynced:number:of:)];
             NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
             NSInteger number = [syncedCount intValue] + 1;
-            [current setValue:[NSNumber numberWithInt:number] forKey:@"syncedCount"];
+            current[@"syncedCount"] = @(number);
             NSInteger of = [needingSyncCount intValue];
             [inv setTarget:self.delegate];
             [inv setSelector:@selector(syncQueueSynced:number:of:)];
