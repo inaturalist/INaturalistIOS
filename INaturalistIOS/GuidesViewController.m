@@ -144,7 +144,7 @@ static const int ListControlIndexNearby = 2;
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
         
