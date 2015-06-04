@@ -29,7 +29,6 @@ static const int ListControlIndexNearby = 2;
 
 @implementation GuidesViewController
 @synthesize guides = _guides;
-@synthesize loader = _loader;
 @synthesize guideUsersSyncedAt = _lastSyncedAt;
 @synthesize allGuidesSyncedAt = _allGuidesSyncedAt;
 @synthesize nearbyGuidesSyncedAt = _nearbyGuidesSyncedAt;
@@ -199,9 +198,7 @@ static const int ListControlIndexNearby = 2;
     NSString *url =[NSString stringWithFormat:@"/guides.json?locale=%@-%@",
                     language,
                     countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Guide mapping]
-                                                      delegate:self];
+    [self syncGuidesWithUrlString:url];
 }
 
 - (void)syncNearbyGuides
@@ -231,9 +228,8 @@ static const int ListControlIndexNearby = 2;
                     self.lastLocation.coordinate.longitude,
                     language,
                     countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Guide mapping]
-                                                      delegate:self];
+    
+    [self syncGuidesWithUrlString:url];
 }
 
 - (void)syncUserGuides
@@ -247,19 +243,131 @@ static const int ListControlIndexNearby = 2;
                     language,
                     countryCode];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[Guide mapping]
-                                                          delegate:self];
+        [self syncGuidesWithUrlString:url];
         self.guideUsersSyncedAt = [NSDate date];
     } else {
         [self stopSync];
     }
 }
 
+- (void)syncGuidesWithUrlString:(NSString *)urlString {
+    
+    __weak typeof(self)weakSelf = self;
+    
+    RKObjectLoaderDidLoadObjectsBlock loadedBlock = ^(NSArray *objects) {
+        NSDate *now = [NSDate date];
+        for (INatModel *o in objects) {
+            Guide *g = (Guide *)o;
+            [g setSyncedAt:now];
+        }
+        
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
+                             now];
+        
+        NSArray *rejects = [Guide objectsWithPredicate:pred];
+        
+        for (Guide *g in rejects) {
+            [g deleteEntity];
+        }
+        
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@",
+                                error.localizedDescription];
+            [[Analytics sharedClient] debugLog:logMsg];
+        }
+        
+        [weakSelf stopSync];
+        [weakSelf loadData];
+    };
+    
+    RKRequestDidLoadResponseBlock responseBlock = ^(RKResponse *response) {
+        bool authFailure = false;
+        NSString *errorMsg;
+        switch (response.statusCode) {
+            case 401:
+                // Unauthorized
+                authFailure = true;
+                break;
+            case 422:
+                // UNPROCESSABLE ENTITY
+                
+                errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+                break;
+            default:
+                return;
+                break;
+        }
+        
+        if (authFailure) {
+            [weakSelf stopSync];
+            [weakSelf showSignupPrompt];
+        } else if (errorMsg) {
+            [weakSelf stopSync];
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                        delegate:nil
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                               otherButtonTitles:nil];
+            [av show];
+        }
+    };
+    
+    RKObjectLoaderDidFailWithErrorBlock errorBlock = ^(NSError *error) {
+        
+        [weakSelf stopSync];
+        
+        // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+        BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+        BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+        NSString *errorMsg = error.localizedDescription;
+        
+        if (jsonParsingError || authFailure) {
+            [weakSelf showSignupPrompt];
+        } else {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                        delegate:nil
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                               otherButtonTitles:nil];
+            [av show];
+        }
+
+    };
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        loader.objectMapping = [Guide mapping];
+                                                        loader.onDidLoadObjects = loadedBlock;
+                                                        loader.onDidLoadResponse = responseBlock;
+                                                        loader.onDidFailWithError = errorBlock;
+                                                    }];
+}
+
 - (void)stopSync
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+}
+    
+- (void)showSignupPrompt {
+    __block __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
+                                                      object:self
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      weakSelf.guideUsersSyncedAt = nil;
+                                                      [weakSelf sync];
+                                                  }];
+    
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.tabBarController presentViewController:nav
+                                        animated:YES
+                                      completion:nil];
 }
 
 - (UIBarButtonItem *)listControlItem
@@ -273,11 +381,13 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"All",nil), NSLocalizedString(@"Your Guides",nil), NSLocalizedString(@"Nearby",nil),nil]];
-        _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        _listControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                   NSLocalizedString(@"All",nil),
+                                                                   NSLocalizedString(@"Your Guides",nil),
+                                                                   NSLocalizedString(@"Nearby",nil),
+                                                                   ]];
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+        NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
         
         [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
@@ -448,83 +558,14 @@ static const int ListControlIndexNearby = 2;
     [self performSegueWithIdentifier:@"GuideDetailSegue" sender:self];
 }
 
-#pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        Guide *g = (Guide *)o;
-        [g setSyncedAt:now];
-    }
-    
-    NSArray *rejects = [Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil", now]];
-    for (Guide *g in rejects) {
-        [g deleteEntity];
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    [self stopSync];
-    [self loadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // was running into a bug in release build config where the object loader was
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
-    
-    [self stopSync];
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-            // Unauthorized
-        case 401:
-            authFailure = true;
-            // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-    
-    if (jsonParsingError || authFailure) {
-        // signup for login notifications
-        __block __weak typeof(self) weakSelf = self;
-        [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
-                                                          object:self
-                                                           queue:nil
-                                                      usingBlock:^(NSNotification *note) {
-                                                          weakSelf.guideUsersSyncedAt = nil;
-                                                          [weakSelf sync];
-                                                      }];
-        
-        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
-        // for sizzle
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [self.tabBarController presentViewController:nav
-                                            animated:YES
-                                          completion:nil];
-    } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-    }
-}
-
 #pragma mark - CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     self.lastLocation = newLocation;
-    if (!self.nearbyGuidesSyncedAt) {
+    if (!self.nearbyGuidesSyncedAt &&
+        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
         [self syncNearbyGuides];
     }
 }
