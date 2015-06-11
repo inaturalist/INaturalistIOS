@@ -43,32 +43,39 @@
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
         double lon = [self.currentLocation.longitude doubleValue];
-        [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(lat, lon) animated:YES];
-        MKCoordinateRegion region;
-        region.center.latitude = lat;
-        region.center.longitude = lon;
-        double meters;
-        if (self.currentLocation.accuracy) {
-            meters = MAX([self.currentLocation.accuracy longValue], 20);
-        } else {
-            meters = 500;
-            self.currentLocation.accuracy = [NSNumber numberWithInt:meters];
-        }
-        double accuracyInDegrees = [self metersToDegrees:meters];
-        region.span.latitudeDelta = accuracyInDegrees * 5;
-        region.span.longitudeDelta = accuracyInDegrees * 5;
-        
-        // be defensive
-        @try {
-            [self.mapView setRegion:[self.mapView regionThatFits:region]];
-        } @catch (NSException *exception) {
-            if ([exception.name isEqualToString:NSInvalidArgumentException]) {
-                // do nothing
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lon);
+        if (CLLocationCoordinate2DIsValid(coord)) {
+            [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(lat, lon) animated:YES];
+            MKCoordinateRegion region;
+            region.center.latitude = lat;
+            region.center.longitude = lon;
+            double meters;
+            if (self.currentLocation.accuracy) {
+                meters = MAX([self.currentLocation.accuracy longValue], 20);
             } else {
-                @throw exception;
+                meters = 500;
+                self.currentLocation.accuracy = [NSNumber numberWithInt:meters];
             }
+            double accuracyInDegrees = [self metersToDegrees:meters];
+            region.span.latitudeDelta = accuracyInDegrees * 5;
+            region.span.longitudeDelta = accuracyInDegrees * 5;
+            
+            // be defensive
+            @try {
+                [self.mapView setRegion:[self.mapView regionThatFits:region]];
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSInvalidArgumentException]) {
+                    // do nothing
+                } else {
+                    @throw exception;
+                }
+            }
+        } else {
+            // null island
+            [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(0, 0)];
         }
     } else {
+        // null island
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
         self.currentLocation = [[INatLocation alloc] initWithLatitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude]
