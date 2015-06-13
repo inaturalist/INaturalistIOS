@@ -160,9 +160,37 @@ static char SUMMARY_ASSOCIATED_KEY;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxon.recordID];
+        
+        __weak typeof(self)weakSelf = self;
+        RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
+            
+            // save into core data
+            NSError *saveError = nil;
+            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+            if (saveError) {
+                NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
+                                    saveError.localizedDescription];
+                [[Analytics sharedClient] debugLog:errMsg];
+                return;
+            }
+            
+            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", self.taxon.recordID];
+            Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
+            if (taxon) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                strongSelf.taxon = taxon;
+                [strongSelf initUI];
+                [strongSelf.tableView reloadData];
+            }
+        };
+        
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[Taxon mapping]
-                                                          delegate:self];
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [Taxon mapping];
+                                                            loader.onDidLoadObject = loadedTaxonBlock;
+                                                            // If something went wrong, just ignore it.
+                                                            // Because, you know, that's always a good idea.
+                                                        }];
     }
 }
 
@@ -300,20 +328,6 @@ static char SUMMARY_ASSOCIATED_KEY;
     
     TKWebViewController *web = [[TKWebViewController alloc] initWithURL:[NSURL URLWithString:url]];
     [self.navigationController pushViewController:web animated:YES];
-}
-
-#pragma - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
-    [object save];
-    self.taxon = (Taxon *)object;
-    [self initUI];
-    [self.tableView reloadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    // If something went wrong, just ignore it. Because, you know, that's always a good idea.
 }
 
 @end
