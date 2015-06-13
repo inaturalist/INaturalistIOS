@@ -30,11 +30,6 @@
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @end
 
-@interface TaxonLoader : NSObject <RKObjectLoaderDelegate>
-@property (nonatomic, strong) ObservationDetailViewController *viewController;
-- (id)initWithViewController:(ObservationDetailViewController *)viewController;
-@end
-
 @interface ObservationDetailViewController : UITableViewController <
     UITextFieldDelegate, 
     UITextViewDelegate, 
@@ -80,7 +75,6 @@
 @property (nonatomic, strong) NSMutableDictionary *ofvCells;
 @property (nonatomic, strong) OFVTaxaSearchControllerDelegate *ofvTaxaSearchControllerDelegate;
 @property (nonatomic, strong) NSString *taxonID;
-@property (nonatomic, strong) TaxonLoader *taxonLoader;
 @property (nonatomic, assign) BOOL didClickCancel;
 
 @property (nonatomic, assign) BOOL shouldShowBigSaveButton;

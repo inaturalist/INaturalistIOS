@@ -114,7 +114,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize ofvCells = _ofvCells;
 @synthesize ofvTaxaSearchControllerDelegate = _ofvTaxaSearchControllerDelegate;
 @synthesize taxonID = _taxonID;
-@synthesize taxonLoader = _taxonLoader;
 
 - (void)observationToUI
 {
@@ -406,17 +405,41 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.fullyLoaded;
     if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
         NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
-        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", taxonID]];
+        NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonID];
+        Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
         if (t && t.fullyLoaded) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             NSString *url = [NSString stringWithFormat:@"%@/taxa/%ld.json", INatBaseURL, (long)taxonID];
-            if (!self.taxonLoader) {
-                self.taxonLoader = [[TaxonLoader alloc] initWithViewController:self];
-            }
+            __weak typeof(self) weakSelf = self;
+            
+            RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                
+                Taxon *loadedTaxon = (Taxon *)object;
+                loadedTaxon.syncedAt = [NSDate date];
+                
+                // save into core data
+                NSError *saveError = nil;
+                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                if (saveError) {
+                    NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
+                                        saveError.localizedDescription];
+                    [[Analytics sharedClient] debugLog:errMsg];
+                    return;
+                }
+                
+                Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
+                strongSelf.observation.taxon = t;
+                [strongSelf observationToUI];
+            };
+            
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                         objectMapping:[Taxon mapping]
-                                                              delegate:self.taxonLoader];
+                                                            usingBlock:^(RKObjectLoader *loader) {
+                                                                loader.objectMapping = [Taxon mapping];
+                                                                loader.onDidLoadObject = taxonLoadedBlock;
+                                                                // do nothing in the event of error
+                                                            }];
         } else {
             NSLog(@"no network, ignore");
         }
@@ -1974,35 +1997,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-}
-
-@end
-
-@implementation TaxonLoader
-
-@synthesize viewController = _viewController;
-
-- (id)initWithViewController:(ObservationDetailViewController *)viewController
-{
-    self = [super init];
-    if (self) {
-        _viewController = viewController;
-    }
-    return self;
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
-    [object save];
-    if (self.viewController.observation) {
-        self.viewController.observation.taxon = (Taxon *)object;
-        [self.viewController observationToUI];
-    }
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    // if something went wrong, just ignore it
 }
 
 @end
