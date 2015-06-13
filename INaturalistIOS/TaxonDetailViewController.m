@@ -8,6 +8,7 @@
 
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <objc/runtime.h>
 
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
@@ -24,6 +25,34 @@ static const int TaxonNameTag = 2;
 static const int TaxonImageTag = 3;
 static const int TaxonImageAttributionTag = 4;
 static const int TaxonDescTag = 1;
+
+static char SUMMARY_ASSOCIATED_KEY;
+
+@interface Taxon (Summary)
+@property (readonly) NSAttributedString *attributedSummary;
+@end
+
+@implementation Taxon (Summary)
+// extracting attributed strings from HTML is expensive
+// stash the attributed summary in an associated object on the taxon itself
+- (NSAttributedString *)attributedSummary {
+    NSAttributedString *_attributedSummary = objc_getAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY);
+    if (!_attributedSummary) {
+        NSData *sumData = [self.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *sumOpts = @{
+                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                                  };
+        _attributedSummary = [[NSAttributedString alloc] initWithData:sumData
+                                                              options:sumOpts
+                                                   documentAttributes:nil
+                                                                error:nil];
+        objc_setAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY, _attributedSummary, OBJC_ASSOCIATION_COPY);
+
+    }
+    return _attributedSummary;
+}
+@end
 
 @implementation TaxonDetailViewController
 
@@ -161,12 +190,9 @@ static const int TaxonDescTag = 1;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        NSAttributedString *summary = [[NSAttributedString alloc] initWithData:[self.taxon.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding]
-                                                                       options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding) }
-                                                            documentAttributes:nil
-                                                                         error:nil];
-        return [summary boundingRectWithSize:CGSizeMake(320, 320) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height + 10;
+        return [self.taxon.attributedSummary boundingRectWithSize:CGSizeMake(320, 320)
+                                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                                          context:nil].size.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -212,11 +238,7 @@ static const int TaxonDescTag = 1;
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.section == 0 && indexPath.row == 0) {
         UILabel *label = (UILabel *)[cell viewWithTag:TaxonDescTag];
-        label.attributedText = [[NSAttributedString alloc] initWithData:[self.taxon.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding]
-                                                                options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                                                           NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding) }
-                                                     documentAttributes:nil
-                                                                  error:nil];
+        label.attributedText = self.taxon.attributedSummary;
         label.numberOfLines = 0;
         label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor whiteColor];
