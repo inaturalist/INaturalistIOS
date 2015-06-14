@@ -27,7 +27,6 @@ static const int ListControlIndexNearby = 2;
 
 @implementation ProjectsViewController
 @synthesize projects = _projects;
-@synthesize loader = _loader;
 @synthesize projectUsersSyncedAt = _lastSyncedAt;
 @synthesize featuredProjectsSyncedAt = _featuredProjectsSyncedAt;
 @synthesize nearbyProjectsSyncedAt = _nearbyProjectsSyncedAt;
