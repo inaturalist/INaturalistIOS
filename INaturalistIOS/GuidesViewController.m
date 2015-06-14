@@ -363,6 +363,8 @@ static const int ListControlIndexNearby = 2;
                                                   }];
     
     SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.skippable = NO;
+    svc.cancellable = YES;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
     // for sizzle
     nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
