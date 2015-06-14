@@ -87,14 +87,6 @@
     readyToChangeLocation = YES;
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    [self setMapView:nil];
-    [self setMapTypeButton:nil];
-    [self setCrossHairView:nil];
-    [self setAccuracyCircleView:nil];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateEditLocation];

@@ -39,7 +39,5 @@
 - (IBAction)clickedGuideMenuButton:(id)sender {
     [self rightRevealToggleAnimated:YES];
 }
-- (void)viewDidUnload {
-    [super viewDidUnload];
-}
+
 @end

@@ -66,10 +66,6 @@ static const int WebViewTag = 1;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideTaxon];
 }
 
-- (void)viewDidUnload {
-    [self setWebView:nil];
-    [super viewDidUnload];
-}
 - (IBAction)clickedObserve:(id)sender {
     [self performSegueWithIdentifier:@"GuideTaxonObserveSegue" sender:sender];
 }

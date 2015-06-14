@@ -562,21 +562,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [super viewWillDisappear:animated];
 }
 
-- (void)viewDidUnload
-{
-    [self setSpeciesGuessTextField:nil];
-    [self setObservedAtLabel:nil];
-    [self setLatitudeLabel:nil];
-    [self setLongitudeLabel:nil];
-    [self setPositionalAccuracyLabel:nil];
-    [self setDescriptionTextView:nil];
-    [self setPlaceGuessField:nil];
-    [self setIdPleaseSwitch:nil];
-    [self setGeoprivacyCell:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 
 #pragma mark UITextFieldDelegate methods
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField

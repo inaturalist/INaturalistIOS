@@ -26,10 +26,6 @@
     self.mapTypeControl.selectedSegmentIndex = self.mapType;
 }
 
-- (void)viewDidUnload {
-    [self setMapTypeControl:nil];
-    [super viewDidUnload];
-}
 
 - (IBAction)choseMapType:(id)sender {
     UISegmentedControl *control = (UISegmentedControl *)sender;

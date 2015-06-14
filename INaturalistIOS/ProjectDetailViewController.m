@@ -187,13 +187,6 @@ static const int LeaveProjectAlertViewTag = 1;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
-- (void)viewDidUnload {
-    [self setProjectIcon:nil];
-    [self setProjectTitle:nil];
-    [self setJoinButton:nil];
-    [super viewDidUnload];
-}
-
 - (NSInteger)heightForHTML:(NSString *)html
 {
     NSString *s = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];

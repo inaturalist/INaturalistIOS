@@ -570,12 +570,6 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
-- (void)viewDidUnload {
-    [self setSyncButton:nil];
-    [self setSyncActivityItem:nil];
-    [super viewDidUnload];
-}
-
 #pragma mark - GuideViewControllerDelegate
 - (void)guideViewControllerDownloadedNGZForGuide:(GuideXML *)guide
 {

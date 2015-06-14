@@ -207,13 +207,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
     [super viewWillDisappear:animated];
 }
 
-- (void)viewDidUnload {
-    [self setProjectIcon:nil];
-    [self setProjectTitle:nil];
-    [self setSyncButton:nil];
-    [super viewDidUnload];
-}
-
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

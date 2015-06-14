@@ -516,8 +516,4 @@ static const int ListControlIndexNearby = 2;
     self.lastLocation = newLocation;
 }
 
-- (void)viewDidUnload {
-    [self setSyncButton:nil];
-    [super viewDidUnload];
-}
 @end

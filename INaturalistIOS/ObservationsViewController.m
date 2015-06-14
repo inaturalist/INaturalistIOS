@@ -967,11 +967,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (void)viewDidUnload
-{
-    [self setTableView:nil];
-    [super viewDidUnload];
-}
 
 - (void)viewWillAppear:(BOOL)animated
 {
