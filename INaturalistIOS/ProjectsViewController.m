@@ -18,6 +18,7 @@
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "LoginController.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -170,20 +171,16 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
-- (void)syncFeaturedProjects
-{
+- (void)syncFeaturedProjects {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Project mapping] 
-                                                      delegate:self];
+    NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
+    
     self.featuredProjectsSyncedAt = [NSDate date];
+    [self syncProjectsWithPath:path];
 }
 
-- (void)syncNearbyProjects
-{
-    self.nearbyProjectsSyncedAt = [NSDate date];
+- (void)syncNearbyProjects {
     if (!self.lastLocation) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
                                                      message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
@@ -195,31 +192,30 @@ static const int ListControlIndexNearby = 2;
         return;
     }
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
-                    self.lastLocation.coordinate.latitude,
-                    self.lastLocation.coordinate.longitude,
-                    language,
-                    countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Project mapping] 
-                                                      delegate:self];
+    NSString *language = [[NSLocale preferredLanguages] firstObject];
+    NSString *path = [NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
+                      self.lastLocation.coordinate.latitude,
+                      self.lastLocation.coordinate.longitude,
+                      language,
+                      countryCode];
+    
+    self.nearbyProjectsSyncedAt = [NSDate date];
+    [self syncProjectsWithPath:path];
 }
 
-- (void)syncUserProjects
-{
+- (void)syncUserProjects {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                    username,
-                    language,
-                    countryCode];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[ProjectUser mapping]
-                                                          delegate:self];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] firstObject];
+        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                          username,
+                          language,
+                          countryCode];
+        
+        self.projectUsersSyncedAt = [NSDate date];
+        [self syncProjectsWithPath:path];
     } else {
         [self stopSync];
         self.projectUsersSyncedAt = nil;
@@ -231,8 +227,134 @@ static const int ListControlIndexNearby = 2;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
         nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     }
-    self.projectUsersSyncedAt = [NSDate date];
 }
+
+- (void)syncProjectsWithPath:(NSString *)path {
+    
+    __weak typeof(self) weakSelf = self;
+
+    RKObjectLoaderDidLoadObjectsBlock didLoadObjectsBlock = ^(NSArray *objects) {
+        NSDate *now = [NSDate date];
+        for (INatModel *o in objects) {
+            [o setSyncedAt:now];
+        }
+        
+        if ([path rangeOfString:@"featured"].location != NSNotFound) {
+            NSArray *rejects = [Project objectsWithPredicate:
+                                [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
+            for (Project *p in rejects) {
+                if (p.projectUsers.count == 0) {
+                    [p deleteEntity];
+                } else {
+                    p.featuredAt = nil;
+                    p.syncedAt = now;
+                }
+            }
+        } else if ([path rangeOfString:@"projects/user"].location != NSNotFound) {
+            NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
+            for (ProjectUser *pu in rejects) {
+                [pu deleteEntity];
+            }
+        }
+        
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
+            [[Analytics sharedClient] debugLog:logMsg];
+        }
+        
+        [weakSelf stopSync];
+        [weakSelf loadData];
+    };
+    
+    RKRequestDidLoadResponseBlock didLoadResponseBlock = ^(RKResponse *response) {
+        bool authFailure = false;
+        NSString *errorMsg;
+        switch (response.statusCode) {
+            case 401:
+                // Unauthorized
+                authFailure = true;
+                break;
+            case 422:
+                // UNPROCESSABLE ENTITY
+                
+                errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+                break;
+            default:
+                return;
+                break;
+        }
+        
+        if (authFailure) {
+            [weakSelf stopSync];
+            [weakSelf showSignupPrompt];
+        } else if (errorMsg) {
+            [weakSelf stopSync];
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                        delegate:nil
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                               otherButtonTitles:nil];
+            [av show];
+        }
+    };
+    
+    RKObjectLoaderDidFailWithErrorBlock didFailBlock = ^(NSError *error) {
+        
+        [weakSelf stopSync];
+        
+        // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+        BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+        BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+        NSString *errorMsg = error.localizedDescription;
+        
+        if (jsonParsingError || authFailure) {
+            [weakSelf showSignupPrompt];
+        } else {
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                        delegate:nil
+                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                               otherButtonTitles:nil];
+            [av show];
+        }
+        
+    };
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        loader.objectMapping = [ProjectUser mapping];
+                                                        
+                                                        loader.onDidLoadObjects = didLoadObjectsBlock;
+                                                        loader.onDidLoadResponse = didLoadResponseBlock;
+                                                        loader.onDidFailWithError = didFailBlock;
+                                                    }];
+    
+}
+
+- (void)showSignupPrompt {
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
+                                                      object:self
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                      strongSelf.projectUsersSyncedAt = nil;
+                                                      [weakSelf sync];
+                                                  }];
+    
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.cancellable = YES;
+    svc.skippable = NO;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.tabBarController presentViewController:nav
+                                        animated:YES
+                                      completion:nil];
+}
+
 
 - (void)stopSync
 {
@@ -432,82 +554,6 @@ static const int ListControlIndexNearby = 2;
     
     if (selectedProject && [selectedProject isKindOfClass:[Project class]])
         [self performSegueWithIdentifier:@"ProjectListSegue" sender:selectedProject];
-}
-
-#pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
-    }
-    
-    if ([objectLoader.resourcePath rangeOfString:@"featured"].location != NSNotFound) {
-        NSArray *rejects = [Project objectsWithPredicate:
-                            [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
-        for (Project *p in rejects) {
-            if (p.projectUsers.count == 0) {
-                [p deleteEntity];
-            } else {
-                p.featuredAt = nil;
-                p.syncedAt = now;
-            }
-        }
-    } else if ([objectLoader.resourcePath rangeOfString:@"projects/user"].location != NSNotFound) {
-        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-        for (ProjectUser *pu in rejects) {
-            [pu deleteEntity];
-        }
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    [self stopSync];
-    [self loadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // was running into a bug in release build config where the object loader was 
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
-    
-    [self stopSync];
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-        // Unauthorized
-        case 401:
-            authFailure = true;
-        // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-    
-    if (jsonParsingError || authFailure) {
-        // force signin
-        self.projectUsersSyncedAt = nil;
-
-        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        splash.reason = NSLocalizedString(@"You must be logged in to do that.", @"Unspecific signup prompt reason.");
-        splash.skippable = NO;
-        splash.cancellable = YES;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                    delegate:self 
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-    }
 }
 
 #pragma mark - CLLocationManagerDelegate

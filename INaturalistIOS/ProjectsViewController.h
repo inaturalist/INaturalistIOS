@@ -10,9 +10,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "ProjectsSearchController.h"
 
-@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, CLLocationManagerDelegate>
+@interface ProjectsViewController : UITableViewController <CLLocationManagerDelegate>
 @property (nonatomic, strong) NSArray *projects;
-@property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *projectUsersSyncedAt;
 @property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
 @property (nonatomic, strong) NSDate *nearbyProjectsSyncedAt;
