@@ -136,7 +136,8 @@
     
     // compile candidates for adding to the map
     NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
-        return MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
+        return CLLocationCoordinate2DIsValid(candidate.coordinate) &&
+            MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
     }];
     
     // remove anything that's not in candidates, or that's not in the first 100
