@@ -352,13 +352,14 @@ static const int ListControlIndexNearby = 2;
 }
     
 - (void)showSignupPrompt {
-    __block __weak typeof(self) weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
                                                       object:self
                                                        queue:nil
                                                   usingBlock:^(NSNotification *note) {
-                                                      weakSelf.guideUsersSyncedAt = nil;
-                                                      [weakSelf sync];
+                                                      __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                      strongSelf.guideUsersSyncedAt = nil;
+                                                      [strongSelf sync];
                                                   }];
     
     SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
