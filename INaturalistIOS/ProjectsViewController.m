@@ -57,47 +57,55 @@ static const int ListControlIndexNearby = 2;
             break;
     }
     [self checkEmpty];
-    [self.tableView reloadData];
     
     if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
 }
 
-- (void)loadUserProjects
-{
+- (void)loadUserProjects {
     NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
-    self.projects = [NSMutableArray arrayWithArray:[projectUsers valueForKey:@"project"]];
+    self.projects = [projectUsers valueForKey:@"project"];
+    [self.tableView reloadData];
 }
 
-- (void)loadFeaturedProjects
-{
-    self.projects = [NSMutableArray arrayWithArray:[Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]]];
+- (void)loadFeaturedProjects {
+    self.projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
+    [self.tableView reloadData];
 }
 
-- (void)loadNearbyProjects
-{
+- (void)loadNearbyProjects {
+    // get all projects with a location
     NSFetchRequest *request = [Project fetchRequest];
     request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
     request.fetchLimit = 500;
-    NSArray *projects = [Project objectsWithFetchRequest:request];
-    self.projects = [NSMutableArray arrayWithArray:[projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
-        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue 
+    NSArray *projectsWithLocations = [Project objectsWithFetchRequest:request];
+    
+    // anything less than 310 miles away is "nearby"
+    NSPredicate *nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
+                                                     longitude:p.longitude.doubleValue];
+        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
+        return d.doubleValue < 500000; // meters
+    }];
+    NSArray *nearbyProjects = [projectsWithLocations filteredArrayUsingPredicate:nearbyPredicate];
+    
+    // sort nearby projects by how near they are (self.lastLocation)
+    NSComparator nearnessComparator = ^NSComparisonResult(Project *p1, Project *p2) {
+        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
                                                             longitude:p1.longitude.doubleValue];
-        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue 
+        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
                                                             longitude:p2.longitude.doubleValue];
         NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
         NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
         return [p1Distance compare:p2Distance];
-    }]];
-    [self.projects filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue 
-                                                     longitude:p.longitude.doubleValue];
-        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
-        return d.doubleValue < 500000; // meters
-    }]];
+    };
+    NSArray *projectsSortedByNearness = [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
+
+    self.projects = projectsSortedByNearness;
+    [self.tableView reloadData];
 }
 
 - (IBAction)clickedSync:(id)sender {

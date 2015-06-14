@@ -11,7 +11,7 @@
 #import "ProjectsSearchController.h"
 
 @interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, CLLocationManagerDelegate>
-@property (nonatomic, strong) NSMutableArray *projects;
+@property (nonatomic, strong) NSArray *projects;
 @property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *projectUsersSyncedAt;
 @property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
