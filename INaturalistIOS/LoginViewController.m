@@ -112,7 +112,7 @@
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
         label.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
-        label.text = NSLocalizedString(@"Or login with:", @"label above alternate login option buttons (ie g+, facebook)");
+        label.text = NSLocalizedString(@"Or Log In with:", @"label above alternate login option buttons (ie g+, facebook)");
         label.textAlignment = NSTextAlignmentCenter;
         
         label;
