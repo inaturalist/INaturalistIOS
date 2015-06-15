@@ -437,18 +437,53 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[face]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[g]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[emailSignup]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginFaceButton
+                                                         attribute:NSLayoutAttributeWidth
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1.0f
+                                                           constant:290.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginGButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.signupEmailButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginFaceButton
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginGButton
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.signupEmailButton
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+
+    
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.skipButton
                                                          attribute:NSLayoutAttributeCenterX
                                                          relatedBy:NSLayoutRelationEqual

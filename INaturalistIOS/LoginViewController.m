@@ -119,6 +119,14 @@
     });
     [self.view addSubview:self.orLabel];
     
+    UIView *socialContainer = ({
+        UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        view;
+    });
+    [self.view addSubview:socialContainer];
+    
     self.gButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.translatesAutoresizingMaskIntoConstraints = NO;
@@ -172,7 +180,7 @@
 
         button;
     });
-    [self.view addSubview:self.gButton];
+    [socialContainer addSubview:self.gButton];
     
     self.faceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
@@ -226,7 +234,7 @@
         button;
 
     });
-    [self.view addSubview:self.faceButton];
+    [socialContainer addSubview:self.faceButton];
     
     UIView *spacer = [UIView new];
     UIView *spacer2 = [UIView new];
@@ -247,17 +255,52 @@
                             @"g": self.gButton,
                             @"face": self.faceButton,
                             @"top": self.topLayoutGuide,
+                            @"social": socialContainer,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[tv]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginTableView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginTableView
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[or]-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[g]-[face(==g)]-|"
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:socialContainer
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:socialContainer
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[g]-[face(==g)]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[g]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[face]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -266,11 +309,7 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[or]-20-[g(==44)]-100-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[or]-20-[face(==44)]-100-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[or]-20-[social(==44)]-100-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];

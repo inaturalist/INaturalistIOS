@@ -168,16 +168,37 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.termsLabel
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.termsLabel
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[terms]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.signupTableView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.signupTableView
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[tv]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                        views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-20-[tv(==230)]"
                                                                       options:0
                                                                       metrics:0
