@@ -26,7 +26,7 @@
 @end
 
 @interface OFVTaxaSearchControllerDelegate : NSObject <TaxaSearchViewControllerDelegate>
-@property (nonatomic, strong) ObservationDetailViewController *controller;
+@property (nonatomic, weak) ObservationDetailViewController *controller;
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @end
 
