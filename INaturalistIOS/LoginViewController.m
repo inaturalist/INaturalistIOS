@@ -107,7 +107,7 @@
     });
     [self.view addSubview:self.loginTableView];
     
-    UILabel *orLabel = ({
+    self.orLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -117,7 +117,7 @@
         
         label;
     });
-    [self.view addSubview:orLabel];
+    [self.view addSubview:self.orLabel];
     
     self.gButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
@@ -243,7 +243,7 @@
                             @"tv": self.loginTableView,
                             @"spacer": spacer,
                             @"spacer2": spacer2,
-                            @"or": orLabel,
+                            @"or": self.orLabel,
                             @"g": self.gButton,
                             @"face": self.faceButton,
                             @"top": self.topLayoutGuide,

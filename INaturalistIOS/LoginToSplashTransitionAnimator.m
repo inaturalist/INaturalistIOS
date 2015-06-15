@@ -68,6 +68,8 @@
                          login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, width, 0);
                          login.gButton.frame = CGRectOffset(login.gButton.frame, width, 0);
                          login.faceButton.frame = CGRectOffset(login.faceButton.frame, width, 0);
+                         login.orLabel.frame = CGRectOffset(login.orLabel.frame, width, 0);
+
                          
                          if (!splash.cancellable)
                              login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, width, 0);
@@ -86,6 +88,7 @@
                          login.loginTableView.frame = CGRectOffset(login.loginTableView.frame, -width, 0);
                          login.gButton.frame = CGRectOffset(login.gButton.frame, -width, 0);
                          login.faceButton.frame = CGRectOffset(login.faceButton.frame, -width, 0);
+                         login.orLabel.frame = CGRectOffset(login.orLabel.frame, -width, 0);
 
                          if (!splash.cancellable)
                              login.navigationController.navigationBar.frame = CGRectOffset(login.navigationController.navigationBar.frame, -width, 0);

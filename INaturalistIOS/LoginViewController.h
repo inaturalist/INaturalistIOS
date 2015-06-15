@@ -16,4 +16,5 @@
 @property BOOL cancellable;
 @property UITableView *loginTableView;
 @property SplitTextButton *gButton, *faceButton;
+@property UILabel *orLabel;
 @end
