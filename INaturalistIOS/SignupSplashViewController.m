@@ -509,14 +509,6 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginFaceButton
-                                                          attribute:NSLayoutAttributeTop
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeBottom
-                                                         multiplier:0.6f
-                                                           constant:0.0f]];
     
     NSMutableArray *mutableConstraints = [NSMutableArray array];
     [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[reason]"
