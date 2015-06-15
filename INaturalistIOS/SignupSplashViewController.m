@@ -26,6 +26,9 @@
     BOOL _skippable;
     BOOL _cancellable;
     NSString *_reason;
+    
+    NSArray *constraintsForCompactClass;
+    NSArray *constraintsForRegularClass;
 }
 @end
 
@@ -179,7 +182,17 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         
-        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:160];
+        int logoSize;
+        if ([self respondsToSelector:@selector(traitCollection)]) {
+            if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+                logoSize = 200;
+            } else {
+                logoSize = 160;
+            }
+        } else {
+            logoSize = 160;
+        }
+        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
         [logo addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
         
         label.textAlignment = NSTextAlignmentCenter;
@@ -363,7 +376,8 @@
         button.layer.cornerRadius = 15;
         
         button.contentEdgeInsets = UIEdgeInsetsMake(-5, 15, -5, 15);
-        button.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
+        if ([button respondsToSelector:@selector(setLayoutMargins:)])
+            button.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
@@ -496,16 +510,6 @@
                                                                       metrics:0
                                                                         views:views]];
 
-
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo]-30-[reason]"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[face(==44)]-[g(==44)]-[emailSignup(==44)]-20-[skip(==30)]-20-[emailSignin(==44)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginFaceButton
                                                           attribute:NSLayoutAttributeTop
                                                           relatedBy:NSLayoutRelationEqual
@@ -513,7 +517,62 @@
                                                           attribute:NSLayoutAttributeBottom
                                                          multiplier:0.6f
                                                            constant:0.0f]];
+    
+    NSMutableArray *mutableConstraints = [NSMutableArray array];
+    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[reason]"
+                                                                                    options:0
+                                                                                    metrics:0
+                                                                                      views:views]];
+    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[logo]-30-[face(==44)]-[g(==44)]-[emailSignup(==44)]-20-[skip(==30)]-20-[emailSignin(==44)]-0-|"
+                                                                                    options:0
+                                                                                    metrics:0
+                                                                                      views:views]];
+    constraintsForRegularClass = [NSArray arrayWithArray:mutableConstraints];
+    [mutableConstraints removeAllObjects];
+    
+    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo]-30-[reason]"
+                                                                                    options:0
+                                                                                    metrics:0
+                                                                                      views:views]];
+    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[face(==44)]-[g(==44)]-[emailSignup(==44)]-20-[skip(==30)]-20-[emailSignin(==44)]-0-|"
+                                                                                    options:0
+                                                                                    metrics:0
+                                                                                      views:views]];
+    constraintsForCompactClass = [NSArray arrayWithArray:mutableConstraints];
 
+    if ([self respondsToSelector:@selector(traitCollection)]) {
+        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+            [self.view addConstraints:constraintsForRegularClass];
+        } else {
+            [self.view addConstraints:constraintsForCompactClass];
+        }
+    } else {
+        [self.view addConstraints:constraintsForCompactClass];
+    }
+    
+
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    // check to see if we've transitioned between regular and compact size classes
+    if (self.traitCollection.horizontalSizeClass == previousTraitCollection.horizontalSizeClass)
+        return;
+    
+    // iNat wordmark will change, both in size and placing
+    int logoSize;
+    if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        [self.view removeConstraints:constraintsForCompactClass];
+        [self.view addConstraints:constraintsForRegularClass];
+        logoSize = 200;
+    } else {
+        [self.view removeConstraints:constraintsForRegularClass];
+        [self.view addConstraints:constraintsForCompactClass];
+        logoSize = 160;
+    }
+    
+    FAKINaturalist *inatWordmark = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
+    [inatWordmark addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+    self.logoLabel.attributedText = inatWordmark.attributedString;
 }
 
 #pragma mark - setters/getters
