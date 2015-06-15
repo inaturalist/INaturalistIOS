@@ -185,7 +185,6 @@
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    NSString *baseURL = [NSString stringWithFormat:@"%@/observations.json", INatBaseURL];
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
@@ -197,7 +196,6 @@
         for (ExploreSearchPredicate *predicate in predicates) {
             if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
-                baseURL = [NSString stringWithFormat:@"%@/observations/%@.json", INatBaseURL, predicate.searchPerson.login];
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
