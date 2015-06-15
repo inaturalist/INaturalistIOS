@@ -195,7 +195,7 @@
         
         label.numberOfLines = 0;
         label.textColor = [UIColor whiteColor];
-        label.font = [UIFont italicSystemFontOfSize:15.0f];
+        label.font = [UIFont systemFontOfSize:15.0f];
         label.textAlignment = NSTextAlignmentCenter;
         
         if (self.reason && self.reason.length > 0) {
