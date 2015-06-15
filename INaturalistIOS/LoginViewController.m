@@ -59,7 +59,7 @@
         UIImageView *iv = [[UIImageView alloc] initWithFrame:self.view.bounds];
         iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         
-        iv.image = self.backgroundImage ?: [UIImage imageNamed:@"SignUp_OrangeFlower"];
+        iv.image = self.backgroundImage ?: [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
 
         iv;
     });
