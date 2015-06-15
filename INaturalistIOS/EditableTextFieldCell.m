@@ -24,6 +24,8 @@
             UITextField *tf = [[UITextField alloc] initWithFrame:self.bounds];
             tf.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
             
+            tf.font = [UIFont systemFontOfSize:16.0f];
+            
             tf;
         });
         [self.contentView addSubview:self.textField];
