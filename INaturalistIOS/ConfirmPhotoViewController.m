@@ -39,8 +39,8 @@
     MultiImageView *multiImageView;
     ALAssetsLibrary *lib;
     UIButton *retake, *confirm;
-    NSArray *iconicTaxa;
 }
+@property NSArray *iconicTaxa;
 @end
 
 @implementation ConfirmPhotoViewController
@@ -57,10 +57,10 @@
         [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
         
         NSError *fetchError;
-        iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                            error:&fetchError];
+        self.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
+                                                                                 error:&fetchError];
 
-        if (iconicTaxa.count == 0) {
+        if (self.iconicTaxa.count == 0) {
             [self loadRemoteIconicTaxa];
         }
         
@@ -70,14 +70,12 @@
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             
-            __strong typeof(weakSelf)strongSelf = weakSelf;
-
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && iconicTaxa.count > 0 && !self.taxon) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && weakSelf.iconicTaxa.count > 0 && !weakSelf.taxon) {
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
-                if (strongSelf.project) {
-                    categorize.project = strongSelf.project;
+                if (weakSelf.project) {
+                    categorize.project = weakSelf.project;
                 }
                 categorize.shouldContinueUpdatingLocation = weakSelf.shouldContinueUpdatingLocation;
                 [weakSelf transitionToCategorize:categorize];
@@ -85,15 +83,15 @@
                 // go straight to making the observation
                 Observation *o = [Observation object];
                 
-                if (strongSelf.taxon) {
-                    o.taxon = strongSelf.taxon;
-                    o.speciesGuess = strongSelf.taxon.defaultName ?: strongSelf.taxon.name;
+                if (weakSelf.taxon) {
+                    o.taxon = weakSelf.taxon;
+                    o.speciesGuess = weakSelf.taxon.defaultName ?: weakSelf.taxon.name;
                 }
                 
-                if (strongSelf.project) {
+                if (weakSelf.project) {
                     ProjectObservation *po = [ProjectObservation object];
                     po.observation = o;
-                    po.project = strongSelf.project;
+                    po.project = weakSelf.project;
                 }
                 
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
@@ -107,8 +105,8 @@
                 [o addAssets:confirmedAssets];
                 detail.observation = o;
                 
-                [strongSelf.navigationController setNavigationBarHidden:NO animated:YES];
-                [strongSelf.navigationController pushViewController:detail animated:YES];
+                [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
+                [weakSelf.navigationController pushViewController:detail animated:YES];
             }
         };
     }
@@ -167,68 +165,10 @@
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         
-        __weak typeof(self)weakSelf = self;
-        [button bk_addEventHandler:^(id sender) {
-            __strong typeof(weakSelf)strongSelf = weakSelf;
+        [button addTarget:self
+                   action:@selector(confirm)
+         forControlEvents:UIControlEventTouchUpInside];
 
-            [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
-            
-            if (strongSelf.image) {
-                // we need to save to the AssetsLibrary...
-                [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving new photo...", @"status while saving your image")];
-                // embed geo
-                CLLocationManager *loc = [[CLLocationManager alloc] init];
-                NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-                if (loc.location) {
-                    
-                    double latitude = fabs(loc.location.coordinate.latitude);
-                    double longitude = fabs(loc.location.coordinate.longitude);
-                    NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-                    NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-                    
-                    NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                           @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-                    
-                    mutableMetadata[@"{GPS}"] = gps;
-                }
-                
-                [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                         metadata:mutableMetadata
-                                  completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                                      if (error) {
-                                          [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                                              error.localizedDescription]];
-                                          [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                      } else {
-                                          [SVProgressHUD dismiss];
-                                          
-                                          [lib assetForURL:newAssetUrl
-                                               resultBlock:^(ALAsset *asset) {
-                                                   __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                   // be defensive
-                                                   if (asset) {
-                                                       strongSelf.confirmFollowUpAction(@[ asset ]);
-                                                   } else {
-                                                       [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
-                                                       [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Error using newly saved image!",
-                                                                                                            @"Error message when we can't load a newly saved image")];
-                                                   }
-                                                   
-                                               } failureBlock:^(NSError *error) {
-                                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
-                                                                                       error.localizedDescription]];
-                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-                                               }];
-                                          
-                                      }
-                                  }];
-            } else if (strongSelf.assets) {
-                // can proceed directly to followup
-                strongSelf.confirmFollowUpAction(strongSelf.assets);
-            }
-            
-        } forControlEvents:UIControlEventTouchUpInside];
-        
         button;
     });
     [self.view addSubview:confirm];
@@ -258,6 +198,62 @@
                                                                         views:views]];
 }
 
+- (void)confirm {
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
+    
+    if (self.image) {
+        // we need to save to the AssetsLibrary...
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving new photo...", @"status while saving your image")];
+        // embed geo
+        CLLocationManager *loc = [[CLLocationManager alloc] init];
+        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+        if (loc.location) {
+            
+            double latitude = fabs(loc.location.coordinate.latitude);
+            double longitude = fabs(loc.location.coordinate.longitude);
+            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
+            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
+            
+            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
+                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
+            
+            mutableMetadata[@"{GPS}"] = gps;
+        }
+        
+        [lib writeImageToSavedPhotosAlbum:self.image.CGImage
+                                 metadata:mutableMetadata
+                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                              if (error) {
+                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                                      error.localizedDescription]];
+                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                              } else {
+                                  [SVProgressHUD dismiss];
+                                  
+                                  [lib assetForURL:newAssetUrl
+                                       resultBlock:^(ALAsset *asset) {
+                                           // be defensive
+                                           if (asset) {
+                                               self.confirmFollowUpAction(@[ asset ]);
+                                           } else {
+                                               [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
+                                               [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Error using newly saved image!",
+                                                                                                    @"Error message when we can't load a newly saved image")];
+                                           }
+                                           
+                                       } failureBlock:^(NSError *error) {
+                                           [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
+                                                                               error.localizedDescription]];
+                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                       }];
+                                  
+                              }
+                          }];
+    } else if (self.assets) {
+        // can proceed directly to followup
+        self.confirmFollowUpAction(self.assets);
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     
@@ -362,8 +358,8 @@
                                                             [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
                                                             
                                                             NSError *fetchError;
-                                                            iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                                                                                error:&fetchError];
+                                                            self.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
+                                                                                                                                     error:&fetchError];
                                                             
 
                                                         };
