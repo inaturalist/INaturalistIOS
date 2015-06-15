@@ -24,7 +24,7 @@
 }
 
 - (UIImage *)searchResult_PlaceholderImage {
-    return [UIImage imageNamed:@"unknown-200px.png"];
+    return [UIImage imageNamed:@"ic_unknown"];
 }
 
 @end

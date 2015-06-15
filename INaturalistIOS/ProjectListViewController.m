@@ -8,6 +8,7 @@
 
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectListViewController.h"
 #import "Observation.h"
@@ -21,6 +22,7 @@
 #import "ProjectDetailViewController.h"
 #import "Analytics.h"
 #import "INatUITabBarController.h"
+#import "UIImage+INaturalist.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
@@ -165,7 +167,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     }
     
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
-                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
+                        placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
     
     CAGradientLayer *lyr = [CAGradientLayer layer];

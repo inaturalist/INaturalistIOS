@@ -19,6 +19,7 @@
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "LoginController.h"
+#import "UIImage+INaturalist.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -438,6 +439,7 @@ static const int ListControlIndexNearby = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
     if (!self.projectsSearchController) {
         self.projectsSearchController = [[ProjectsSearchController alloc] 
@@ -541,7 +543,7 @@ static const int ListControlIndexNearby = 2;
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = p.title;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;
 }

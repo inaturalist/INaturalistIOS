@@ -15,6 +15,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -40,6 +41,7 @@
 #import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 #import "Observation+AddAssets.h"
+#import "UIImage+INaturalist.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -161,10 +163,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if (self.speciesGuessTextField.text.length == 0 && self.observation.speciesGuess.length == 0) {
             self.speciesGuessTextField.text = self.observation.taxon.defaultName;
         }
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
         self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.taxon.iconicTaxonName];
     } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
         self.speciesGuessTextField.enabled = YES;
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }
@@ -311,9 +313,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.activityButton.frame];
     imageView.contentMode = UIViewContentModeCenter;
 	if (self.observation.hasUnviewedActivity.boolValue) {
-        imageView.image = [UIImage imageNamed:@"08-chat-red.png"];
+        imageView.image = [UIImage imageNamed:@"08-chat-red"];
 	} else {
-        imageView.image = [UIImage imageNamed:@"08-chat.png"];
+        imageView.image = [UIImage imageNamed:@"08-chat"];
 	}
     [self.activityButton insertSubview:imageView atIndex:0];
 	[self.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.observation.activityCount] forState:UIControlStateNormal];
@@ -460,7 +462,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+        
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
         [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];
@@ -715,10 +717,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         TKCoverflowCoverView *boundCover = cover;
         
         [cover.imageView sd_setImageWithURL:[NSURL URLWithString:op.mediumURL ?: op.smallURL]
-                           placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
+                           placeholderImage:[UIImage imageNamed:@"121-landscape"]
                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                       if (error) {
-                                          boundCover.image = [UIImage imageNamed:@"184-warning.png"];
+                                          boundCover.image = [UIImage imageNamed:@"184-warning"];
                                       }
                                   }];
 	} else {
@@ -993,7 +995,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [imageView sd_cancelCurrentImageLoad];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     [imageView sd_setImageWithURL:[NSURL URLWithString:po.project.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     [imageView setBackgroundColor:[UIColor clearColor]];
     [cell.contentView addSubview:imageView];
     

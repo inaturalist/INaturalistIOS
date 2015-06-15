@@ -20,6 +20,7 @@
 #import "TutorialSinglePageViewController.h"
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
+#import "UIImage+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -551,7 +552,7 @@ static const int ListControlIndexNearby = 2;
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"guides"]];
+                 placeholderImage:[UIImage inat_defaultGuideImage]];
     
     return cell;
 }

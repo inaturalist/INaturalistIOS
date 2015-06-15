@@ -10,6 +10,7 @@
 //
 
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ImageStore.h"
 #import "Analytics.h"
@@ -419,16 +420,8 @@
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
 {
     NSString *iconicTaxonName = name ? [name lowercaseString] : @"unknown";
-    NSString *key = [NSString stringWithFormat:@"%@-200px", iconicTaxonName];
-    UIImage *img = [self.dictionary objectForKey:key];
-    if (!img) {
-        img = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", key]];
-        if (!img) {
-            img = [UIImage imageNamed:@"unknown-200px.png"];
-        }
-        [self.dictionary setObject:img forKey:key];
-    }
-    return img;
+    NSString *key = [NSString stringWithFormat:@"ic_%@", iconicTaxonName];
+    return [UIImage imageNamed:key];
 }
 
 @end

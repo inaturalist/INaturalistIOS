@@ -18,6 +18,7 @@
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "ImageStore.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -160,12 +161,13 @@ static const int GutterWidth  = 5;
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
     [img sd_cancelCurrentImageLoad];
-    img.image = [UIImage imageNamed:@"unknown-200px.png"];
+    img.image = [UIImage imageNamed:@"ic_unknown"];
     img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
-        [img sd_setImageWithURL:guideTaxon.smallPhotoUrl];
+        [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
+               placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
         
         UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
         if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {

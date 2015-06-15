@@ -381,7 +381,7 @@ static NSArray *ICONIC_TAXON_ORDER;
         chiclet.translatesAutoresizingMaskIntoConstraints = NO;
         
         chiclet.categoryLabel.text = ICONIC_TAXON_NAMES[t.name];
-        NSString *imageName = [NSString stringWithFormat:@"ic_%@", [ICONIC_TAXON_NAMES[t.name] lowercaseString]];
+        NSString *imageName = [NSString stringWithFormat:@"ic_%@", [t.name lowercaseString]];
         chiclet.categoryImageView.image = [UIImage imageNamed:imageName];
         
         chiclet.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];

@@ -16,6 +16,7 @@
 #import "Analytics.h"
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "UIImage+INaturalist.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -147,7 +148,7 @@ static const int LeaveProjectAlertViewTag = 1;
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
-                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
+                        placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
     
     CAGradientLayer *lyr = [CAGradientLayer layer];

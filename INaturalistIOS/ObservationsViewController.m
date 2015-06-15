@@ -685,10 +685,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
 	if (o.hasUnviewedActivity.boolValue) {
 		// make bubble red
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red.png"] forState:UIControlStateNormal];
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
 	} else {
 		// make bubble grey
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
 	}
 	
 	[activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];

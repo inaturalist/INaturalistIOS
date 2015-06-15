@@ -177,17 +177,17 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         [fmt setDateStyle:NSDateFormatterMediumStyle];
                         [fmt setTimeStyle:NSDateFormatterMediumStyle];
                         subtitle.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
-                        imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
+                        imageView.image = [UIImage imageNamed:@"258-checkmark"];
                     } else if (self.guide.ngzURL) {
                         title.textColor = [UIColor blackColor];
                         title.text = NSLocalizedString(@"Download for offline use", nil);
                         subtitle.text = self.guide.ngzFileSize;
-                        imageView.image = [UIImage imageNamed:@"265-download.png"];
+                        imageView.image = [UIImage imageNamed:@"265-download"];
                     } else {
                         title.textColor = [UIColor darkGrayColor];
                         title.text = NSLocalizedString(@"Download not available", nil);
                         subtitle.text = NSLocalizedString(@"Guide editor must enable this feature.", nil);
-                        imageView.image = [UIImage imageNamed:@"265-download-gray.png"];
+                        imageView.image = [UIImage imageNamed:@"265-download-gray"];
                     }
                 }
             }

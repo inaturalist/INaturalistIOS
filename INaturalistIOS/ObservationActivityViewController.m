@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationActivityViewController.h"
 #import "Observation.h"
@@ -38,6 +39,8 @@ static const int IdentificationCellAgreeTag = 9;
 static const int IdentificationCellTaxonScientificNameTag = 10;
 static const int IdentificationCellBodyTag = 11;
 
+static UIImage *defaultPersonImage;
+
 @interface ObservationActivityViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *addCommentButton;
@@ -57,9 +60,15 @@ static const int IdentificationCellBodyTag = 11;
 
 @implementation ObservationActivityViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
+    
+    defaultPersonImage = ({
+        FAKIcon *personIcon = [FAKIonIcons iosPersonOutlineIconWithSize:40];
+        [personIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        [personIcon imageWithSize:CGSizeMake(40, 40)];
+    });
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification
@@ -383,7 +392,7 @@ static const int IdentificationCellBodyTag = 11;
         
         [imageView sd_cancelCurrentImageLoad];
         [imageView sd_setImageWithURL:[NSURL URLWithString:comment.user.userIconURL]
-                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
+                     placeholderImage:defaultPersonImage];
 
         body.text = [comment.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
@@ -402,7 +411,7 @@ static const int IdentificationCellBodyTag = 11;
 		
         [imageView sd_cancelCurrentImageLoad];
         [imageView sd_setImageWithURL:[NSURL URLWithString:identification.user.userIconURL]
-                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
+                     placeholderImage:defaultPersonImage];
 		
         taxonImageView.image = nil;
         [taxonImageView sd_cancelCurrentImageLoad];

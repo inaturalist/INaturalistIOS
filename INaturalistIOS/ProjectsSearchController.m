@@ -10,6 +10,7 @@
 
 #import "ProjectsSearchController.h"
 #import "Project.h"
+#import "UIImage+INaturalist.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -42,7 +43,7 @@ static NSString *CellIdentifier = @"ProjectCell";
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = p.title;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     return cell;
 }
 

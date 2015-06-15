@@ -125,10 +125,10 @@
                    placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
         }
         self.speciesGuessTextField.enabled = NO;
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
         self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.taxon.iconicTaxonName];
     } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
         self.speciesGuessTextField.enabled = YES;
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }

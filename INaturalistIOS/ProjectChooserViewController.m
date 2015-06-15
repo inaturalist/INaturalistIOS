@@ -14,6 +14,7 @@
 #import "Project.h"
 #import "ProjectUser.h"
 #import "Analytics.h"
+#import "UIImage+INaturalist.h"
 
 static const int ProjectCellImageTag = 1;
 static const int ProjectCellTitleTag = 2;
@@ -146,7 +147,7 @@ static const int ProjectCellTitleTag = 2;
     UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
     title.text = pu.project.title;
     [imageView sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
