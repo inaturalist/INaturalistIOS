@@ -35,14 +35,12 @@
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 
-@interface INaturalistAppDelegate ()
-
+@interface INaturalistAppDelegate () {
+    NSManagedObjectModel *managedObjectModel;
+}
 @end
 
 @implementation INaturalistAppDelegate
-
-@synthesize window = _window;
-@synthesize photoObjectManager = _photoObjectManager;
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url

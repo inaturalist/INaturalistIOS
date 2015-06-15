@@ -11,15 +11,10 @@
 @class LoginController;
 
 @interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
-{
-    NSManagedObjectModel *managedObjectModel;
-}
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) RKObjectManager *photoObjectManager;
 @property (strong, nonatomic) LoginController *loginController;
 
-- (void)configureRestKit;
 - (BOOL)loggedIn;
-- (NSManagedObjectModel *)getManagedObjectModel;
 - (void)showMainUI;
 @end
