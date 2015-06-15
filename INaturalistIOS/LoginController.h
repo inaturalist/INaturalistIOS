@@ -25,6 +25,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
+                       license:(NSString *)license
                        success:(LoginSuccessBlock)successBlock
                        failure:(LoginErrorBlock)failureBlock;
 

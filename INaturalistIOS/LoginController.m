@@ -115,6 +115,7 @@ NSInteger INatMinPasswordLength = 6;
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
+                       license:(NSString *)license
                        success:(LoginSuccessBlock)successBlock
                        failure:(LoginErrorBlock)errorBlock {
     
@@ -128,6 +129,9 @@ NSInteger INatMinPasswordLength = 6;
                                               @"user[login]": username,
                                               @"user[password]": password,
                                               @"user[password_confirmation]": password,
+                                              @"user[preferred_observation_license]": license,
+                                              @"user[preferred_photo_license]": license,
+                                              @"user[preferred_sound_license]": license,
                                               };
                            
                            request.onDidLoadResponse = ^(RKResponse *response) {

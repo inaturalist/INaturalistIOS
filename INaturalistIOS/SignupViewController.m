@@ -24,6 +24,7 @@
     NSString *email, *password, *username;
     BOOL shareData;
 }
+@property CheckboxCell *checkboxCell;
 @end
 
 @implementation SignupViewController
@@ -214,32 +215,32 @@
         
         return cell;
     } else if (indexPath.item == 3) {
-        CheckboxCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Checkbox"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.backgroundColor = [UIColor clearColor];
-        cell.tintColor = [UIColor whiteColor];
+        self.checkboxCell = [tableView dequeueReusableCellWithIdentifier:@"Checkbox"];
+        self.checkboxCell.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.checkboxCell.backgroundColor = [UIColor clearColor];
+        self.checkboxCell.tintColor = [UIColor whiteColor];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
         });
         NSString *base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
         NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
-        cell.checkText.attributedText = [NSAttributedString inat_attrStrWithBaseStr:base
-                                                                          baseAttrs:@{
-                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:12.0f]
-                                                                                      }
-                                                                           emSubstr:emphasis
-                                                                            emAttrs:@{
-                                                                                      NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0f]
-                                                                                      }];
+        self.checkboxCell.checkText.attributedText = [NSAttributedString inat_attrStrWithBaseStr:base
+                                                                                       baseAttrs:@{
+                                                                                                   NSFontAttributeName: [UIFont systemFontOfSize:12.0f]
+                                                                                                   }
+                                                                                        emSubstr:emphasis
+                                                                                         emAttrs:@{
+                                                                                                   NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0f]
+                                                                                                   }];
         NSRange emphasisRange = [base rangeOfString:emphasis];
         if (emphasisRange.location != NSNotFound) {
-            cell.checkText.userInteractionEnabled = YES;
+            self.checkboxCell.checkText.userInteractionEnabled = YES;
             UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
                                                                                             UIGestureRecognizerState state,
                                                                                             CGPoint location) {
                 
                 NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
-
+                
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
                                                                 message:creativeCommons
                                                                delegate:nil
@@ -249,10 +250,10 @@
                 
             }];
             
-            [cell.checkText addGestureRecognizer:tap];
+            [self.checkboxCell.checkText addGestureRecognizer:tap];
         }
-
-        return cell;
+        
+        return self.checkboxCell;
     } else {
         RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Button"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -497,6 +498,13 @@
         return;
     }
     
+    NSString *license;
+    if (self.checkboxCell.selected) {
+        license = @"CC-BY-NC";
+    } else {
+        license = @"on";
+    }
+    
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating iNaturalist account...", @"Notice while we're creating an iNat account for them")
                          maskType:SVProgressHUDMaskTypeGradient];
 
@@ -505,6 +513,7 @@
     [appDelegate.loginController createAccountWithEmail:email
                                                password:password
                                                username:username
+                                                license:license
                                                 success:^(NSDictionary *info) {
                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
                                                     [SVProgressHUD showSuccessWithStatus:nil];
