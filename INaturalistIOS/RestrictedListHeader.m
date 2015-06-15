@@ -44,30 +44,30 @@
             button;
         });
         [self.contentView addSubview:self.clearButton];
+        
+        NSDictionary *views = @{
+                                @"titleLabel": self.titleLabel,
+                                @"clearButton": self.clearButton,
+                                };
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[titleLabel]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[clearButton(==30)]-15-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleLabel]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[clearButton]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
     }
-    
-    NSDictionary *views = @{
-                            @"titleLabel": self.titleLabel,
-                            @"clearButton": self.clearButton,
-                            };
-    
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[titleLabel]"
-                                                                 options:0
-                                                                 metrics:0
-                                                                   views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[clearButton(==30)]-15-|"
-                                                                 options:0
-                                                                 metrics:0
-                                                                   views:views]];
-
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleLabel]-0-|"
-                                                                 options:0
-                                                                 metrics:0
-                                                                   views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[clearButton]-0-|"
-                                                                 options:0
-                                                                 metrics:0
-                                                                   views:views]];
     
     return self;
 }
