@@ -67,7 +67,9 @@ static const int ListControlIndexNearby = 2;
     NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
-    self.projects = [projectUsers valueForKey:@"project"];
+    // be defensive
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
+    self.projects = [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
     [self.tableView reloadData];
 }
 
@@ -321,9 +323,16 @@ static const int ListControlIndexNearby = 2;
         
     };
     
+    RKObjectMapping *mapping = nil;
+    if ([path rangeOfString:@"projects/user"].location != NSNotFound) {
+        mapping = [ProjectUser mapping];
+    } else {
+        mapping = [Project mapping];
+    }
+    
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [ProjectUser mapping];
+                                                        loader.objectMapping = mapping;
                                                         
                                                         loader.onDidLoadObjects = didLoadObjectsBlock;
                                                         loader.onDidLoadResponse = didLoadResponseBlock;
