@@ -92,6 +92,7 @@
         map.translatesAutoresizingMaskIntoConstraints = NO;
         
         map.mapType = MKMapTypeHybrid;
+        map.showsPointsOfInterest = NO;
         
         map;
     });
@@ -265,22 +266,7 @@
     
     ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
     detail.observation = (ExploreObservation *)view.annotation;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
-    
-    // close icon
-    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
-    [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
-    UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
-    
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
-                                                                 style:UIBarButtonItemStylePlain
-                                                               handler:^(id sender) {
-                                                                   [self dismissViewControllerAnimated:YES completion:nil];
-                                                               }];
-    
-    detail.navigationItem.leftBarButtonItem = close;
-    
-    [self presentViewController:nav animated:YES completion:nil];
+    [self.navigationController pushViewController:detail animated:YES];
 }
 
 #pragma mark - iNat API Calls
