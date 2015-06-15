@@ -382,12 +382,12 @@
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
-        [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Already have an account? Sign in", "@base text for email sign in button")
+        [button setAttributedTitle:[NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Already have an account? Log In", "@base text for email sign in button")
                                                                      baseAttrs:@{
                                                                                  NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
                                                                                  NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.5f],
                                                                                  }
-                                                                      emSubstr:NSLocalizedString(@"Sign in", @"portion of the base text for email sign in button that is bold. must be a substring of the base test.")
+                                                                      emSubstr:NSLocalizedString(@"Log In", @"portion of the base text for email sign in button that is bold. must be a substring of the base test.")
                                                                        emAttrs:@{
                                                                                  NSFontAttributeName: [UIFont boldSystemFontOfSize:14.0f],
                                                                                  NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:1.0f],
