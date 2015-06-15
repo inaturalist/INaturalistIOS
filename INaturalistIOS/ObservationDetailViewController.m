@@ -759,19 +759,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         });
     };
     
+    __weak typeof(self) weakSelf = self;
     [self presentMHGalleryController:gallery animated:YES completion:^{
         // add a delete button
         NSMutableArray *toolbarItems = [gallery.imageViewerViewController.toolbar.items mutableCopy];
         [toolbarItems removeLastObject];
         [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                 handler:^(id sender) {
+                                                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
                                                                                     [blockGallery dismissViewControllerAnimated:YES
                                                                                                                dismissImageView:nil
                                                                                                                      completion:nil];
-                                                                                    ObservationPhoto *op = self.observationPhotos[blockGallery.presentationIndex];
-                                                                                    [self.observationPhotos removeObject:op];
+                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[blockGallery.presentationIndex];
+                                                                                    [strongSelf.observationPhotos removeObject:op];
                                                                                     [op deleteEntity];
-                                                                                    [self refreshCoverflowView];
+                                                                                    [strongSelf refreshCoverflowView];
                                                                                 }]];
         gallery.imageViewerViewController.toolbar.items = toolbarItems;
     }];
