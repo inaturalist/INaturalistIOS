@@ -132,6 +132,7 @@
                                                                                    [weakSelf dismissViewControllerAnimated:YES
                                                                                                                 completion:nil];
                                                                                }];
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
     orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
