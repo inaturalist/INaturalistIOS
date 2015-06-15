@@ -407,9 +407,7 @@
     
     CGContextRelease(bitmap);
     CGImageRelease(ref);
-    
-    CGColorSpaceRelease(colorSpaceInfo);
-    
+        
     return newImage; 
 }
 
