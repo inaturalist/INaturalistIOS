@@ -462,7 +462,7 @@
                                                                         views:views]];
 
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo]-[reason]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo]-30-[reason]"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
