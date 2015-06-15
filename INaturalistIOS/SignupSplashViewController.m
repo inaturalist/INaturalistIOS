@@ -8,7 +8,6 @@
 
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 
 #import "SignupSplashViewController.h"
 #import "NSAttributedString+InatHelpers.h"
@@ -242,12 +241,20 @@
                     [weakSelf dismissViewControllerAnimated:YES completion:nil];
                 }
             } failure:^(NSError *error) {
+                NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
+                NSString *alertMsg;
                 if (error) {
-                    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                    alertMsg = error.localizedDescription;
                 } else {
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                                                         @"Uknown facebook login error")];
+                    alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+                                                 @"Uknown facebook login error");
                 }
+                
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertMsg
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             }];
 
         } forControlEvents:UIControlEventTouchUpInside];
@@ -292,12 +299,20 @@
                                                                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
+                                                                       NSString *alertTitle = NSLocalizedString(@"Log In Problem",
+                                                                                                           @"Title for login problem alert");
+                                                                       NSString *alertMsg;
                                                                        if (error) {
-                                                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                                           alertMsg = error.localizedDescription;
                                                                        } else {
-                                                                           [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                                                @"Uknown google login error")];
+                                                                           alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                        @"Uknown google login error");
                                                                        }
+                                                                       [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                                   message:alertMsg
+                                                                                                  delegate:nil
+                                                                                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                         otherButtonTitles:nil] show];
                                                                    }];
                         
         } forControlEvents:UIControlEventTouchUpInside];

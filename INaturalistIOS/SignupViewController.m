@@ -469,19 +469,31 @@
     }
     
     // validators
+    BOOL isValid = YES;
+    NSString *alertMsg;
     if (!email || ![email containsString:@"@"]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Email Address",
-                                                             "Error for bad email when making account.")];
-        return;
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Email Address", "Error for bad email when making account.");
     }
     if (!password || password.length < INatMinPasswordLength) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Passwords must be six characters in length.",
-                                                             @"Error for bad password when making account")];
-        return;
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+                                     @"Error for bad password when making account");
     }
     if (!username) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Username",
-                                                             @"Error for bad username hwne making account.")];
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username hwne making account.");
+    }
+    
+    if (!isValid) {
+        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
+        
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
     
@@ -503,14 +515,22 @@
                                                     }
                                                 }
                                                 failure:^(NSError *error) {
-                                                    NSString *errMsg;
+                                                    [SVProgressHUD dismiss];
+
+                                                    NSString *alertTitle = NSLocalizedString(@"Create Account Error", @"Title for create account alert");
+                                                    NSString *alertMsg;
                                                     if (error) {
-                                                        errMsg = error.localizedDescription;
+                                                        alertMsg = error.localizedDescription;
                                                     } else {
-                                                        errMsg = NSLocalizedString(@"Failed to create an iNat account. Please try again.",
+                                                        alertMsg = NSLocalizedString(@"Failed to create an iNat account. Please try again.",
                                                                                    @"Uknown iNaturalist create account error");
                                                     }
-                                                    [SVProgressHUD showErrorWithStatus:errMsg];
+                                                    
+                                                    [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                message:alertMsg
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                      otherButtonTitles:nil] show];
                                                 }];
 }
 

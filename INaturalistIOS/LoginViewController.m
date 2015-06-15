@@ -153,12 +153,19 @@
                                                                            [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
+                                                                       NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                                                       NSString *alertMsg;
                                                                        if (error) {
-                                                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                                           alertMsg = error.localizedDescription;
                                                                        } else {
-                                                                           [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                                                @"Uknown google login error")];
+                                                                           alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                        @"Uknown google login error");
                                                                        }
+                                                                       [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                                   message:alertMsg
+                                                                                                  delegate:nil
+                                                                                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                         otherButtonTitles:nil] show];
                                                                    }];
         
         } forControlEvents:UIControlEventTouchUpInside];
@@ -200,12 +207,19 @@
                     [strongSelf dismissViewControllerAnimated:YES completion:nil];
                 }
             } failure:^(NSError *error) {
+                NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                NSString *alertMsg;
                 if (error) {
-                    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                    alertMsg = error.localizedDescription;
                 } else {
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                                                         @"Uknown facebook login error")];
+                    alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+                                            @"Uknown facebook login error");
                 }
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                           message:alertMsg
+                                          delegate:nil
+                                 cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
             }];
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -491,14 +505,27 @@
     }
     
     // validators
+    BOOL isValid = YES;
+    NSString *alertMsg;
     if (!username) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Invalid Username",
-                                                             @"Error for bad username hwne making account.")];
-        return;
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Username",
+                                     @"Error for bad username hwne making account.");
     }
     if (!password || password.length < INatMinPasswordLength) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Passwords must be six characters in length.",
-                                                             @"Error for bad password when making account")];
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+                                     @"Error for bad password when making account");
+    }
+    if (!isValid) {
+        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
+
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
     
@@ -518,19 +545,25 @@
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                }
                                            } failure:^(NSError *error) {
-                                               NSString *errMsg;
+                                               [SVProgressHUD dismiss];
+                                               NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                               NSString *alertMsg;
                                                if (error) {
                                                    if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
-                                                       errMsg = NSLocalizedString(@"Incorrect username or password.",
-                                                                                  @"Error msg when we get a 401 from the server");
+                                                       alertMsg = NSLocalizedString(@"Incorrect username or password.",
+                                                                                    @"Error msg when we get a 401 from the server");
                                                    } else {
-                                                       errMsg = error.localizedDescription;
+                                                       alertMsg = error.localizedDescription;
                                                    }
                                                } else {
-                                                   errMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
-                                                                              @"Uknown iNat login error");
+                                                   alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
+                                                                                @"Uknown iNat login error");
                                                }
-                                               [SVProgressHUD showErrorWithStatus:errMsg];
+                                               [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                           message:alertMsg
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                 otherButtonTitles:nil] show];
                                            }];
 }
 
@@ -564,11 +597,13 @@
         av = nil;
     }
     
-    NSString *title = NSLocalizedString(@"Check your email", @"title of alert after you reset your password");
-    NSString *msg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.", @"body of alert after you reset your password");
+    NSString *alertTitle = NSLocalizedString(@"Check your email",
+                                             @"title of alert after you reset your password");
+    NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
+                                           @"body of alert after you reset your password");
     
-    av = [[UIAlertView alloc] initWithTitle:title
-                                    message:msg
+    av = [[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil];
