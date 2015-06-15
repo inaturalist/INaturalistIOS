@@ -34,6 +34,8 @@
 #import "ExploreObservationsDataSource.h"
 #import "ExploreObservationsController.h"
 #import "ExploreObservationPhoto+BestAvailableURL.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 @interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
@@ -151,11 +153,8 @@
 
 - (void)tag {
     if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                    message:NSLocalizedString(@"No anonymous identifications!", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self showSignupWithReason:NSLocalizedString(@"You must be logged in to identify observations.",
+                                                     @"Reason for signup prompt when trying to add an ID in explore.")];
         return;
     }
     
@@ -196,11 +195,8 @@
                                      withProperties:@{ @"Via": @"Agree" }];
                     [self addIdentificationWithTaxonId:selectedIdentification.identificationTaxonId];
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                                message:NSLocalizedString(@"No anonymous identifications!", nil)
-                                               delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                      otherButtonTitles:nil] show];
+                    [self showSignupWithReason:NSLocalizedString(@"You must be logged in to identify observations.",
+                                                                 @"Reason for signup prompt when trying to add an ID in explore.")];
                 }
                 break;
             default:
@@ -396,11 +392,8 @@
     if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
         [self addComment:self.textView.text];
     } else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                    message:NSLocalizedString(@"No anonymous comments!", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self showSignupWithReason:NSLocalizedString(@"You must be logged in to comment.",
+                                                     @"Reason for signup prompt when trying to add a comment in explore.")];
     }
     
     [super didPressRightButton:sender];
@@ -492,6 +485,22 @@
                                                }
                                            }];
     
+}
+
+#pragma mark - Login / Signup prompt
+
+- (void)showSignupWithReason:(NSString *)reason {
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.skippable = NO;
+    svc.cancellable = YES;
+    svc.reason = reason;
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.navigationController presentViewController:nav
+                                            animated:YES
+                                          completion:nil];
 }
 
 @end
