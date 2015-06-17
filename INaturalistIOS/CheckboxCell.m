@@ -25,16 +25,18 @@
         checkSelected = [FAKIonIcons iosCheckmarkIconWithSize:30.0f];
         checkDeselected = [FAKIonIcons iosCheckmarkOutlineIconWithSize:30.0f];
         
-        self.checkIcon = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
+        self.checkButton = ({
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            label.textAlignment = NSTextAlignmentCenter;
-            label.textColor = self.tintColor;
+            button.titleLabel.textAlignment = NSTextAlignmentCenter;
+            button.tintColor = self.tintColor;
             
-            label;
+            [button addTarget:self action:@selector(toggleSelected) forControlEvents:UIControlEventTouchUpInside];
+            
+            button;
         });
-        [self.contentView addSubview:self.checkIcon];
+        [self.contentView addSubview:self.checkButton];
         
         self.checkText = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -49,10 +51,10 @@
         [self.contentView addSubview:self.checkText];
         
         NSDictionary *views = @{
-                                @"icon": self.checkIcon,
+                                @"icon": self.checkButton,
                                 @"text": self.checkText,
                                 };
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[icon(==60)]-0-[text]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[icon]-0-[text]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -65,7 +67,7 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.checkIcon
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.checkButton
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
@@ -80,14 +82,21 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
-    self.checkIcon.attributedText = (selected ? checkSelected : checkDeselected).attributedString;
+    [self.checkButton setAttributedTitle:(selected ? checkSelected : checkDeselected).attributedString
+                                forState:UIControlStateNormal];
 }
 
 - (void)setTintColor:(UIColor *)tintColor {
     [super setTintColor:tintColor];
     
-    self.checkIcon.textColor = tintColor;
+    self.checkButton.tintColor = tintColor;
     self.checkText.textColor = tintColor;
 }
+
+- (void)toggleSelected {
+    [self setSelected:!self.selected animated:YES];
+}
+
+
 
 @end

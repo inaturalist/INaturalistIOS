@@ -10,7 +10,7 @@
 
 @interface CheckboxCell : UITableViewCell
 
-@property UILabel *checkIcon;
+@property UIButton *checkButton;
 @property UILabel *checkText;
 
 @end

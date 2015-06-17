@@ -22,7 +22,6 @@
 
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
     NSString *email, *password, *username;
-    BOOL shareData;
 }
 @property CheckboxCell *checkboxCell;
 @end
@@ -241,7 +240,7 @@
         self.checkboxCell.backgroundColor = [UIColor clearColor];
         self.checkboxCell.tintColor = [UIColor whiteColor];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            [self.checkboxCell setSelected:YES animated:YES];
         });
         NSString *base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
         NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
@@ -285,8 +284,6 @@
         cell.roundedButton.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.6f];
         cell.roundedButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         
-        // TODO: extract shareData and submit it here?
-        
         __weak typeof(self)weakSelf = self;
         [cell.roundedButton bk_addEventHandler:^(id sender) {
             [weakSelf signupAction];
@@ -304,31 +301,6 @@
         return 55.0f;
     } else {
         return 44.0f;
-    }
-}
-
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item == 3) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        if (cell.selected) {
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            // don't follow through with selection
-            return nil;
-        }
-    }
-    // follow through with selection
-    return indexPath;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item == 3)
-        shareData = YES;
-}
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item == 3) {
-        shareData = NO;
     }
 }
 
