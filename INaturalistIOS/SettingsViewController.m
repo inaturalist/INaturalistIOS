@@ -51,9 +51,9 @@ static const int CategorizeNewObsSwitchTag = 11;
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
     JDFTooltipView *tooltip;
-    PartnerController *partnerController;
     UIActionSheet *changeNetworkActionSheet;
 }
+@property PartnerController *partnerController;
 @end
 
 @implementation SettingsViewController
@@ -252,7 +252,7 @@ static const int CategorizeNewObsSwitchTag = 11;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    partnerController = [[PartnerController alloc] init];
+    self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
 }
@@ -366,7 +366,7 @@ static const int CategorizeNewObsSwitchTag = 11;
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
             User *me = [appDelegate.loginController fetchMe];
             if (me) {
-                Partner *p = [partnerController partnerForSiteId:me.siteId.integerValue];
+                Partner *p = [self.partnerController partnerForSiteId:me.siteId.integerValue];
                 cell.detailTextLabel.text = p.name;
             } else {
                 cell.detailTextLabel.text = @"iNaturalist";
@@ -384,20 +384,22 @@ static const int CategorizeNewObsSwitchTag = 11;
             User *me = [appDelegate.loginController fetchMe];
             if (!me) { return; }
             
-            NSArray *partnerNames = [partnerController.partners bk_map:^id(Partner *p) {
+            NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
                 return p.name;
             }];
             
-            Partner *currentPartner = [partnerController partnerForSiteId:me.siteId.integerValue];
+            Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
             
+            __weak typeof(self) weakSelf = self;
             [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
                                                        rows:partnerNames
                                            initialSelection:[partnerNames indexOfObject:currentPartner.name]
                                                   doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
                                                       // update base url
-                                                      Partner *p = partnerController.partners[selectedIndex];
+                                                      Partner *p = strongSelf.partnerController.partners[selectedIndex];
                                                       if (![p isEqual:currentPartner]) {
-                                                          [self selectedPartner:p];
+                                                          [weakSelf selectedPartner:p];
                                                       }
                                                   }
                                                 cancelBlock:nil
