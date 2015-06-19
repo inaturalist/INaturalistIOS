@@ -14,6 +14,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import <googleplus-ios-sdk/GPPSignIn.h>
+#import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -31,6 +32,9 @@
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "PartnerController.h"
+#import "Partner.h"
+#import "LoginController.h"
 
 static const int CreditsSection = 3;
 
@@ -44,9 +48,11 @@ static const int VersionCellTag = 5;
 static const int AutocompleteNamesSwitchTag = 10;
 static const int CategorizeNewObsSwitchTag = 11;
 
-@interface SettingsViewController () {
+@interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
     JDFTooltipView *tooltip;
+    PartnerController *partnerController;
+    UIActionSheet *changeNetworkActionSheet;
 }
 @end
 
@@ -246,6 +252,8 @@ static const int CategorizeNewObsSwitchTag = 11;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    partnerController = [[PartnerController alloc] init];
+    
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -265,6 +273,15 @@ static const int CategorizeNewObsSwitchTag = 11;
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
+}
+
+- (void)selectedPartner:(Partner *)partner {
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.loginController loggedInUserSelectedPartner:partner
+                                                  completion:^{
+                                                      [weakSelf.tableView reloadData];
+                                                  }];
 }
 
 #pragma mark - UISwitch target
@@ -304,49 +321,118 @@ static const int CategorizeNewObsSwitchTag = 11;
         
     } else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        UISwitch *switcher;
-        if (![cell viewWithTag:10 + indexPath.item]) {
+
+        if (indexPath.item == 0 || indexPath.item == 1) {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
-            switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
-            switcher.translatesAutoresizingMaskIntoConstraints = NO;
-            switcher.tag = 10 + indexPath.item;
-            switcher.enabled = YES;
-            [switcher addTarget:self
-                         action:@selector(settingSwitched:)
-               forControlEvents:UIControlEventValueChanged];
+            UISwitch *switcher;
+            if (![cell viewWithTag:10 + indexPath.item]) {
+                
+                switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                switcher.translatesAutoresizingMaskIntoConstraints = NO;
+                switcher.tag = 10 + indexPath.item;
+                switcher.enabled = YES;
+                [switcher addTarget:self
+                             action:@selector(settingSwitched:)
+                   forControlEvents:UIControlEventValueChanged];
+                
+                [cell.contentView addSubview:switcher];
+                
+                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:@{ @"switcher": switcher }]];
+                [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:cell.contentView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                multiplier:1.0f
+                                                                  constant:0.0f]];
+            } else {
+                switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+            }
             
-            [cell.contentView addSubview:switcher];
-            
-            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
-                                                                         options:0
-                                                                         metrics:0
-                                                                           views:@{ @"switcher": switcher }]];
-            [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
-                                                             attribute:NSLayoutAttributeCenterY
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:cell.contentView
-                                                             attribute:NSLayoutAttributeCenterY
-                                                            multiplier:1.0f
-                                                              constant:0.0f]];
+            if (switcher.tag == AutocompleteNamesSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+            else if (switcher.tag == CategorizeNewObsSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
         } else {
-            switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+            // main text in black
+            cell.textLabel.enabled = YES;
+            
+            // put user object changing site id
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            User *me = [appDelegate.loginController fetchMe];
+            if (me) {
+                Partner *p = [partnerController partnerForSiteId:me.siteId.integerValue];
+                cell.detailTextLabel.text = p.name;
+            } else {
+                cell.detailTextLabel.text = @"iNaturalist";
+            }
+            
         }
-        
-        if (switcher.tag == AutocompleteNamesSwitchTag)
-            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
-        else if (switcher.tag == CategorizeNewObsSwitchTag)
-            switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
-        
+    }
+}
+
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if ([actionSheet isEqual:changeNetworkActionSheet]) {
+        if (buttonIndex == 0) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            User *me = [appDelegate.loginController fetchMe];
+            if (!me) { return; }
+            
+            NSArray *partnerNames = [partnerController.partners bk_map:^id(Partner *p) {
+                return p.name;
+            }];
+            
+            Partner *currentPartner = [partnerController partnerForSiteId:me.siteId.integerValue];
+            
+            [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
+                                                       rows:partnerNames
+                                           initialSelection:[partnerNames indexOfObject:currentPartner.name]
+                                                  doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                      // update base url
+                                                      Partner *p = partnerController.partners[selectedIndex];
+                                                      if (![p isEqual:currentPartner]) {
+                                                          [self selectedPartner:p];
+                                                      }
+                                                  }
+                                                cancelBlock:nil
+                                                     origin:self.view] showActionSheetPicker];
+        }
     }
 }
 
 #pragma mark - UITableViewDataSource
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // do nothing when tapping app settings
     if (indexPath.section == 1) {
+        if (indexPath.item == 2) {
+            // so the user can select again
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            
+            NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+            if (!username) {
+                [self presentSignup];
+            } else {
+                // show SERIOUS alert
+                NSString *alertMsg = NSLocalizedString(@"Changing your iNaturalist Network affiliation will alter some parts of the app, like what taxa appear in searches, but it will also allow the new network partner to view and download all of your data. Are you sure you want to do this?",
+                                                       @"alert msg before changing the network affiliation.");
+                NSString *cancelBtnMsg = NSLocalizedString(@"No, don't change my affiliation", @"cancel button before changing network affiliation.");
+                NSString *continueBtnMsg = NSLocalizedString(@"Yes, change my affiliation", @"continue button before changing network affiliation.");
+                
+                changeNetworkActionSheet = [[UIActionSheet alloc] initWithTitle:alertMsg
+                                                                       delegate:self
+                                                              cancelButtonTitle:cancelBtnMsg
+                                                         destructiveButtonTitle:nil
+                                                              otherButtonTitles:continueBtnMsg, nil];
+                [changeNetworkActionSheet showFromTabBar:self.tabBarController.tabBar];
+            }
+            
+            return;
+        }
         // show popover
         NSString *tooltipText;
         if (indexPath.item == 0) {

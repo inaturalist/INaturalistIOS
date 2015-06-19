@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class SplitTextButton;
+@class Partner;
 
 @interface LoginViewController : UIViewController
 
@@ -17,4 +18,5 @@
 @property UITableView *loginTableView;
 @property SplitTextButton *gButton, *faceButton;
 @property UILabel *orLabel;
+@property Partner *selectedPartner;
 @end

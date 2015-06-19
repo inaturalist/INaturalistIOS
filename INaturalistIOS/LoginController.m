@@ -15,6 +15,8 @@
 #import "INaturalistAppDelegate.h"
 #import "GooglePlusAuthViewController.h"
 #import "UIColor+INaturalist.h"
+#import "Partner.h"
+#import "User.h"
 
 
 @interface LoginController () <GPPSignInDelegate> {
@@ -115,6 +117,7 @@ NSInteger INatMinPasswordLength = 6;
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
+                          site:(NSInteger)siteId
                        license:(NSString *)license
                        success:(LoginSuccessBlock)successBlock
                        failure:(LoginErrorBlock)errorBlock {
@@ -129,6 +132,7 @@ NSInteger INatMinPasswordLength = 6;
                                               @"user[login]": username,
                                               @"user[password]": password,
                                               @"user[password_confirmation]": password,
+                                              @"user[site_id]": @(siteId),
                                               @"user[preferred_observation_license]": license,
                                               @"user[preferred_photo_license]": license,
                                               @"user[preferred_sound_license]": license,
@@ -221,9 +225,6 @@ NSInteger INatMinPasswordLength = 6;
     }
     
     if (loginSucceeded) {
-        
-        [self executeSuccess:nil];
-    
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"iNaturalist" }];
         isLoginCompleted = YES;
@@ -243,6 +244,7 @@ NSInteger INatMinPasswordLength = 6;
                               
                               request.onDidFailLoadWithError = ^(NSError *error) {
                                   NSLog(@"error fetching self: %@", error.localizedDescription);
+                                  [self executeError:error];
                               };
                               
                               request.onDidLoadResponse = ^(RKResponse *response) {
@@ -262,6 +264,8 @@ NSInteger INatMinPasswordLength = 6;
                                                                            forKey:INatTokenPrefKey];
                                   [[NSUserDefaults standardUserDefaults] synchronize];
                                   
+                                  [self executeSuccess:nil];
+
                                   [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                                                       object:nil];
                               };
@@ -405,6 +409,66 @@ NSInteger INatMinPasswordLength = 6;
         
         self.currentSuccessBlock = nil;
         self.currentErrorBlock = nil;
+    }
+}
+
+#pragma mark - Partners
+
+- (void)loggedInUserSelectedPartner:(Partner *)partner completion:(void (^)(void))completion {
+    // be extremely defensive here. an invalid baseURL shouldn't be possible,
+    // but if it does happen, nothing in the app will work.
+    NSURL *partnerURL = partner.baseURL;
+    if (!partner.baseURL) { return; }
+    [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
+                                              forKey:kInatCustomBaseURLStringKey];
+    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+    
+    // put user object changing site id
+    User *me = [self fetchMe];
+    if (!me) { return; }
+    me.siteId = @(partner.identifier);
+    
+    NSError *saveError = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+    if (saveError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
+                                            saveError.localizedDescription]];
+        return;
+    }
+    
+    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.recordID.integerValue]
+                      usingBlock:^(RKRequest *request) {
+                          request.params = @{
+                                             @"user[site_id]": @(partner.identifier),
+                                             };
+                          request.onDidFailLoadWithError = ^(NSError *error) {
+                              NSLog(@"error");
+                          };
+                          request.onDidLoadResponse = ^(RKResponse *response) {
+                              if (completion) {
+                                  completion();
+                              }
+                          };
+                      }];
+}
+
+#pragma mark - Convenience method for fetching the logged in User
+
+- (User *)fetchMe {
+    NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+    if (username) {
+        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+        NSError *fetchError;
+        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
+        if (fetchError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
+                                                fetchError.localizedDescription]];
+            return nil;
+        }
+        return me;
+    } else {
+        return nil;
     }
 }
 

@@ -115,6 +115,9 @@
 		FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */; };
 		FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
+		FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
+		FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
+		FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19661B30EEE60066CA22 /* PartnerController.m */; };
 		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
 		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
 		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
@@ -162,6 +165,7 @@
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
@@ -415,6 +419,11 @@
 		FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShortcutSearchItem.m; sourceTree = "<group>"; };
 		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
+		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
+		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
+		FA4C19631B30EE890066CA22 /* Partner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Partner.m; sourceTree = "<group>"; };
+		FA4C19651B30EEE60066CA22 /* PartnerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartnerController.h; sourceTree = "<group>"; };
+		FA4C19661B30EEE60066CA22 /* PartnerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartnerController.m; sourceTree = "<group>"; };
 		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
 		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
 		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
@@ -509,8 +518,10 @@
 		FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraOverlay.h; sourceTree = "<group>"; };
 		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
+		FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+INaturalist.h"; sourceTree = "<group>"; };
 		FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+INaturalist.m"; sourceTree = "<group>"; };
+		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
 		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
@@ -556,6 +567,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */,
 				19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */,
 				6098FD1916F3BE690053987E /* Social.framework in Frameworks */,
 				6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */,
@@ -621,6 +633,7 @@
 		1927513614E9CCC9000ABAC4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */,
 				6098FD1816F3BE690053987E /* Social.framework */,
 				6098FD1616F3BE4C0053987E /* Accounts.framework */,
 				6098FD1416F3BE270053987E /* AdSupport.framework */,
@@ -682,6 +695,7 @@
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
 				19A219F11707B8A50042A889 /* config.h */,
+				FA4C195F1B30EDB70066CA22 /* partners.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -887,6 +901,10 @@
 				FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */,
 				FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */,
 				FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */,
+				FA4C19651B30EEE60066CA22 /* PartnerController.h */,
+				FA4C19661B30EEE60066CA22 /* PartnerController.m */,
+				FA4C19621B30EE890066CA22 /* Partner.h */,
+				FA4C19631B30EE890066CA22 /* Partner.m */,
 				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
 				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
 			);
@@ -1252,6 +1270,7 @@
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
+				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
 				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1378,6 +1397,7 @@
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
@@ -1463,6 +1483,7 @@
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
+				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
@@ -1805,6 +1826,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */,
 				FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */,
 				FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */,
 				19AE897018DD036800505918 /* INaturalist2.4.xcdatamodel */,
@@ -1813,7 +1835,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */;
+			currentVersion = FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

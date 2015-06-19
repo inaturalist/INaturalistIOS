@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class Partner;
+@class User;
+
 extern NSString *kUserLoggedInNotificationName;
 extern NSInteger INatMinPasswordLength;
 
@@ -25,6 +28,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
+                          site:(NSInteger)siteId
                        license:(NSString *)license
                        success:(LoginSuccessBlock)successBlock
                        failure:(LoginErrorBlock)failureBlock;
@@ -36,4 +40,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 - (void)logout;
 
+- (void)loggedInUserSelectedPartner:(Partner *)partner
+                         completion:(void (^)(void))completion;
+- (User *)fetchMe;
 @end

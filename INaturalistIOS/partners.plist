@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>identifier</key>
+		<string>3</string>
+		<key>logoName</key>
+		<string>network_logo_nz</string>
+		<key>name</key>
+		<string>NatureWatch NZ</string>
+		<key>baseUrl</key>
+		<string>http://naturewatch.org.nz</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>530</string>
+		</array>
+	</dict>
+	<dict>
+		<key>logoName</key>
+		<string>network_logo_ca</string>
+		<key>identifier</key>
+		<string>5</string>
+		<key>name</key>
+		<string>iNaturalist.ca</string>
+		<key>baseUrl</key>
+		<string>http://inaturalist.ca</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>302</string>
+		</array>
+	</dict>
+	<dict>
+		<key>logoName</key>
+		<string>network_logo_mx</string>
+		<key>identifier</key>
+		<string>2</string>
+		<key>name</key>
+		<string>Naturalista</string>
+		<key>baseUrl</key>
+		<string>http://conabio.inaturalist.org</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>334</string>
+		</array>
+	</dict>
+	<dict>
+		<key>identifier</key>
+		<string>1</string>
+		<key>name</key>
+		<string>iNaturalist</string>
+		<key>baseUrl</key>
+		<string>https://www.inaturalist.org</string>
+	</dict>
+</array>
+</plist>

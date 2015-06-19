@@ -6,8 +6,11 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+@import CoreTelephony;
+
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <objc/runtime.h>
 
 #import "SignupSplashViewController.h"
 #import "NSAttributedString+InatHelpers.h"
@@ -18,8 +21,12 @@
 #import "SplitTextButton.h"
 #import "FAKInaturalist.h"
 #import "LoginViewController.h"
+#import "PartnerController.h"
+#import "Partner.h"
 
-@interface SignupSplashViewController () {
+static char PARTNER_ASSOCIATED_KEY;
+
+@interface SignupSplashViewController () <UIAlertViewDelegate> {
     UIImage *orangeFlower, *moth, *purpleFlower;
     NSTimer *backgroundCycleTimer;
     
@@ -29,10 +36,15 @@
     
     NSArray *constraintsForCompactClass;
     NSArray *constraintsForRegularClass;
+    
+    UIAlertView *partnerAlert;
 }
+@property Partner *selectedPartner;
 @end
 
 @implementation SignupSplashViewController
+
+#pragma mark - UIViewController lifecycle
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -115,6 +127,18 @@
                                  strongSelf.skipButton.alpha = 1.0f;
                              }];
         });
+    }
+    
+    PartnerController *partners = [[PartnerController alloc] init];
+    CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
+    if (info) {
+        CTCarrier *carrier = info.subscriberCellularProvider;
+        if (carrier) {
+            Partner *p = [partners partnerForMobileCountryCode:carrier.mobileCountryCode];
+            if (p) {
+                [self showPartnerAlertForPartner:p];
+            }
+        }
     }
 }
 
@@ -254,6 +278,10 @@
                 } else {
                     [weakSelf dismissViewControllerAnimated:YES completion:nil];
                 }
+                if (strongSelf.selectedPartner) {
+                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                  completion:nil];
+                }
             } failure:^(NSError *error) {
                 NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
                 NSString *alertMsg;
@@ -306,11 +334,17 @@
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.loginController loginWithGoogleUsingNavController:strongSelf.navigationController
                                                                    success:^(NSDictionary *info) {
+                                                                       __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                       
                                                                        if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                                            [appDelegate showMainUI];
                                                                        } else {
                                                                            
                                                                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                                                                       }
+                                                                       if (strongSelf.selectedPartner) {
+                                                                           [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                                         completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
                                                                        NSString *alertTitle = NSLocalizedString(@"Log In Problem",
@@ -353,6 +387,7 @@
             __strong typeof(weakSelf)strongSelf = weakSelf;
             SignupViewController *signupVC = [[SignupViewController alloc] initWithNibName:nil bundle:nil];
             signupVC.backgroundImage = strongSelf.backgroundImageView.image;
+            signupVC.selectedPartner = strongSelf.selectedPartner;
             [strongSelf.navigationController pushViewController:signupVC animated:YES];
             
         } forControlEvents:UIControlEventTouchUpInside];
@@ -541,9 +576,9 @@
     } else {
         [self.view addConstraints:constraintsForCompactClass];
     }
-    
-
 }
+
+#pragma mark Orientation and Screen Resizing
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     // check to see if we've transitioned between regular and compact size classes
@@ -565,6 +600,62 @@
     FAKINaturalist *inatWordmark = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
     [inatWordmark addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
     self.logoLabel.attributedText = inatWordmark.attributedString;
+}
+
+#pragma mark - Partner alert helper
+
+- (void)showPartnerAlertForPartner:(Partner *)partner {
+    if (!partner) { return; }
+    
+    NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Join %@?",
+                                                                        @"join iNat network partner alert title"),
+                            partner.name];
+    NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"iNaturalist partners with %@ in your country.",
+                                                                      @"join iNat network partner alert message"),
+                          partner.name];
+    
+    partnerAlert = [[UIAlertView alloc] initWithTitle:alertTitle
+                                              message:alertMsg
+                                             delegate:self
+                                    cancelButtonTitle:NSLocalizedString(@"No", nil)
+                                    otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    
+    if (partner.logo) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 45)];
+        
+        UIImageView *iv = [[UIImageView alloc] initWithImage:partner.logo];
+        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        iv.center = CGPointMake(view.center.x, view.center.y - 5);
+        iv.contentMode = UIViewContentModeScaleAspectFit;
+
+        [view addSubview:iv];
+        [partnerAlert setValue:view forKey:@"accessoryView"];
+    }
+    objc_setAssociatedObject(partnerAlert, &PARTNER_ASSOCIATED_KEY, partner, OBJC_ASSOCIATION_RETAIN);
+    [partnerAlert show];
+}
+
+#pragma mark AlertView delegate
+
+- (void)alertView:(nonnull UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == partnerAlert) {
+        if (buttonIndex == 1) {
+            Partner *p = objc_getAssociatedObject(alertView, &PARTNER_ASSOCIATED_KEY);
+            // be extremely defensive here. an invalid baseURL shouldn't be possible,
+            // but if it does happen, nothing in the app will work.
+            NSURL *partnerURL = [p baseURL];
+            if (partnerURL) {
+                [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
+                                                          forKey:kInatCustomBaseURLStringKey];
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+            }
+        } else {
+            // revert to default base URL
+            [[NSUserDefaults standardUserDefaults] setObject:nil
+                                                      forKey:kInatCustomBaseURLStringKey];
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+        }
+    }
 }
 
 #pragma mark - setters/getters

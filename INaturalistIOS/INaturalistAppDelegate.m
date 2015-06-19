@@ -38,7 +38,11 @@
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
+    RKManagedObjectStore *_inatObjectStore;
 }
+
+@property (readonly) RKManagedObjectStore *inatObjectStore;
+
 @end
 
 @implementation INaturalistAppDelegate
@@ -121,13 +125,25 @@
     return YES;
 }
 
+- (void)reconfigureForNewBaseUrl {
+    [self configureRestKit];
+}
+
+- (RKManagedObjectStore *)inatObjectStore {
+    if (!_inatObjectStore) {
+        _inatObjectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"
+                                                        usingSeedDatabaseName:nil
+                                                           managedObjectModel:[self getManagedObjectModel]
+                                                                     delegate:self];
+    }
+    
+    return _inatObjectStore;
+}
+
 - (void)configureRestKit
 {
-    manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
-                                                       usingSeedDatabaseName:nil 
-                                                          managedObjectModel:[self getManagedObjectModel] 
-                                                                    delegate:self];
     RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];
+    manager.objectStore = [self inatObjectStore];
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -202,7 +218,7 @@
     
     // setup photo object manager
     self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatMediaBaseURL]];
-    self.photoObjectManager.objectStore = [manager objectStore];
+    self.photoObjectManager.objectStore = [self inatObjectStore];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
                                 toResourcePath:@"/observation_photos/:recordID\\.json"];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class

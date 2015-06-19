@@ -19,6 +19,7 @@
 #import "CheckboxCell.h"
 #import "NSAttributedString+InatHelpers.h"
 #import "UITapGestureRecognizer+InatHelpers.h"
+#import "Partner.h"
 
 @interface SignupViewController () <UITableViewDataSource, UITableViewDelegate> {
     NSString *email, *password, *username;
@@ -498,6 +499,8 @@
         license = @"on";
     }
     
+    NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
+    
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating iNaturalist account...", @"Notice while we're creating an iNat account for them")
                          maskType:SVProgressHUDMaskTypeGradient];
 
@@ -506,6 +509,7 @@
     [appDelegate.loginController createAccountWithEmail:email
                                                password:password
                                                username:username
+                                                   site:selectedPartnerId
                                                 license:license
                                                 success:^(NSDictionary *info) {
                                                     __strong typeof(weakSelf)strongSelf = weakSelf;

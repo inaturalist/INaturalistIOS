@@ -160,6 +160,10 @@
                                                                        } else {
                                                                            [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                                        }
+                                                                       if (strongSelf.selectedPartner) {
+                                                                           [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                                         completion:nil];
+                                                                       }
                                                                    } failure:^(NSError *error) {
                                                                        NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
                                                                        NSString *alertMsg;
@@ -213,6 +217,10 @@
                     [appDelegate showMainUI];
                 } else {
                     [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                }
+                if (strongSelf.selectedPartner) {
+                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                  completion:nil];
                 }
             } failure:^(NSError *error) {
                 NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
@@ -582,6 +590,10 @@
                                                    [appDelegate showMainUI];
                                                } else {
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                               }
+                                               if (strongSelf.selectedPartner) {
+                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                 completion:nil];
                                                }
                                            } failure:^(NSError *error) {
                                                [SVProgressHUD dismiss];

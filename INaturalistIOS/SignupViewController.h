@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class Partner;
+
 @interface SignupViewController : UIViewController
 
 @property UIImage *backgroundImage;
@@ -15,4 +17,5 @@
 @property UITableView *signupTableView;
 @property UILabel *termsLabel;
 
+@property Partner *selectedPartner;
 @end
