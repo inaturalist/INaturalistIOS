@@ -42,6 +42,7 @@
 #import "ConfirmPhotoViewController.h"
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
+#import "NSURL+INaturalist.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -412,7 +413,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if (t && t.fullyLoaded) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-            NSString *url = [NSString stringWithFormat:@"%@/taxa/%ld.json", INatBaseURL, (long)taxonID];
+            NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonID]
+                                          relativeToURL:[NSURL inat_baseURL]] absoluteString];
             __weak typeof(self) weakSelf = self;
             
             RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
@@ -436,7 +438,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 [strongSelf observationToUI];
             };
             
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
                                                             usingBlock:^(RKObjectLoader *loader) {
                                                                 loader.objectMapping = [Taxon mapping];
                                                                 loader.onDidLoadObject = taxonLoadedBlock;

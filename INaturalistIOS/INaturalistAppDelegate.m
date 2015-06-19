@@ -34,6 +34,7 @@
 #import "INatUITabBarController.h"
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "NSURL+INaturalist.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -122,11 +123,11 @@
 
 - (void)configureRestKit
 {
-    RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatBaseURL]];
     manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
                                                        usingSeedDatabaseName:nil 
                                                           managedObjectModel:[self getManagedObjectModel] 
                                                                     delegate:self];
+    RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -264,11 +265,12 @@
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     };
     //
-    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code",INatBaseURL,INatClientID ]];
+    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code", [NSURL inat_baseURLForAuthentication], INatClientID ]];
     [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
                                              secret:INatClientSecret
                                    authorizationURL:authorizationURL
-                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/token", INatBaseURL]]
+                                           tokenURL:[NSURL URLWithString:@"/oauth/token"
+                                                           relativeToURL:[NSURL inat_baseURLForAuthentication]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthService];
     
@@ -279,7 +281,8 @@
     [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
                                              secret:INatClientSecret
                                    authorizationURL:authorizationURL
-                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/assertion_token.json", INatBaseURL]]
+                                           tokenURL:[NSURL URLWithString:@"/oauth/assertion_token.json"
+                                                           relativeToURL:[NSURL inat_baseURLForAuthentication]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthServiceExtToken];
 }

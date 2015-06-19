@@ -19,6 +19,7 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "INatUITabBarController.h"
+#import "NSURL+INaturalist.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
@@ -159,8 +160,9 @@ static char SUMMARY_ASSOCIATED_KEY;
     self.clearsSelectionOnViewWillAppear = YES;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxon.recordID];
-        
+        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%@.json", self.taxon.recordID]
+                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
+
         __weak typeof(self)weakSelf = self;
         RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
             
@@ -184,7 +186,7 @@ static char SUMMARY_ASSOCIATED_KEY;
             }
         };
         
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
                                                         usingBlock:^(RKObjectLoader *loader) {
                                                             loader.objectMapping = [Taxon mapping];
                                                             loader.onDidLoadObject = loadedTaxonBlock;

@@ -16,6 +16,7 @@
 #import "ExploreProject.h"
 #import "ExplorePerson.h"
 #import "Taxon.h"
+#import "NSURL+INaturalist.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -405,8 +406,8 @@
     }
     d2 = today;
 
-    
-    NSString *url = [NSString stringWithFormat:@"%@/observations/user_stats.json", INatBaseURL];
+    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:nil];
+    components.path = @"observations/user_stats.json";
     NSString *query = [NSString stringWithFormat:@"?d1=%@&d2=%@", d1, d2];
     
     // apply active search predicates to the query
@@ -424,7 +425,8 @@
         }
     }
     
-    return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, query]];
+    components.query = query;
+    return [components URL];
 }
 
 

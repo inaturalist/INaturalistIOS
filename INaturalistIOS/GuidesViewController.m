@@ -21,6 +21,7 @@
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
+#import "NSURL+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -422,7 +423,8 @@ static const int ListControlIndexNearby = 2;
                                           indexPathForSelectedRow] row]];
         }
         GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
-        gx.xmlURL = [INatBaseURL stringByAppendingFormat:@"/guides/%@.xml", g.recordID];
+        gx.xmlURL =[[NSURL URLWithString:[NSString stringWithFormat:@"/guides/%@.xml", g.recordID]
+                           relativeToURL:[NSURL inat_baseURL]] absoluteString];
         vc.guide = gx;
         vc.title = g.title;
         vc.guideDelegate = self;

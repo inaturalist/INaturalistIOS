@@ -25,6 +25,7 @@
 #import "ExploreObservation.h"
 #import "ExploreRegion.h"
 #import "MKMapView+ZoomLevel.h"
+#import "NSURL+INaturalist.h"
 
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
@@ -273,8 +274,8 @@
 
 - (void)addOverlaysForLocationId:(NSInteger)locationId {
     // fetch the geometry file
-    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/places/geometry/%ld.geojson",
-                                       INatBaseURL, (long)locationId]];
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"/places/geometry/%ld.geojson", (long)locationId]
+                        relativeToURL:[NSURL inat_baseURL]];
     NSData *data = [NSData dataWithContentsOfURL:URL];
     
     // don't do any overlay work if we can't get a geometry file from inat.org
