@@ -151,7 +151,13 @@ NSInteger INatMinPasswordLength = 6;
                                
                                if ([respJson valueForKey:@"errors"]) {
                                    // TODO: extract error from json and notify user
-                                   [self executeError:nil];
+                                   NSArray *errors = [respJson valueForKey:@"errors"];
+                                   NSError *newError = [NSError errorWithDomain:@"org.inaturalist"
+                                                                           code:response.statusCode
+                                                                       userInfo:@{
+                                                                                  NSLocalizedDescriptionKey: errors.firstObject
+                                                                                  }];
+                                   [self executeError:newError];
                                    return;
                                }
                                
