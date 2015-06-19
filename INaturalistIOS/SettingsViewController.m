@@ -280,6 +280,7 @@ static const int CategorizeNewObsSwitchTag = 11;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loggedInUserSelectedPartner:partner
                                                   completion:^{
+                                                      [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeCompleted];
                                                       [weakSelf.tableView reloadData];
                                                   }];
 }
@@ -417,6 +418,7 @@ static const int CategorizeNewObsSwitchTag = 11;
             if (!username) {
                 [self presentSignup];
             } else {
+                [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeBegan];
                 // show SERIOUS alert
                 NSString *alertMsg = NSLocalizedString(@"Changing your iNaturalist Network affiliation will alter some parts of the app, like what taxa appear in searches, but it will also allow the new network partner to view and download all of your data. Are you sure you want to do this?",
                                                        @"alert msg before changing the network affiliation.");

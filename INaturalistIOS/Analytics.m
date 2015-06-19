@@ -161,6 +161,8 @@ NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
 NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabled";
+NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings Network Change Began";
+NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Network Change Completed";
 
 // guides
 NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";

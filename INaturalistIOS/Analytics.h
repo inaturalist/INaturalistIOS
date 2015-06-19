@@ -116,6 +116,8 @@ extern NSString *kAnalyticsEventNewObservationSaveObservation;
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;
 extern NSString *kAnalyticsEventSettingDisabled;
+extern NSString *kAnalyticsEventSettingsNetworkChangeBegan;
+extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
 
 // guides
 extern NSString *kAnalyticsEventDownloadGuideStarted;
