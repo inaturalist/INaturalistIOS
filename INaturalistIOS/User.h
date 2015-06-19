@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSNumber * observationsCount;
 @property (nonatomic, retain) NSNumber * identificationsCount;
 @property (nonatomic, retain) NSString * mediumUserIconURL;
+@property (nonatomic, retain) NSNumber * siteId;
 @end
 
 @interface User (CoreDataGeneratedAccessors)
