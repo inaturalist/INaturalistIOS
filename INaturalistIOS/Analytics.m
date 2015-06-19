@@ -94,6 +94,7 @@ NSString *kAnalyticsEventNavigateSettings =                     @"Navigate - Set
 NSString *kAnalyticsEventNavigateTutorial =                     @"Navigate - Tutorial";
 NSString *kAnalyticsEventNavigateLogin =                        @"Navigate - Login";
 NSString *kAnalyticsEventNavigateSignup =                       @"Navigate - Signup";
+NSString *kAnalyticsEventNavigateSignupSplash =                 @"Navigate - Signup Splash";
 NSString *kAnalyticsEventNavigateAcknowledgements =             @"Navigate - Acknowledgements";
 
 NSString *kAnalyticsEventNavigateMap =                          @"Navigate - Map";
@@ -141,6 +142,18 @@ NSString *kAnalyticsEventLoginFailed =                          @"Login Failed";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
 NSString *kAnalyticsEventLogout =                               @"Logout";
 NSString *kAnalyticsEventForgotPassword =                       @"Forgot Password";
+
+// signup splash
+NSString *kAnalyticsEventSplashFacebook =                       @"Splash Screen - Facebook";
+NSString *kAnalyticsEventSplashGoogle =                         @"Splash Screen - Google";
+NSString *kAnalyticsEventSplashSignupEmail =                    @"Splash Screen - Signup Email";
+NSString *kAnalyticsEventSplashLogin =                          @"Splash Screen - Login";
+NSString *kAnalyticsEventSplashCancel =                         @"Splash Screen - Cancel";
+NSString *kAnalyticsEventSplashSkip =                           @"Splash Screen - Skip";
+
+// partners
+NSString *kAnalyticsEventPartnerAlertPresented =                @"Partner Alert Presented";
+NSString *kAnalyticsEventPartnerAlertResponse =                 @"Partner Alert Response";
 
 // model integrity
 NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";

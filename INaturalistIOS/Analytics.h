@@ -48,6 +48,7 @@ extern NSString *kAnalyticsEventNavigateSettings;
 extern NSString *kAnalyticsEventNavigateTutorial;
 extern NSString *kAnalyticsEventNavigateLogin;
 extern NSString *kAnalyticsEventNavigateSignup;
+extern NSString *kAnalyticsEventNavigateSignupSplash;
 extern NSString *kAnalyticsEventNavigateAcknowledgements;
 
 extern NSString *kAnalyticsEventNavigateMap;
@@ -96,6 +97,18 @@ extern NSString *kAnalyticsEventLoginFailed;
 extern NSString *kAnalyticsEventSignup;
 extern NSString *kAnalyticsEventLogout;
 extern NSString *kAnalyticsEventForgotPassword;
+
+// signup splash
+extern NSString *kAnalyticsEventSplashFacebook;
+extern NSString *kAnalyticsEventSplashGoogle;
+extern NSString *kAnalyticsEventSplashSignupEmail;
+extern NSString *kAnalyticsEventSplashLogin;
+extern NSString *kAnalyticsEventSplashCancel;
+extern NSString *kAnalyticsEventSplashSkip;
+
+// partners
+extern NSString *kAnalyticsEventPartnerAlertPresented;
+extern NSString *kAnalyticsEventPartnerAlertResponse;
 
 // model integrity
 extern NSString *kAnalyticsEventObservationlessOFVSaved;

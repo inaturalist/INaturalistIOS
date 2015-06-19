@@ -23,6 +23,7 @@
 #import "LoginViewController.h"
 #import "PartnerController.h"
 #import "Partner.h"
+#import "Analytics.h"
 
 static char PARTNER_ASSOCIATED_KEY;
 
@@ -156,6 +157,7 @@ static char PARTNER_ASSOCIATED_KEY;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
                                                                                  style:UIBarButtonItemStylePlain
                                                                                handler:^(id sender) {
+                                                                                   [[Analytics sharedClient] event:kAnalyticsEventSplashCancel];
                                                                                    [weakSelf dismissViewControllerAnimated:YES
                                                                                                                 completion:nil];
                                                                                }];
@@ -260,6 +262,7 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventSplashFacebook];
             
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
@@ -320,6 +323,8 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventSplashGoogle];
+
             __strong typeof(weakSelf)strongSelf = weakSelf;
             
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -384,6 +389,8 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventSplashSignupEmail];
+
             __strong typeof(weakSelf)strongSelf = weakSelf;
             SignupViewController *signupVC = [[SignupViewController alloc] initWithNibName:nil bundle:nil];
             signupVC.backgroundImage = strongSelf.backgroundImageView.image;
@@ -416,6 +423,8 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventSplashSkip];
+
             __strong typeof(weakSelf)strongSelf = weakSelf;
             if (strongSelf.skipAction) {
                 strongSelf.skipAction();
@@ -447,6 +456,7 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
+            [[Analytics sharedClient] event:kAnalyticsEventLogin];
             __strong typeof(weakSelf)strongSelf = weakSelf;
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = NO;
@@ -607,6 +617,9 @@ static char PARTNER_ASSOCIATED_KEY;
 - (void)showPartnerAlertForPartner:(Partner *)partner {
     if (!partner) { return; }
     
+    [[Analytics sharedClient] event:kAnalyticsEventPartnerAlertPresented
+                     withProperties:@{ @"Partner": partner.name }];
+    
     NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Join %@?",
                                                                         @"join iNat network partner alert title"),
                             partner.name];
@@ -639,6 +652,10 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (void)alertView:(nonnull UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView == partnerAlert) {
+        
+        [[Analytics sharedClient] event:kAnalyticsEventPartnerAlertResponse
+                         withProperties:@{ @"Response": (buttonIndex == 1) ? @"Yes" : @"No" }];
+        
         if (buttonIndex == 1) {
             Partner *p = objc_getAssociatedObject(alertView, &PARTNER_ASSOCIATED_KEY);
             // be extremely defensive here. an invalid baseURL shouldn't be possible,

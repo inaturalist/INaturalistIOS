@@ -66,6 +66,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize lastRefreshAt = _lastRefreshAt;
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Observations" }];
+
     SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
     splash.cancellable = YES;
     splash.reason = reason;

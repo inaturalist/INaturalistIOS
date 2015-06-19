@@ -364,6 +364,9 @@ static const int ListControlIndexNearby = 2;
                                                       [strongSelf sync];
                                                   }];
     
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Guides" }];
+
     SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
     svc.skippable = NO;
     svc.cancellable = YES;

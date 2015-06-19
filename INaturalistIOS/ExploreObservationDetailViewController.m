@@ -490,6 +490,8 @@
 #pragma mark - Login / Signup prompt
 
 - (void)showSignupWithReason:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Explore Detail" }];
     SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
     svc.skippable = NO;
     svc.cancellable = YES;

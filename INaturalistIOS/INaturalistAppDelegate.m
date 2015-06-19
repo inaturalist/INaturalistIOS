@@ -87,6 +87,9 @@
     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
     
     if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"App Launch" }];
+
         SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
         splash.skippable = YES;
         splash.cancellable = NO;

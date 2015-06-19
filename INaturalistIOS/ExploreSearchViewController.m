@@ -162,6 +162,9 @@
                                                                       if (observationsController.activeSearchPredicates.count > 0)
                                                                           [searchMenu showActiveSearch];
                                                                   } else {
+                                                                      [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                                                                                       withProperties:@{ @"From": @"Explore Search My Obs" }];
+
                                                                       SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil
                                                                                                                                                         bundle:nil];
                                                                       UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];

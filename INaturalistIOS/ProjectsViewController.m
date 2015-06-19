@@ -222,6 +222,9 @@ static const int ListControlIndexNearby = 2;
         [self stopSync];
         self.projectUsersSyncedAt = nil;
 
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects" }];
+
         SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
         splash.reason = NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.");
         splash.skippable = NO;
@@ -353,6 +356,9 @@ static const int ListControlIndexNearby = 2;
                                                       [weakSelf sync];
                                                   }];
     
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Projects" }];
+
     SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
     svc.cancellable = YES;
     svc.skippable = NO;

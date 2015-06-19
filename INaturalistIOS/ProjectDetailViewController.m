@@ -88,6 +88,9 @@ static const int LeaveProjectAlertViewTag = 1;
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
         } else {
+            [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                             withProperties:@{ @"From": @"Project Detail" }];
+
             SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
             signup.reason = NSLocalizedString(@"You must be signed in to join a project.", @"Reason text for signup prompt while trying to join a project.");
             signup.cancellable = YES;
@@ -356,6 +359,9 @@ static const int LeaveProjectAlertViewTag = 1;
 {
     [SVProgressHUD dismiss];
     if (objectLoader.response.statusCode == 401) {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Project Detail" }];
+
         SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
         signup.reason = NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.");
         signup.cancellable = YES;

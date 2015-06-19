@@ -514,6 +514,9 @@ static const int CategorizeNewObsSwitchTag = 11;
 }
 
 - (void)presentSignup {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Settings" }];
+
     SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
     signup.cancellable = YES;
     signup.skippable = NO;
