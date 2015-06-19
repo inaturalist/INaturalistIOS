@@ -528,7 +528,7 @@
                                                     if (error) {
                                                         alertMsg = error.localizedDescription;
                                                     } else {
-                                                        alertMsg = NSLocalizedString(@"Failed to create an iNat account. Please try again.",
+                                                        alertMsg = NSLocalizedString(@"Failed to create an iNaturalist account. Please try again.",
                                                                                    @"Uknown iNaturalist create account error");
                                                     }
                                                     
