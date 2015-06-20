@@ -106,12 +106,6 @@ static const int CategorizeNewObsSwitchTag = 11;
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
     
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
-        
-    for (UIViewController *vc in self.tabBarController.viewControllers) {
-        if ([vc isKindOfClass:UINavigationController.class]) {
-            [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
-        }
-    }
     
 	[Comment deleteAll];
 	[Identification deleteAll];
