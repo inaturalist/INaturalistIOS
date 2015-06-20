@@ -130,9 +130,7 @@ static char PARTNER_ASSOCIATED_KEY;
         });
     }
     
-    PartnerController *partners = [[PartnerController alloc] init];
-    [self showPartnerAlertForPartner:partners.partners[2]];
-    
+    PartnerController *partners = [[PartnerController alloc] init];    
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
         CTCarrier *carrier = info.subscriberCellularProvider;
