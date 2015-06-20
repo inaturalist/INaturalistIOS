@@ -84,6 +84,8 @@ NSInteger INatMinPasswordLength = 6;
                         externalAccessToken = [session.accessTokenData.accessToken copy];
                         accountType = nil;
                         accountType = kINatAuthServiceExtToken;
+                        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                                         withProperties:@{ @"Via": @"Facebook" }];
                         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                                              assertionType:[NSURL URLWithString:@"http://facebook.com"]
                                                                                  assertion:externalAccessToken];
@@ -224,8 +226,10 @@ NSInteger INatMinPasswordLength = 6;
     }
     
     if (loginSucceeded) {
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"iNaturalist" }];
+        if ([accountType isEqualToString:kINatAuthService]) {
+            [[Analytics sharedClient] event:kAnalyticsEventLogin
+                             withProperties:@{ @"Via": @"iNaturalist" }];
+        }
         isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
                                                  forKey:INatTokenPrefKey];
