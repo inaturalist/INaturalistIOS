@@ -27,6 +27,8 @@
         if (logoName) {
             self.logo = [UIImage imageNamed:logoName];
         }
+        
+        self.countryName = [plistDict valueForKey:@"countryName"];
     }
     
     return self;

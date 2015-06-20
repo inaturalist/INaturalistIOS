@@ -131,6 +131,8 @@ static char PARTNER_ASSOCIATED_KEY;
     }
     
     PartnerController *partners = [[PartnerController alloc] init];
+    [self showPartnerAlertForPartner:partners.partners[2]];
+    
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
         CTCarrier *carrier = info.subscriberCellularProvider;
@@ -623,15 +625,15 @@ static char PARTNER_ASSOCIATED_KEY;
     NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Join %@?",
                                                                         @"join iNat network partner alert title"),
                             partner.name];
-    NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"iNaturalist partners with %@ in your country.",
-                                                                      @"join iNat network partner alert message"),
-                          partner.name];
+    NSString *alertMsgFmt = NSLocalizedString(@"Would you like to use %@, a member of the iNaturalist Network in %@? Clicking OK will localize your experience and share data accordingly.",
+                                              @"join iNat network partner alert message");
+    NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.name, partner.countryName];
     
     partnerAlert = [[UIAlertView alloc] initWithTitle:alertTitle
                                               message:alertMsg
                                              delegate:self
                                     cancelButtonTitle:NSLocalizedString(@"No", nil)
-                                    otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+                                    otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
     
     if (partner.logo) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 45)];

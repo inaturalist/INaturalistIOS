@@ -16,6 +16,7 @@
 @property NSURL *baseURL;
 @property NSInteger identifier;
 @property UIImage *logo;
+@property NSString *countryName;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryFromPlist;
 
