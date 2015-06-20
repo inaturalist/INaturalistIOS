@@ -87,14 +87,7 @@ NSInteger INatMinPasswordLength = 6;
                         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                                              assertionType:[NSURL URLWithString:@"http://facebook.com"]
                                                                                  assertion:externalAccessToken];
-                        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                                         withProperties:@{ @"Via": @"Facebook" }];
-                        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                            object:nil];
-                        
-                        [self executeSuccess:nil];
-                        
+                                                
                         break;
                     case FBSessionStateClosed:
                         NSLog(@"session FBSessionStateClosed");
