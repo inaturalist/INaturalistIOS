@@ -248,8 +248,7 @@
 - (void)setObservation:(ExploreObservation *)observation {
     _observation = observation;
     
-    if (![observation commentsAndIdentificationsSynchronized])
-        [self fetchObservationCommentsAndIds];
+    [self fetchObservationCommentsAndIds];
     
     [self.view setNeedsLayout];
 }
