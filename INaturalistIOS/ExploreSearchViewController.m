@@ -168,6 +168,7 @@
                                                                       SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil
                                                                                                                                                         bundle:nil];
                                                                       UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+                                                                      nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
                                                                       splash.animateIn = NO;
                                                                       splash.skippable = NO;
                                                                       splash.cancellable = YES;
