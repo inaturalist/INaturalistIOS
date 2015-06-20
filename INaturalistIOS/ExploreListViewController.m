@@ -132,7 +132,22 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
     detail.observation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
-    [self.navigationController pushViewController:detail animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
+    
+    // close icon
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
+    [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
+    UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
+    
+    UIBarButtonItem *close = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
+                                                                 style:UIBarButtonItemStylePlain
+                                                               handler:^(id sender) {
+                                                                   [self dismissViewControllerAnimated:YES completion:nil];
+                                                               }];
+    
+    detail.navigationItem.leftBarButtonItem = close;
+    
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
