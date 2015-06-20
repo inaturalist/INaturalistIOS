@@ -660,7 +660,7 @@
                           otherButtonTitles:nil];
     [av show];
     
-    return NO;
+    return YES;
 }
 
 @end
