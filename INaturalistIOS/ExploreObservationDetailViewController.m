@@ -499,9 +499,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
     // for sizzle
     nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [self.tabBarController presentViewController:nav
-                                        animated:YES
-                                      completion:nil];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 @end
