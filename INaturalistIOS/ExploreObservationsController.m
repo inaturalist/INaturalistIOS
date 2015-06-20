@@ -407,8 +407,8 @@
     d2 = today;
 
     NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:nil];
-    components.path = @"observations/user_stats.json";
-    NSString *query = [NSString stringWithFormat:@"?d1=%@&d2=%@", d1, d2];
+    components.path = @"/observations/user_stats.json";
+    NSString *query = [NSString stringWithFormat:@"d1=%@&d2=%@", d1, d2];
     
     // apply active search predicates to the query
     if (predicates.count > 0) {
