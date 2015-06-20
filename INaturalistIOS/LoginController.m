@@ -277,10 +277,7 @@ NSInteger INatMinPasswordLength = 6;
                                   [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                                                       object:nil];
                               };
-                          }];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                            object:nil];
+                          }];        
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"iNaturalist" }];
