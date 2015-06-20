@@ -780,6 +780,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = YES;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+            nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
             [self presentViewController:nav animated:YES completion:nil];
 
         } forControlEvents:UIControlEventTouchUpInside];
