@@ -276,14 +276,27 @@ static NSString *kSortSpeciesKey = @"species_count";
 
 - (void)configureCell:(ExploreLeaderboardCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *leaderboardRecord = [leaderboard objectAtIndex:indexPath.item];
-    NSNumber *obsCount = [leaderboardRecord valueForKeyPath:kSortObservationsKey];
-    NSNumber *speciesCount = [leaderboardRecord valueForKeyPath:kSortSpeciesKey];
+    NSInteger obsCount = [[leaderboardRecord valueForKeyPath:kSortObservationsKey] integerValue];
+    NSInteger speciesCount = [[leaderboardRecord valueForKeyPath:kSortSpeciesKey] integerValue];
     NSString *username = [leaderboardRecord valueForKeyPath:@"user_login"];
     NSString *userIconUrl = [leaderboardRecord valueForKeyPath:@"user_icon"];
     
     cell.username.text = username;
-    cell.observationCount.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount.integerValue];
-    cell.speciesCount.text = [NSString stringWithFormat:@"Species: %ld", (long)speciesCount.integerValue];
+    
+    // the leaderboard API call can return users who are on the species leaderboard but not the
+    // obs leaderboard, leaving them with 0 apparent observations in the JSON. this is obviously
+    // incorrect, but we don't want to do another API call for every row, so just show * like on
+    // the web.
+    if (obsCount > 0) {
+        cell.observationCount.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount];
+    } else {
+        cell.observationCount.text = @"Observations: *";
+    }
+    if (speciesCount > 0) {
+        cell.speciesCount.text = [NSString stringWithFormat:@"Species: %ld", (long)speciesCount];
+    } else {
+        cell.speciesCount.text = @"Species: *";
+    }
     
     // embolden the sort key for the leaderboard
     if ([sortKey isEqualToString:kSortObservationsKey]) {
