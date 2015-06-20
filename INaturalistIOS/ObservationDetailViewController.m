@@ -513,6 +513,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self initUI];
     [super viewDidAppear:animated];
     
+    
+    
     @try {
         if (self.observation.isNew &&
             (
