@@ -252,10 +252,20 @@ static const int CategorizeNewObsSwitchTag = 11;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(initUI)
+                                                 name:kUserLoggedInNotificationName
+                                               object:nil];
+
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
 }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
