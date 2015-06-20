@@ -60,13 +60,17 @@ NSInteger INatMinPasswordLength = 6;
     self.currentSuccessBlock = successBlock;
     self.currentErrorBlock = errorBlock;
     
-    NSArray *perms = @[@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups"];
+    accountType = nil;
+    accountType = kINatAuthServiceExtToken;
+    isLoginCompleted = NO;
+
+    NSArray *perms = @[@"email"];
     FBSession *session = [[FBSession alloc] initWithAppID:nil
                                               permissions:perms
                                           urlSchemeSuffix:@"inat"
                                        tokenCacheStrategy:nil];
     [FBSession setActiveSession:session];
-    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
+    [session openWithBehavior:FBSessionLoginBehaviorForcingSafari
             completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
                 
                 if (error) {
@@ -93,6 +97,7 @@ NSInteger INatMinPasswordLength = 6;
                         break;
                     case FBSessionStateClosed:
                         NSLog(@"session FBSessionStateClosed");
+                        break;
                     case FBSessionStateClosedLoginFailed:
                         NSLog(@"session FBSessionStateClosedLoginFailed");
                         [FBSession.activeSession closeAndClearTokenInformation];
@@ -302,6 +307,10 @@ NSInteger INatMinPasswordLength = 6;
     self.currentSuccessBlock = success;
     self.currentErrorBlock = error;
     
+    accountType = nil;
+    accountType = kINatAuthServiceExtToken;
+    isLoginCompleted = NO;
+
     GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
                                                                                 clientID:self.clientIdForGoogleSignin
                                                                             clientSecret:nil
