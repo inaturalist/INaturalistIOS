@@ -19,7 +19,7 @@
             self.baseURL = [url copy];
         else
             return nil;
-        self.mobileCountryCodes = [plistDict valueForKey:@"countryCodes"];
+        self.mobileCountryCodes = [plistDict valueForKey:@"mobileCountryCodes"];
         self.name = [plistDict valueForKey:@"name"];
         self.identifier = [[plistDict valueForKey:@"identifier"] integerValue];
         
