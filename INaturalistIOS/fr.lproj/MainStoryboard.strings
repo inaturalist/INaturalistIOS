@@ -1,170 +1,170 @@
 /* Class = "IBUIBarButtonItem"; title = "Edit"; ObjectID = "0Fk-rY-9h1"; */
-"0Fk-rY-9h1.title" = "Modifier";
+"0Fk-rY-9h1.title" = "Modifica";
 
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
-"0Q2-fy-dMQ.text" = "Lancer le tutoriel";
+"0Q2-fy-dMQ.text" = "Tutorial";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
-"0U1-va-cIB.title" = "Guides";
+"0U1-va-cIB.title" = "Guide";
 
 /* Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona"; */
-"1bw-oa-ona.placeholder" = "Lieu inconnu";
+"1bw-oa-ona.placeholder" = "Luogo sconosciuto";
 
 /* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ"; */
-"1hu-IK-XsQ.text" = "Nom scientifique";
+"1hu-IK-XsQ.text" = "Nome scientifico";
 
 /* Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj"; */
-"1yP-Oa-9Kj.title" = "Connexion";
+"1yP-Oa-9Kj.title" = "Accedi";
 
 /* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S"; */
-"31c-qh-A6S.title" = "Ajouter";
+"31c-qh-A6S.title" = "Aggiungi";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
-"3DS-CL-NMe.headerTitle" = "Connectez-vous avec Facebook";
+"3DS-CL-NMe.headerTitle" = "Accedi con Facebook";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
 "46e-pE-mJn.text" = "???";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS"; */
-"6Eu-N7-evS.text" = "Titre";
+"6Eu-N7-evS.text" = "Titolo";
 
 /* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
-"6UX-BL-9DW.title" = "Projets";
+"6UX-BL-9DW.title" = "Progetti";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "718-d6-pVr"; */
-"718-d6-pVr.text" = "Nom d'utilisateur";
+"718-d6-pVr.text" = "Nome utente";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
-"7ua-fh-uvU.placeholder" = "Votre nom d'utilisateur iNat";
+"7ua-fh-uvU.placeholder" = "Tuo nome utente iNat";
 
 /* Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
-"9br-9C-J7v.headerTitle" = "Qu'avez-vous vu?";
+"9br-9C-J7v.headerTitle" = "Cosa hai visto?";
 
 /* Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH"; */
-"AWa-0U-YdH.text" = "Attribution";
+"AWa-0U-YdH.text" = "Attribuzione";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat password"; ObjectID = "AeG-t0-DTD"; */
-"AeG-t0-DTD.placeholder" = "Votre mot de passe iNat";
+"AeG-t0-DTD.placeholder" = "Tua password iNat";
 
 /* Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl"; */
-"AiV-F7-sFl.text" = "Détails";
+"AiV-F7-sFl.text" = "Dettagli";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA"; */
-"Be1-xj-miA.text" = "Étiquette";
+"Be1-xj-miA.text" = "Etichetta";
 
 /* Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV"; */
-"CFS-AV-ZYV.text" = "Long. :";
+"CFS-AV-ZYV.text" = "Lon:";
 
 /* Class = "IBUILabel"; text = "Geoprivacy"; ObjectID = "CrY-as-UVn"; */
-"CrY-as-UVn.text" = "Géoconfidentialité";
+"CrY-as-UVn.text" = "Geoprivacy";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "D22-7s-3ca"; */
-"D22-7s-3ca.text" = "Étiquette";
+"D22-7s-3ca.text" = "Etichetta";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x"; */
-"Df8-ua-w8x.headerTitle" = "Description de Wikipédia";
+"Df8-ua-w8x.headerTitle" = "Descrizione Wikipedia";
 
 /* Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8"; */
-"EGB-Ac-Dg8.title" = "Guides";
+"EGB-Ac-Dg8.title" = "Guide";
 
 /* Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF"; */
-"EcO-h2-uOF.text" = "Nom par défaut de l'espèce";
+"EcO-h2-uOF.text" = "Nome di default delle specie";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD"; */
-"Edp-cg-PsD.text" = "Titre";
+"Edp-cg-PsD.text" = "Titolo";
 
 /* Class = "IBUINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx"; */
-"F6V-RD-Yrx.title" = "Taxon";
+"F6V-RD-Yrx.title" = "Tipologia";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA"; */
-"GC7-gQ-cDA.text" = "Utilisateur inconnu";
+"GC7-gQ-cDA.text" = "Sconosciuto";
 
 /* Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X"; */
-"GKo-Sv-g5X.title" = "Observer";
+"GKo-Sv-g5X.title" = "Osserva";
 
 /* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU"; */
-"GmQ-fX-MuU.title" = "Projets";
+"GmQ-fX-MuU.title" = "Progetti";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ"; */
-"Gq1-rm-ccJ.text" = "Statut de conservation inconnu";
+"Gq1-rm-ccJ.text" = "Sconosciuto";
 
 /* Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS"; */
-"H2L-mX-7uS.text" = "Sous-titre";
+"H2L-mX-7uS.text" = "Sottotitolo";
 
 /* Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB"; */
-"HB8-Oo-jRB.title" = "Fermer";
+"HB8-Oo-jRB.title" = "Chiudi";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Version"; ObjectID = "I43-iz-miT"; */
-"I43-iz-miT.headerTitle" = "Version";
+"I43-iz-miT.headerTitle" = "Versione";
 
 /* Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev"; */
-"IvC-UJ-yev.text" = "Contacter le soutien technique";
+"IvC-UJ-yev.text" = "Contatta il supporto";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "Vous aimez iNat? Évaluez-nous";
+"r3a-dI-zLW.text" = "Ti piace iNat? Votaci";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
-"J9i-XA-tlL.text" = "Choisir des projets";
+"J9i-XA-tlL.text" = "Scegli progetti";
 
 /* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ"; */
-"JRR-T4-jKQ.title" = "Terminé";
+"JRR-T4-jKQ.title" = "Fatto";
 
 /* Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal"; */
-"JkM-AH-Zal.text" = "Ouvrir";
+"JkM-AH-Zal.text" = "apri";
 
 /* Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb"; */
-"Kfy-Up-oCb.title" = "Chercher une espèce";
+"Kfy-Up-oCb.title" = "Cerca specie";
 
 /* Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv"; */
-"Kp6-B4-NJv.text" = "Inscription";
+"Kp6-B4-NJv.text" = "Iscriviti";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT"; */
 "M93-9f-xgT.text" = "???";
 
 /* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
-"ME2-ai-L2I.normalTitle" = "Voir davantage...";
+"ME2-ai-L2I.normalTitle" = "Mostra altro...";
 
 /* Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
-"Nsa-pu-mCD.title" = "Choisir des projets";
+"Nsa-pu-mCD.title" = "Scegli progetti";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "Obm-wO-wio"; */
-"Obm-wO-wio.title" = "Annuler";
+"Obm-wO-wio.title" = "Cancella";
 
 /* Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM"; */
-"Ohz-Dw-0wM.text" = "Nom de l'espèce";
+"Ohz-Dw-0wM.text" = "Nome delle specie";
 
 /* Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4"; */
 "P1E-WK-OB4.text" = "00:00";
 
 /* Class = "IBUINavigationItem"; title = "Project"; ObjectID = "Pc6-ER-pVU"; */
-"Pc6-ER-pVU.title" = "Projet";
+"Pc6-ER-pVU.title" = "Progetto";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Location"; ObjectID = "Q0S-qE-f4O"; */
-"Q0S-qE-f4O.headerTitle" = "Emplacement";
+"Q0S-qE-f4O.headerTitle" = "Località";
 
 /* Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq"; */
-"QYT-BR-dNq.text" = "Besoin d'aide avec votre ID?";
+"QYT-BR-dNq.text" = "Serve aiuto con l'ID?";
 
 /* Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh"; */
-"Qrv-G3-6nh.text" = "Conçu et programmé par iNaturalist, à la California Academy of Sciences, avec le soutien de l'Encyclopédie de la vie.\n\nCette application utilise des éléments libres ou protégés par Creative Commons, comme Three20, Restkit, TapkuLibrary par Devin Ross, DejalActivityView par David Sinclair, ainsi que les icones Glyphish par Joseph Wain. Nous saluons le talent et la générosité de ces programmeurs et artistes.";
+"Qrv-G3-6nh.text" = "Progettato e costruito da iNaturalist alla California Academy of Sciences, con il supporto della Encyclopedia of Life.\n\nQuesta app fa ampio uso di materiale da open source e Licenze Creative Commons, inclusi Three20, Restkit, TapkuLibrary di Devin Ross, DejalActivityView di David Sinclair, e icone Glyphish di Joseph Wain. Sentiti ringraziamenti a questi generosi e talentuosi ingegneri e artisti! ";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
 "R4F-3k-D7x.text" = "???";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ"; */
-"RVt-Kj-7RQ.headerTitle" = "Statut de conservation";
+"RVt-Kj-7RQ.headerTitle" = "Stato di conservazione";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM"; */
-"SQG-h4-rqM.text" = "Nom d'utilisateur";
+"SQG-h4-rqM.text" = "Nome utente";
 
 /* Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq"; */
-"SaM-EA-Ovq.title" = "GuideTaxon";
+"SaM-EA-Ovq.title" = "Guida Tipologia";
 
 /* Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI"; */
-"Sr1-uD-ljI.text" = "2.1.1, sous-version 2.1.12";
+"Sr1-uD-ljI.text" = "2.1.1, build 2.1.12";
 
 /* Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C"; */
-"TJg-mX-i6C.text" = "Connectez-vous avec Facebook";
+"TJg-mX-i6C.text" = "Accedi con Facebook";
 
 /* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
 "UWz-sc-ZIU.text" = "m";
@@ -176,167 +176,167 @@
 "VjR-qL-q95.segmentTitles[1]" = "Satellite";
 
 /* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95"; */
-"VjR-qL-q95.segmentTitles[2]" = "Mixte";
+"VjR-qL-q95.segmentTitles[2]" = "Ibrida";
 
 /* Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j"; */
-"Vmt-AE-W0j.title" = "Modifier";
+"Vmt-AE-W0j.title" = "Modifica";
 
 /* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ"; */
-"X8Y-bf-fBQ.text" = "Le titre du projet est beaucoup trop long.";
+"X8Y-bf-fBQ.text" = "Il nome del progetto è troppo lungo fratello";
 
 /* Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF"; */
-"XXq-bW-vbF.title" = "Détails du projet";
+"XXq-bW-vbF.title" = "Dettagli Progetto";
 
 /* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh"; */
 "XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
 
 /* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
-"Ypi-aU-Rf4.text" = "Liste rouge de l'UICN";
+"Ypi-aU-Rf4.text" = "IUCN Lista Rossa";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs"; */
-"Z4l-tt-zMs.headerTitle" = "Date / Heure";
+"Z4l-tt-zMs.headerTitle" = "Data / Ora";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Projects"; ObjectID = "ZOk-5a-K6O"; */
-"ZOk-5a-K6O.headerTitle" = "Projets";
+"ZOk-5a-K6O.headerTitle" = "Progetti";
 
 /* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "ZUi-2S-ebn"; */
-"ZUi-2S-ebn.title" = "Projets";
+"ZUi-2S-ebn.title" = "Progetti";
 
 /* Class = "IBUILabel"; text = "Password"; ObjectID = "ZzY-Yv-hhu"; */
-"ZzY-Yv-hhu.text" = "Mot de passe ";
+"ZzY-Yv-hhu.text" = "Password";
 
 /* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA"; */
-"bKM-7Q-aRA.text" = "Le titre du projet est beaucoup trop long";
+"bKM-7Q-aRA.text" = "Il nome del progetto è troppo lungo fratello";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF"; */
-"bTy-8i-NnF.text" = "Étiquette";
+"bTy-8i-NnF.text" = "Etichetta";
 
 /* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9"; */
-"bW0-Pb-mB9.text" = "Nom scientifique";
+"bW0-Pb-mB9.text" = "Nome scientifico";
 
 /* Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA"; */
-"cQc-hZ-KcA.headerTitle" = "Plus";
+"cQc-hZ-KcA.headerTitle" = "Altro";
 
 /* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "cSZ-cD-dfS"; */
-"cSZ-cD-dfS.title" = "Ajouter";
+"cSZ-cD-dfS.title" = "Aggiungi";
 
 /* Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb"; */
-"cTI-n2-vmb.title" = "Titre du guide";
+"cTI-n2-vmb.title" = "Titolo della Guida";
 
 /* Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC"; */
-"dYu-ti-1gC.text" = "Ajouter une observation";
+"dYu-ti-1gC.text" = "Aggiungi osservazione";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk"; */
-"e0j-MT-hzk.text" = "Inconnue";
+"e0j-MT-hzk.text" = "Sconosciuto";
 
 /* Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY"; */
-"eMN-g3-ANY.text" = "Préc.";
+"eMN-g3-ANY.text" = "Acc.";
 
 /* Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht"; */
-"exb-m5-Kht.text" = "Nom du taxon";
+"exb-m5-Kht.text" = "Nome tipologia";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Observation Rules"; ObjectID = "gDe-P6-41D"; */
-"gDe-P6-41D.headerTitle" = "Règles au sujet des observations";
+"gDe-P6-41D.headerTitle" = "Regole per le osservazioni";
 
 /* Class = "IBUILabel"; text = "Lat:"; ObjectID = "gq3-Sv-hEY"; */
-"gq3-Sv-hEY.text" = "Lat. :";
+"gq3-Sv-hEY.text" = "Lat:";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh"; */
-"h2K-Kg-3dh.headerTitle" = "Connectez-vous avec Google+";
+"h2K-Kg-3dh.headerTitle" = "Accedi con Google+";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN"; */
-"hKK-sS-qAN.title" = "Annuler";
+"hKK-sS-qAN.title" = "Annulla";
 
 /* Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb"; */
-"hX2-Qg-qfb.normalTitle" = "Voir sur iNaturalist";
+"hX2-Qg-qfb.normalTitle" = "Guarda su iNaturalist";
 
 /* Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u"; */
-"hfA-vB-13u.text" = "Connexion";
+"hfA-vB-13u.text" = "Accedi";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT"; */
-"jaz-9S-FvT.title" = "Annuler";
+"jaz-9S-FvT.title" = "Annulla";
 
 /* Class = "IBUILabel"; text = "Common name"; ObjectID = "ju8-if-UDh"; */
-"ju8-if-UDh.text" = "Nom commun";
+"ju8-if-UDh.text" = "Nome comune";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Description"; ObjectID = "kaD-3n-Xuk"; */
-"kaD-3n-Xuk.headerTitle" = "Description";
+"kaD-3n-Xuk.headerTitle" = "Descrizione";
 
 /* Class = "IBUITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0"; */
-"l3n-dl-Zr0.title" = "Réglages";
+"l3n-dl-Zr0.title" = "Impostazioni";
 
 /* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku"; */
-"lPu-9O-6Ku.title" = "Projets";
+"lPu-9O-6Ku.title" = "Progetti";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I"; */
-"ljj-kr-K3I.headerTitle" = "Vous n'avez pas de compte?";
+"ljj-kr-K3I.headerTitle" = "Non hai ancora un account?";
 
 /* Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p"; */
-"lol-PH-r6p.text" = "Choisissez un type de carte";
+"lol-PH-r6p.text" = "Scegli un tipo di mappa";
 
 /* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "mgd-CX-pVK"; */
-"mgd-CX-pVK.title" = "Terminé";
+"mgd-CX-pVK.title" = "Fatto";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
-"oWq-bA-sYY.headerTitle" = "Votre compte iNaturalist";
+"oWq-bA-sYY.headerTitle" = "Il tuo account iNaturalist";
 
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
-"ohk-ES-lZM.text" = "Connectez-vous avec Google";
+"ohk-ES-lZM.text" = "Accedi con Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
-"pL9-Nd-0JB.headerTitle" = "Aide";
+"pL9-Nd-0JB.headerTitle" = "Aiuto";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
-"pmm-Vg-XgJ.placeholder" = "Nom de l'espèce";
+"pmm-Vg-XgJ.placeholder" = "Nome delle specie";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
-"qJK-jT-EPE.headerTitle" = "Notes";
+"qJK-jT-EPE.headerTitle" = "Note";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C"; */
-"qfi-HT-h2C.title" = "Annuler";
+"qfi-HT-h2C.title" = "Annulla";
 
 /* Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP"; */
-"qsE-wG-WNP.text" = "Titre du projet";
+"qsE-wG-WNP.text" = "Titolo del progetto";
 
 /* Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R"; */
-"r3N-gL-j8R.text" = "Nom du projet";
+"r3N-gL-j8R.text" = "Nome del progetto";
 
 /* Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj"; */
-"r7b-jc-Kqj.title" = "Synchroniser";
+"r7b-jc-Kqj.title" = "Sincronizza";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "rwB-lT-a3J"; */
-"rwB-lT-a3J.text" = "Titre";
+"rwB-lT-a3J.text" = "Titolo";
 
 /* Class = "IBUITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn"; */
-"s0d-iz-ydn.title" = "Observations";
+"s0d-iz-ydn.title" = "Osservazioni";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "Connexion à iNaturalist.org";
+"tW8-NR-sj7.headerTitle" = "Accedi a iNaturalist.org";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
-"tiA-DP-jEV.title" = "Connexion";
+"tiA-DP-jEV.title" = "Accedi";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC"; */
-"tnA-n3-DOC.headerTitle" = "Termes";
+"tnA-n3-DOC.headerTitle" = "Termini";
 
 /* Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX"; */
-"tp5-5y-3mX.normalTitle" = "Détails";
+"tp5-5y-3mX.normalTitle" = "Dettagli";
 
 /* Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf"; */
-"uR8-0q-Vnf.title" = "Observations";
+"uR8-0q-Vnf.title" = "Osservazioni";
 
 /* Class = "IBUIBarButtonItem"; title = "Join"; ObjectID = "wCV-Z1-3g6"; */
-"wCV-Z1-3g6.title" = "Se joindre au projet";
+"wCV-Z1-3g6.title" = "Unisciti";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Credits"; ObjectID = "wVj-s3-ngo"; */
-"wVj-s3-ngo.headerTitle" = "Crédits";
+"wVj-s3-ngo.headerTitle" = "Ringraziamenti";
 
 /* Class = "IBUITabBarItem"; title = "Map"; ObjectID = "x9r-Ta-0Z8"; */
-"x9r-Ta-0Z8.title" = "Carte";
+"x9r-Ta-0Z8.title" = "Mappa";
 
 /* Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps"; */
-"xdk-Tu-cps.text" = "Nom du guide";
+"xdk-Tu-cps.text" = "Nome della guida";
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
-"zpr-b5-V8G.title" = "Modifier l'emplacement";
+"zpr-b5-V8G.title" = "Modifica Luogo";
 
