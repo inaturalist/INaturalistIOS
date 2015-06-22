@@ -665,6 +665,7 @@ static char PARTNER_ASSOCIATED_KEY;
                 [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
                                                           forKey:kInatCustomBaseURLStringKey];
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+                self.selectedPartner = p;
             }
         } else {
             // revert to default base URL
