@@ -125,19 +125,35 @@ static const int CategorizeNewObsSwitchTag = 11;
 
 - (void)localSignOut
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    // clear g+
     if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
+
+    // clear preference cached signin info & preferences
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults synchronize];
+    [defaults removeObjectForKey:kINatAutocompleteNamesPrefKey];
+    [defaults removeObjectForKey:kInatCategorizeNewObsPrefKey];
+    [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // clear cached RKClient authentication details
     [RKClient.sharedClient setUsername:nil];
     [RKClient.sharedClient setPassword:nil];
+    [RKClient.sharedClient setValue:nil forHTTPHeaderField:@"Authorization"];
+    
+    // since we've removed any custom base URL, reconfigure RestKit again
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate reconfigureForNewBaseUrl];
+    
+    // remove OAuth account stuff
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     for (NXOAuth2Account *account in sharedStore.accounts) {
         [sharedStore removeAccount:account];
     }
+    
+    // update UI
     [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
     [self initUI];
 }
