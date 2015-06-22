@@ -273,11 +273,8 @@ NSInteger INatMinPasswordLength = 6;
                                              insertIntoManagedObjectContext:context];
                                   user.login = [parsedData objectForKey:@"login"];
                                   user.recordID = [parsedData objectForKey:@"id"];
-                                  user.name = [parsedData objectForKey:@"name"];
-                                  user.userIconURL = [parsedData objectForKey:@"user_icon_url"];
                                   user.observationsCount = [parsedData objectForKey:@"observations_count"];
                                   user.identificationsCount = [parsedData objectForKey:@"identifications_count"];
-                                  user.mediumUserIconURL = [parsedData objectForKey:@"medium_user_icon_url"];
                                   user.siteId = [parsedData objectForKey:@"site_id"];
                                   
                                   NSError *saveError = nil;
