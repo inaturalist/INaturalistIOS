@@ -586,14 +586,14 @@
                                            success:^(NSDictionary *info) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                [SVProgressHUD showSuccessWithStatus:nil];
+                                               if (strongSelf.selectedPartner) {
+                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                 completion:nil];
+                                               }
                                                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                    [appDelegate showMainUI];
                                                } else {
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                               }
-                                               if (strongSelf.selectedPartner) {
-                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                 completion:nil];
                                                }
                                            } failure:^(NSError *error) {
                                                [SVProgressHUD dismiss];
