@@ -125,6 +125,12 @@ NSInteger INatMinPasswordLength = 6;
     self.currentSuccessBlock = successBlock;
     self.currentErrorBlock = errorBlock;
     
+    NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
+    // format for rails
+    localeString = [localeString stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    // default to english
+    if (!localeString) { localeString = @"en-US"; }
+    
     [[RKClient sharedClient] post:@"/users.json"
                        usingBlock:^(RKRequest *request) {
                            request.params = @{
@@ -136,6 +142,7 @@ NSInteger INatMinPasswordLength = 6;
                                               @"user[preferred_observation_license]": license,
                                               @"user[preferred_photo_license]": license,
                                               @"user[preferred_sound_license]": license,
+                                              @"user[locale]": localeString,
                                               };
                            
                            request.onDidLoadResponse = ^(RKResponse *response) {
