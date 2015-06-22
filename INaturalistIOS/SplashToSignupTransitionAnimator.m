@@ -27,6 +27,20 @@
     // insert the signup view underneath the splash view in the transition context
     [[transitionContext containerView] insertSubview:signup.view atIndex:0];
     
+    // Custom transitions break topLayoutGuide in iOS 7, fix its constraint
+    CGFloat navigationBarHeight = signup.navigationController.navigationBar.frame.size.height;
+    for (NSLayoutConstraint *constraint in signup.view.constraints) {
+        if (constraint.firstItem == signup.topLayoutGuide
+            && constraint.firstAttribute == NSLayoutAttributeHeight
+            && constraint.secondItem == nil
+            && constraint.constant < navigationBarHeight) {
+            constraint.constant += navigationBarHeight;
+        }
+    }
+    
+    // layout the container to get the constraints the toVC in iOS7
+    [[transitionContext containerView] layoutIfNeeded];
+
     CGFloat width = splash.view.frame.size.width;
     
     // signup screen stuff starts off-screen to the right

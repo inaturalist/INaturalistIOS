@@ -28,6 +28,20 @@
     // insert the login view underneath the list view in the transition context
     [[transitionContext containerView] insertSubview:login.view atIndex:0];
     
+    // Custom transitions break topLayoutGuide in iOS 7, fix its constraint
+    CGFloat navigationBarHeight = login.navigationController.navigationBar.frame.size.height;
+    for (NSLayoutConstraint *constraint in login.view.constraints) {
+        if (constraint.firstItem == login.topLayoutGuide
+            && constraint.firstAttribute == NSLayoutAttributeHeight
+            && constraint.secondItem == nil
+            && constraint.constant < navigationBarHeight) {
+            constraint.constant += navigationBarHeight;
+        }
+    }
+    
+    // layout the container to get the constraints the toVC in iOS7
+    [[transitionContext containerView] layoutIfNeeded];
+    
     CGFloat width = splash.view.frame.size.width;
     
     // login screen stuff starts off-screen to the right
@@ -42,6 +56,7 @@
         splash.blurView.alpha = 0.0f;
         splash.backgroundImageView.alpha = 0.0f;
     }
+    
     
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                      animations:^{
