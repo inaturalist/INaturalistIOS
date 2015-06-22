@@ -247,6 +247,10 @@ NSInteger INatMinPasswordLength = 6;
         [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
         [self removeOAuth2Observers];
         
+        // because we're in the midst of switching the default URL, and adding access tokens,
+        // we can't seem to make an object loader fetch here. so instead we do the ugly GET
+        // and do the User object mapping manually. admittedly not ideal, and worth another
+        // look when we upgrade to RK 0.2x
         [[RKClient sharedClient] get:@"/users/edit.json"
                           usingBlock:^(RKRequest *request) {
                               
@@ -262,6 +266,27 @@ NSInteger INatMinPasswordLength = 6;
                                                                                     error:&error];
                                   if (error) {
                                       NSLog(@"error parsing json: %@", error.localizedDescription);
+                                  }
+                                  
+                                  NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
+                                  User *user = [[User alloc] initWithEntity:[User entity]
+                                             insertIntoManagedObjectContext:context];
+                                  user.login = [parsedData objectForKey:@"login"];
+                                  user.recordID = [parsedData objectForKey:@"id"];
+                                  user.name = [parsedData objectForKey:@"name"];
+                                  user.userIconURL = [parsedData objectForKey:@"user_icon_url"];
+                                  user.observationsCount = [parsedData objectForKey:@"observations_count"];
+                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"];
+                                  user.mediumUserIconURL = [parsedData objectForKey:@"medium_user_icon_url"];
+                                  user.siteId = [parsedData objectForKey:@"site_id"];
+                                  
+                                  NSError *saveError = nil;
+                                  [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                  if (saveError) {
+                                      [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
+                                                                          saveError.localizedDescription]];
+                                      [self executeError:saveError];
+                                      return;
                                   }
                                   
                                   NSString *userName = [parsedData objectForKey:@"login"];
@@ -427,9 +452,10 @@ NSInteger INatMinPasswordLength = 6;
     // be extremely defensive here. an invalid baseURL shouldn't be possible,
     // but if it does happen, nothing in the app will work.
     NSURL *partnerURL = partner.baseURL;
-    if (!partner.baseURL) { return; }
+    if (!partnerURL) { return; }
     [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
                                               forKey:kInatCustomBaseURLStringKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
     
     // put user object changing site id
