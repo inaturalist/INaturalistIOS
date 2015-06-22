@@ -21,9 +21,11 @@
     __block BOOL hasDate = self.observedOn != nil;
     __block BOOL hasLocation = self.latitude != nil;
     
+    NSInteger initialObsPhotoCount = self.observationPhotos.count;
+    
     [assets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger idx, BOOL *stop) {
         ObservationPhoto *op = [ObservationPhoto object];
-        op.position = @(idx);
+        op.position = @(initialObsPhotoCount + idx);
         [op setObservation:self];
         [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
         
