@@ -144,26 +144,19 @@ static const int CategorizeNewObsSwitchTag = 11;
 
 - (void)launchTutorial
 {
-    NSString *curLang = [[NSLocale preferredLanguages] objectAtIndex:0];
-
-    NSMutableArray *tutorialImages = [NSMutableArray array];
-    for (int i = 1; i <= 7; i++) {
-        NSURL *tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%d%@", i, curLang]
-                                                         withExtension:@"png"];
-        if (!tutorialItemUrl) {
-            // if we don't have tutorial files for the user's preferred language,
-            // default to english
-            tutorialItemUrl = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"tutorial%den", i]
-                                                      withExtension:@"png"];
-        }
-        
-        // be defensive
-        if (tutorialItemUrl) {
-            [tutorialImages addObject:tutorialItemUrl];
-        }
-    }
-    NSArray *galleryData = [tutorialImages bk_map:^id(NSURL *url) {
-        return [MHGalleryItem itemWithURL:url.absoluteString galleryType:MHGalleryTypeImage];
+    
+    NSArray *tutorialImages = @[
+                                [UIImage imageNamed:@"tutorial1"],
+                                [UIImage imageNamed:@"tutorial2"],
+                                [UIImage imageNamed:@"tutorial3"],
+                                [UIImage imageNamed:@"tutorial4"],
+                                [UIImage imageNamed:@"tutorial5"],
+                                [UIImage imageNamed:@"tutorial6"],
+                                [UIImage imageNamed:@"tutorial7"],
+                                ];
+    
+    NSArray *galleryData = [tutorialImages bk_map:^id(UIImage *image) {
+        return [MHGalleryItem itemWithImage:image];
     }];
     
     MHUICustomization *customization = [[MHUICustomization alloc] init];
