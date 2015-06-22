@@ -5,6 +5,15 @@
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
 "0Q2-fy-dMQ.text" = "Tutorial";
 
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Autocomplete names";
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Categorize new observations";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "Aiy-zE-mfm"; */
+"Aiy-zE-mfm.text" = "iNaturalist Network";
+
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Guides";
 
@@ -281,11 +290,20 @@
 /* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
 "oWq-bA-sYY.headerTitle" = "Your iNaturalist Account";
 
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
+"LbD-zB-zU2.headerTitle" = "App Settings";
+
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Sign in with Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "Help";
+
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
+"sxb-6N-VGO.headerTitle" = "About";
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Acknowledgements";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "Species name";
