@@ -271,11 +271,11 @@ NSInteger INatMinPasswordLength = 6;
                                   NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
                                   User *user = [[User alloc] initWithEntity:[User entity]
                                              insertIntoManagedObjectContext:context];
-                                  user.login = [parsedData objectForKey:@"login"];
-                                  user.recordID = [parsedData objectForKey:@"id"];
-                                  user.observationsCount = [parsedData objectForKey:@"observations_count"];
-                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"];
-                                  user.siteId = [parsedData objectForKey:@"site_id"];
+                                  user.login = [parsedData objectForKey:@"login"] ?: nil;
+                                  user.recordID = [parsedData objectForKey:@"id"] ?: nil;
+                                  user.observationsCount = [parsedData objectForKey:@"observations_count"] ?: nil;
+                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: nil;
+                                  user.siteId = [parsedData objectForKey:@"site_id"] ?: nil;
                                   
                                   NSError *saveError = nil;
                                   [[[RKObjectManager sharedManager] objectStore] save:&saveError];
