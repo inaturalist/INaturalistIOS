@@ -461,6 +461,7 @@ static char PARTNER_ASSOCIATED_KEY;
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = NO;
             login.backgroundImage = strongSelf.backgroundImageView.image;
+            login.selectedPartner = strongSelf.selectedPartner;
             [strongSelf.navigationController pushViewController:login animated:YES];
         } forControlEvents:UIControlEventTouchUpInside];
         
