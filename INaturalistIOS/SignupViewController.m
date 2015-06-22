@@ -513,6 +513,10 @@
                                                 license:license
                                                 success:^(NSDictionary *info) {
                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                    if (strongSelf.selectedPartner) {
+                                                        [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                      completion:nil];
+                                                    }
                                                     [SVProgressHUD showSuccessWithStatus:nil];
                                                     if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                         [appDelegate showMainUI];
