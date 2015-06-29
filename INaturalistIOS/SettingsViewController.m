@@ -47,6 +47,8 @@ static const int VersionCellTag = 5;
 
 static const int AutocompleteNamesSwitchTag = 10;
 static const int CategorizeNewObsSwitchTag = 11;
+static const int AutocompleteNamesLabelTag = 12;
+static const int CategorizeNewObsLabelTag = 13;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -330,14 +332,29 @@ static const int CategorizeNewObsSwitchTag = 11;
 {
     if (indexPath.section == 4 && indexPath.row == 0) {
         cell.textLabel.text = self.versionText;
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.backgroundView = nil;
         cell.tag = VersionCellTag;
         
-    } else if (indexPath.section == 1) {
+    }
+    else if (indexPath.section == 0 && indexPath.row == 0) {
+        // Set the alignment for username.
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
+    else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
 
         if (indexPath.item == 0 || indexPath.item == 1) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
+            if(autoNameLabel){
+                autoNameLabel.textAlignment = NSTextAlignmentNatural;
+            }
+            UILabel *categoriesLabel = (UILabel *)[cell.contentView viewWithTag:CategorizeNewObsLabelTag];
+            if(categoriesLabel){
+                categoriesLabel.textAlignment = NSTextAlignmentNatural;
+            }
             
             UISwitch *switcher;
             if (![cell viewWithTag:10 + indexPath.item]) {
