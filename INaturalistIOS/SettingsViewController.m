@@ -404,6 +404,12 @@ static const int CategorizeNewObsLabelTag = 13;
             
         }
     }
+    else if (indexPath.section == 2) {  // Handles help section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
+    else if (indexPath.section == 3) {  // Handles Acknowledgements section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
 }
 
 

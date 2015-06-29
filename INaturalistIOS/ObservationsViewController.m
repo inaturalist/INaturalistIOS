@@ -699,15 +699,15 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	if (o.activityCount > 0) {
 		activityButton.hidden = NO;
         interactiveActivityButton.hidden = NO;
-		CGRect frame = syncImage.frame;
-		frame.origin.x = cell.frame.size.width - 10 - activityButton.frame.size.width - frame.size.width;
-		syncImage.frame = frame;
+//		CGRect frame = syncImage.frame;
+//		frame.origin.x = cell.frame.size.width - 10 - activityButton.frame.size.width - frame.size.width;
+//		syncImage.frame = frame;
 	} else {
 		activityButton.hidden = YES;
         interactiveActivityButton.hidden = YES;
-		CGRect frame = syncImage.frame;
-		frame.origin.x = cell.frame.size.width - 10 - frame.size.width;
-		syncImage.frame = frame;
+//		CGRect frame = syncImage.frame;
+//		frame.origin.x = cell.frame.size.width - 10 - frame.size.width;
+//		syncImage.frame = frame;
 	}
     [interactiveActivityButton addTarget:self
                                   action:@selector(clickedActivity:event:)
@@ -715,6 +715,40 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	
     upperRight.text = o.observedOnShortString;
     syncImage.hidden = !o.needsSync;
+    
+    
+    if(!cell.constraints.count){
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        syncImage.translatesAutoresizingMaskIntoConstraints = NO;
+        activityButton.translatesAutoresizingMaskIntoConstraints = NO;
+        interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
+        title.translatesAutoresizingMaskIntoConstraints = NO;
+        subtitle.translatesAutoresizingMaskIntoConstraints = NO;
+        upperRight.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        title.textAlignment = NSTextAlignmentNatural;
+        subtitle.textAlignment = NSTextAlignmentNatural;
+        
+        NSDictionary *views = @{@"imageView":imageView,@"syncImage": syncImage,@"title":title,@"subtitle":subtitle,@"upperRight":upperRight,@"activityButton": activityButton,@"interactiveActivityButton":interactiveActivityButton};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[upperRight]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==44)]-5-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-|" options:NSLayoutFormatDirectionLeadingToTrailing metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title]-2-[subtitle]-5-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[interactiveActivityButton(==35)]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[interactiveActivityButton]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[syncImage(==16)]-4-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[activityButton(==24)]-3-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[upperRight(==15)]-[activityButton(==22)]-4-|" options:0 metrics:0 views:views]];
+    }
     
     return cell;
 }
