@@ -1,22 +1,26 @@
 //
-//  SyncQueue.m
+//  UploadManager.m
 //  iNaturalist
 //
 //  Created by Ken-ichi Ueda on 3/20/12.
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import "SyncQueue.h"
+#import "UploadManager.h"
 #import "INatModel.h"
 #import "DeletedRecord.h"
 #import "Observation.h"
 #import "Analytics.h"
 
-@implementation SyncQueue
-@synthesize queue = _queue;
-@synthesize delegate = _delegate;
-@synthesize loader = _loader;
-@synthesize started = _started;
+@interface UploadManager ()
+@property (nonatomic, strong) NSMutableArray *queue;
+@property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
+@property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, assign) BOOL started;
+@property NSOperationQueue *uploadWorkQueue;
+@end
+
+@implementation UploadManager
 
 - (id)initWithDelegate:(id)delegate
 {
@@ -24,6 +28,9 @@
     if (self) {
         self.delegate = delegate;
         self.queue = [[NSMutableArray alloc] init];
+        
+        self.uploadWorkQueue = [[NSOperationQueue alloc] init];
+        self.uploadWorkQueue.maxConcurrentOperationCount = 1;
     }
     return self;
 }
@@ -80,18 +87,11 @@
     if (recordsToSync.count == 0) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC finished %@", model]];
         [self.queue removeObject:current];
-        if ([self.delegate respondsToSelector:@selector(syncQueueFinishedSyncFor:)]) {
-            [self.delegate performSelector:@selector(syncQueueFinishedSyncFor:) withObject:model];
-        }
         [self start];
         return;
     }
     
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC start uploading %@", model]];
-    
-    if ([self.delegate respondsToSelector:@selector(syncQueueStartedSyncFor:)]) {
-        [self.delegate performSelector:@selector(syncQueueStartedSyncFor:) withObject:model];
-    }
     
     // manually applying mappings b/c PUT and POST responses return JSON without a root element, 
     // e.g. {foo: 'bar'} instead of observation: {foo: 'bar'}, which RestKit apparently can't 
@@ -159,9 +159,9 @@
     [[Analytics sharedClient] debugLog:@"SYNC finished"];
 
     [self stop];
-    if ([self.delegate respondsToSelector:@selector(syncQueueFinished)]) {
-        [self.delegate performSelector:@selector(syncQueueFinished)];
-    }
+    if ([self.delegate respondsToSelector:@selector(uploadSessionFinished)])
+        [self.delegate uploadSessionFinished];
+
     NSNotification *syncNotification = [NSNotification notificationWithName:INatUserSavedObservationNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:syncNotification];
 }
@@ -192,19 +192,13 @@
         o = [objects objectAtIndex:i];
         [o setSyncedAt:now];
         
-        if ([self.delegate respondsToSelector:@selector(syncQueueSynced:number:of:)]) {
-            NSMethodSignature *sig = [[self.delegate class]
-                                      instanceMethodSignatureForSelector:@selector(syncQueueSynced:number:of:)];
-            NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
+        if ([self.delegate respondsToSelector:@selector(uploadSuccessFor:number:total:)]) {
             NSInteger number = [syncedCount intValue] + 1;
             current[@"syncedCount"] = @(number);
-            NSInteger of = [needingSyncCount intValue];
-            [inv setTarget:self.delegate];
-            [inv setSelector:@selector(syncQueueSynced:number:of:)];
-            [inv setArgument:&o atIndex:2];
-            [inv setArgument:&number atIndex:3];
-            [inv setArgument:&of atIndex:4];
-            [inv invoke];
+            NSInteger total = [needingSyncCount intValue];
+            [self.delegate uploadSuccessFor:o
+                                     number:number
+                                      total:total];
         }
     }
     
@@ -229,11 +223,11 @@
         objectLoader.method == RKRequestMethodPUT &&
         [objectLoader.sourceObject respondsToSelector:@selector(recordID)] &&
         [objectLoader.sourceObject performSelector:@selector(recordID)] != nil;
-    
+
     if (jsonParsingError || authFailure) {
         [self stop];
-        if ([self.delegate respondsToSelector:@selector(syncQueueAuthRequired)]) {
-            [self.delegate performSelector:@selector(syncQueueAuthRequired)];
+        if ([self.delegate respondsToSelector:@selector(uploadSessionAuthRequired)]) {
+            [self.delegate uploadSessionAuthRequired];
         }
     } else if (recordDeletedFromServer) {
         // if it was in the sync queue there were local changes, so post it again
@@ -241,17 +235,8 @@
         [record setSyncedAt:nil];
         [record setRecordID:nil];
         [record save];
-    } else if ([self.delegate respondsToSelector:@selector(syncQueue:objectLoader:didFailWithError:)]) {
-        NSMethodSignature *sig = [[self.delegate class]
-                                  instanceMethodSignatureForSelector:@selector(syncQueue:objectLoader:didFailWithError:)];
-        NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
-        SyncQueue *sq = self;
-        [inv setTarget:self.delegate];
-        [inv setSelector:@selector(syncQueue:objectLoader:didFailWithError:)];
-        [inv setArgument:&sq atIndex:2];
-        [inv setArgument:&objectLoader atIndex:3];
-        [inv setArgument:&error atIndex:4];
-        [inv invoke];
+    } else if ([self.delegate respondsToSelector:@selector(uploadFailedFor:error:)]) {
+        [self.delegate uploadFailedFor:nil error:error];
     } else {
         [self stop];
     }
@@ -282,8 +267,8 @@
 {
     self.loader = objectLoader;
     [self stop];
-    if ([self.delegate respondsToSelector:@selector(syncQueueUnexpectedResponse)]) {
-        [self.delegate performSelector:@selector(syncQueueUnexpectedResponse)];
+    if ([self.delegate respondsToSelector:@selector(uploadFailedFor:error:)]) {
+        [self.delegate uploadFailedFor:nil error:nil];
     }
 }
 
@@ -292,8 +277,9 @@
     if (request.method != RKRequestMethodDELETE) return;
     
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC failed delete with %@", error.localizedDescription]];
-    if ([self.delegate respondsToSelector:@selector(syncQueue:nonLoaderRequestFailedWithError:)])
-        [self.delegate syncQueue:self nonLoaderRequestFailedWithError:error];
+    if ([self.delegate respondsToSelector:@selector(uploadFailedFor:error:)]) {
+        [self.delegate uploadFailedFor:nil error:error];
+    }
     
     [self stop];
 }

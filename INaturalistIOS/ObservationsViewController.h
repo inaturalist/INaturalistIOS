@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ObservationDetailViewController.h"
-#import "SyncQueue.h"
+#import "UploadManager.h"
 #import "DeletedRecord.h"
 
 @class INatModel;
@@ -16,7 +16,7 @@
 @class ObservationStore;
 
 
-@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, UIAlertViewDelegate, SyncQueueDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
+@interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
 @property (nonatomic, assign) NSInteger observationsToSyncCount;
 @property (nonatomic, assign) NSInteger syncedObservationsCount;
 @property (nonatomic, assign) NSInteger observationPhotosToSyncCount;
@@ -25,8 +25,7 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton; // if the button is just kind of floating and not assigned a super view, it will get deallocated UNLESS we have a strong reference here
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
-@property (nonatomic, strong) SyncQueue *syncQueue;
-@property (nonatomic, strong) NSMutableArray *syncErrors;
+@property (nonatomic, strong) UploadManager *syncQueue;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 
 - (IBAction)sync:(id)sender;
