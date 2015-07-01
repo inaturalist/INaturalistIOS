@@ -87,7 +87,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)
                                                     delegate:self 
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
@@ -97,7 +97,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults objectForKey:INatTokenPrefKey]) {
-        [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to sync.", @"This is an explanation for why the sync button triggers a login prompt.")];
+        [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to upload.", @"This is an explanation for why the upload button triggers a login prompt.")];
         return;
     }
     
@@ -117,7 +117,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 	[self.syncQueue start];
     
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
+        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
                                                                style:UIBarButtonItemStyleBordered
                                                               target:self
                                                               action:@selector(stopSync)];
@@ -258,7 +258,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
         
         if (notify) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)];
             [self.refreshControl endRefreshing];
         }
         
@@ -374,7 +374,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         
     }
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount] + [ObservationPhoto deletedRecordCount];
-    NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Sync ",nil)];
+    NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Upload ", nil)];
     if (self.observationsToSyncCount > 0) {
         if (self.observationsToSyncCount == 1) {
             [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observation",nil), self.observationsToSyncCount]];
