@@ -887,7 +887,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self uiToObservation];
     switch (buttonIndex) {
         case 0:
-            self.observation.geoprivacy = NSLocalizedString( @"open_adj",nil);
+            self.observation.geoprivacy = NSLocalizedString(@"open",nil);
             break;
         case 1:
             self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
@@ -1132,7 +1132,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                  delegate:self 
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Open_adj",nil),
+                                                        otherButtonTitles:NSLocalizedString(@"Open",nil),
                                                                             NSLocalizedString(@"Obscured",nil),
                                                                             NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
