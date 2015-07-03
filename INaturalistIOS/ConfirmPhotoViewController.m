@@ -41,6 +41,7 @@
     UIButton *retake, *confirm;
 }
 @property NSArray *iconicTaxa;
+@property RKObjectLoader *taxaLoader;
 @end
 
 @implementation ConfirmPhotoViewController
@@ -328,54 +329,47 @@
         return;
     }
     
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            // update timestamps on us and taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            // save into core data
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
-                                                                                                    saveError.localizedDescription]];
-                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                                                                return;
-                                                            }
-                                                            
-                                                            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
-                                                            request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
-                                                            [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-                                                            
-                                                            NSError *fetchError;
-                                                            self.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                                                                                     error:&fetchError];
-                                                            
-
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                                                                                error.localizedDescription]];
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                                                                                error.localizedDescription]];
-                                                        };
-                                                        
-                                                    }];
-    
+    __weak typeof(self)weakSelf = self;
+    self.taxaLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:@"/taxa"];
+    self.taxaLoader.objectMapping = [Taxon mapping];
+    self.taxaLoader.onDidLoadObjects = ^(NSArray *objects) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        
+        // update timestamps on us and taxa objects
+        NSDate *now = [NSDate date];
+        [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                              NSUInteger idx,
+                                              BOOL *stop) {
+            [o setSyncedAt:now];
+        }];
+        
+        // save into core data
+        NSError *saveError = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+        if (saveError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
+                                                saveError.localizedDescription]];
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+            return;
+        }
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
+        request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
+        
+        NSError *fetchError;
+        strongSelf.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
+                                                                                       error:&fetchError];
+    };
+    self.taxaLoader.onDidFailLoadWithError = ^(NSError *error) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
+                                            error.localizedDescription]];
+    };
+    self.taxaLoader.onDidFailLoadWithError = ^(NSError *error) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
+                                            error.localizedDescription]];
+    };
+    [self.taxaLoader sendAsynchronously];
 }
 
 
