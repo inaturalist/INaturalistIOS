@@ -84,6 +84,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 @interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate,MHGalleryDelegate>
 @property UIBarButtonItem *bigSave;
+@property RKObjectLoader *taxonLoader;
 @end
 
 @implementation ObservationDetailViewController
@@ -438,12 +439,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 [strongSelf observationToUI];
             };
             
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [Taxon mapping];
-                                                                loader.onDidLoadObject = taxonLoadedBlock;
-                                                                // do nothing in the event of error
-                                                            }];
+            self.taxonLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:urlString];
+            self.taxonLoader.objectMapping = [Taxon mapping];
+            self.taxonLoader.onDidLoadObject = taxonLoadedBlock;
+            [self.taxonLoader sendAsynchronously];
+            
         } else {
             NSLog(@"no network, ignore");
         }
