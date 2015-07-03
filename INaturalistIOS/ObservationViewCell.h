@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+static const int ObservationCellImageTag = 5;
+static const int ObservationCellTitleTag = 1;
+static const int ObservationCellSubTitleTag = 2;
+static const int ObservationCellUpperRightTag = 3;
+static const int ObservationCellLowerRightTag = 4;
+static const int ObservationCellActivityButtonTag = 6;
+static const int ObservationCellActivityInteractiveButtonTag = 7;
+
 @interface ObservationViewCell : UITableViewCell
+
 
 @end
