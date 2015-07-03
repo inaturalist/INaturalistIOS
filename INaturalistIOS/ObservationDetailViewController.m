@@ -407,7 +407,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     BOOL taxonIDSetExplicitly = self.taxonID && self.taxonID.length > 0;
     BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.fullyLoaded;
-    if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
+    if (self.observation && self.observation.taxon && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
         NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
         NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonID];
         Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
