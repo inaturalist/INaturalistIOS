@@ -272,6 +272,10 @@
     }
 }
 
+- (void)dealloc {
+    [[RKClient sharedClient].requestQueue cancelRequest:self.taxaLoader];
+}
+
 - (void)transitionToCategorize:(CategorizeViewController *)categorizeVC {
     
     UINavigationController *nav = self.navigationController;
