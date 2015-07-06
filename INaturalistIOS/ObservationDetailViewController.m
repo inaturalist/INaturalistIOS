@@ -764,8 +764,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     __weak MHGalleryController *blockGallery = gallery;
     
     gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        __strong typeof(blockGallery)strongGallery = blockGallery;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+            [strongGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
     
@@ -776,11 +777,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [toolbarItems removeLastObject];
         [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                 handler:^(id sender) {
+                                                                                    __strong typeof(blockGallery)strongGallery = blockGallery;
                                                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                                                    [blockGallery dismissViewControllerAnimated:YES
-                                                                                                               dismissImageView:nil
-                                                                                                                     completion:nil];
-                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[blockGallery.presentationIndex];
+                                                                                    [strongGallery dismissViewControllerAnimated:YES
+                                                                                                                dismissImageView:nil
+                                                                                                                      completion:nil];
+                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
                                                                                     [strongSelf.observationPhotos removeObject:op];
                                                                                     [op deleteEntity];
                                                                                     [strongSelf refreshCoverflowView];
