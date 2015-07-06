@@ -1931,21 +1931,25 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.geocoder = [[CLGeocoder alloc] init];
     }
     [self.geocoder cancelGeocode];
+    __weak typeof (self)weakSelf = self;
+    
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
             // self.observation may not be accessible
             // if it's been deleted for example
             @try {
-                self.observation.placeGuess = [[NSArray arrayWithObjects:
-                                                pm.name,
-                                                pm.locality,
-                                                pm.administrativeArea,
-                                                pm.ISOcountryCode,
-                                                nil]
-                                               componentsJoinedByString:@", "];
-                if (self.placeGuessField) {
-                    self.placeGuessField.text = self.observation.placeGuess;
+                NSString *name = pm.name ?: @"";
+                NSString *locality = pm.locality ?: @"";
+                NSString *administrativeArea = pm.administrativeArea ?: @"";
+                NSString *ISOcountryCode = pm.ISOcountryCode ?: @"";
+                strongSelf.observation.placeGuess = [ @[ name,
+                                                         locality,
+                                                         administrativeArea,
+                                                         ISOcountryCode ] componentsJoinedByString:@", "];
+                if (strongSelf.placeGuessField) {
+                    strongSelf.placeGuessField.text = strongSelf.observation.placeGuess;
                 }
             } @catch (NSException *exception) {
                 if ([exception.name isEqualToString:NSObjectInaccessibleException])
