@@ -12,7 +12,7 @@
 "1bw-oa-ona.placeholder" = "מקום לא מוכר";
 
 /* Class = "UILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ"; */
-"1hu-IK-XsQ.text" = "Scientific name";
+"1hu-IK-XsQ.text" = "שם מדעי";
 
 /* Class = "UILabel"; text = "your ID"; ObjectID = "1iK-3K-ACP"; */
 "1iK-3K-ACP.text" = "קוד זיהוי";
@@ -81,13 +81,13 @@
 "EGB-Ac-Dg8.title" = "מדריכים";
 
 /* Class = "UILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF"; */
-"EcO-h2-uOF.text" = "שם של הזן";
+"EcO-h2-uOF.text" = "שם הזן";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "Edp-cg-PsD"; */
 "Edp-cg-PsD.text" = "Title";
 
 /* Class = "UINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx"; */
-"F6V-RD-Yrx.title" = "סוג";
+"F6V-RD-Yrx.title" = "סיווג";
 
 /* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "FYt-db-0Ka"; */
 "FYt-db-0Ka.title" = "אחורה";
@@ -123,7 +123,7 @@
 "JRR-T4-jKQ.title" = "סיים";
 
 /* Class = "UILabel"; text = "open"; ObjectID = "JkM-AH-Zal"; */
-"JkM-AH-Zal.text" = "פתח";
+"JkM-AH-Zal.text" = "ציבורי";
 
 /* Class = "UINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb"; */
 "Kfy-Up-oCb.title" = "חפשו זנים";
@@ -138,19 +138,19 @@
 "M93-9f-xgT.text" = "???";
 
 /* Class = "UIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
-"ME2-ai-L2I.normalTitle" = "עוד...";
+"ME2-ai-L2I.normalTitle" = "מידע נוסף...";
 
 /* Class = "UINavigationItem"; title = "Add Identification"; ObjectID = "Ml3-QP-W2S"; */
 "Ml3-QP-W2S.title" = "הוסיפו זיהוי";
 
 /* Class = "UITextField"; placeholder = "Species name"; ObjectID = "NdE-AU-Gkn"; */
-"NdE-AU-Gkn.placeholder" = "השם של הזן";
+"NdE-AU-Gkn.placeholder" = "שם הזן";
 
 /* Class = "UINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
 "Nsa-pu-mCD.title" = "בחרו פרויקט";
 
 /* Class = "UILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM"; */
-"Ohz-Dw-0wM.text" = "שם של הזנים";
+"Ohz-Dw-0wM.text" = "שם הזן";
 
 /* Class = "UILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4"; */
 "P1E-WK-OB4.text" = "00:00 AM";
@@ -315,7 +315,7 @@
 "pL9-Nd-0JB.headerTitle" = "עזרה";
 
 /* Class = "UITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
-"pmm-Vg-XgJ.placeholder" = "שם הזנים";
+"pmm-Vg-XgJ.placeholder" = "שם הזן";
 
 /* Class = "UITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
 "qJK-jT-EPE.headerTitle" = "הערות";

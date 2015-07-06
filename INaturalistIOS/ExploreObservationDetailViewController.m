@@ -92,7 +92,8 @@
     [self.tableView registerClass:[ExploreIdentificationCell class] forCellReuseIdentifier:@"IdentificationCell"];
     [self.tableView registerClass:[ExploreCommentCell class] forCellReuseIdentifier:@"CommentCell"];
     
-    self.textView.placeholder = @"Add a comment";
+    self.textView.placeholder = NSLocalizedString(@"Add a comment", @"text placeholder");
+    self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -502,4 +503,30 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
+@end
+
+
+
+// ##################################################
+// Category for Slack text view.
+// Fixing placeholder label's width for RTL localization.
+// ##################################################
+@interface SLKTextView(FixBoundsForPlaceholder)
+
+- (CGRect)slk_placeholderRectThatFits:(CGRect)bounds;
+
+@end
+
+@implementation SLKTextView(FixBoundsForPlaceholder)
+
+- (CGRect)slk_placeholderRectThatFits:(CGRect)bounds{
+    CGRect rect = CGRectZero;
+    rect.size = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).size;
+    // *3.0 to add space on the right hand side.
+    rect.size.width -= self.textContainerInset.left * 3.0;
+    rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
+    CGFloat padding = self.textContainer.lineFragmentPadding;
+    rect.origin.x += padding;
+    return rect;
+}
 @end

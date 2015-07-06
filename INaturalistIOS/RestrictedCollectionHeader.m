@@ -20,12 +20,12 @@
         self.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
         
         self.titleLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0,
-                                                                       frame.size.width - 15 - 30, // room for indent and clearbutton
-                                                                       frame.size.height)];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.font = [UIFont systemFontOfSize:12.0f];
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor blackColor];
+            label.textAlignment = NSTextAlignmentNatural;
+            label.translatesAutoresizingMaskIntoConstraints = NO;
             label;
         });
         [self addSubview:self.titleLabel];
@@ -37,12 +37,34 @@
             [clear addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
             [button setAttributedTitle:clear.attributedString forState:UIControlStateNormal];
             
-            button.frame = CGRectMake(frame.size.width - 30 - 15,        // room for indent and button
-                                      0, 30, frame.size.height);
-            
+            button.frame = CGRectZero;
+            button.translatesAutoresizingMaskIntoConstraints = NO;
             button;
         });
         [self addSubview:self.clearButton];
+        
+        NSDictionary *views = @{
+                                @"titleLabel": self.titleLabel,
+                                @"clearButton": self.clearButton,
+                                };
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[titleLabel]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[clearButton(==30)]-15-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleLabel]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[clearButton]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
     }
     
     return self;

@@ -170,6 +170,7 @@ static const int GutterWidth  = 5;
                placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
         
         UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
+        label.textAlignment = NSTextAlignmentNatural;
         if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
             label.font = [UIFont italicSystemFontOfSize:12.0];
             label.text = guideTaxon.name;

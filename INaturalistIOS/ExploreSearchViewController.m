@@ -154,6 +154,7 @@
                                                                     if (observationsController.activeSearchPredicates.count > 0)
                                                                         [searchMenu showActiveSearch];
                                                                 }];
+        
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find my observations", nil)
                                                               action:^{
                                                                   if ([[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey]) {

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -14,20 +15,34 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Field name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontSizeToFit="NO" id="4">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" misplaced="YES" text="Field name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                         <rect key="frame" x="15" y="11" width="162" height="21"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </label>
-                    <view tag="2" contentMode="scaleToFill" id="7" customClass="DCRoundSwitch">
+                    <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7" customClass="DCRoundSwitch">
                         <rect key="frame" x="220" y="8" width="90" height="27"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="90" id="9Sr-ZZ-hVh"/>
+                        </constraints>
                     </view>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="4" firstAttribute="top" secondItem="k46-da-ubv" secondAttribute="topMargin" constant="3" id="ECx-m3-ndK"/>
+                    <constraint firstItem="7" firstAttribute="bottom" secondItem="k46-da-ubv" secondAttribute="bottomMargin" id="H3F-dy-GcD"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="7" secondAttribute="trailing" constant="2" id="Qtj-wl-oT7"/>
+                    <constraint firstItem="7" firstAttribute="top" secondItem="k46-da-ubv" secondAttribute="topMargin" id="ZMV-5I-wkT"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="4" secondAttribute="bottom" constant="3" id="cEr-h4-Hli"/>
+                    <constraint firstItem="4" firstAttribute="leading" secondItem="k46-da-ubv" secondAttribute="leadingMargin" constant="7" id="vbd-cW-luU"/>
+                </constraints>
             </tableViewCellContentView>
         </tableViewCell>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>
