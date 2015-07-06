@@ -257,6 +257,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
+- (void)dealloc {
+    [[RKClient sharedClient].requestQueue cancelRequest:self.taxonLoader];
+}
+
 - (void)initUI
 {
     UINavigationItem *navItem;
