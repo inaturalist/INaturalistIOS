@@ -882,8 +882,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/observations/%d", INatWebBaseURL, [self.observation.recordID intValue]]];
+        NSString *observationPath = [NSString stringWithFormat:@"/observations/%d", [self.observation.recordID intValue]];
+        NSURL *url = [[NSURL inat_baseURL] URLByAppendingPathComponent:observationPath];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
@@ -1507,11 +1507,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)clickedView
 {
+    NSString *viewBaseText = NSLocalizedString(@"View on %@", @"Open one of my observations on iNat.org or a partner site.");
+    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:NO];
+    NSString *viewText = [NSString stringWithFormat:viewBaseText, components.host];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
                                                     cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
+                                                    otherButtonTitles:viewText, nil];
     actionSheet.tag = ViewActionSheetTag;
     
     // be defensive
