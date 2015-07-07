@@ -665,6 +665,7 @@ static char PARTNER_ASSOCIATED_KEY;
             if (partnerURL) {
                 [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
                                                           forKey:kInatCustomBaseURLStringKey];
+                [[NSUserDefaults standardUserDefaults] synchronize];
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
                 self.selectedPartner = p;
             }
@@ -672,6 +673,7 @@ static char PARTNER_ASSOCIATED_KEY;
             // revert to default base URL
             [[NSUserDefaults standardUserDefaults] setObject:nil
                                                       forKey:kInatCustomBaseURLStringKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
         }
     }
