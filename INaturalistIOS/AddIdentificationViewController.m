@@ -65,6 +65,33 @@
 }
 
 - (IBAction)saveAction:(id)sender {
+    
+    BOOL inputValidated = YES;
+    NSString *alertMsg;
+    
+    if (!self.observation || !self.observation.recordID) {
+        inputValidated = NO;
+        alertMsg = NSLocalizedString(@"Unable to add an identification to this observation. Please try again later.",
+                                     @"Failure message when making an identification");
+    } else if (!self.taxon || !self.taxon.recordID) {
+        inputValidated = NO;
+        alertMsg = NSLocalizedString(@"Unable to identify this observation to that species. Please try again later.",
+                                     @"Failure message when making an identification");
+    }
+    
+    if (!inputValidated) {
+        NSString *alertTitle = NSLocalizedString(@"Identification Failed", @"Title of identification failure alert");
+        if (!alertMsg) {
+            alertMsg = NSLocalizedString(@"Unknown error while making an identification.", @"Unknown error");
+        }
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
