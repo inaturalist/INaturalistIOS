@@ -17,6 +17,7 @@
 #import "ExplorePerson.h"
 #import "Taxon.h"
 #import "NSURL+INaturalist.h"
+#import "NSLocale+INaturalist.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -189,6 +190,11 @@
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
+    
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        query = [query stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+    }
     
     BOOL hasActiveLocationPredicate = NO;
     
@@ -364,6 +370,11 @@
 
 - (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler {
     NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)observation.observationId];
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
+    }
+    
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [ExploreMappingProvider observationMapping];
@@ -495,6 +506,5 @@
     
     return YES;
 }
-
 
 @end
