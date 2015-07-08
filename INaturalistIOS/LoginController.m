@@ -167,6 +167,8 @@ NSInteger INatMinPasswordLength = 6;
                                    [self executeError:newError];
                                    return;
                                }
+
+                               [[Analytics sharedClient] event:kAnalyticsEventSignup];
                                
                                [self loginWithUsername:username
                                               password:password
