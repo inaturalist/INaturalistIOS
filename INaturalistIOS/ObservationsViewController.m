@@ -376,7 +376,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
     if (self.navigationController.topViewController != self)
         return;
-        
+    
+    // this method has the side effect of changing the sync toolbar,
+    // which we shouldn't do while syncing.
+    if (self.isSyncing) {
+        return;
+    }
+    
     self.observationsToSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     if (self.observationsToSyncCount == 0) {
         self.observationsToSyncCount = [[NSSet setWithArray:[[ObservationFieldValue needingSync] valueForKey:@"observationID"]] count];
@@ -606,7 +612,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.tableView endUpdates];
     
     // now is a good time to check that we're displaying up to date sync info
-    [self checkSyncStatus];
+    if (!self.isSyncing) {
+        [self checkSyncStatus];
+    }
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -1255,6 +1263,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 
 - (void)uploadSessionAuthRequired {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     [SVProgressHUD dismiss];
     
     [self stopSync];
@@ -1264,6 +1274,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)uploadSessionFinished {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     [self stopSync];
     self.tableView.userInteractionEnabled = YES;
     
@@ -1291,6 +1303,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)uploadStartedFor:(Observation *)observation {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
     NSString *name = observation.taxon.name ?: observation.speciesGuess;
     if (!name) {
         name = NSLocalizedString(@"something", @"Something observed by the user.");
@@ -1320,6 +1334,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
     if ([object isKindOfClass:ProjectObservation.class]) {
         ProjectObservation *po = (ProjectObservation *)object;
         if (!self.nonFatalUploadErrors) {
@@ -1370,6 +1386,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
     NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleting %@", @"in-progress delete message"),
                            deletedRecord.modelName.humanize];
     [SVProgressHUD showWithStatus:statusMsg];
@@ -1382,10 +1400,14 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)deleteSessionFinished {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
     [SVProgressHUD dismiss];
 }
 
 - (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     [SVProgressHUD dismiss];
     NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
     NSString *alertMsg;
