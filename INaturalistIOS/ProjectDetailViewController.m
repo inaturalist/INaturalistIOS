@@ -17,6 +17,7 @@
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UIImage+INaturalist.h"
+#import "INatWebController.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -62,7 +63,8 @@ static const int LeaveProjectAlertViewTag = 1;
     NSString *url =[NSString stringWithFormat:@"%@/projects/%@?locale=%@-%@",
                     INatWebBaseURL, self.project.cachedSlug, language, countryCode];
     
-    TKWebViewController *web = [[TKWebViewController alloc] initWithURL:[NSURL URLWithString:url]];
+    INatWebController *web = [[INatWebController alloc] initWithNibName:nil bundle:nil];
+    web.url = [NSURL URLWithString:url];
     [self.navigationController pushViewController:web animated:YES];
 }
 

@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <TapkuLibrary/TapkuLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <objc/runtime.h>
 
@@ -20,6 +19,7 @@
 #import "Analytics.h"
 #import "INatUITabBarController.h"
 #import "NSURL+INaturalist.h"
+#import "INatWebController.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
@@ -312,23 +312,24 @@ static char SUMMARY_ASSOCIATED_KEY;
     
     NSString *wikipediaTitle = self.taxon.wikipediaTitle;
     NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
-    NSString *url;
+    NSString *urlString;
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
-        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
+        urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
     } else if (buttonIndex == 1) {
-        url = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
+        urlString = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
     } else if (buttonIndex == 2) {
         if (!wikipediaTitle) {
             wikipediaTitle = escapedName;
         }
-        url = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
+        urlString = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
     } else {
         return;
     }
     
-    TKWebViewController *web = [[TKWebViewController alloc] initWithURL:[NSURL URLWithString:url]];
+    INatWebController *web = [[INatWebController alloc] initWithNibName:nil bundle:nil];
+    web.url = [NSURL URLWithString:urlString];
     [self.navigationController pushViewController:web animated:YES];
 }
 
