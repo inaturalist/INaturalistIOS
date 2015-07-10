@@ -435,11 +435,30 @@ static UIImage *defaultPersonImage;
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];
 		
 		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-		if ([username isEqualToString:identification.user.login] && identification.isCurrent) {
-			agreeButton.hidden = YES;
-		} else {
-			agreeButton.hidden = NO;
-		}
+        
+        // get "my" current identification
+        Identification *myCurrentIdentification = nil;
+        for (Identification *eachId in self.identifications) {
+            if ([eachId.user.login isEqualToString:username] && eachId.isCurrent) {
+                // this is my current
+                myCurrentIdentification = eachId;
+            }
+        }
+        if (myCurrentIdentification) {
+            if ([identification isEqual:myCurrentIdentification]) {
+                // can't agree with "my" current identification
+                agreeButton.hidden = YES;
+            } else if ([identification.taxon isEqual:myCurrentIdentification.taxon]) {
+                // can't agree with IDs whose taxon matches "my" current identification
+                agreeButton.hidden = YES;
+            } else {
+                // not mine, not same taxon as mine, can agree
+                agreeButton.hidden = NO;
+            }
+        } else {
+            // no current id, can agree
+            agreeButton.hidden = NO;
+        }
 	}
 	
     return cell;

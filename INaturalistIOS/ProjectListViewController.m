@@ -28,17 +28,16 @@ static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
 static const int ListedTaxonCellSubtitleTag = 3;
 
+@interface ProjectListViewController ()
+@property (nonatomic, strong) ProjectUser *projectUser;
+@property (nonatomic, assign) BOOL detailsPresented;
+@property (nonatomic, strong) NSArray *listedTaxa;
+@property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
+@end
+
 @implementation ProjectListViewController
-@synthesize project = _project;
-@synthesize projectUser = _projectUser;
-@synthesize listedTaxa = _listedTaxa;
-@synthesize projectIcon = _projectIcon;
-@synthesize projectTitle = _projectTitle;
-@synthesize loader = _loader;
-@synthesize lastSyncedAt = _lastSyncedAt;
-@synthesize syncButton = _syncButton;
-@synthesize stopSyncButton = _stopSyncButton;
-@synthesize detailsPresented = _detailsPresented;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -125,12 +124,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)loadData
 {
-    NSArray *sorts = [NSArray arrayWithObjects:
-                      [[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES], 
-                      [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES], 
-                      nil];
-    self.listedTaxa = [NSMutableArray arrayWithArray:
-                       [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
+    NSArray *sorts = @[ [[NSSortDescriptor alloc] initWithKey:@"taxonName" ascending:YES] ];
+    self.listedTaxa = [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
