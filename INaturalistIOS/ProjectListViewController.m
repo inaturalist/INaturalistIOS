@@ -29,16 +29,6 @@ static const int ListedTaxonCellTitleTag = 2;
 static const int ListedTaxonCellSubtitleTag = 3;
 
 @implementation ProjectListViewController
-@synthesize project = _project;
-@synthesize projectUser = _projectUser;
-@synthesize listedTaxa = _listedTaxa;
-@synthesize projectIcon = _projectIcon;
-@synthesize projectTitle = _projectTitle;
-@synthesize loader = _loader;
-@synthesize lastSyncedAt = _lastSyncedAt;
-@synthesize syncButton = _syncButton;
-@synthesize stopSyncButton = _stopSyncButton;
-@synthesize detailsPresented = _detailsPresented;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
