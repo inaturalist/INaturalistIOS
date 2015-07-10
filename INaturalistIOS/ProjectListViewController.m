@@ -126,8 +126,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 - (void)loadData
 {
     NSArray *sorts = [NSArray arrayWithObjects:
-                      [[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES], 
-                      [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES], 
+                      [[NSSortDescriptor alloc] initWithKey:@"taxonName" ascending:YES], 
                       nil];
     self.listedTaxa = [NSMutableArray arrayWithArray:
                        [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
