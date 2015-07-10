@@ -38,7 +38,6 @@ static NSDateFormatter *shortFormatter;
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        //self.contentView.backgroundColor = [UIColor whiteColor];
         
         observationImageView = ({
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
