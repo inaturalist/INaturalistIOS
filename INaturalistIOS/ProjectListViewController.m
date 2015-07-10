@@ -28,6 +28,15 @@ static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
 static const int ListedTaxonCellSubtitleTag = 3;
 
+@interface ProjectListViewController ()
+@property (nonatomic, strong) ProjectUser *projectUser;
+@property (nonatomic, assign) BOOL detailsPresented;
+@property (nonatomic, strong) NSArray *listedTaxa;
+@property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
+@end
+
 @implementation ProjectListViewController
 
 - (IBAction)clickedSync:(id)sender {
