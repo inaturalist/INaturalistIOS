@@ -333,6 +333,12 @@
     }];
 }
 
+- (NSArray *)observationsWithPhotos {
+    return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
+        return observation.observationPhotos.count > 0;
+    }];
+}
+
 - (BOOL)hasActiveLocationSearchPredicate {
     return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *p) {
         return p.type == ExploreSearchPredicateTypeLocation;
