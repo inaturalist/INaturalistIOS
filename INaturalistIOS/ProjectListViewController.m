@@ -125,11 +125,8 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)loadData
 {
-    NSArray *sorts = [NSArray arrayWithObjects:
-                      [[NSSortDescriptor alloc] initWithKey:@"taxonName" ascending:YES], 
-                      nil];
-    self.listedTaxa = [NSMutableArray arrayWithArray:
-                       [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
+    NSArray *sorts = @[ [[NSSortDescriptor alloc] initWithKey:@"taxonName" ascending:YES] ];
+    self.listedTaxa = [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -17,7 +17,7 @@
 @property (nonatomic, strong) Project *project;
 @property (nonatomic, strong) ProjectUser *projectUser;
 @property (nonatomic, assign) BOOL detailsPresented;
-@property (nonatomic, strong) NSMutableArray *listedTaxa;
+@property (nonatomic, strong) NSArray *listedTaxa;
 @property (weak, nonatomic) IBOutlet UIImageView *projectIcon;
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;
 @property (nonatomic, strong) RKObjectLoader *loader;
