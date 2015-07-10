@@ -364,4 +364,46 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
++ (NSArray *)needingUpload {
+    // all observations that need sync are upload candidates
+    NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
+    [needingUpload addObjectsFromArray:[self needingSync]];
+    
+    // also, all observations whose uploadable children need sync
+    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+        if (op.observation) {
+            [needingUpload addObject:op.observation];
+        }
+    }
+    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
+        if (ofv.observation) {
+            [needingUpload addObject:ofv.observation];
+        }
+    }
+    for (ProjectObservation *po in [ProjectObservation needingSync]) {
+        if (po.observation) {
+            [needingUpload addObject:po.observation];
+        }
+    }
+    
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(Observation *o1, Observation *o2) {
+        return [o1.recordID compare:o2.recordID];
+    }];
+}
+
+- (BOOL)needsUpload {
+    // needs upload if this obs needs sync, or any children need sync
+    if (self.needsSync) { return YES; }
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) { return YES; }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) { return YES; }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) { return YES; }
+    }
+    return NO;
+}
+
 @end

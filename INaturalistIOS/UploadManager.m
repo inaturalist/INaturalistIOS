@@ -11,6 +11,30 @@
 #import "DeletedRecord.h"
 #import "Observation.h"
 #import "Analytics.h"
+#import "ObservationPhoto.h"
+#import "ObservationFieldValue.h"
+#import "ProjectObservation.h"
+#import "INaturalistAppDelegate.h"
+
+@interface NSArray (FP)
+- (id)head;
+- (instancetype)tail;
+@end
+
+@implementation NSArray (FP)
+- (id)head {
+    return self.firstObject;
+}
+- (instancetype)tail {
+    if (self.count == 0) { return [[self.class alloc] init]; }
+    if (self.count == 1) { return [[self.class alloc] init]; }
+    
+    NSRange tailRange;
+    tailRange.location = 1;
+    tailRange.length = [self count] - 1;
+    return [self subarrayWithRange:tailRange];
+}
+@end
 
 @interface UploadManager ()
 @property (nonatomic, strong) NSMutableArray *queue;
@@ -34,6 +58,186 @@
     }
     return self;
 }
+
+- (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion {
+    
+    if (deletedRecords.count == 0) {
+        NSError *saveError = nil;
+        [[NSManagedObjectContext defaultContext] save:&saveError];
+        if (saveError) {
+            [self.delegate deleteFailedFor:nil error:saveError];
+        }
+        [self.delegate deleteSessionFinished];
+        deletesCompletion();
+    } else {
+        DeletedRecord *head = [deletedRecords head];
+        [self.delegate deleteStartedFor:head];
+
+        NSString *deletePath = [NSString stringWithFormat:@"/%@/%d", head.modelName.underscore.pluralize, head.recordID.intValue];
+        [[RKClient sharedClient] delete:deletePath
+                             usingBlock:^(RKRequest *request) {
+                                 request.onDidFailLoadWithError = ^(NSError *error) {
+                                     [self.delegate deleteFailedFor:head error:error];
+                                 };
+                                 request.onDidLoadResponse = ^(RKResponse *response) {
+                                     [self.delegate deleteSuccessFor:head];
+                                     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", head]];
+                                     [head deleteEntity];
+
+                                     [self uploadDeletes:[deletedRecords tail]
+                                              completion:deletesCompletion];
+                                 };
+                             }];
+    }
+}
+
+- (void)uploadObservations:(NSArray *)observations {
+    if (observations.count == 0) {
+        self.started = NO;
+        [self.delegate uploadSessionFinished];
+    } else {
+        if (!self.started) {
+            self.started = YES;
+        }
+        
+        // upload head
+        Observation *head = [observations head];
+        NSArray *tail = [observations tail];
+        
+        __weak typeof(self)weakSelf = self;
+        [self uploadRecordsForObservation:head
+                               completion:^{
+                                   [weakSelf uploadObservations:tail];
+                               }];
+    }
+}
+
+- (void)uploadRecordsForObservation:(Observation *)observation completion:(void (^)())observationCompletion {
+    
+    NSArray *childrenNeedingUpload = [self childRecordsToUploadForObservation:observation];
+    
+    __weak typeof(self)weakSelf = self;
+    void(^eachCompletion)() = ^void() {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        if (!observation.needsUpload) {
+            [strongSelf.delegate uploadSuccessFor:observation];
+            observationCompletion();
+        }
+    };
+    
+    [self.delegate uploadStartedFor:observation];
+    
+    if (observation.needsSync) {
+        __weak typeof(self)weakSelf = self;
+        [self uploadRecord:observation
+                completion:^{
+                    eachCompletion();
+                    for (INatModel *child in childrenNeedingUpload) {
+                        [weakSelf uploadRecord:child
+                                    completion:eachCompletion];
+                    }
+                }];
+    } else {
+        for (INatModel *child in childrenNeedingUpload) {
+            [self uploadRecord:child
+                    completion:eachCompletion];
+        }
+    }
+}
+
+
+- (void)uploadRecord:(INatModel *)record completion:(void (^)())completion {
+    
+    __weak typeof(self) weakSelf = self;
+    RKObjectLoaderBlock loaderBlock = ^(RKObjectLoader *loader) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        // need to setup params for obs photo uploads here
+        // this should go into a protocol
+        // and needs to trap for an error getting the additional params
+        if ([record respondsToSelector:@selector(fileUploadParameter)]) {
+            NSString *path = [record performSelector:@selector(fileUploadParameter)];
+            
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
+                                                     serializationMappingForClass:[record class]];
+            NSError* error = nil;
+            RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:record
+                                                                              mapping:serializationMapping];
+            NSDictionary *dictionary = [serializer serializedObject:&error];
+            
+            // should really call completion with the error
+            if (error) {
+                [strongSelf.delegate uploadFailedFor:record error:error];
+                strongSelf.started = NO;
+                return;
+            }
+            
+            RKParams* params = [RKParams paramsWithDictionary:dictionary];
+            
+            [params setFile:path
+                   forParam:@"file"];
+            loader.params = params;
+        }
+        
+        loader.objectMapping = [[record class] mapping];
+        loader.onDidLoadObject = ^(INatModel *uploadedObject) {
+            
+            uploadedObject.syncedAt = [NSDate date];
+            NSError *error = nil;
+            [[[RKObjectManager sharedManager] objectStore] save:&error];
+            // should really call completion with the error
+            if (error) {
+                [strongSelf.delegate uploadFailedFor:record error:error];
+                strongSelf.started = NO;
+                return;
+            }
+            
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC completed upload of %@", record]];
+            
+            completion();
+            
+        };
+        loader.onDidFailLoadWithError = ^(NSError *error) {
+            
+        };
+        loader.onDidFailWithError = ^(NSError *error) {
+            
+        };
+    };
+    
+    if (record.syncedAt) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via PUT", record]];
+        [[RKObjectManager sharedManager] putObject:record usingBlock:loaderBlock];
+    } else {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via POST", record]];
+        [[RKObjectManager sharedManager] postObject:record usingBlock:loaderBlock];
+    }
+}
+
+// should go into Observation class
+- (NSArray *)childRecordsToUploadForObservation:(Observation *)observation {
+    NSMutableArray *recordsToUpload = [NSMutableArray array];
+    
+    for (ObservationPhoto *op in observation.observationPhotos) {
+        if (op.needsSync) {
+            [recordsToUpload addObject:op];
+        }
+    }
+    for (ObservationFieldValue *ofv in observation.observationFieldValues) {
+        if (ofv.needsSync) {
+            [recordsToUpload addObject:ofv];
+        }
+    }
+    for (ProjectObservation *po in observation.projectObservations) {
+        if (po.needsSync) {
+            [recordsToUpload addObject:po];
+        }
+    }
+    
+    return [NSArray arrayWithArray:recordsToUpload];
+}
+
 
 - (void)addModel:(id)model
 {
@@ -196,9 +400,6 @@
             NSInteger number = [syncedCount intValue] + 1;
             current[@"syncedCount"] = @(number);
             NSInteger total = [needingSyncCount intValue];
-            [self.delegate uploadSuccessFor:o
-                                     number:number
-                                      total:total];
         }
     }
     

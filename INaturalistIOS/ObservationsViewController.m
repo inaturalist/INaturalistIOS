@@ -107,6 +107,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     if (!self.syncQueue) {
         self.syncQueue = [[UploadManager alloc] initWithDelegate:self];
     }
+    /*
 	[self.syncQueue addModel:Observation.class];
 	[self.syncQueue addModel:ObservationFieldValue.class];
 	[self.syncQueue addModel:ProjectObservation.class];
@@ -115,6 +116,17 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
 	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
 	[self.syncQueue start];
+     */
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                  NSStringFromClass(class)]]];
+    }
+    
+    UploadManager *uploader = self.syncQueue;
+    [uploader uploadDeletes:recordsToDelete completion:^{
+        [uploader uploadObservations:[Observation needingUpload]];
+    }];
     
     if (!self.stopSyncButton) {
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
@@ -127,9 +139,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController setToolbarHidden:NO];
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
                  animated:YES];
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Uploading...", @"Message that we're beginning to upload")
-                         maskType:SVProgressHUDMaskTypeNone];
     
     // temporarily disable user interaction with the tableview
     self.tableView.userInteractionEnabled = NO;
@@ -1244,13 +1253,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 #pragma mark - Upload
 
-- (void)uploadSessionStartedTotal:(NSInteger)numberToUpload {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d observations.",
-                                                 @"Upload session start message.");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, numberToUpload];
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
-}
-
 
 - (void)uploadSessionAuthRequired {
     [SVProgressHUD dismiss];
@@ -1288,18 +1290,26 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self refreshHeader];
 }
 
-- (void)uploadStartedFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d of %d %@.",
-                                                 @"Begin one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
+- (void)uploadStartedFor:(Observation *)observation {
+    NSString *name = observation.taxon.name ?: observation.speciesGuess;
+    if (!name) {
+        name = NSLocalizedString(@"something", @"Something observed by the user.");
+    }
+    
+    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Uploading '%@'...", @"in-progress upload message"), name];
     [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 
-- (void)uploadSuccessFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploaded %d of %d %@.",
-                                                 @"Finished one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+- (void)uploadSuccessFor:(Observation *)observation {
+    NSString *name = observation.taxon.name ?: observation.speciesGuess;
+    if (!name) {
+        name = NSLocalizedString(@"something", @"Something observed by the user.");
+    }
+
+    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Finished with '%@'...", @"in-progress upload message"), name];
+    [SVProgressHUD showSuccessWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+    NSError *error = nil;
+    [fetchedResultsController performFetch:&error];
 }
 
 - (void)uploadNonFatalError:(NSError *)error {
@@ -1357,6 +1367,39 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                                            otherButtonTitles:nil];
         [av show];
     }
+}
+
+- (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
+    NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleting %@", @"in-progress delete message"),
+                           deletedRecord.modelName.humanize];
+    [SVProgressHUD showWithStatus:statusMsg];
+}
+
+- (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
+    NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleted %@", @"finished delete message"),
+                           deletedRecord.modelName.humanize];
+    [SVProgressHUD showSuccessWithStatus:statusMsg];
+}
+
+- (void)deleteSessionFinished {
+    [SVProgressHUD dismiss];
+}
+
+- (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [SVProgressHUD dismiss];
+    NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
+    NSString *alertMsg;
+    if (error) {
+        alertMsg = error.localizedDescription;
+    } else {
+        alertMsg = NSLocalizedString(@"Uknown error while attempting to delete.", @"uknonwn delete error");
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:alertTitle
+                                message:alertMsg
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 @end

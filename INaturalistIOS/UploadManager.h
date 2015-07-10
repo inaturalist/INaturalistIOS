@@ -32,4 +32,8 @@
 - (void)start;
 - (void)stop;
 - (BOOL)isRunning;
+
+- (void)uploadObservations:(NSArray *)observations;
+- (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion;
+
 @end
