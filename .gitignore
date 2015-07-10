@@ -2,6 +2,7 @@
 INaturalist.xcodeproj/project.xcworkspace
 INaturalist.xcodeproj/xcuserdata
 INaturalistIOS/config.h
+config.h
 
 # from https://github.com/github/gitignore/blob/master/Objective-C.gitignore
 *.pbxuser
