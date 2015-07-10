@@ -110,7 +110,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize locationManager = _locationManager;
 @synthesize locationTimer = _locationTimer;
 @synthesize geocoder = _geocoder;
-@synthesize popOver = _popOver;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
 @synthesize observationWasNew = _observationWasNew;

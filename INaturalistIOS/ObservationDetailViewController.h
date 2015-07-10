@@ -67,7 +67,6 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
-@property (nonatomic, strong) UIPopoverController *popOver;
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
 @property (nonatomic, assign) BOOL locationUpdatesOn;
 @property (nonatomic, assign) BOOL observationWasNew;
