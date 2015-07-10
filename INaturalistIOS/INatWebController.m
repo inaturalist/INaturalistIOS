@@ -24,6 +24,8 @@
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
+    
     [self.view addSubview:self.webView];
 
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
