@@ -24,6 +24,8 @@
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
+    
     [self.view addSubview:self.webView];
 
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -65,7 +67,11 @@
 #pragma mark webview delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    return [self.delegate webView:webView shouldLoadRequest:request];
+    if (self.delegate) {
+        return [self.delegate webView:webView shouldLoadRequest:request];
+    } else {
+        return YES;
+    }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {

@@ -139,16 +139,21 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController setToolbarHidden:NO];
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
                  animated:YES];
-    
-    // temporarily disable user interaction with the tableview
+        
+    // temporarily disable user interaction with most of the UI
     self.tableView.userInteractionEnabled = NO;
+    self.tabBarController.tabBar.userInteractionEnabled = NO;
+    self.navigationController.navigationBar.userInteractionEnabled = NO;
 }
 
 - (void)stopSync
 {
     [SVProgressHUD dismiss];
-    // re-enable user interaction with the tableview
+    
     self.tableView.userInteractionEnabled = YES;
+    self.tabBarController.tabBar.userInteractionEnabled = YES;
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
+
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
@@ -1278,6 +1283,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
     [self stopSync];
     self.tableView.userInteractionEnabled = YES;
+    self.tabBarController.tabBar.userInteractionEnabled = YES;
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
     
     if (self.nonFatalUploadErrors && self.nonFatalUploadErrors.count > 0) {
         [SVProgressHUD dismiss];
