@@ -68,7 +68,7 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[separator]-2-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[separator]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];

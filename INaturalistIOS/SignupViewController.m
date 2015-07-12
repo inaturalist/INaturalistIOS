@@ -466,16 +466,14 @@
     // validators
     BOOL isValid = YES;
     NSString *alertMsg;
-    if (!email || ![email containsString:@"@"]) {
+    if (!email || [email rangeOfString:@"@"].location == NSNotFound) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Email Address", "Error for bad email when making account.");
-    }
-    if (!password || password.length < INatMinPasswordLength) {
+    }  else if (!password || password.length < INatMinPasswordLength) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
                                      @"Error for bad password when making account");
-    }
-    if (!username) {
+    } else if (!username) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username hwne making account.");
     }

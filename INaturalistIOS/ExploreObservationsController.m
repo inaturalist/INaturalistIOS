@@ -17,6 +17,7 @@
 #import "ExplorePerson.h"
 #import "Taxon.h"
 #import "NSURL+INaturalist.h"
+#import "NSLocale+INaturalist.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -190,6 +191,11 @@
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
     
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        query = [query stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+    }
+    
     BOOL hasActiveLocationPredicate = NO;
     
     // apply active search predicates to the query
@@ -327,6 +333,12 @@
     }];
 }
 
+- (NSArray *)observationsWithPhotos {
+    return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
+        return observation.observationPhotos.count > 0;
+    }];
+}
+
 - (BOOL)hasActiveLocationSearchPredicate {
     return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *p) {
         return p.type == ExploreSearchPredicateTypeLocation;
@@ -364,6 +376,11 @@
 
 - (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler {
     NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)observation.observationId];
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
+    }
+    
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [ExploreMappingProvider observationMapping];
@@ -495,6 +512,5 @@
     
     return YES;
 }
-
 
 @end

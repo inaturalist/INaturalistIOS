@@ -74,6 +74,9 @@
     // wait to set the delegate and receive regionDidChange notifications until
     // after the view has completely finished loading
     mapView.delegate = self;
+    
+    
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -324,6 +327,7 @@
         NSLog(@"error deserializing MapKit shape from GeoJSON: %@", error.localizedDescription);
         return;
     }
+    
     
     if ([shape isKindOfClass:[NSArray class]]) {
         // some geometries contain multiple shapes (ie San Francisco County)

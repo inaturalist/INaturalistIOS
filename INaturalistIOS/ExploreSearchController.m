@@ -11,6 +11,7 @@
 #import "ExploreSearchController.h"
 #import "Taxon.h"
 #import "ExploreMappingProvider.h"
+#import "NSLocale+INaturalist.h"
 
 @implementation ExploreSearchController
 
@@ -18,6 +19,7 @@
     NSString *pathPattern = @"/taxa/search.json";
     NSString *queryBase = @"?per_page=25&q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, taxon];
+    
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
     
     [self searchForPath:path mapping:[Taxon mapping] completionHandler:handler];
@@ -60,6 +62,13 @@
 }
 
 - (void)searchForPath:(NSString *)path mapping:(RKObjectMapping *)mapping completionHandler:(SearchCompletionHandler)handler {
+    
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        NSString *localeQueryComponent = [NSString stringWithFormat:@"&locale=%@", localeString];
+        path = [path stringByAppendingString:localeQueryComponent];
+    }
+
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
         // can't infer search mappings via keypath

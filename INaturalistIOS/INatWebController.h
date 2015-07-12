@@ -17,6 +17,5 @@
 @property NSURL *url;
 @property UIWebView *webView;
 @property (weak) id <INatWebControllerDelegate> delegate;
-//@property (weak) id <UIWebViewDelegate> delegate;
 
 @end

@@ -39,11 +39,12 @@
 #import "ObservationViewCell.h"
 
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate> {
     UIView *noContentView;
 
     NSFetchedResultsController *fetchedResultsController;
 }
+@property NSMutableArray *nonFatalUploadErrors;
 @end
 
 @implementation ObservationsViewController
@@ -56,7 +57,6 @@
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize syncQueue = _syncQueue;
-@synthesize syncErrors = _syncErrors;
 @synthesize lastRefreshAt = _lastRefreshAt;
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
@@ -80,7 +80,7 @@
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)
                                                     delegate:self 
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
@@ -90,7 +90,7 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults objectForKey:INatTokenPrefKey]) {
-        [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to sync.", @"This is an explanation for why the sync button triggers a login prompt.")];
+        [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to upload.", @"This is an explanation for why the upload button triggers a login prompt.")];
         return;
     }
     
@@ -98,9 +98,8 @@
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
     if (!self.syncQueue) {
-        self.syncQueue = [[SyncQueue alloc] initWithDelegate:self];
+        self.syncQueue = [[UploadManager alloc] initWithDelegate:self];
     }
-	[self.syncQueue.queue removeAllObjects];
 	[self.syncQueue addModel:Observation.class];
 	[self.syncQueue addModel:ObservationFieldValue.class];
 	[self.syncQueue addModel:ProjectObservation.class];
@@ -111,7 +110,7 @@
 	[self.syncQueue start];
     
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop sync",nil)
+        self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
                                                                style:UIBarButtonItemStyleBordered
                                                               target:self
                                                               action:@selector(stopSync)];
@@ -122,17 +121,23 @@
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
                  animated:YES];
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing...",nil) maskType:SVProgressHUDMaskTypeNone];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Uploading...", @"Message that we're beginning to upload")
+                         maskType:SVProgressHUDMaskTypeNone];
     
-    // temporarily disable user interaction with the tableview
+    // temporarily disable user interaction with most of the UI
     self.tableView.userInteractionEnabled = NO;
+    self.tabBarController.tabBar.userInteractionEnabled = NO;
+    self.navigationController.navigationBar.userInteractionEnabled = NO;
 }
 
 - (void)stopSync
 {
     [SVProgressHUD dismiss];
-    // re-enable user interaction with the tableview
+    
     self.tableView.userInteractionEnabled = YES;
+    self.tabBarController.tabBar.userInteractionEnabled = YES;
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
+
     if (self.syncQueue) {
         [self.syncQueue stop];
     }
@@ -251,7 +256,7 @@
         ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
         
         if (notify) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to sync with iNaturalist.org",nil)];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)];
             [self.refreshControl endRefreshing];
         }
         
@@ -367,7 +372,7 @@
         
     }
     self.observationPhotosToSyncCount = [ObservationPhoto needingSyncCount] + [ObservationPhoto deletedRecordCount];
-    NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Sync ",nil)];
+    NSMutableString *msg = [NSMutableString stringWithString:NSLocalizedString(@"Upload ", nil)];
     if (self.observationsToSyncCount > 0) {
         if (self.observationsToSyncCount == 1) {
             [msg appendString:[NSString stringWithFormat:NSLocalizedString(@"%d observation",nil), self.observationsToSyncCount]];
@@ -1227,44 +1232,45 @@
 	NSLog(@"Request Error: %@", error.localizedDescription);
 }
 
-#pragma mark - SyncQueueDelegate
-- (void)syncQueueStartedSyncFor:(id)model
-{
-    NSString *activityMsg;
-    if (model == ObservationPhoto.class) {
-        activityMsg = NSLocalizedString(@"Syncing photos...",nil);
-    } else {
-        NSString *modelName = NSStringFromClass(model).humanize.pluralize;
-        activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Syncing %@...",nil), NSLocalizedString(modelName, nil)];
-    }
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
-}
-- (void)syncQueueSynced:(INatModel *)record number:(NSInteger)number of:(NSInteger)total
-{
-    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Synced %d of %d %@",nil),
-                             number,
-                             total,
-                             NSStringFromClass(record.class).humanize.pluralize];
+#pragma mark - Upload
+
+- (void)uploadSessionStartedTotal:(NSInteger)numberToUpload {
+    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d observations.",
+                                                 @"Upload session start message.");
+    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, numberToUpload];
     [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 
-- (void)syncQueueFinished
-{
+
+- (void)uploadSessionAuthRequired {
+    [SVProgressHUD dismiss];
+    
     [self stopSync];
-    if (self.syncErrors && self.syncErrors.count > 0) {
-        [SVProgressHUD dismiss];
+    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
+                                            @"This is an explanation for why the sync button triggers a login prompt.");
+    [self presentSignupSplashWithReason:reasonMsg];
+}
 
+- (void)uploadSessionFinished {
+    [self stopSync];
+    self.tableView.userInteractionEnabled = YES;
+    self.tabBarController.tabBar.userInteractionEnabled = YES;
+    self.navigationController.navigationBar.userInteractionEnabled = YES;
+    
+    if (self.nonFatalUploadErrors && self.nonFatalUploadErrors.count > 0) {
+        [SVProgressHUD dismiss];
+        
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
-                                                     message:[self.syncErrors componentsJoinedByString:@"\n\n"]
-                                                    delegate:self 
+                                                     message:[self.nonFatalUploadErrors componentsJoinedByString:@"\n\n"]
+                                                    delegate:self
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-        self.syncErrors = nil;
+        
+        [self.nonFatalUploadErrors removeAllObjects];
     } else {
         [SVProgressHUD showSuccessWithStatus:nil];
         // re-enable user interaction with the tableview
-        self.tableView.userInteractionEnabled = YES;
     }
     
     // make sure any deleted records get gone
@@ -1274,74 +1280,68 @@
     [self refreshHeader];
 }
 
-- (void)syncQueueAuthRequired
-{
-    [SVProgressHUD dismiss];
-    
-    [self stopSync];
-    [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to sync.", @"This is an explanation for why the sync button triggers a login prompt.")];
+- (void)uploadStartedFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
+    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d of %d %@.",
+                                                 @"Begin one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
+    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 
-- (void)syncQueue:(SyncQueue *)syncQueue objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    if ([objectLoader.targetObject isKindOfClass:ProjectObservation.class]) {
-        ProjectObservation *po = (ProjectObservation *)objectLoader.targetObject;
-        if (!self.syncErrors) {
-            self.syncErrors = [[NSMutableArray alloc] init];
+- (void)uploadSuccessFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
+    NSString *activityMsgFmt = NSLocalizedString(@"Uploaded %d of %d %@.",
+                                                 @"Finished one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
+    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
+    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+}
+
+- (void)uploadNonFatalError:(NSError *)error {
+    if (!self.nonFatalUploadErrors) {
+        self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
+    }
+    [self.nonFatalUploadErrors addObject:error.localizedDescription];
+}
+
+- (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
+    if ([object isKindOfClass:ProjectObservation.class]) {
+        ProjectObservation *po = (ProjectObservation *)object;
+        if (!self.nonFatalUploadErrors) {
+            self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
         }
-        [self.syncErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
-                                    po.observation.speciesGuess, 
-                                    po.observation.observedOnShortString,
-                                    po.project.title,
-                                    error.localizedDescription]];
+        [self.nonFatalUploadErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
+                                              po.observation.speciesGuess,
+                                              po.observation.observedOnShortString,
+                                              po.project.title,
+                                              error.localizedDescription]];
         [po deleteEntity];
-    } else if ([objectLoader.targetObject isKindOfClass:ObservationFieldValue.class]) {
+        
+    } else if ([object isKindOfClass:ObservationFieldValue.class]) {
         // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
         // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
         // kueda 20140112
-        ObservationFieldValue *ofv = (ObservationFieldValue *)objectLoader.targetObject;
+        ObservationFieldValue *ofv = (ObservationFieldValue *)object;
         if (!ofv.observation) {
             NSLog(@"ERROR: deleted mysterious ofv: %@", ofv);
             [ofv deleteEntity];
         }
-    } else {
-        if ([self isSyncing]) {
-            [SVProgressHUD dismiss];
-            
-            NSString *alertTitle;
-            NSString *alertMessage;
+    } else if ([self isSyncing]) {
+        NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
+        NSString *alertMessage;
+        
+        if (error) {
             if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
                 alertTitle = NSLocalizedString(@"Request timed out",nil);
                 alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
             } else {
-                alertTitle = NSLocalizedString(@"Whoops!",nil);
                 alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
             }
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle 
-                                                         message:alertMessage
-                                                        delegate:self 
-                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                               otherButtonTitles:nil];
-            [av show];
-            [objectLoader cancel];
-        } 
-        [self stopSync];
-    }
-}
-
-- (void)syncQueue:(SyncQueue *)syncQueue nonLoaderRequestFailedWithError:(NSError *)error {
-    if ([self isSyncing]) {
-        [SVProgressHUD dismiss];
-
-        NSString *alertTitle;
-        NSString *alertMessage;
-        if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
-            alertTitle = NSLocalizedString(@"Request timed out",nil);
-            alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
         } else {
-            alertTitle = NSLocalizedString(@"Whoops!",nil);
-            alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
+            alertMessage = NSLocalizedString(@"There was an unexpected error.",
+                                             @"Unresolvable and unknown error during observation upload.");
         }
+        
+        [SVProgressHUD dismiss];
+        
+        [self stopSync];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                      message:alertMessage
                                                     delegate:self
@@ -1349,20 +1349,6 @@
                                            otherButtonTitles:nil];
         [av show];
     }
-    [self stopSync];
-}
-
-- (void)syncQueueUnexpectedResponse
-{
-    [SVProgressHUD dismiss];
-    
-    [self stopSync];
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                 message:NSLocalizedString(@"There was an unexpected error.",nil)
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
 }
 
 @end

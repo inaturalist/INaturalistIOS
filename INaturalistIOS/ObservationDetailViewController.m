@@ -84,6 +84,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 @interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate,MHGalleryDelegate>
 @property UIBarButtonItem *bigSave;
+@property RKObjectLoader *taxonLoader;
 @end
 
 @implementation ObservationDetailViewController
@@ -109,7 +110,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @synthesize locationManager = _locationManager;
 @synthesize locationTimer = _locationTimer;
 @synthesize geocoder = _geocoder;
-@synthesize popOver = _popOver;
 @synthesize currentActionSheet = _currentActionSheet;
 @synthesize locationUpdatesOn = _locationUpdatesOn;
 @synthesize observationWasNew = _observationWasNew;
@@ -255,6 +255,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             ofv.value = textField.text;
         }
     }
+}
+
+- (void)dealloc {
+    [[RKClient sharedClient].requestQueue cancelRequest:self.taxonLoader];
 }
 
 - (void)initUI
@@ -407,7 +411,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     BOOL taxonIDSetExplicitly = self.taxonID && self.taxonID.length > 0;
     BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.fullyLoaded;
-    if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
+    if (self.observation && self.observation.taxon && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
         NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
         NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonID];
         Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
@@ -439,12 +443,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 [strongSelf observationToUI];
             };
             
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [Taxon mapping];
-                                                                loader.onDidLoadObject = taxonLoadedBlock;
-                                                                // do nothing in the event of error
-                                                            }];
+            self.taxonLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:urlString];
+            self.taxonLoader.objectMapping = [Taxon mapping];
+            self.taxonLoader.onDidLoadObject = taxonLoadedBlock;
+            [self.taxonLoader sendAsynchronously];
+            
         } else {
             NSLog(@"no network, ignore");
         }
@@ -761,8 +764,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     __weak MHGalleryController *blockGallery = gallery;
     
     gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        __strong typeof(blockGallery)strongGallery = blockGallery;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+            [strongGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
     
@@ -773,11 +777,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [toolbarItems removeLastObject];
         [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                 handler:^(id sender) {
+                                                                                    __strong typeof(blockGallery)strongGallery = blockGallery;
                                                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                                                    [blockGallery dismissViewControllerAnimated:YES
-                                                                                                               dismissImageView:nil
-                                                                                                                     completion:nil];
-                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[blockGallery.presentationIndex];
+                                                                                    [strongGallery dismissViewControllerAnimated:YES
+                                                                                                                dismissImageView:nil
+                                                                                                                      completion:nil];
+                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
                                                                                     [strongSelf.observationPhotos removeObject:op];
                                                                                     [op deleteEntity];
                                                                                     [strongSelf refreshCoverflowView];
@@ -877,8 +882,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/observations/%d", INatWebBaseURL, [self.observation.recordID intValue]]];
+        NSString *observationPath = [NSString stringWithFormat:@"/observations/%d", [self.observation.recordID intValue]];
+        NSURL *url = [[NSURL inat_baseURL] URLByAppendingPathComponent:observationPath];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
@@ -888,7 +893,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self uiToObservation];
     switch (buttonIndex) {
         case 0:
-            self.observation.geoprivacy = NSLocalizedString( @"open_adj",nil);
+            self.observation.geoprivacy = NSLocalizedString(@"open",nil);
             break;
         case 1:
             self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
@@ -1279,7 +1284,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                  delegate:self 
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Open_adj",nil),
+                                                        otherButtonTitles:NSLocalizedString(@"Open",nil),
                                                                             NSLocalizedString(@"Obscured",nil),
                                                                             NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
@@ -1648,11 +1653,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)clickedView
 {
+    NSString *viewBaseText = NSLocalizedString(@"View on %@", @"Open one of my observations on iNat.org or a partner site.");
+    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:NO];
+    NSString *viewText = [NSString stringWithFormat:viewBaseText, components.host];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
                                                     cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
+                                                    otherButtonTitles:viewText, nil];
     actionSheet.tag = ViewActionSheetTag;
     
     // be defensive
@@ -2074,21 +2082,25 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.geocoder = [[CLGeocoder alloc] init];
     }
     [self.geocoder cancelGeocode];
+    __weak typeof (self)weakSelf = self;
+    
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
             // self.observation may not be accessible
             // if it's been deleted for example
             @try {
-                self.observation.placeGuess = [[NSArray arrayWithObjects:
-                                                pm.name,
-                                                pm.locality,
-                                                pm.administrativeArea,
-                                                pm.ISOcountryCode,
-                                                nil]
-                                               componentsJoinedByString:@", "];
-                if (self.placeGuessField) {
-                    self.placeGuessField.text = self.observation.placeGuess;
+                NSString *name = pm.name ?: @"";
+                NSString *locality = pm.locality ?: @"";
+                NSString *administrativeArea = pm.administrativeArea ?: @"";
+                NSString *ISOcountryCode = pm.ISOcountryCode ?: @"";
+                strongSelf.observation.placeGuess = [ @[ name,
+                                                         locality,
+                                                         administrativeArea,
+                                                         ISOcountryCode ] componentsJoinedByString:@", "];
+                if (strongSelf.placeGuessField) {
+                    strongSelf.placeGuessField.text = strongSelf.observation.placeGuess;
                 }
             } @catch (NSException *exception) {
                 if ([exception.name isEqualToString:NSObjectInaccessibleException])

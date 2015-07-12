@@ -36,6 +36,7 @@
 #import "ExploreObservationPhoto+BestAvailableURL.h"
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "NSURL+INaturalist.h"
 
 @interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
@@ -170,11 +171,13 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (actionSheet == shareActionSheet) {
+        NSString *observationPath = [NSString stringWithFormat:@"/observations/%ld", (long)self.observation.observationId];
+        NSURL *observationURL = [[NSURL inat_baseURL] URLByAppendingPathComponent:observationPath];
+
         switch (buttonIndex) {
             case 0:
                 // open in safari
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
-                                                                                 INatWebBaseURL, (long)self.observation.observationId]]];
+                [[UIApplication sharedApplication] openURL:observationURL];
                 break;
             case 1:
                 // share

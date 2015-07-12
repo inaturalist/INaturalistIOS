@@ -38,7 +38,6 @@ static NSDateFormatter *shortFormatter;
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        //self.contentView.backgroundColor = [UIColor whiteColor];
         
         observationImageView = ({
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -394,15 +393,15 @@ static NSDateFormatter *shortFormatter;
         observedOnLabel.text = [shortFormatter stringFromDate:date];
     }
     
-    if (observation.idPlease) {
-        observationAttrLabel.text = NSLocalizedString(@"ID PLEASE", nil);
-        observationAttrLabel.textColor = [UIColor colorForIdPleaseNotice];
-        observationAttrLabel.backgroundColor = [UIColor secondaryColorForIdPleaseNotice];
-        observationAttrLabel.hidden = NO;
-    } else if ([observation.qualityGrade isEqualToString:@"research"]) {
+    if ([observation.qualityGrade isEqualToString:@"research"]) {
         observationAttrLabel.text = NSLocalizedString(@"RESEARCH", nil);
         observationAttrLabel.textColor = [UIColor colorForResearchGradeNotice];
         observationAttrLabel.backgroundColor = [UIColor secondaryColorForResearchGradeNotice];
+        observationAttrLabel.hidden = NO;
+    } else if (observation.idPlease) {
+        observationAttrLabel.text = NSLocalizedString(@"ID PLEASE", nil);
+        observationAttrLabel.textColor = [UIColor colorForIdPleaseNotice];
+        observationAttrLabel.backgroundColor = [UIColor secondaryColorForIdPleaseNotice];
         observationAttrLabel.hidden = NO;
     }
 }
