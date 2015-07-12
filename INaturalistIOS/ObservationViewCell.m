@@ -12,34 +12,21 @@
 
 
 - (void)awakeFromNib{
+    self.observationImage.translatesAutoresizingMaskIntoConstraints = NO;
+    self.syncImage.translatesAutoresizingMaskIntoConstraints = NO;
+    self.activityButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    
-    UIImageView *imageView = (UIImageView *)[self viewWithTag:ObservationCellImageTag];
-    UILabel *title = (UILabel *)[self viewWithTag:ObservationCellTitleTag];
-    UILabel *subtitle = (UILabel *)[self viewWithTag:ObservationCellSubTitleTag];
-    UILabel *upperRight = (UILabel *)[self viewWithTag:ObservationCellUpperRightTag];
-    UIImageView *syncImage = (UIImageView *)[self viewWithTag:ObservationCellLowerRightTag];
-    UIButton *activityButton = (UIButton *)[self viewWithTag:ObservationCellActivityButtonTag];
-    UIButton *interactiveActivityButton = (UIButton *)[self viewWithTag:ObservationCellActivityInteractiveButtonTag];
-    
-    imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    syncImage.translatesAutoresizingMaskIntoConstraints = NO;
-    activityButton.translatesAutoresizingMaskIntoConstraints = NO;
-    interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
-    title.translatesAutoresizingMaskIntoConstraints = NO;
-    subtitle.translatesAutoresizingMaskIntoConstraints = NO;
-    upperRight.translatesAutoresizingMaskIntoConstraints = NO;
-
+    self.titleLabel.textAlignment = NSTextAlignmentNatural;
+    self.subtitleLabel.textAlignment = NSTextAlignmentNatural;
         
-    title.textAlignment = NSTextAlignmentNatural;
-    subtitle.textAlignment = NSTextAlignmentNatural;
+    NSDictionary *views = @{@"imageView":self.observationImage,@"title":self.titleLabel,@"subtitle":self.subtitleLabel,@"dateLabel":self.dateLabel,@"activityButton": self.activityButton, @"interactiveActivityButton":self.interactiveActivityButton, @"syncImage":self.syncImage};
         
         
-    NSDictionary *views = @{@"imageView":imageView,@"title":title,@"subtitle":subtitle,@"upperRight":upperRight,@"activityButton": activityButton, @"interactiveActivityButton":interactiveActivityButton, @"syncImage":syncImage};
-        
-        
-        
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[upperRight(==46)]-3-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-3-|" options:0 metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-3-|" options:0 metrics:0 views:views]];
     
@@ -53,12 +40,11 @@
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==subtitle)]-2-[subtitle]-4-|" options:0 metrics:0 views:views]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:subtitle attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.subtitleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[upperRight(==15)]->=0-[activityButton(==22)]-3-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[dateLabel(==15)]->=0-[activityButton(==22)]-3-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     
-    
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:subtitle attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.subtitleLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
 }
 
 

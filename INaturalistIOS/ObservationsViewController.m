@@ -632,34 +632,22 @@
     return [sectionInfo numberOfObjects];
 }
 
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//    
-//
-//    
-//
-//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
-    UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
-    UILabel *subtitle = (UILabel *)[cell viewWithTag:ObservationCellSubTitleTag];
-    UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
-    UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
-	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
-    UIButton *interactiveActivityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityInteractiveButtonTag];
+    ObservationViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
+    
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
 		if (op.photoKey == nil) {
-            [imageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
+            [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
 		} else {
-			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+			cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
             
             // if we can't find a square image...
-            if (!imageView.image) {
+            if (!cell.observationImage.image) {
                 // ...try again a few times, it's probably a new image in the process of being cut-down
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
@@ -670,46 +658,47 @@
 		}
         
     } else {
-        imageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+        cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
     
     if (o.speciesGuess && o.speciesGuess.length > 0) {
-        [title setText:o.speciesGuess];
+        [cell.titleLabel setText:o.speciesGuess];
     } else {
-        [title setText:NSLocalizedString(@"Something...",nil)];
+        [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
     
     if (o.placeGuess && o.placeGuess.length > 0) {
-        subtitle.text = o.placeGuess;
+        cell.subtitleLabel.text = o.placeGuess;
     } else if (o.latitude) {
-        subtitle.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
     } else {
-        subtitle.text = NSLocalizedString(@"Somewhere...",nil);
+        cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
 	if (o.hasUnviewedActivity.boolValue) {
 		// make bubble red
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
+		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
 	} else {
 		// make bubble grey
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
+		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
 	}
 	
-	[activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
+	[cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
 	
 	if (o.activityCount > 0) {
-		activityButton.hidden = NO;
-        interactiveActivityButton.hidden = NO;
+		cell.activityButton.hidden = NO;
+        cell.interactiveActivityButton.hidden = NO;
 	} else {
-		activityButton.hidden = YES;
-        interactiveActivityButton.hidden = YES;
+		cell.activityButton.hidden = YES;
+        cell.interactiveActivityButton.hidden = YES;
 	}
-    [interactiveActivityButton addTarget:self
+    
+    [cell.interactiveActivityButton addTarget:self
                                   action:@selector(clickedActivity:event:)
                         forControlEvents:UIControlEventTouchUpInside];
 	
-    upperRight.text = o.observedOnShortString;
-    syncImage.hidden = !o.needsSync;
+    cell.dateLabel.text = o.observedOnShortString;
+    cell.syncImage.hidden = !o.needsSync;
     
     
     

@@ -33,6 +33,7 @@
     self.navigationController.navigationBar.translucent = NO;
 	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
+    self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
 - (void)viewDidAppear:(BOOL)animated {

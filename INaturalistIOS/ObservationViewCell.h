@@ -18,5 +18,13 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 @interface ObservationViewCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIImageView *observationImage;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *subtitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UIButton *interactiveActivityButton;
+@property (weak, nonatomic) IBOutlet UIButton *activityButton;
+@property (weak, nonatomic) IBOutlet UIImageView *syncImage;
+
 
 @end
