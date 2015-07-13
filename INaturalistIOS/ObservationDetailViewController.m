@@ -778,10 +778,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                                 handler:^(id sender) {
                                                                                     __strong typeof(blockGallery)strongGallery = blockGallery;
                                                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                                    
+                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
+
                                                                                     [strongGallery dismissViewControllerAnimated:YES
                                                                                                                 dismissImageView:nil
                                                                                                                       completion:nil];
-                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
                                                                                     [strongSelf.observationPhotos removeObject:op];
                                                                                     [op deleteEntity];
                                                                                     [strongSelf refreshCoverflowView];
@@ -796,15 +798,21 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
     NSMutableArray *toolbarItems = [galleryController.imageViewerViewController.toolbar.items mutableCopy];
     [toolbarItems removeLastObject];
+    
+    __weak typeof(self)weakSelf = self;
     [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                             handler:^(id sender) {
-                                                                                [blockGallery dismissViewControllerAnimated:YES
-                                                                                                           dismissImageView:nil
-                                                                                                                 completion:nil];
-                                                                                ObservationPhoto *op = self.observationPhotos[blockGallery.presentationIndex];
-                                                                                [self.observationPhotos removeObject:op];
+                                                                                __strong typeof(blockGallery)strongGallery = blockGallery;
+                                                                                __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                                                
+                                                                                ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
+
+                                                                                [strongGallery dismissViewControllerAnimated:YES
+                                                                                                            dismissImageView:nil
+                                                                                                                  completion:nil];
+                                                                                [strongSelf.observationPhotos removeObject:op];
                                                                                 [op deleteEntity];
-                                                                                [self refreshCoverflowView];
+                                                                                [strongSelf refreshCoverflowView];
                                                                             }]];
     dispatch_async(dispatch_get_main_queue(), ^{
         galleryController.imageViewerViewController.toolbar.items = toolbarItems;
