@@ -59,7 +59,7 @@
                                 @"separator": self.separator,
                                 @"right": self.rightTitleLabel,
                                 };
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-20-[right]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-15-[right]-15-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
