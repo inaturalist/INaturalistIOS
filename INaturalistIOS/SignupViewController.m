@@ -479,7 +479,7 @@
     }
     
     if (!isValid) {
-        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
         
         [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -525,7 +525,7 @@
                                                 failure:^(NSError *error) {
                                                     [SVProgressHUD dismiss];
 
-                                                    NSString *alertTitle = NSLocalizedString(@"Create Account Error", @"Title for create account alert");
+                                                    NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                     NSString *alertMsg;
                                                     if (error) {
                                                         alertMsg = error.localizedDescription;

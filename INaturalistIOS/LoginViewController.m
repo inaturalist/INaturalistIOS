@@ -165,7 +165,7 @@
                                                                                                                          completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
-                                                                       NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                                                       NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                                        NSString *alertMsg;
                                                                        if (error) {
                                                                            alertMsg = error.localizedDescription;
@@ -223,7 +223,7 @@
                                                                   completion:nil];
                 }
             } failure:^(NSError *error) {
-                NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                 NSString *alertMsg;
                 if (error) {
                     alertMsg = error.localizedDescription;
@@ -565,7 +565,7 @@
                                      @"Error for bad password when making account");
     }
     if (!isValid) {
-        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
 
         [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -597,7 +597,7 @@
                                                }
                                            } failure:^(NSError *error) {
                                                [SVProgressHUD dismiss];
-                                               NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                               NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                NSString *alertMsg;
                                                if (error) {
                                                    if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
