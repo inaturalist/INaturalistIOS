@@ -39,9 +39,8 @@
 @interface UploadManager ()
 @property (nonatomic, strong) NSMutableArray *queue;
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
-@property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, assign) BOOL started;
-@property NSOperationQueue *uploadWorkQueue;
+@property NSMutableArray *objectLoaders;
 @end
 
 @implementation UploadManager
@@ -53,8 +52,9 @@
         self.delegate = delegate;
         self.queue = [[NSMutableArray alloc] init];
         
-        self.uploadWorkQueue = [[NSOperationQueue alloc] init];
-        self.uploadWorkQueue.maxConcurrentOperationCount = 1;
+        // workaround a restkit bug where the object loader isn't retained in the
+        // event that a request fails by stashing all objectloaders
+        self.objectLoaders = [NSMutableArray array];
     }
     return self;
 }
@@ -148,71 +148,76 @@
 
 - (void)uploadRecord:(INatModel *)record completion:(void (^)())completion {
     
-    __weak typeof(self) weakSelf = self;
-    RKObjectLoaderBlock loaderBlock = ^(RKObjectLoader *loader) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
+    RKRequestMethod *method = record.syncedAt ? RKRequestMethodPUT : RKRequestMethodPOST;
+    
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via %d", record, (int)method]];
+    RKObjectLoader *loader = [[RKObjectManager sharedManager] loaderForObject:record method:method];
+    
+    // need to setup params for obs photo uploads here
+    // this should go into a protocol
+    // and needs to trap for an error getting the additional params
+    if ([record respondsToSelector:@selector(fileUploadParameter)]) {
+        NSString *path = [record performSelector:@selector(fileUploadParameter)];
         
-        // need to setup params for obs photo uploads here
-        // this should go into a protocol
-        // and needs to trap for an error getting the additional params
-        if ([record respondsToSelector:@selector(fileUploadParameter)]) {
-            NSString *path = [record performSelector:@selector(fileUploadParameter)];
-            
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
-                                                     serializationMappingForClass:[record class]];
-            NSError* error = nil;
-            RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:record
-                                                                              mapping:serializationMapping];
-            NSDictionary *dictionary = [serializer serializedObject:&error];
-            
-            // should really call completion with the error
-            if (error) {
-                [strongSelf.delegate uploadFailedFor:record error:error];
-                strongSelf.started = NO;
-                return;
-            }
-            
-            RKParams* params = [RKParams paramsWithDictionary:dictionary];
-            
-            [params setFile:path
-                   forParam:@"file"];
-            loader.params = params;
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
+                                                 serializationMappingForClass:[record class]];
+        NSError* error = nil;
+        RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:record
+                                                                          mapping:serializationMapping];
+        NSDictionary *dictionary = [serializer serializedObject:&error];
+        
+        // should really call completion with the error
+        if (error) {
+            [self.delegate uploadFailedFor:record error:error];
+            self.started = NO;
+            return;
         }
         
-        loader.objectMapping = [[record class] mapping];
-        loader.onDidLoadObject = ^(INatModel *uploadedObject) {
-            
-            uploadedObject.syncedAt = [NSDate date];
-            NSError *error = nil;
-            [[[RKObjectManager sharedManager] objectStore] save:&error];
-            // should really call completion with the error
-            if (error) {
-                [strongSelf.delegate uploadFailedFor:record error:error];
-                strongSelf.started = NO;
-                return;
-            }
-            
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC completed upload of %@", record]];
-            
-            completion();
-            
-        };
-        loader.onDidFailLoadWithError = ^(NSError *error) {
-            
-        };
-        loader.onDidFailWithError = ^(NSError *error) {
-            
-        };
+        RKParams* params = [RKParams paramsWithDictionary:dictionary];
+        
+        [params setFile:path
+               forParam:@"file"];
+        loader.params = params;
+    }
+
+    loader.objectMapping = [[record class] mapping];
+    
+    __weak typeof(self) weakSelf = self;
+    loader.onDidLoadObject = ^(INatModel *uploadedObject) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        uploadedObject.syncedAt = [NSDate date];
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        // should really call completion with the error
+        if (error) {
+            [strongSelf.delegate uploadFailedFor:record error:error];
+            strongSelf.started = NO;
+            return;
+        }
+        
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC completed upload of %@", record]];
+        
+        completion();
     };
     
-    if (record.syncedAt) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via PUT", record]];
-        [[RKObjectManager sharedManager] putObject:record usingBlock:loaderBlock];
-    } else {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via POST", record]];
-        [[RKObjectManager sharedManager] postObject:record usingBlock:loaderBlock];
-    }
+    loader.onDidFailLoadWithError = ^(NSError *error) {
+        
+    };
+    
+    loader.onDidFailWithError = ^(NSError *error) {
+        
+    };
+    
+    [self.objectLoaders addObject:loader];
+    [loader sendAsynchronously];
+}
+
+- (void)dealloc {
+    [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
+        [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
+    }];
 }
 
 // should go into Observation class
@@ -417,7 +422,7 @@
     
     // was running into a bug in release build config where the object loader was 
     // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
+    //self.loader = objectLoader;
     bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
     bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
     bool recordDeletedFromServer = (objectLoader.response.statusCode == 404 || objectLoader.response.statusCode == 410) &&
@@ -466,7 +471,7 @@
 
 - (void)objectLoaderDidLoadUnexpectedResponse:(RKObjectLoader *)objectLoader
 {
-    self.loader = objectLoader;
+    //self.loader = objectLoader;
     [self stop];
     if ([self.delegate respondsToSelector:@selector(uploadFailedFor:error:)]) {
         [self.delegate uploadFailedFor:nil error:nil];

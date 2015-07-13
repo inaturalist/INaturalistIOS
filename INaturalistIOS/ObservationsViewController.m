@@ -156,6 +156,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
     if (self.syncQueue) {
         [self.syncQueue stop];
+        self.syncQueue = nil;
     }
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
