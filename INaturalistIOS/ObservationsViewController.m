@@ -339,8 +339,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
     [self.syncButton setTitle:msg];
     
-    
-    
     if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
         [self setToolbarItems:self.syncToolbarItems animated:YES];
@@ -348,6 +346,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [self.navigationController setToolbarHidden:YES];
         [self setToolbarItems:nil animated:YES];
     }
+    
+    [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
+    
     self.syncedObservationsCount = 0;
 }
 
