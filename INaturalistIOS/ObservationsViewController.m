@@ -60,8 +60,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
-@synthesize syncedObservationsCount = _syncedObservationsCount;
-@synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
 @synthesize lastRefreshAt = _lastRefreshAt;
@@ -348,8 +346,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
     
     [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
-    
-    self.syncedObservationsCount = 0;
 }
 
 - (void)checkEmpty
