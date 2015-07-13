@@ -25,7 +25,6 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton; // if the button is just kind of floating and not assigned a super view, it will get deallocated UNLESS we have a strong reference here
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
 @property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
-@property (nonatomic, strong) UploadManager *syncQueue;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 
 - (IBAction)sync:(id)sender;

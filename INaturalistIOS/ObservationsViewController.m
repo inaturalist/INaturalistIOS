@@ -51,6 +51,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
     NSFetchedResultsController *fetchedResultsController;
 }
+@property UploadManager *uploadManager;
 @property NSMutableArray *nonFatalUploadErrors;
 @end
 
@@ -63,7 +64,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
-@synthesize syncQueue = _syncQueue;
 @synthesize lastRefreshAt = _lastRefreshAt;
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
@@ -104,26 +104,17 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
-    if (!self.syncQueue) {
-        self.syncQueue = [[UploadManager alloc] initWithDelegate:self];
+    UploadManager *uploader = [[UploadManager alloc] initWithDelegate:self];
+    if (!self.uploadManager) {
+        self.uploadManager = uploader;
     }
-    /*
-	[self.syncQueue addModel:Observation.class];
-	[self.syncQueue addModel:ObservationFieldValue.class];
-	[self.syncQueue addModel:ProjectObservation.class];
-    if ([ObservationPhoto needingSyncCount] > 0) {
-        [[[RKObjectManager sharedManager] objectStore] save:nil];
-    }
-	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
-	[self.syncQueue start];
-     */
+    
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
         [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
                                                                                   NSStringFromClass(class)]]];
     }
     
-    UploadManager *uploader = self.syncQueue;
     [uploader uploadDeletes:recordsToDelete completion:^{
         [uploader uploadObservations:[Observation needingUpload]];
     }];
@@ -139,7 +130,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     [self.navigationController setToolbarHidden:NO];
     [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
                  animated:YES];
-        
+    
     // temporarily disable user interaction with most of the UI
     self.tableView.userInteractionEnabled = NO;
     self.tabBarController.tabBar.userInteractionEnabled = NO;
@@ -154,9 +145,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
 
-    if (self.syncQueue) {
-        [self.syncQueue stop];
-        self.syncQueue = nil;
+    if (self.uploadManager) {
+        [self.uploadManager stop];
+        self.uploadManager = nil;
     }
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
@@ -166,73 +157,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 - (BOOL)isSyncing
 {
     return [UIApplication sharedApplication].isIdleTimerDisabled;
-}
-
-- (void)syncObservationPhoto:(ObservationPhoto *)op
-{
-    INaturalistAppDelegate *app = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
-    // in theory no observation photo should be without an observation, but...
-    if (!op.observation) {
-        [op destroy];
-        return;
-    }
-    
-    NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey
-                                                       forSize:ImageStoreLargeSize];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    // if we don't have a file for this obs photo, it's not in the ImageStore
-    // remove the obsPhoto, and notify the user that we can't sync the photo.
-    if (!path || ![fm fileExistsAtPath:path]) {
-        
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC Can't upload obs photo, no file for %@", path]];
-        
-        // human readable index
-        NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
-        NSString *obsName;
-        if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
-            obsName = op.observation.speciesGuess;
-        else
-            obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
-        
-        NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
-                                                                          @"error message when an obs photo doesn't have a file on the phone."),
-                              index, obsName];
-        NSString *alertTitle = NSLocalizedString(@"Photo Upload Problem", @"error title during an obs photo problem.");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                        message:alertMsg
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        
-        // bail on syncing this photo.
-        // this sucks, but is better than crashing.
-        [op destroy];
-        [self stopSync];
-        return;
-    }
-
-    void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
-        loader.delegate = self.syncQueue;
-        RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
-                                                 serializationMappingForClass:[ObservationPhoto class]];
-        NSError* error = nil;
-        NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
-                                    serializedObject:&error];
-        RKParams* params = [RKParams paramsWithDictionary:dictionary];
-
-        [params setFile:path
-               forParam:@"file"];
-        loader.params = params;
-        loader.objectMapping = [ObservationPhoto mapping];
-    };
-    if (op.syncedAt && op.recordID) {
-        [app.photoObjectManager putObject:op usingBlock:prepareObservationPhoto];
-    } else {
-        [app.photoObjectManager postObject:op usingBlock:prepareObservationPhoto];
-    }
 }
 
 - (IBAction)edit:(id)sender {
