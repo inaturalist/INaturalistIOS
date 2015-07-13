@@ -17,8 +17,9 @@
 #import "TaxonPhoto.h"
 #import "Analytics.h"
 
-@interface AddIdentificationViewController () <RKRequestDelegate>
-
+@interface AddIdentificationViewController () <RKRequestDelegate> {
+    BOOL viewHasPresented;
+}
 @property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
@@ -33,17 +34,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
 }
 
 - (void)viewWillAppear:(BOOL)animated {
 	if (!self.taxon) {
-		[self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+        if (viewHasPresented) {
+            // user is trying to cancel adding an ID
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+        }
 	}
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    viewHasPresented = YES;
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddIdentification];
 }
 
