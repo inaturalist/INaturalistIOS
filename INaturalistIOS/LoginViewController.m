@@ -136,6 +136,7 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
                                 };
         
+        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
                                                                                 attributes:attrs];
         button.leftTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
@@ -195,6 +196,7 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                 };
         
+        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
                                                                                 attributes:attrs];
         button.leftTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
