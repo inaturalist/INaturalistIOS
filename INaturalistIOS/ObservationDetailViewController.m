@@ -755,7 +755,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
     gallery.galleryItems = galleryData;
-    gallery.presentationIndex = 0;
+    gallery.presentationIndex = index;
     gallery.UICustomization = customization;
     
     gallery.galleryDelegate = self;
