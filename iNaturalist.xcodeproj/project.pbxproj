@@ -1364,7 +1364,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Crashlytics.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
+			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Pods/Fabric/Fabric.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
 		};
 		FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1647,7 +1647,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1686,7 +1689,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
