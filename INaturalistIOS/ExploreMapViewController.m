@@ -211,12 +211,14 @@
         if ([container.selectedViewController isEqual:self] && [self.tabBarController.selectedViewController isEqual:self.navigationController]) {
             [mapChangedTimer invalidate];
             
+            __weak typeof(self) weakSelf = self;
             // give the user a bit to keep scrolling before we make a new API call
             mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
                                                                    block:^(NSTimer *timer) {
+                                                                       __strong typeof(weakSelf) strongSelf = weakSelf;
                                                                        // notify the observation data source that we have a new limiting region
                                                                        ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                                       self.observationDataSource.limitingRegion = region;
+                                                                       strongSelf.observationDataSource.limitingRegion = region;
                                                                    }
                                                                  repeats:NO];
         }
