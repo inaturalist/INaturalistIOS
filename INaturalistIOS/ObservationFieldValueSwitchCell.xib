@@ -15,10 +15,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" misplaced="YES" text="Field name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Field name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                         <rect key="frame" x="15" y="11" width="162" height="21"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </label>
                     <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7" customClass="DCRoundSwitch">
@@ -35,6 +35,7 @@
                     <constraint firstAttribute="trailingMargin" secondItem="7" secondAttribute="trailing" constant="2" id="Qtj-wl-oT7"/>
                     <constraint firstItem="7" firstAttribute="top" secondItem="k46-da-ubv" secondAttribute="topMargin" id="ZMV-5I-wkT"/>
                     <constraint firstAttribute="bottomMargin" secondItem="4" secondAttribute="bottom" constant="3" id="cEr-h4-Hli"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="4" secondAttribute="trailing" constant="135" id="cKJ-rg-dEj"/>
                     <constraint firstItem="4" firstAttribute="leading" secondItem="k46-da-ubv" secondAttribute="leadingMargin" constant="7" id="vbd-cW-luU"/>
                 </constraints>
             </tableViewCellContentView>

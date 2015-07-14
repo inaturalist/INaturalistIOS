@@ -36,6 +36,7 @@
 #import "SignupSplashViewController.h"
 #import "LoginViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "UploadManagerNotificationDelegate.h"
 #import "ObservationViewCell.h"
 
 

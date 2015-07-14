@@ -785,7 +785,7 @@
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" rowHeight="54" id="EzP-MT-5na">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" rowHeight="54" id="EzP-MT-5na" customClass="ProjectTableViewCell">
                                 <rect key="frame" x="0.0" y="130" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EzP-MT-5na" id="OQe-bd-Skb">
@@ -806,6 +806,10 @@
                                         </view>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="projectImage" destination="92R-nd-fDz" id="bAx-WM-j9G"/>
+                                    <outlet property="titleLabel" destination="r3N-gL-j8R" id="0I4-DW-Qhh"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -1342,6 +1346,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="detailsButton" destination="tp5-5y-3mX" id="cpL-nz-bA2"/>
                         <outlet property="projectIcon" destination="Ylj-cd-RUn" id="1Qk-sc-nvV"/>
                         <outlet property="projectTitle" destination="bKM-7Q-aRA" id="zgE-Df-ZC7"/>
                         <outlet property="syncButton" destination="YpC-0K-6eW" id="KHg-C4-ye9"/>
@@ -1629,7 +1634,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" id="BXg-UH-Aqz">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" rowHeight="54" id="BXg-UH-Aqz" customClass="ProjectTableViewCell">
                                 <rect key="frame" x="0.0" y="86" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BXg-UH-Aqz" id="Lrd-cI-gDW">
@@ -1650,6 +1655,10 @@
                                         </view>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="projectImage" destination="Nzm-nG-y5B" id="EgZ-nt-pfg"/>
+                                    <outlet property="titleLabel" destination="qsE-wG-WNP" id="cr9-ud-RTK"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -2215,8 +2224,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Q4H-Ck-yCo"/>
         <segue reference="8j7-c4-5Sv"/>
         <segue reference="hvR-ND-N81"/>
+        <segue reference="Q4H-Ck-yCo"/>
     </inferredMetricsTieBreakers>
 </document>

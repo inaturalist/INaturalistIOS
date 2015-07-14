@@ -17,6 +17,7 @@
 @property (nonatomic, strong) Project *project;
 @property (weak, nonatomic) IBOutlet UIImageView *projectIcon;
 @property (weak, nonatomic) IBOutlet UILabel *projectTitle;
+@property (weak, nonatomic) IBOutlet UIButton *detailsButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
