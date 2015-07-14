@@ -7,6 +7,7 @@
 //
 
 #import <FlurrySDK/Flurry.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
 #import "Analytics.h"
@@ -28,7 +29,7 @@
         [Flurry startSession:INatFlurryKey];
         
 #ifdef INatCrashlyticsKey
-        [Crashlytics startWithAPIKey:INatCrashlyticsKey];
+        [Fabric with:@[CrashlyticsKit]];
 #endif
 
     });
