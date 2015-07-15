@@ -8,6 +8,7 @@
 
 #import "RecordSearchController.h"
 #import "INatModel.h"
+#import "Analytics.h"
 
 @implementation RecordSearchController
 @synthesize searchResults = _searchResults;
@@ -68,6 +69,7 @@
     }
     self.isLoading = YES;
     NSString *url = [NSString stringWithFormat:self.searchURL, self.savedSearchTerm];
+    [[Analytics sharedClient] debugLog:@"Network - Record search"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
                                                  objectMapping:[self.model mapping]
                                                       delegate:self];

@@ -186,6 +186,7 @@ static char SUMMARY_ASSOCIATED_KEY;
             }
         };
         
+        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
                                                         usingBlock:^(RKObjectLoader *loader) {
                                                             loader.objectMapping = [Taxon mapping];

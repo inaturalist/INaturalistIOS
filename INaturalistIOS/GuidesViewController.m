@@ -338,6 +338,7 @@ static const int ListControlIndexNearby = 2;
 
     };
     
+    [[Analytics sharedClient] debugLog:@"Network - Sync guides"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = [Guide mapping];

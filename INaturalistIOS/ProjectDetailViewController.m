@@ -116,6 +116,7 @@ static const int LeaveProjectAlertViewTag = 1;
         self.projectUser.project = self.project;
         self.projectUser.projectID = self.project.recordID;
     }
+    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
     [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
@@ -126,6 +127,7 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)leave
 {
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Leaving...",nil)];
+    [[Analytics sharedClient] debugLog:@"Network - Leave a project"];
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];

@@ -18,6 +18,7 @@
 #import "Taxon.h"
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
+#import "Analytics.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -248,6 +249,7 @@
         [self.notificationDelegate startedObservationFetch];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
         // can't infer search mappings via keypath
@@ -381,6 +383,7 @@
         path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch comments and IDs for observation"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [ExploreMappingProvider observationMapping];

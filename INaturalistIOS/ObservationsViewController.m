@@ -289,6 +289,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
+        [[Analytics sharedClient] debugLog:@"Network - Load an observation"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
@@ -847,7 +848,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
                 [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load error: %@",
                                                     error.localizedDescription]];
             };
-
+            [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
             [self.meObjectLoader sendAsynchronously];
         }
     } else {

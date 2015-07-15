@@ -117,6 +117,7 @@
     }
     
     NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId];
+    [[Analytics sharedClient] debugLog:@"Network - Load taxon details"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [Taxon mapping];

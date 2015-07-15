@@ -445,6 +445,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             self.taxonLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:urlString];
             self.taxonLoader.objectMapping = [Taxon mapping];
             self.taxonLoader.onDidLoadObject = taxonLoadedBlock;
+            [[Analytics sharedClient] debugLog:@"Network - Load a partially loaded taxon"];
             [self.taxonLoader sendAsynchronously];
             
         } else {

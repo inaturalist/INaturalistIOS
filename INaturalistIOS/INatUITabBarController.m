@@ -544,6 +544,7 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Fetch Iconic Taxa
 
 - (void)fetchIconicTaxa {
+    [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         

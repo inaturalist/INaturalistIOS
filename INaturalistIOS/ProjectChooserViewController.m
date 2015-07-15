@@ -97,6 +97,7 @@ static const int ProjectCellTitleTag = 2;
                         countryCode];
         if (username && username.length > 0) {
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                          objectMapping:[ProjectUser mapping]
                                                               delegate:self];

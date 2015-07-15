@@ -69,6 +69,7 @@
         path = [path stringByAppendingString:localeQueryComponent];
     }
 
+    [[Analytics sharedClient] debugLog:@"Network - Explore search"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
         // can't infer search mappings via keypath

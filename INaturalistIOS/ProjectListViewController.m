@@ -109,6 +109,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
+    [[Analytics sharedClient] debugLog:@"Network - Load project list"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
 }
 

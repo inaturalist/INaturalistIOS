@@ -376,6 +376,7 @@
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
                                             error.localizedDescription]];
     };
+    [[Analytics sharedClient] debugLog:@"Network - Load iconic taxa in confirm"];
     [self.taxaLoader sendAsynchronously];
 }
 

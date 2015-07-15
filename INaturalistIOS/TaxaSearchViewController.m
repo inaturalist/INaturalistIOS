@@ -45,6 +45,7 @@ static const int TaxonCellSubtitleTag = 3;
     if (modal)
         [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
     
+    [[Analytics sharedClient] debugLog:@"Network - Taxa search];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         
