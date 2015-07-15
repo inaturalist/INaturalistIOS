@@ -146,6 +146,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             cell = [tableView dequeueReusableCellWithIdentifier:TextCellIdentifier forIndexPath:indexPath];
             UITextView *textView = (UITextView *)[cell viewWithTag:TextCellTextViewTag];
             textView.text = [self.guide.desc stringByStrippingHTML];
+            textView.textAlignment = NSTextAlignmentNatural;
         } else {
             if (indexPath.row < 2) {
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
@@ -206,7 +207,9 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     } else {
         cell.textLabel.text = pieces[1];
     }
+    cell.textLabel.textAlignment = NSTextAlignmentNatural;
     cell.detailTextLabel.text = [[self.tagCounts objectForKey:tag] stringValue];
+    cell.detailTextLabel.textAlignment = NSTextAlignmentNatural;
     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     cell.userInteractionEnabled = YES;
     UIView *bgv = [[UIView alloc] initWithFrame:cell.frame];
@@ -246,6 +249,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
     view.backgroundColor = [UIColor grayColor];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(68, 0, 252, 22)];
+    label.textAlignment = NSTextAlignmentNatural;
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
     label.text = title;

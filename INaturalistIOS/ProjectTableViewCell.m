@@ -42,11 +42,7 @@
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.projectImage attribute:NSLayoutAttributeRight multiplier:1 constant:3]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-15]];
-    
-//    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[projectImage(==43)]-3-[titleLabel]-45-|" options:0 metrics:0 views:views]];
-    
-//    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[projectImage(==43)]->=0-|" options:NSLayoutFormatAlignAllLeft metrics:0 views:views]];
-    
+        
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-17-[titleLabel]-17-|" options:NSLayoutFormatAlignAllRight metrics:0 views:views]];
 }
 

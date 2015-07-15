@@ -249,7 +249,7 @@ static const int ListedTaxonCellAddButtonTag = 4;
         
     }
 
-    // Check if the button aleady exists
+    // Check if the button aleady exists, Adding the buttons only once.
     if([cell.contentView viewWithTag:ListedTaxonCellAddButtonTag] == nil){
         
         UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -263,8 +263,6 @@ static const int ListedTaxonCellAddButtonTag = 4;
         addButton.titleLabel.textColor = [UIColor whiteColor];
         addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
         [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
-//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//        cell.accessoryView = addButton;
         
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.accessoryView = nil;
@@ -287,12 +285,12 @@ static const int ListedTaxonCellAddButtonTag = 4;
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         subtitleLabel.textAlignment = NSTextAlignmentNatural;
         
-
         NSDictionary *views = @{@"addButton":addButton, @"imageView":imageView, @"titleLabel":titleLabel};
         
         [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==43)]-[titleLabel]-[addButton(==50)]-|" options:0 metrics:0 views:views]];
         
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==43)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==43)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        // Handle subtitle label is available on that cell.
         if(subtitleLabel){
             NSDictionary *titleAndSubtitle = @{@"titleLabel":titleLabel, @"subtitleLabel":subtitleLabel};
             [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[titleLabel][subtitleLabel(==21)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:titleAndSubtitle]];
@@ -305,16 +303,8 @@ static const int ListedTaxonCellAddButtonTag = 4;
             [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[titleLabel]-5-|" options:0 metrics:0 views:views]];
         }
         
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[addButton(==35)]-9-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[addButton(==35)]" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     }
-    
-    
-    
-    
-    
-    
-    
-    
     
     if (lt) {
         titleLabel.text = lt.taxonDefaultName;

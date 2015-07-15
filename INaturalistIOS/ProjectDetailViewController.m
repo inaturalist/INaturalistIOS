@@ -172,6 +172,8 @@ static const int LeaveProjectAlertViewTag = 1;
                                 };
         self.navigationController.navigationBar.titleTextAttributes = attrs;
     }
+    // Adding auto layout for header view.
+    [self setupConstraintsForHeader];
     
     [super viewDidLoad];
 }
@@ -250,6 +252,7 @@ static const int LeaveProjectAlertViewTag = 1;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
     label.font = [UIFont boldSystemFontOfSize:17];
     label.textColor = [UIColor darkGrayColor];
+    label.textAlignment = NSTextAlignmentNatural;
     switch (section) {
         case 0:
             label.text = NSLocalizedString(@"Description",nil);
@@ -273,10 +276,14 @@ static const int LeaveProjectAlertViewTag = 1;
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     UILabel *rowContent;
+    NSString *divAlignment = [self divAlignmentForCurrentLanguage];
     if (indexPath.section == 0 && indexPath.row == 0) {
         rowContent = (UILabel *)[cell viewWithTag:1];
+        // Adding auto layout to support RTL for sizeToFit
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
-            NSString *htmlString = [NSString stringWithFormat:@"<div>%@</div>", [self projectDescription]];
+            NSString *htmlString = [NSString stringWithFormat:@"<div style='text-align:%@;'>%@</div>",divAlignment, [self projectDescription]];
+            
             rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
                                                                          options:@{
                                                                                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -286,12 +293,15 @@ static const int LeaveProjectAlertViewTag = 1;
                                                                            error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         rowContent = (UILabel *)[cell viewWithTag:1];
+        // Adding auto layout to support RTL for sizeToFit
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
+            NSString *htmlString = [NSString stringWithFormat:@"<div style='text-align:%@;'>%@</div>",divAlignment, [self projectTerms]];
             
-            NSString *htmlString = [NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]];
             rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
                                                                          options:@{
                                                                                    NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -299,23 +309,26 @@ static const int LeaveProjectAlertViewTag = 1;
                                                                                    }
                                                               documentAttributes:nil
                                                                            error:nil];
+            
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     } else if (indexPath.section == 2 && indexPath.row == 0) {
-        rowContent = (UILabel *)[cell viewWithTag:1];
-        
+        rowContent = (UILabel *)[cell viewWithTag:2];
+        // Adding auto layout to support RTL for sizeToFit.
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
             NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
             NSMutableString *termsString;
             if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
-                termsString = [NSMutableString stringWithString:@"<div><ul>"];
+                termsString = [NSMutableString stringWithFormat:@"<div style='text-align:%@;'><ul>",divAlignment];
                 for (NSString *term in terms) {
                     [termsString appendString:[NSString stringWithFormat:@"\n<li>- %@</li>", term]];
                 }
                 [termsString appendString:@"</ul></div>"];
             } else {
-                termsString = [NSMutableString stringWithFormat:@"<div>%@.</div>", NSLocalizedString(@"No observation rules", nil)];
+                termsString = [NSMutableString stringWithFormat:@"<div style='text-align:%@;'>%@.</div>",divAlignment, NSLocalizedString(@"No observation rules", nil)];
             }
             
             rowContent.attributedText = [[NSAttributedString alloc] initWithData:[termsString dataUsingEncoding:NSUTF8StringEncoding]
@@ -327,6 +340,7 @@ static const int LeaveProjectAlertViewTag = 1;
                                                                            error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     }
     return cell;
@@ -407,4 +421,62 @@ static const int LeaveProjectAlertViewTag = 1;
         [self leave];
     }
 }
+
+
+- (void)setupConstraintsForHeader{
+    self.projectIcon.translatesAutoresizingMaskIntoConstraints = NO;
+    self.projectTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    self.projectTitle.textAlignment = NSTextAlignmentNatural;
+    
+    NSDictionary *views = @{@"projectIcon":self.projectIcon, @"projectTitle":self.projectTitle};
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[projectIcon(==70)]-[projectTitle]-10-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[projectIcon(==70)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[projectTitle]-5-|" options:0 metrics:0 views:views]];
+}
+
+
+/*!
+ * Adding auto layout to support RTL for sizeToFit.
+ */
+- (void)setupConstraintsForCell:(UITableViewCell *)cell andLabel:(UILabel *)label{
+    if(!label.constraints.count){
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        NSDictionary *views = @{@"label":label};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[label]-5-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[label]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        
+    }
+}
+
+/*!
+ * Get the alignment for div based on current language.
+ */
+- (NSString *)divAlignmentForCurrentLanguage{
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if([language isEqualToString:@"he"] || [language isEqualToString:@"ar"])
+        return @"right";
+    
+    return @"left";
+}
+
+
+
+
 @end
+
+
+
+
+
+
+
+
+
+
+
