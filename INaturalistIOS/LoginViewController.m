@@ -136,8 +136,14 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
                                 };
         
+<<<<<<< HEAD
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google attributes:attrs];
         button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
+=======
+        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
+                                                                                attributes:attrs];
+>>>>>>> upstream/master
         button.leftTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
         
         
@@ -166,7 +172,7 @@
                                                                                                                          completion:nil];
                                                                        }
                                                                    } failure:^(NSError *error) {
-                                                                       NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                                                       NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                                        NSString *alertMsg;
                                                                        if (error) {
                                                                            alertMsg = error.localizedDescription;
@@ -196,8 +202,14 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                 };
         
+<<<<<<< HEAD
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face attributes:attrs];
         button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
+=======
+        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
+                                                                                attributes:attrs];
+>>>>>>> upstream/master
         button.leftTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
 
         [button bk_addEventHandler:^(id sender) {
@@ -224,7 +236,7 @@
                                                                   completion:nil];
                 }
             } failure:^(NSError *error) {
-                NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                 NSString *alertMsg;
                 if (error) {
                     alertMsg = error.localizedDescription;
@@ -569,7 +581,7 @@
                                      @"Error for bad password when making account");
     }
     if (!isValid) {
-        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
 
         [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -601,7 +613,7 @@
                                                }
                                            } failure:^(NSError *error) {
                                                [SVProgressHUD dismiss];
-                                               NSString *alertTitle = NSLocalizedString(@"Login Error", @"Title for login error alert");
+                                               NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                NSString *alertMsg;
                                                if (error) {
                                                    if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {

@@ -15,7 +15,15 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
+<<<<<<< HEAD
 #import "ProjectTableViewCell.h"
+=======
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+
+static const int ProjectCellImageTag = 1;
+static const int ProjectCellTitleTag = 2;
+>>>>>>> upstream/master
 
 @implementation ProjectChooserViewController
 
@@ -217,7 +225,17 @@
     }
     
     if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Project Chooser" }];
+        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        svc.skippable = NO;
+        svc.cancellable = YES;
+        svc.reason = NSLocalizedString(@"You must be logged in to do that.", @"Login reason prompt from project chooser.");
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        // for sizzle
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]

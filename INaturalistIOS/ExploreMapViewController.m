@@ -26,7 +26,7 @@
 #import "ExploreRegion.h"
 #import "MKMapView+ZoomLevel.h"
 #import "NSURL+INaturalist.h"
-
+#import "ExploreContainerViewController.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -206,16 +206,23 @@
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
-    [mapChangedTimer invalidate];
-    
-    // give the user a bit to keep scrolling before we make a new API call
-    mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
-                                                           block:^(NSTimer *timer) {
-                                                               // notify the observation data source that we have a new limiting region
-                                                               ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                               self.observationDataSource.limitingRegion = region;
-                                                           }
-                                                         repeats:NO];
+    if ([self.navigationController.topViewController isKindOfClass:[ExploreContainerViewController class]]) {
+        ExploreContainerViewController *container = (ExploreContainerViewController *)self.navigationController.topViewController;
+        if ([container.selectedViewController isEqual:self] && [self.tabBarController.selectedViewController isEqual:self.navigationController]) {
+            [mapChangedTimer invalidate];
+            
+            __weak typeof(self) weakSelf = self;
+            // give the user a bit to keep scrolling before we make a new API call
+            mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
+                                                                   block:^(NSTimer *timer) {
+                                                                       __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                                       // notify the observation data source that we have a new limiting region
+                                                                       ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
+                                                                       strongSelf.observationDataSource.limitingRegion = region;
+                                                                   }
+                                                                 repeats:NO];
+        }
+    }
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation

@@ -260,9 +260,10 @@
                                                                                             UIGestureRecognizerState state,
                                                                                             CGPoint location) {
                 
+                NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
                 NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
                                                                 message:creativeCommons
                                                                delegate:nil
                                                       cancelButtonTitle:@"OK"
@@ -479,7 +480,7 @@
     }
     
     if (!isValid) {
-        NSString *alertTitle = NSLocalizedString(@"Input Error", @"Title for input error alert.");
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
         
         [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -525,7 +526,7 @@
                                                 failure:^(NSError *error) {
                                                     [SVProgressHUD dismiss];
 
-                                                    NSString *alertTitle = NSLocalizedString(@"Create Account Error", @"Title for create account alert");
+                                                    NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                     NSString *alertMsg;
                                                     if (error) {
                                                         alertMsg = error.localizedDescription;
