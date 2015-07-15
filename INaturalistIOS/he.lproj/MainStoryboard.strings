@@ -47,8 +47,8 @@
 /* Class = "UITabBarItem"; title = "Item"; ObjectID = "6cS-83-3B7"; */
 "6cS-83-3B7.title" = "Item";
 
-/* Class = "UILabel"; text = "Username"; ObjectID = "718-d6-pVr"; */
-"718-d6-pVr.text" = "שם משתמש";
+/* Class = "UILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
+"nla-WE-iqA.text" = "שם משתמש";
 
 /* Class = "UITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
 "9br-9C-J7v.headerTitle" = "מה ראית?";
@@ -373,3 +373,13 @@
 
 /* Class = "UINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "עריכת מיקום";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
+"g3B-dy-Lka.text" = "רשת iNaturalist";
+
+
+
+
+
+
+
