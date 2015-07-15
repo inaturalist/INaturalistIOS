@@ -12,6 +12,7 @@
 #import "Taxon.h"
 #import "ExploreMappingProvider.h"
 #import "NSLocale+INaturalist.h"
+#import "Analytics.h"
 
 @implementation ExploreSearchController
 
