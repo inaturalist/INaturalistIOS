@@ -569,6 +569,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self save];
     }
     [self keyboardDone];
+    [self stopUpdatingLocation];
     [super viewWillDisappear:animated];
 }
 
