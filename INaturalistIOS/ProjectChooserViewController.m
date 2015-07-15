@@ -15,15 +15,11 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
-<<<<<<< HEAD
+
 #import "ProjectTableViewCell.h"
-=======
+
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
-
-static const int ProjectCellImageTag = 1;
-static const int ProjectCellTitleTag = 2;
->>>>>>> upstream/master
 
 @implementation ProjectChooserViewController
 
