@@ -264,8 +264,11 @@
     if (self.image) {
         multiImageView.images = @[ self.image ];
     } else if (self.assets && self.assets.count > 0) {
-        NSArray *images = [self.assets bk_map:^id(ALAsset *asset) {
+        NSArray *images = [[self.assets bk_map:^id(ALAsset *asset) {
             return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+        }] bk_select:^BOOL(id obj) {
+            // imageWithCGImage can return nil, which bk_map converts to NSNull
+            return obj && obj != [NSNull null];
         }];
         multiImageView.images = images;
         multiImageView.hidden = NO;
@@ -373,6 +376,7 @@
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
                                             error.localizedDescription]];
     };
+    [[Analytics sharedClient] debugLog:@"Network - Load iconic taxa in confirm"];
     [self.taxaLoader sendAsynchronously];
 }
 

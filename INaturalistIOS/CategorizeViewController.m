@@ -452,8 +452,11 @@ static NSArray *ICONIC_TAXON_ORDER;
 }
 
 - (void)configureMultiImageView:(MultiImageView *)miv forAssets:(NSArray *)assets {
-    NSArray *images = [assets bk_map:^id(ALAsset *asset) {
+    NSArray *images = [[assets bk_map:^id(ALAsset *asset) {
         return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+    }] bk_select:^BOOL(id obj) {
+        // imageWithCGImage can return nil, which bk_map converts to NSNull
+        return obj && obj != [NSNull null];
     }];
     miv.images = images;
 }

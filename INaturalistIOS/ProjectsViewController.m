@@ -334,6 +334,7 @@ static const int ListControlIndexNearby = 2;
         mapping = [Project mapping];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Load projects"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = mapping;

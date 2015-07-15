@@ -30,12 +30,18 @@
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
 
+typedef NS_ENUM(NSInteger, INatPhotoSource) {
+    INatPhotoSourceCamera,
+    INatPhotoSourcePhotos
+};
+
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate> {
     INatTooltipView *makeFirstObsTooltip;
+    UIAlertView *authAlertView;
 }
 
 @end
@@ -104,14 +110,88 @@ static char PROJECT_ASSOCIATED_KEY;
                                  }];
 }
 
+
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
     
+    // check for access to assets library
+    ALAuthorizationStatus alAuthStatus = [ALAssetsLibrary authorizationStatus];
+    switch (alAuthStatus) {
+        case ALAuthorizationStatusDenied:
+        case ALAuthorizationStatusRestricted:
+            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
+            return;
+            break;
+        case ALAuthorizationStatusAuthorized:
+        case ALAuthorizationStatusNotDetermined:
+        default:
+            // continue
+            break;
+    }
+    
+    // check for access to camera
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self newObservationForTaxon:taxon project:project];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentAuthAlertForSource:INatPhotoSourceCamera];
+            });
+        }
+    }];
+}
+
+- (void)presentAuthAlertForSource:(INatPhotoSource)source {
+    
+    NSString *alertTitle, *alertMsg;
+    switch (source) {
+        case INatPhotoSourceCamera:
+            alertTitle = NSLocalizedString(@"Cannot access camera", @"Alert title when we don't have permission to access camera.");
+            alertMsg = NSLocalizedString(@"Please make sure iNaturalist is turned on in Settings > Privacy > Camera",
+                                         @"Alert message when we don't have permission to access the camera.");
+            break;
+        case INatPhotoSourcePhotos:
+        default:
+            alertTitle = NSLocalizedString(@"Cannot access photos", @"Alert title when we don't have permission to access photos.");
+            alertMsg = NSLocalizedString(@"Please make sure iNaturalist is turned on in Settings > Privacy > Photos",
+                                         @"Alert message when we don't have permission to access the photo library.");
+            break;
+    }
+    
+    authAlertView = [[UIAlertView alloc] initWithTitle:alertTitle
+                                               message:alertMsg
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                     otherButtonTitles:nil];
+    
+    BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+    if (canOpenSettings) {
+        NSString *settingsButtonTitle = NSLocalizedString(@"Settings",
+                                                          @"The name of the iOS Settings app, used in an alert button that will launch Settings.");
+        [authAlertView addButtonWithTitle:settingsButtonTitle];
+    }
+    [authAlertView show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == authAlertView && buttonIndex == 1) {
+        BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+        if (canOpenSettings) {
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:url];
+        }
+    }
+}
+
+- (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
+
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     [makeFirstObsTooltip hideAnimated:YES];
-    
+
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -464,6 +544,7 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Fetch Iconic Taxa
 
 - (void)fetchIconicTaxa {
+    [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         

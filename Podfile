@@ -4,15 +4,14 @@ platform :ios, :deployment_target => '7.0'
 inhibit_all_warnings!
 
 target :iNaturalist do
-  pod 'Fabric', '1.3.2'
-  pod 'Fabric/Crashlytics', '1.3.2'
+	pod 'Fabric', '1.2.8'
+	pod 'Crashlytics', '3.0.11'
 	pod 'FlurrySDK', '6.2.0'
 	pod 'Facebook-iOS-SDK', '3.20.0'
 	pod 'Bolts', '1.1.3'
 	pod 'FontAwesomeKit', '2.2.0'
 	pod 'HexColors', '2.2.1'
 	pod 'BlocksKit', '2.2.5'
-	pod 'SVProgressHUD', '1.1.3'
 	pod 'GeoJSONSerialization', '0.0.4'
 	pod 'AFNetworking', '1.3.4'
 	pod 'MHVideoPhotoGallery', '1.6.6'
@@ -36,6 +35,7 @@ target :iNaturalist do
   pod 'IFTTTLaunchImage', '0.4.1'
 	pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
 	pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
+	pod 'SVProgressHUD', :git => 'https://github.com/alexshepard/SVProgressHUD.git', :commit => 'c80b6cea04b966c3ff017d8e5d184c23f8af5cb4'
 end
 
 target :iNaturalistTests do
