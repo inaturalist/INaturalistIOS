@@ -458,8 +458,8 @@ static const int LeaveProjectAlertViewTag = 1;
  * Get the alignment for div based on current language.
  */
 - (NSString *)divAlignmentForCurrentLanguage{
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if([language isEqualToString:@"he"] || [language isEqualToString:@"ar"])
+    NSLocaleLanguageDirection currentLanguageDirection = [NSLocale characterDirectionForLanguage:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]];
+    if(currentLanguageDirection == kCFLocaleLanguageDirectionRightToLeft)
         return @"right";
     
     return @"left";
