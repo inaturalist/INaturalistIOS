@@ -134,6 +134,9 @@ static char SUMMARY_ASSOCIATED_KEY;
     UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
     
     defaultNameLabel.text = self.taxon.defaultName;
+    defaultNameLabel.textAlignment = NSTextAlignmentNatural;
+    taxonNameLabel.textAlignment = NSTextAlignmentNatural;
+    attributionLabel.textAlignment = NSTextAlignmentNatural;
     if (self.taxon.rankLevel.intValue >= 20) {
         taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@", [self.taxon.rank capitalizedString], self.taxon.name];
         taxonNameLabel.font = [UIFont systemFontOfSize:taxonNameLabel.font.pointSize];
