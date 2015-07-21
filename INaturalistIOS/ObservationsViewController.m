@@ -995,7 +995,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    if ([objectLoader.URL.absoluteString containsString:@"/people/"]) {
+    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFount) {
         // got me object
         
         NSError *saveError;
@@ -1056,7 +1056,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
 
-    if ([objectLoader.URL.absoluteString containsString:@"/people/"]) {
+    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
         // was running into a bug in release build config where the object loader was
         // getting deallocated after handling an error.  This is a kludge.
         self.meObjectLoader = objectLoader;
