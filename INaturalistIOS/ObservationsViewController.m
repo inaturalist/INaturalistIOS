@@ -995,7 +995,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFount) {
+    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
         // got me object
         
         NSError *saveError;
