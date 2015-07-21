@@ -753,42 +753,10 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             
             NSString *path = [NSString stringWithFormat:@"/people/%@.json", username];
             
-            if (self.meObjectLoader) {
-                // cancel previous request
-                [[[RKClient sharedClient] requestQueue] cancelRequest:self.meObjectLoader];
-            }
-            
-            self.meObjectLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:path];
-            self.meObjectLoader.objectMapping = [User mapping];
-            __weak typeof(self) weakSelf = self;
-            self.meObjectLoader.onDidLoadObject = ^(User *user) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                
-                NSError *saveError;
-                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                if (saveError) {
-                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
-                                                        saveError.localizedDescription]];
-                    [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                }
-                
-                NSError *fetchError;
-                if (fetchError) {
-                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
-                                                        fetchError.localizedDescription]];
-                    [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-                }
-                
-                // triggers reconfiguration of the header
-                [strongSelf.tableView reloadData];
-            };
-            
-            self.meObjectLoader.onDidFailWithError = ^(NSError *error) {
-                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load error: %@",
-                                                    error.localizedDescription]];
-            };
             [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
-            [self.meObjectLoader sendAsynchronously];
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                         objectMapping:[User mapping]
+                                                              delegate:self];
         }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
@@ -945,8 +913,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     
-    [self loadUserForHeader];
-    
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
 		RefreshControl *refresh = [[RefreshControl alloc] init];
@@ -989,8 +955,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
+        
     }
     
+    [self loadUserForHeader];
+
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
 
@@ -1039,6 +1008,23 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
+    if ([objectLoader.URL.absoluteString containsString:@"/people/"]) {
+        // got me object
+        
+        NSError *saveError;
+        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+        if (saveError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
+                                                saveError.localizedDescription]];
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        }
+        
+        // triggers reconfiguration of the header
+        [self.tableView reloadData];
+
+        return;
+    }
+    
 	[self.refreshControl endRefreshing];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
@@ -1082,11 +1068,18 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-//    NSLog(@"objectLoader didFailWithError, error: %@", error);
-    // was running into a bug in release build config where the object loader was
-    // getting deallocated after handling an error.  This is a kludge.
-//    self.loader = objectLoader;
-    
+
+    if ([objectLoader.URL.absoluteString containsString:@"/people/"]) {
+        // was running into a bug in release build config where the object loader was
+        // getting deallocated after handling an error.  This is a kludge.
+        self.meObjectLoader = objectLoader;
+
+        // silently do nothing
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load Me error: %@",
+                                            error.localizedDescription]];
+
+        return;
+    }
 	
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
