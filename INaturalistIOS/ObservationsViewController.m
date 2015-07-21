@@ -734,8 +734,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         
-        [header.signupButton setTitle:NSLocalizedString(@"Sign up", @"Title for button that allows users to sign up for a new iNat account")
-                             forState:UIControlStateNormal];
         [header.signupButton bk_addEventHandler:^(id sender) {
             
             [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
@@ -745,15 +743,6 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
             
         } forControlEvents:UIControlEventTouchUpInside];
         
-        NSString *loginString = NSLocalizedString(@"Already have an account?", @"Title for button that allows users to login to their iNat account");
-        NSString *loginStringHighlight = NSLocalizedString(@"account", @"Portion of Already have an account? that should be highlighted.");
-        NSMutableAttributedString *loginAttrString = [[NSMutableAttributedString alloc] initWithString:loginString];
-        if ([loginString rangeOfString:loginStringHighlight].location != NSNotFound) {
-            [loginAttrString addAttribute:NSForegroundColorAttributeName
-                                    value:[UIColor blueColor]
-                                    range:[loginString rangeOfString:loginStringHighlight]];
-        }
-        [header.loginButton setAttributedTitle:loginAttrString forState:UIControlStateNormal];
         [header.loginButton bk_addEventHandler:^(id sender) {
             
             [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
