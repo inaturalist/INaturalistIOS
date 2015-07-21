@@ -944,10 +944,8 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
-        
+        [self loadUserForHeader];
     }
-    
-    [self loadUserForHeader];
 
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
