@@ -935,6 +935,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     if (!self.locationUpdatesOn) return;
     
+    // self.observation can be momentarily nil when it's being deleted
+    if (!self.observation) return;
+    
     @try {
         self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
         self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
