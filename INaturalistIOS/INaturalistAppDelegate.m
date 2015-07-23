@@ -57,20 +57,77 @@
                                                                         annotation:annotation]);
 }
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self setupAnalytics];
+    
+    [self showLoadingScreen];
+    
+    [self configureApplicationInBackground];
+    
+    return YES;
+}
+
+- (void)setupAnalytics {
     // setup analytics
     [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];
     
     // log all page views for the tab bar controller
     [[Analytics sharedClient] logAllPageViewForTarget:self.window.rootViewController];
+}
 
-    // Override point for customization after application launch.
-    [self configureRestKit];
-    [self configureOAuth2Client];
+- (void)showLoadingScreen {
+    UIViewController *loadingVC = [[UIViewController alloc] initWithNibName:nil bundle:nil];
     
-    self.loginController = [[LoginController alloc] init];
+    UIImageView *launchImageView = ({
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
+        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        iv.image = [UIImage IFTTTDefaultLaunchImage];
+        iv;
+    });
+    [loadingVC.view addSubview:launchImageView];
     
+    UIActivityIndicatorView *spinner = ({
+        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        
+        view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        view.center = loadingVC.view.center;
+        [view startAnimating];
+        
+        view;
+    });
+    [loadingVC.view addSubview:spinner];
+    
+    [self.window setRootViewController:loadingVC];
+}
+
+- (void)configureApplicationInBackground {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        [self configureGlobalStyles];
+        
+        self.loginController = [[LoginController alloc] init];
+        
+        [self configureRestKit];
+        [self configureOAuth2Client];
+        
+        if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+            });
+        }
+    });
+}
+
+
+- (void)configureGlobalStyles {
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [[UITabBar appearance] setTintColor:[UIColor inatTint]];
@@ -86,46 +143,6 @@
     // tiny bit offwhite, so it stands up with or without the gradient mask
     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
     
-    if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"App Launch" }];
-
-        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        splash.skippable = YES;
-        splash.cancellable = NO;
-        splash.animateIn = YES;
-        splash.skipAction = ^{
-            [self showMainUI];
-        };
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-        nav.delegate = self;
-        [self.window setRootViewController:nav];
-    } else {
-        // start with a launch image
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-        UIViewController *mainVC = [storyboard instantiateInitialViewController];
-        UIImageView *launchImageView = ({
-            UIImageView *iv = [[UIImageView alloc] initWithFrame:mainVC.view.bounds];
-            iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            iv.image = [UIImage IFTTTDefaultLaunchImage];
-            iv;
-        });
-        [mainVC.view addSubview:launchImageView];
-        
-        [self.window setRootViewController:mainVC];
-        
-        // fade the launch image away
-        [UIView animateWithDuration:0.65f
-                         animations:^{
-                             launchImageView.alpha = 0.0f;
-                         }
-                         completion:^(BOOL finished) {
-                             [launchImageView removeFromSuperview];
-                         }];
-    }
-    
-    return YES;
 }
 
 - (void)reconfigureForNewBaseUrl {
@@ -332,6 +349,22 @@
                              [priorSnapshot removeFromSuperview];
                          }];
     }
+}
+
+- (void)showInitialSignupUI {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"App Launch" }];
+    
+    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    splash.skippable = YES;
+    splash.cancellable = NO;
+    splash.animateIn = YES;
+    splash.skipAction = ^{
+        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+    };
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+    nav.delegate = self;
+    [self.window setRootViewController:nav];
 }
 
 
