@@ -329,7 +329,7 @@
 "s0d-iz-ydn.title" = "観察記録";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "INaturalist.org にサインインします";
+"tW8-NR-sj7.headerTitle" = "iNaturalist.org にサインインします";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
 "tiA-DP-jEV.title" = "ログイン";
