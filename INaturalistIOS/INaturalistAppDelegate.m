@@ -132,6 +132,7 @@
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [[UITabBar appearance] setTintColor:[UIColor inatTint]];
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
+        [[UITabBar appearance] setTranslucent:NO];
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
         [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
