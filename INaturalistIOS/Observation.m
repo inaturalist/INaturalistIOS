@@ -386,8 +386,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         }
     }
     
-    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(Observation *o1, Observation *o2) {
-        return [o1.recordID compare:o2.recordID];
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
+        return [o1.localCreatedAt compare:o2.localCreatedAt];
     }];
 }
 
