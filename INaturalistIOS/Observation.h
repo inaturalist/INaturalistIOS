@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
+#import "Uploadable.h"
 
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
 @class Taxon, Comment, Identification;
 
-@interface Observation : INatModel
+@interface Observation : INatModel <Uploadable>
 
 @property (nonatomic, retain) NSString * speciesGuess;
 @property (nonatomic, retain) NSNumber * taxonID;

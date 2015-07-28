@@ -370,19 +370,28 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [needingUpload addObjectsFromArray:[self needingSync]];
     
     // also, all observations whose uploadable children need sync
+    
     for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
         if (op.observation) {
             [needingUpload addObject:op.observation];
+        } else {
+            [op destroy];
         }
     }
+    
     for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
         if (ofv.observation) {
             [needingUpload addObject:ofv.observation];
+        } else {
+            [ofv destroy];
         }
     }
+    
     for (ProjectObservation *po in [ProjectObservation needingSync]) {
         if (po.observation) {
             [needingUpload addObject:po.observation];
+        } else {
+            [po destroy];
         }
     }
     
@@ -404,6 +413,28 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         if (po.needsSync) { return YES; }
     }
     return NO;
+}
+
+-(NSArray *)childrenNeedingUpload {
+    NSMutableArray *recordsToUpload = [NSMutableArray array];
+    
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) {
+            [recordsToUpload addObject:op];
+        }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) {
+            [recordsToUpload addObject:ofv];
+        }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) {
+            [recordsToUpload addObject:po];
+        }
+    }
+    
+    return [NSArray arrayWithArray:recordsToUpload];
 }
 
 @end

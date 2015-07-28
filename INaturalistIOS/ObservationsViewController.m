@@ -115,7 +115,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     }
     
     [uploader uploadDeletes:recordsToDelete completion:^{
-        [uploader uploadObservations:[Observation needingUpload]];
+        [uploader uploadObservations:[Observation needingUpload] completion:nil];
     }];
     
     if (!self.stopSyncButton) {
@@ -145,9 +145,9 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
 
     if (self.uploadManager) {
-        [self.uploadManager stop];
         self.uploadManager = nil;
     }
+    
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
     [self checkSyncStatus];

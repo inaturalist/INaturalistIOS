@@ -562,6 +562,7 @@
 		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
 		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
+		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -747,6 +748,7 @@
 				195F3247151A8AB60019CB85 /* Taxon.m */,
 				195F3249151A8AF70019CB85 /* TaxonPhoto.h */,
 				195F324A151A8AF70019CB85 /* TaxonPhoto.m */,
+				FAF614CD1B630122008B63B0 /* Uploadable.h */,
 				19AE897718DD08CC00505918 /* User.h */,
 				19AE897818DD08CC00505918 /* User.m */,
 				197FD41A17FE13CD0099BDE6 /* GuideTaxonXML.h */,
