@@ -91,7 +91,7 @@
     }
 }
 
-- (void)uploadObservations:(NSArray *)observations {
+- (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion {
     if (observations.count == 0) {
         self.started = NO;
         [self.delegate uploadSessionFinished];
@@ -118,7 +118,7 @@
                                            [strongSelf.delegate uploadFailedFor:head error:error];
                                        }
                                    } else {
-                                       [weakSelf uploadObservations:tail];
+                                       [weakSelf uploadObservations:tail completion:uploadCompletion];
                                    }
                                }];
     }
