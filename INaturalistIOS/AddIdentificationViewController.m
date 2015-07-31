@@ -31,11 +31,6 @@
 
 @implementation AddIdentificationViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
 	if (!self.taxon) {
         if (viewHasPresented) {
