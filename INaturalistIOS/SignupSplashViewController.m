@@ -597,6 +597,8 @@ static char PARTNER_ASSOCIATED_KEY;
 #pragma mark Orientation and Screen Resizing
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    
     // check to see if we've transitioned between regular and compact size classes
     if (self.traitCollection.horizontalSizeClass == previousTraitCollection.horizontalSizeClass)
         return;
