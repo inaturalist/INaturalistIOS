@@ -32,6 +32,8 @@
 @implementation AddIdentificationViewController
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
 	if (!self.taxon) {
         if (viewHasPresented) {
             // user is trying to cancel adding an ID
