@@ -13,7 +13,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <googleplus-ios-sdk/GPPSignIn.h>
+#import "GPPSignIn.h"
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 
 #import "SettingsViewController.h"
