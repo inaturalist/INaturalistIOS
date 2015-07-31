@@ -251,14 +251,14 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.loginFaceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
-        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
-        button.leftTitleLabel.attributedText = ({
+        button.leadingTitleLabel.attributedText = ({
             FAKIcon *face = [FAKIonIcons socialFacebookIconWithSize:25.0f];
             face.attributedString;
         });
-        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
+        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
                                                                                   baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
@@ -313,14 +313,14 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.loginGButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
-        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
-        button.leftTitleLabel.attributedText = ({
+        button.leadingTitleLabel.attributedText = ({
             FAKIcon *face = [FAKIonIcons socialGoogleplusIconWithSize:25.0f];
             face.attributedString;
         });
-        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
+        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
                                                                                   baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
@@ -380,14 +380,14 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.signupEmailButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
-        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
-        button.leftTitleLabel.attributedText = ({
+        button.leadingTitleLabel.attributedText = ({
             FAKIcon *face = [FAKIonIcons emailIconWithSize:25.0f];
             face.attributedString;
         });
-        button.rightTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
+        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
                                                                                   baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
                                                                                    emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
                                                                                     emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];

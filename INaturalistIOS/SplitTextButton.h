@@ -10,8 +10,8 @@
 
 @interface SplitTextButton : UIControl
 
-@property UILabel *leftTitleLabel;
-@property UILabel *rightTitleLabel;
+@property UILabel *leadingTitleLabel;
+@property UILabel *trailingTitleLabel;
 @property UIView *separator;
 
 @end
