@@ -194,8 +194,9 @@ static const int ListedTaxonCellAddButtonTag = 4;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES];
     [super viewWillAppear:animated];
+
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -217,8 +218,8 @@ static const int ListedTaxonCellAddButtonTag = 4;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopSync];
     [super viewWillDisappear:animated];
+    [self stopSync];
 }
 
 #pragma mark - Table view data source
