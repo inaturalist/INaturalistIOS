@@ -202,12 +202,13 @@ static char SUMMARY_ASSOCIATED_KEY;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     [self.navigationController setToolbarHidden:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
