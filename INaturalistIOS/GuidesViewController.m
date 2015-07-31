@@ -557,6 +557,7 @@ static const int ListControlIndexNearby = 2;
     [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
+    title.textAlignment = NSTextAlignmentNatural;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
                  placeholderImage:[UIImage inat_defaultGuideImage]];
     

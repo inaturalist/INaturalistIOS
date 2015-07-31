@@ -32,7 +32,7 @@
             self.activeSearchLabel = ({
                 UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
                 label.translatesAutoresizingMaskIntoConstraints = NO;
-                
+                label.textAlignment = NSTextAlignmentNatural;
                 label.font = [UIFont systemFontOfSize:11.0f];
                 label.numberOfLines = 0;
                 label.textColor = [UIColor whiteColor];

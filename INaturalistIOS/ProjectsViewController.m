@@ -20,9 +20,8 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
+#import "ProjectTableViewCell.h"
 
-static const int ProjectCellImageTag = 1;
-static const int ProjectCellTitleTag = 2;
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
@@ -539,17 +538,15 @@ static const int ListControlIndexNearby = 2;
 {
     static NSString *CellIdentifier = @"ProjectCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[ProjectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
-    title.text = p.title;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
+    cell.titleLabel.text = p.title;
+    [cell.projectImage sd_cancelCurrentImageLoad];
+    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
                  placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;

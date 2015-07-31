@@ -249,6 +249,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.loginFaceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.leftTitleLabel.attributedText = ({
@@ -310,6 +311,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.loginGButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.leftTitleLabel.attributedText = ({
@@ -376,6 +378,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.signupEmailButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+        button.rightTitleLabel.textAlignment = NSTextAlignmentNatural;
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.leftTitleLabel.attributedText = ({

@@ -139,7 +139,9 @@
         button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
                                                                                 attributes:attrs];
+
         button.leftTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
+        
         
         [button bk_addEventHandler:^(id sender) {
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -199,6 +201,7 @@
         button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
         button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
                                                                                 attributes:attrs];
+
         button.leftTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
 
         [button bk_addEventHandler:^(id sender) {
@@ -444,6 +447,8 @@
     if (indexPath.item == 0) {
         placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
         
+        cell.textField.rightViewMode = UITextFieldViewModeAlways;
+        cell.textField.rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15.0, cell.textField.frame.size.height)];
         // left icons
         cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
         cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
@@ -474,6 +479,7 @@
             // don't hide the keyboard
             return NO;
         };
+        
     } else {
         placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
         
