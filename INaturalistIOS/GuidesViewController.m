@@ -499,6 +499,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+    
     [self stopSync];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
