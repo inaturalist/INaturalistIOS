@@ -154,6 +154,8 @@ static const int LeaveProjectAlertViewTag = 1;
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
                         placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
@@ -176,8 +178,6 @@ static const int LeaveProjectAlertViewTag = 1;
     }
     // Adding auto layout for header view.
     [self setupConstraintsForHeader];
-    
-    [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
