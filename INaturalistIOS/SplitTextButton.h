@@ -12,5 +12,6 @@
 
 @property UILabel *leftTitleLabel;
 @property UILabel *rightTitleLabel;
+@property UIView *separator;
 
 @end

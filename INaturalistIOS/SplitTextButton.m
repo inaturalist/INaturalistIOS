@@ -8,10 +8,6 @@
 
 #import "SplitTextButton.h"
 
-@interface SplitTextButton ()
-@property UIView *separator;
-@end
-
 @implementation SplitTextButton
 
 - (instancetype)initWithFrame:(CGRect)frame {
