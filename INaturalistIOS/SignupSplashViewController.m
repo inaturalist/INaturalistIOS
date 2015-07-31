@@ -101,6 +101,8 @@ static char PARTNER_ASSOCIATED_KEY;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
     [backgroundCycleTimer invalidate];
     backgroundCycleTimer = nil;
 }
