@@ -88,6 +88,7 @@ static NSString *kSortSpeciesKey = @"species_count";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
     [[Analytics sharedClient] event:kAnalyticsEventNavigateExploreLeaderboard];
     
