@@ -497,6 +497,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
@@ -511,12 +513,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.navigationController.toolbar.tintColor = [UIColor inatTint];
     }
 
-    [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated {    
-    [self initUI];
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self initUI];
     
     
     
