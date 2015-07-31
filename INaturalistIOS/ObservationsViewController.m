@@ -999,10 +999,11 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+
     [self stopSync];
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
-	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
