@@ -133,8 +133,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
 	[self taxonToUI];
-	
-	NSLog(@"chose taxon: %@", taxon.defaultName);
 }
 
 - (void)taxonToUI
