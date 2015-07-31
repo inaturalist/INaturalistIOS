@@ -140,7 +140,7 @@
         button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
                                                                                 attributes:attrs];
 
-        button.leftTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
         
         
         [button bk_addEventHandler:^(id sender) {
@@ -202,7 +202,7 @@
         button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
                                                                                 attributes:attrs];
 
-        button.leftTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
 
         [button bk_addEventHandler:^(id sender) {
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
