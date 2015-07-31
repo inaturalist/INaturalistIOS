@@ -182,6 +182,8 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.navigationController setToolbarHidden:YES animated:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
