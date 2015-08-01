@@ -653,6 +653,16 @@
             [self configureHeaderView:header forUser:me];
         }
         
+        __weak typeof(self) weakSelf = self;
+        [header.projectsButton bk_addEventHandler:^(id sender) {
+            [weakSelf performSegueWithIdentifier:@"segueToProjects" sender:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [header.guidesButton bk_addEventHandler:^(id sender) {
+            [weakSelf performSegueWithIdentifier:@"segueToGuides" sender:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+
+        
         return header;
         
     } else {
