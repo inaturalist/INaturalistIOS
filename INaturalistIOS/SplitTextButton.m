@@ -8,6 +8,10 @@
 
 #import "SplitTextButton.h"
 
+@interface SplitTextButton ()
+@property NSLayoutConstraint *leadingTitleWidthConstraint;
+@end
+
 @implementation SplitTextButton
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -73,13 +77,15 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leadingTitleLabel
-                                                         attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:1.0f
-                                                          constant:34]];
+        self.leadingTitleWidthConstraint = [NSLayoutConstraint constraintWithItem:self.leadingTitleLabel
+                                                                        attribute:NSLayoutAttributeWidth
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:1.0f
+                                                                         constant:40];  // default width
+        [self addConstraint:self.leadingTitleWidthConstraint];
+        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
@@ -104,6 +110,15 @@
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
+}
+
+- (CGFloat)leadingTitleWidth {
+    return self.leadingTitleWidthConstraint.constant;
+}
+
+- (void)setLeadingTitleWidth:(CGFloat)width {
+    self.leadingTitleWidthConstraint.constant = width;
+    [self setNeedsUpdateConstraints];
 }
 
 @end

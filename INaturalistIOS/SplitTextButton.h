@@ -13,5 +13,6 @@
 @property UILabel *leadingTitleLabel;
 @property UILabel *trailingTitleLabel;
 @property UIView *separator;
+@property CGFloat leadingTitleWidth;
 
 @end
