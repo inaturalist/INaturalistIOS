@@ -249,6 +249,15 @@ static char PARTNER_ASSOCIATED_KEY;
     });
     [self.view addSubview:self.reasonLabel];
     
+    NSMutableParagraphStyle *indentedParagraphStyle = ({
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        style.alignment = NSTextAlignmentJustified;
+        style.firstLineHeadIndent = 10.0f;
+        style.headIndent = 10.0f;
+        style.tailIndent = -10.0f;
+        style;
+    });
+
     self.loginFaceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
         button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
@@ -258,10 +267,16 @@ static char PARTNER_ASSOCIATED_KEY;
             FAKIcon *face = [FAKIonIcons socialFacebookIconWithSize:25.0f];
             face.attributedString;
         });
-        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
-                                                                                   emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+
+        
+        NSAttributedString *title = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Facebook", "@base text for fb login button")
+                                                                      baseAttrs:@{
+                                                                                  NSFontAttributeName: [UIFont systemFontOfSize:16.0f],
+                                                                                  NSParagraphStyleAttributeName: indentedParagraphStyle,
+                                                                                  }
+                                                                       emSubstr:NSLocalizedString(@"Facebook", @"portion of the base text for fb login button that is bold. must be a substring of the base test.")
+                                                                        emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+        button.trailingTitleLabel.attributedText = title;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
@@ -320,10 +335,15 @@ static char PARTNER_ASSOCIATED_KEY;
             FAKIcon *face = [FAKIonIcons socialGoogleplusIconWithSize:25.0f];
             face.attributedString;
         });
-        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
-                                                                                   emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+        NSAttributedString *title = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Log In with Google+", "@base text for g+ login button")
+                                                                      baseAttrs:@{
+                                                                                  NSFontAttributeName: [UIFont systemFontOfSize:16.0f],
+                                                                                  NSParagraphStyleAttributeName: indentedParagraphStyle,
+                                                                                  }
+                                                                       emSubstr:NSLocalizedString(@"Google+", @"portion of the base text for g+ login button that is bold. must be a substring of the base test.")
+                                                                        emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+        
+        button.trailingTitleLabel.attributedText = title;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
@@ -387,10 +407,14 @@ static char PARTNER_ASSOCIATED_KEY;
             FAKIcon *face = [FAKIonIcons emailIconWithSize:25.0f];
             face.attributedString;
         });
-        button.trailingTitleLabel.attributedText = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
-                                                                                  baseAttrs:@{ NSFontAttributeName: [UIFont systemFontOfSize:16.0f] }
-                                                                                   emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
-                                                                                    emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+        NSAttributedString *title = [NSAttributedString inat_attrStrWithBaseStr:NSLocalizedString(@"Sign Up with Email", "@base text for email signup button")
+                                                                      baseAttrs:@{
+                                                                                  NSFontAttributeName: [UIFont systemFontOfSize:16.0f],
+                                                                                  NSParagraphStyleAttributeName: indentedParagraphStyle,
+                                                                                  }
+                                                                       emSubstr:NSLocalizedString(@"Email", @"portion of the base text for email signup button that is bold. must be a substring of the base test.")
+                                                                        emAttrs:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f] }];
+        button.trailingTitleLabel.attributedText = title;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
