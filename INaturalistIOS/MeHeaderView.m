@@ -7,20 +7,22 @@
 //
 
 #import "MeHeaderView.h"
+#import "UIColor+INaturalist.h"
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 @implementation MeHeaderView
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor inatTint];
         
         self.iconImageView = ({
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
             iv.contentMode = UIViewContentModeScaleAspectFill;
-            iv.layer.borderColor = [UIColor grayColor].CGColor;
+            iv.layer.borderColor = [UIColor whiteColor].CGColor;
             iv.layer.borderWidth = 2.0f;
             iv.layer.cornerRadius = 40.0f;      // circular with an 80x80 frame
             
@@ -30,67 +32,87 @@
         });
         [self addSubview:self.iconImageView];
         
-        self.nameLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.font = [UIFont systemFontOfSize:18.0f];
-            label.textColor = [UIColor darkGrayColor];
-            label.textAlignment = NSTextAlignmentCenter;
-            
-            label;
-        });
-        [self addSubview:self.nameLabel];
-        
         self.obsCountLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
-            label.font = [UIFont systemFontOfSize:14.0f];
-            label.textColor = [UIColor grayColor];
-            label.textAlignment = NSTextAlignmentCenter;
+            label.font = [UIFont systemFontOfSize:18.0f];
+            label.textColor = [UIColor whiteColor];
+            label.textAlignment = NSTextAlignmentNatural;
 
             label;
         });
         [self addSubview:self.obsCountLabel];
         
-        self.idsCountLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
+        self.projectsButton = ({
             
-            label.font = [UIFont systemFontOfSize:14.0f];
-            label.textColor = [UIColor grayColor];
-            label.textAlignment = NSTextAlignmentCenter;
+            SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+            button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            label;
-        });
-        [self addSubview:self.idsCountLabel];
+            FAKIcon *guidesIcon = [FAKIonIcons iosBookIconWithSize:20];
+            [guidesIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            button.leadingTitleLabel.attributedText = guidesIcon.attributedString;
+            button.leadingTitleWidth = 34.0f;
 
+            button.trailingTitleLabel.text = NSLocalizedString(@"Projects", @"Title for projects button on the Me tab");
+            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
+            button.separator.hidden = YES;
+            
+            button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
+            button.tintColor = [UIColor whiteColor];
+            
+            button;
+        });
+        [self addSubview:self.projectsButton];
+        
+        self.guidesButton = ({
+            SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+            button.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            FAKIcon *guidesIcon = [FAKIonIcons iosBookIconWithSize:20];
+            [guidesIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            button.leadingTitleLabel.attributedText = guidesIcon.attributedString;
+            button.leadingTitleWidth = 34.0f;
+
+            button.trailingTitleLabel.text = NSLocalizedString(@"Guides", @"Title for guides button on the Me tab");
+            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
+            button.separator.hidden = YES;
+            
+            button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
+            button.tintColor = [UIColor whiteColor];
+
+            
+            button;
+        });
+        [self addSubview:self.guidesButton];
         
         NSDictionary *views = @{
                                 @"icon": self.iconImageView,
-                                @"name": self.nameLabel,
                                 @"obsCount": self.obsCountLabel,
-                                @"idsCount": self.idsCountLabel,
+                                @"projects": self.projectsButton,
+                                @"guides": self.guidesButton,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[icon(==80)]-[name]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[obsCount]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[icon(==80)]-[obsCount]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[icon(==80)]-[idsCount]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[projects]-[guides(==projects)]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[name]-10-[obsCount]-5-[idsCount]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[projects(==34)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[guides(==34)]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconImageView
                                                          attribute:NSLayoutAttributeCenterY

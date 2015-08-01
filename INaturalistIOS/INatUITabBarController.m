@@ -30,6 +30,10 @@
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
 
+#define EXPLORE_TAB_INDEX   0
+#define OBSERVE_TAB_INDEX   1
+#define ME_TAB_INDEX        2
+
 typedef NS_ENUM(NSInteger, INatPhotoSource) {
     INatPhotoSourceCamera,
     INatPhotoSourcePhotos
@@ -72,15 +76,15 @@ static char PROJECT_ASSOCIATED_KEY;
     UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline]
                                          imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
-    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.image = img;
-    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
-    [((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
+    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = img;
+    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
+    [((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
                                                                                            forState:UIControlStateNormal];
     
     // make the delegate call to make sure our side effects execute
-    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][4]]) {
+    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][ME_TAB_INDEX]]) {
         // Me tab
-        self.selectedIndex = 4;
+        self.selectedIndex = ME_TAB_INDEX;
     }
     
     // we'll use the iconic taxa during the new observation flow
@@ -301,14 +305,14 @@ static char PROJECT_ASSOCIATED_KEY;
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     
     // intercept selection of the "observe" tab
-    if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
+    if ([tabBarController.viewControllers indexOfObject:viewController] == OBSERVE_TAB_INDEX) {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
 
         [self triggerNewObservationFlowForTaxon:nil project:nil];
         
         return NO;
-    } else if ([tabBarController.viewControllers indexOfObject:viewController] == 4) {
+    } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             if (![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
@@ -330,7 +334,7 @@ static char PROJECT_ASSOCIATED_KEY;
     }
     
     NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
-    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[2]
+    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[OBSERVE_TAB_INDEX]
                                                                       hostView:self.view
                                                                    tooltipText:firstObsText
                                                                 arrowDirection:JDFTooltipViewArrowDirectionDown
@@ -341,7 +345,7 @@ static char PROJECT_ASSOCIATED_KEY;
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         __strong typeof(weakSelf)strongSelf = weakSelf;
-        if (strongSelf.selectedIndex == 4)
+        if (strongSelf.selectedIndex == ME_TAB_INDEX)
             [makeFirstObsTooltip show];
     });
 }
@@ -511,7 +515,7 @@ static char PROJECT_ASSOCIATED_KEY;
     NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:4];       // Me tab
+    UITabBarItem *item = [self.tabBar.items objectAtIndex:ME_TAB_INDEX];
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%ld", (long)theCount];
     } else {

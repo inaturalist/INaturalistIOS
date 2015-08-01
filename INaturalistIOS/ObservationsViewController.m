@@ -760,22 +760,11 @@
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
         [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
     }
-    
-    // name
-    if (user.name && ![user.name isEqualToString:@""]) {
-        view.nameLabel.text = user.name;
-    }
-    
+        
     // observation count
     if (user.observationsCount) {
         view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
-    }
-    
-    // identification count
-    if (user.identifications) {
-        view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
-                                   user.identificationsCount.integerValue];
     }
 }
 
