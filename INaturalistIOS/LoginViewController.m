@@ -584,8 +584,10 @@
         return;
     }
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
-                         maskType:SVProgressHUDMaskTypeGradient];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
+                             maskType:SVProgressHUDMaskTypeGradient];
+    });
     
     __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
@@ -593,7 +595,9 @@
                                           password:password
                                            success:^(NSDictionary *info) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
-                                               [SVProgressHUD showSuccessWithStatus:nil];
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [SVProgressHUD showSuccessWithStatus:nil];
+                                               });
                                                if (strongSelf.selectedPartner) {
                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                  completion:nil];
@@ -604,7 +608,10 @@
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                }
                                            } failure:^(NSError *error) {
-                                               [SVProgressHUD dismiss];
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [SVProgressHUD dismiss];
+                                               });
+
                                                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                NSString *alertMsg;
                                                if (error) {
