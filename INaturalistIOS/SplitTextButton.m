@@ -55,7 +55,7 @@
                                 @"separator": self.separator,
                                 @"right": self.trailingTitleLabel,
                                 };
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-15-[right]-15-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-0-[right]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -79,7 +79,7 @@
                                                             toItem:nil
                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                         multiplier:1.0f
-                                                          constant:40.0f]];
+                                                          constant:34]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
