@@ -452,7 +452,7 @@
             <objects>
                 <tabBarController definesPresentationContext="YES" id="ln2-Xm-kuL" customClass="INatUITabBarController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="CX2-0f-gTP">
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="CX2-0f-gTP">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
