@@ -132,7 +132,6 @@
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [[UITabBar appearance] setTintColor:[UIColor inatTint]];
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
-        [[UITabBar appearance] setTranslucent:NO];
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
         [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
@@ -335,20 +334,22 @@
 
 - (void)showMainUI {
     if (![self.window.rootViewController isKindOfClass:[INatUITabBarController class]]) {
-        UIView *priorSnapshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
-
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-        UIViewController *mainVC = [storyboard instantiateInitialViewController];
-        
-        [mainVC.view addSubview:priorSnapshot];
-        self.window.rootViewController = mainVC;
-        
-        [UIView animateWithDuration:0.65f
-                         animations:^{
-                             priorSnapshot.alpha = 0.0f;
-                         } completion:^(BOOL finished) {
-                             [priorSnapshot removeFromSuperview];
-                         }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIView *priorSnapshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            UIViewController *mainVC = [storyboard instantiateInitialViewController];
+            
+            [mainVC.view addSubview:priorSnapshot];
+            self.window.rootViewController = mainVC;
+            
+            [UIView animateWithDuration:0.65f
+                             animations:^{
+                                 priorSnapshot.alpha = 0.0f;
+                             } completion:^(BOOL finished) {
+                                 [priorSnapshot removeFromSuperview];
+                             }];
+        });
     }
 }
 

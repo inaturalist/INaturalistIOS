@@ -102,6 +102,9 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
+		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
+		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
+		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
@@ -376,6 +379,14 @@
 		791192251A65553AF8BDAFFD /* libPods-iNaturalistTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalistTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		877B526621D376BBB82550CD /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
 		879E5037B10357A014B15064 /* Pods-iNaturalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist.debug.xcconfig"; sourceTree = "<group>"; };
+		890DE36A1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		890DE36B1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		890DE36C1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
+		893FE7171B525BFD00BC7CC4 /* config.h.example */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.h.example; sourceTree = SOURCE_ROOT; };
+		897569FD1B4557B500F0BFAD /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
+		897569FE1B4557B500F0BFAD /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
+		899A00D21B53AADD0079162F /* ProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTableViewCell.h; sourceTree = "<group>"; };
+		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
 		9538BDDEB9B56A1D6B95F692 /* libPods-iNaturalist Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
@@ -690,6 +701,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				893FE7171B525BFD00BC7CC4 /* config.h.example */,
 				FA6F87661B0E996B0019B157 /* fonts */,
 				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
@@ -863,6 +875,10 @@
 				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
 				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
 				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
+				897569FD1B4557B500F0BFAD /* ObservationViewCell.h */,
+				897569FE1B4557B500F0BFAD /* ObservationViewCell.m */,
+				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
+				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1229,6 +1245,9 @@
 				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = iNaturalist;
 				TargetAttributes = {
+					1927513214E9CCC9000ABAC4 = {
+						DevelopmentTeam = N5J7L4P93Z;
+					};
 					FADE28AF1B02D9AA00CA55FF = {
 						CreatedOnToolsVersion = 6.3.1;
 						TestTargetID = 1927513214E9CCC9000ABAC4;
@@ -1248,6 +1267,7 @@
 				fr,
 				it,
 				pt,
+				he,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -1281,6 +1301,7 @@
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
 				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
+				893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1399,6 +1420,7 @@
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
+				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
 				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
@@ -1484,6 +1506,7 @@
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
+				897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */,
 				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
 				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
 				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
@@ -1563,6 +1586,7 @@
 				FA1B37BF1AD88BFE002A00A5 /* fr */,
 				FA1B37C11AD88C06002A00A5 /* it */,
 				FA1B37C41AD88EED002A00A5 /* pt */,
+				890DE36A1B41357000207219 /* he */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
@@ -1577,6 +1601,7 @@
 				FA1B37BC1AD88BE2002A00A5 /* fr */,
 				FA1B37BD1AD88BE3002A00A5 /* it */,
 				FA1B37C51AD88EF3002A00A5 /* pt */,
+				890DE36B1B41357000207219 /* he */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1591,6 +1616,7 @@
 				FA1B37BA1AD88BBC002A00A5 /* fr */,
 				FA1B37BB1AD88BCF002A00A5 /* it */,
 				FA1B37C21AD88EDC002A00A5 /* pt */,
+				890DE36C1B41357000207219 /* he */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1649,6 +1675,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1674,6 +1702,7 @@
 					"$(inherited)",
 				);
 				PRODUCT_NAME = iNaturalist;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -1689,8 +1718,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

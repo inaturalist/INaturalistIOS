@@ -15,11 +15,11 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
+
+#import "ProjectTableViewCell.h"
+
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
-
-static const int ProjectCellImageTag = 1;
-static const int ProjectCellTitleTag = 2;
 
 @implementation ProjectChooserViewController
 
@@ -107,6 +107,8 @@ static const int ProjectCellTitleTag = 2;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self checkEmpty];
 }
 
@@ -142,14 +144,12 @@ static const int ProjectCellTitleTag = 2;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ProjectCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
-    title.text = pu.project.title;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
+    cell.titleLabel.text = pu.project.title;
+    [cell.projectImage sd_cancelCurrentImageLoad];
+    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
                  placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;

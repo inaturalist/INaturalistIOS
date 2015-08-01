@@ -478,6 +478,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];
@@ -497,6 +499,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+    
     [self stopSync];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
@@ -557,6 +561,7 @@ static const int ListControlIndexNearby = 2;
     [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
+    title.textAlignment = NSTextAlignmentNatural;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
                  placeholderImage:[UIImage inat_defaultGuideImage]];
     

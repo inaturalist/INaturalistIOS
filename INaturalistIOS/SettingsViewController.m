@@ -13,7 +13,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <googleplus-ios-sdk/GPPSignIn.h>
+#import "GPPSignIn.h"
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 
 #import "SettingsViewController.h"
@@ -47,6 +47,12 @@ static const int VersionCellTag = 5;
 
 static const int AutocompleteNamesSwitchTag = 10;
 static const int CategorizeNewObsSwitchTag = 11;
+static const int AutocompleteNamesLabelTag = 12;
+static const int CategorizeNewObsLabelTag = 13;
+static const int NetworkDetailLabelTag = 14;
+static const int NetworkTextLabelTag = 15;
+static const int UsernameDetailLabelTag = 16;
+static const int UsernameTextLabelTag = 17;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -76,7 +82,10 @@ static const int CategorizeNewObsSwitchTag = 11;
     rateUsActionCell.tag = RateUsCellTag;
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
+        
+        UILabel *usernameDetailTextLabel = (UILabel *)[usernameCell viewWithTag:UsernameDetailLabelTag];
+        usernameDetailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
+        
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
         usernameCell.detailTextLabel.text = NSLocalizedString(@"Unknown",nil);
@@ -330,14 +339,30 @@ static const int CategorizeNewObsSwitchTag = 11;
 {
     if (indexPath.section == 4 && indexPath.row == 0) {
         cell.textLabel.text = self.versionText;
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.backgroundView = nil;
         cell.tag = VersionCellTag;
         
-    } else if (indexPath.section == 1) {
+    }
+    else if (indexPath.section == 0 && indexPath.row == 0) {
+        // Set the alignment for username.
+//        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+        [self setupConstraintsForUsernameCell:cell];
+    }
+    else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
 
         if (indexPath.item == 0 || indexPath.item == 1) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
+            if(autoNameLabel){
+                autoNameLabel.textAlignment = NSTextAlignmentNatural;
+            }
+            UILabel *categoriesLabel = (UILabel *)[cell.contentView viewWithTag:CategorizeNewObsLabelTag];
+            if(categoriesLabel){
+                categoriesLabel.textAlignment = NSTextAlignmentNatural;
+            }
             
             UISwitch *switcher;
             if (![cell viewWithTag:10 + indexPath.item]) {
@@ -378,14 +403,22 @@ static const int CategorizeNewObsSwitchTag = 11;
             // put user object changing site id
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
             User *me = [appDelegate.loginController fetchMe];
+            UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
+            [self setupConstraintsForNetworkCell:cell];
             if (me) {
                 Partner *p = [self.partnerController partnerForSiteId:me.siteId.integerValue];
-                cell.detailTextLabel.text = p.name;
+                detailTextLabel.text = p.name;
             } else {
-                cell.detailTextLabel.text = @"iNaturalist";
+                detailTextLabel.text = @"iNaturalist";
             }
             
         }
+    }
+    else if (indexPath.section == 2) {  // Handles help section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
+    else if (indexPath.section == 3) {  // Handles Acknowledgements section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
     }
 }
 
@@ -548,4 +581,68 @@ static const int CategorizeNewObsSwitchTag = 11;
     }
 }
 
+
+- (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{
+    if(!cell.constraints.count){
+        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
+        detailTextLabel.textAlignment = NSTextAlignmentNatural;
+        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UILabel *textLabel = (UILabel *)[cell viewWithTag:NetworkTextLabelTag];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textAlignment = NSTextAlignmentNatural;
+        
+        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[textLabel]-[detailTextLabel]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+    }
+}
+
+- (void)setupConstraintsForUsernameCell:(UITableViewCell *)cell{
+    if(!cell.constraints.count){
+        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:UsernameDetailLabelTag];
+        detailTextLabel.textAlignment = NSTextAlignmentCenter;
+        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UILabel *textLabel = (UILabel *)[cell viewWithTag:UsernameTextLabelTag];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:-8.0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 @end
+
+
+
+
+
+
+
+
+
+
+
+

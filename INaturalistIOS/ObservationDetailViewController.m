@@ -145,12 +145,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     [descriptionTextView setText:self.observation.inatDescription];
     
+    // Species cell
     UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
     UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
     img.layer.cornerRadius = 5.0f;
     img.clipsToBounds = YES;
-
+    
     [img sd_cancelCurrentImageLoad];
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
     img.image = iconicTaxonImage;
@@ -336,7 +337,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     UIButton *bigSaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
     bigSaveButton.frame = CGRectMake(0, 0, 150, 44);
     bigSaveButton.tintColor = [UIColor whiteColor];
-    [bigSaveButton setTitle:@"SAVE" forState:UIControlStateNormal];
+    [bigSaveButton setTitle:NSLocalizedString(@"Save",nil) forState:UIControlStateNormal];
     bigSaveButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:36];
     [bigSaveButton addTarget:self action:@selector(clickedSave) forControlEvents:UIControlEventTouchUpInside];
@@ -496,6 +497,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
@@ -510,12 +513,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.navigationController.toolbar.tintColor = [UIColor inatTint];
     }
 
-    [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated {    
-    [self initUI];
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self initUI];
     
     
     
@@ -1002,12 +1005,156 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             return [self tableView:tableView observationFieldValueCellForRowAtIndexPath:indexPath];
         }
     }
-    return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    UITableViewCell *staticCell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    if(indexPath.section == 0){ // Adding auto layout for species
+        if(!staticCell.constraints.count){
+            UILabel *speciesLabel = (UILabel *)[staticCell viewWithTag:2];
+            speciesLabel.textAlignment = NSTextAlignmentNatural;
+            speciesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            UIImageView *img = (UIImageView *)[staticCell viewWithTag:1];
+            img.translatesAutoresizingMaskIntoConstraints = NO;
+            UIButton *rightButton = (UIButton *)[staticCell viewWithTag:3];
+            rightButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"image":img, @"label":speciesLabel, @"button":rightButton};
+            
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[image(==34)]-[label][button(==32)]-11-|" options:0 metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[image(==34)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[label(==44)]-0-|" options:0 metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[button(==34)]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 1){    // Adding auto layout for notes cell
+        UITextView *notesTextview = (UITextView *)[staticCell viewWithTag:1];
+        notesTextview.textAlignment = NSTextAlignmentNatural;
+    }
+    else if(indexPath.section == 2){    // Adding auto layout for location cell
+        UITableViewCell *locationCell = staticCell;
+        if(!locationCell.constraints.count){
+            UIView *spinnerView = (UIView *)[locationCell viewWithTag:1];
+            spinnerView.translatesAutoresizingMaskIntoConstraints = NO;
+            UIImageView *locationIcon = (UIImageView *)[locationCell viewWithTag:2];
+            locationIcon.translatesAutoresizingMaskIntoConstraints = NO;
+            UILabel *latLabel = (UILabel *)[locationCell viewWithTag:3];
+            latLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            latLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *latValueLabel = (UILabel *)[locationCell viewWithTag:4];
+            latValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            latValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *lonValueLabel = (UILabel *)[locationCell viewWithTag:5];
+            lonValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            lonValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *lonLabel = (UILabel *)[locationCell viewWithTag:6];
+            lonLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            lonLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *accLabel = (UILabel *)[locationCell viewWithTag:7];
+            accLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            accLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *accValueLabel = (UILabel *)[locationCell viewWithTag:8];
+            accValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            accValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *accMLabel = (UILabel *)[locationCell viewWithTag:9];
+            accMLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            accMLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *locationLabel = (UILabel *)[locationCell viewWithTag:10];
+            locationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            locationLabel.textAlignment = NSTextAlignmentNatural;
+            
+            NSDictionary *views = @{@"spinner":spinnerView, @"locationIcon":locationIcon,
+                                    @"latLabel":latLabel,@"latValueLabel":latValueLabel,@"lonLabel":lonLabel,
+                                    @"lonValueLabel":lonValueLabel,@"accLabel":accLabel,@"accValueLabel":accValueLabel,
+                                    @"accMLabel":accMLabel,@"locationLabel":locationLabel};
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[locationIcon(==20)]-[locationLabel]-|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[locationIcon(==20)]-29-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[locationLabel][latLabel(==21)]|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-37-[latLabel(==23)][latValueLabel(==64)]-11-[lonLabel(==24)][lonValueLabel(==64)]-[accLabel(==24)][accValueLabel(==24)][accMLabel(==16)]->=0-|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:latValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:lonLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:lonValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accMLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[spinner(==20)]-29-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[spinner(==20)]" options:0 metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 3){
+        UITableViewCell *dateCell = staticCell;
+        if(!dateCell.constraints.count){
+            UILabel *dateLabel = (UILabel *)[dateCell viewWithTag:1];
+            dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            dateLabel.textAlignment = NSTextAlignmentNatural;
+            UIImageView *dateIcon = (UIImageView *)[dateCell viewWithTag:2];
+            dateIcon.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"dateLabel":dateLabel,@"dateIcon":dateIcon};
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[dateIcon(==23)]-15-[dateLabel]-|" options:0 metrics:0 views:views]];
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[dateIcon(==25)]-10-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[dateLabel]|" options:0 metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 4){
+        if(indexPath.row == 0){
+            UITableViewCell *moreCell = staticCell;
+            if(!moreCell.constraints.count){
+                UILabel *helpLabel = (UILabel *)[moreCell viewWithTag:1];
+                helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                helpLabel.textAlignment = NSTextAlignmentNatural;
+                UIView *switchView = (UIView *)[moreCell viewWithTag:2];
+                switchView.translatesAutoresizingMaskIntoConstraints = NO;
+                
+                NSDictionary *views = @{@"helpLabel":helpLabel,@"switchView":switchView};
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[helpLabel]-3-[switchView(==96)]-11-|" options:0 metrics:0 views:views]];
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[helpLabel]-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[switchView]-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            }
+        }
+        else if(indexPath.row == 1){
+            UITableViewCell *privacyCell = staticCell;
+            if(!privacyCell.constraints.count){
+                UILabel *privacyLabel = (UILabel *)[privacyCell viewWithTag:1];
+                privacyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                privacyLabel.textAlignment = NSTextAlignmentNatural;
+                UILabel *valueLabel = (UILabel *)[privacyCell viewWithTag:2];
+                valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                valueLabel.textAlignment = NSTextAlignmentCenter;
+                
+                NSDictionary *views = @{@"privacyLabel":privacyLabel,@"valueLabel":valueLabel};
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[privacyLabel]-3-[valueLabel(==100)]-11-|" options:0 metrics:0 views:views]];
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[privacyLabel]-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[valueLabel]-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            }
+        }
+        
+    }
+    
+    return staticCell;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"ProjectCell"];
     [cell setBackgroundColor:[UIColor whiteColor]];
     ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
@@ -1065,7 +1212,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueStaticCell owner:self options:nil];
         cell = [nibObjects objectAtIndex:0];
         UILabel *leftLabel = (UILabel *)[cell viewWithTag:1];
+        leftLabel.textAlignment = NSTextAlignmentNatural;
         UILabel *rightLabel = (UILabel *)[cell viewWithTag:2];
+        rightLabel.textAlignment = NSTextAlignmentCenter;
         leftLabel.text = ofv.observationField.name;
         rightLabel.text = ofv.value == nil ? ofv.defaultValue : ofv.value;
         if ([self projectsRequireField:ofv.observationField].count > 0) {

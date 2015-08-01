@@ -75,7 +75,7 @@ static UIImage *defaultPersonImage;
                                                object:[Observation managedObjectContext]];
 	
 	RefreshControl *refresh = [[RefreshControl alloc] init];
-	refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to Refresh"];
+	refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh",nil)];
 	[refresh addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
 	self.refreshControl = refresh;
 }
@@ -332,7 +332,7 @@ static UIImage *defaultPersonImage;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     INatModel *activity = self.activities[indexPath.row];
-    int defaultHeight = [activity isKindOfClass:[Identification class]] ? 80 : 60;
+    int defaultHeight = [activity isKindOfClass:[Identification class]] ? 90 : 60;
     
     // be defensive
     @try {
@@ -397,6 +397,26 @@ static UIImage *defaultPersonImage;
 
         body.text = [comment.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
+        
+        // Adding auto layout.
+        body.textAlignment = NSTextAlignmentNatural;
+        body.translatesAutoresizingMaskIntoConstraints = NO;
+        byline.textAlignment = NSTextAlignmentNatural;
+        byline.translatesAutoresizingMaskIntoConstraints = NO;
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        if(!cell.constraints.count){
+            NSDictionary *views = @{@"body":body,@"byline":byline,@"imageView":imageView};
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[imageView(==45)]-[body]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[imageView(==45)]-[byline]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-7-[imageView(==45)]->=0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[body][byline(==21)]-4-|" options:0 metrics:0 views:views]];
+        }
+        
+        
+        
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
 		UIImageView *imageView = (UIImageView *)[cell viewWithTag:IdentificationCellImageTag];
@@ -436,6 +456,11 @@ static UIImage *defaultPersonImage;
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];
 		
 		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+		if ([username isEqualToString:identification.user.login] && identification.isCurrent) {
+			agreeButton.hidden = YES;
+		} else {
+			agreeButton.hidden = NO;
+		}
         
         // get "my" current identification
         Identification *myCurrentIdentification = nil;
@@ -445,6 +470,7 @@ static UIImage *defaultPersonImage;
                 myCurrentIdentification = eachId;
             }
         }
+        
         if (myCurrentIdentification) {
             if ([identification isEqual:myCurrentIdentification]) {
                 // can't agree with "my" current identification
@@ -460,6 +486,56 @@ static UIImage *defaultPersonImage;
             // no current id, can agree
             agreeButton.hidden = NO;
         }
+        
+        // Adding auto layout.
+        if(!cell.constraints.count){
+            title.translatesAutoresizingMaskIntoConstraints = NO;
+            title.textAlignment = NSTextAlignmentNatural;
+            taxonName.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonName.textAlignment = NSTextAlignmentNatural;
+            taxonScientificName.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonScientificName.textAlignment = NSTextAlignmentNatural;
+            byline.translatesAutoresizingMaskIntoConstraints = NO;
+            byline.textAlignment = NSTextAlignmentNatural;
+            body.translatesAutoresizingMaskIntoConstraints = NO;
+            body.textAlignment = NSTextAlignmentNatural;
+            imageView.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonImageView.translatesAutoresizingMaskIntoConstraints = NO;
+            agreeButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"title":title,@"taxonName":taxonName,
+                                    @"taxonScientificName":taxonScientificName,
+                                    @"byline":byline,@"body":body,@"imageView":imageView,
+                                    @"agreeButton":agreeButton,@"taxonImageView":taxonImageView};
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[imageView(==45)]-[taxonImageView(==45)]-[title]->=8-[agreeButton]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[imageView(==45)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[taxonImageView(==45)]" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==19)][taxonName(==title)][taxonScientificName(==taxonName)]->=0-[body][byline(==21)]->=0-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[agreeButton(==34)]" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:body attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:taxonImageView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:body attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:byline attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:byline attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:taxonImageView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonName attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonScientificName attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonName attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonScientificName attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+        }
+        
 	}
 	
     return cell;

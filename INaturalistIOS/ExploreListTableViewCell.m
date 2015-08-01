@@ -56,7 +56,7 @@ static NSDateFormatter *shortFormatter;
             
             label.textColor = [UIColor colorForIconicTaxon:nil];
             label.font = [UIFont boldSystemFontOfSize:17.0f];
-            
+            label.textAlignment = NSTextAlignmentNatural;
             label;
         });
         [self.contentView addSubview:commonNameLabel];
@@ -67,7 +67,7 @@ static NSDateFormatter *shortFormatter;
             
             label.textColor = [UIColor blackColor];
             label.font = [UIFont italicSystemFontOfSize:14.0f];
-            
+            label.textAlignment = NSTextAlignmentNatural;
             label;
         });
         [self.contentView addSubview:scientificNameLabel];
@@ -94,7 +94,7 @@ static NSDateFormatter *shortFormatter;
             
             label.textColor = [UIColor blackColor];
             label.font = [UIFont boldSystemFontOfSize:14.0f];
-            
+            label.textAlignment = NSTextAlignmentNatural;
             label;
         });
         [self.contentView addSubview:observerNameLabel];
@@ -105,7 +105,7 @@ static NSDateFormatter *shortFormatter;
             
             label.textColor = [UIColor blackColor];
             label.font = [UIFont systemFontOfSize:12.0f];
-            label.textAlignment = NSTextAlignmentRight;
+            label.textAlignment = NSTextAlignmentCenter;
             
             label;
         });
@@ -145,10 +145,10 @@ static NSDateFormatter *shortFormatter;
                                                           constant:-4.0f]];
         // imageview is anchored 5 px from left edge of cell
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observationImageView
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:4.0f]];
         // imageview is perfectly square
@@ -162,18 +162,18 @@ static NSDateFormatter *shortFormatter;
         
         // common name label - 10px from imageview
         [self addConstraint:[NSLayoutConstraint constraintWithItem:commonNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:observationImageView
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:10.0f]];
         // common name label - stretch the rest of the cell width
         [self addConstraint:[NSLayoutConstraint constraintWithItem:commonNameLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:-5.0f]];
         // common name label - 5px from top of the cell
@@ -187,18 +187,18 @@ static NSDateFormatter *shortFormatter;
         
         // scientific name label - 1 pixel indented from common name label
         [self addConstraint:[NSLayoutConstraint constraintWithItem:scientificNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:commonNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:1.0f]];
         // scientific name lable - stretch the rest of the cell width
         [self addConstraint:[NSLayoutConstraint constraintWithItem:scientificNameLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:-5.0f]];
         // scientific name label - just below common name
@@ -212,10 +212,10 @@ static NSDateFormatter *shortFormatter;
         
         // observer label - left aligned with common name
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observerNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:commonNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:0.0f]];
         // observer label - width 70% of tableview cell (other 30% will go to observed on)
@@ -237,10 +237,10 @@ static NSDateFormatter *shortFormatter;
         
         // observed on label - right aligned with cell
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedOnLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:-5.0f]];
         // observed on label - width 30% of tableview cell (other 70% will go to observed by)
@@ -263,10 +263,10 @@ static NSDateFormatter *shortFormatter;
         
         // observation attr label - left aligned with common name left
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observationAttrLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:commonNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:0.0f]];
         // observation attr label - static width
@@ -312,18 +312,18 @@ static NSDateFormatter *shortFormatter;
                                                           constant:0.0f]];
         // separator - starts 4px to the right of the imageview
         [self addConstraint:[NSLayoutConstraint constraintWithItem:separator
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:observationImageView
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:4.0f]];
         // separator - pinned to right
         [self addConstraint:[NSLayoutConstraint constraintWithItem:separator
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:0.0f]];
 

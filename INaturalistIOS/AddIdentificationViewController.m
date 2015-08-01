@@ -31,12 +31,9 @@
 
 @implementation AddIdentificationViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
 	if (!self.taxon) {
         if (viewHasPresented) {
             // user is trying to cancel adding an ID
@@ -136,8 +133,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
 	[self taxonToUI];
-	
-	NSLog(@"chose taxon: %@", taxon.defaultName);
 }
 
 - (void)taxonToUI

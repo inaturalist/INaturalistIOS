@@ -55,7 +55,7 @@
                 UISearchBar *bar = [[UISearchBar alloc] initWithFrame:CGRectZero];
                 bar.translatesAutoresizingMaskIntoConstraints = NO;
                 
-                bar.placeholder = @"Search";        // follow Apple mail example
+                bar.placeholder = NSLocalizedString(@"Search", nil);        // follow Apple mail example
                 bar.delegate = self;
                 
                 bar;
@@ -277,12 +277,13 @@
         // set the predicate first
         cell.predicate = item.predicate;
         cell.searchText = optionsSearchBar.text;
-        
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
         return cell;
     } else {
         //shortcut cells
         
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SEARCH_SHORTCUT_CELL];
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.textLabel.font = [UIFont italicSystemFontOfSize:14.0f];
         
         ShortcutSearchItem *item = [self.shortcutItems objectAtIndex:indexPath.row];

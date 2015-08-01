@@ -134,6 +134,9 @@ static char SUMMARY_ASSOCIATED_KEY;
     UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
     
     defaultNameLabel.text = self.taxon.defaultName;
+    defaultNameLabel.textAlignment = NSTextAlignmentNatural;
+    taxonNameLabel.textAlignment = NSTextAlignmentNatural;
+    attributionLabel.textAlignment = NSTextAlignmentNatural;
     if (self.taxon.rankLevel.intValue >= 20) {
         taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@", [self.taxon.rank capitalizedString], self.taxon.name];
         taxonNameLabel.font = [UIFont systemFontOfSize:taxonNameLabel.font.pointSize];
@@ -199,12 +202,13 @@ static char SUMMARY_ASSOCIATED_KEY;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     [self.navigationController setToolbarHidden:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -248,6 +252,7 @@ static char SUMMARY_ASSOCIATED_KEY;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
     label.font = [UIFont boldSystemFontOfSize:17];
     label.textColor = [UIColor darkGrayColor];
+    label.textAlignment = NSTextAlignmentNatural;
     switch (section) {
         case 0:
             label.text = NSLocalizedString(@"Description",nil);
@@ -270,6 +275,7 @@ static char SUMMARY_ASSOCIATED_KEY;
     if (indexPath.section == 0 && indexPath.row == 0) {
         UILabel *label = (UILabel *)[cell viewWithTag:TaxonDescTag];
         label.attributedText = self.taxon.attributedSummary;
+        label.textAlignment = NSTextAlignmentNatural;
         label.numberOfLines = 0;
         label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor whiteColor];
@@ -278,6 +284,7 @@ static char SUMMARY_ASSOCIATED_KEY;
         UILabel *title = (UILabel *)[cell viewWithTag:1];
         if (self.taxon.conservationStatusName) {
             title.text = NSLocalizedString(self.taxon.conservationStatusName.humanize, nil);
+            title.textAlignment = NSTextAlignmentNatural;
             if ([self.taxon.conservationStatusName isEqualToString:@"vulnerable"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"endangered"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"critically_endangered"]) {

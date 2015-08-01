@@ -9,7 +9,7 @@
 #import "SplitTextButton.h"
 
 @interface SplitTextButton ()
-@property UIView *separator;
+@property NSLayoutConstraint *leadingTitleWidthConstraint;
 @end
 
 @implementation SplitTextButton
@@ -21,7 +21,7 @@
         self.tintColor = [UIColor whiteColor];
         self.layer.cornerRadius = 2.0f;
         
-        self.leftTitleLabel = ({
+        self.leadingTitleLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
@@ -31,7 +31,7 @@
             
             label;
         });
-        [self addSubview:self.leftTitleLabel];
+        [self addSubview:self.leadingTitleLabel];
         
         self.separator = ({
             UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
@@ -43,7 +43,7 @@
         });
         [self addSubview:self.separator];
         
-        self.rightTitleLabel = ({
+        self.trailingTitleLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
@@ -52,14 +52,14 @@
             
             label;
         });
-        [self addSubview:self.rightTitleLabel];
+        [self addSubview:self.trailingTitleLabel];
         
         NSDictionary *views = @{
-                                @"left": self.leftTitleLabel,
+                                @"left": self.leadingTitleLabel,
                                 @"separator": self.separator,
-                                @"right": self.rightTitleLabel,
+                                @"right": self.trailingTitleLabel,
                                 };
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-15-[right]-15-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[left]-0-[separator]-0-[right]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -77,13 +77,15 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftTitleLabel
-                                                         attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:1.0f
-                                                          constant:40.0f]];
+        self.leadingTitleWidthConstraint = [NSLayoutConstraint constraintWithItem:self.leadingTitleLabel
+                                                                        attribute:NSLayoutAttributeWidth
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:1.0f
+                                                                         constant:40];  // default width
+        [self addConstraint:self.leadingTitleWidthConstraint];
+        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
                                                          attribute:NSLayoutAttributeWidth
                                                          relatedBy:NSLayoutRelationEqual
@@ -101,13 +103,22 @@
     
     [UIView animateWithDuration:0.1f
                      animations:^{
-                         self.leftTitleLabel.highlighted = highlighted;
-                         self.rightTitleLabel.highlighted = highlighted;
+                         self.leadingTitleLabel.highlighted = highlighted;
+                         self.trailingTitleLabel.highlighted = highlighted;
                      }];
 }
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
+}
+
+- (CGFloat)leadingTitleWidth {
+    return self.leadingTitleWidthConstraint.constant;
+}
+
+- (void)setLeadingTitleWidth:(CGFloat)width {
+    self.leadingTitleWidthConstraint.constant = width;
+    [self setNeedsUpdateConstraints];
 }
 
 @end

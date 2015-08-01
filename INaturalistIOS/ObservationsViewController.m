@@ -37,14 +37,8 @@
 #import "LoginViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UploadManagerNotificationDelegate.h"
+#import "ObservationViewCell.h"
 
-static const int ObservationCellImageTag = 5;
-static const int ObservationCellTitleTag = 1;
-static const int ObservationCellSubTitleTag = 2;
-static const int ObservationCellUpperRightTag = 3;
-static const int ObservationCellLowerRightTag = 4;
-static const int ObservationCellActivityButtonTag = 6;
-static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate> {
     UIView *noContentView;
@@ -559,27 +553,22 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
     return [sectionInfo numberOfObjects];
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ObservationCellImageTag];
-    UILabel *title = (UILabel *)[cell viewWithTag:ObservationCellTitleTag];
-    UILabel *subtitle = (UILabel *)[cell viewWithTag:ObservationCellSubTitleTag];
-    UILabel *upperRight = (UILabel *)[cell viewWithTag:ObservationCellUpperRightTag];
-    UIImageView *syncImage = (UIImageView *)[cell viewWithTag:ObservationCellLowerRightTag];
-	UIButton *activityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityButtonTag];
-    UIButton *interactiveActivityButton = (UIButton *)[cell viewWithTag:ObservationCellActivityInteractiveButtonTag];
+    ObservationViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
+    
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
 		if (op.photoKey == nil) {
-            [imageView sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
+            [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
 		} else {
-			imageView.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+			cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
             
             // if we can't find a square image...
-            if (!imageView.image) {
+            if (!cell.observationImage.image) {
                 // ...try again a few times, it's probably a new image in the process of being cut-down
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
@@ -590,52 +579,49 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 		}
         
     } else {
-        imageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+        cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
     
     if (o.speciesGuess && o.speciesGuess.length > 0) {
-        [title setText:o.speciesGuess];
+        [cell.titleLabel setText:o.speciesGuess];
     } else {
-        [title setText:NSLocalizedString(@"Something...",nil)];
+        [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
     
     if (o.placeGuess && o.placeGuess.length > 0) {
-        subtitle.text = o.placeGuess;
+        cell.subtitleLabel.text = o.placeGuess;
     } else if (o.latitude) {
-        subtitle.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
     } else {
-        subtitle.text = NSLocalizedString(@"Somewhere...",nil);
+        cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
 	if (o.hasUnviewedActivity.boolValue) {
 		// make bubble red
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
+		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
 	} else {
 		// make bubble grey
-		[activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
+		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
 	}
 	
-	[activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
+	[cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
 	
 	if (o.activityCount > 0) {
-		activityButton.hidden = NO;
-        interactiveActivityButton.hidden = NO;
-		CGRect frame = syncImage.frame;
-		frame.origin.x = cell.frame.size.width - 10 - activityButton.frame.size.width - frame.size.width;
-		syncImage.frame = frame;
+		cell.activityButton.hidden = NO;
+        cell.interactiveActivityButton.hidden = NO;
 	} else {
-		activityButton.hidden = YES;
-        interactiveActivityButton.hidden = YES;
-		CGRect frame = syncImage.frame;
-		frame.origin.x = cell.frame.size.width - 10 - frame.size.width;
-		syncImage.frame = frame;
+		cell.activityButton.hidden = YES;
+        cell.interactiveActivityButton.hidden = YES;
 	}
-    [interactiveActivityButton addTarget:self
+    
+    [cell.interactiveActivityButton addTarget:self
                                   action:@selector(clickedActivity:event:)
                         forControlEvents:UIControlEventTouchUpInside];
 	
-    upperRight.text = o.observedOnShortString;
-    syncImage.hidden = !o.needsSync;
+    cell.dateLabel.text = o.observedOnShortString;
+    cell.syncImage.hidden = !o.needsSync;
+    
+    
     
     return cell;
 }
@@ -713,22 +699,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
         [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
     }
-    
-    // name
-    if (user.name && ![user.name isEqualToString:@""]) {
-        view.nameLabel.text = user.name;
-    }
-    
+        
     // observation count
     if (user.observationsCount) {
         view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
-    }
-    
-    // identification count
-    if (user.identifications) {
-        view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
-                                   user.identificationsCount.integerValue];
     }
 }
 
@@ -952,10 +927,11 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+
     [self stopSync];
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
-	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
