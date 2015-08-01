@@ -396,8 +396,6 @@ static const int ListControlIndexNearby = 2;
                                                                    NSLocalizedString(@"Nearby",nil),
                                                                    ]];
         
-        _listControl.tintColor = [UIColor whiteColor];
-        
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
         
