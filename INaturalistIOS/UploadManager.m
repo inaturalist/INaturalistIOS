@@ -35,6 +35,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];   
+}
+
 - (void)addModel:(id)model
 {
     [self addModel:model syncSelector:nil];
