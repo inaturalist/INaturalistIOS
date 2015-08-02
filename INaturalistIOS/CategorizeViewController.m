@@ -326,6 +326,8 @@ static NSArray *ICONIC_TAXON_ORDER;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [UIView animateWithDuration:0.4f
                      animations:^{
