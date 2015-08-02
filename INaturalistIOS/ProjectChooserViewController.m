@@ -137,6 +137,10 @@
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectChooser];
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
