@@ -35,6 +35,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     [self loadURL:self.url forWebView:self.webView];
 }
 
