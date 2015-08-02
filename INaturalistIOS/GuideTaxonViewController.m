@@ -57,6 +57,8 @@ static const int WebViewTag = 1;
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     [self.navigationController setToolbarHidden:YES animated:animated];
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideTaxon];
 }
