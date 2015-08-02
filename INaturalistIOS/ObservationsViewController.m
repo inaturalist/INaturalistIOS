@@ -340,6 +340,10 @@
 
 - (void)checkSyncStatus
 {
+    if (self.isSyncing) {
+        return;
+    }
+    
     if (self.navigationController.topViewController != self)
         return;
         
