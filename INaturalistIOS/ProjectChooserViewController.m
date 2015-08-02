@@ -114,6 +114,8 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     for (int i = 0; i < self.projectUsers.count; i++) {
         ProjectUser *pu = [self.projectUsers objectAtIndex:i];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
