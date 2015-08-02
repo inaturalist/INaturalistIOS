@@ -190,6 +190,10 @@ static UIImage *defaultPersonImage;
 	}
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Actions
 - (void)clickedAddComment
 {
