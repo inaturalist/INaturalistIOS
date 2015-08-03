@@ -113,7 +113,7 @@
     
     if (!self.stopSyncButton) {
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
-                                                               style:UIBarButtonItemStyleBordered
+                                                               style:UIBarButtonItemStyleDone
                                                               target:self
                                                               action:@selector(stopSync)];
         self.stopSyncButton.tintColor = [UIColor redColor];
