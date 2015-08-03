@@ -169,6 +169,7 @@ static const int UsernameTextLabelTag = 17;
 
 - (void)launchTutorial
 {
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTutorial];
     
     NSArray *tutorialImages = @[
                                 [UIImage imageNamed:@"tutorial1"],
@@ -199,6 +200,7 @@ static const int UsernameTextLabelTag = 17;
     
     gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
         dispatch_async(dispatch_get_main_queue(), ^{
+            [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTutorial];
             [blockGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
