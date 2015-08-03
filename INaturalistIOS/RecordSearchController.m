@@ -33,6 +33,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (NSString *)searchURL
 {
     if (!_searchURL) {

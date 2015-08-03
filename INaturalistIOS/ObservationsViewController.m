@@ -241,12 +241,14 @@
 
 		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
 		
+        [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
 		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", username, iso8601String] delegate:self];
 	}
 }
 
 - (void)checkNewActivity
 {
+    [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
 	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
 }
 
@@ -272,6 +274,10 @@
 
 - (void)checkSyncStatus
 {
+    if (self.isSyncing) {
+        return;
+    }
+    
     if (self.navigationController.topViewController != self)
         return;
     
@@ -974,6 +980,10 @@
                         animated:YES
                       completion:nil];
     }
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - RKObjectLoaderDelegate

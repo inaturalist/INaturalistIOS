@@ -95,6 +95,9 @@
     if (observations.count == 0) {
         self.started = NO;
         [self.delegate uploadSessionFinished];
+        if (uploadCompletion) {
+            uploadCompletion();
+        }
     } else {
         if (!self.started) {
             self.started = YES;

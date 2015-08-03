@@ -160,6 +160,8 @@ static char SUMMARY_ASSOCIATED_KEY;
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     self.clearsSelectionOnViewWillAppear = YES;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {

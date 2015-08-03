@@ -199,6 +199,10 @@ static const int LeaveProjectAlertViewTag = 1;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (NSInteger)heightForHTML:(NSString *)html
 {
     NSString *s = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
