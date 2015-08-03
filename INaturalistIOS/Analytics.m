@@ -38,11 +38,23 @@
 }
 
 - (void)event:(NSString *)name {
+#ifdef INatFlurryKey
     [Flurry logEvent:name];
+#endif
+    
+#ifdef INatCrashlyticsKey
+    [Answers logCustomEventWithName:name customAttributes:nil];
+#endif
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
+#ifdef INatFlurryKey
     [Flurry logEvent:name withParameters:properties];
+#endif
+    
+#ifdef INatCrashlyticsKey
+    [Answers logCustomEventWithName:name customAttributes:properties];
+#endif
 }
 
 - (void)logAllPageViewForTarget:(UIViewController *)target {
