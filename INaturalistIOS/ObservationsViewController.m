@@ -953,9 +953,12 @@
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-	if (username.length) {
-		RefreshControl *refresh = [[RefreshControl alloc] init];
-		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)];
+    if (username.length) {
+        RefreshControl *refresh = [[RefreshControl alloc] init];
+        refresh.backgroundColor = [UIColor inatTint];
+        refresh.tintColor = [UIColor whiteColor];
+        refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
+                                                                  attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
 		[refresh addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl = refresh;
 	} else {
