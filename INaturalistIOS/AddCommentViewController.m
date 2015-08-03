@@ -57,6 +57,7 @@
 							 @"comment[parent_id]": self.observation.recordID,
 							 @"comment[parent_type]": @"Observation"
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
