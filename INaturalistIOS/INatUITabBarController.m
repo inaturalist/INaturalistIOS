@@ -69,17 +69,10 @@ static char PROJECT_ASSOCIATED_KEY;
     self.delegate = self;
     
     // configure camera VC
-    FAKIcon *camera = [FAKIonIcons iosCameraIconWithSize:45];
-    [camera addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
     FAKIcon *cameraOutline = [FAKIonIcons iosCameraOutlineIconWithSize:45];
-    [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
-    UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline]
-                                         imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-
-    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = img;
+    UIImage *cameraImg = [cameraOutline imageWithSize:CGSizeMake(34, 45)];
+    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
-    [((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
-                                                                                           forState:UIControlStateNormal];
     
     // make the delegate call to make sure our side effects execute
     if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][ME_TAB_INDEX]]) {
