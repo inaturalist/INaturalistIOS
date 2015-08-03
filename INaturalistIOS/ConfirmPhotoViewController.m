@@ -100,14 +100,15 @@
                 
                 detail.delegate = weakSelf;
                 detail.shouldShowBigSaveButton = YES;
-                if (weakSelf.shouldContinueUpdatingLocation)
-                    [detail startUpdatingLocation];
                 
                 [o addAssets:confirmedAssets];
                 detail.observation = o;
                 
                 [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
                 [weakSelf.navigationController pushViewController:detail animated:YES];
+                
+                if (weakSelf.shouldContinueUpdatingLocation)
+                    [detail startUpdatingLocation];
             }
         };
     }
