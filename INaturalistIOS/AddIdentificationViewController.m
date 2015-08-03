@@ -106,6 +106,7 @@
 							 @"identification[observation_id]": self.observation.recordID,
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
