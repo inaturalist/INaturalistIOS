@@ -42,6 +42,10 @@
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddComment];
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (IBAction)clickedCancel:(id)sender {
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
