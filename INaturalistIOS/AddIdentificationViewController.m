@@ -64,6 +64,10 @@
     }
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (IBAction)cancelAction:(id)sender {
 	[self.navigationController popViewControllerAnimated:YES];
 }
