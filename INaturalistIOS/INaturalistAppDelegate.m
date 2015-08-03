@@ -9,6 +9,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "INaturalistAppDelegate.h"
 #import "List.h"
@@ -130,7 +131,10 @@
 - (void)configureGlobalStyles {
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        
+        [[UITabBar appearance] setTintColor:[UIColor colorWithHexString:@"#666666"]];
+        [[UITabBar appearance] setSelectedImageTintColor:[UIColor inatTint]];
+        
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
