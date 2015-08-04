@@ -55,7 +55,7 @@
             button.leadingTitleWidth = 34.0f;
 
             button.trailingTitleLabel.text = NSLocalizedString(@"Projects", @"Title for projects button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
@@ -76,7 +76,7 @@
             button.leadingTitleWidth = 34.0f;
 
             button.trailingTitleLabel.text = NSLocalizedString(@"Guides", @"Title for guides button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
