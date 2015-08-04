@@ -132,7 +132,7 @@
                                                                style:UIBarButtonItemStyleDone
                                                               target:self
                                                               action:@selector(stopSync)];
-        self.stopSyncButton.tintColor = [UIColor redColor];
+        self.stopSyncButton.tintColor = [UIColor whiteColor];
     }
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [self.navigationController setToolbarHidden:NO];
@@ -755,7 +755,7 @@
         
     // observation count
     if (user.observationsCount) {
-        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
+        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d Observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
     }
 }
@@ -938,7 +938,7 @@
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
     if (username.length) {
         RefreshControl *refresh = [[RefreshControl alloc] init];
-        refresh.backgroundColor = [UIColor inatTint];
+        refresh.backgroundColor = [UIColor inatDarkGreen];
         refresh.tintColor = [UIColor whiteColor];
         refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
                                                                   attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
