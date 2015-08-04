@@ -22,18 +22,18 @@
 // without a flurry key, event logging is a no-op
 + (Analytics *)sharedClient {
     static Analytics *_sharedClient = nil;
-#ifdef INatFlurryKey
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedClient = [[Analytics alloc] init];
-        [Flurry startSession:INatFlurryKey];
-        
 #ifdef INatCrashlyticsKey
         [Fabric with:@[CrashlyticsKit]];
 #endif
 
-    });
+#ifdef INatFlurryKey
+        _sharedClient = [[Analytics alloc] init];
+        [Flurry startSession:INatFlurryKey];
 #endif
+    });
     return _sharedClient;
 }
 

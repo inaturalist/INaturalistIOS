@@ -1203,7 +1203,7 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */,
 				FA63FA2919E4D40F007306F9 /* ShellScript */,
-				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
+				89B4C2BF1B665A74005B948A /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -1355,6 +1355,20 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		89B4C2BF1B665A74005B948A /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\" 345e342e4072648b2f39f3eb6ba91e02002087e3 772e463271ce4ae8d80b4c3f53bc00109ac88f7d6b23c21faeb89dff06cc74a6";
+		};
 		9D5253E631060D844242E2BF /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1383,19 +1397,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Pods/Fabric/Fabric.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
-		};
-		FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1688,6 +1689,7 @@
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -1726,6 +1728,7 @@
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -1734,7 +1737,7 @@
 				);
 				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "0cd98630-25f1-43a1-bc92-c9b7214fabc2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
