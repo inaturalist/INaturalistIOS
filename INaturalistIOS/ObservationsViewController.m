@@ -73,7 +73,33 @@
     [self.tabBarController presentViewController:nav animated:YES completion:nil];
 }
 
+- (void)uploadOneObservation:(UIButton *)button {
+    CGPoint buttonCenter = button.center;
+    CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
+    NSIndexPath *ip = [self.tableView indexPathForRowAtPoint:translatedCenter];
+    
+    Observation *observation = [fetchedResultsController objectAtIndexPath:ip];
+    
+    [self uploadDeletes:@[]
+                uploads:@[ observation ]];
+}
+
 - (IBAction)sync:(id)sender {
+    
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
+    
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                  NSStringFromClass(class)]]];
+    }
+    
+    [self uploadDeletes:recordsToDelete
+                uploads:[Observation needingUpload]];
+}
+
+- (void)uploadDeletes:(NSArray *)observationsToDelete uploads:(NSArray *)observationsToUpload {
+    
     if (self.isSyncing) {
         return;
     }
@@ -93,23 +119,12 @@
         [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to upload.", @"This is an explanation for why the upload button triggers a login prompt.")];
         return;
     }
-    
-    
-    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
     UploadManager *uploader = [[UploadManager alloc] initWithDelegate:self];
-    if (!self.uploadManager) {
-        self.uploadManager = uploader;
-    }
+    self.uploadManager = uploader;
     
-    NSMutableArray *recordsToDelete = [NSMutableArray array];
-    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
-                                                                                  NSStringFromClass(class)]]];
-    }
-    
-    [uploader uploadDeletes:recordsToDelete completion:^{
-        [uploader uploadObservations:[Observation needingUpload] completion:nil];
+    [uploader uploadDeletes:observationsToDelete completion:^{
+        [uploader uploadObservations:observationsToUpload completion:nil];
     }];
     
     if (!self.stopSyncButton) {
@@ -630,7 +645,28 @@
     cell.dateLabel.text = o.observedOnShortString;
     cell.syncImage.hidden = !o.needsSync;
     
-    
+    if (o.needsUpload) {
+        cell.uploadButton.hidden = NO;
+        FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:40.0f];
+        [upload addAttribute:NSForegroundColorAttributeName
+                       value:[UIColor inatTint]];
+        [cell.uploadButton setAttributedTitle:upload.attributedString
+                                     forState:UIControlStateNormal];
+        
+        cell.activityButton.hidden = YES;
+        cell.syncImage.hidden = YES;
+        cell.dateLabel.hidden = YES;
+        
+        [cell.uploadButton addTarget:self
+                              action:@selector(uploadOneObservation:)
+                    forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+        
+    } else {
+        cell.uploadButton.hidden = YES;
+        cell.dateLabel.hidden = NO;
+    }
     
     return cell;
 }
