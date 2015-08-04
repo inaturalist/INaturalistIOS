@@ -793,6 +793,11 @@
                                                  name:kUserLoggedInNotificationName
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(stopSync)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    
     // NSFetchedResultsController request for my observations
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
     
