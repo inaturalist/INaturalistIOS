@@ -777,7 +777,7 @@
         
     // observation count
     if (user.observationsCount) {
-        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
+        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d Observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
     }
 }
