@@ -116,7 +116,7 @@
                                                                style:UIBarButtonItemStyleDone
                                                               target:self
                                                               action:@selector(stopSync)];
-        self.stopSyncButton.tintColor = [UIColor redColor];
+        self.stopSyncButton.tintColor = [UIColor whiteColor];
     }
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [self.navigationController setToolbarHidden:NO];
