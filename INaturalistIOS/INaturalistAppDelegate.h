@@ -17,6 +17,7 @@
 
 - (BOOL)loggedIn;
 - (void)showMainUI;
+- (void)showInitialSignupUI;
 
 - (void)reconfigureForNewBaseUrl;
 

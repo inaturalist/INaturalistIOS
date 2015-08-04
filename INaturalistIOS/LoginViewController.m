@@ -136,11 +136,11 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
                                 };
         
-        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
-        button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
                                                                                 attributes:attrs];
 
-        button.leftTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
         
         
         [button bk_addEventHandler:^(id sender) {
@@ -198,11 +198,11 @@
                                 NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                 };
         
-        button.rightTitleLabel.textAlignment = NSTextAlignmentCenter;
-        button.rightTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
                                                                                 attributes:attrs];
 
-        button.leftTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
 
         [button bk_addEventHandler:^(id sender) {
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -584,8 +584,10 @@
         return;
     }
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
-                         maskType:SVProgressHUDMaskTypeGradient];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
+                             maskType:SVProgressHUDMaskTypeGradient];
+    });
     
     __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
@@ -593,7 +595,9 @@
                                           password:password
                                            success:^(NSDictionary *info) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
-                                               [SVProgressHUD showSuccessWithStatus:nil];
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [SVProgressHUD showSuccessWithStatus:nil];
+                                               });
                                                if (strongSelf.selectedPartner) {
                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                  completion:nil];
@@ -604,7 +608,10 @@
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                }
                                            } failure:^(NSError *error) {
-                                               [SVProgressHUD dismiss];
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [SVProgressHUD dismiss];
+                                               });
+
                                                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                NSString *alertMsg;
                                                if (error) {

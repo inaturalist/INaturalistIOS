@@ -333,6 +333,7 @@ static const int ListControlIndexNearby = 2;
         mapping = [Project mapping];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Load projects"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = mapping;
@@ -392,6 +393,7 @@ static const int ListControlIndexNearby = 2;
                                                                    NSLocalizedString(@"Featured",nil),
                                                                    NSLocalizedString(@"Nearby",nil)
                                                                    ]];
+        _listControl.tintColor = [UIColor whiteColor];
         
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
@@ -470,6 +472,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];
@@ -488,6 +492,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+    
     [self stopSync];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];

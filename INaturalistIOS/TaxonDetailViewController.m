@@ -160,6 +160,8 @@ static char SUMMARY_ASSOCIATED_KEY;
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     self.clearsSelectionOnViewWillAppear = YES;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -189,6 +191,7 @@ static char SUMMARY_ASSOCIATED_KEY;
             }
         };
         
+        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
                                                         usingBlock:^(RKObjectLoader *loader) {
                                                             loader.objectMapping = [Taxon mapping];
@@ -201,12 +204,13 @@ static char SUMMARY_ASSOCIATED_KEY;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     [self.navigationController setToolbarHidden:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

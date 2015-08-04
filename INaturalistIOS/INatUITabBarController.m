@@ -30,12 +30,22 @@
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
 
+#define EXPLORE_TAB_INDEX   0
+#define OBSERVE_TAB_INDEX   1
+#define ME_TAB_INDEX        2
+
+typedef NS_ENUM(NSInteger, INatPhotoSource) {
+    INatPhotoSourceCamera,
+    INatPhotoSourcePhotos
+};
+
 static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate> {
     INatTooltipView *makeFirstObsTooltip;
+    UIAlertView *authAlertView;
 }
 
 @end
@@ -59,30 +69,19 @@ static char PROJECT_ASSOCIATED_KEY;
     self.delegate = self;
     
     // configure camera VC
-    FAKIcon *camera = [FAKIonIcons iosCameraIconWithSize:45];
-    [camera addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
     FAKIcon *cameraOutline = [FAKIonIcons iosCameraOutlineIconWithSize:45];
-    [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor]];
-    UIImage *img = [[UIImage imageWithStackedIcons:@[camera, cameraOutline]
-                                         imageSize:CGSizeMake(34,45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-
-    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.image = img;
-    ((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
-    [((UIViewController *)[self.viewControllers objectAtIndex:2]).tabBarItem setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor] }
-                                                                                           forState:UIControlStateNormal];
+    UIImage *cameraImg = [cameraOutline imageWithSize:CGSizeMake(34, 45)];
+    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
+    ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
     
     // make the delegate call to make sure our side effects execute
-    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][4]]) {
+    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][ME_TAB_INDEX]]) {
         // Me tab
-        self.selectedIndex = 4;
+        self.selectedIndex = ME_TAB_INDEX;
     }
     
     // we'll use the iconic taxa during the new observation flow
     [self fetchIconicTaxa];
-    
-    
-    // 7.1 and greater can handle translucent tab bars correctly
-    [self.tabBar setTranslucent:SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.1")];
     
     [super viewDidLoad];
 }
@@ -104,14 +103,88 @@ static char PROJECT_ASSOCIATED_KEY;
                                  }];
 }
 
+
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
     
+    // check for access to assets library
+    ALAuthorizationStatus alAuthStatus = [ALAssetsLibrary authorizationStatus];
+    switch (alAuthStatus) {
+        case ALAuthorizationStatusDenied:
+        case ALAuthorizationStatusRestricted:
+            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
+            return;
+            break;
+        case ALAuthorizationStatusAuthorized:
+        case ALAuthorizationStatusNotDetermined:
+        default:
+            // continue
+            break;
+    }
+    
+    // check for access to camera
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self newObservationForTaxon:taxon project:project];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentAuthAlertForSource:INatPhotoSourceCamera];
+            });
+        }
+    }];
+}
+
+- (void)presentAuthAlertForSource:(INatPhotoSource)source {
+    
+    NSString *alertTitle, *alertMsg;
+    switch (source) {
+        case INatPhotoSourceCamera:
+            alertTitle = NSLocalizedString(@"Cannot access camera", @"Alert title when we don't have permission to access camera.");
+            alertMsg = NSLocalizedString(@"Please make sure iNaturalist is turned on in Settings > Privacy > Camera",
+                                         @"Alert message when we don't have permission to access the camera.");
+            break;
+        case INatPhotoSourcePhotos:
+        default:
+            alertTitle = NSLocalizedString(@"Cannot access photos", @"Alert title when we don't have permission to access photos.");
+            alertMsg = NSLocalizedString(@"Please make sure iNaturalist is turned on in Settings > Privacy > Photos",
+                                         @"Alert message when we don't have permission to access the photo library.");
+            break;
+    }
+    
+    authAlertView = [[UIAlertView alloc] initWithTitle:alertTitle
+                                               message:alertMsg
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                     otherButtonTitles:nil];
+    
+    BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+    if (canOpenSettings) {
+        NSString *settingsButtonTitle = NSLocalizedString(@"Settings",
+                                                          @"The name of the iOS Settings app, used in an alert button that will launch Settings.");
+        [authAlertView addButtonWithTitle:settingsButtonTitle];
+    }
+    [authAlertView show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == authAlertView && buttonIndex == 1) {
+        BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+        if (canOpenSettings) {
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:url];
+        }
+    }
+}
+
+- (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
+
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     [makeFirstObsTooltip hideAnimated:YES];
-    
+
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -225,14 +298,14 @@ static char PROJECT_ASSOCIATED_KEY;
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     
     // intercept selection of the "observe" tab
-    if ([tabBarController.viewControllers indexOfObject:viewController] == 2) {
+    if ([tabBarController.viewControllers indexOfObject:viewController] == OBSERVE_TAB_INDEX) {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
 
         [self triggerNewObservationFlowForTaxon:nil project:nil];
         
         return NO;
-    } else if ([tabBarController.viewControllers indexOfObject:viewController] == 4) {
+    } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             if (![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
@@ -254,7 +327,7 @@ static char PROJECT_ASSOCIATED_KEY;
     }
     
     NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
-    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[2]
+    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetBarButtonItem:self.tabBar.items[OBSERVE_TAB_INDEX]
                                                                       hostView:self.view
                                                                    tooltipText:firstObsText
                                                                 arrowDirection:JDFTooltipViewArrowDirectionDown
@@ -265,7 +338,7 @@ static char PROJECT_ASSOCIATED_KEY;
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         __strong typeof(weakSelf)strongSelf = weakSelf;
-        if (strongSelf.selectedIndex == 4)
+        if (strongSelf.selectedIndex == ME_TAB_INDEX)
             [makeFirstObsTooltip show];
     });
 }
@@ -435,7 +508,7 @@ static char PROJECT_ASSOCIATED_KEY;
     NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
     NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:4];       // Me tab
+    UITabBarItem *item = [self.tabBar.items objectAtIndex:ME_TAB_INDEX];
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%ld", (long)theCount];
     } else {
@@ -464,6 +537,7 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Fetch Iconic Taxa
 
 - (void)fetchIconicTaxa {
+    [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         

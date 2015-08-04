@@ -131,6 +131,8 @@ NSInteger INatMinPasswordLength = 6;
     // default to english
     if (!localeString) { localeString = @"en-US"; }
     
+    [[Analytics sharedClient] debugLog:@"Network - Post Users"];
+    
     [[RKClient sharedClient] post:@"/users.json"
                        usingBlock:^(RKRequest *request) {
                            request.params = @{
@@ -260,6 +262,7 @@ NSInteger INatMinPasswordLength = 6;
         // we can't seem to make an object loader fetch here. so instead we do the ugly GET
         // and do the User object mapping manually. admittedly not ideal, and worth another
         // look when we upgrade to RK 0.2x
+        [[Analytics sharedClient] debugLog:@"Network - Get Me User"];
         [[RKClient sharedClient] get:@"/users/edit.json"
                           usingBlock:^(RKRequest *request) {
                               
@@ -477,6 +480,7 @@ NSInteger INatMinPasswordLength = 6;
         return;
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
     [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.recordID.integerValue]
                       usingBlock:^(RKRequest *request) {
                           request.params = @{

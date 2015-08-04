@@ -23,6 +23,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.mapTypeControl.selectedSegmentIndex = self.mapType;
 }
 

@@ -23,15 +23,11 @@
 
 @implementation AddCommentViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     self.navigationController.navigationBar.translucent = NO;
-	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
     self.textView.textAlignment = NSTextAlignmentNatural;
 }
@@ -46,6 +42,10 @@
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddComment];
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (IBAction)clickedCancel:(id)sender {
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -57,6 +57,7 @@
 							 @"comment[parent_id]": self.observation.recordID,
 							 @"comment[parent_type]": @"Observation"
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 

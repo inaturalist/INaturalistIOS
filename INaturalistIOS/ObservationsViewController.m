@@ -46,6 +46,7 @@
     NSFetchedResultsController *fetchedResultsController;
 }
 @property NSMutableArray *nonFatalUploadErrors;
+@property RKObjectLoader *meObjectLoader;
 @end
 
 @implementation ObservationsViewController
@@ -112,7 +113,7 @@
     
     if (!self.stopSyncButton) {
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
-                                                               style:UIBarButtonItemStyleBordered
+                                                               style:UIBarButtonItemStyleDone
                                                               target:self
                                                               action:@selector(stopSync)];
         self.stopSyncButton.tintColor = [UIColor redColor];
@@ -278,40 +279,15 @@
     }
 }
 
-- (void)refreshHeader {
-    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-    if (username.length) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%@.json", username]
-                                                        usingBlock:^(RKObjectLoader *loader) {
-                                                            loader.objectMapping = [User mapping];
-                                                            loader.onDidLoadObject = ^(User *me) {
-                                                                NSError *saveError;
-                                                                [[User managedObjectContext] save:&saveError];
-                                                                if (saveError) {
-                                                                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving user: %@",
-                                                                                                        saveError.localizedDescription]];
-                                                                }
-                                                                
-                                                                [self.tableView reloadData];
-                                                            };
-                                                            
-                                                            loader.onDidFailWithError = ^(NSError *error) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error refreshing header: %@",
-                                                                                                    error.localizedDescription]];
-                                                            };
-                                                        }];
-    }
-}
-
 - (void)refreshData
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
+        [[Analytics sharedClient] debugLog:@"Network - Load an observation"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
-        
-        [self refreshHeader];
+        [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
 	}
 }
@@ -333,12 +309,14 @@
 
 		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
 		
+        [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
 		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", username, iso8601String] delegate:self];
 	}
 }
 
 - (void)checkNewActivity
 {
+    [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
 	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
 }
 
@@ -364,6 +342,10 @@
 
 - (void)checkSyncStatus
 {
+    if (self.isSyncing) {
+        return;
+    }
+    
     if (self.navigationController.topViewController != self)
         return;
         
@@ -738,14 +720,20 @@
             [self configureHeaderView:header forUser:me];
         }
         
+        __weak typeof(self) weakSelf = self;
+        [header.projectsButton bk_addEventHandler:^(id sender) {
+            [weakSelf performSegueWithIdentifier:@"segueToProjects" sender:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        [header.guidesButton bk_addEventHandler:^(id sender) {
+            [weakSelf performSegueWithIdentifier:@"segueToGuides" sender:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
         return header;
         
     } else {
         AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         
-        [header.signupButton setTitle:NSLocalizedString(@"Sign up", @"Title for button that allows users to sign up for a new iNat account")
-                             forState:UIControlStateNormal];
         [header.signupButton bk_addEventHandler:^(id sender) {
             
             [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
@@ -755,15 +743,6 @@
             
         } forControlEvents:UIControlEventTouchUpInside];
         
-        NSString *loginString = NSLocalizedString(@"Already have an account?", @"Title for button that allows users to login to their iNat account");
-        NSString *loginStringHighlight = NSLocalizedString(@"account", @"Portion of Already have an account? that should be highlighted.");
-        NSMutableAttributedString *loginAttrString = [[NSMutableAttributedString alloc] initWithString:loginString];
-        if ([loginString rangeOfString:loginStringHighlight].location != NSNotFound) {
-            [loginAttrString addAttribute:NSForegroundColorAttributeName
-                                    value:[UIColor blueColor]
-                                    range:[loginString rangeOfString:loginStringHighlight]];
-        }
-        [header.loginButton setAttributedTitle:loginAttrString forState:UIControlStateNormal];
         [header.loginButton bk_addEventHandler:^(id sender) {
             
             [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
@@ -795,22 +774,11 @@
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
         [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
     }
-    
-    // name
-    if (user.name && ![user.name isEqualToString:@""]) {
-        view.nameLabel.text = user.name;
-    }
-    
+        
     // observation count
     if (user.observationsCount) {
         view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
-    }
-    
-    // identification count
-    if (user.identifications) {
-        view.idsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d identifications", @"Count of identifications by this user."),
-                                   user.identificationsCount.integerValue];
     }
 }
 
@@ -820,39 +788,15 @@
         
         self.navigationItem.title = username;
         
-        if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
-            [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] && [[RKClient sharedClient]  isNetworkReachable]) {
             
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/people/%@.json", username]
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [User mapping];
-                                                                loader.onDidLoadObject = ^(User *user) {
-                                                                    NSError *saveError;
-                                                                    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                                    if (saveError) {
-                                                                        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
-                                                                                                            saveError.localizedDescription]];
-                                                                        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
-                                                                    }
-                                                                    
-                                                                    NSError *fetchError;
-                                                                    if (fetchError) {
-                                                                        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
-                                                                                                            fetchError.localizedDescription]];
-                                                                        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-                                                                    }
-                                                                    
-                                                                    // triggers reconfiguration of the header
-                                                                    [self.tableView reloadData];
-                                                                };
-                                                                
-                                                                loader.onDidFailWithError = ^(NSError *error) {
-                                                                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load error: %@",
-                                                                                                        error.localizedDescription]];
-                                                                };
-                                                            }];
+            NSString *path = [NSString stringWithFormat:@"/people/%@.json", username];
+            
+            [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                         objectMapping:[User mapping]
+                                                              delegate:self];
         }
-        
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
@@ -1008,12 +952,13 @@
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     
-    [self loadUserForHeader];
-    
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-	if (username.length) {
-		RefreshControl *refresh = [[RefreshControl alloc] init];
-		refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)];
+    if (username.length) {
+        RefreshControl *refresh = [[RefreshControl alloc] init];
+        refresh.backgroundColor = [UIColor inatTint];
+        refresh.tintColor = [UIColor whiteColor];
+        refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
+                                                                  attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
 		[refresh addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl = refresh;
 	} else {
@@ -1052,17 +997,19 @@
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
+        [self loadUserForHeader];
     }
-    
+
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+
     [self stopSync];
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
-	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -1099,9 +1046,30 @@
     }
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
+    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
+        // got me object
+        
+        NSError *saveError;
+        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+        if (saveError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
+                                                saveError.localizedDescription]];
+            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        }
+        
+        // triggers reconfiguration of the header
+        [self.tableView reloadData];
+
+        return;
+    }
+    
 	[self.refreshControl endRefreshing];
     if (objects.count == 0) return;
     NSDate *now = [NSDate date];
@@ -1145,11 +1113,18 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-//    NSLog(@"objectLoader didFailWithError, error: %@", error);
-    // was running into a bug in release build config where the object loader was
-    // getting deallocated after handling an error.  This is a kludge.
-//    self.loader = objectLoader;
-    
+
+    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
+        // was running into a bug in release build config where the object loader was
+        // getting deallocated after handling an error.  This is a kludge.
+        self.meObjectLoader = objectLoader;
+
+        // silently do nothing
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load Me error: %@",
+                                            error.localizedDescription]];
+
+        return;
+    }
 	
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
@@ -1278,7 +1253,7 @@
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
-    [self refreshHeader];
+    [self loadUserForHeader];
 }
 
 - (void)uploadStartedFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {

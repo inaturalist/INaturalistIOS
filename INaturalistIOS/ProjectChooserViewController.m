@@ -97,6 +97,7 @@
                         countryCode];
         if (username && username.length > 0) {
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
                                                          objectMapping:[ProjectUser mapping]
                                                               delegate:self];
@@ -106,11 +107,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     for (int i = 0; i < self.projectUsers.count; i++) {
         ProjectUser *pu = [self.projectUsers objectAtIndex:i];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
@@ -130,6 +135,10 @@
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectChooser];
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source

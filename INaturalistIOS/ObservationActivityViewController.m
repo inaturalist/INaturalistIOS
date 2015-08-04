@@ -190,6 +190,10 @@ static UIImage *defaultPersonImage;
 	}
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Actions
 - (void)clickedAddComment
 {
@@ -231,6 +235,7 @@ static UIImage *defaultPersonImage;
 							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":identification.taxonID
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Add Identification (Agree)"];
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
@@ -239,6 +244,7 @@ static UIImage *defaultPersonImage;
 - (void)markAsRead
 {
 	if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
+        [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
 		[[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID] params:nil delegate:self];
 		self.observation.hasUnviewedActivity = [NSNumber numberWithBool:NO];
 		NSError *error = nil;
@@ -252,6 +258,7 @@ static UIImage *defaultPersonImage;
             && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
             && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [SVProgressHUD showWithStatus:NSLocalizedString(@"Refreshing...",nil)];
+        [[Analytics sharedClient] debugLog:@"Network - Refresh observation activity"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
 														  delegate:self];

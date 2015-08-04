@@ -116,6 +116,7 @@ static const int LeaveProjectAlertViewTag = 1;
         self.projectUser.project = self.project;
         self.projectUser.projectID = self.project.recordID;
     }
+    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
     [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
@@ -126,6 +127,7 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)leave
 {
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Leaving...",nil)];
+    [[Analytics sharedClient] debugLog:@"Network - Leave a project"];
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
@@ -152,6 +154,8 @@ static const int LeaveProjectAlertViewTag = 1;
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
                         placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
@@ -174,12 +178,12 @@ static const int LeaveProjectAlertViewTag = 1;
     }
     // Adding auto layout for header view.
     [self setupConstraintsForHeader];
-    
-    [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.navigationController setToolbarHidden:YES animated:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
@@ -193,6 +197,10 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (NSInteger)heightForHTML:(NSString *)html

@@ -446,6 +446,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             self.taxonLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:urlString];
             self.taxonLoader.objectMapping = [Taxon mapping];
             self.taxonLoader.onDidLoadObject = taxonLoadedBlock;
+            [[Analytics sharedClient] debugLog:@"Network - Load a partially loaded taxon"];
             [self.taxonLoader sendAsynchronously];
             
         } else {
@@ -496,6 +497,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
@@ -510,12 +513,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.navigationController.toolbar.tintColor = [UIColor inatTint];
     }
 
-    [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated {    
-    [self initUI];
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self initUI];
     
     
     
@@ -569,6 +572,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [self save];
     }
     [self keyboardDone];
+    [self stopUpdatingLocation];
     [super viewWillDisappear:animated];
 }
 
@@ -933,6 +937,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     if (!self.locationUpdatesOn) return;
+    
+    // self.observation can be momentarily nil when it's being deleted
+    if (!self.observation) return;
     
     @try {
         self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];

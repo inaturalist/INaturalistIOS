@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+#import "SplitTextButton.h"
+
 @interface MeHeaderView : UIView
 
 @property UIImageView *iconImageView;
-@property UILabel *nameLabel;
 @property UILabel *obsCountLabel;
-@property UILabel *idsCountLabel;
+@property SplitTextButton *projectsButton;
+@property SplitTextButton *guidesButton;
 
 @end

@@ -35,6 +35,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];   
+}
+
 - (void)addModel:(id)model
 {
     [self addModel:model syncSelector:nil];
@@ -149,6 +153,10 @@
     [[Analytics sharedClient] debugLog:@"SYNC stopped"];
 
     self.started = NO;
+    
+    // remove all the models from the app
+    [self.queue removeAllObjects];
+    
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
     // sleep is ok now
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];

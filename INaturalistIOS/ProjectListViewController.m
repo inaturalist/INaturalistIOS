@@ -110,6 +110,7 @@ static const int ListedTaxonCellAddButtonTag = 4;
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
+    [[Analytics sharedClient] debugLog:@"Network - Load project list"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
 }
 
@@ -193,8 +194,9 @@ static const int ListedTaxonCellAddButtonTag = 4;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES];
     [super viewWillAppear:animated];
+
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -216,8 +218,12 @@ static const int ListedTaxonCellAddButtonTag = 4;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopSync];
     [super viewWillDisappear:animated];
+    [self stopSync];
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source

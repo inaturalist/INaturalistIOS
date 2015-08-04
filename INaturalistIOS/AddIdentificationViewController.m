@@ -31,12 +31,9 @@
 
 @implementation AddIdentificationViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
 	if (!self.taxon) {
         if (viewHasPresented) {
             // user is trying to cancel adding an ID
@@ -65,6 +62,10 @@
         [vc setDelegate:self];
         //vc.query = self.observation.speciesGuess;
     }
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (IBAction)cancelAction:(id)sender {
@@ -105,6 +106,7 @@
 							 @"identification[observation_id]": self.observation.recordID,
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
@@ -136,8 +138,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
 	[self taxonToUI];
-	
-	NSLog(@"chose taxon: %@", taxon.defaultName);
 }
 
 - (void)taxonToUI

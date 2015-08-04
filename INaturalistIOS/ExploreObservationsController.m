@@ -18,6 +18,7 @@
 #import "Taxon.h"
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
+#import "Analytics.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -248,6 +249,7 @@
         [self.notificationDelegate startedObservationFetch];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
         // can't infer search mappings via keypath
@@ -346,6 +348,7 @@
 }
 
 - (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
     [self postToPath:@"/identifications"
               params:@{ @"identification[observation_id]": @(observation.observationId),
                         @"identification[taxon_id]": @(taxonId) }
@@ -353,6 +356,7 @@
 }
 
 - (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
     [self postToPath:@"/comments"
               params:@{ @"comment[body]": commentBody,
                         @"comment[parent_id]": @(observation.observationId),
@@ -361,6 +365,7 @@
 }
 
 - (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
+    
     [[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
         request.params = params;
         
@@ -381,6 +386,7 @@
         path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch comments and IDs for observation"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [ExploreMappingProvider observationMapping];
