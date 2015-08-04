@@ -80,20 +80,34 @@
     
     Observation *observation = [fetchedResultsController objectAtIndexPath:ip];
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                     withProperties:@{
+                                      @"Via": @"Manual Single Upload",
+                                      @"numDeletes": @(0),
+                                      @"numUploads": @(1),
+                                      }];
+
     [self uploadDeletes:@[]
                 uploads:@[ observation ]];
 }
 
 - (IBAction)sync:(id)sender {
     
-    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
-    
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
         [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
                                                                                   NSStringFromClass(class)]]];
     }
+    NSArray *recordsToUpload = [Observation needingUpload];
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                     withProperties:@{
+                                      @"Via": @"Manual Full Upload",
+                                      @"numDeletes": @(recordsToDelete.count),
+                                      @"numUploads": @(recordsToUpload.count),
+                                      }];
+
+
     [self uploadDeletes:recordsToDelete
                 uploads:[Observation needingUpload]];
 }
@@ -131,18 +145,37 @@
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
                                                                style:UIBarButtonItemStyleDone
                                                               target:self
-                                                              action:@selector(stopSync)];
+                                                              action:@selector(stopSyncPressed)];
         self.stopSyncButton.tintColor = [UIColor whiteColor];
     }
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [self.navigationController setToolbarHidden:NO];
-    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
+    [self setToolbarItems:@[ flex, self.stopSyncButton, flex ]
                  animated:YES];
     
     // temporarily disable user interaction with most of the UI
     self.tableView.userInteractionEnabled = NO;
     self.tabBarController.tabBar.userInteractionEnabled = NO;
     self.navigationController.navigationBar.userInteractionEnabled = NO;
+}
+
+- (void)appEnteredBackground {
+    if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"App Entered Background",
+                                          }];
+        [self stopSync];
+    }
+}
+
+- (void)stopSyncPressed {
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Stop Upload Button",
+                                      }];
+    
+    [self stopSync];
 }
 
 - (void)stopSync
@@ -173,6 +206,11 @@
 
 - (IBAction)edit:(id)sender {
     if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Edit:",
+                                          }];
+        
         [self stopSync];
     }
     if ([self isEditing]) {
@@ -831,7 +869,7 @@
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(stopSync)
+                                             selector:@selector(appEnteredBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
     
@@ -990,8 +1028,14 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-
-    [self stopSync];
+    
+    if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"View Will Disappear",
+                                          }];
+        [self stopSync];
+    }
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
 }
@@ -1200,7 +1244,12 @@
 
     [SVProgressHUD dismiss];
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Required",
+                                      }];
     [self stopSync];
+    
     NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
                                             @"This is an explanation for why the sync button triggers a login prompt.");
     [self presentSignupSplashWithReason:reasonMsg];
@@ -1209,7 +1258,12 @@
 - (void)uploadSessionFinished {
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Upload Complete",
+                                      }];
     [self stopSync];
+
     self.tableView.userInteractionEnabled = YES;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
@@ -1310,7 +1364,12 @@
         
         [SVProgressHUD dismiss];
         
+        [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
+                         withProperties:@{
+                                          @"Alert": alertMessage,
+                                          }];
         [self stopSync];
+        
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                      message:alertMessage
                                                     delegate:self
