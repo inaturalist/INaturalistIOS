@@ -137,7 +137,10 @@
     self.tableView.userInteractionEnabled = YES;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
-
+    
+    // allow sleep
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
     if (self.uploadManager) {
         self.uploadManager = nil;
     }
