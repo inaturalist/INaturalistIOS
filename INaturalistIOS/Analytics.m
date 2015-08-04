@@ -25,6 +25,7 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        // Enable the use of Fabic without Flurry.
 #ifdef INatCrashlyticsKey
         [Fabric with:@[CrashlyticsKit]];
 #endif
