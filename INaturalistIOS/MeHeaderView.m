@@ -104,11 +104,11 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[projects(==34)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[projects(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[guides(==34)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[guides(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
