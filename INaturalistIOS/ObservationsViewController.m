@@ -157,7 +157,8 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
     if (self.uploadManager) {
-        self.uploadManager = nil;
+        // notify the upload manager to cancel any outstanding work
+        self.uploadManager.cancelled = YES;
     }
     
     [[self tableView] reloadData];

@@ -36,7 +36,9 @@
 }
 @end
 
-@interface UploadManager ()
+@interface UploadManager () {
+    BOOL _cancelled;
+}
 @property (nonatomic, strong) NSMutableArray *queue;
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 @property (nonatomic, assign) BOOL started;
@@ -70,6 +72,11 @@
             deletesCompletion();
         }
     } else {
+        if (self.cancelled) {
+            deletesCompletion();
+            return;
+        }
+        
         DeletedRecord *head = [deletedRecords head];
         [self.delegate deleteStartedFor:head];
 
@@ -99,6 +106,11 @@
             uploadCompletion();
         }
     } else {
+        if (self.cancelled) {
+            uploadCompletion();
+            return;
+        }
+        
         if (!self.started) {
             self.started = YES;
         }
@@ -244,6 +256,18 @@
     [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
         [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
     }];
+}
+
+- (void)setCancelled:(BOOL)cancelled {
+    _cancelled = cancelled;
+    
+    [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
+        [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
+    }];
+}
+
+- (BOOL)cancelled {
+    return _cancelled;
 }
 
 

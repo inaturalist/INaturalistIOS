@@ -16,6 +16,9 @@
  * model are fully * uploaded before moving on to the next model.
  */
 @interface UploadManager : NSObject
+
+@property (assign) BOOL cancelled;
+
 - (id)initWithDelegate:(id)delegate;
 
 - (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion;
