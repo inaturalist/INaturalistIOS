@@ -15,21 +15,13 @@
  * Queue of INatModels to upload to the server. Ensures that records of each
  * model are fully * uploaded before moving on to the next model.
  */
-@interface UploadManager : NSObject <RKObjectLoaderDelegate, RKRequestQueueDelegate, RKRequestDelegate>
+@interface UploadManager : NSObject
+
+@property (assign) BOOL cancelled;
+
 - (id)initWithDelegate:(id)delegate;
 
-/**
- * Add model to the queue, e.g. [sq addModel:Observation.class]
- */
-- (void)addModel:(id)model;
+- (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion;
+- (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion;
 
-/**
- * Add model to the queue with optional selector to fire on the delegate to
- * actually perform the upload operation. Useful for appending extra params like
- * file data.
- */
-- (void)addModel:(id)model syncSelector:(SEL)syncSelector;
-- (void)start;
-- (void)stop;
-- (BOOL)isRunning;
 @end

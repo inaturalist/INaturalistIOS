@@ -9,18 +9,22 @@
 #import <Foundation/Foundation.h>
 
 @class INatModel;
+@class Observation;
+@class DeletedRecord;
 
 @protocol UploadManagerNotificationDelegate <NSObject>
 @optional
-- (void)uploadSessionStartedTotal:(NSInteger)numberToUpload;
 - (void)uploadSessionAuthRequired;
 - (void)uploadSessionFinished;
-
-- (void)uploadStartedFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total;
-- (void)uploadProgress:(double)progress for:(INatModel *)object;
-- (void)uploadSuccessFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total;
+- (void)uploadStartedFor:(Observation *)observation;
+- (void)uploadSuccessFor:(Observation *)observation;
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error;
 
 - (void)uploadNonFatalError:(NSError *)error;
+
+- (void)deleteStartedFor:(DeletedRecord *)deletedRecord;
+- (void)deleteSuccessFor:(DeletedRecord *)deletedRecord;
+- (void)deleteSessionFinished;
+- (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error;
 @end
