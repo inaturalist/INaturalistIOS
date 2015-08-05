@@ -332,7 +332,6 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    //return (username && username.length > 0);
     NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
     return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
 }
