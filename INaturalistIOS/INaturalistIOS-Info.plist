@@ -44,11 +44,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>182</string>
+	<string>180</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>345e342e4072648b2f39f3eb6ba91e02002087e3</string>
+		<string>7baaee0ca8a376b3d129b908c1e03be6ecbe5786</string>
 		<key>Kits</key>
 		<array>
 			<dict>
