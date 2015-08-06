@@ -133,10 +133,16 @@
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         
-        [[UITabBar appearance] setTintColor:[UIColor colorWithHexString:@"#666666"]];
-        [[UITabBar appearance] setSelectedImageTintColor:[UIColor inatTint]];
-        
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
+        
+        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        
+        // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
+                                                             forState:UIControlStateSelected];
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
+                                                             forState:UIControlStateNormal];
+        
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
         [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];

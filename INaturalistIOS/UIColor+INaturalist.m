@@ -19,4 +19,9 @@
 + (UIColor *)inatDarkGreen {
     return [UIColor colorWithHexString:@"#588039"];
 }
+
++ (UIColor *)inatInactiveGreyTint {
+    return [UIColor colorWithHexString:@"#666666"];
+}
+
 @end

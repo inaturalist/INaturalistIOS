@@ -38,6 +38,7 @@
 #import "ExploreLeaderboardViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "SignupSplashViewController.h"
+#import "UIColor+INaturalist.h"
 
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
@@ -73,8 +74,8 @@
         
         self.navigationController.tabBarItem.image = ({
             FAKIcon *worldOutline = [FAKIonIcons iosWorldOutlineIconWithSize:35];
-            [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [worldOutline imageWithSize:CGSizeMake(34, 45)];
+            [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
+            [[worldOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage =({

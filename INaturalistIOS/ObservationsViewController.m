@@ -832,8 +832,8 @@
     if (self = [super initWithCoder:aDecoder]) {
         self.navigationController.tabBarItem.image = ({
             FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
-            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [meOutline imageWithSize:CGSizeMake(34, 45)];
+            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
+            [[meOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage =({

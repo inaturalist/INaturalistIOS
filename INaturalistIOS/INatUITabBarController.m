@@ -70,7 +70,8 @@ static char PROJECT_ASSOCIATED_KEY;
     
     // configure camera VC
     FAKIcon *cameraOutline = [FAKIonIcons iosCameraOutlineIconWithSize:45];
-    UIImage *cameraImg = [cameraOutline imageWithSize:CGSizeMake(34, 45)];
+    [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
+    UIImage *cameraImg = [[cameraOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
     

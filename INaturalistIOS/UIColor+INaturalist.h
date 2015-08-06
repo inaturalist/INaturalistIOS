@@ -11,4 +11,5 @@
 @interface UIColor (INaturalist)
 + (UIColor *)inatDarkGreen;
 + (UIColor *)inatTint;
++ (UIColor *)inatInactiveGreyTint;
 @end
