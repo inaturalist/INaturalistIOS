@@ -13,11 +13,11 @@
 @implementation UIColor (INaturalist)
 + (UIColor *)inatTint
 {
-    return [UIColor colorWithRed:114.0/255.0 green:173.0/255.0 blue:34.0/255.0 alpha:1];
+    return [UIColor colorWithHexString:@"#74ac00"];
 }
 
 + (UIColor *)inatDarkGreen {
-    return [UIColor colorWithHexString:@"#588039"];
+    return [UIColor colorWithHexString:@"#5a7700"];
 }
 
 + (UIColor *)inatInactiveGreyTint {
