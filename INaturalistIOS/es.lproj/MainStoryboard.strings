@@ -5,10 +5,10 @@
 "0Q2-fy-dMQ.text" = "Tutorial";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
-"M0h-Eg-gr3.text" = "Autocomplete names";
+"M0h-Eg-gr3.text" = "Autocompletar nombres";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
-"thU-yQ-HUV.text" = "Categorize new observations";
+"thU-yQ-HUV.text" = "Clasificar nuevas observaciones";
 
 /* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
 "g3B-dy-Lka.text" = "iNaturalist Network";
@@ -32,7 +32,7 @@
 "3DS-CL-NMe.headerTitle" = "Iniciar con Facebook";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
-"46e-pE-mJn.text" = "???";
+"46e-pE-mJn.text" = "¿?";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS"; */
 "6Eu-N7-evS.text" = "Título";
@@ -41,7 +41,7 @@
 "6UX-BL-9DW.title" = "Proyectos";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
-"nla-WE-iqA.text" = "Nombre de usuario";
+"nla-WE-iqA.text" = "Username";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Tu nombre de usuario Nat";
@@ -128,7 +128,7 @@
 "Kp6-B4-NJv.text" = "Regístrate";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT"; */
-"M93-9f-xgT.text" = "???";
+"M93-9f-xgT.text" = "¿?";
 
 /* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
 "ME2-ai-L2I.normalTitle" = "Ver más...";
@@ -158,7 +158,7 @@
 "Qrv-G3-6nh.text" = "Diseñado y creado por iNaturalist en la Academia de Ciencias de California, con la ayuda de la Enciclopedia de la Vida.\n\nEsta aplicación utiliza numerosos recursos abiertos y materiales con licencia creativa común, entre los que se incluye Three20, Restkit, TapkuLibrary de Devin Ross, DejalActivityView de David Sinclair y Glyphish icons de Joseph Wain. ¡Muchas gracias a todos estos artistas e ingenieros tan generosos y con tanto talento! ";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
-"R4F-3k-D7x.text" = "???";
+"R4F-3k-D7x.text" = "¿?";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ"; */
 "RVt-Kj-7RQ.headerTitle" = "Estado de conservación";
@@ -167,7 +167,7 @@
 "SQG-h4-rqM.text" = "Nombre de usuario";
 
 /* Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq"; */
-"SaM-EA-Ovq.title" = "GuideTaxon";
+"SaM-EA-Ovq.title" = "Guía de la especie o grupo";
 
 /* Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI"; */
 "Sr1-uD-ljI.text" = "2.1.1, creada 2.1.12";
@@ -176,7 +176,7 @@
 "TJg-mX-i6C.text" = "Iniciar con Facebook";
 
 /* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
-"UWz-sc-ZIU.text" = "m";
+"UWz-sc-ZIU.text" = "mts.";
 
 /* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95"; */
 "VjR-qL-q95.segmentTitles[0]" = "Estándar";
@@ -197,7 +197,7 @@
 "XXq-bW-vbF.title" = "Detalles del Proyecto";
 
 /* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh"; */
-"XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed eiusmod tempor incididunt ut labore et dolore magna aliqua. UT enim ad minim veniam, quis nostrud nostrud ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor en reprehenderit en voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat no cupidatat, sunt en culpa officia deserunt necesidades anim id est laborum. Nam liber te conciente al factor tum poen legum odioque civiuda.";
+"XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
 
 /* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
 "Ypi-aU-Rf4.text" = "Lista roja de la UICN";
@@ -290,7 +290,7 @@
 "oWq-bA-sYY.headerTitle" = "Tu cuenta de Naturalista";
 
 /* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
-"LbD-zB-zU2.headerTitle" = "App Settings";
+"LbD-zB-zU2.headerTitle" = "Configuración de la aplicación";
 
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Iniciar con Google+";
@@ -302,7 +302,7 @@
 "sxb-6N-VGO.headerTitle" = "About";
 
 /* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
-"zPB-Sx-9Uh.text" = "Acknowledgements";
+"zPB-Sx-9Uh.text" = "Agradecimientos";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "Nombre de la especie";
@@ -357,4 +357,3 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Editar ubicación";
-

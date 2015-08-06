@@ -162,4 +162,22 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+// should take an error
+- (NSString *)fileUploadParameter {
+    NSString *path = [[ImageStore sharedImageStore] pathForKey:self.photoKey
+                                                       forSize:ImageStoreLargeSize];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    // if we don't have a file for this obs photo, it's not in the ImageStore
+    // remove the obsPhoto, and notify the user that we can't sync the photo.
+    if (!path || ![fm fileExistsAtPath:path]) {
+        
+        // throw an error here
+        return nil;
+    } else {
+        return path;
+    }
+
+}
+
 @end

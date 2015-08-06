@@ -148,6 +148,8 @@ NSString *kAnalyticsEventExploreObservationShare =              @"Explore - Obse
 // observation activities
 NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
+NSString *kAnalyticsEventSyncStopped =                          @"Sync Stopped";
+NSString *kAnalyticsEventSyncFailed =                           @"Sync Failed";
 NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refresh Observations";
 
 // login

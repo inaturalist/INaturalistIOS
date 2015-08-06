@@ -364,4 +364,77 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
++ (NSArray *)needingUpload {
+    // all observations that need sync are upload candidates
+    NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
+    [needingUpload addObjectsFromArray:[self needingSync]];
+    
+    // also, all observations whose uploadable children need sync
+    
+    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+        if (op.observation) {
+            [needingUpload addObject:op.observation];
+        } else {
+            [op destroy];
+        }
+    }
+    
+    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
+        if (ofv.observation) {
+            [needingUpload addObject:ofv.observation];
+        } else {
+            [ofv destroy];
+        }
+    }
+    
+    for (ProjectObservation *po in [ProjectObservation needingSync]) {
+        if (po.observation) {
+            [needingUpload addObject:po.observation];
+        } else {
+            [po destroy];
+        }
+    }
+    
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
+        return [o1.localCreatedAt compare:o2.localCreatedAt];
+    }];
+}
+
+- (BOOL)needsUpload {
+    // needs upload if this obs needs sync, or any children need sync
+    if (self.needsSync) { return YES; }
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) { return YES; }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) { return YES; }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) { return YES; }
+    }
+    return NO;
+}
+
+-(NSArray *)childrenNeedingUpload {
+    NSMutableArray *recordsToUpload = [NSMutableArray array];
+    
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) {
+            [recordsToUpload addObject:op];
+        }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) {
+            [recordsToUpload addObject:ofv];
+        }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) {
+            [recordsToUpload addObject:po];
+        }
+    }
+    
+    return [NSArray arrayWithArray:recordsToUpload];
+}
+
 @end

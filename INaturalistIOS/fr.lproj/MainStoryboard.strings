@@ -11,7 +11,7 @@
 "thU-yQ-HUV.text" = "Classez les nouvelles observations";
 
 /* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
-"g3B-dy-Lka.text" = "Réseau iNaturalist";
+"g3B-dy-Lka.text" = "iNaturalist Network";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Guides";
@@ -41,7 +41,7 @@
 "6UX-BL-9DW.title" = "Projets";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
-"nla-WE-iqA.text" = "Nom d'utilisateur";
+"nla-WE-iqA.text" = "Username";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Votre nom d'utilisateur iNat";
@@ -357,4 +357,3 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Modifier l'emplacement";
-

@@ -45,6 +45,7 @@
 
     NSFetchedResultsController *fetchedResultsController;
 }
+@property UploadManager *uploadManager;
 @property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @end
@@ -54,11 +55,8 @@
 @synthesize observationsToSyncCount = _observationsToSyncCount;
 @synthesize observationPhotosToSyncCount = _observationPhotosToSyncCount;
 @synthesize syncToolbarItems = _syncToolbarItems;
-@synthesize syncedObservationsCount = _syncedObservationsCount;
-@synthesize syncedObservationPhotosCount = _syncedObservationPhotosCount;
 @synthesize editButton = _editButton;
 @synthesize stopSyncButton = _stopSyncButton;
-@synthesize syncQueue = _syncQueue;
 @synthesize lastRefreshAt = _lastRefreshAt;
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
@@ -75,7 +73,47 @@
     [self.tabBarController presentViewController:nav animated:YES completion:nil];
 }
 
+- (void)uploadOneObservation:(UIButton *)button {
+    CGPoint buttonCenter = button.center;
+    CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
+    NSIndexPath *ip = [self.tableView indexPathForRowAtPoint:translatedCenter];
+    
+    Observation *observation = [fetchedResultsController objectAtIndexPath:ip];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                     withProperties:@{
+                                      @"Via": @"Manual Single Upload",
+                                      @"numDeletes": @(0),
+                                      @"numUploads": @(1),
+                                      }];
+
+    [self uploadDeletes:@[]
+                uploads:@[ observation ]];
+}
+
 - (IBAction)sync:(id)sender {
+    
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                  NSStringFromClass(class)]]];
+    }
+    NSArray *recordsToUpload = [Observation needingUpload];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                     withProperties:@{
+                                      @"Via": @"Manual Full Upload",
+                                      @"numDeletes": @(recordsToDelete.count),
+                                      @"numUploads": @(recordsToUpload.count),
+                                      }];
+
+
+    [self uploadDeletes:recordsToDelete
+                uploads:[Observation needingUpload]];
+}
+
+- (void)uploadDeletes:(NSArray *)observationsToDelete uploads:(NSArray *)observationsToUpload {
+    
     if (self.isSyncing) {
         return;
     }
@@ -95,41 +133,49 @@
         [self presentSignupSplashWithReason:NSLocalizedString(@"You must be logged in to upload.", @"This is an explanation for why the upload button triggers a login prompt.")];
         return;
     }
-    
-    
-    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation];
 
-    if (!self.syncQueue) {
-        self.syncQueue = [[UploadManager alloc] initWithDelegate:self];
-    }
-	[self.syncQueue addModel:Observation.class];
-	[self.syncQueue addModel:ObservationFieldValue.class];
-	[self.syncQueue addModel:ProjectObservation.class];
-    if ([ObservationPhoto needingSyncCount] > 0) {
-        [[[RKObjectManager sharedManager] objectStore] save:nil];
-    }
-	[self.syncQueue addModel:ObservationPhoto.class syncSelector:@selector(syncObservationPhoto:)];
-	[self.syncQueue start];
+    UploadManager *uploader = [[UploadManager alloc] initWithDelegate:self];
+    self.uploadManager = uploader;
+    
+    [uploader uploadDeletes:observationsToDelete completion:^{
+        [uploader uploadObservations:observationsToUpload completion:nil];
+    }];
     
     if (!self.stopSyncButton) {
         self.stopSyncButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop upload", @"Button to stop in-progress upload.")
                                                                style:UIBarButtonItemStyleDone
                                                               target:self
-                                                              action:@selector(stopSync)];
-        self.stopSyncButton.tintColor = [UIColor redColor];
+                                                              action:@selector(stopSyncPressed)];
+        self.stopSyncButton.tintColor = [UIColor whiteColor];
     }
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [self.navigationController setToolbarHidden:NO];
-    [self setToolbarItems:[NSArray arrayWithObjects:flex, self.stopSyncButton, flex, nil]
+    [self setToolbarItems:@[ flex, self.stopSyncButton, flex ]
                  animated:YES];
-    
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Uploading...", @"Message that we're beginning to upload")
-                         maskType:SVProgressHUDMaskTypeNone];
     
     // temporarily disable user interaction with most of the UI
     self.tableView.userInteractionEnabled = NO;
     self.tabBarController.tabBar.userInteractionEnabled = NO;
     self.navigationController.navigationBar.userInteractionEnabled = NO;
+}
+
+- (void)appEnteredBackground {
+    if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"App Entered Background",
+                                          }];
+        [self stopSync];
+    }
+}
+
+- (void)stopSyncPressed {
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Stop Upload Button",
+                                      }];
+    
+    [self stopSync];
 }
 
 - (void)stopSync
@@ -139,10 +185,15 @@
     self.tableView.userInteractionEnabled = YES;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
-
-    if (self.syncQueue) {
-        [self.syncQueue stop];
+    
+    // allow sleep
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
+    if (self.uploadManager) {
+        // notify the upload manager to cancel any outstanding work
+        self.uploadManager.cancelled = YES;
     }
+    
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
     [self checkSyncStatus];
@@ -153,75 +204,13 @@
     return [UIApplication sharedApplication].isIdleTimerDisabled;
 }
 
-- (void)syncObservationPhoto:(ObservationPhoto *)op
-{
-    INaturalistAppDelegate *app = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
-    // in theory no observation photo should be without an observation, but...
-    if (!op.observation) {
-        [op destroy];
-        return;
-    }
-    
-    NSString *path = [[ImageStore sharedImageStore] pathForKey:op.photoKey
-                                                       forSize:ImageStoreLargeSize];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    // if we don't have a file for this obs photo, it's not in the ImageStore
-    // remove the obsPhoto, and notify the user that we can't sync the photo.
-    if (!path || ![fm fileExistsAtPath:path]) {
-        
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC Can't upload obs photo, no file for %@", path]];
-        
-        // human readable index
-        NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
-        NSString *obsName;
-        if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
-            obsName = op.observation.speciesGuess;
-        else
-            obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
-        
-        NSString *alertMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
-                                                                          @"error message when an obs photo doesn't have a file on the phone."),
-                              index, obsName];
-        NSString *alertTitle = NSLocalizedString(@"Photo Upload Problem", @"error title during an obs photo problem.");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                        message:alertMsg
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        
-        // bail on syncing this photo.
-        // this sucks, but is better than crashing.
-        [op destroy];
-        [self stopSync];
-        return;
-    }
-
-    void (^prepareObservationPhoto)(RKObjectLoader *) = ^(RKObjectLoader *loader) {
-        loader.delegate = self.syncQueue;
-        RKObjectMapping* serializationMapping = [app.photoObjectManager.mappingProvider 
-                                                 serializationMappingForClass:[ObservationPhoto class]];
-        NSError* error = nil;
-        NSDictionary* dictionary = [[RKObjectSerializer serializerWithObject:op mapping:serializationMapping] 
-                                    serializedObject:&error];
-        RKParams* params = [RKParams paramsWithDictionary:dictionary];
-
-        [params setFile:path
-               forParam:@"file"];
-        loader.params = params;
-        loader.objectMapping = [ObservationPhoto mapping];
-    };
-    if (op.syncedAt && op.recordID) {
-        [app.photoObjectManager putObject:op usingBlock:prepareObservationPhoto];
-    } else {
-        [app.photoObjectManager postObject:op usingBlock:prepareObservationPhoto];
-    }
-}
-
 - (IBAction)edit:(id)sender {
     if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Edit:",
+                                          }];
+        
         [self stopSync];
     }
     if ([self isEditing]) {
@@ -348,7 +337,13 @@
     
     if (self.navigationController.topViewController != self)
         return;
-        
+    
+    // this method has the side effect of changing the sync toolbar,
+    // which we shouldn't do while syncing.
+    if (self.isSyncing) {
+        return;
+    }
+    
     self.observationsToSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
     if (self.observationsToSyncCount == 0) {
         self.observationsToSyncCount = [[NSSet setWithArray:[[ObservationFieldValue needingSync] valueForKey:@"observationID"]] count];
@@ -375,8 +370,6 @@
     }
     [self.syncButton setTitle:msg];
     
-    
-    
     if (self.itemsToSyncCount > 0) {
         [self.navigationController setToolbarHidden:NO];
         [self setToolbarItems:self.syncToolbarItems animated:YES];
@@ -384,7 +377,8 @@
         [self.navigationController setToolbarHidden:YES];
         [self setToolbarItems:nil animated:YES];
     }
-    self.syncedObservationsCount = 0;
+    
+    [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
 }
 
 - (void)checkEmpty
@@ -578,7 +572,9 @@
     [self.tableView endUpdates];
     
     // now is a good time to check that we're displaying up to date sync info
-    [self checkSyncStatus];
+    if (!self.isSyncing) {
+        [self checkSyncStatus];
+    }
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -688,7 +684,28 @@
     cell.dateLabel.text = o.observedOnShortString;
     cell.syncImage.hidden = !o.needsSync;
     
-    
+    if (o.needsUpload) {
+        cell.uploadButton.hidden = NO;
+        FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:40.0f];
+        [upload addAttribute:NSForegroundColorAttributeName
+                       value:[UIColor inatTint]];
+        [cell.uploadButton setAttributedTitle:upload.attributedString
+                                     forState:UIControlStateNormal];
+        
+        cell.activityButton.hidden = YES;
+        cell.syncImage.hidden = YES;
+        cell.dateLabel.hidden = YES;
+        
+        [cell.uploadButton addTarget:self
+                              action:@selector(uploadOneObservation:)
+                    forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+        
+    } else {
+        cell.uploadButton.hidden = YES;
+        cell.dateLabel.hidden = NO;
+    }
     
     return cell;
 }
@@ -777,7 +794,7 @@
         
     // observation count
     if (user.observationsCount) {
-        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d observations", @"Count of observations by this user."),
+        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d Observations", @"Count of observations by this user."),
                                    user.observationsCount.integerValue];
     }
 }
@@ -849,6 +866,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appEnteredBackground)
+                                                 name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
     
     // NSFetchedResultsController request for my observations
@@ -955,7 +977,7 @@
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
     if (username.length) {
         RefreshControl *refresh = [[RefreshControl alloc] init];
-        refresh.backgroundColor = [UIColor inatTint];
+        refresh.backgroundColor = [UIColor inatDarkGreen];
         refresh.tintColor = [UIColor whiteColor];
         refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
                                                                   attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
@@ -1006,8 +1028,14 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-
-    [self stopSync];
+    
+    if (self.isSyncing) {
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"View Will Disappear",
+                                          }];
+        [self stopSync];
+    }
     [self stopEditing];
     [self setToolbarItems:nil animated:YES];
 }
@@ -1210,25 +1238,32 @@
 
 #pragma mark - Upload
 
-- (void)uploadSessionStartedTotal:(NSInteger)numberToUpload {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d observations.",
-                                                 @"Upload session start message.");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, numberToUpload];
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
-}
-
 
 - (void)uploadSessionAuthRequired {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     [SVProgressHUD dismiss];
     
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Required",
+                                      }];
     [self stopSync];
+    
     NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
                                             @"This is an explanation for why the sync button triggers a login prompt.");
     [self presentSignupSplashWithReason:reasonMsg];
 }
 
 - (void)uploadSessionFinished {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Upload Complete",
+                                      }];
     [self stopSync];
+
     self.tableView.userInteractionEnabled = YES;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
@@ -1256,18 +1291,28 @@
     [self loadUserForHeader];
 }
 
-- (void)uploadStartedFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploading %d of %d %@.",
-                                                 @"Begin one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
+- (void)uploadStartedFor:(Observation *)observation {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
+    NSString *name = observation.taxon.name ?: observation.speciesGuess;
+    if (!name) {
+        name = NSLocalizedString(@"something", @"Something observed by the user.");
+    }
+    
+    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Uploading '%@'...", @"in-progress upload message"), name];
     [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
 }
 
-- (void)uploadSuccessFor:(INatModel *)object number:(NSInteger)number total:(NSInteger)total {
-    NSString *activityMsgFmt = NSLocalizedString(@"Uploaded %d of %d %@.",
-                                                 @"Finished one upload message. Numbers are # of total (ie 1 of 3). String is the thing being uploaded (photo, obs, etc).");
-    NSString *activityMsg = [NSString stringWithFormat:activityMsgFmt, number, total, NSStringFromClass(object.class).humanize.pluralize];
-    [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+- (void)uploadSuccessFor:(Observation *)observation {
+    NSString *name = observation.taxon.name ?: observation.speciesGuess;
+    if (!name) {
+        name = NSLocalizedString(@"something", @"Something observed by the user.");
+    }
+
+    NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Finished with '%@'...", @"in-progress upload message"), name];
+    [SVProgressHUD showSuccessWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+    NSError *error = nil;
+    [fetchedResultsController performFetch:&error];
 }
 
 - (void)uploadNonFatalError:(NSError *)error {
@@ -1278,6 +1323,8 @@
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
     if ([object isKindOfClass:ProjectObservation.class]) {
         ProjectObservation *po = (ProjectObservation *)object;
         if (!self.nonFatalUploadErrors) {
@@ -1317,7 +1364,12 @@
         
         [SVProgressHUD dismiss];
         
+        [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
+                         withProperties:@{
+                                          @"Alert": alertMessage,
+                                          }];
         [self stopSync];
+        
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                      message:alertMessage
                                                     delegate:self
@@ -1325,6 +1377,45 @@
                                            otherButtonTitles:nil];
         [av show];
     }
+}
+
+- (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleting %@", @"in-progress delete message"),
+                           deletedRecord.modelName.humanize];
+    [SVProgressHUD showWithStatus:statusMsg];
+}
+
+- (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
+    NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleted %@", @"finished delete message"),
+                           deletedRecord.modelName.humanize];
+    [SVProgressHUD showSuccessWithStatus:statusMsg];
+}
+
+- (void)deleteSessionFinished {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
+    [SVProgressHUD dismiss];
+}
+
+- (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
+    [SVProgressHUD dismiss];
+    NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
+    NSString *alertMsg;
+    if (error) {
+        alertMsg = error.localizedDescription;
+    } else {
+        alertMsg = NSLocalizedString(@"Uknown error while attempting to delete.", @"uknonwn delete error");
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:alertTitle
+                                message:alertMsg
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 @end

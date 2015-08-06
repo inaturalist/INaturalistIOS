@@ -64,6 +64,9 @@
 {
     [self setupAnalytics];
     
+    // we need a login controller to handle google auth, can't do this in the background
+    self.loginController = [[LoginController alloc] init];
+
     [self showLoadingScreen];
     
     [self configureApplicationInBackground];
@@ -109,8 +112,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
         [self configureGlobalStyles];
-        
-        self.loginController = [[LoginController alloc] init];
         
         [self configureRestKit];
         [self configureOAuth2Client];
@@ -331,7 +332,6 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    //return (username && username.length > 0);
     NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
     return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
 }

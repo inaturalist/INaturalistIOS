@@ -41,7 +41,7 @@
 "6UX-BL-9DW.title" = "Progetti";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
-"nla-WE-iqA.text" = "Nome utente";
+"nla-WE-iqA.text" = "Username";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Tuo nome utente iNat";
@@ -357,4 +357,3 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Modifica Luogo";
-

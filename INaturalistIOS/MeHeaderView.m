@@ -15,7 +15,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        self.backgroundColor = [UIColor inatTint];
+        self.backgroundColor = [UIColor inatDarkGreen];
         
         self.iconImageView = ({
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -49,17 +49,17 @@
             SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
             button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            FAKIcon *guidesIcon = [FAKIonIcons iosBookIconWithSize:20];
-            [guidesIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            button.leadingTitleLabel.attributedText = guidesIcon.attributedString;
+            FAKIcon *projectsIcon = [FAKIonIcons iosBriefcaseIconWithSize:20];
+            [projectsIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            button.leadingTitleLabel.attributedText = projectsIcon.attributedString;
             button.leadingTitleWidth = 34.0f;
 
             button.trailingTitleLabel.text = NSLocalizedString(@"Projects", @"Title for projects button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
-            button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
+            button.backgroundColor = [UIColor inatTint];
             button.tintColor = [UIColor whiteColor];
             
             button;
@@ -76,11 +76,11 @@
             button.leadingTitleWidth = 34.0f;
 
             button.trailingTitleLabel.text = NSLocalizedString(@"Guides", @"Title for guides button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
-            button.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
+            button.backgroundColor = [UIColor inatTint];
             button.tintColor = [UIColor whiteColor];
 
             
@@ -104,11 +104,11 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[projects(==34)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[projects(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-7-[guides(==34)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[guides(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
