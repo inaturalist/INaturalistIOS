@@ -138,11 +138,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.longitudeLabel.text = nil;
     }
     
-    if (self.observation.positionalAccuracy) {
-        [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
-    } else {
-        self.positionalAccuracyLabel.text = nil;
-    }
+    NSString *positionalBaseStr = NSLocalizedString(@"%d m",
+                                                    @"positional accuracy. the %d is the number of meters, the m is english shorthand for meters.");
+    NSInteger positionalAccuracy = self.observation.positionalAccuracy ? self.observation.positionalAccuracy.integerValue : 0;
+    self.positionalAccuracyLabel.text = [NSString stringWithFormat:positionalBaseStr, positionalAccuracy];
+
     [descriptionTextView setText:self.observation.inatDescription];
     
     // Species cell
@@ -1054,9 +1054,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             UILabel *accValueLabel = (UILabel *)[locationCell viewWithTag:8];
             accValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
             accValueLabel.textAlignment = NSTextAlignmentNatural;
-            UILabel *accMLabel = (UILabel *)[locationCell viewWithTag:9];
-            accMLabel.translatesAutoresizingMaskIntoConstraints = NO;
-            accMLabel.textAlignment = NSTextAlignmentNatural;
             UILabel *locationLabel = (UILabel *)[locationCell viewWithTag:10];
             locationLabel.translatesAutoresizingMaskIntoConstraints = NO;
             locationLabel.textAlignment = NSTextAlignmentNatural;
@@ -1064,7 +1061,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             NSDictionary *views = @{@"spinner":spinnerView, @"locationIcon":locationIcon,
                                     @"latLabel":latLabel,@"latValueLabel":latValueLabel,@"lonLabel":lonLabel,
                                     @"lonValueLabel":lonValueLabel,@"accLabel":accLabel,@"accValueLabel":accValueLabel,
-                                    @"accMLabel":accMLabel,@"locationLabel":locationLabel};
+                                    @"locationLabel":locationLabel};
             
             [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[locationIcon(==20)]-[locationLabel]-|" options:0 metrics:0 views:views]];
             
@@ -1072,7 +1069,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             
             [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[locationLabel][latLabel(==21)]|" options:0 metrics:0 views:views]];
             
-            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-37-[latLabel(==23)][latValueLabel(==64)]-11-[lonLabel(==24)][lonValueLabel(==64)]-[accLabel(==24)][accValueLabel(==24)][accMLabel(==16)]->=0-|" options:0 metrics:0 views:views]];
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-37-[latLabel(==23)][latValueLabel(==64)]-11-[lonLabel(==24)][lonValueLabel(==64)]-[accLabel(==24)][accValueLabel(==40)]->=0-|" options:0 metrics:0 views:views]];
             
             [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:latValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
             
@@ -1083,8 +1080,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
             
             [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-            
-            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accMLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
             
             [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[spinner(==20)]-29-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
             [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[spinner(==20)]" options:0 metrics:0 views:views]];
