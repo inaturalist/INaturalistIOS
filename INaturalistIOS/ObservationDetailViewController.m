@@ -1122,9 +1122,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 
                 [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[helpLabel]-3-[switchView(==96)]-11-|" options:0 metrics:0 views:views]];
                 
-                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[helpLabel]-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[helpLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
                 
-                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[switchView]-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[switchView]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
             }
         }
         else if(indexPath.row == 1){
@@ -1141,9 +1141,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 
                 [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[privacyLabel]-3-[valueLabel(==100)]-11-|" options:0 metrics:0 views:views]];
                 
-                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[privacyLabel]-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[privacyLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
                 
-                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[valueLabel]-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[valueLabel]-0-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
             }
         }
         
