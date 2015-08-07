@@ -27,9 +27,9 @@
     NSDictionary *views = @{@"imageView":self.observationImage,@"title":self.titleLabel,@"subtitle":self.subtitleLabel,@"dateLabel":self.dateLabel,@"activityButton": self.activityButton, @"interactiveActivityButton":self.interactiveActivityButton, @"syncImage":self.syncImage, @"uploadButton":self.uploadButton};
         
         
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-3-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-6-|" options:0 metrics:0 views:views]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-3-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-8-|" options:0 metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==44)]->=0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
     
@@ -38,7 +38,7 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[interactiveActivityButton(==44)]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[syncImage(==16)]-5-|" options:0 metrics:0 views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadButton(==42)]-5-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadButton(==30)]-4-|" options:0 metrics:0 views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[uploadButton]-0-|" options:0 metrics:0 views:views]];
 
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==subtitle)]-2-[subtitle]-4-|" options:0 metrics:0 views:views]];

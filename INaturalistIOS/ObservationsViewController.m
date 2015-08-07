@@ -686,7 +686,7 @@
     
     if (o.needsUpload) {
         cell.uploadButton.hidden = NO;
-        FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:40.0f];
+        FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:30];
         [upload addAttribute:NSForegroundColorAttributeName
                        value:[UIColor inatTint]];
         [cell.uploadButton setAttributedTitle:upload.attributedString
