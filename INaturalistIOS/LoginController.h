@@ -43,4 +43,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (void)loggedInUserSelectedPartner:(Partner *)partner
                          completion:(void (^)(void))completion;
 - (User *)fetchMe;
+
+@property (readonly) BOOL isLoggedIn;
+
 @end

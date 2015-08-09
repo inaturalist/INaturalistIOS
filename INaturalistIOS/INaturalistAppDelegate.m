@@ -334,12 +334,8 @@
                                      forAccountType:kINatAuthServiceExtToken];
 }
 
-- (BOOL)loggedIn
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
-    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+- (BOOL)loggedIn {
+    return self.loginController.isLoggedIn;
 }
 
 - (void)showMainUI {

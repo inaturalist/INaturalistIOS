@@ -517,4 +517,11 @@ NSInteger INatMinPasswordLength = 6;
     }
 }
 
+- (BOOL)isLoggedIn {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+}
+
 @end
