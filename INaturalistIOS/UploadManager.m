@@ -39,30 +39,24 @@
 @interface UploadManager () {
     BOOL _cancelled;
 }
-@property (nonatomic, strong) NSMutableArray *queue;
-@property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
-@property (nonatomic, assign) BOOL started;
 @property NSMutableArray *objectLoaders;
 @end
 
 @implementation UploadManager
 
-- (id)initWithDelegate:(id)delegate
-{
-    self = [super init];
-    if (self) {
-        self.delegate = delegate;
-        self.queue = [[NSMutableArray alloc] init];
-        
+- (instancetype)init {
+    if (self = [super init]) {
         // workaround a restkit bug where the object loader isn't retained in the
         // event that a request fails by stashing all objectloaders
         self.objectLoaders = [NSMutableArray array];
     }
+    
     return self;
 }
 
 - (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion {
     if (deletedRecords.count == 0) {
+        self.uploading = NO;
         NSError *saveError = nil;
         [[NSManagedObjectContext defaultContext] save:&saveError];
         if (saveError) {
@@ -72,7 +66,10 @@
             deletesCompletion();
         }
     } else {
-        if (self.cancelled) {
+        self.uploading = YES;
+        
+        if (self.isCancelled) {
+            self.uploading = NO;
             deletesCompletion();
             return;
         }
@@ -100,19 +97,18 @@
 
 - (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion {
     if (observations.count == 0) {
-        self.started = NO;
+        self.uploading = NO;
         [self.delegate uploadSessionFinished];
         if (uploadCompletion) {
             uploadCompletion();
         }
     } else {
-        if (self.cancelled) {
+        self.uploading = YES;
+        
+        if (self.isCancelled) {
+            self.uploading = NO;
             uploadCompletion();
             return;
-        }
-        
-        if (!self.started) {
-            self.started = YES;
         }
         
         // upload head
@@ -201,7 +197,7 @@
         // should really call completion with the error
         if (error) {
             [self.delegate uploadFailedFor:record error:error];
-            self.started = NO;
+            self.uploading = NO;
             return;
         }
         
@@ -266,7 +262,7 @@
     }];
 }
 
-- (BOOL)cancelled {
+- (BOOL)isCancelled {
     return _cancelled;
 }
 

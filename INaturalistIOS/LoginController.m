@@ -17,7 +17,7 @@
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
 #import "User.h"
-
+#import "UploadManager.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -41,6 +41,8 @@ NSInteger INatMinPasswordLength = 6;
 
 - (instancetype)init {
     if (self = [super init]) {
+        self.uploadManager = [[UploadManager alloc] init];
+        
         [self initOAuth2Service];
         [self initGoogleLogin];
     }

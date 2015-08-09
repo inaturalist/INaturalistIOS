@@ -17,11 +17,13 @@
  */
 @interface UploadManager : NSObject
 
-@property (assign) BOOL cancelled;
+@property (assign, getter=isCancelled) BOOL cancelled;
+@property (assign, getter=isUploading) BOOL uploading;
 
-- (id)initWithDelegate:(id)delegate;
+@property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
 - (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion;
 - (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion;
+
 
 @end

@@ -10,6 +10,7 @@
 
 @class Partner;
 @class User;
+@class UploadManager;
 
 extern NSString *kUserLoggedInNotificationName;
 extern NSInteger INatMinPasswordLength;
@@ -45,5 +46,6 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (User *)fetchMe;
 
 @property (readonly) BOOL isLoggedIn;
+@property UploadManager *uploadManager;
 
 @end

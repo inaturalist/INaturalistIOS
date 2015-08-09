@@ -45,7 +45,6 @@
 
     NSFetchedResultsController *fetchedResultsController;
 }
-@property UploadManager *uploadManager;
 @property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @end
@@ -134,8 +133,9 @@
         return;
     }
 
-    UploadManager *uploader = [[UploadManager alloc] initWithDelegate:self];
-    self.uploadManager = uploader;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    uploader.cancelled = NO;
     
     [uploader uploadDeletes:observationsToDelete completion:^{
         [uploader uploadObservations:observationsToUpload completion:nil];
@@ -189,10 +189,9 @@
     // allow sleep
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
-    if (self.uploadManager) {
-        // notify the upload manager to cancel any outstanding work
-        self.uploadManager.cancelled = YES;
-    }
+    // notify the upload manager to cancel any outstanding work
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    appDelegate.loginController.uploadManager.cancelled = YES;
     
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
@@ -201,6 +200,8 @@
 
 - (BOOL)isSyncing
 {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    return appDelegate.loginController.uploadManager.isUploading;
     return [UIApplication sharedApplication].isIdleTimerDisabled;
 }
 
@@ -915,6 +916,9 @@
                                                  name:NSManagedObjectContextDidSaveNotification 
                                                object:[Observation managedObjectContext]];
     
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController.uploadManager setDelegate:self];
     
     [self loadUserForHeader];
 }
