@@ -99,7 +99,10 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[projects]-[guides(==projects)]-|"
+        
+        // project and guide buttons are 150pts max width, prefer to expand to fill the available space
+        // within the space between the icon and the right edge of superview, projects and guides should be left aligned
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(10@100)-[icon(==80)]-(10@910)-[projects(<=150,==150@900)]-[guides(==projects)]-(10@900)-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
