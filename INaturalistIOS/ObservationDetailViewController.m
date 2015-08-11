@@ -737,7 +737,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                   }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
+		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
 		if (img) cover.image = img;
 	}
     return cover;
