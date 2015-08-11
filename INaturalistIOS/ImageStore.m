@@ -50,7 +50,7 @@
 
 - (UIImage *)find:(NSString *)key
 {
-    return [self find:key forSize:0];
+    return [self find:key forSize:ImageStoreOriginalSize];
 }
 
 - (UIImage *)find:(NSString *)key forSize:(int)size
@@ -250,7 +250,7 @@
 
 - (NSString *)pathForKey:(NSString *)key
 {
-    return [self pathForKey:key forSize:0];
+    return [self pathForKey:key forSize:ImageStoreOriginalSize];
 }
 
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size
