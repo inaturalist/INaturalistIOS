@@ -15,6 +15,8 @@
 #import "ImageStore.h"
 #import "Analytics.h"
 
+#define INATURALIST_ORG_MAX_PHOTO_EDGE      2048
+
 @interface ImageStore () {
     NSOperationQueue *resizeQueue;
 }
@@ -154,7 +156,7 @@
             [self generateImageWithParams:@{
                                             @"key": key,
                                             @"size": @(ImageStoreLargeSize),
-                                            @"longEdge": @(2.0 * screenMax),
+                                            @"longEdge": @(INATURALIST_ORG_MAX_PHOTO_EDGE),
                                             @"compression": @(1.0),
                                             }
                                     error:nil];
