@@ -107,7 +107,9 @@
         
         if (self.isCancelled) {
             self.uploading = NO;
-            uploadCompletion();
+            if (uploadCompletion) {
+                uploadCompletion();
+            }
             return;
         }
         
