@@ -161,6 +161,14 @@
                                             }
                                     error:nil];
         }
+        
+        // once we're done making cutdowns from it, delete the original
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+        if (error) {
+            NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: error deleting original %@", error.localizedDescription];
+            [[Analytics sharedClient] debugLog:debugMsg];
+        }
     }];
     
     [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
