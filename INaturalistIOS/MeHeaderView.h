@@ -12,7 +12,7 @@
 
 @interface MeHeaderView : UIView
 
-@property UIImageView *iconImageView;
+@property UIButton *iconButton;
 @property UILabel *obsCountLabel;
 @property SplitTextButton *projectsButton;
 @property SplitTextButton *guidesButton;

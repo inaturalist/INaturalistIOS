@@ -12,6 +12,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
+#import <SDWebImage/UIButton+WebCache.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -47,6 +48,7 @@
 }
 @property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
+@property MeHeaderView *meHeader;
 @end
 
 @implementation ObservationsViewController
@@ -722,7 +724,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
     if (username && ![username isEqualToString:@""]) {
-        MeHeaderView *header = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         
         NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
         meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
@@ -735,18 +737,18 @@
         }
         
         if (me) {
-            [self configureHeaderView:header forUser:me];
+            [self configureHeaderView:self.meHeader forUser:me];
         }
         
         __weak typeof(self) weakSelf = self;
-        [header.projectsButton bk_addEventHandler:^(id sender) {
+        [self.meHeader.projectsButton bk_addEventHandler:^(id sender) {
             [weakSelf performSegueWithIdentifier:@"segueToProjects" sender:nil];
         } forControlEvents:UIControlEventTouchUpInside];
-        [header.guidesButton bk_addEventHandler:^(id sender) {
+        [self.meHeader.guidesButton bk_addEventHandler:^(id sender) {
             [weakSelf performSegueWithIdentifier:@"segueToGuides" sender:nil];
         } forControlEvents:UIControlEventTouchUpInside];
         
-        return header;
+        return self.meHeader;
         
     } else {
         AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
@@ -781,22 +783,66 @@
 #pragma mark - Header helpers
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
+    NSUInteger needingUploadCount = [[Observation needingUpload] count] + [Observation deletedRecordCount];
+    NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] +
+        [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
-    // icon
-    if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""])
-        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]];
-    else if (user.userIconURL && ![user.userIconURL isEqualToString:@""])
-        [view.iconImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
-    else {
-        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
-        [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-        [view.iconImageView setImage:[person imageWithSize:CGSizeMake(80, 80)]];
-    }
-        
-    // observation count
-    if (user.observationsCount) {
-        view.obsCountLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d Observations", @"Count of observations by this user."),
-                                   user.observationsCount.integerValue];
+    if (needingUploadCount > 0 || needingDeleteCount > 0) {
+        [UIView animateWithDuration:0.1f animations:^{
+            FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:80];
+            view.iconButton.backgroundColor = [UIColor whiteColor];
+            [view.iconButton setTintColor:[UIColor inatTint]];
+            [view.iconButton setAttributedTitle:uploadIcon.attributedString
+                                       forState:UIControlStateNormal];
+            
+            if (![view.iconButton targetForAction:@selector(sync:) withSender:self]) {
+                [view.iconButton addTarget:self
+                                    action:@selector(sync:)
+                          forControlEvents:UIControlEventTouchUpInside];
+            }
+            
+            NSString *baseUploadCountStr;
+            if (needingUploadCount == 1) {
+                baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload", @"Count of observations to upload, singular.");
+            } else {
+                baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload", @"Count of observations to upload, plural.");
+            }
+            view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
+        }];
+    } else {
+        [UIView animateWithDuration:0.1f animations:^{
+            view.iconButton.backgroundColor = [UIColor clearColor];
+            [view.iconButton removeTarget:self
+                                   action:@selector(sync:)
+                         forControlEvents:UIControlEventTouchUpInside];
+            
+            // icon
+            if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
+                [view.iconButton sd_setBackgroundImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]
+                                                     forState:UIControlStateNormal];
+            } else if (user.userIconURL && ![user.userIconURL isEqualToString:@""]) {
+                [view.iconButton sd_setBackgroundImageWithURL:[NSURL URLWithString:user.userIconURL]
+                                                     forState:UIControlStateNormal];
+            } else {
+                FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
+                [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+                [view.iconButton setImage:[person imageWithSize:CGSizeMake(80, 80)]
+                                 forState:UIControlStateNormal];
+            }
+            
+            // observation count
+            if (user.observationsCount.integerValue > 0) {
+                NSString *baseObsCountStr;
+                if (user.observationsCount.integerValue == 1) {
+                    baseObsCountStr = NSLocalizedString(@"%d Observation", @"Count of observations by this user, singular.");
+                } else {
+                    baseObsCountStr = NSLocalizedString(@"%d Observations", @"Count of observations by this user, plural.");
+                }
+                view.obsCountLabel.text = [NSString stringWithFormat:baseObsCountStr, user.observationsCount.integerValue];
+            } else {
+                view.obsCountLabel.text = NSLocalizedString(@"No Observations", @"Header observation count title when there are none.");
+            }
+        }];
     }
 }
 
@@ -1267,7 +1313,7 @@
                                       @"Via": @"Upload Complete",
                                       }];
     [self stopSync];
-
+    
     self.tableView.userInteractionEnabled = YES;
     self.tabBarController.tabBar.userInteractionEnabled = YES;
     self.navigationController.navigationBar.userInteractionEnabled = YES;
@@ -1305,6 +1351,10 @@
     
     NSString *activityMsg = [NSString stringWithFormat:NSLocalizedString(@"Uploading '%@'...", @"in-progress upload message"), name];
     [SVProgressHUD showWithStatus:activityMsg maskType:SVProgressHUDMaskTypeNone];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+    });
 }
 
 - (void)uploadSuccessFor:(Observation *)observation {
@@ -1389,6 +1439,15 @@
     NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleting %@", @"in-progress delete message"),
                            deletedRecord.modelName.humanize];
     [SVProgressHUD showWithStatus:statusMsg];
+    
+    [UIView animateWithDuration:1.0f
+                          delay:0.0f
+                        options:UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse
+                     animations:^{
+                         self.meHeader.iconButton.tintColor = [UIColor inatDarkGreen];
+                     } completion:^(BOOL finished) {
+                         self.meHeader.iconButton.tintColor = [UIColor inatTint];
+                     }];
 }
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
@@ -1401,6 +1460,8 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
     [SVProgressHUD dismiss];
+    MeHeaderView *header = (MeHeaderView *)[self.tableView headerViewForSection:0];
+    [header.layer removeAllAnimations];
 }
 
 - (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {

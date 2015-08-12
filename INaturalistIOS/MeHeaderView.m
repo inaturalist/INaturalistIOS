@@ -17,21 +17,21 @@
         
         self.backgroundColor = [UIColor inatDarkGreen];
         
-        self.iconImageView = ({
-            UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
-            iv.translatesAutoresizingMaskIntoConstraints = NO;
+        self.iconButton = ({
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            iv.contentMode = UIViewContentModeScaleAspectFill;
-            iv.layer.borderColor = [UIColor whiteColor].CGColor;
-            iv.layer.borderWidth = 2.0f;
-            iv.layer.cornerRadius = 40.0f;      // circular with an 80x80 frame
+            button.contentMode = UIViewContentModeScaleAspectFill;
+            button.layer.borderColor = [UIColor whiteColor].CGColor;
+            button.layer.borderWidth = 2.0f;
+            button.layer.cornerRadius = 40.0f;      // circular with an 80x80 frame
             
-            iv.clipsToBounds = YES;
+            button.clipsToBounds = YES;
             
-            iv;
+            button;
         });
-        [self addSubview:self.iconImageView];
-        
+        [self addSubview:self.iconButton];
+                
         self.obsCountLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
@@ -89,7 +89,7 @@
         [self addSubview:self.guidesButton];
         
         NSDictionary *views = @{
-                                @"icon": self.iconImageView,
+                                @"icon": self.iconButton,
                                 @"obsCount": self.obsCountLabel,
                                 @"projects": self.projectsButton,
                                 @"guides": self.guidesButton,
@@ -117,14 +117,14 @@
                                                                        views:views]];
 
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconImageView
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconButton
                                                          attribute:NSLayoutAttributeCenterY
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeCenterY
                                                         multiplier:1.0f
                                                           constant:0.0f]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconImageView
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconButton
                                                          attribute:NSLayoutAttributeHeight
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:nil
