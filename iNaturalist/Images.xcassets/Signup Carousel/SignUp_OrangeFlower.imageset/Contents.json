@@ -6,12 +6,13 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "SignUp_OrangeFlower.jpg",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "SignUp_OrangeFlower.jpg"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "SignUp_OrangeFlower-1.jpg"
     }
   ],
   "info" : {

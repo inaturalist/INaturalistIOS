@@ -89,6 +89,10 @@
         UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
         iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         iv.image = [UIImage IFTTTDefaultLaunchImage];
+        if (!iv.image) {
+            iv.image = [UIImage imageNamed:@"SignUp_OrangeFlower"];
+        }
+        
         iv;
     });
     [loadingVC.view addSubview:launchImageView];
