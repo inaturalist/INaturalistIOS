@@ -634,19 +634,7 @@
     if (username && ![username isEqualToString:@""]) {
         self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         
-        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
-        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
-        NSError *fetchError;
-        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
-        if (fetchError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                fetchError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-        }
-        
-        if (me) {
-            [self configureHeaderView:self.meHeader forUser:me];
-        }
+        [self configureHeaderForLoggedInUser];
         
         __weak typeof(self) weakSelf = self;
         [self.meHeader.projectsButton bk_addEventHandler:^(id sender) {
@@ -698,6 +686,25 @@
 }
 
 #pragma mark - Header helpers
+
+- (void)configureHeaderForLoggedInUser {
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
+    if (username && username.length > 0) {
+        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
+        NSError *fetchError;
+        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
+        if (fetchError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
+                                                fetchError.localizedDescription]];
+            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+        }
+        
+        if (me) {
+            [self configureHeaderView:self.meHeader forUser:me];
+        }
+    }
+}
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
     NSUInteger needingUploadCount = [[Observation needingUpload] count] + [Observation deletedRecordCount];
@@ -1248,11 +1255,13 @@
 }
 
 - (void)uploadSuccessFor:(Observation *)observation {
-    NSError *error = nil;
-    [fetchedResultsController performFetch:&error];     // will trigger UI updates on
+    
+    [self configureHeaderForLoggedInUser];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
+    
+    // fade the uploadprogress to invisible to make it clear that it finished
     if ([self.tableView.visibleCells containsObject:cell]) {
         [UIView animateWithDuration:0.2f
                               delay:0.2f
@@ -1265,6 +1274,10 @@
                              cell.uploadProgress.hidden = YES;
                              cell.uploadProgress.alpha = 1.0f;
                              cell.uploadProgress.progress = 0.0;
+                             
+                             // trigger tableview UI updates if necessary
+                             NSError *error = nil;
+                             [fetchedResultsController performFetch:&error];
                          }];
     }
 }
@@ -1351,8 +1364,7 @@
 }
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
-    NSString *statusMsg = [NSString stringWithFormat:NSLocalizedString(@"Deleted %@", @"finished delete message"),
-                           deletedRecord.modelName.humanize];
+    [self configureHeaderForLoggedInUser];
 }
 
 - (void)deleteSessionFinished {
