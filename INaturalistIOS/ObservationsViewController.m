@@ -163,8 +163,6 @@
 
 - (void)stopSync
 {
-    self.tableView.userInteractionEnabled = YES;
-    
     // allow sleep
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
@@ -1206,7 +1204,7 @@
                      withProperties:@{
                                       @"Via": @"Upload Complete",
                                       }];
-    [self stopSync];
+    
     
     if (self.nonFatalUploadErrors && self.nonFatalUploadErrors.count > 0) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
@@ -1219,11 +1217,16 @@
         [self.nonFatalUploadErrors removeAllObjects];
     }
     
-    // make sure any deleted records get gone
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
     
-    [self loadUserForHeader];
+    // allow any pending upload animations to finish
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
+        // make sure any deleted records get gone
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+
+        [self stopSync];
+        [self loadUserForHeader];
+    });
 }
 
 - (void)uploadStartedFor:(Observation *)observation {
@@ -1251,10 +1254,18 @@
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = NO;
-        cell.dateLabel.hidden = NO;
-        cell.uploadProgress.hidden = YES;
-        cell.uploadProgress.progress = 1.0;
+        [UIView animateWithDuration:0.2f
+                              delay:0.2f
+                            options:0
+                         animations:^{
+                             cell.uploadProgress.alpha = 0.0f;
+                         } completion:^(BOOL finished) {
+                             cell.subtitleLabel.hidden = NO;
+                             cell.dateLabel.hidden = NO;
+                             cell.uploadProgress.hidden = YES;
+                             cell.uploadProgress.alpha = 1.0f;
+                             cell.uploadProgress.progress = 0.0;
+                         }];
     }
 }
 
