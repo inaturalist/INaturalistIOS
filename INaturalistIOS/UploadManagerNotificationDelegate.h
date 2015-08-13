@@ -18,7 +18,7 @@
 - (void)uploadSessionFinished;
 - (void)uploadStartedFor:(Observation *)observation;
 - (void)uploadSuccessFor:(Observation *)observation;
-
+- (void)uploadProgress:(float)progress for:(Observation *)observation;
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error;
 
 - (void)uploadNonFatalError:(NSError *)error;

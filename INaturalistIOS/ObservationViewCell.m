@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "ObservationViewCell.h"
+#import "UIColor+INaturalist.h"
 
 @implementation ObservationViewCell
 
@@ -20,16 +23,30 @@
     self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.uploadButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.uploadProgress.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.titleLabel.textAlignment = NSTextAlignmentNatural;
     self.subtitleLabel.textAlignment = NSTextAlignmentNatural;
+    self.uploadProgress.tintColor = [UIColor inatTint];
+    self.uploadProgress.trackTintColor = [UIColor colorWithHexString:@"#D0E3B5"];
         
-    NSDictionary *views = @{@"imageView":self.observationImage,@"title":self.titleLabel,@"subtitle":self.subtitleLabel,@"dateLabel":self.dateLabel,@"activityButton": self.activityButton, @"interactiveActivityButton":self.interactiveActivityButton, @"syncImage":self.syncImage, @"uploadButton":self.uploadButton};
-        
-        
+    NSDictionary *views = @{
+                            @"imageView":self.observationImage,
+                            @"title":self.titleLabel,
+                            @"subtitle":self.subtitleLabel,
+                            @"dateLabel":self.dateLabel,
+                            @"activityButton": self.activityButton,
+                            @"interactiveActivityButton":self.interactiveActivityButton,
+                            @"syncImage":self.syncImage,
+                            @"uploadButton":self.uploadButton,
+                            @"uploadProgress": self.uploadProgress
+                            };
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-6-|" options:0 metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-8-|" options:0 metrics:0 views:views]];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[uploadProgress]-8-|" options:0 metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==44)]->=0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
     
@@ -40,8 +57,10 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[syncImage(==16)]-5-|" options:0 metrics:0 views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadButton(==30)]-4-|" options:0 metrics:0 views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[uploadButton]-0-|" options:0 metrics:0 views:views]];
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==subtitle)]-2-[subtitle]-4-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==subtitle)]-2-[uploadProgress]-4-|" options:0 metrics:0 views:views]];
+
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.subtitleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
     
@@ -50,6 +69,9 @@
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.subtitleLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
 }
 
+- (void)prepareForReuse {
+    self.uploadProgress.hidden = YES;
+}
 
 
 @end

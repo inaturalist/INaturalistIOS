@@ -140,10 +140,19 @@
 - (void)uploadRecordsForObservation:(Observation *)observation completion:(void (^)(NSError *error))observationCompletion {
     
     NSArray *childrenNeedingUpload = [observation childrenNeedingUpload];
+    NSUInteger recordsNeedingUpload = childrenNeedingUpload.count;
+    if (observation.needsSync) { recordsNeedingUpload++; }
     
+    __block NSUInteger recordsUploaded = 0;
+
     __weak typeof(self)weakSelf = self;
     void(^eachCompletion)() = ^void() {
         __strong typeof(weakSelf)strongSelf = weakSelf;
+        recordsUploaded++;
+        
+        [strongSelf.delegate uploadProgress:(float)recordsUploaded / recordsNeedingUpload
+                                        for:observation];
+        
         if (!observation.needsUpload) {
             [strongSelf.delegate uploadSuccessFor:observation];
             observationCompletion(nil);
@@ -151,6 +160,7 @@
     };
     
     [self.delegate uploadStartedFor:observation];
+    
     
     if (observation.needsSync) {
         __weak typeof(self)weakSelf = self;
