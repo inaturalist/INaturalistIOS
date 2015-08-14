@@ -923,6 +923,10 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatAutocompleteNamesPrefKey];
         
+        // completely new users default to autoupload on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatAutomaticallyUploadPrefKey];
+
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                   forKey:@"firstSignInSeen"];
         [[NSUserDefaults standardUserDefaults] setBool:YES
@@ -941,6 +945,10 @@
         // existing users default to autocomplete off
         [[NSUserDefaults standardUserDefaults] setBool:NO
                                                 forKey:kINatAutocompleteNamesPrefKey];
+
+        // existing users default to autoupload off
+        [[NSUserDefaults standardUserDefaults] setBool:NO
+                                                forKey:kINatAutomaticallyUploadPrefKey];
 
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:@"seenVersion254"];

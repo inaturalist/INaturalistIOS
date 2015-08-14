@@ -45,14 +45,18 @@ static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
 
-static const int AutocompleteNamesSwitchTag = 10;
-static const int CategorizeNewObsSwitchTag = 11;
 static const int AutocompleteNamesLabelTag = 12;
 static const int CategorizeNewObsLabelTag = 13;
 static const int NetworkDetailLabelTag = 14;
 static const int NetworkTextLabelTag = 15;
 static const int UsernameDetailLabelTag = 16;
 static const int UsernameTextLabelTag = 17;
+static const int AutomaticallyUploadLabelTag = 18;
+
+// tags 100-1xx are reserved for switches
+static const int AutocompleteNamesSwitchTag = 100;
+static const int AutomaticallyUploadSwitchTag = 101;
+static const int CategorizeNewObsSwitchTag = 102;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -143,6 +147,7 @@ static const int UsernameTextLabelTag = 17;
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
     [defaults removeObjectForKey:kINatAutocompleteNamesPrefKey];
+    [defaults removeObjectForKey:kINatAutomaticallyUploadPrefKey];
     [defaults removeObjectForKey:kInatCategorizeNewObsPrefKey];
     [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -318,6 +323,8 @@ static const int UsernameTextLabelTag = 17;
         key = kINatAutocompleteNamesPrefKey;
     else if (switcher.tag == CategorizeNewObsSwitchTag)
         key = kInatCategorizeNewObsPrefKey;
+    else if (switcher.tag == AutomaticallyUploadSwitchTag)
+        key = kINatAutomaticallyUploadPrefKey;
     
     if (key) {
         NSString *analyticsEvent;
@@ -354,24 +361,29 @@ static const int UsernameTextLabelTag = 17;
     else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
 
-        if (indexPath.item == 0 || indexPath.item == 1) {
+        if (indexPath.item < 3) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
-            if(autoNameLabel){
+            if (autoNameLabel) {
                 autoNameLabel.textAlignment = NSTextAlignmentNatural;
             }
             UILabel *categoriesLabel = (UILabel *)[cell.contentView viewWithTag:CategorizeNewObsLabelTag];
-            if(categoriesLabel){
+            if (categoriesLabel) {
                 categoriesLabel.textAlignment = NSTextAlignmentNatural;
             }
+            UILabel *automaticallyUploadLabel = (UILabel *)[cell.contentView viewWithTag:AutomaticallyUploadLabelTag];
+            if (automaticallyUploadLabel) {
+                automaticallyUploadLabel.textAlignment = NSTextAlignmentNatural;
+            }
+
             
             UISwitch *switcher;
-            if (![cell viewWithTag:10 + indexPath.item]) {
+            if (![cell viewWithTag:100 + indexPath.item]) {
                 
                 switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
                 switcher.translatesAutoresizingMaskIntoConstraints = NO;
-                switcher.tag = 10 + indexPath.item;
+                switcher.tag = 100 + indexPath.item;
                 switcher.enabled = YES;
                 [switcher addTarget:self
                              action:@selector(settingSwitched:)
@@ -391,13 +403,15 @@ static const int UsernameTextLabelTag = 17;
                                                                 multiplier:1.0f
                                                                   constant:0.0f]];
             } else {
-                switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+                switcher = (UISwitch *)[cell viewWithTag:100 + indexPath.item];
             }
             
             if (switcher.tag == AutocompleteNamesSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
             else if (switcher.tag == CategorizeNewObsSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
+            else if (switcher.tag == AutomaticallyUploadSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey];
         } else {
             // main text in black
             cell.textLabel.enabled = YES;
@@ -493,9 +507,13 @@ static const int UsernameTextLabelTag = 17;
         } else if (indexPath.item == 1) {
             // skip categorization
             tooltipText = NSLocalizedString(@"Enable to make a quick, initial identification from high-level taxa when making a new observation.", @"tooltip text for skip categorization option.");
+        } else if (indexPath.item == 2) {
+            // automatically upload
+            tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
+                                            @"tooltip text for automatically upload option.");
         }
         
-        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:10+indexPath.item]
+        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
                                                     hostView:tableView
                                                  tooltipText:tooltipText
                                               arrowDirection:JDFTooltipViewArrowDirectionDown

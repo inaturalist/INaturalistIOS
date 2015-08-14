@@ -43,6 +43,10 @@
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "UploadManager.h"
+#import "DeletedRecord.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -1609,6 +1613,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return;
     }
     [self save];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
+        Observation *obs = self.observation;
+        if (obs.needsUpload) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            appDelegate.loginController.uploadManager.cancelled = NO;
+            [appDelegate.loginController.uploadManager uploadObservations:@[ obs ]
+                                                               completion:nil];
+        }
+    }
+
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }
