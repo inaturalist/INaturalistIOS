@@ -168,11 +168,14 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
                                                        forSize:ImageStoreLargeSize];
     NSFileManager *fm = [NSFileManager defaultManager];
     
-    // if we don't have a file for this obs photo, it's not in the ImageStore
-    // remove the obsPhoto, and notify the user that we can't sync the photo.
+    // if we can't get the large, try the small
+    if (!path || ! [fm fileExistsAtPath:path]) {
+        path = [[ImageStore sharedImageStore] pathForKey:self.photoKey
+                                                 forSize:ImageStoreSmallSize];
+    }
+    
+    // if we don't have any files for this obs photo, it's not in the ImageStore
     if (!path || ![fm fileExistsAtPath:path]) {
-        
-        // throw an error here
         return nil;
     } else {
         return path;
