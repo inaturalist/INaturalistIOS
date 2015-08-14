@@ -22,6 +22,7 @@
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "UIColor+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -382,7 +383,7 @@ static const int ListControlIndexNearby = 2;
                                                                    NSLocalizedString(@"Your Guides",nil),
                                                                    NSLocalizedString(@"Nearby",nil),
                                                                    ]];
-        _listControl.tintColor = [UIColor whiteColor];
+        _listControl.tintColor = [UIColor inatTint];
 
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
