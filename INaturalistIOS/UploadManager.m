@@ -170,14 +170,14 @@
                         observationCompletion(error);
                     } else {
                         eachCompletion();
-                        for (INatModel *child in childrenNeedingUpload) {
+                        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
                             [weakSelf uploadRecord:child
                                         completion:eachCompletion];
                         }
                     }
                 }];
     } else {
-        for (INatModel *child in childrenNeedingUpload) {
+        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
             [self uploadRecord:child
                     completion:eachCompletion];
         }
@@ -185,7 +185,7 @@
 }
 
 
-- (void)uploadRecord:(INatModel *)record completion:(void (^)(NSError *error))completion {
+- (void)uploadRecord:(INatModel <Uploadable> *)record completion:(void (^)(NSError *error))completion {
     
     RKRequestMethod method = record.syncedAt ? RKRequestMethodPUT : RKRequestMethodPOST;
     
@@ -197,6 +197,36 @@
     // and needs to trap for an error getting the additional params
     if ([record respondsToSelector:@selector(fileUploadParameter)]) {
         NSString *path = [record performSelector:@selector(fileUploadParameter)];
+        
+        if (!path) {
+            // the only case for now
+            if ([record isKindOfClass:[ObservationPhoto class]]) {
+                // if there's no file for this photo, bail on it and the upload process
+                ObservationPhoto *op = (ObservationPhoto *)record;
+                
+                // human readable index
+                NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
+                NSString *obsName;
+                if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
+                    obsName = op.observation.speciesGuess;
+                else
+                    obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
+                
+                NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
+                                                                                  @"error message when an obs photo doesn't have a file on the phone."),
+                                      index, obsName];
+                NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                                     code:1201
+                                                 userInfo:@{
+                                                            NSLocalizedDescriptionKey: errorMsg,
+                                                            }];
+                [op destroy];
+                
+                [self.delegate uploadFailedFor:record error:error];
+                self.uploading = NO;
+                return;
+            }
+        }
         
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
         RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
