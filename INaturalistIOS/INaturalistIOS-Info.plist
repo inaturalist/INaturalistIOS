@@ -13,7 +13,7 @@
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>org.inaturalist.inaturalist</string>
+	<string>com.carmelcrew.inaturalist.ios</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -44,11 +44,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>200</string>
+	<string>203</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>7baaee0ca8a376b3d129b908c1e03be6ecbe5786</string>
+		<string>345e342e4072648b2f39f3eb6ba91e02002087e3</string>
 		<key>Kits</key>
 		<array>
 			<dict>

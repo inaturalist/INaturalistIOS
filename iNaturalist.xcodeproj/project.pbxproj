@@ -1,204 +1,204 @@
 // !$*UTF8*$!
 {
-archiveVersion = 1;
-classes = {
-};
-objectVersion = 46;
-objects = {
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
 
 /* Begin PBXBuildFile section */
-166DE656E2ACFA4E159E2AB1 /* libPods-iNaturalistTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 791192251A65553AF8BDAFFD /* libPods-iNaturalistTests.a */; };
-1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
-1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
-1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
-1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 1904E5F217FB814A00725804 /* bootstrap.min.css */; };
-1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
-190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 190619BC152A3D3C0001A307 /* AssetsLibrary.framework */; };
-190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
-190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
-190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
-191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */; };
-191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191426EA180DC20F005165D8 /* GuidePageViewController.m */; };
-191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191490A31513C7C300231C80 /* ProjectChooserViewController.m */; };
-191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
-191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
-191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C6917D3F5660086DBEB /* GuidesViewController.m */; };
-191C5C8417D3FACC0086DBEB /* Guide.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8317D3FACC0086DBEB /* Guide.m */; };
-191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8617D3FF650086DBEB /* GuidesSearchController.m */; };
-191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CC16014A6700C1F5DE /* ObservationField.m */; };
-191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */; };
-191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4D21601501A00C1F5DE /* ProjectObservationField.m */; };
-1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1922D9A014FEBF58003778B2 /* CrossHairView.m */; };
-1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
-1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
-1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */; };
-1927514414E9CCC9000ABAC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514314E9CCC9000ABAC4 /* main.m */; };
-1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */; };
-1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
-1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
-193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
-195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 195515F018470F1300FEE783 /* ObservationPageViewController.m */; };
-1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FCFC17F102FA004F57F2 /* GuideXML.m */; };
-19570CC417EB92D8000C800A /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideViewController.m */; };
-19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
-1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
-195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
-195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
-1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1963DF6417D7E8830073DC68 /* GuideCollectionViewController.m */; };
-19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
-1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1964A99F1581DBB1005F2E0B /* ImageIO.framework */; };
-196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */; };
-197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectListViewController.m */; };
-197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */; };
-197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */; };
-198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
-198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
-198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F914EC93A200DB55C5 /* MobileCoreServices.framework */; };
-198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FB14EC93AB00DB55C5 /* SystemConfiguration.framework */; };
-198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FD14EC93B900DB55C5 /* libxml2.dylib */; };
-1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */; };
-1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
-198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
-1997411115194E89006FBEA0 /* UploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* UploadManager.m */; };
-19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
-19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */; };
-19AE897318DD08A100505918 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897218DD08A100505918 /* Comment.m */; };
-19AE897618DD08B600505918 /* Identification.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897518DD08B600505918 /* Identification.m */; };
-19AE897918DD08CC00505918 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897818DD08CC00505918 /* User.m */; };
-19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897B18DD0AA700505918 /* AddCommentViewController.m */; };
-19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */; };
-19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898118DD0AEB00505918 /* ObservationActivityViewController.m */; };
-19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898418DD0B2300505918 /* ObservationAnnotation.m */; };
-19AE898818DD0B9600505918 /* RefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898718DD0B9600505918 /* RefreshControl.m */; };
-19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
-19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
-19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
-19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
-19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
-19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */; };
-19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D9B54514F62B850017B70A /* INatUITabBarController.m */; };
-19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
-19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */; };
-19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */; };
-19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */; };
-19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F3AC7517E138A9005706E8 /* libz.dylib */; };
-19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
-19F62193150ECBEE00C58F28 /* List.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62192150ECBEE00C58F28 /* List.m */; };
-19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62195150ECC0200C58F28 /* ListedTaxon.m */; };
-19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
-19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
-19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
-19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87447152254FC00A65F9A /* ProjectDetailViewController.m */; };
-19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
-19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748615251D6A00A65F9A /* ProjectsSearchController.m */; };
-19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */; };
-19F87493152670B200A65F9A /* RecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87492152670B100A65F9A /* RecordSearchController.m */; };
-19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874951526763E00A65F9A /* TaxaSearchController.m */; };
-19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
-19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
-19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
-6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
-60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
-87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
-893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
-897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
-899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
-FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
-FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
-FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
-FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
-FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
-FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
-FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */; };
-FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */; };
-FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F991A12DFD200928102 /* ExploreSearchController.m */; };
-FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20171A13F67200928102 /* ExploreSearchView.m */; };
-FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */; };
-FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */; };
-FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
-FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
-FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
-FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19661B30EEE60066CA22 /* PartnerController.m */; };
-FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
-FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
-FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
-FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */; };
-FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */; };
-FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */; };
-FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
-FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */; };
-FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
-FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
-FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
-FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */; };
-FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */; };
-FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */; };
-FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */; };
-FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */; };
-FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E219FACE6900A9AB5D /* ExploreObservationDetailHeader.m */; };
-FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E419FACE6900A9AB5D /* AutocompleteCell.m */; };
-FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */; };
-FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F319FACF1800A9AB5D /* ExploreObservationsController.m */; };
-FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F619FAD14E00A9AB5D /* ExploreContainerViewController.m */; };
-FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F819FAD14E00A9AB5D /* ExploreGridViewController.m */; };
-FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FA19FAD14E00A9AB5D /* ExploreListViewController.m */; };
-FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */; };
-FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */; };
-FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
-FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
-FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
-FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
-FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
-FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
-FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */; };
-FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */; };
-FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
-FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
-FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
-FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
-FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
-FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
-FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
-FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
-FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
-FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
-FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
-FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
-FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
-FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
-FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
-FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
-FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
-FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
-FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
-FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
-FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
-FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
-FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
-FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
-FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
-FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
-FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
-FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
-FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
-FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
-FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
-FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */; };
-FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
-FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
-FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
+		166DE656E2ACFA4E159E2AB1 /* libPods-iNaturalistTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 791192251A65553AF8BDAFFD /* libPods-iNaturalistTests.a */; };
+		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
+		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
+		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
+		1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 1904E5F217FB814A00725804 /* bootstrap.min.css */; };
+		1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1905715F14FDFF49007FBE30 /* EditLocationViewController.m */; };
+		190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 190619BC152A3D3C0001A307 /* AssetsLibrary.framework */; };
+		190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C6151BF71F00D5B6E4 /* DeletedRecord.m */; };
+		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
+		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
+		191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 191059DD18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m */; };
+		191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191426EA180DC20F005165D8 /* GuidePageViewController.m */; };
+		191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191490A31513C7C300231C80 /* ProjectChooserViewController.m */; };
+		191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
+		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
+		191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C6917D3F5660086DBEB /* GuidesViewController.m */; };
+		191C5C8417D3FACC0086DBEB /* Guide.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8317D3FACC0086DBEB /* Guide.m */; };
+		191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8617D3FF650086DBEB /* GuidesSearchController.m */; };
+		191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CC16014A6700C1F5DE /* ObservationField.m */; };
+		191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */; };
+		191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4D21601501A00C1F5DE /* ProjectObservationField.m */; };
+		1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1922D9A014FEBF58003778B2 /* CrossHairView.m */; };
+		1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513714E9CCC9000ABAC4 /* UIKit.framework */; };
+		1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513914E9CCC9000ABAC4 /* Foundation.framework */; };
+		1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */; };
+		1927514414E9CCC9000ABAC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514314E9CCC9000ABAC4 /* main.m */; };
+		1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */; };
+		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
+		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
+		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
+		195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 195515F018470F1300FEE783 /* ObservationPageViewController.m */; };
+		1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FCFC17F102FA004F57F2 /* GuideXML.m */; };
+		19570CC417EB92D8000C800A /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideViewController.m */; };
+		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
+		1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1959CDB214EA30280036F363 /* QuartzCore.framework */; };
+		195F3248151A8AB60019CB85 /* Taxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F3247151A8AB60019CB85 /* Taxon.m */; };
+		195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 195F324A151A8AF70019CB85 /* TaxonPhoto.m */; };
+		1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1963DF6417D7E8830073DC68 /* GuideCollectionViewController.m */; };
+		19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19640DE51508100A003BF888 /* MapTypeViewController.m */; };
+		1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1964A99F1581DBB1005F2E0B /* ImageIO.framework */; };
+		196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = 196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */; };
+		197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 197A6056151155DE0061B83B /* ProjectListViewController.m */; };
+		197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */; };
+		197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */; };
+		198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F314EC938700DB55C5 /* CFNetwork.framework */; };
+		198551F814EC939900DB55C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F714EC939900DB55C5 /* Security.framework */; };
+		198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F914EC93A200DB55C5 /* MobileCoreServices.framework */; };
+		198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FB14EC93AB00DB55C5 /* SystemConfiguration.framework */; };
+		198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FD14EC93B900DB55C5 /* libxml2.dylib */; };
+		1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */; };
+		1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
+		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
+		1997411115194E89006FBEA0 /* UploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* UploadManager.m */; };
+		19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
+		19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */; };
+		19AE897318DD08A100505918 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897218DD08A100505918 /* Comment.m */; };
+		19AE897618DD08B600505918 /* Identification.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897518DD08B600505918 /* Identification.m */; };
+		19AE897918DD08CC00505918 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897818DD08CC00505918 /* User.m */; };
+		19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897B18DD0AA700505918 /* AddCommentViewController.m */; };
+		19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */; };
+		19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898118DD0AEB00505918 /* ObservationActivityViewController.m */; };
+		19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898418DD0B2300505918 /* ObservationAnnotation.m */; };
+		19AE898818DD0B9600505918 /* RefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898718DD0B9600505918 /* RefreshControl.m */; };
+		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
+		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
+		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
+		19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
+		19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
+		19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */; };
+		19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D9B54514F62B850017B70A /* INatUITabBarController.m */; };
+		19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
+		19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */; };
+		19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */; };
+		19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19F0A47D17F3F4340086455D /* guide_taxon-remote.xsl */; };
+		19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F3AC7517E138A9005706E8 /* libz.dylib */; };
+		19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62187150EC6B700C58F28 /* ProjectsViewController.m */; };
+		19F62193150ECBEE00C58F28 /* List.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62192150ECBEE00C58F28 /* List.m */; };
+		19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62195150ECC0200C58F28 /* ListedTaxon.m */; };
+		19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
+		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
+		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
+		19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87447152254FC00A65F9A /* ProjectDetailViewController.m */; };
+		19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
+		19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748615251D6A00A65F9A /* ProjectsSearchController.m */; };
+		19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */; };
+		19F87493152670B200A65F9A /* RecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87492152670B100A65F9A /* RecordSearchController.m */; };
+		19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874951526763E00A65F9A /* TaxaSearchController.m */; };
+		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
+		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
+		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
+		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
+		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
+		87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
+		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
+		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
+		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
+		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
+		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
+		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
+		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
+		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
+		FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
+		FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */; };
+		FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */; };
+		FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F991A12DFD200928102 /* ExploreSearchController.m */; };
+		FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20171A13F67200928102 /* ExploreSearchView.m */; };
+		FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */; };
+		FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */; };
+		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
+		FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
+		FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
+		FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19661B30EEE60066CA22 /* PartnerController.m */; };
+		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
+		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
+		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
+		FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */; };
+		FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */; };
+		FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */; };
+		FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
+		FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */; };
+		FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
+		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
+		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
+		FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */; };
+		FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */; };
+		FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */; };
+		FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */; };
+		FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */; };
+		FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E219FACE6900A9AB5D /* ExploreObservationDetailHeader.m */; };
+		FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E419FACE6900A9AB5D /* AutocompleteCell.m */; };
+		FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */; };
+		FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F319FACF1800A9AB5D /* ExploreObservationsController.m */; };
+		FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F619FAD14E00A9AB5D /* ExploreContainerViewController.m */; };
+		FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F819FAD14E00A9AB5D /* ExploreGridViewController.m */; };
+		FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FA19FAD14E00A9AB5D /* ExploreListViewController.m */; };
+		FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */; };
+		FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */; };
+		FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
+		FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
+		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
+		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
+		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
+		FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
+		FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */; };
+		FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */; };
+		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
+		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
+		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
+		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
+		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
+		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
+		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
+		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
+		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
+		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
+		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
+		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
+		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
+		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
+		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
+		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
+		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
+		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
+		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
+		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
+		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
+		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
+		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
+		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
+		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
+		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
+		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
+		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
+		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
+		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
+		FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */; };
+		FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
+		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
+		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */ = {
-isa = PBXContainerItemProxy;
-containerPortal = 1927512A14E9CCC8000ABAC4 /* Project object */;
-proxyType = 1;
-remoteGlobalIDString = 1927513214E9CCC9000ABAC4;
-remoteInfo = iNaturalist;
-};
+		FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1927512A14E9CCC8000ABAC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1927513214E9CCC9000ABAC4;
+			remoteInfo = iNaturalist;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -579,40 +579,40 @@ remoteInfo = iNaturalist;
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-1927513014E9CCC9000ABAC4 /* Frameworks */ = {
-isa = PBXFrameworksBuildPhase;
-buildActionMask = 2147483647;
-files = (
-FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */,
-19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */,
-6098FD1916F3BE690053987E /* Social.framework in Frameworks */,
-6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */,
-19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */,
-1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */,
-190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */,
-19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */,
-193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */,
-198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */,
-198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */,
-198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */,
-198551F814EC939900DB55C5 /* Security.framework in Frameworks */,
-198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */,
-1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */,
-1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */,
-1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
-1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
-87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
-FADE28AD1B02D9AA00CA55FF /* Frameworks */ = {
-isa = PBXFrameworksBuildPhase;
-buildActionMask = 2147483647;
-files = (
-166DE656E2ACFA4E159E2AB1 /* libPods-iNaturalistTests.a in Frameworks */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		1927513014E9CCC9000ABAC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */,
+				19F3AC7617E138A9005706E8 /* libz.dylib in Frameworks */,
+				6098FD1916F3BE690053987E /* Social.framework in Frameworks */,
+				6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */,
+				19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */,
+				1964A9A01581DBB1005F2E0B /* ImageIO.framework in Frameworks */,
+				190619BD152A3D3C0001A307 /* AssetsLibrary.framework in Frameworks */,
+				19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */,
+				193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */,
+				198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */,
+				198551FC14EC93AB00DB55C5 /* SystemConfiguration.framework in Frameworks */,
+				198551FA14EC93A200DB55C5 /* MobileCoreServices.framework in Frameworks */,
+				198551F814EC939900DB55C5 /* Security.framework in Frameworks */,
+				198551F414EC938700DB55C5 /* CFNetwork.framework in Frameworks */,
+				1927513C14E9CCC9000ABAC4 /* CoreGraphics.framework in Frameworks */,
+				1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */,
+				1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
+				1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
+				87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FADE28AD1B02D9AA00CA55FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166DE656E2ACFA4E159E2AB1 /* libPods-iNaturalistTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1195,697 +1195,712 @@ runOnlyForDeploymentPostprocessing = 0;
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-1927513214E9CCC9000ABAC4 /* iNaturalist */ = {
-isa = PBXNativeTarget;
-buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */;
-buildPhases = (
-537BB181587740C4A2252975 /* Check Pods Manifest.lock */,
-1927512F14E9CCC9000ABAC4 /* Sources */,
-1927513014E9CCC9000ABAC4 /* Frameworks */,
-1927513114E9CCC9000ABAC4 /* Resources */,
-16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */,
-FA63FA2919E4D40F007306F9 /* ShellScript */,
-FA88B7681ABCD34A0004B4C6 /* ShellScript */,
-);
-buildRules = (
-);
-dependencies = (
-);
-name = iNaturalist;
-productName = INaturalistIOS;
-productReference = 1927513314E9CCC9000ABAC4 /* iNaturalist.app */;
-productType = "com.apple.product-type.application";
-};
-FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */ = {
-isa = PBXNativeTarget;
-buildConfigurationList = FADE28B81B02D9AA00CA55FF /* Build configuration list for PBXNativeTarget "iNaturalistTests" */;
-buildPhases = (
-61FE790250EE685F49B85C6D /* Check Pods Manifest.lock */,
-FADE28AC1B02D9AA00CA55FF /* Sources */,
-FADE28AD1B02D9AA00CA55FF /* Frameworks */,
-FADE28AE1B02D9AA00CA55FF /* Resources */,
-9D5253E631060D844242E2BF /* Copy Pods Resources */,
-);
-buildRules = (
-);
-dependencies = (
-FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */,
-);
-name = iNaturalistTests;
-productName = iNaturalistTests;
-productReference = FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */;
-productType = "com.apple.product-type.bundle.unit-test";
-};
+		1927513214E9CCC9000ABAC4 /* iNaturalist */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */;
+			buildPhases = (
+				537BB181587740C4A2252975 /* Check Pods Manifest.lock */,
+				1927512F14E9CCC9000ABAC4 /* Sources */,
+				1927513014E9CCC9000ABAC4 /* Frameworks */,
+				1927513114E9CCC9000ABAC4 /* Resources */,
+				16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */,
+				FA63FA2919E4D40F007306F9 /* Run Script */,
+				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
+				89AFC8311B7C816E0045D878 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iNaturalist;
+			productName = INaturalistIOS;
+			productReference = 1927513314E9CCC9000ABAC4 /* iNaturalist.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FADE28B81B02D9AA00CA55FF /* Build configuration list for PBXNativeTarget "iNaturalistTests" */;
+			buildPhases = (
+				61FE790250EE685F49B85C6D /* Check Pods Manifest.lock */,
+				FADE28AC1B02D9AA00CA55FF /* Sources */,
+				FADE28AD1B02D9AA00CA55FF /* Frameworks */,
+				FADE28AE1B02D9AA00CA55FF /* Resources */,
+				9D5253E631060D844242E2BF /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */,
+			);
+			name = iNaturalistTests;
+			productName = iNaturalistTests;
+			productReference = FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-1927512A14E9CCC8000ABAC4 /* Project object */ = {
-isa = PBXProject;
-attributes = {
-LastUpgradeCheck = 0430;
-ORGANIZATIONNAME = iNaturalist;
-TargetAttributes = {
-1927513214E9CCC9000ABAC4 = {
-DevelopmentTeam = N5J7L4P93Z;
-};
-FADE28AF1B02D9AA00CA55FF = {
-CreatedOnToolsVersion = 6.3.1;
-TestTargetID = 1927513214E9CCC9000ABAC4;
-};
-};
-};
-buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */;
-compatibilityVersion = "Xcode 3.2";
-developmentRegion = English;
-hasScannedForEncodings = 0;
-knownRegions = (
-en,
-es,
-Base,
-ja,
-sv,
-fr,
-it,
-pt,
-he,
-);
-mainGroup = 1927512814E9CCC8000ABAC4;
-productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
-projectDirPath = "";
-projectRoot = "";
-targets = (
-1927513214E9CCC9000ABAC4 /* iNaturalist */,
-FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */,
-);
-};
+		1927512A14E9CCC8000ABAC4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = iNaturalist;
+				TargetAttributes = {
+					1927513214E9CCC9000ABAC4 = {
+						DevelopmentTeam = 7YZJ6C4C54;
+					};
+					FADE28AF1B02D9AA00CA55FF = {
+						CreatedOnToolsVersion = 6.3.1;
+						TestTargetID = 1927513214E9CCC9000ABAC4;
+					};
+				};
+			};
+			buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+				Base,
+				ja,
+				sv,
+				fr,
+				it,
+				pt,
+				he,
+			);
+			mainGroup = 1927512814E9CCC8000ABAC4;
+			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1927513214E9CCC9000ABAC4 /* iNaturalist */,
+				FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */,
+			);
+		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-1927513114E9CCC9000ABAC4 /* Resources */ = {
-isa = PBXResourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
-FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
-19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
-19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
-19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
-19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
-19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
-19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
-60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
-60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
-FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
-19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
-19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
-1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
-FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
-FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
-893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
-FADE28AE1B02D9AA00CA55FF /* Resources */ = {
-isa = PBXResourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		1927513114E9CCC9000ABAC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
+				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
+				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
+				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
+				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
+				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
+				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
+				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
+				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
+				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
+				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
+				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
+				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
+				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
+				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
+				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
+				893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FADE28AE1B02D9AA00CA55FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-);
-name = "Copy Pods Resources";
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh\"\n";
-showEnvVarsInLog = 0;
-};
-537BB181587740C4A2252975 /* Check Pods Manifest.lock */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-);
-name = "Check Pods Manifest.lock";
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-showEnvVarsInLog = 0;
-};
-61FE790250EE685F49B85C6D /* Check Pods Manifest.lock */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-);
-name = "Check Pods Manifest.lock";
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-showEnvVarsInLog = 0;
-};
-9D5253E631060D844242E2BF /* Copy Pods Resources */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-);
-name = "Copy Pods Resources";
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-resources.sh\"\n";
-showEnvVarsInLog = 0;
-};
-FA63FA2919E4D40F007306F9 /* ShellScript */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-"",
-);
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Pods/Fabric/Fabric.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
-};
-FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
-isa = PBXShellScriptBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-inputPaths = (
-);
-outputPaths = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-shellPath = /bin/sh;
-shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
-};
+		16CEFB6800AF43389BB9AB22 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		537BB181587740C4A2252975 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		61FE790250EE685F49B85C6D /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		89AFC8311B7C816E0045D878 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\" 345e342e4072648b2f39f3eb6ba91e02002087e3 772e463271ce4ae8d80b4c3f53bc00109ac88f7d6b23c21faeb89dff06cc74a6\n";
+		};
+		9D5253E631060D844242E2BF /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA63FA2919E4D40F007306F9 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Pods/Fabric/Fabric.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
+		};
+		FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-1927512F14E9CCC9000ABAC4 /* Sources */ = {
-isa = PBXSourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
-FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */,
-19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
-FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
-1927514414E9CCC9000ABAC4 /* main.m in Sources */,
-1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
-FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
-1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
-19AE897318DD08A100505918 /* Comment.m in Sources */,
-19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
-1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
-899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
-1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
-FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
-198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
-19AE897918DD08CC00505918 /* User.m in Sources */,
-FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
-1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
-1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
-FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
-FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
-1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
-FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
-FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
-FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */,
-FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
-FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
-FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
-FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
-19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
-FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
-FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
-190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
-1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
-FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */,
-1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
-FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */,
-191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
-19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
-191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
-FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */,
-FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
-FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
-19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
-FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */,
-19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
-FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
-19F62193150ECBEE00C58F28 /* List.m in Sources */,
-FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
-19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
-FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
-FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
-FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
-19F62199150ECC1200C58F28 /* Project.m in Sources */,
-19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
-FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
-FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
-19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
-FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
-19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
-197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
-191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
-FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
-FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
-FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */,
-FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
-1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
-FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
-195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
-195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
-190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
-190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
-19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
-19F874841522E59000A65F9A /* INatWebController.m in Sources */,
-19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
-19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
-FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
-19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
-19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
-FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
-FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
-FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
-FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
-19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
-19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
-191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
-191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
-191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
-FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
-19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
-FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
-FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */,
-FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
-FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */,
-FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
-FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
-FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
-897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */,
-FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
-FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
-FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
-FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
-191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
-19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,
-FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
-FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
-FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
-FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
-FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
-FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
-FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
-FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
-FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
-FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
-FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
-FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */,
-FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
-FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
-196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
-FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
-191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
-FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
-FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
-191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
-191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
-1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
-19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
-19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
-FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
-19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
-19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
-FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
-FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
-1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
-FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
-19AE897618DD08B600505918 /* Identification.m in Sources */,
-FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
-FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
-FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
-197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
-FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
-197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
-191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
-195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
-FADE28AC1B02D9AA00CA55FF /* Sources */ = {
-isa = PBXSourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		1927512F14E9CCC9000ABAC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
+				FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */,
+				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
+				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
+				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
+				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
+				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
+				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
+				19AE897318DD08A100505918 /* Comment.m in Sources */,
+				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
+				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
+				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
+				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
+				FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
+				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
+				19AE897918DD08CC00505918 /* User.m in Sources */,
+				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
+				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
+				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
+				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
+				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
+				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
+				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
+				FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */,
+				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
+				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
+				FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
+				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
+				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
+				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
+				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
+				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
+				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
+				FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */,
+				1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
+				FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */,
+				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
+				19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
+				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
+				FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */,
+				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
+				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
+				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
+				FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */,
+				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
+				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
+				19F62193150ECBEE00C58F28 /* List.m in Sources */,
+				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
+				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
+				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
+				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
+				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
+				19F62199150ECC1200C58F28 /* Project.m in Sources */,
+				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
+				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
+				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
+				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
+				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
+				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
+				197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
+				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
+				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
+				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
+				FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */,
+				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
+				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
+				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
+				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
+				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
+				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
+				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
+				19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
+				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
+				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
+				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
+				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
+				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
+				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
+				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
+				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
+				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
+				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
+				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
+				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
+				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
+				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
+				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
+				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
+				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
+				FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */,
+				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
+				FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */,
+				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
+				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
+				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
+				897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */,
+				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
+				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
+				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
+				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
+				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
+				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,
+				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
+				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
+				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
+				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
+				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
+				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
+				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
+				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
+				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
+				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
+				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
+				FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */,
+				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
+				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
+				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
+				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
+				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
+				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
+				FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
+				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
+				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
+				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
+				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
+				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
+				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
+				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
+				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
+				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
+				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
+				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
+				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
+				19AE897618DD08B600505918 /* Identification.m in Sources */,
+				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
+				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
+				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
+				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
+				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
+				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
+				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
+				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FADE28AC1B02D9AA00CA55FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */ = {
-isa = PBXTargetDependency;
-target = 1927513214E9CCC9000ABAC4 /* iNaturalist */;
-targetProxy = FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */;
-};
+		FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1927513214E9CCC9000ABAC4 /* iNaturalist */;
+			targetProxy = FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */ = {
-isa = PBXVariantGroup;
-children = (
-1958894A18074F2300294EB3 /* Base */,
-1958894F180750B700294EB3 /* en */,
-19FFA16F191D82CE000A6EBA /* es */,
-FA3D905C1A93FCC700BAA0EC /* ja */,
-FA3D90721A93FCF100BAA0EC /* sv */,
-FA1B37BF1AD88BFE002A00A5 /* fr */,
-FA1B37C11AD88C06002A00A5 /* it */,
-FA1B37C41AD88EED002A00A5 /* pt */,
-890DE36A1B41357000207219 /* he */,
-);
-name = MainStoryboard.storyboard;
-sourceTree = "<group>";
-};
-60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */ = {
-isa = PBXVariantGroup;
-children = (
-60EBAD5016E5C65B00BFCDAF /* en */,
-60EBAD5216E5C66000BFCDAF /* es */,
-FA3D90741A93FD0600BAA0EC /* ja */,
-FA3D90761A93FD0800BAA0EC /* sv */,
-FA1B37BC1AD88BE2002A00A5 /* fr */,
-FA1B37BD1AD88BE3002A00A5 /* it */,
-FA1B37C51AD88EF3002A00A5 /* pt */,
-890DE36B1B41357000207219 /* he */,
-);
-name = InfoPlist.strings;
-sourceTree = "<group>";
-};
-60F6CEC016E29AD60031504A /* Localizable.strings */ = {
-isa = PBXVariantGroup;
-children = (
-60F6CEBF16E29AD60031504A /* en */,
-60F6CEC216E2A8700031504A /* es */,
-FA3D905D1A93FCC700BAA0EC /* ja */,
-FA3D90731A93FCF100BAA0EC /* sv */,
-FA1B37BA1AD88BBC002A00A5 /* fr */,
-FA1B37BB1AD88BCF002A00A5 /* it */,
-FA1B37C21AD88EDC002A00A5 /* pt */,
-890DE36C1B41357000207219 /* he */,
-);
-name = Localizable.strings;
-sourceTree = "<group>";
-};
+		1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1958894A18074F2300294EB3 /* Base */,
+				1958894F180750B700294EB3 /* en */,
+				19FFA16F191D82CE000A6EBA /* es */,
+				FA3D905C1A93FCC700BAA0EC /* ja */,
+				FA3D90721A93FCF100BAA0EC /* sv */,
+				FA1B37BF1AD88BFE002A00A5 /* fr */,
+				FA1B37C11AD88C06002A00A5 /* it */,
+				FA1B37C41AD88EED002A00A5 /* pt */,
+				890DE36A1B41357000207219 /* he */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+		60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60EBAD5016E5C65B00BFCDAF /* en */,
+				60EBAD5216E5C66000BFCDAF /* es */,
+				FA3D90741A93FD0600BAA0EC /* ja */,
+				FA3D90761A93FD0800BAA0EC /* sv */,
+				FA1B37BC1AD88BE2002A00A5 /* fr */,
+				FA1B37BD1AD88BE3002A00A5 /* it */,
+				FA1B37C51AD88EF3002A00A5 /* pt */,
+				890DE36B1B41357000207219 /* he */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		60F6CEC016E29AD60031504A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60F6CEBF16E29AD60031504A /* en */,
+				60F6CEC216E2A8700031504A /* es */,
+				FA3D905D1A93FCC700BAA0EC /* ja */,
+				FA3D90731A93FCF100BAA0EC /* sv */,
+				FA1B37BA1AD88BBC002A00A5 /* fr */,
+				FA1B37BB1AD88BCF002A00A5 /* it */,
+				FA1B37C21AD88EDC002A00A5 /* pt */,
+				890DE36C1B41357000207219 /* he */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-1927514F14E9CCC9000ABAC4 /* Debug */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ALWAYS_SEARCH_USER_PATHS = NO;
-ARCHS = "$(ARCHS_STANDARD)";
-CLANG_ENABLE_OBJC_ARC = YES;
-"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-COPY_PHASE_STRIP = NO;
-GCC_C_LANGUAGE_STANDARD = gnu99;
-GCC_DYNAMIC_NO_PIC = NO;
-GCC_OPTIMIZATION_LEVEL = 0;
-GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES;
-GCC_WARN_UNUSED_VARIABLE = YES;
-IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-SDKROOT = iphoneos6.0;
-};
-name = Debug;
-};
-1927515014E9CCC9000ABAC4 /* Release */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ALWAYS_SEARCH_USER_PATHS = NO;
-ARCHS = "$(ARCHS_STANDARD)";
-CLANG_ENABLE_OBJC_ARC = YES;
-"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iNaturalist, LLC";
-COPY_PHASE_STRIP = YES;
-GCC_C_LANGUAGE_STANDARD = gnu99;
-GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES;
-GCC_WARN_UNUSED_VARIABLE = YES;
-IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E370407E-FC62-4E98-9D47-120CA597D2CF";
-SDKROOT = iphoneos6.0;
-VALIDATE_PRODUCT = YES;
-};
-name = Release;
-};
-1927515214E9CCC9000ABAC4 /* Debug */ = {
-isa = XCBuildConfiguration;
-baseConfigurationReference = 879E5037B10357A014B15064 /* Pods-iNaturalist.debug.xcconfig */;
-buildSettings = {
-ARCHS = "$(ARCHS_STANDARD)";
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-CLANG_ENABLE_MODULES = YES;
-CODE_SIGN_IDENTITY = "iPhone Developer";
-"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-FRAMEWORK_SEARCH_PATHS = (
-"$(inherited)",
-"$(PROJECT_DIR)",
-);
-GCC_PRECOMPILE_PREFIX_HEADER = YES;
-GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
-GCC_PREPROCESSOR_DEFINITIONS = (
-"$(inherited)",
-"DEBUG=1",
-);
-HEADER_SEARCH_PATHS = (
-"\"$(BUILT_PRODUCTS_DIR)/../../Headers\"",
-"$(SDK_DIR)/usr/include/libxml2",
-"$(inherited)",
-);
-INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
-IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-LIBRARY_SEARCH_PATHS = "$(inherited)";
-OTHER_LDFLAGS = (
-"-ObjC",
-"-all_load",
-"-lsqlite3.0",
-"$(inherited)",
-);
-PRODUCT_NAME = iNaturalist;
-PROVISIONING_PROFILE = "";
-SDKROOT = iphoneos;
-TARGETED_DEVICE_FAMILY = "1,2";
-USER_HEADER_SEARCH_PATHS = "";
-WRAPPER_EXTENSION = app;
-};
-name = Debug;
-};
-1927515314E9CCC9000ABAC4 /* Release */ = {
-isa = XCBuildConfiguration;
-baseConfigurationReference = 0E1CCDC474BAD6E1C98FD185 /* Pods-iNaturalist.release.xcconfig */;
-buildSettings = {
-ARCHS = "$(ARCHS_STANDARD)";
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-CLANG_ENABLE_MODULES = YES;
-CODE_SIGN_IDENTITY = "iPhone Developer";
-"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-FRAMEWORK_SEARCH_PATHS = (
-"$(inherited)",
-"$(PROJECT_DIR)",
-);
-GCC_PRECOMPILE_PREFIX_HEADER = YES;
-GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
-HEADER_SEARCH_PATHS = (
-"\"$(BUILT_PRODUCTS_DIR)/../../Headers\"",
-"$(SDK_DIR)/usr/include/libxml2",
-"$(inherited)",
-);
-INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
-IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-LIBRARY_SEARCH_PATHS = "$(inherited)";
-OTHER_LDFLAGS = (
-"-ObjC",
-"-all_load",
-"-lsqlite3.0",
-"$(inherited)",
-);
-PRODUCT_NAME = iNaturalist;
-PROVISIONING_PROFILE = "";
-"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-SDKROOT = iphoneos;
-TARGETED_DEVICE_FAMILY = "1,2";
-USER_HEADER_SEARCH_PATHS = "";
-WRAPPER_EXTENSION = app;
-};
-name = Release;
-};
-FADE28B91B02D9AA00CA55FF /* Debug */ = {
-isa = XCBuildConfiguration;
-baseConfigurationReference = 632CB5561AA3F7B99765BE50 /* Pods-iNaturalistTests.debug.xcconfig */;
-buildSettings = {
-BUNDLE_LOADER = "$(TEST_HOST)";
-CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-CLANG_CXX_LIBRARY = "libc++";
-CLANG_ENABLE_MODULES = YES;
-CLANG_WARN_BOOL_CONVERSION = YES;
-CLANG_WARN_CONSTANT_CONVERSION = YES;
-CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-CLANG_WARN_EMPTY_BODY = YES;
-CLANG_WARN_ENUM_CONVERSION = YES;
-CLANG_WARN_INT_CONVERSION = YES;
-CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-CLANG_WARN_UNREACHABLE_CODE = YES;
-CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-ENABLE_STRICT_OBJC_MSGSEND = YES;
-FRAMEWORK_SEARCH_PATHS = (
-"$(SDKROOT)/Developer/Library/Frameworks",
-"$(inherited)",
-);
-GCC_NO_COMMON_BLOCKS = YES;
-GCC_PREPROCESSOR_DEFINITIONS = (
-"DEBUG=1",
-"$(inherited)",
-);
-GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-GCC_WARN_UNDECLARED_SELECTOR = YES;
-GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-GCC_WARN_UNUSED_FUNCTION = YES;
-INFOPLIST_FILE = iNaturalistTests/Info.plist;
-IPHONEOS_DEPLOYMENT_TARGET = 8.3;
-LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-MTL_ENABLE_DEBUG_INFO = YES;
-ONLY_ACTIVE_ARCH = NO;
-PRODUCT_NAME = "$(TARGET_NAME)";
-SDKROOT = iphoneos;
-TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
-};
-name = Debug;
-};
-FADE28BA1B02D9AA00CA55FF /* Release */ = {
-isa = XCBuildConfiguration;
-baseConfigurationReference = 877B526621D376BBB82550CD /* Pods-iNaturalistTests.release.xcconfig */;
-buildSettings = {
-BUNDLE_LOADER = "$(TEST_HOST)";
-CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-CLANG_CXX_LIBRARY = "libc++";
-CLANG_ENABLE_MODULES = YES;
-CLANG_WARN_BOOL_CONVERSION = YES;
-CLANG_WARN_CONSTANT_CONVERSION = YES;
-CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-CLANG_WARN_EMPTY_BODY = YES;
-CLANG_WARN_ENUM_CONVERSION = YES;
-CLANG_WARN_INT_CONVERSION = YES;
-CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-CLANG_WARN_UNREACHABLE_CODE = YES;
-CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-COPY_PHASE_STRIP = NO;
-DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-ENABLE_NS_ASSERTIONS = NO;
-ENABLE_STRICT_OBJC_MSGSEND = YES;
-FRAMEWORK_SEARCH_PATHS = (
-"$(SDKROOT)/Developer/Library/Frameworks",
-"$(inherited)",
-);
-GCC_NO_COMMON_BLOCKS = YES;
-GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-GCC_WARN_UNDECLARED_SELECTOR = YES;
-GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-GCC_WARN_UNUSED_FUNCTION = YES;
-INFOPLIST_FILE = iNaturalistTests/Info.plist;
-IPHONEOS_DEPLOYMENT_TARGET = 8.3;
-LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-MTL_ENABLE_DEBUG_INFO = NO;
-PRODUCT_NAME = "$(TARGET_NAME)";
-SDKROOT = iphoneos;
-TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
-};
-name = Release;
-};
+		1927514F14E9CCC9000ABAC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos6.0;
+			};
+			name = Debug;
+		};
+		1927515014E9CCC9000ABAC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iNaturalist, LLC";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E370407E-FC62-4E98-9D47-120CA597D2CF";
+				SDKROOT = iphoneos6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1927515214E9CCC9000ABAC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 879E5037B10357A014B15064 /* Pods-iNaturalist.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"\"$(BUILT_PRODUCTS_DIR)/../../Headers\"",
+					"$(SDK_DIR)/usr/include/libxml2",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-lsqlite3.0",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = iNaturalist;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1927515314E9CCC9000ABAC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0E1CCDC474BAD6E1C98FD185 /* Pods-iNaturalist.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "INaturalistIOS/iNaturalist-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"$(BUILT_PRODUCTS_DIR)/../../Headers\"",
+					"$(SDK_DIR)/usr/include/libxml2",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-lsqlite3.0",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = iNaturalist;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d49a850d-7038-4a4e-8dcd-fda43103342a";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FADE28B91B02D9AA00CA55FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 632CB5561AA3F7B99765BE50 /* Pods-iNaturalistTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = iNaturalistTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
+			};
+			name = Debug;
+		};
+		FADE28BA1B02D9AA00CA55FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 877B526621D376BBB82550CD /* Pods-iNaturalistTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = iNaturalistTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */ = {
-isa = XCConfigurationList;
-buildConfigurations = (
-1927514F14E9CCC9000ABAC4 /* Debug */,
-1927515014E9CCC9000ABAC4 /* Release */,
-);
-defaultConfigurationIsVisible = 0;
-defaultConfigurationName = Release;
-};
-1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */ = {
-isa = XCConfigurationList;
-buildConfigurations = (
-1927515214E9CCC9000ABAC4 /* Debug */,
-1927515314E9CCC9000ABAC4 /* Release */,
-);
-defaultConfigurationIsVisible = 0;
-defaultConfigurationName = Release;
-};
-FADE28B81B02D9AA00CA55FF /* Build configuration list for PBXNativeTarget "iNaturalistTests" */ = {
-isa = XCConfigurationList;
-buildConfigurations = (
-FADE28B91B02D9AA00CA55FF /* Debug */,
-FADE28BA1B02D9AA00CA55FF /* Release */,
-);
-defaultConfigurationIsVisible = 0;
-defaultConfigurationName = Release;
-};
+		1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1927514F14E9CCC9000ABAC4 /* Debug */,
+				1927515014E9CCC9000ABAC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1927515214E9CCC9000ABAC4 /* Debug */,
+				1927515314E9CCC9000ABAC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FADE28B81B02D9AA00CA55FF /* Build configuration list for PBXNativeTarget "iNaturalistTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FADE28B91B02D9AA00CA55FF /* Debug */,
+				FADE28BA1B02D9AA00CA55FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
-isa = XCVersionGroup;
-children = (
-FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */,
-FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */,
-FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */,
-19AE897018DD036800505918 /* INaturalist2.4.xcdatamodel */,
-191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */,
-190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */,
-191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
-1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
-);
-currentVersion = FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */;
-path = INaturalist.xcdatamodeld;
-sourceTree = "<group>";
-versionGroupType = wrapper.xcdatamodel;
-};
+		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */,
+				FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */,
+				FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */,
+				19AE897018DD036800505918 /* INaturalist2.4.xcdatamodel */,
+				191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */,
+				190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */,
+				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
+				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
+			);
+			currentVersion = FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */;
+			path = INaturalist.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 /* End XCVersionGroup section */
-};
-rootObject = 1927512A14E9CCC8000ABAC4 /* Project object */;
+	};
+	rootObject = 1927512A14E9CCC8000ABAC4 /* Project object */;
 }
