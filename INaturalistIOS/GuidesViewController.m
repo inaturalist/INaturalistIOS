@@ -22,6 +22,7 @@
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "UIColor+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -30,19 +31,6 @@ static const int ListControlIndexUser = 1;
 static const int ListControlIndexNearby = 2;
 
 @implementation GuidesViewController
-@synthesize guides = _guides;
-@synthesize guideUsersSyncedAt = _lastSyncedAt;
-@synthesize allGuidesSyncedAt = _allGuidesSyncedAt;
-@synthesize nearbyGuidesSyncedAt = _nearbyGuidesSyncedAt;
-@synthesize noContentLabel = _noContentLabel;
-@synthesize guidesSearchController = _guidesSearchController;
-@synthesize listControl = _listControl;
-@synthesize listControlItem = _listControlItem;
-@synthesize locationManager = _locationManager;
-@synthesize lastLocation = _lastLocation;
-@synthesize syncButton = _syncButton;
-@synthesize searchBar = _searchBar;
-@synthesize syncActivityItem = _syncActivityItem;
 
 - (void)loadData
 {
@@ -395,7 +383,7 @@ static const int ListControlIndexNearby = 2;
                                                                    NSLocalizedString(@"Your Guides",nil),
                                                                    NSLocalizedString(@"Nearby",nil),
                                                                    ]];
-        _listControl.tintColor = [UIColor whiteColor];
+        _listControl.tintColor = [UIColor inatTint];
 
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;

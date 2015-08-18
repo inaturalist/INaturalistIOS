@@ -17,24 +17,17 @@
 
 
 @interface ObservationsViewController : UITableViewController <ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate>
-@property (nonatomic, assign) NSInteger observationsToSyncCount;
-@property (nonatomic, assign) NSInteger observationPhotosToSyncCount;
-@property (nonatomic, strong) NSArray *syncToolbarItems;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton; // if the button is just kind of floating and not assigned a super view, it will get deallocated UNLESS we have a strong reference here
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *editButton;
-@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
+
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 
 - (IBAction)sync:(id)sender;
 - (IBAction)viewActivity:(id)sender;
 - (void)stopSync;
-- (void)stopEditing;
 
 - (void)syncObservationPhoto:(ObservationPhoto *)op;
 - (void)loadData;
 - (void)reload;
 - (void)checkSyncStatus;
-- (NSInteger)itemsToSyncCount;
 - (void)clickedActivity:(id)sender event:(UIEvent *)event;
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification;
 - (BOOL)isSyncing;

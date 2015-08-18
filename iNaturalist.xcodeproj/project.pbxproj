@@ -163,6 +163,7 @@
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
+		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
 		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -519,6 +520,7 @@
 		FA724ADF1AB150BD00D01773 /* MeHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeHeaderView.m; sourceTree = "<group>"; };
 		FA724AE11AB150D300D01773 /* AnonHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonHeaderView.h; sourceTree = "<group>"; };
 		FA724AE21AB150D300D01773 /* AnonHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonHeaderView.m; sourceTree = "<group>"; };
+		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardHeader.h; sourceTree = "<group>"; };
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
 		FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChiclet.h; sourceTree = "<group>"; };
@@ -708,6 +710,7 @@
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
+				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
@@ -1297,6 +1300,7 @@
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
+				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,

@@ -17,7 +17,7 @@
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
 #import "User.h"
-
+#import "UploadManager.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -41,6 +41,8 @@ NSInteger INatMinPasswordLength = 6;
 
 - (instancetype)init {
     if (self = [super init]) {
+        self.uploadManager = [[UploadManager alloc] init];
+        
         [self initOAuth2Service];
         [self initGoogleLogin];
     }
@@ -515,6 +517,13 @@ NSInteger INatMinPasswordLength = 6;
     } else {
         return nil;
     }
+}
+
+- (BOOL)isLoggedIn {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
 }
 
 @end

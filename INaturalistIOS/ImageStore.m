@@ -15,6 +15,8 @@
 #import "ImageStore.h"
 #import "Analytics.h"
 
+#define INATURALIST_ORG_MAX_PHOTO_EDGE      2048
+
 @interface ImageStore () {
     NSOperationQueue *resizeQueue;
 }
@@ -50,7 +52,7 @@
 
 - (UIImage *)find:(NSString *)key
 {
-    return [self find:key forSize:0];
+    return [self find:key forSize:ImageStoreOriginalSize];
 }
 
 - (UIImage *)find:(NSString *)key forSize:(int)size
@@ -154,10 +156,18 @@
             [self generateImageWithParams:@{
                                             @"key": key,
                                             @"size": @(ImageStoreLargeSize),
-                                            @"longEdge": @(2.0 * screenMax),
+                                            @"longEdge": @(INATURALIST_ORG_MAX_PHOTO_EDGE),
                                             @"compression": @(1.0),
                                             }
                                     error:nil];
+        }
+        
+        // once we're done making cutdowns from it, delete the original
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+        if (error) {
+            NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: error deleting original %@", error.localizedDescription];
+            [[Analytics sharedClient] debugLog:debugMsg];
         }
     }];
     
@@ -250,7 +260,7 @@
 
 - (NSString *)pathForKey:(NSString *)key
 {
-    return [self pathForKey:key forSize:0];
+    return [self pathForKey:key forSize:ImageStoreOriginalSize];
 }
 
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size

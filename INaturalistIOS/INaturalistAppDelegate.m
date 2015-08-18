@@ -89,6 +89,10 @@
         UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
         iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         iv.image = [UIImage IFTTTDefaultLaunchImage];
+        if (!iv.image) {
+            iv.image = [UIImage imageNamed:@"SignUp_OrangeFlower"];
+        }
+        
         iv;
     });
     [loadingVC.view addSubview:launchImageView];
@@ -133,10 +137,16 @@
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         
-        [[UITabBar appearance] setTintColor:[UIColor colorWithHexString:@"#666666"]];
-        [[UITabBar appearance] setSelectedImageTintColor:[UIColor inatTint]];
-        
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
+        
+        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        
+        // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
+                                                             forState:UIControlStateSelected];
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
+                                                             forState:UIControlStateNormal];
+        
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
         [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
@@ -328,12 +338,8 @@
                                      forAccountType:kINatAuthServiceExtToken];
 }
 
-- (BOOL)loggedIn
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
-    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+- (BOOL)loggedIn {
+    return self.loginController.isLoggedIn;
 }
 
 - (void)showMainUI {

@@ -133,18 +133,11 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="8" contentMode="left" text="???" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" adjustsFontSizeToFit="NO" id="R4F-3k-D7x">
-                                                    <rect key="frame" x="269" y="31" width="24" height="24"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="8" contentMode="left" text="???" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="6" adjustsLetterSpacingToFitWidth="YES" id="R4F-3k-D7x">
+                                                    <rect key="frame" x="269" y="31" width="40" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="9" contentMode="left" text="m" lineBreakMode="tailTruncation" minimumFontSize="10" id="UWz-sc-ZIU">
-                                                    <rect key="frame" x="293" y="31" width="16" height="24"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="10" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Unknown place" adjustsFontSizeToFit="NO" minimumFontSize="17" id="1bw-oa-ona">
@@ -397,6 +390,10 @@
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
+                                        <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" id="5V2-Zg-2MV">
+                                            <rect key="frame" x="57" y="38" width="202" height="2"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </progressView>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
@@ -408,7 +405,7 @@
                                     <outlet property="syncImage" destination="TR3-ef-hqW" id="yeG-m3-74n"/>
                                     <outlet property="titleLabel" destination="bTy-8i-NnF" id="mvk-US-bo9"/>
                                     <outlet property="uploadButton" destination="4ad-gm-E4t" id="80s-v8-Hdv"/>
-                                    <segue destination="U46-UV-TAq" kind="push" identifier="EditObservationSegue" id="BM6-2v-ilx"/>
+                                    <outlet property="uploadProgress" destination="5V2-Zg-2MV" id="2a4-Ck-J1T"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -417,32 +414,14 @@
                             <outlet property="delegate" destination="2" id="H1f-PQ-aEK"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf">
-                        <barButtonItem key="leftBarButtonItem" title="Edit" id="0Fk-rY-9h1">
-                            <connections>
-                                <action selector="edit:" destination="2" id="uXk-xm-Qpf"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Add" style="done" id="31c-qh-A6S">
-                            <color key="tintColor" red="0.65882354970000001" green="0.80000007149999997" blue="0.1960784495" alpha="1" colorSpace="deviceRGB"/>
-                            <connections>
-                                <action selector="addNewObservation:" destination="2" id="OeF-E8-agj"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Observations" id="uR8-0q-Vnf"/>
                     <connections>
-                        <outlet property="editButton" destination="0Fk-rY-9h1" id="mdZ-o7-jWm"/>
-                        <outlet property="syncButton" destination="r7b-jc-Kqj" id="ZEM-2s-eAN"/>
                         <segue destination="Kvl-LX-MOH" kind="push" identifier="segueToProjects" id="H68-Pb-2gy"/>
                         <segue destination="3yj-dQ-gUZ" kind="push" identifier="segueToGuides" id="zsZ-Oy-2P1"/>
+                        <segue destination="U46-UV-TAq" kind="push" identifier="observationDetail" id="3Qk-hR-j2H"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
-                <barButtonItem title="Sync" style="done" id="r7b-jc-Kqj">
-                    <connections>
-                        <action selector="sync:" destination="2" id="taN-EH-nC5"/>
-                    </connections>
-                </barButtonItem>
             </objects>
             <point key="canvasLocation" x="-276" y="419"/>
         </scene>
@@ -2178,8 +2157,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="951-R5-gTN"/>
         <segue reference="hvR-ND-N81"/>
+        <segue reference="951-R5-gTN"/>
         <segue reference="Q4H-Ck-yCo"/>
     </inferredMetricsTieBreakers>
 </document>

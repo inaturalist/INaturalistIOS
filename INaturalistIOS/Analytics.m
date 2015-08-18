@@ -59,21 +59,39 @@
 }
 
 - (void)logAllPageViewForTarget:(UIViewController *)target {
+#ifdef INatFlurryKey
     [Flurry logAllPageViewsForTarget:target];
+#endif
 }
 
 - (void)timedEvent:(NSString *)name {
+#ifdef INatFlurryKey
     [Flurry logEvent:name timed:YES];
+#endif
+    
+#ifdef INatCrashlyticsKey
+    [Answers logCustomEventWithName:name customAttributes:nil]; // no timed events in Crashlytics
+#endif
 }
 - (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
+#ifdef INatFlurryKey
     [Flurry logEvent:name withParameters:properties timed:YES];
+#endif
+    
+#ifdef INatCrashlyticsKey
+    [Answers logCustomEventWithName:name customAttributes:properties];
+#endif
 }
 
 - (void)endTimedEvent:(NSString *)name {
+#ifdef INatFlurryKey
     [Flurry endTimedEvent:name withParameters:nil];
+#endif
 }
 - (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
+#ifdef INatFlurryKey
     [Flurry endTimedEvent:name withParameters:properties];
+#endif
 }
 
 - (void)debugLog:(NSString *)logMessage {

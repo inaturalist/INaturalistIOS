@@ -39,30 +39,24 @@
 @interface UploadManager () {
     BOOL _cancelled;
 }
-@property (nonatomic, strong) NSMutableArray *queue;
-@property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
-@property (nonatomic, assign) BOOL started;
 @property NSMutableArray *objectLoaders;
 @end
 
 @implementation UploadManager
 
-- (id)initWithDelegate:(id)delegate
-{
-    self = [super init];
-    if (self) {
-        self.delegate = delegate;
-        self.queue = [[NSMutableArray alloc] init];
-        
+- (instancetype)init {
+    if (self = [super init]) {
         // workaround a restkit bug where the object loader isn't retained in the
         // event that a request fails by stashing all objectloaders
         self.objectLoaders = [NSMutableArray array];
     }
+    
     return self;
 }
 
 - (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion {
     if (deletedRecords.count == 0) {
+        self.uploading = NO;
         NSError *saveError = nil;
         [[NSManagedObjectContext defaultContext] save:&saveError];
         if (saveError) {
@@ -72,7 +66,10 @@
             deletesCompletion();
         }
     } else {
-        if (self.cancelled) {
+        self.uploading = YES;
+        
+        if (self.isCancelled) {
+            self.uploading = NO;
             deletesCompletion();
             return;
         }
@@ -100,19 +97,20 @@
 
 - (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion {
     if (observations.count == 0) {
-        self.started = NO;
+        self.uploading = NO;
         [self.delegate uploadSessionFinished];
         if (uploadCompletion) {
             uploadCompletion();
         }
     } else {
-        if (self.cancelled) {
-            uploadCompletion();
-            return;
-        }
+        self.uploading = YES;
         
-        if (!self.started) {
-            self.started = YES;
+        if (self.isCancelled) {
+            self.uploading = NO;
+            if (uploadCompletion) {
+                uploadCompletion();
+            }
+            return;
         }
         
         // upload head
@@ -142,10 +140,19 @@
 - (void)uploadRecordsForObservation:(Observation *)observation completion:(void (^)(NSError *error))observationCompletion {
     
     NSArray *childrenNeedingUpload = [observation childrenNeedingUpload];
+    NSUInteger recordsNeedingUpload = childrenNeedingUpload.count;
+    if (observation.needsSync) { recordsNeedingUpload++; }
     
+    __block NSUInteger recordsUploaded = 0;
+
     __weak typeof(self)weakSelf = self;
     void(^eachCompletion)() = ^void() {
         __strong typeof(weakSelf)strongSelf = weakSelf;
+        recordsUploaded++;
+        
+        [strongSelf.delegate uploadProgress:(float)recordsUploaded / recordsNeedingUpload
+                                        for:observation];
+        
         if (!observation.needsUpload) {
             [strongSelf.delegate uploadSuccessFor:observation];
             observationCompletion(nil);
@@ -153,6 +160,7 @@
     };
     
     [self.delegate uploadStartedFor:observation];
+    
     
     if (observation.needsSync) {
         __weak typeof(self)weakSelf = self;
@@ -162,14 +170,14 @@
                         observationCompletion(error);
                     } else {
                         eachCompletion();
-                        for (INatModel *child in childrenNeedingUpload) {
+                        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
                             [weakSelf uploadRecord:child
                                         completion:eachCompletion];
                         }
                     }
                 }];
     } else {
-        for (INatModel *child in childrenNeedingUpload) {
+        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
             [self uploadRecord:child
                     completion:eachCompletion];
         }
@@ -177,7 +185,7 @@
 }
 
 
-- (void)uploadRecord:(INatModel *)record completion:(void (^)(NSError *error))completion {
+- (void)uploadRecord:(INatModel <Uploadable> *)record completion:(void (^)(NSError *error))completion {
     
     RKRequestMethod method = record.syncedAt ? RKRequestMethodPUT : RKRequestMethodPOST;
     
@@ -190,6 +198,36 @@
     if ([record respondsToSelector:@selector(fileUploadParameter)]) {
         NSString *path = [record performSelector:@selector(fileUploadParameter)];
         
+        if (!path) {
+            // the only case for now
+            if ([record isKindOfClass:[ObservationPhoto class]]) {
+                // if there's no file for this photo, bail on it and the upload process
+                ObservationPhoto *op = (ObservationPhoto *)record;
+                
+                // human readable index
+                NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
+                NSString *obsName;
+                if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
+                    obsName = op.observation.speciesGuess;
+                else
+                    obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
+                
+                NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
+                                                                                  @"error message when an obs photo doesn't have a file on the phone."),
+                                      index, obsName];
+                NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                                     code:1201
+                                                 userInfo:@{
+                                                            NSLocalizedDescriptionKey: errorMsg,
+                                                            }];
+                [op destroy];
+                
+                [self.delegate uploadFailedFor:record error:error];
+                self.uploading = NO;
+                return;
+            }
+        }
+        
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
         RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
                                                  serializationMappingForClass:[record class]];
@@ -201,7 +239,7 @@
         // should really call completion with the error
         if (error) {
             [self.delegate uploadFailedFor:record error:error];
-            self.started = NO;
+            self.uploading = NO;
             return;
         }
         
@@ -266,7 +304,7 @@
     }];
 }
 
-- (BOOL)cancelled {
+- (BOOL)isCancelled {
     return _cancelled;
 }
 
