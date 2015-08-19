@@ -474,7 +474,7 @@ static const int CategorizeNewObsSwitchTag = 102;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1) {
-        if (indexPath.item == 2) {
+        if (indexPath.item == 3) {
             // so the user can select again
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
