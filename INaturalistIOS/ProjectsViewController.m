@@ -27,18 +27,6 @@ static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
 @implementation ProjectsViewController
-@synthesize projects = _projects;
-@synthesize projectUsersSyncedAt = _lastSyncedAt;
-@synthesize featuredProjectsSyncedAt = _featuredProjectsSyncedAt;
-@synthesize nearbyProjectsSyncedAt = _nearbyProjectsSyncedAt;
-@synthesize noContentLabel = _noContentLabel;
-@synthesize projectsSearchController = _projectsSearchController;
-@synthesize listControl = _listControl;
-@synthesize listControlItem = _listControlItem;
-@synthesize locationManager = _locationManager;
-@synthesize lastLocation = _lastLocation;
-@synthesize syncButton = _syncButton;
-@synthesize syncActivityItem = _syncActivityItem;
 
 - (void)loadData
 {
