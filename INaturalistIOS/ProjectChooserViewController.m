@@ -98,9 +98,13 @@
         if (username && username.length > 0) {
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
             [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                         objectMapping:[ProjectUser mapping]
-                                                              delegate:self];
+            RKObjectManager *objectManager = [RKObjectManager sharedManager];
+            [objectManager loadObjectsAtResourcePath:url
+                                          usingBlock:^(RKObjectLoader *loader) {
+                                              loader.delegate = self;
+                                              // handle naked array in JSON by explicitly directing the loader which mapping to use
+                                              loader.objectMapping = [objectManager.mappingProvider objectMappingForClass:[ProjectUser class]];
+                                          }];
         }
     }
 }
