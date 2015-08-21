@@ -25,8 +25,4 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
-- (void)loadData;
-- (void)sync;
-- (void)stopSync;
-- (void)checkEmpty;
 @end
