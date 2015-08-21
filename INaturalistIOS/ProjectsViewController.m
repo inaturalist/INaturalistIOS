@@ -386,10 +386,6 @@ static const int ListControlIndexNearby = 2;
                            flex, 
                            nil]];
     
-    if (self.locationManager) {
-        [self.locationManager startUpdatingLocation];
-    }
-    [self loadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -421,6 +417,11 @@ static const int ListControlIndexNearby = 2;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenProjects];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
+    if (self.locationManager) {
+        [self.locationManager startUpdatingLocation];
+    }
+    [self loadData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
