@@ -855,7 +855,10 @@
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
     
     // sort by common name, if available
-    request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO] ];
+    request.sortDescriptors = @[
+                                [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO],
+                                [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO],
+                                ];
     
     // no request predicate yet, all Observations in core data are "mine"
     
