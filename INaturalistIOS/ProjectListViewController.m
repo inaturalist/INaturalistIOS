@@ -119,7 +119,7 @@ static const int ListedTaxonCellAddButtonTag = 4;
     self.navigationItem.rightBarButtonItem = self.syncButton;
     self.tableView.scrollEnabled = YES;
     [SVProgressHUD dismiss];
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
     [self loadData];
     [[self tableView] reloadData];
 }
