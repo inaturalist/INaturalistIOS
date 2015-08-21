@@ -30,6 +30,9 @@ static const int ListControlIndexAll = 0;
 static const int ListControlIndexUser = 1;
 static const int ListControlIndexNearby = 2;
 
+@interface GuidesViewController () <RKRequestDelegate, RKObjectLoaderDelegate>
+@end
+
 @implementation GuidesViewController
 
 - (void)loadData
@@ -241,105 +244,19 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)syncGuidesWithUrlString:(NSString *)urlString {
-    
-    __weak typeof(self)weakSelf = self;
-    
-    RKObjectLoaderDidLoadObjectsBlock loadedBlock = ^(NSArray *objects) {
-        NSDate *now = [NSDate date];
-        for (INatModel *o in objects) {
-            Guide *g = (Guide *)o;
-            [g setSyncedAt:now];
-        }
-        
-        NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
-                             now];
-        
-        NSArray *rejects = [Guide objectsWithPredicate:pred];
-        
-        for (Guide *g in rejects) {
-            [g deleteEntity];
-        }
-        
-        NSError *error = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
-        if (error) {
-            NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@",
-                                error.localizedDescription];
-            [[Analytics sharedClient] debugLog:logMsg];
-        }
-        
-        [weakSelf stopSync];
-        [weakSelf loadData];
-    };
-    
-    RKRequestDidLoadResponseBlock responseBlock = ^(RKResponse *response) {
-        bool authFailure = false;
-        NSString *errorMsg;
-        switch (response.statusCode) {
-            case 401:
-                // Unauthorized
-                authFailure = true;
-                break;
-            case 422:
-                // UNPROCESSABLE ENTITY
-                
-                errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-                break;
-            default:
-                return;
-                break;
-        }
-        
-        if (authFailure) {
-            [weakSelf stopSync];
-            [weakSelf showSignupPrompt];
-        } else if (errorMsg) {
-            [weakSelf stopSync];
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                        delegate:nil
-                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                               otherButtonTitles:nil];
-            [av show];
-        }
-    };
-    
-    RKObjectLoaderDidFailWithErrorBlock errorBlock = ^(NSError *error) {
-        
-        [weakSelf stopSync];
-        
-        // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-        BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-        BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-        NSString *errorMsg = error.localizedDescription;
-        
-        if (jsonParsingError || authFailure) {
-            [weakSelf showSignupPrompt];
-        } else {
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                         message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                        delegate:nil
-                                               cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                               otherButtonTitles:nil];
-            [av show];
-        }
-
-    };
-    
     [[Analytics sharedClient] debugLog:@"Network - Sync guides"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [Guide mapping];
-                                                        loader.onDidLoadObjects = loadedBlock;
-                                                        loader.onDidLoadResponse = responseBlock;
-                                                        loader.onDidFailWithError = errorBlock;
-                                                    }];
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager loadObjectsAtResourcePath:urlString
+                                  usingBlock:^(RKObjectLoader *loader) {
+                                      loader.delegate = self;
+                                      loader.objectMapping = [Guide mapping];
+                                  }];
 }
 
 - (void)stopSync
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
 }
     
 - (void)showSignupPrompt {
@@ -529,6 +446,10 @@ static const int ListControlIndexNearby = 2;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -592,4 +513,87 @@ static const int ListControlIndexNearby = 2;
         [g save];
     }
 }
+
+#pragma mark - RKRequest and RKObjectLoader delegates
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    [self stopSync];
+    
+    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    NSString *errorMsg = error.localizedDescription;
+    
+    if (jsonParsingError || authFailure) {
+        [self showSignupPrompt];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+    }
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
+    NSDate *now = [NSDate date];
+    for (INatModel *o in objects) {
+        Guide *g = (Guide *)o;
+        [g setSyncedAt:now];
+    }
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
+                         now];
+    
+    NSArray *rejects = [Guide objectsWithPredicate:pred];
+    
+    for (Guide *g in rejects) {
+        [g deleteEntity];
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@",
+                            error.localizedDescription];
+        [[Analytics sharedClient] debugLog:logMsg];
+    }
+    
+    [self stopSync];
+    [self loadData];
+}
+
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    bool authFailure = false;
+    NSString *errorMsg;
+    switch (response.statusCode) {
+        case 401:
+            // Unauthorized
+            authFailure = true;
+            break;
+        case 422:
+            // UNPROCESSABLE ENTITY
+            
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+            break;
+        default:
+            return;
+            break;
+    }
+    
+    if (authFailure) {
+        [self stopSync];
+        [self showSignupPrompt];
+    } else if (errorMsg) {
+        [self stopSync];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+}
+
 @end
