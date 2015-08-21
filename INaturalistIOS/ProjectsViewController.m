@@ -31,6 +31,8 @@ static const int ListControlIndexNearby = 2;
 
 @implementation ProjectsViewController
 
+#pragma mark - load* methods are loading locally from core data
+
 - (void)loadData
 {
     BOOL syncNeeded = NO;
@@ -102,19 +104,6 @@ static const int ListControlIndexNearby = 2;
     [self.tableView reloadData];
 }
 
-- (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
-                                                    delegate:self 
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-        return;
-    }
-    [self sync];
-}
-
 - (void)checkEmpty
 {
     if (self.projects.count == 0 && !self.searchDisplayController.active) {
@@ -146,6 +135,21 @@ static const int ListControlIndexNearby = 2;
     } else if (self.noContentLabel) {
         [self.noContentLabel removeFromSuperview];
     }
+}
+
+#pragma mark - sync* methods are fetching from inaturalist.org
+
+- (IBAction)clickedSync:(id)sender {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
+    [self sync];
 }
 
 - (void)sync
