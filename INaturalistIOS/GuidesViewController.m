@@ -62,7 +62,7 @@ static const int ListControlIndexNearby = 2;
         
         [self sync:NO];
     } else {
-        [self stopSync];
+        [self syncFinished];
     }
 }
 
@@ -210,7 +210,7 @@ static const int ListControlIndexNearby = 2;
                                                otherButtonTitles:nil];
             [av show];
         }
-        [self stopSync];
+        [self syncFinished];
         return;
     }
     self.nearbyGuidesSyncedAt = [NSDate date];
@@ -239,7 +239,7 @@ static const int ListControlIndexNearby = 2;
         [self syncGuidesWithUrlString:url];
         self.guideUsersSyncedAt = [NSDate date];
     } else {
-        [self stopSync];
+        [self syncFinished];
     }
 }
 
@@ -253,7 +253,7 @@ static const int ListControlIndexNearby = 2;
                                   }];
 }
 
-- (void)stopSync
+- (void)syncFinished
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
 }
@@ -407,7 +407,6 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewWillDisappear:animated];
     
-    [self stopSync];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -517,7 +516,7 @@ static const int ListControlIndexNearby = 2;
 #pragma mark - RKRequest and RKObjectLoader delegates
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    [self stopSync];
+    [self syncFinished];
     
     // KLUDGE!! RestKit doesn't seem to handle failed auth very well
     BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
@@ -560,7 +559,7 @@ static const int ListControlIndexNearby = 2;
         [[Analytics sharedClient] debugLog:logMsg];
     }
     
-    [self stopSync];
+    [self syncFinished];
     [self loadData];
 }
 
@@ -583,10 +582,10 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (authFailure) {
-        [self stopSync];
+        [self syncFinished];
         [self showSignupPrompt];
     } else if (errorMsg) {
-        [self stopSync];
+        [self syncFinished];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                     delegate:nil
