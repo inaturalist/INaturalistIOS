@@ -185,7 +185,7 @@ static const int ListControlIndexNearby = 2;
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-        [self stopSync];
+        [self syncFinished];
         return;
     }
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
@@ -214,7 +214,7 @@ static const int ListControlIndexNearby = 2;
         self.projectUsersSyncedAt = [NSDate date];
         [self syncProjectsWithPath:path];
     } else {
-        [self stopSync];
+        [self syncFinished];
         self.projectUsersSyncedAt = nil;
 
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
@@ -273,7 +273,7 @@ static const int ListControlIndexNearby = 2;
 }
 
 
-- (void)stopSync
+- (void)syncFinished
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
 }
@@ -396,7 +396,7 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewWillDisappear:animated];
     
-    [self stopSync];
+    [self syncFinished];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -520,12 +520,12 @@ static const int ListControlIndexNearby = 2;
         [[Analytics sharedClient] debugLog:logMsg];
     }
     
-    [self stopSync];
+    [self syncFinished];
     [self loadData];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    [self stopSync];
+    [self syncFinished];
     
     // KLUDGE!! RestKit doesn't seem to handle failed auth very well
     BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
@@ -563,10 +563,10 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (authFailure) {
-        [self stopSync];
+        [self syncFinished];
         [self showSignupPrompt];
     } else if (errorMsg) {
-        [self stopSync];
+        [self syncFinished];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
                                                     delegate:nil
