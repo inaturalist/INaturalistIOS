@@ -256,7 +256,6 @@ static const int ListControlIndexNearby = 2;
 - (void)stopSync
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
 }
     
 - (void)showSignupPrompt {
