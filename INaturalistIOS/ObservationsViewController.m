@@ -596,13 +596,9 @@
     cell.dateLabel.text = o.observedOnShortString;
     cell.syncImage.hidden = !o.needsSync;
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (o.needsUpload) {
         cell.uploadButton.hidden = NO;
-        FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:30];
-        [upload addAttribute:NSForegroundColorAttributeName
-                       value:[UIColor inatTint]];
-        [cell.uploadButton setAttributedTitle:upload.attributedString
-                                     forState:UIControlStateNormal];
         
         cell.activityButton.hidden = YES;
         cell.syncImage.hidden = YES;
@@ -613,6 +609,11 @@
                     forControlEvents:UIControlEventTouchUpInside];
         
         cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+        if ([appDelegate.loginController.uploadManager isUploading]) {
+            cell.uploadButton.enabled = NO;
+        } else {
+            cell.uploadButton.enabled = YES;
+        }
     } else {
         cell.uploadButton.hidden = YES;
         cell.dateLabel.hidden = NO;
@@ -677,12 +678,15 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ObservationViewCell *cell = (ObservationViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    if (cell.uploadProgress.hidden) {
-        Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
+        return;
+    } else {
         [self performSegueWithIdentifier:@"observationDetail" sender:o];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Header helpers
@@ -1246,11 +1250,12 @@
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = YES;
+        cell.subtitleLabel.hidden = NO;
         cell.dateLabel.hidden = YES;
         cell.uploadButton.hidden = YES;
-        cell.uploadProgress.hidden = NO;
-        cell.uploadProgress.progress = 0;
+        cell.uploadSpinner.hidden = NO;
+        [cell.uploadSpinner startAnimating];
+        cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
     }
 }
 
@@ -1261,24 +1266,20 @@
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     
-    // fade the uploadprogress to invisible to make it clear that it finished
     if ([self.tableView.visibleCells containsObject:cell]) {
-        [UIView animateWithDuration:0.2f
-                              delay:0.2f
-                            options:0
-                         animations:^{
-                             cell.uploadProgress.alpha = 0.0f;
-                         } completion:^(BOOL finished) {
-                             cell.subtitleLabel.hidden = NO;
-                             cell.dateLabel.hidden = NO;
-                             cell.uploadProgress.hidden = YES;
-                             cell.uploadProgress.alpha = 1.0f;
-                             cell.uploadProgress.progress = 0.0;
-                             
-                             // trigger tableview UI updates if necessary
-                             NSError *error = nil;
-                             [fetchedResultsController performFetch:&error];
-                         }];
+        cell.subtitleLabel.hidden = NO;
+        cell.dateLabel.hidden = NO;
+        cell.uploadSpinner.hidden = YES;
+        [cell.uploadSpinner stopAnimating];
+        
+        cell.subtitleLabel.text = NSLocalizedString(@"Finished", @"subtitle for observation after it's finished uploading.");
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if ([self.tableView.visibleCells containsObject:cell]) {
+                [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                                      withRowAnimation:UITableViewRowAnimationFade];
+            }
+        });
     }
 }
 
@@ -1286,11 +1287,12 @@
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = YES;
+        cell.subtitleLabel.hidden = NO;
         cell.dateLabel.hidden = YES;
         cell.uploadButton.hidden = YES;
-        cell.uploadProgress.hidden = NO;
-        cell.uploadProgress.progress = progress;
+        cell.uploadSpinner.hidden = NO;
+        [cell.uploadSpinner startAnimating];
+        cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
     }
 }
 

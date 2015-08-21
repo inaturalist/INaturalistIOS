@@ -26,7 +26,7 @@ static const int ObservationCellActivityInteractiveButtonTag = 7;
 @property (weak, nonatomic) IBOutlet UIButton *activityButton;
 @property (weak, nonatomic) IBOutlet UIImageView *syncImage;
 @property IBOutlet UIButton *uploadButton;
-@property IBOutlet UIProgressView *uploadProgress;
+@property IBOutlet UIActivityIndicatorView *uploadSpinner;
 
 
 @end
