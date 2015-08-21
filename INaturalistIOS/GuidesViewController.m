@@ -314,6 +314,7 @@ static const int ListControlIndexNearby = 2;
 {
     if (!_syncActivityItem) {
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
+        aiv.color = [UIColor inatTint];
         [aiv startAnimating];
         _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
     }
