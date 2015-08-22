@@ -347,7 +347,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)willSave
 {
     [super willSave];
-    NSDate *sortableDate = self.createdAt ? self.createdAt : self.localCreatedAt;
+    NSDate *sortableDate = self.localCreatedAt ? self.localCreatedAt : self.createdAt;
     NSString *sortable = [NSString stringWithFormat:@"%f", sortableDate.timeIntervalSinceReferenceDate];
     [self setPrimitiveValue:sortable forKey:@"sortable"];
     
