@@ -15,7 +15,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        self.backgroundColor = [UIColor inatDarkGreen];
+        self.backgroundColor = [UIColor inatDarkGray];
         
         self.iconButton = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -59,7 +59,7 @@
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
-            button.backgroundColor = [UIColor inatTint];
+            button.backgroundColor = [UIColor inatLightGray];
             button.tintColor = [UIColor whiteColor];
             
             button;
@@ -80,7 +80,7 @@
             button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
             button.separator.hidden = YES;
             
-            button.backgroundColor = [UIColor inatTint];
+            button.backgroundColor = [UIColor inatLightGray];
             button.tintColor = [UIColor whiteColor];
 
             

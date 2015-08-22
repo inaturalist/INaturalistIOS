@@ -24,4 +24,12 @@
     return [UIColor colorWithHexString:@"#666666"];
 }
 
++ (UIColor *)inatDarkGray {
+    return [UIColor colorWithHexString:@"#5D5D5D"];
+}
+
++ (UIColor *)inatLightGray {
+    return [UIColor colorWithHexString:@"#7B7B7B"];
+}
+
 @end

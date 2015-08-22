@@ -716,15 +716,15 @@
         [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
-        view.iconButton.backgroundColor = [UIColor whiteColor];
-        [view.iconButton setTintColor:[UIColor inatTint]];
+        view.iconButton.backgroundColor = [UIColor inatTint];
+        [view.iconButton setTintColor:[UIColor whiteColor]];
 
         if (self.isSyncing) {
-            FAKIcon *pauseIcon = [FAKIonIcons iosPauseIconWithSize:80];
-            [view.iconButton setAttributedTitle:pauseIcon.attributedString
+            FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
+            [view.iconButton setAttributedTitle:stopIcon.attributedString
                                        forState:UIControlStateNormal];
         } else {
-            FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:80];
+            FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:50];
             [view.iconButton setAttributedTitle:uploadIcon.attributedString
                                        forState:UIControlStateNormal];
         }
@@ -1246,8 +1246,8 @@
 - (void)uploadStartedFor:(Observation *)observation {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    FAKIcon *pauseIcon = [FAKIonIcons iosPauseIconWithSize:80];
-    [self.meHeader.iconButton setAttributedTitle:pauseIcon.attributedString
+    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:40];
+    [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
@@ -1363,8 +1363,8 @@
 
 - (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    FAKIcon *pauseIcon = [FAKIonIcons iosPauseIconWithSize:80];
-    [self.meHeader.iconButton setAttributedTitle:pauseIcon.attributedString
+    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:40];
+    [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
 }
 
