@@ -49,7 +49,7 @@
             SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
             button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            FAKIcon *projectsIcon = [FAKIonIcons iosBriefcaseIconWithSize:20];
+            FAKIcon *projectsIcon = [FAKIonIcons iosBriefcaseOutlineIconWithSize:20];
             [projectsIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             button.leadingTitleLabel.attributedText = projectsIcon.attributedString;
             button.leadingTitleWidth = 34.0f;
@@ -70,7 +70,7 @@
             SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
             button.translatesAutoresizingMaskIntoConstraints = NO;
             
-            FAKIcon *guidesIcon = [FAKIonIcons iosBookIconWithSize:20];
+            FAKIcon *guidesIcon = [FAKIonIcons iosBookOutlineIconWithSize:20];
             [guidesIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
             button.leadingTitleLabel.attributedText = guidesIcon.attributedString;
             button.leadingTitleWidth = 34.0f;
