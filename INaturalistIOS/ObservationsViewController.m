@@ -963,7 +963,7 @@
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
     if (username.length) {
         RefreshControl *refresh = [[RefreshControl alloc] init];
-        refresh.backgroundColor = [UIColor inatDarkGreen];
+        refresh.backgroundColor = [UIColor inatDarkGray];
         refresh.tintColor = [UIColor whiteColor];
         refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
                                                                   attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
