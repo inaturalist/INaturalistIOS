@@ -21,6 +21,7 @@
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             button.translatesAutoresizingMaskIntoConstraints = NO;
             
+            button.backgroundColor = [UIColor inatTint];
             button.contentMode = UIViewContentModeScaleAspectFill;
             button.layer.borderColor = [UIColor whiteColor].CGColor;
             button.layer.borderWidth = 2.0f;
