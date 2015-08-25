@@ -379,7 +379,9 @@
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
 {
-    if (self.view && ![[UIApplication sharedApplication] isIdleTimerDisabled]) {
+    if (self.view && [self.navigationController.topViewController isEqual:self] &&
+        ![[UIApplication sharedApplication] isIdleTimerDisabled] &&
+        ![self.tabBarController presentedViewController]) {
         [self reload];
     }
 }
