@@ -1248,7 +1248,7 @@
 - (void)uploadStartedFor:(Observation *)observation {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:40];
+    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
     
@@ -1365,7 +1365,7 @@
 
 - (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:40];
+    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
 }
