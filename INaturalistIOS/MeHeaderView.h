@@ -17,4 +17,7 @@
 @property SplitTextButton *projectsButton;
 @property SplitTextButton *guidesButton;
 
+- (void)startAnimatingUpload;
+- (void)stopAnimatingUpload;
+
 @end

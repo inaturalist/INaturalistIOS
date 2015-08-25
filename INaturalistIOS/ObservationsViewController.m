@@ -635,7 +635,9 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
     if (username && ![username isEqualToString:@""]) {
-        self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        if (!self.meHeader) {
+            self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
+        }
         
         [self configureHeaderForLoggedInUser];
         
@@ -713,22 +715,68 @@
 }
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
-    NSUInteger needingUploadCount = [[Observation needingUpload] count] + [Observation deletedRecordCount];
-    NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] +
-        [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
+    NSUInteger needingUploadCount = [[Observation needingUpload] count];
+    NSUInteger needingDeleteCount = [Observation deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
-        view.iconButton.backgroundColor = [UIColor inatTint];
+        [view.iconButton setImage:nil forState:UIControlStateNormal];
+        [view.iconButton sd_setBackgroundImageWithURL:nil forState:UIControlStateNormal];
         [view.iconButton setTintColor:[UIColor whiteColor]];
+        view.iconButton.backgroundColor = [UIColor inatTint];
 
         if (self.isSyncing) {
             FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
             [view.iconButton setAttributedTitle:stopIcon.attributedString
                                        forState:UIControlStateNormal];
+            
+            [view startAnimatingUpload];
+            
+            view.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
+            
         } else {
             FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:50];
-            [view.iconButton setAttributedTitle:uploadIcon.attributedString
-                                       forState:UIControlStateNormal];
+            if (![[view.iconButton attributedTitleForState:UIControlStateNormal] isEqualToAttributedString:uploadIcon.attributedString]) {
+                
+                [view.iconButton setAttributedTitle:uploadIcon.attributedString
+                                           forState:UIControlStateNormal];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [UIView animateWithDuration:0.3f
+                                     animations:^{
+                                         view.iconButton.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
+                                     } completion:^(BOOL finished) {
+                                         [UIView animateWithDuration:0.3f
+                                                          animations:^{
+                                                              view.iconButton.transform = CGAffineTransformIdentity;
+                                                          }];
+                                     }];
+                });
+            }
+            
+            if (needingUploadCount > 0 && needingDeleteCount > 0) {
+                NSString *baseUploadAndDeleteCountStr = NSLocalizedString(@"%d To Upload, %d To Delete",
+                                                                          @"Count of observations to upload and delete.");
+                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadAndDeleteCountStr, needingUploadCount, needingDeleteCount];
+            } else if (needingUploadCount > 0) {
+                NSString *baseUploadCountStr;
+                if (needingUploadCount == 1) {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
+                                                           @"Count of observations to upload, singular.");
+                } else {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
+                                                           @"Count of observations to upload, plural.");
+                }
+                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
+            } else if (needingDeleteCount > 0) {
+                NSString *baseDeleteCountStr;
+                if (needingDeleteCount == 1) {
+                    baseDeleteCountStr = NSLocalizedString(@"%d Delete to Sync",
+                                                           @"Count of deletes to upload, singular.");
+                } else {
+                    baseDeleteCountStr = NSLocalizedString(@"%d Deletes To Sync",
+                                                           @"Count of observations to upload, plural.");
+                }
+                view.obsCountLabel.text = [NSString stringWithFormat:baseDeleteCountStr, needingDeleteCount];
+            }
         }
         
         if (![view.iconButton targetForAction:@selector(sync:) withSender:self]) {
@@ -737,14 +785,8 @@
                       forControlEvents:UIControlEventTouchUpInside];
         }
         
-        NSString *baseUploadCountStr;
-        if (needingUploadCount == 1) {
-            baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload", @"Count of observations to upload, singular.");
-        } else {
-            baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload", @"Count of observations to upload, plural.");
-        }
-        view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
     } else {
+        [view.iconButton setAttributedTitle:nil forState:UIControlStateNormal];
         view.iconButton.backgroundColor = [UIColor clearColor];
         [view.iconButton removeTarget:self
                                action:@selector(sync:)
@@ -1216,6 +1258,8 @@
 - (void)uploadSessionFinished {
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+    [self.meHeader stopAnimatingUpload];
+
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
                                       @"Via": @"Upload Complete",
@@ -1251,7 +1295,10 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    
+    [self.meHeader startAnimatingUpload];
+    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
+
+
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
@@ -1368,6 +1415,8 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
+    [self.meHeader startAnimatingUpload];
+    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing deletes...", @"Title of me header while syncing deletes.");
 }
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
@@ -1376,6 +1425,7 @@
 
 - (void)deleteSessionFinished {
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    [self.meHeader stopAnimatingUpload];
     [self.tableView reloadData];
 }
 

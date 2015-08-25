@@ -10,6 +10,10 @@
 #import "UIColor+INaturalist.h"
 #import <FontAwesomeKit/FAKIonIcons.h>
 
+@interface MeHeaderView ()
+@property BOOL isAnimating;
+@end
+
 @implementation MeHeaderView
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -138,4 +142,43 @@
     
     return self;
 }
+
+- (void)startAnimatingUpload {
+    if (self.isAnimating) {
+        return;
+    }
+    
+    self.isAnimating = YES;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIView *view = [[UIView alloc] initWithFrame:self.iconButton.bounds];
+        view.tag = 0x99;
+        view.backgroundColor = [UIColor inatDarkGreen];
+        [self.iconButton insertSubview:view belowSubview:self.iconButton.titleLabel];
+        
+        view.frame = CGRectMake(0, self.iconButton.bounds.origin.x + self.iconButton.bounds.size.height,
+                                self.iconButton.bounds.size.height, 0);
+        
+        [UIView animateWithDuration:2.0f
+                              delay:0.0f
+                            options:UIViewAnimationOptionRepeat
+                         animations:^{
+                             view.frame = self.iconButton.bounds;
+                         } completion:^(BOOL finished) {
+                             view.frame = CGRectMake(0, self.iconButton.bounds.origin.x + self.iconButton.bounds.size.height,
+                                                     self.iconButton.bounds.size.height, 0);
+                         }];
+    });
+}
+
+- (void)stopAnimatingUpload {
+    if (!self.isAnimating) { return; }
+    self.isAnimating = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIView *view = [self.iconButton viewWithTag:0x99];
+        [view removeFromSuperview];
+    });
+}
+
+
 @end
