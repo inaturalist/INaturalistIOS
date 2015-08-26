@@ -227,6 +227,31 @@ static const int ListedTaxonCellAddButtonTag = 4;
 }
 
 #pragma mark - Table view data source
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.item == 0) {
+        // be defensive
+        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"ProjectList" }];
+            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:nil
+                                                                                         project:self.project];
+        } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            // can't present from the tab bar while it's out of the view hierarchy
+            // so dismiss the presented view (ie the parent of this taxon details VC)
+            // and then trigger the new observation flow once the tab bar is back
+            // in thei heirarchy.
+            INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+            [tabBar dismissViewControllerAnimated:YES
+                                       completion:^{
+                                           [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                            withProperties:@{ @"From": @"ProjectList" }];
+                                           [tabBar triggerNewObservationFlowForTaxon:nil
+                                                                             project:self.project];
+                                       }];
+        }
+    }
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.project.observationsRestrictedToList) {
