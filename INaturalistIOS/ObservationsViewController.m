@@ -641,14 +641,13 @@
         
         [self configureHeaderForLoggedInUser];
         
-        __weak typeof(self) weakSelf = self;
-        [self.meHeader.projectsButton bk_addEventHandler:^(id sender) {
-            [weakSelf performSegueWithIdentifier:@"segueToProjects" sender:nil];
-        } forControlEvents:UIControlEventTouchUpInside];
-        [self.meHeader.guidesButton bk_addEventHandler:^(id sender) {
-            [weakSelf performSegueWithIdentifier:@"segueToGuides" sender:nil];
-        } forControlEvents:UIControlEventTouchUpInside];
-        
+        [self.meHeader.projectsButton addTarget:self
+                                         action:@selector(tappedProjects)
+                               forControlEvents:UIControlEventTouchUpInside];
+        [self.meHeader.guidesButton addTarget:self
+                                       action:@selector(tappedGuides)
+                             forControlEvents:UIControlEventTouchUpInside];
+
         return self.meHeader;
         
     } else {
@@ -694,6 +693,14 @@
 }
 
 #pragma mark - Header helpers
+
+- (void)tappedProjects {
+    [self performSegueWithIdentifier:@"segueToProjects" sender:nil];
+}
+
+- (void)tappedGuides {
+    [self performSegueWithIdentifier:@"segueToGuides" sender:nil];
+}
 
 - (void)configureHeaderForLoggedInUser {
     NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
