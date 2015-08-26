@@ -16,6 +16,7 @@
 @property UILabel *obsCountLabel;
 @property SplitTextButton *projectsButton;
 @property SplitTextButton *guidesButton;
+@property UIActivityIndicatorView *uploadingSpinner;
 
 - (void)startAnimatingUpload;
 - (void)stopAnimatingUpload;

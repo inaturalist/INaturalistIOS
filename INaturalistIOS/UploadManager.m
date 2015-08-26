@@ -38,6 +38,7 @@
 
 @interface UploadManager () {
     BOOL _cancelled;
+    Observation *_currentlyUploadingObservation;
 }
 @property NSMutableArray *objectLoaders;
 @end
@@ -118,6 +119,8 @@
         NSArray *tail = [observations tail];
         
         __weak typeof(self)weakSelf = self;
+        self.currentlyUploadingObservation = head;
+        
         [self uploadRecordsForObservation:head
                                completion:^(NSError *error) {
                                    __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -131,6 +134,7 @@
                                            [strongSelf.delegate uploadFailedFor:head error:error];
                                        }
                                    } else {
+                                       strongSelf.currentlyUploadingObservation = nil;
                                        [weakSelf uploadObservations:tail completion:uploadCompletion];
                                    }
                                }];
@@ -154,6 +158,9 @@
                                         for:observation];
         
         if (!observation.needsUpload) {
+            if (self.currentlyUploadingObservation == observation) {
+                self.currentlyUploadingObservation = nil;
+            }
             [strongSelf.delegate uploadSuccessFor:observation];
             observationCompletion(nil);
         }
@@ -298,6 +305,7 @@
 
 - (void)setCancelled:(BOOL)cancelled {
     _cancelled = cancelled;
+    self.uploading = NO;
     
     [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
         [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
@@ -306,6 +314,18 @@
 
 - (BOOL)isCancelled {
     return _cancelled;
+}
+
+- (void)setCurrentlyUploadingObservation:(Observation *)currentlyUploadingObservation {
+    _currentlyUploadingObservation = currentlyUploadingObservation;
+}
+
+- (Observation *)currentlyUploadingObservation {
+    if (self.isUploading) {
+        return _currentlyUploadingObservation;
+    } else {
+        return nil;
+    }
 }
 
 

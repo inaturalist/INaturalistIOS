@@ -170,6 +170,9 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     appDelegate.loginController.uploadManager.cancelled = YES;
     
+    [self.meHeader stopAnimatingUpload];
+    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    
     [[self tableView] reloadData];
     self.tableView.scrollEnabled = YES;
     [self checkSyncStatus];
@@ -596,29 +599,54 @@
                         forControlEvents:UIControlEventTouchUpInside];
 	
     cell.dateLabel.text = o.observedOnShortString;
-    cell.syncImage.hidden = !o.needsSync;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (o.needsUpload) {
-        cell.uploadButton.hidden = NO;
-        
-        cell.activityButton.hidden = YES;
-        cell.syncImage.hidden = YES;
-        cell.dateLabel.hidden = YES;
-        
-        [cell.uploadButton addTarget:self
-                              action:@selector(uploadOneObservation:)
-                    forControlEvents:UIControlEventTouchUpInside];
-        
-        cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
-        if ([appDelegate.loginController.uploadManager isUploading]) {
-            cell.uploadButton.enabled = NO;
+        if ([[appDelegate.loginController.uploadManager currentlyUploadingObservation] isEqual:o]) {
+            cell.subtitleLabel.hidden = NO;
+            cell.dateLabel.hidden = YES;
+            cell.uploadButton.hidden = YES;
+            cell.uploadSpinner.hidden = NO;
+            [cell.uploadSpinner startAnimating];
+            cell.uploadSpinner.color = [UIColor whiteColor];
+            cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
+            cell.backgroundColor = [UIColor inatTint];
+            cell.titleLabel.textColor = [UIColor whiteColor];
+            cell.subtitleLabel.textColor = [UIColor whiteColor];
+            cell.observationImage.alpha = 1.0f;
         } else {
-            cell.uploadButton.enabled = YES;
+            cell.uploadButton.hidden = NO;
+            
+            cell.activityButton.hidden = YES;
+            cell.dateLabel.hidden = YES;
+            
+            [cell.uploadButton addTarget:self
+                                  action:@selector(uploadOneObservation:)
+                        forControlEvents:UIControlEventTouchUpInside];
+            cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+
+            if ([appDelegate.loginController.uploadManager isUploading]) {
+                cell.uploadButton.enabled = NO;
+                cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
+                cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
+                cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
+                cell.observationImage.alpha = 0.5f;
+            } else {
+                cell.uploadButton.enabled = YES;
+                cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
+                cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
+                cell.titleLabel.textColor = [UIColor blackColor];
+                cell.observationImage.alpha = 1.0f;
+            }
         }
     } else {
         cell.uploadButton.hidden = YES;
         cell.dateLabel.hidden = NO;
+        
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.subtitleLabel.textColor = [UIColor blackColor];
+        cell.titleLabel.textColor = [UIColor blackColor];
+        cell.observationImage.alpha = 1.0f;
     }
     
     return cell;
@@ -741,19 +769,27 @@
             view.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
             
         } else {
+            
+            [view stopAnimatingUpload];
+
             FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:50];
             if (![[view.iconButton attributedTitleForState:UIControlStateNormal] isEqualToAttributedString:uploadIcon.attributedString]) {
                 
                 [view.iconButton setAttributedTitle:uploadIcon.attributedString
                                            forState:UIControlStateNormal];
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [UIView animateWithDuration:0.3f
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [UIView animateWithDuration:0.2f
                                      animations:^{
-                                         view.iconButton.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
+                                         view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
                                      } completion:^(BOOL finished) {
-                                         [UIView animateWithDuration:0.3f
+                                         [UIView animateWithDuration:0.2f
                                                           animations:^{
-                                                              view.iconButton.transform = CGAffineTransformIdentity;
+                                                              view.iconButton.transform = CGAffineTransformMakeScale(0.95f, 0.95f);
+                                                          } completion:^(BOOL finished) {
+                                                              [UIView animateWithDuration:0.2f
+                                                                               animations:^{
+                                                                                   view.iconButton.transform = CGAffineTransformIdentity;
+                                                                               }];
                                                           }];
                                      }];
                 });
@@ -862,15 +898,15 @@
         self.navigationController.tabBarItem.image = ({
             FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
             [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[meOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            [[meOutline imageWithSize:CGSizeMake(25, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
-        self.navigationController.tabBarItem.selectedImage =({
+        self.navigationController.tabBarItem.selectedImage = ({
             FAKIcon *meFilled = [FAKIonIcons iosPersonIconWithSize:35];
             [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [meFilled imageWithSize:CGSizeMake(34, 45)];
+            [meFilled imageWithSize:CGSizeMake(25, 45)];
         });
-        
+
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
     }
     
@@ -1265,8 +1301,6 @@
 - (void)uploadSessionFinished {
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
-    [self.meHeader stopAnimatingUpload];
-
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
                                       @"Via": @"Upload Complete",
@@ -1284,7 +1318,8 @@
         [self.nonFatalUploadErrors removeAllObjects];
     }
     
-    
+    [self.meHeader stopAnimatingUpload];
+
     // allow any pending upload animations to finish
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
         // make sure any deleted records get gone
@@ -1302,9 +1337,9 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    [self.meHeader startAnimatingUpload];
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
 
+    [self.meHeader startAnimatingUpload];
 
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
@@ -1333,7 +1368,7 @@
         
         cell.subtitleLabel.text = NSLocalizedString(@"Finished", @"subtitle for observation after it's finished uploading.");
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if ([self.tableView.visibleCells containsObject:cell]) {
                 [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                                       withRowAnimation:UITableViewRowAnimationFade];
@@ -1365,6 +1400,8 @@
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
+    [self.meHeader stopAnimatingUpload];
+
     if ([object isKindOfClass:ProjectObservation.class]) {
         ProjectObservation *po = (ProjectObservation *)object;
         if (!self.nonFatalUploadErrors) {
@@ -1422,8 +1459,8 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    [self.meHeader startAnimatingUpload];
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing deletes...", @"Title of me header while syncing deletes.");
+    [self.meHeader startAnimatingUpload];
 }
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {

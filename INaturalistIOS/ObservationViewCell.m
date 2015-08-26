@@ -17,7 +17,6 @@
 
 - (void)awakeFromNib{
     self.observationImage.translatesAutoresizingMaskIntoConstraints = NO;
-    self.syncImage.translatesAutoresizingMaskIntoConstraints = NO;
     self.activityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -29,10 +28,10 @@
     self.titleLabel.textAlignment = NSTextAlignmentNatural;
     self.subtitleLabel.textAlignment = NSTextAlignmentNatural;
     
-    self.uploadSpinner.color = [UIColor inatTint];
+    self.uploadSpinner.color = [UIColor whiteColor];
     self.uploadSpinner.hidden = YES;
     
-    FAKIcon *upload = [FAKIonIcons iosCloudUploadOutlineIconWithSize:30];
+    FAKIcon *upload = [FAKIonIcons iosCloudUploadIconWithSize:30];
     [upload addAttribute:NSForegroundColorAttributeName
                    value:[UIColor inatTint]];
     [self.uploadButton setAttributedTitle:upload.attributedString
@@ -50,14 +49,13 @@
                             @"dateLabel":self.dateLabel,
                             @"activityButton": self.activityButton,
                             @"interactiveActivityButton":self.interactiveActivityButton,
-                            @"syncImage":self.syncImage,
                             @"uploadButton":self.uploadButton,
                             @"uploadSpinner": self.uploadSpinner
                             };
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-6-|" options:0 metrics:0 views:views]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[syncImage(==16)]-[activityButton(==24)]-8-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(==44)]-[subtitle]-[activityButton(==24)]-8-|" options:0 metrics:0 views:views]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==44)]->=0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
     
@@ -66,13 +64,18 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[interactiveActivityButton(==44)]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[syncImage(==16)]-5-|" options:0 metrics:0 views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadButton(==30)]-4-|" options:0 metrics:0 views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadButton(==30)]-10-|" options:0 metrics:0 views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[uploadButton]-0-|" options:0 metrics:0 views:views]];
-
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadSpinner(==30)]-4-|" options:0 metrics:0 views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[uploadSpinner]-0-|" options:0 metrics:0 views:views]];
-
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadSpinner(==30)]-8-|" options:0 metrics:0 views:views]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadSpinner
+                                                     attribute:NSLayoutAttributeCenterY
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterY
+                                                    multiplier:1.0f
+                                                      constant:0.0f]];
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==subtitle)]-2-[subtitle]-4-|" options:0 metrics:0 views:views]];
 
     

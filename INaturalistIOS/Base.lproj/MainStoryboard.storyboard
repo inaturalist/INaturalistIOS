@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -362,10 +362,6 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" alpha="0.20000000000000015" tag="4" contentMode="scaleAspectFit" image="01-refresh" id="TR3-ef-hqW">
-                                            <rect key="frame" x="267" y="29" width="16" height="16"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                        </imageView>
                                         <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="R82-gv-Mlg">
                                             <rect key="frame" x="291" y="28" width="24" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -390,8 +386,8 @@
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
-                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" id="tqM-4i-PoG">
-                                            <rect key="frame" x="275" y="8" width="37" height="37"/>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" id="tqM-4i-PoG">
+                                            <rect key="frame" x="284" y="16" width="20" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </activityIndicatorView>
                                     </subviews>
@@ -402,7 +398,6 @@
                                     <outlet property="interactiveActivityButton" destination="aPl-pQ-9Hc" id="Lfe-eM-ady"/>
                                     <outlet property="observationImage" destination="glh-ub-upd" id="3na-A3-Nsn"/>
                                     <outlet property="subtitleLabel" destination="Be1-xj-miA" id="zd7-SZ-XXO"/>
-                                    <outlet property="syncImage" destination="TR3-ef-hqW" id="yeG-m3-74n"/>
                                     <outlet property="titleLabel" destination="bTy-8i-NnF" id="mvk-US-bo9"/>
                                     <outlet property="uploadButton" destination="4ad-gm-E4t" id="80s-v8-Hdv"/>
                                     <outlet property="uploadSpinner" destination="tqM-4i-PoG" id="pvf-VH-8QW"/>
@@ -1222,9 +1217,6 @@
                                         </view>
                                     </subviews>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="x2g-xK-zHb" kind="push" identifier="AddObservationRowSegue" id="8j7-c4-5Sv"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonOneNameCell" rowHeight="54" id="2mR-jt-faC">
                                 <rect key="frame" x="0.0" y="220" width="320" height="54"/>
@@ -2139,7 +2131,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="01-refresh" width="24" height="26"/>
         <image name="06-magnify" width="24" height="24"/>
         <image name="08-chat-red" width="24" height="22"/>
         <image name="265-download-gray" width="24" height="22"/>
@@ -2158,7 +2149,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="hvR-ND-N81"/>
-        <segue reference="951-R5-gTN"/>
+        <segue reference="3K4-WT-L9k"/>
         <segue reference="Q4H-Ck-yCo"/>
     </inferredMetricsTieBreakers>
 </document>

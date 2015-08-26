@@ -12,6 +12,8 @@
 
 @interface MeHeaderView ()
 @property BOOL isAnimating;
+@property NSArray *titleConstraintsWithSpinner;
+@property NSArray *titleConstraintsWithoutSpinner;
 @end
 
 @implementation MeHeaderView
@@ -48,6 +50,17 @@
             label;
         });
         [self addSubview:self.obsCountLabel];
+        
+        self.uploadingSpinner = ({
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            spinner.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            spinner.color = [UIColor whiteColor];
+            spinner.hidden = YES;
+            
+            spinner;
+        });
+        [self addSubview:self.uploadingSpinner];
         
         self.projectsButton = ({
             
@@ -96,14 +109,20 @@
         NSDictionary *views = @{
                                 @"icon": self.iconButton,
                                 @"obsCount": self.obsCountLabel,
+                                @"uploadingSpinner": self.uploadingSpinner,
                                 @"projects": self.projectsButton,
                                 @"guides": self.guidesButton,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[obsCount]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+        self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[uploadingSpinner]-[obsCount]-|"
+                                                                                   options:0
+                                                                                   metrics:0
+                                                                                     views:views];
+        self.titleConstraintsWithoutSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[obsCount]-|"
+                                                                                      options:0
+                                                                                      metrics:0
+                                                                                        views:views];
+        [self addConstraints:self.titleConstraintsWithoutSpinner];        
         
         // project and guide buttons are 150pts max width, prefer to expand to fill the available space
         // within the space between the icon and the right edge of superview, projects and guides should be left aligned
@@ -112,6 +131,15 @@
                                                                      metrics:0
                                                                        views:views]];
         
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[uploadingSpinner]-8-[projects(==30)]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[uploadingSpinner]-8-[guides(==30)]"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[projects(==30)]"
                                                                      options:0
                                                                      metrics:0
@@ -144,40 +172,19 @@
 }
 
 - (void)startAnimatingUpload {
-    if (self.isAnimating) {
-        return;
-    }
-    
-    self.isAnimating = YES;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIView *view = [[UIView alloc] initWithFrame:self.iconButton.bounds];
-        view.tag = 0x99;
-        view.backgroundColor = [UIColor inatDarkGreen];
-        [self.iconButton insertSubview:view belowSubview:self.iconButton.titleLabel];
-        
-        view.frame = CGRectMake(0, self.iconButton.bounds.origin.x + self.iconButton.bounds.size.height,
-                                self.iconButton.bounds.size.height, 0);
-        
-        [UIView animateWithDuration:2.0f
-                              delay:0.0f
-                            options:UIViewAnimationOptionRepeat
-                         animations:^{
-                             view.frame = self.iconButton.bounds;
-                         } completion:^(BOOL finished) {
-                             view.frame = CGRectMake(0, self.iconButton.bounds.origin.x + self.iconButton.bounds.size.height,
-                                                     self.iconButton.bounds.size.height, 0);
-                         }];
-    });
+    self.uploadingSpinner.hidden = NO;
+    [self.uploadingSpinner startAnimating];
+    [self removeConstraints:self.titleConstraintsWithoutSpinner];
+    [self addConstraints:self.titleConstraintsWithSpinner];
+    [self setNeedsDisplay];
 }
 
 - (void)stopAnimatingUpload {
-    if (!self.isAnimating) { return; }
-    self.isAnimating = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIView *view = [self.iconButton viewWithTag:0x99];
-        [view removeFromSuperview];
-    });
+    self.uploadingSpinner.hidden = YES;
+    [self.uploadingSpinner stopAnimating];
+    [self removeConstraints:self.titleConstraintsWithSpinner];
+    [self addConstraints:self.titleConstraintsWithoutSpinner];
+    [self setNeedsDisplay];
 }
 
 

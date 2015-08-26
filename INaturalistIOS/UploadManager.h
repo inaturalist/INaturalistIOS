@@ -20,6 +20,8 @@
 @property (assign, getter=isCancelled) BOOL cancelled;
 @property (assign, getter=isUploading) BOOL uploading;
 
+@property Observation *currentlyUploadingObservation;
+
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
 - (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion;
