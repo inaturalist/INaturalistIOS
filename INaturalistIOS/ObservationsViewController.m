@@ -111,7 +111,7 @@
                 uploads:[Observation needingUpload]];
 }
 
-- (void)uploadDeletes:(NSArray *)observationsToDelete uploads:(NSArray *)observationsToUpload {
+- (void)uploadDeletes:(NSArray *)recordsToDelete uploads:(NSArray *)observationsToUpload {
     
     if (self.isSyncing) {
         return;
@@ -135,11 +135,9 @@
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
-    uploader.cancelled = NO;
     
-    [uploader uploadDeletes:observationsToDelete completion:^{
-        [uploader uploadObservations:observationsToUpload completion:nil];
-    }];
+    [uploader syncDeletedRecords:recordsToDelete
+          thenUploadObservations:observationsToUpload];
 }
 
 - (void)appEnteredBackground {
@@ -148,7 +146,10 @@
                          withProperties:@{
                                           @"Via": @"App Entered Background",
                                           }];
-        [self stopSync];
+        
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        UploadManager *uploader = appDelegate.loginController.uploadManager;
+        [uploader cancelSyncsAndUploads];
     }
 }
 
@@ -158,23 +159,23 @@
                                       @"Via": @"Stop Upload Button",
                                       }];
     
-    [self stopSync];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    [uploader cancelSyncsAndUploads];
 }
 
-- (void)stopSync
+- (void)syncStopped
 {
     // allow sleep
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
-    // notify the upload manager to cancel any outstanding work
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    appDelegate.loginController.uploadManager.cancelled = YES;
-    
+    // stop any persistent upload animations
     [self.meHeader stopAnimatingUpload];
-    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     
+    // reload tableview
     [[self tableView] reloadData];
-    self.tableView.scrollEnabled = YES;
+    
+    // update UI about operations pending sync/upload
     [self checkSyncStatus];
 }
 
@@ -1291,7 +1292,7 @@
                      withProperties:@{
                                       @"Via": @"Auth Required",
                                       }];
-    [self stopSync];
+    [self syncStopped];
     
     NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
                                             @"This is an explanation for why the sync button triggers a login prompt.");
@@ -1326,9 +1327,14 @@
         NSError *error = nil;
         [[[RKObjectManager sharedManager] objectStore] save:&error];
 
-        [self stopSync];
+        [self syncStopped];
         [self loadUserForHeader];
     });
+}
+
+- (void)uploadCancelledFor:(INatModel *)object {
+    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    [self syncStopped];
 }
 
 - (void)uploadStartedFor:(Observation *)observation {
@@ -1443,7 +1449,7 @@
                          withProperties:@{
                                           @"Alert": alertMessage,
                                           }];
-        [self stopSync];
+        [self syncStopped];
         
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                      message:alertMessage

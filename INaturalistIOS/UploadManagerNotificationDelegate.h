@@ -20,6 +20,7 @@
 - (void)uploadSuccessFor:(Observation *)observation;
 - (void)uploadProgress:(float)progress for:(Observation *)observation;
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error;
+- (void)uploadCancelledFor:(INatModel *)object;
 
 - (void)uploadNonFatalError:(NSError *)error;
 

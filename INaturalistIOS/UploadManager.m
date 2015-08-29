@@ -16,305 +16,315 @@
 #import "ProjectObservation.h"
 #import "INaturalistAppDelegate.h"
 
-@interface NSArray (FP)
-- (id)head;
-- (instancetype)tail;
-@end
-
-@implementation NSArray (FP)
-- (id)head {
-    return self.firstObject;
-}
-- (instancetype)tail {
-    if (self.count == 0) { return [[self.class alloc] init]; }
-    if (self.count == 1) { return [[self.class alloc] init]; }
-    
-    NSRange tailRange;
-    tailRange.location = 1;
-    tailRange.length = [self count] - 1;
-    return [self subarrayWithRange:tailRange];
-}
-@end
-
-@interface UploadManager () {
-    BOOL _cancelled;
+@interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
 }
-@property NSMutableArray *objectLoaders;
+
+@property NSMutableArray *observationsToUpload;
+@property NSMutableArray *recordsToDelete;
 @end
 
 @implementation UploadManager
 
-- (instancetype)init {
-    if (self = [super init]) {
-        // workaround a restkit bug where the object loader isn't retained in the
-        // event that a request fails by stashing all objectloaders
-        self.objectLoaders = [NSMutableArray array];
-    }
+#pragma mark - public methods
+
+/**
+ * Public method that serially uploads a list of observations.
+ */
+- (void)uploadObservations:(NSArray *)observations {
+    self.uploading = YES;
+    self.cancelled = NO;
     
-    return self;
+    self.observationsToUpload = [observations mutableCopy];
+    [self uploadNextObservation];
 }
 
-- (void)uploadDeletes:(NSArray *)deletedRecords completion:(void (^)())deletesCompletion {
-    if (deletedRecords.count == 0) {
-        self.uploading = NO;
-        NSError *saveError = nil;
-        [[NSManagedObjectContext defaultContext] save:&saveError];
-        if (saveError) {
-            [self.delegate deleteFailedFor:nil error:saveError];
-        } else {
-            [self.delegate deleteSessionFinished];
-            deletesCompletion();
-        }
-    } else {
-        self.uploading = YES;
-        
-        if (self.isCancelled) {
-            self.uploading = NO;
-            deletesCompletion();
-            return;
-        }
-        
-        DeletedRecord *head = [deletedRecords head];
-        [self.delegate deleteStartedFor:head];
+/**
+ * Public method that serially syncs/uploads a list of deleted records,
+ * then uploads a list of new or updated observations.
+ */
+- (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload {
+    self.uploading = YES;
+    self.cancelled = NO;
+    
+    self.recordsToDelete = [deletedRecords mutableCopy];
+    self.observationsToUpload = [recordsToUpload mutableCopy];
+    
+    [self syncNextDelete];
+}
 
-        NSString *deletePath = [NSString stringWithFormat:@"/%@/%d", head.modelName.underscore.pluralize, head.recordID.intValue];
-        [[RKClient sharedClient] delete:deletePath
-                             usingBlock:^(RKRequest *request) {
-                                 request.onDidFailLoadWithError = ^(NSError *error) {
-                                     [self.delegate deleteFailedFor:head error:error];
-                                 };
-                                 request.onDidLoadResponse = ^(RKResponse *response) {
-                                     [self.delegate deleteSuccessFor:head];
-                                     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", head]];
-                                     [head deleteEntity];
+- (void)cancelSyncsAndUploads {
+    self.cancelled = YES;
+    self.uploading = NO;
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    [self.delegate uploadCancelledFor:nil];
+}
 
-                                     [self uploadDeletes:[deletedRecords tail]
-                                              completion:deletesCompletion];
-                                 };
-                             }];
+#pragma mark - private methods
+
+/**
+ * Upload the next observation in our list of observations.
+ *
+ * If the list is empty, we're finished, so notify the delegate and cleanup.
+ */
+- (void)uploadNextObservation {
+    
+    if (self.cancelled) {
+        return;
     }
-}
 
-- (void)uploadObservations:(NSArray *)observations completion:(void (^)())uploadCompletion {
-    if (observations.count == 0) {
+    if (self.observationsToUpload.count > 0) {
+        // notify starting a new observation
+        Observation *nextObservation = [self.observationsToUpload firstObject];
+        self.currentlyUploadingObservation = nextObservation;
+        [self.delegate uploadStartedFor:nextObservation];
+        [self uploadOneRecordForObservation:nextObservation];
+    } else {
+        // notify finished with uploading
+        self.currentlyUploadingObservation = nil;
         self.uploading = NO;
         [self.delegate uploadSessionFinished];
-        if (uploadCompletion) {
-            uploadCompletion();
-        }
-    } else {
-        self.uploading = YES;
-        
-        if (self.isCancelled) {
-            self.uploading = NO;
-            if (uploadCompletion) {
-                uploadCompletion();
-            }
-            return;
-        }
-        
-        // upload head
-        Observation *head = [observations head];
-        NSArray *tail = [observations tail];
-        
-        __weak typeof(self)weakSelf = self;
-        self.currentlyUploadingObservation = head;
-        
-        [self uploadRecordsForObservation:head
-                               completion:^(NSError *error) {
-                                   __strong typeof(weakSelf) strongSelf = weakSelf;
-                                   if (error) {
-                                       bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-                                       bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-                                       
-                                       if (jsonParsingError || authFailure) {
-                                           [strongSelf.delegate uploadSessionAuthRequired];
-                                       } else {
-                                           [strongSelf.delegate uploadFailedFor:head error:error];
-                                       }
-                                   } else {
-                                       strongSelf.currentlyUploadingObservation = nil;
-                                       [weakSelf uploadObservations:tail completion:uploadCompletion];
-                                   }
-                               }];
     }
 }
 
-- (void)uploadRecordsForObservation:(Observation *)observation completion:(void (^)(NSError *error))observationCompletion {
+/**
+ * Upload a record for an observation. If the observation itself needs
+ * upload, then upload that first. If not, then work on the child records
+ * that need upload.
+ */
+- (void)uploadOneRecordForObservation:(Observation *)observation {
     
-    NSArray *childrenNeedingUpload = [observation childrenNeedingUpload];
-    NSUInteger recordsNeedingUpload = childrenNeedingUpload.count;
-    if (observation.needsSync) { recordsNeedingUpload++; }
-    
-    __block NSUInteger recordsUploaded = 0;
+    if (self.cancelled) {
+        return;
+    }
 
-    __weak typeof(self)weakSelf = self;
-    void(^eachCompletion)() = ^void() {
-        __strong typeof(weakSelf)strongSelf = weakSelf;
-        recordsUploaded++;
-        
-        [strongSelf.delegate uploadProgress:(float)recordsUploaded / recordsNeedingUpload
-                                        for:observation];
-        
-        if (!observation.needsUpload) {
-            if (self.currentlyUploadingObservation == observation) {
-                self.currentlyUploadingObservation = nil;
-            }
-            [strongSelf.delegate uploadSuccessFor:observation];
-            observationCompletion(nil);
-        }
-    };
+    if (!observation.needsUpload) {
+        [self.delegate uploadSuccessFor:observation];
+        self.currentlyUploadingObservation = nil;
+        [self.observationsToUpload removeObject:observation];
+        [self uploadNextObservation];
+        return;
+    }
     
-    [self.delegate uploadStartedFor:observation];
-    
+    RKObjectLoaderBlock loaderBlock = nil;
+    INatModel <Uploadable> *recordToUpload = nil;
     
     if (observation.needsSync) {
-        __weak typeof(self)weakSelf = self;
-        [self uploadRecord:observation
-                completion:^ (NSError *error) {
-                    if (error) {
-                        observationCompletion(error);
-                    } else {
-                        eachCompletion();
-                        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
-                            [weakSelf uploadRecord:child
-                                        completion:eachCompletion];
-                        }
-                    }
-                }];
+        // upload the observation itself
+        loaderBlock = ^(RKObjectLoader *loader) {
+            loader.objectMapping = [Observation mapping];
+            loader.delegate = self;
+        };
+        recordToUpload = observation;
+        
     } else {
-        for (INatModel <Uploadable> *child in childrenNeedingUpload) {
-            [self uploadRecord:child
-                    completion:eachCompletion];
-        }
-    }
-}
-
-
-- (void)uploadRecord:(INatModel <Uploadable> *)record completion:(void (^)(NSError *error))completion {
-    
-    RKRequestMethod method = record.syncedAt ? RKRequestMethodPUT : RKRequestMethodPOST;
-    
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC upload one %@ via %d", record, (int)method]];
-    RKObjectLoader *loader = [[RKObjectManager sharedManager] loaderForObject:record method:method];
-    
-    // need to setup params for obs photo uploads here
-    // this should go into a protocol
-    // and needs to trap for an error getting the additional params
-    if ([record respondsToSelector:@selector(fileUploadParameter)]) {
-        NSString *path = [record performSelector:@selector(fileUploadParameter)];
+        // upload a child record for the obs
+        recordToUpload = [[observation childrenNeedingUpload] firstObject];
         
-        if (!path) {
-            // the only case for now
-            if ([record isKindOfClass:[ObservationPhoto class]]) {
-                // if there's no file for this photo, bail on it and the upload process
-                ObservationPhoto *op = (ObservationPhoto *)record;
-                
-                // human readable index
-                NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
-                NSString *obsName;
-                if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
-                    obsName = op.observation.speciesGuess;
-                else
-                    obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
-                
-                NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
-                                                                                  @"error message when an obs photo doesn't have a file on the phone."),
-                                      index, obsName];
-                NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                                     code:1201
-                                                 userInfo:@{
-                                                            NSLocalizedDescriptionKey: errorMsg,
-                                                            }];
-                [op destroy];
-                
-                [self.delegate uploadFailedFor:record error:error];
-                self.uploading = NO;
-                return;
-            }
-        }
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
-                                                 serializationMappingForClass:[record class]];
-        NSError* error = nil;
-        RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:record
-                                                                          mapping:serializationMapping];
-        NSDictionary *dictionary = [serializer serializedObject:&error];
-        
-        // should really call completion with the error
-        if (error) {
-            [self.delegate uploadFailedFor:record error:error];
-            self.uploading = NO;
+        if (!recordToUpload) {
+            // notify finished with this observation
+            [self.observationsToUpload removeObject:observation];
+            [self uploadNextObservation];
             return;
         }
         
-        RKParams* params = [RKParams paramsWithDictionary:dictionary];
-        
-        [params setFile:path
-               forParam:@"file"];
-        loader.params = params;
+        loaderBlock = ^(RKObjectLoader *loader) {
+            loader.objectMapping = [[recordToUpload class] mapping];
+            loader.delegate = self;
+            
+            if ([recordToUpload respondsToSelector:@selector(fileUploadParameter)]) {
+                NSString *path = [recordToUpload performSelector:@selector(fileUploadParameter)];
+                
+                if (!path) {
+                    // the only case for now
+                    if ([recordToUpload isKindOfClass:[ObservationPhoto class]]) {
+                        // if there's no file for this photo, bail on it and the upload process
+                        ObservationPhoto *op = (ObservationPhoto *)recordToUpload;
+                        
+                        // human readable index
+                        NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
+                        NSString *obsName;
+                        if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
+                            obsName = op.observation.speciesGuess;
+                        else
+                            obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
+                        
+                        NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
+                                                                                          @"error message when an obs photo doesn't have a file on the phone."),
+                                              index, obsName];
+                        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                                             code:1201
+                                                         userInfo:@{
+                                                                    NSLocalizedDescriptionKey: errorMsg,
+                                                                    }];
+                        [op destroy];
+                        
+                        [self.delegate uploadFailedFor:recordToUpload error:error];
+                        self.uploading = NO;
+                        return;
+                    }
+                }
+                
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+                RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
+                                                         serializationMappingForClass:[recordToUpload class]];
+                NSError* error = nil;
+                RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:recordToUpload
+                                                                                  mapping:serializationMapping];
+                NSDictionary *dictionary = [serializer serializedObject:&error];
+                
+                // should really call completion with the error
+                if (error) {
+                    [self.delegate uploadFailedFor:recordToUpload error:error];
+                    self.uploading = NO;
+                    return;
+                }
+                
+                RKParams* params = [RKParams paramsWithDictionary:dictionary];
+                
+                [params setFile:path
+                       forParam:@"file"];
+                loader.params = params;
+            }
+        };
     }
     
-    loader.objectMapping = [[record class] mapping];
+    if (recordToUpload && loaderBlock) {
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        
+        if (recordToUpload.syncedAt) {
+            [objectManager putObject:recordToUpload usingBlock:loaderBlock];
+        } else {
+            [objectManager postObject:recordToUpload usingBlock:loaderBlock];
+        }
+    } else {
+        // notify finished with this observation
+        [self.delegate uploadSuccessFor:observation];
+        self.currentlyUploadingObservation = nil;
+        [self.observationsToUpload removeObject:observation];
+        [self uploadNextObservation];
+        return;
+    }
+}
+
+
+
+
+- (void)syncNextDelete {
+    if (self.cancelled) {
+        return;
+    }
     
-    loader.onDidLoadResponse = ^(RKResponse *response) {
-        bool recordDeletedFromServer = (response.statusCode == 404 || response.statusCode == 410)
-            && method == RKRequestMethodPUT
+    if (self.recordsToDelete.count > 0) {
+        // notify starting a new deletion
+        DeletedRecord *nextDelete = [self.recordsToDelete firstObject];
+        [self.delegate deleteStartedFor:nextDelete];
+        
+        NSString *nextDeletePath = [NSString stringWithFormat:@"/%@/%d",
+                                    nextDelete.modelName.underscore.pluralize,
+                                    nextDelete.recordID.intValue];
+        
+        [[RKClient sharedClient] delete:nextDeletePath
+                             usingBlock:^(RKRequest *request) {
+                                 request.delegate = self;
+                                 request.onDidLoadResponse = ^(RKResponse *response) {
+                                 };
+                             }];
+    } else {
+        // notify finished with deletions
+        [self.delegate deleteSessionFinished];
+        [self uploadNextObservation];
+    }
+}
+
+#pragma mark - RKRequestDelegate
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    // check for 401
+    if (response.statusCode == 401) {
+        [self.delegate uploadSessionAuthRequired];
+        return;
+    }
+
+    if (request.method == RKRequestMethodDELETE) {
+        DeletedRecord *thisDelete = [self.recordsToDelete firstObject];
+        // update UI
+        [self.delegate deleteSuccessFor:thisDelete];
+        // debug log
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", thisDelete]];
+        // update local work queue
+        [self.recordsToDelete removeObject:thisDelete];
+        // delete the backing local entity
+        [thisDelete deleteEntity];
+        // continue working on the work queue
+        [self syncNextDelete];
+    } else {
+        // anything special needed for PUT or POST?
+        Observation *thisUpload = [self.observationsToUpload firstObject];
+        INatModel *record = thisUpload.needsSync ? thisUpload : [thisUpload.childrenNeedingUpload firstObject];
+        if (record) {
+            bool recordDeletedFromServer = (response.statusCode == 404 || response.statusCode == 410)
+            && request.method == RKRequestMethodPUT
             && [record respondsToSelector:@selector(recordID)]
             && [record performSelector:@selector(recordID)] != nil;
-        
-        if (recordDeletedFromServer) {
-            // if it was in the sync queue there were local changes, so post it again
-            [record setSyncedAt:nil];
-            [record setRecordID:nil];
-            [record save];
+            
+            if (recordDeletedFromServer) {
+                // if it was in the sync queue there were local changes, so post it again
+                [record setSyncedAt:nil];
+                [record setRecordID:nil];
+                [record save];
+            }
         }
-    };
-
-    loader.onDidLoadObject = ^(INatModel *uploadedObject) {
-        uploadedObject.syncedAt = [NSDate date];
-        NSError *error = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
-        if (error) {
-            completion(error);
-        } else {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC completed upload of %@", record]];
-            completion(nil);
-        }
-    };
-    
-    loader.onDidFailLoadWithError = ^(NSError *error) {
-        completion(error);
-    };
-    
-    loader.onDidFailWithError = ^(NSError *error) {
-        completion(error);
-    };
-    
-    [self.objectLoaders addObject:loader];
-    [loader sendAsynchronously];
+    }
 }
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // notify about failure
+    if (objectLoader.method == RKRequestMethodDELETE) {
+        DeletedRecord *failedDelete = [self.recordsToDelete firstObject];
+        [self.delegate deleteFailedFor:failedDelete error:error];
+    } else {
+        // this masks all failures behind the observation failing to upload
+        // is this the correct move?
+        Observation *failedObservation = [self.observationsToUpload firstObject];
+        [self.delegate uploadFailedFor:failedObservation error:error];
+    }
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {
+    NSError *error = nil;
+    object.syncedAt = [NSDate date];
+
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        [self.delegate uploadFailedFor:object error:error];
+    } else {
+        if (self.cancelled) {
+            [self.delegate uploadCancelledFor:object];
+        } else {
+            Observation *thisObservation = nil;
+            if ([object isKindOfClass:[Observation class]]) {
+                thisObservation = (Observation *)object;
+            } else if ([object isKindOfClass:[ObservationPhoto class]]) {
+                thisObservation = ((ObservationPhoto *)object).observation;
+            } else if ([object isKindOfClass:[ProjectObservation class]]) {
+                thisObservation = ((ProjectObservation *)object).observation;
+            } else if ([object isKindOfClass:[ObservationFieldValue class]]) {
+                thisObservation = ((ObservationFieldValue *)object).observation;
+            }
+            if (thisObservation) {
+                [self uploadOneRecordForObservation:thisObservation];
+            }
+        }
+    }
+}
+
+#pragma mark - NSObject lifecycle
 
 - (void)dealloc {
-    [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
-        [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
-    }];
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
 }
 
-- (void)setCancelled:(BOOL)cancelled {
-    _cancelled = cancelled;
-    self.uploading = NO;
-    
-    [self.objectLoaders enumerateObjectsUsingBlock:^(RKObjectLoader *loader, NSUInteger idx, BOOL *stop) {
-        [[[RKClient sharedClient] requestQueue] cancelRequest:loader];
-    }];
-}
-
-- (BOOL)isCancelled {
-    return _cancelled;
-}
+#pragma mark - setters & getters
 
 - (void)setCurrentlyUploadingObservation:(Observation *)currentlyUploadingObservation {
     _currentlyUploadingObservation = currentlyUploadingObservation;
@@ -327,6 +337,5 @@
         return nil;
     }
 }
-
 
 @end
