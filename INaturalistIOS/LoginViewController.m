@@ -398,13 +398,14 @@
     if (indexPath.section == 0) {
         EditableTextFieldCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TextField"];
         
-
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         [self configureEditableTextCell:cell forIndexPath:indexPath];
         
         return cell;
     } else {
         RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Button"];
         
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.roundedButton.tintColor = [UIColor whiteColor];
         cell.roundedButton.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.6f];
         cell.roundedButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
