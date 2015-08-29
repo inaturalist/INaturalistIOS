@@ -4,8 +4,8 @@ platform :ios, :deployment_target => '7.0'
 inhibit_all_warnings!
 
 target :iNaturalist do
-	pod 'Fabric', '1.2.8'
-	pod 'Crashlytics', '3.0.11'
+	pod 'Fabric', '1.4.0'
+	pod 'Crashlytics', '3.1.1'
 	pod 'FlurrySDK', '6.2.0'
 	pod 'Facebook-iOS-SDK', '3.20.0'
 	pod 'Bolts', '1.1.3'
