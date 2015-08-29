@@ -178,6 +178,9 @@
 - (void)configureRestKit
 {
     RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];
+    // re-use the same shared client
+    [[RKObjectManager sharedManager] setClient:[RKClient sharedClient]];
+    
     manager.objectStore = [self inatObjectStore];
     
     // Auth
