@@ -838,11 +838,23 @@
         
         // icon
         if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
-            [view.iconButton sd_setBackgroundImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]
-                                                 forState:UIControlStateNormal];
+            // render the user icon as an image, not a mask,
+            // which sdwebimage doesn't seem to be able to do directly
+            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]
+                                       forState:UIControlStateNormal
+                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                           forState:UIControlStateNormal];
+                                      }];
         } else if (user.userIconURL && ![user.userIconURL isEqualToString:@""]) {
-            [view.iconButton sd_setBackgroundImageWithURL:[NSURL URLWithString:user.userIconURL]
-                                                 forState:UIControlStateNormal];
+            // render the user icon as an image, not a mask,
+            // which sdwebimage doesn't seem to be able to do directly
+            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]
+                                       forState:UIControlStateNormal
+                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                           forState:UIControlStateNormal];
+                                      }];
         } else {
             FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
             [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
