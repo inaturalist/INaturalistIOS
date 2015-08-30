@@ -508,10 +508,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     if (self.shouldShowBigSaveButton) {
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.translucent = NO;
         self.navigationController.toolbar.barTintColor = [UIColor inatTint];
         self.navigationController.toolbar.tintColor = [UIColor whiteColor];
     } else {
         self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.translucent = NO;
         self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
         self.navigationController.toolbar.tintColor = [UIColor inatTint];
     }
