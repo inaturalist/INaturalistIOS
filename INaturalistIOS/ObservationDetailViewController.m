@@ -138,13 +138,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.longitudeLabel.text = nil;
     }
     
-    NSString *positionalBaseStr = NSLocalizedString(@"%d m",
-                                                    @"positional accuracy. the %d is the number of meters, the m is english shorthand for meters.");
-    NSInteger positionalAccuracy = self.observation.positionalAccuracy ? self.observation.positionalAccuracy.integerValue : 0;
-    self.positionalAccuracyLabel.text = [NSString stringWithFormat:positionalBaseStr, positionalAccuracy];
-
+    if (self.observation.positionalAccuracy && self.observation.positionalAccuracy.integerValue > 0) {
+        NSString *positionalBaseStr = NSLocalizedString(@"%d m",
+                                                        @"positional accuracy. the %d is the number of meters, the m is english shorthand for meters.");
+        self.positionalAccuracyLabel.text = [NSString stringWithFormat:positionalBaseStr,
+                                             self.observation.positionalAccuracy.integerValue];
+    } else {
+        self.positionalAccuracyLabel.text = NSLocalizedString(@"??? m", @"unknown positional accuracy");
+    }
     [descriptionTextView setText:self.observation.inatDescription];
-    
+
     // Species cell
     UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
