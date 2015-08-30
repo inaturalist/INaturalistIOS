@@ -858,7 +858,7 @@
         } else {
             FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
             [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [view.iconButton setImage:[person imageWithSize:CGSizeMake(80, 80)]
+            [view.iconButton setImage:[[person imageWithSize:CGSizeMake(80, 80)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                              forState:UIControlStateNormal];
         }
         
