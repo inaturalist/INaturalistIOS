@@ -178,17 +178,14 @@
 - (void)configureRestKit
 {
     RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];
-    // re-use the same shared client
-    [[RKObjectManager sharedManager] setClient:[RKClient sharedClient]];
-    
     manager.objectStore = [self inatObjectStore];
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //[RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    //[RKClient.sharedClient setPassword:[defaults objectForKey:INatPasswordPrefKey]];
-    [RKClient.sharedClient setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
-    [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
+    //[manager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
+    //[manager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    [manager.client setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
+    [manager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
     
     // User Agent
     UIDevice *d = [UIDevice currentDevice];
@@ -198,7 +195,7 @@
                            d.systemName, 
                            d.systemVersion, 
                            d.model];
-    [RKClient.sharedClient setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    [manager.client setValue:userAgent forHTTPHeaderField:@"User-Agent"];
     NSDictionary *userAgentDict = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:userAgentDict];
     
@@ -243,7 +240,7 @@
     dateFormatter.locale = [NSLocale currentLocale];
     [RKObjectMapping addDefaultDateFormatter:dateFormatter];
     
-    [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
+    [manager.client requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
     // DEBUG
 //        RKLogConfigureByName("RestKit", RKLogLevelWarning);
@@ -252,7 +249,7 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
-    
+    [RKClient setSharedClient:manager.client];
     
     // setup photo object manager
     self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatMediaBaseURL]];
