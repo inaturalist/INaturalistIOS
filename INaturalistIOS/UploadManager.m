@@ -239,8 +239,9 @@
 
 #pragma mark - RKRequestDelegate
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    // check for 401
+    // check for 401 unauthorized
     if (response.statusCode == 401) {
+        self.uploading = NO;
         [self.delegate uploadSessionAuthRequired];
         return;
     }
@@ -258,7 +259,6 @@
         // continue working on the work queue
         [self syncNextDelete];
     } else {
-        // anything special needed for PUT or POST?
         Observation *thisUpload = [self.observationsToUpload firstObject];
         INatModel *record = thisUpload.needsSync ? thisUpload : [thisUpload.childrenNeedingUpload firstObject];
         if (record) {
@@ -278,15 +278,22 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
+    if (!self.uploading) {
+        return;
+    }
+    
     // notify about failure
     if (objectLoader.method == RKRequestMethodDELETE) {
         DeletedRecord *failedDelete = [self.recordsToDelete firstObject];
         [self.delegate deleteFailedFor:failedDelete error:error];
+        self.uploading = NO;
     } else {
         // this masks all failures behind the observation failing to upload
         // is this the correct move?
         Observation *failedObservation = [self.observationsToUpload firstObject];
         [self.delegate uploadFailedFor:failedObservation error:error];
+        self.uploading = NO;
     }
 }
 
