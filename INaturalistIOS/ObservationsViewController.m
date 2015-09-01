@@ -179,8 +179,8 @@
     // reload tableview
     [[self tableView] reloadData];
     
-    // update UI about operations pending sync/upload
-    [self checkSyncStatus];
+    // update tab bar UI
+    [self updateSyncBadge];
 }
 
 - (BOOL)isSyncing {
@@ -212,9 +212,6 @@
         
         return;
     }
-    
-    // make sure -itemsToSyncCount is current
-    [self checkSyncStatus];
     
     NSInteger itemsToUpload = [[Observation needingUpload] count] + [Observation deletedRecordCount];
     itemsToUpload += [ObservationPhoto deletedRecordCount];
@@ -295,16 +292,7 @@
     [[self tableView] reloadData];
 }
 
-- (void)checkSyncStatus
-{
-    if (self.isSyncing) {
-        return;
-    }
-    
-    if (self.navigationController.topViewController != self) {
-        return;
-    }
-    
+- (void)updateSyncBadge {
     [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
 }
 
@@ -494,9 +482,7 @@
     [self.tableView endUpdates];
     
     // now is a good time to check that we're displaying up to date sync info
-    if (!self.isSyncing) {
-        [self checkSyncStatus];
-    }
+    [self updateSyncBadge];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -1089,9 +1075,8 @@
 {
     [super viewDidAppear:animated];
     
-    if (!self.isSyncing) {
-        [self checkSyncStatus];
-    }
+    [self updateSyncBadge];
+
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
     seconds = minutes * 60;
@@ -1384,7 +1369,8 @@
 - (void)uploadSuccessFor:(Observation *)observation {
     
     [self configureHeaderForLoggedInUser];
-    
+    [self updateSyncBadge];
+
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     
@@ -1493,6 +1479,7 @@
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
     [self configureHeaderForLoggedInUser];
+    [self updateSyncBadge];
 }
 
 - (void)deleteSessionFinished {
