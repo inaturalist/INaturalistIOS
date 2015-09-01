@@ -18,6 +18,11 @@
 
 @property Observation *currentlyUploadingObservation;
 
+// index counting from zero
+@property (readonly) NSInteger indexOfCurrentlyUploadingObservation;
+
+@property (readonly) NSInteger currentUploadSessionTotalObservations;
+
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;

@@ -18,6 +18,7 @@
 
 @interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
+    NSInteger _currentUploadSessionTotalObservations;
 }
 
 @property NSMutableArray *observationsToUpload;
@@ -36,6 +37,8 @@
     self.cancelled = NO;
     
     self.observationsToUpload = [observations mutableCopy];
+    _currentUploadSessionTotalObservations = self.observationsToUpload.count;
+    
     [self uploadNextObservation];
 }
 
@@ -48,8 +51,11 @@
     self.cancelled = NO;
     
     self.recordsToDelete = [deletedRecords mutableCopy];
-    self.observationsToUpload = [recordsToUpload mutableCopy];
     
+    self.observationsToUpload = [recordsToUpload mutableCopy];
+    _currentUploadSessionTotalObservations = self.observationsToUpload.count;
+    
+    // when deletes are finished, the last delete callback will start the first upload
     [self syncNextDelete];
 }
 
@@ -76,8 +82,13 @@
     if (self.observationsToUpload.count > 0) {
         // notify starting a new observation
         Observation *nextObservation = [self.observationsToUpload firstObject];
+        
         self.currentlyUploadingObservation = nextObservation;
-        [self.delegate uploadStartedFor:nextObservation];
+        NSInteger idx = [self indexOfCurrentlyUploadingObservation] + 1;
+        [self.delegate uploadStartedFor:nextObservation
+                                 number:idx
+                                     of:self.currentUploadSessionTotalObservations];
+        //[self.delegate uploadStartedFor:nextObservation];
         [self uploadOneRecordForObservation:nextObservation];
     } else {
         // notify finished with uploading
@@ -343,6 +354,19 @@
     } else {
         return nil;
     }
+}
+
+- (NSInteger)indexOfCurrentlyUploadingObservation {
+    if (self.isUploading) {
+        NSInteger idx = self.currentUploadSessionTotalObservations - self.observationsToUpload.count;
+        return idx;
+    } else {
+        return 0;
+    }
+}
+
+- (NSInteger)currentUploadSessionTotalObservations {
+    return _currentUploadSessionTotalObservations;
 }
 
 @end

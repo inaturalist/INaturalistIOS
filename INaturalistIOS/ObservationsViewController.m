@@ -765,9 +765,14 @@
             [view.iconButton setAttributedTitle:stopIcon.attributedString
                                        forState:UIControlStateNormal];
             
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            NSInteger current = appDelegate.loginController.uploadManager.indexOfCurrentlyUploadingObservation + 1;
+            NSInteger total = appDelegate.loginController.uploadManager.currentUploadSessionTotalObservations;
+            NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
+                                                                  @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
+            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
+
             [view startAnimatingUpload];
-            
-            view.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
             
         } else {
             
@@ -1349,16 +1354,17 @@
     [self syncStopped];
 }
 
-- (void)uploadStartedFor:(Observation *)observation {
+- (void)uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Uploading observations...", @"Title of me header while uploading observations.");
-
+    NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
+                                                          @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
+    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
     [self.meHeader startAnimatingUpload];
-
+    
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
