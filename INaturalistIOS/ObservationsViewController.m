@@ -750,17 +750,32 @@
         [view.iconButton setTintColor:[UIColor whiteColor]];
         view.iconButton.backgroundColor = [UIColor inatTint];
 
-        if (self.isSyncing) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+        
+        if (uploadManager.isUploading) {
             FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
             [view.iconButton setAttributedTitle:stopIcon.attributedString
                                        forState:UIControlStateNormal];
             
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            NSInteger current = appDelegate.loginController.uploadManager.indexOfCurrentlyUploadingObservation + 1;
-            NSInteger total = appDelegate.loginController.uploadManager.currentUploadSessionTotalObservations;
-            NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
-                                                                  @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
-            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
+            if (uploadManager.isSyncingDeletes) {
+                self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing deletes...", @"Title of me header when syncing deletions.");
+            } else {
+                NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
+                NSInteger total = uploadManager.currentUploadSessionTotalObservations;
+                if (total > 1) {
+                    NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
+                                                                          @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
+                    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
+                } else {
+                    NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
+                    NSString *speciesName = NSLocalizedString(@"Something...", nil);
+                    if (uploadManager.currentlyUploadingObservation.taxon) {
+                        speciesName = uploadManager.currentlyUploadingObservation.taxon.name;
+                    }
+                    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
+                }
+            }
 
             [view startAnimatingUpload];
             
@@ -1349,9 +1364,8 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
-                                                          @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
-    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
+    
+    [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
@@ -1473,7 +1487,7 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing deletes...", @"Title of me header while syncing deletes.");
+    [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
 }
 

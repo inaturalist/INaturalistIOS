@@ -15,6 +15,7 @@
 
 @property (assign, getter=isCancelled) BOOL cancelled;
 @property (assign, getter=isUploading) BOOL uploading;
+@property (assign, getter=isSyncingDeletes) BOOL syncingDeletes;
 
 @property Observation *currentlyUploadingObservation;
 

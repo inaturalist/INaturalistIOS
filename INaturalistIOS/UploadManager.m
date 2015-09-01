@@ -48,6 +48,7 @@
  */
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload {
     self.uploading = YES;
+    self.syncingDeletes = YES;
     self.cancelled = NO;
     
     self.recordsToDelete = [deletedRecords mutableCopy];
@@ -242,6 +243,7 @@
                                  };
                              }];
     } else {
+        self.syncingDeletes = NO;
         // notify finished with deletions
         [self.delegate deleteSessionFinished];
         [self uploadNextObservation];
