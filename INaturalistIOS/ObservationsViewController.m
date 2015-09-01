@@ -39,9 +39,12 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UploadManagerNotificationDelegate.h"
 #import "ObservationViewCell.h"
+#import "ObservationDetailViewController.h"
+#import "DeletedRecord.h"
+#import "UploadManager.h"
 
-
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
+    
     UIView *noContentView;
 
     NSFetchedResultsController *fetchedResultsController;
@@ -49,6 +52,7 @@
 @property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @property MeHeaderView *meHeader;
+@property (nonatomic, strong) NSDate *lastRefreshAt;
 @end
 
 @implementation ObservationsViewController
