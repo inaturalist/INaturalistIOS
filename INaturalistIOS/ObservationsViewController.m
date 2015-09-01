@@ -597,6 +597,7 @@
             cell.subtitleLabel.hidden = NO;
             cell.dateLabel.hidden = YES;
             cell.uploadButton.hidden = YES;
+            cell.activityButton.hidden = YES;
             cell.uploadSpinner.hidden = NO;
             [cell.uploadSpinner startAnimating];
             cell.uploadSpinner.color = [UIColor whiteColor];
@@ -608,8 +609,8 @@
         } else {
             cell.uploadButton.hidden = NO;
             
-            cell.activityButton.hidden = YES;
             cell.dateLabel.hidden = YES;
+            cell.activityButton.hidden = YES;
             
             [cell.uploadButton addTarget:self
                                   action:@selector(uploadOneObservation:)
@@ -633,7 +634,7 @@
     } else {
         cell.uploadButton.hidden = YES;
         cell.dateLabel.hidden = NO;
-        
+
         cell.backgroundColor = [UIColor whiteColor];
         cell.subtitleLabel.textColor = [UIColor blackColor];
         cell.titleLabel.textColor = [UIColor blackColor];
@@ -1374,6 +1375,8 @@
         cell.subtitleLabel.hidden = NO;
         cell.dateLabel.hidden = YES;
         cell.uploadButton.hidden = YES;
+        cell.activityButton.hidden = YES;
+        cell.interactiveActivityButton.hidden = YES;
         cell.uploadSpinner.hidden = NO;
         [cell.uploadSpinner startAnimating];
         cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
@@ -1412,6 +1415,7 @@
         cell.subtitleLabel.hidden = NO;
         cell.dateLabel.hidden = YES;
         cell.uploadButton.hidden = YES;
+        cell.activityButton.hidden = YES;
         cell.uploadSpinner.hidden = NO;
         [cell.uploadSpinner startAnimating];
         cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
