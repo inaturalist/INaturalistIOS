@@ -783,12 +783,32 @@
         } else {
             
             [view stopAnimatingUpload];
-
-            FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:50];
-            if (![[view.iconButton attributedTitleForState:UIControlStateNormal] isEqualToAttributedString:uploadIcon.attributedString]) {
+            
+            NSString *uploadButtonTitleText = NSLocalizedString(@"Upload", @"Title for upload button.");
+            
+            if ([view.iconButton attributedTitleForState:UIControlStateNormal] == nil) {
+                FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:46];
+                NSMutableAttributedString *uploadIconString = [[NSMutableAttributedString alloc] initWithAttributedString:uploadIcon.attributedString];
+                // explicit linebreak because uilabel doesn't seem to be able to calculate number of lines required with a FAK glyph
+                NSString *uploadButtonSecondLine = [NSString stringWithFormat:@"\n%@", uploadButtonTitleText];
+                [uploadIconString appendAttributedString:[[NSAttributedString alloc] initWithString:uploadButtonSecondLine
+                                                                                         attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11] }]];
                 
-                [view.iconButton setAttributedTitle:uploadIcon.attributedString
+                // set a max line height on the "Upload" text line. required because the first line of the label is a 50pt glyph
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                paragraphStyle.lineSpacing = 0;
+                paragraphStyle.maximumLineHeight = 11;
+                paragraphStyle.alignment = NSTextAlignmentCenter;
+                [uploadIconString addAttribute:NSParagraphStyleAttributeName
+                                         value:paragraphStyle
+                                         range:NSMakeRange(2, uploadIconString.length - 2)];
+
+                [view.iconButton setAttributedTitle:uploadIconString
                                            forState:UIControlStateNormal];
+                
+                view.iconButton.titleLabel.numberOfLines = 2;
+                view.iconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [UIView animateWithDuration:0.2f
                                      animations:^{
