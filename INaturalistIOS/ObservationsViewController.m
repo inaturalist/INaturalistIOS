@@ -743,7 +743,7 @@
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
     NSUInteger needingUploadCount = [[Observation needingUpload] count];
-    NSUInteger needingDeleteCount = [Observation deletedRecordCount];
+    NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
         [view.iconButton setImage:nil forState:UIControlStateNormal];
