@@ -578,7 +578,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (!self.observation.isDeleted && !self.didClickCancel) {
-        [self save];
+       // [self save];
     }
     [self keyboardDone];
     [self stopUpdatingLocation];
@@ -887,9 +887,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (buttonIndex == 0) {
         // no point in querying location anymore
         [self.locationManager stopUpdatingLocation];
-
+        
         [self.observation destroy];
         self.observation = nil;
+        
+        // trigger autoupload
+        [self triggerAutoUpload];
+
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
@@ -979,6 +984,34 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         } else {
             // unanticpated exception
             @throw(exception);
+        }
+    }
+}
+
+- (void)triggerAutoUpload {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey]) {
+        // trigger sync of all deletes and uploads
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        UploadManager *uploader = appDelegate.loginController.uploadManager;
+        if (![uploader isUploading]) {
+            NSMutableArray *recordsToDelete = [NSMutableArray array];
+            for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+                [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                          NSStringFromClass(klass)]]];
+            }
+            NSArray *observationsToUpload = [Observation needingUpload];
+            if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
+                
+                [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                                 withProperties:@{
+                                                  @"Via": @"Automatic Upload",
+                                                  @"numDeletes": @(recordsToDelete.count),
+                                                  @"numUploads": @(observationsToUpload.count),
+                                                  }];
+
+                [uploader syncDeletedRecords:recordsToDelete
+                      thenUploadObservations:observationsToUpload];
+            }
         }
     }
 }
@@ -1730,7 +1763,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (changes.count > 0) {
         self.observation.localUpdatedAt = now;
     }
-	[self.observation save];
+    
+    [self.observation save];
+    [self triggerAutoUpload];
 }
 
 - (IBAction)clickedCancel:(id)sender {

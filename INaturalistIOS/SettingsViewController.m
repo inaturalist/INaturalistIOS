@@ -45,18 +45,21 @@ static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
 
-static const int AutocompleteNamesLabelTag = 12;
-static const int CategorizeNewObsLabelTag = 13;
 static const int NetworkDetailLabelTag = 14;
 static const int NetworkTextLabelTag = 15;
 static const int UsernameDetailLabelTag = 16;
 static const int UsernameTextLabelTag = 17;
 static const int AutomaticallyUploadLabelTag = 18;
 
-// tags 100-1xx are reserved for switches
+// labels for settings switcher rows are 50 + row index
+static const int AutocompleteNamesLabelTag = 50;
+static const int CategorizeNewObsLabelTag = 51;
+static const int AutouploadLabelTag = 52;
+
+// setting switchers are 100 + row index
 static const int AutocompleteNamesSwitchTag = 100;
-static const int AutomaticallyUploadSwitchTag = 101;
-static const int CategorizeNewObsSwitchTag = 102;
+static const int CategorizeNewObsSwitchTag = 101;
+static const int AutouploadSwitchTag = 102;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -126,7 +129,7 @@ static const int CategorizeNewObsSwitchTag = 102;
     [Observation deleteAll];
 	[ObservationPhoto deleteAll];
     [ProjectUser deleteAll];
-    [ProjectObservation deleteAll]; 
+    [ProjectObservation deleteAll];
     for (DeletedRecord *dr in [DeletedRecord allObjects]) {
          [dr deleteEntity];
     }
@@ -323,8 +326,8 @@ static const int CategorizeNewObsSwitchTag = 102;
         key = kINatAutocompleteNamesPrefKey;
     else if (switcher.tag == CategorizeNewObsSwitchTag)
         key = kInatCategorizeNewObsPrefKey;
-    else if (switcher.tag == AutomaticallyUploadSwitchTag)
-        key = kINatAutomaticallyUploadPrefKey;
+    else if (switcher.tag == AutouploadSwitchTag)
+        key = kInatAutouploadPrefKey;
     
     if (key) {
         NSString *analyticsEvent;
@@ -372,11 +375,10 @@ static const int CategorizeNewObsSwitchTag = 102;
             if (categoriesLabel) {
                 categoriesLabel.textAlignment = NSTextAlignmentNatural;
             }
-            UILabel *automaticallyUploadLabel = (UILabel *)[cell.contentView viewWithTag:AutomaticallyUploadLabelTag];
-            if (automaticallyUploadLabel) {
-                automaticallyUploadLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *autouploadLabel = (UILabel *)[cell.contentView viewWithTag:AutouploadLabelTag];
+            if (autouploadLabel) {
+                autouploadLabel.textAlignment = NSTextAlignmentNatural;
             }
-
             
             UISwitch *switcher;
             if (![cell viewWithTag:100 + indexPath.item]) {
@@ -410,9 +412,12 @@ static const int CategorizeNewObsSwitchTag = 102;
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
             else if (switcher.tag == CategorizeNewObsSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
-            else if (switcher.tag == AutomaticallyUploadSwitchTag)
-                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey];
+            else if (switcher.tag == AutouploadSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
+
         } else {
+            // iNaturalist Network setting
+            
             // main text in black
             cell.textLabel.enabled = YES;
             

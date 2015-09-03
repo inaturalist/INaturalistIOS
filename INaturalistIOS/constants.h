@@ -19,6 +19,7 @@
 #define kINatAutomaticallyUploadPrefKey @"INatAutomaticallyUploadPrefKey"
 #define kInatCategorizeNewObsPrefKey @"INatCategorizeNewObsPrefKey"
 #define kInatCustomBaseURLStringKey @"InatCustomBaseURLStringKey"
+#define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 
 
 #ifdef DEBUG1
