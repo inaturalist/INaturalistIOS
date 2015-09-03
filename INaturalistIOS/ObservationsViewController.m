@@ -771,8 +771,8 @@
                 } else {
                     NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
                     NSString *speciesName = NSLocalizedString(@"Something...", nil);
-                    if (uploadManager.currentlyUploadingObservation.taxon) {
-                        speciesName = uploadManager.currentlyUploadingObservation.taxon.name;
+                    if (uploadManager.currentlyUploadingObservation.speciesGuess) {
+                        speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
                     }
                     self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
                 }
