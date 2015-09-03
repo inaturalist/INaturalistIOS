@@ -18,6 +18,7 @@
 #import "Partner.h"
 #import "User.h"
 #import "UploadManager.h"
+#import "Taxon.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -474,6 +475,9 @@ NSInteger INatMinPasswordLength = 6;
     if (!me) { return; }
     me.siteId = @(partner.identifier);
     
+    // delete any stashed taxa
+    [Taxon deleteAll];
+    
     NSError *saveError = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&saveError];
     if (saveError) {
@@ -481,6 +485,30 @@ NSInteger INatMinPasswordLength = 6;
                                             saveError.localizedDescription]];
         return;
     }
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        
+                                                        loader.objectMapping = [Taxon mapping];
+                                                        
+                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            // update timestamps on taxa objects
+                                                            NSDate *now = [NSDate date];
+                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                                                                                  NSUInteger idx,
+                                                                                                  BOOL *stop) {
+                                                                [o setSyncedAt:now];
+                                                            }];
+                                                            
+                                                            NSError *saveError = nil;
+                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                                                            if (saveError) {
+                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
+                                                                                                    saveError.localizedDescription]];
+                                                            }
+                                                        };
+                                                    }];
     
     [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
     [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.recordID.integerValue]
