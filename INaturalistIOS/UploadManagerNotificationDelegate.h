@@ -16,10 +16,11 @@
 @optional
 - (void)uploadSessionAuthRequired;
 - (void)uploadSessionFinished;
-- (void)uploadStartedFor:(Observation *)observation;
+- (void)uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total;
 - (void)uploadSuccessFor:(Observation *)observation;
 - (void)uploadProgress:(float)progress for:(Observation *)observation;
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error;
+- (void)uploadCancelledFor:(INatModel *)object;
 
 - (void)uploadNonFatalError:(NSError *)error;
 

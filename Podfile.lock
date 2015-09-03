@@ -19,13 +19,13 @@ PODS:
   - Bolts (1.1.3)
   - cocoa-oauth (0.0.1):
     - NSData+Base64 (~> 1.0)
-  - Crashlytics (3.0.11)
+  - Crashlytics (3.1.1)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
-  - Expecta (1.0.0)
-  - Fabric (1.2.8):
-    - Fabric/Base (= 1.2.8)
-  - Fabric/Base (1.2.8)
+  - Expecta (1.0.2)
+  - Fabric (1.4.0):
+    - Fabric/Base (= 1.4.0)
+  - Fabric/Base (1.4.0)
   - Facebook-iOS-SDK (3.20.0):
     - Bolts (~> 1.0)
   - FileMD5Hash (0.0.1)
@@ -102,14 +102,14 @@ PODS:
     - RestKit/ObjectMapping/Core
     - XMLReader
   - RestKit/UI (0.10.3)
-  - SDWebImage (3.7.1):
-    - SDWebImage/Core (= 3.7.1)
-  - SDWebImage/Core (3.7.1)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
   - SlackTextViewController (1.5):
     - SlackTextViewController/Additions (= 1.5)
   - SlackTextViewController/Additions (1.5)
   - SOCKit (1.1)
-  - Specta (1.0.0)
+  - Specta (1.0.3)
   - SSZipArchive (0.3.2)
   - SVProgressHUD (1.1.3)
   - SVPullToRefresh (0.4.1)
@@ -124,11 +124,11 @@ DEPENDENCIES:
   - AFNetworking (= 1.3.4)
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
-  - Crashlytics (= 3.0.11)
+  - Crashlytics (= 3.1.1)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Expecta
-  - Fabric (= 1.2.8)
+  - Fabric (= 1.4.0)
   - Facebook-iOS-SDK (= 3.20.0)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - FlurrySDK (= 6.2.0)
@@ -145,6 +145,7 @@ DEPENDENCIES:
   - QBImagePickerController (= 2.2.2)
   - RaptureXML (= 1.0.1)
   - RestKit (= 0.10.3)
+  - SDWebImage (= 3.7.3)
   - SlackTextViewController (= 1.5)
   - Specta
   - SSZipArchive (= 0.3.2)
@@ -184,11 +185,11 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: e431c88fd02115d4a34016c2100bbfa4d2d5b146
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
-  Crashlytics: 1eef152dd21c1f2f9d9dbe115e637c77c6ffcc8e
+  Crashlytics: 39ab395565bc03c29cdecd2b9d103ebf30930c10
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
-  Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  Fabric: a9eabe53915e9f1db55a84dd2838737928675878
+  Expecta: 54e8a3530add08f4f0208c111355eda7cde74a53
+  Fabric: 6d1d1c1eaf7ebc76fc3307e2c0259456411baf26
   Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
   FileMD5Hash: d96615de89074573f05b8106441e15ac6241cfae
   FlurrySDK: 6d8cc2f898589214ed72e481cf59cffa55b88fe0
@@ -209,10 +210,10 @@ SPEC CHECKSUMS:
   QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   RestKit: b83399c3f43ff4f1808ff85eced8d55bb7739584
-  SDWebImage: ed3095af2ff88b436426037444979b917f6c5575
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
   SlackTextViewController: 4a1797ac2f3616dbd37435fc62da655e61399cdd
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
-  Specta: 96fe05fe5c7348b5223f85e862904f6e832abb14
+  Specta: cf3e4188cf35375c3ee2cd03f8db8f1f4ef98234
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c

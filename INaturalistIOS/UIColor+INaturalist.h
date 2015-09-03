@@ -12,4 +12,6 @@
 + (UIColor *)inatDarkGreen;
 + (UIColor *)inatTint;
 + (UIColor *)inatInactiveGreyTint;
++ (UIColor *)inatDarkGray;
++ (UIColor *)inatLightGray;
 @end

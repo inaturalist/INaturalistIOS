@@ -28,11 +28,4 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
-- (void)loadData;
-- (void)sync;
-- (void)syncAllGuides;
-- (void)syncNearbyGuides;
-- (void)syncUserGuides;
-- (void)stopSync;
-- (void)checkEmpty;
 @end

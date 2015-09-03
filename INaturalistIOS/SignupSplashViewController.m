@@ -485,7 +485,8 @@ static char PARTNER_ASSOCIATED_KEY;
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
-            [[Analytics sharedClient] event:kAnalyticsEventLogin];
+            [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
+                             withProperties:@{ @"from": @"SignupSplash" }];
             __strong typeof(weakSelf)strongSelf = weakSelf;
             LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
             login.cancellable = NO;

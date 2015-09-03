@@ -194,17 +194,19 @@ static NSDateFormatter *jsDateFormatter = nil;
 
 // Note: controllers are responsible for setting localUpdatedAt and syncedAt
 - (void)updateLocalTimestamps {
-    // if there's a recordID but no localUpdatedAt, assume this came fresh from the website and should be considered synced.
     NSDate *now = [NSDate date];
+    // if there's a recordID but no localUpdatedAt, assume this came fresh from the website and should be considered synced.
     if (self.recordID && !self.localUpdatedAt) {
         [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
         [self setPrimitiveValue:now forKey:@"syncedAt"];
-        if (![self primitiveValueForKey:@"localCreatedAt"]) {
-            [self setPrimitiveValue:now forKey:@"localCreatedAt"];
-        }
-        return;
-    } else if (!self.localCreatedAt) {
-        [self setPrimitiveValue:now forKey:@"localCreatedAt"];
+    }
+    
+    // if we don't have a local creation date, assume this came from the server
+    if (![self primitiveValueForKey:@"localCreatedAt"]) {
+        // try to use server creation date for localCreatedAt
+        // if we don't have a local creation date
+        [self setPrimitiveValue:self.createdAt ?: now
+                         forKey:@"localCreatedAt"];
         [self setPrimitiveValue:now forKey:@"localUpdatedAt"];
     }
 }

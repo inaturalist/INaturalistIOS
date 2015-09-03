@@ -504,11 +504,10 @@ static char PROJECT_ASSOCIATED_KEY;
     [self setObservationsTabBadge];
 }
 
-- (void)setObservationsTabBadge
-{
-    NSInteger obsSyncCount = [Observation needingSyncCount] + [Observation deletedRecordCount];
-    NSInteger photoSyncCount = [ObservationPhoto needingSyncCount];
-    NSInteger theCount = obsSyncCount > 0 ? obsSyncCount : photoSyncCount;
+- (void)setObservationsTabBadge {
+    NSInteger theCount = [[Observation needingUpload] count];
+    theCount += [Observation deletedRecordCount];
+    
     UITabBarItem *item = [self.tabBar.items objectAtIndex:ME_TAB_INDEX];
     if (theCount > 0) {
         item.badgeValue = [NSString stringWithFormat:@"%ld", (long)theCount];
