@@ -1534,7 +1534,7 @@
     if (error) {
         alertMsg = error.localizedDescription;
     } else {
-        alertMsg = NSLocalizedString(@"Uknown error while attempting to delete.", @"uknonwn delete error");
+        alertMsg = NSLocalizedString(@"Unknown error while attempting to delete.", @"unknown delete error");
     }
     
     [[[UIAlertView alloc] initWithTitle:alertTitle

@@ -310,7 +310,7 @@ static char PARTNER_ASSOCIATED_KEY;
                     alertMsg = error.localizedDescription;
                 } else {
                     alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                                 @"Uknown facebook login error");
+                                                 @"Unknown facebook login error");
                 }
                 
                 [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -383,7 +383,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                            alertMsg = error.localizedDescription;
                                                                        } else {
                                                                            alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                        @"Uknown google login error");
+                                                                                                        @"Unknown google login error");
                                                                        }
                                                                        [[[UIAlertView alloc] initWithTitle:alertTitle
                                                                                                    message:alertMsg

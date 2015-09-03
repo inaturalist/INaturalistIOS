@@ -174,7 +174,7 @@
                                                                            alertMsg = error.localizedDescription;
                                                                        } else {
                                                                            alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                        @"Uknown google login error");
+                                                                                                        @"Unknown google login error");
                                                                        }
                                                                        [[[UIAlertView alloc] initWithTitle:alertTitle
                                                                                                    message:alertMsg
@@ -234,7 +234,7 @@
                     alertMsg = error.localizedDescription;
                 } else {
                     alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                            @"Uknown facebook login error");
+                                            @"Unknown facebook login error");
                 }
                 [[[UIAlertView alloc] initWithTitle:alertTitle
                                            message:alertMsg
@@ -624,7 +624,7 @@
                                                    }
                                                } else {
                                                    alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
-                                                                                @"Uknown iNat login error");
+                                                                                @"Unknown iNat login error");
                                                }
                                                [[[UIAlertView alloc] initWithTitle:alertTitle
                                                                            message:alertMsg
