@@ -17,6 +17,8 @@
 @property (assign, getter=isUploading) BOOL uploading;
 @property (assign, getter=isSyncingDeletes) BOOL syncingDeletes;
 
+@property (assign, readonly) BOOL shouldAutoupload;
+
 @property Observation *currentlyUploadingObservation;
 
 // index counting from zero
@@ -29,5 +31,6 @@
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;
 - (void)uploadObservations:(NSArray *)observations;
 - (void)cancelSyncsAndUploads;
+- (void)autouploadPendingContent;
 
 @end

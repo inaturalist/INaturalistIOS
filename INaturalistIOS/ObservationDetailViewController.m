@@ -990,29 +990,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)triggerAutoUpload {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey]) {
-        // trigger sync of all deletes and uploads
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploader = appDelegate.loginController.uploadManager;
-        if (![uploader isUploading]) {
-            NSMutableArray *recordsToDelete = [NSMutableArray array];
-            for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-                [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
-                                                                                          NSStringFromClass(klass)]]];
-            }
-            NSArray *observationsToUpload = [Observation needingUpload];
-            if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
-                
-                [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
-                                 withProperties:@{
-                                                  @"Via": @"Automatic Upload",
-                                                  @"numDeletes": @(recordsToDelete.count),
-                                                  @"numUploads": @(observationsToUpload.count),
-                                                  }];
-
-                [uploader syncDeletedRecords:recordsToDelete
-                      thenUploadObservations:observationsToUpload];
-            }
-        }
+        [uploader autouploadPendingContent];
     }
 }
 
@@ -1652,16 +1632,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     [self save];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutomaticallyUploadPrefKey]) {
-        Observation *obs = self.observation;
-        if (obs.needsUpload) {
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            appDelegate.loginController.uploadManager.cancelled = NO;
-            [appDelegate.loginController.uploadManager uploadObservations:@[ obs ]
-                                                               completion:nil];
-        }
-    }
-
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }

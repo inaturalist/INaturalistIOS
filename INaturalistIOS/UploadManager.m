@@ -68,6 +68,30 @@
     [self.delegate uploadCancelledFor:nil];
 }
 
+- (void)autouploadPendingContent {
+    if (!self.shouldAutoupload) { return; }
+    if (self.isUploading) { return; }
+    
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                  NSStringFromClass(klass)]]];
+    }
+    NSArray *observationsToUpload = [Observation needingUpload];
+    if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
+        
+        [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                         withProperties:@{
+                                          @"Via": @"Automatic Upload",
+                                          @"numDeletes": @(recordsToDelete.count),
+                                          @"numUploads": @(observationsToUpload.count),
+                                          }];
+        
+        [self syncDeletedRecords:recordsToDelete
+          thenUploadObservations:observationsToUpload];
+    }
+}
+
 #pragma mark - private methods
 
 /**
@@ -96,7 +120,14 @@
         // notify finished with uploading
         self.currentlyUploadingObservation = nil;
         self.uploading = NO;
+        self.syncingDeletes = NO;
         [self.delegate uploadSessionFinished];
+        
+        if (self.shouldAutoupload) {
+            // check to see if there's anything else to upload
+            // if so, upload it
+            [self autouploadPendingContent];
+        }
     }
 }
 
@@ -341,8 +372,30 @@
 
 #pragma mark - NSObject lifecycle
 
+- (instancetype)init {
+    if (self = [super init]) {
+        // monitor reachability to trigger autoupload
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:RKReachabilityDidChangeNotification
+                                                   object:nil];
+    }
+    
+    return self;
+}
+
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - Reachability Updates
+
+- (void)reachabilityChanged:(NSNotification *)note {
+    if ([[[RKObjectManager sharedManager] client] isNetworkReachable] && self.shouldAutoupload) {
+        [self autouploadPendingContent];
+    }
 }
 
 #pragma mark - setters & getters
@@ -370,6 +423,20 @@
 
 - (NSInteger)currentUploadSessionTotalObservations {
     return _currentUploadSessionTotalObservations;
+}
+
+- (BOOL)shouldAutoupload {
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
+        return NO;
+    
+    if (![[[RKObjectManager sharedManager] client] isNetworkReachable])
+        return NO;
+    
+    if ([self isUploading])
+        return NO;
+    
+    return YES;
 }
 
 @end
