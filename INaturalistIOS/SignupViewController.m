@@ -532,7 +532,7 @@
                                                         alertMsg = error.localizedDescription;
                                                     } else {
                                                         alertMsg = NSLocalizedString(@"Failed to create an iNaturalist account. Please try again.",
-                                                                                   @"Uknown iNaturalist create account error");
+                                                                                   @"Unknown iNaturalist create account error");
                                                     }
                                                     
                                                     [[[UIAlertView alloc] initWithTitle:alertTitle

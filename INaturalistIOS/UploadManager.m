@@ -62,6 +62,7 @@
 
 - (void)cancelSyncsAndUploads {
     self.cancelled = YES;
+    self.syncingDeletes = NO;
     self.uploading = NO;
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
     [self.delegate uploadCancelledFor:nil];

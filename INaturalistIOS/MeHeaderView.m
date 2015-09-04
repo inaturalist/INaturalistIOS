@@ -115,7 +115,7 @@
                                 @"guides": self.guidesButton,
                                 };
         
-        self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[uploadingSpinner]-[obsCount]-|"
+        self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-(10@900)-[uploadingSpinner]-[obsCount]-|"
                                                                                    options:0
                                                                                    metrics:0
                                                                                      views:views];

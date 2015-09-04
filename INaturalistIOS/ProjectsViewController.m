@@ -22,6 +22,7 @@
 #import "UIImage+INaturalist.h"
 #import "ProjectTableViewCell.h"
 #import "UIColor+INaturalist.h"
+#import "NSURL+INaturalist.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -410,7 +411,9 @@ static const int ListControlIndexNearby = 2;
         vc.tutorialImage = [UIImage imageNamed:@"tutorial_projects"];
         vc.tutorialTitle = NSLocalizedString(@"Projects are collections of observations with a common purpose", @"Title for projects tutorial screen");
         vc.tutorialSubtitleOne = NSLocalizedString(@"Join projects to select them when you record observations", @"Subtitle above image for projects tutorial screen");
-        vc.tutorialSubtitleTwo = NSLocalizedString(@"Visit iNaturalist.org to create your own projects", @"Subtitle below image for projects tutorial screen");
+        NSString *tutorialSubtitleTwoBase = NSLocalizedString(@"Visit %@ to create your own projects",
+                                                              @"Subtitle below image for projects tutorial screen. The string is the URL for iNat (or partner site)");
+        vc.tutorialSubtitleTwo = [NSString stringWithFormat:tutorialSubtitleTwoBase, [NSURL inat_baseURL]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self presentViewController:vc animated:YES completion:nil];
         });

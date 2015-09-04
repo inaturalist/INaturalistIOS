@@ -746,8 +746,8 @@
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
+        [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
         [view.iconButton setImage:nil forState:UIControlStateNormal];
-        [view.iconButton sd_setBackgroundImageWithURL:nil forState:UIControlStateNormal];
         [view.iconButton setTintColor:[UIColor whiteColor]];
         view.iconButton.backgroundColor = [UIColor inatTint];
 
@@ -771,8 +771,8 @@
                 } else {
                     NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
                     NSString *speciesName = NSLocalizedString(@"Something...", nil);
-                    if (uploadManager.currentlyUploadingObservation.taxon) {
-                        speciesName = uploadManager.currentlyUploadingObservation.taxon.name;
+                    if (uploadManager.currentlyUploadingObservation.speciesGuess) {
+                        speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
                     }
                     self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
                 }
@@ -785,8 +785,9 @@
             [view stopAnimatingUpload];
             
             NSString *uploadButtonTitleText = NSLocalizedString(@"Upload", @"Title for upload button.");
+            NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
             
-            if ([view.iconButton attributedTitleForState:UIControlStateNormal] == nil) {
+            if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
                 FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:46];
                 NSMutableAttributedString *uploadIconString = [[NSMutableAttributedString alloc] initWithAttributedString:uploadIcon.attributedString];
                 // explicit linebreak because uilabel doesn't seem to be able to calculate number of lines required with a FAK glyph
@@ -1384,6 +1385,7 @@
 
 - (void)uploadCancelledFor:(INatModel *)object {
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    [self configureHeaderForLoggedInUser];
     [self syncStopped];
 }
 
@@ -1542,7 +1544,7 @@
     if (error) {
         alertMsg = error.localizedDescription;
     } else {
-        alertMsg = NSLocalizedString(@"Uknown error while attempting to delete.", @"uknonwn delete error");
+        alertMsg = NSLocalizedString(@"Unknown error while attempting to delete.", @"unknown delete error");
     }
     
     [[[UIAlertView alloc] initWithTitle:alertTitle
