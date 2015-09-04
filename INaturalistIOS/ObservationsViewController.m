@@ -811,6 +811,12 @@
                 view.iconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    // only animate the upload button if it's still an upload button
+                    NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
+                    if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
+                        return;
+                    }
+                    
                     [UIView animateWithDuration:0.2f
                                      animations:^{
                                          view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
