@@ -746,8 +746,8 @@
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
+        [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
         [view.iconButton setImage:nil forState:UIControlStateNormal];
-        [view.iconButton sd_setBackgroundImageWithURL:nil forState:UIControlStateNormal];
         [view.iconButton setTintColor:[UIColor whiteColor]];
         view.iconButton.backgroundColor = [UIColor inatTint];
 
@@ -785,8 +785,9 @@
             [view stopAnimatingUpload];
             
             NSString *uploadButtonTitleText = NSLocalizedString(@"Upload", @"Title for upload button.");
+            NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
             
-            if ([view.iconButton attributedTitleForState:UIControlStateNormal] == nil) {
+            if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
                 FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:46];
                 NSMutableAttributedString *uploadIconString = [[NSMutableAttributedString alloc] initWithAttributedString:uploadIcon.attributedString];
                 // explicit linebreak because uilabel doesn't seem to be able to calculate number of lines required with a FAK glyph
@@ -1376,6 +1377,7 @@
 
 - (void)uploadCancelledFor:(INatModel *)object {
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    [self configureHeaderForLoggedInUser];
     [self syncStopped];
 }
 
