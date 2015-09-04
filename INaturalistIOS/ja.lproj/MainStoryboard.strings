@@ -11,7 +11,7 @@
 "thU-yQ-HUV.text" = "新規観察記録を分類する";
 
 /* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
-"g3B-dy-Lka.text" = "iNaturalist Network";
+"g3B-dy-Lka.text" = "iNaturalistネットワーク";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "ガイド";
@@ -41,7 +41,7 @@
 "6UX-BL-9DW.title" = "プロジェクト";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
-"nla-WE-iqA.text" = "Username";
+"nla-WE-iqA.text" = "ユーザー名";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "あなたのiNat ユーザー名";
@@ -329,7 +329,7 @@
 "s0d-iz-ydn.title" = "観察記録";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "INaturalist.org にサインインします";
+"tW8-NR-sj7.headerTitle" = "iNaturalist.org にサインインします";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
 "tiA-DP-jEV.title" = "ログイン";
