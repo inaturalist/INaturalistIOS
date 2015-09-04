@@ -203,8 +203,9 @@
                                                                     }];
                         [op destroy];
                         
+                        [self stopUploadActivity];
                         [self.delegate uploadFailedFor:recordToUpload error:error];
-                        self.uploading = NO;
+                        
                         return;
                     }
                 }
@@ -217,10 +218,10 @@
                                                                                   mapping:serializationMapping];
                 NSDictionary *dictionary = [serializer serializedObject:&error];
                 
-                // should really call completion with the error
                 if (error) {
+                    [self stopUploadActivity];
                     [self.delegate uploadFailedFor:recordToUpload error:error];
-                    self.uploading = NO;
+
                     return;
                 }
                 
@@ -282,11 +283,17 @@
     }
 }
 
+- (void)stopUploadActivity {
+    self.uploading = NO;
+    self.syncingDeletes = NO;
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - RKRequestDelegate
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     // check for 401 unauthorized
     if (response.statusCode == 401) {
-        self.uploading = NO;
+        [self stopUploadActivity];
         [self.delegate uploadSessionAuthRequired];
         return;
     }
@@ -331,14 +338,17 @@
     // notify about failure
     if (objectLoader.method == RKRequestMethodDELETE) {
         DeletedRecord *failedDelete = [self.recordsToDelete firstObject];
+
+        [self stopUploadActivity];
         [self.delegate deleteFailedFor:failedDelete error:error];
-        self.uploading = NO;
+
     } else {
         // this masks all failures behind the observation failing to upload
         // is this the correct move?
         Observation *failedObservation = [self.observationsToUpload firstObject];
+        
+        [self stopUploadActivity];
         [self.delegate uploadFailedFor:failedObservation error:error];
-        self.uploading = NO;
     }
 }
 
@@ -348,6 +358,7 @@
 
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {
+        [self stopUploadActivity];
         [self.delegate uploadFailedFor:object error:error];
     } else {
         if (self.cancelled) {

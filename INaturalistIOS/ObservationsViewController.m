@@ -811,6 +811,12 @@
                 view.iconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    // only animate the upload button if it's still an upload button
+                    NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
+                    if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
+                        return;
+                    }
+                    
                     [UIView animateWithDuration:0.2f
                                      animations:^{
                                          view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
@@ -1333,17 +1339,16 @@
 	NSLog(@"Request Error: %@", error.localizedDescription);
 }
 
-#pragma mark - Upload
+#pragma mark - Upload Notification Delegate
 
 
 - (void)uploadSessionAuthRequired {
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    [self syncStopped];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
                                       @"Via": @"Auth Required",
                                       }];
-    [self syncStopped];
     
     NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
                                             @"This is an explanation for why the sync button triggers a login prompt.");
@@ -1351,7 +1356,14 @@
 }
 
 - (void)uploadSessionFinished {
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    // allow any pending upload animations to finish
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // make sure any deleted records get gone
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        
+        [self syncStopped];
+    });
 
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
@@ -1369,23 +1381,10 @@
         
         [self.nonFatalUploadErrors removeAllObjects];
     }
-    
-    [self.meHeader stopAnimatingUpload];
-
-    // allow any pending upload animations to finish
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
-        // make sure any deleted records get gone
-        NSError *error = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
-
-        [self syncStopped];
-        [self loadUserForHeader];
-    });
 }
 
 - (void)uploadCancelledFor:(INatModel *)object {
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
-    [self configureHeaderForLoggedInUser];
     [self syncStopped];
 }
 
@@ -1460,10 +1459,8 @@
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    [self syncStopped];
     
-    [self.meHeader stopAnimatingUpload];
-
     if ([object isKindOfClass:ProjectObservation.class]) {
         ProjectObservation *po = (ProjectObservation *)object;
         if (!self.nonFatalUploadErrors) {
@@ -1485,7 +1482,7 @@
             NSLog(@"ERROR: deleted mysterious ofv: %@", ofv);
             [ofv deleteEntity];
         }
-    } else if ([self isSyncing]) {
+    } else {
         NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
         NSString *alertMessage;
         
@@ -1505,7 +1502,6 @@
                          withProperties:@{
                                           @"Alert": alertMessage,
                                           }];
-        [self syncStopped];
         
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
                                                      message:alertMessage
@@ -1531,14 +1527,12 @@
 }
 
 - (void)deleteSessionFinished {
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    [self.meHeader stopAnimatingUpload];
-    [self.tableView reloadData];
+    [self syncStopped];
 }
 
 - (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-
+    [self syncStopped];
+    
     NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
     NSString *alertMsg;
     if (error) {
