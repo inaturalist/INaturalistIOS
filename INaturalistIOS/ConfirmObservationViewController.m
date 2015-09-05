@@ -9,6 +9,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
+#import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
+#import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 
 #import "ConfirmObservationViewController.h"
 #import "Observation.h"
@@ -333,6 +335,19 @@
                 // do nothing
             } else if (indexPath.item == 1) {
                 // show date/time action sheet picker
+                [[[ActionSheetDatePicker alloc] initWithTitle:NSLocalizedString(@"Select Date", @"title for date selector")
+                                               datePickerMode:UIDatePickerModeDateAndTime
+                                                 selectedDate:self.observation.localObservedOn
+                                                    doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+                                                        
+                                                        self.observation.localObservedOn = selectedDate;
+                                                        self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
+                                                        
+                                                        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                                              withRowAnimation:UITableViewRowAnimationFade];
+                                                        
+                                                    } cancelBlock:nil
+                                                       origin:self.view] showActionSheetPicker];
             } else if (indexPath.item == 2) {
                 // show location chooser
 
