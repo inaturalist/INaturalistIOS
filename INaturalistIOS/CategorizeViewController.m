@@ -25,6 +25,7 @@
 #import "Analytics.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "ConfirmObservationViewController.h"
 
 static NSDictionary *ICONIC_TAXON_NAMES;
 static NSArray *ICONIC_TAXON_ORDER;
@@ -506,15 +507,9 @@ static NSArray *ICONIC_TAXON_ORDER;
     }
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-
-    detail.observation = o;
-    detail.delegate = self;
-    detail.shouldShowBigSaveButton = YES;
-    [self.navigationController pushViewController:detail animated:YES];
-    if (self.shouldContinueUpdatingLocation)
-        [detail startUpdatingLocation];
-
+    ConfirmObservationViewController *confirm = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.observation = o;
+    [self.navigationController pushViewController:confirm animated:YES];
 }
 
 #pragma mark - ObservationDetailViewController delegate

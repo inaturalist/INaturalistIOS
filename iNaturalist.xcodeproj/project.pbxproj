@@ -164,6 +164,8 @@
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
 		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
+		FA7558491B9A4BDF00762D7B /* ConfirmObservationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */; };
+		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
 		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -521,6 +523,10 @@
 		FA724AE11AB150D300D01773 /* AnonHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonHeaderView.h; sourceTree = "<group>"; };
 		FA724AE21AB150D300D01773 /* AnonHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonHeaderView.m; sourceTree = "<group>"; };
 		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		FA7558471B9A4BDF00762D7B /* ConfirmObservationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmObservationViewController.h; sourceTree = "<group>"; };
+		FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmObservationViewController.m; sourceTree = "<group>"; };
+		FA75584A1B9A599800762D7B /* DisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureCell.h; sourceTree = "<group>"; };
+		FA75584B1B9A599800762D7B /* DisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisclosureCell.m; sourceTree = "<group>"; };
 		FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardHeader.h; sourceTree = "<group>"; };
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
 		FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChiclet.h; sourceTree = "<group>"; };
@@ -781,6 +787,8 @@
 				19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */,
 				FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */,
 				FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */,
+				FA7558471B9A4BDF00762D7B /* ConfirmObservationViewController.h */,
+				FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */,
 				FAC0F1671A9EAE3B000F20C4 /* ConfirmPhotoViewController.h */,
 				FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */,
 				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
@@ -882,6 +890,8 @@
 				897569FE1B4557B500F0BFAD /* ObservationViewCell.m */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
+				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
+				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1473,6 +1483,7 @@
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
+				FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */,
 				197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
@@ -1492,6 +1503,7 @@
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				FA7558491B9A4BDF00762D7B /* ConfirmObservationViewController.m in Sources */,
 				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
 				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
 				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,

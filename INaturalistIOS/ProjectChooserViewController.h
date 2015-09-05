@@ -18,7 +18,7 @@
 @end
 
 @interface ProjectChooserViewController : UITableViewController <RKObjectLoaderDelegate>
-@property (weak, nonatomic) UIViewController *delegate;
+@property (weak, nonatomic) id <ProjectChooserViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSArray *projectUsers;
 @property (nonatomic, strong) NSMutableArray *chosenProjects;
 @property (nonatomic, strong) UILabel *noContentLabel;
