@@ -337,16 +337,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // do nothing
             } else if (indexPath.item == 1) {
                 // show date/time action sheet picker
+                __weak typeof(self) weakSelf = self;
                 [[[ActionSheetDatePicker alloc] initWithTitle:NSLocalizedString(@"Select Date", @"title for date selector")
                                                datePickerMode:UIDatePickerModeDateAndTime
                                                  selectedDate:self.observation.localObservedOn
                                                     doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
                                                         
-                                                        self.observation.localObservedOn = selectedDate;
-                                                        self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
+                                                        __strong typeof(weakSelf) strongSelf = self;
+                                                        strongSelf.observation.localObservedOn = selectedDate;
+                                                        strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
                                                         
-                                                        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                              withRowAnimation:UITableViewRowAnimationFade];
+                                                        [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                                                    withRowAnimation:UITableViewRowAnimationFade];
                                                         
                                                     } cancelBlock:nil
                                                        origin:self.view] showActionSheetPicker];
