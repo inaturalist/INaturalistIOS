@@ -20,6 +20,7 @@
 #import "TaxaSearchViewController.h"
 #import "ProjectChooserViewController.h"
 #import "ProjectObservation.h"
+#import "TextViewCell.h"
 
 #define PHOTOS_SECTION              0
 #define IDENTIFY_SECTION            1
@@ -28,9 +29,10 @@
 #define PROJECT_DETAILS_SECTION     4
 #define PROJECTS_SECTION            5
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
 @property UITableView *tableView;
 @property UIButton *saveButton;
+@property (readonly) NSString *notesPlaceholder;
 @end
 
 @implementation ConfirmObservationViewController
@@ -57,7 +59,7 @@
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"locationDisclosure"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"switch"];
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"notes"];
+        [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
         tv.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -120,6 +122,29 @@
         // log it at least, also notify the user
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if ([textView.text isEqualToString:self.notesPlaceholder]) {
+        textView.textColor = [UIColor blackColor];
+        textView.text = @"";
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    self.observation.inatDescription = textView.text;
+    
+    if (textView.text.length == 0) {
+        textView.textColor = [UIColor grayColor];
+        textView.text = self.notesPlaceholder;
+    }
+}
+
+#pragma mark textview helper
+- (NSString *)notesPlaceholder {
+    return NSLocalizedString(@"Notes...", @"Placeholder for observation notes when making a new observation.");
 }
 
 #pragma mark - UISwitch targets
@@ -416,8 +441,17 @@
 }
 
 - (UITableViewCell *)notesCellInTableView:(UITableView *)tableView {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    TextViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
     
+    if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
+        cell.textView.text = self.observation.inatDescription;
+        cell.textView.textColor = [UIColor blackColor];
+    } else {
+        cell.textView.text = self.notesPlaceholder;
+        cell.textView.textColor = [UIColor grayColor];
+    }
+    cell.textView.delegate = self;
+
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
     return cell;

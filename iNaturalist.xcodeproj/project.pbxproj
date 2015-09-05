@@ -185,6 +185,7 @@
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
+		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
@@ -568,6 +569,8 @@
 		FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupSplashViewController.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
+		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
+		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
@@ -892,6 +895,8 @@
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
 				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
 				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
+				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
+				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1485,6 +1490,7 @@
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
 				FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */,
 				197A6057151155DE0061B83B /* ProjectListViewController.m in Sources */,
+				FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
