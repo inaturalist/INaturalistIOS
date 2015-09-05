@@ -24,12 +24,14 @@
 #import "ProjectObservation.h"
 #import "TextViewCell.h"
 
-#define PHOTOS_SECTION              0
-#define IDENTIFY_SECTION            1
-#define NOTES_SECTION               2
-#define CAPTIVE_SECTION             3
-#define PROJECT_DETAILS_SECTION     4
-#define PROJECTS_SECTION            5
+typedef NS_ENUM(NSInteger, ConfirmObsSection) {
+    ConfirmObsSectionPhotos = 0,
+    ConfirmObsSectionIdentify,
+    ConfirmObsSectionNotes,
+    ConfirmObsSectionCaptive,
+    ConfirmObsSectionProjectDetails,
+    ConfirmObsSectionProjects
+};
 
 @interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
 @property UITableView *tableView;
@@ -205,9 +207,9 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == PHOTOS_SECTION) {
+    if (indexPath.section == ConfirmObsSectionPhotos) {
         return 110;
-    } else if (indexPath.section == NOTES_SECTION && indexPath.item == 0) {
+    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 0) {
         return 88;
     } else {
         return 44;
@@ -216,22 +218,22 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case PHOTOS_SECTION:
+        case ConfirmObsSectionPhotos:
             return 0;
             break;
-        case IDENTIFY_SECTION:
+        case ConfirmObsSectionIdentify:
             return 34;
             break;
-        case NOTES_SECTION:
+        case ConfirmObsSectionNotes:
             return 2;
             break;
-        case CAPTIVE_SECTION:
+        case ConfirmObsSectionCaptive:
             return 2;
             break;
-        case PROJECT_DETAILS_SECTION:
+        case ConfirmObsSectionProjectDetails:
             return 34;
             break;
-        case PROJECTS_SECTION:
+        case ConfirmObsSectionProjects:
             return 34;
             break;
         default:
@@ -242,22 +244,22 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case PHOTOS_SECTION:
+        case ConfirmObsSectionPhotos:
             return 1;
             break;
-        case IDENTIFY_SECTION:
+        case ConfirmObsSectionIdentify:
             return 2;
             break;
-        case NOTES_SECTION:
+        case ConfirmObsSectionNotes:
             return 4;
             break;
-        case CAPTIVE_SECTION:
+        case ConfirmObsSectionCaptive:
             return 1;
             break;
-        case PROJECT_DETAILS_SECTION:
+        case ConfirmObsSectionProjectDetails:
             return 0;
             break;
-        case PROJECTS_SECTION:
+        case ConfirmObsSectionProjects:
             return 1;
             break;
         default:
@@ -277,17 +279,17 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     switch (indexPath.section) {
-        case PHOTOS_SECTION:
+        case ConfirmObsSectionPhotos:
             return [self photoCellInTableView:tableView];
             break;
-        case IDENTIFY_SECTION:
+        case ConfirmObsSectionIdentify:
             if (indexPath.item == 0) {
                 return [self speciesCellInTableView:tableView];
             } else {
                 return [self helpIdCellInTableView:tableView];
             }
             break;
-        case NOTES_SECTION:
+        case ConfirmObsSectionNotes:
             if (indexPath.item == 0) {
                 return [self notesCellInTableView:tableView];
             } else if (indexPath.item == 1) {
@@ -300,13 +302,13 @@
                 return [self illegalCellForIndexPath:indexPath];
             }
             break;
-        case CAPTIVE_SECTION:
+        case ConfirmObsSectionCaptive:
             return [self captiveCellInTableView:tableView];
             break;
-        case PROJECT_DETAILS_SECTION:
+        case ConfirmObsSectionProjectDetails:
             return [self illegalCellForIndexPath:indexPath];
             break;
-        case PROJECTS_SECTION:
+        case ConfirmObsSectionProjects:
             return [self addProjectCellInTableView:tableView];
             break;
         default:
@@ -317,10 +319,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.section) {
-        case PHOTOS_SECTION:
+        case ConfirmObsSectionPhotos:
             // do nothing
             break;
-        case IDENTIFY_SECTION:
+        case ConfirmObsSectionIdentify:
             if (indexPath.item == 0) {
                 TaxaSearchViewController *search = [[TaxaSearchViewController alloc] initWithNibName:nil bundle:nil];
                 search.delegate = self;
@@ -330,7 +332,7 @@
                 // do nothing
             }
             break;
-        case NOTES_SECTION:
+        case ConfirmObsSectionNotes:
             if (indexPath.item == 0) {
                 // do nothing
             } else if (indexPath.item == 1) {
@@ -357,13 +359,13 @@
                 // do nothing
             }
             break;
-        case CAPTIVE_SECTION:
+        case ConfirmObsSectionCaptive:
             // do nothing
             break;
-        case PROJECT_DETAILS_SECTION:
+        case ConfirmObsSectionProjectDetails:
             // do nothing
             break;
-        case PROJECTS_SECTION: {
+        case ConfirmObsSectionProjects: {
             ProjectChooserViewController *projects = [[ProjectChooserViewController alloc] initWithNibName:nil bundle:nil];
             projects.delegate = self;
             
@@ -380,22 +382,22 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case PHOTOS_SECTION:
+        case ConfirmObsSectionPhotos:
             return nil;
             break;
-        case IDENTIFY_SECTION:
+        case ConfirmObsSectionIdentify:
             return NSLocalizedString(@"What did you see?", @"title for identification section of new obs confirm screen.");
             break;
-        case NOTES_SECTION:
+        case ConfirmObsSectionNotes:
             return nil;
             break;
-        case CAPTIVE_SECTION:
+        case ConfirmObsSectionCaptive:
             return nil;
             break;
-        case PROJECT_DETAILS_SECTION:
+        case ConfirmObsSectionProjectDetails:
             return NSLocalizedString(@"More", @"title for project obs field section of new obs confirm screen.");
             break;
-        case PROJECTS_SECTION:
+        case ConfirmObsSectionProjects:
             return NSLocalizedString(@"Projects", @"title for projects  section of new obs confirm screen.");
             break;
         default:
