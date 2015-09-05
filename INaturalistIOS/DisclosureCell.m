@@ -19,7 +19,7 @@
             
             iv;
         });
-        [self addSubview:self.cellImageView];
+        [self.contentView addSubview:self.cellImageView];
         
         self.titleLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -28,7 +28,7 @@
             
             label;
         });
-        [self addSubview:self.titleLabel];
+        [self.contentView addSubview:self.titleLabel];
 
         self.subtitleLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -37,7 +37,7 @@
             
             label;
         });
-        [self addSubview:self.subtitleLabel];
+        [self.contentView addSubview:self.subtitleLabel];
 
         NSDictionary *views = @{
                                 @"iv": self.cellImageView,
