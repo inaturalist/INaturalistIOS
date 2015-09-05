@@ -356,7 +356,37 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // show location chooser
 
             } else if (indexPath.item == 3) {
-                // show geoprivacy chooser
+                // geoprivacy
+                
+                // really want swift enums here
+                NSArray *geoprivacyOptions = @[@"open", @"obscured", @"private"];
+                NSArray *presentableGeoPrivacyOptions = @[
+                                                          NSLocalizedString(@"Open", @"open geoprivacy"),
+                                                          NSLocalizedString(@"Obscured", @"obscured geoprivacy"),
+                                                          NSLocalizedString(@"Private", @"private geoprivacy"),
+                                                          ];
+
+                NSInteger selectedIndex = [geoprivacyOptions indexOfObject:self.observation.geoprivacy];
+                if (selectedIndex == NSNotFound) {
+                    selectedIndex = 0;
+                }
+                
+                __weak typeof(self) weakSelf = self;
+                [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Select Privacy", @"title for geoprivacy selector")
+                                                           rows:presentableGeoPrivacyOptions
+                                               initialSelection:selectedIndex
+                                                      doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                          
+                                                          __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                          
+                                                          strongSelf.observation.geoprivacy = geoprivacyOptions[selectedIndex];
+                                                          
+                                                          [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+
+                                                      } cancelBlock:nil
+                                                         origin:self.view] showActionSheetPicker];
+                
             } else {
                 // do nothing
             }
@@ -506,7 +536,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
-    cell.subtitleLabel.text = self.observation.geoprivacy;
+    cell.subtitleLabel.text = self.observation.presentableGeoprivacy;
     
     FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:24];
     [globe addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];

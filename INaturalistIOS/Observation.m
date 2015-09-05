@@ -438,4 +438,16 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return [NSArray arrayWithArray:recordsToUpload];
 }
 
+- (NSString *)presentableGeoprivacy {
+    
+    if ([self.geoprivacy isEqualToString:@"private"]) {
+        return NSLocalizedString(@"Private", @"private geoprivacy");
+    } else if ([self.geoprivacy isEqualToString:@"obscured"]) {
+        return NSLocalizedString(@"Obscured", @"obscured geoprivacy");
+    } else {
+        return NSLocalizedString(@"Open", @"open geoprivacy");
+    }
+    
+}
+
 @end

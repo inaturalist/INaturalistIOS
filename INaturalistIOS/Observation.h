@@ -68,6 +68,7 @@
 
 + (NSArray *)needingUpload;
 - (BOOL)needsUpload;
+- (NSString *)presentableGeoprivacy;
 
 @end
 
