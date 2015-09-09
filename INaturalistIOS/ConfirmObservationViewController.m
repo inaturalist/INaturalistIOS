@@ -23,6 +23,7 @@
 #import "ProjectChooserViewController.h"
 #import "ProjectObservation.h"
 #import "TextViewCell.h"
+#import "EditLocationViewController.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -33,7 +34,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionProjects
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
+@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate>
 @property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
@@ -200,6 +201,19 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 }
 
+#pragma mark - EditLocation 
+
+- (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
+    self.observation.latitude = location.latitude;
+    self.observation.longitude = location.longitude;
+    self.observation.positionalAccuracy = location.accuracy;
+    self.observation.positioningMethod = location.positioningMethod;
+    
+    [self.navigationController popToViewController:self animated:YES];
+
+    //[self reverseGeocodeCoordinates];
+}
+
 #pragma mark - table view delegate / datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -354,7 +368,21 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                        origin:self.view] showActionSheetPicker];
             } else if (indexPath.item == 2) {
                 // show location chooser
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+                EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
+                map.delegate = self;
+                
+                if (self.observation.visibleLatitude) {
+                    INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
+                                                                     longitude:self.observation.visibleLongitude
+                                                                      accuracy:self.observation.positionalAccuracy];
+                    loc.positioningMethod = self.observation.positioningMethod;
+                    [map setCurrentLocation:loc];
+                } else {
+                    [map setCurrentLocation:nil];
+                }
 
+                [self.navigationController pushViewController:map animated:YES];
             } else if (indexPath.item == 3) {
                 // geoprivacy
                 

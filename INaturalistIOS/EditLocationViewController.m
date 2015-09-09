@@ -20,13 +20,11 @@
 @synthesize crossHairView = _crossHairView;
 @synthesize accuracyCircleView = _accuracyCircleView;
 
-#pragma mark - View lifecycle
+#pragma mark - View Controller lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationController setToolbarHidden:NO];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
     if (!self.currentLocationButton) {
         self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location"]
                                                                       style:UIBarButtonItemStyleBordered 
@@ -39,7 +37,7 @@
                                                                            target:self 
                                                                            action:@selector(clickedMapTypeButton)];
     }
-    [self setToolbarItems:[NSArray arrayWithObjects:self.currentLocationButton, flex, self.mapTypeButton, nil]];
+
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
         double lon = [self.currentLocation.longitude doubleValue];
@@ -92,6 +90,14 @@
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateEditLocation];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
+        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
+    }
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateEditLocation];
@@ -109,6 +115,34 @@
     [self updateAccuracyCircle];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"MapTypeSegue"]) {
+        MapTypeViewController *vc = [segue destinationViewController];
+        vc.delegate = self;
+        vc.mapType = self.mapView.mapType;
+    }
+}
+
+#pragma mark - helpers for accuracy & accuracy circle
+
+- (void)resetAccuracy
+{
+    CGRect r = self.view.frame;
+    double pixelAcc = MIN(r.size.width, r.size.height) / 5;
+    self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:pixelAcc]];
+}
+
+- (void)updateAccuracyCircle
+{
+    [self.accuracyCircleView setHidden:NO];
+    self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
+    self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
+}
+
+
+#pragma mark - setter for currentLocation
+
 - (void)setCurrentLocation:(INatLocation *)currentLocation
 {
     _currentLocation = currentLocation;
@@ -118,6 +152,8 @@
                                  animated:YES];
     }
 }
+
+#pragma mark - meters / degrees / pixel conversion helpers
 
 - (double)degreesToMeters:(double)degrees
 {
@@ -150,19 +186,7 @@
 
 }
 
-- (IBAction)clickedCancel:(id)sender {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidCancel:)]) {
-        [self.delegate performSelector:@selector(editLocationViewControllerDidCancel) withObject:self];
-    }
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)clickedDone:(id)sender {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
-        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
-    }
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
-}
+#pragma mark - UIButton targets
 
 - (void)clickedCurrentLocationButton
 {
@@ -240,28 +264,6 @@
     self.mapView.mapType = mapType.intValue;
 }
 
-- (void)resetAccuracy
-{
-    CGRect r = self.view.frame;
-    double pixelAcc = MIN(r.size.width, r.size.height) / 5;
-    self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:pixelAcc]];
-}
-
-- (void)updateAccuracyCircle
-{
-    [self.accuracyCircleView setHidden:NO];
-    self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
-    self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"MapTypeSegue"]) {
-        MapTypeViewController *vc = [segue destinationViewController];
-        vc.delegate = self;
-        vc.mapType = self.mapView.mapType;
-    }
-}
 
 @end
 
