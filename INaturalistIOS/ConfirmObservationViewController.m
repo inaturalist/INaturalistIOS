@@ -25,6 +25,7 @@
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
+#import "PhotoScrollView.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -523,8 +524,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (UITableViewCell *)photoCellInTableView:(UITableView *)tableView {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
-    cell.textLabel.text = @"Photos";
+    
+    PhotoScrollView *photoScrollView = [[PhotoScrollView alloc] initWithFrame:cell.contentView.bounds];
+    photoScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    
+    photoScrollView.photos = self.observation.sortedObservationPhotos;
+    [cell.contentView addSubview:photoScrollView];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     return cell;
 }
 
