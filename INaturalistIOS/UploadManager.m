@@ -407,7 +407,7 @@
 #pragma mark - Reachability Updates
 
 - (void)reachabilityChanged:(NSNotification *)note {
-    if ([[[RKObjectManager sharedManager] client] isNetworkReachable] && self.shouldAutoupload) {
+    if (self.shouldAutoupload) {
         [self autouploadPendingContent];
     }
 }
