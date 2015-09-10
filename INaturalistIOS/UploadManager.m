@@ -23,6 +23,7 @@
 
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
+@property UIBackgroundTaskIdentifier bgTask;
 @end
 
 @implementation UploadManager
@@ -33,6 +34,9 @@
  * Public method that serially uploads a list of observations.
  */
 - (void)uploadObservations:(NSArray *)observations {
+    // register to do background work
+    [self startBackgroundJob];
+
     self.uploading = YES;
     self.cancelled = NO;
     
@@ -47,6 +51,10 @@
  * then uploads a list of new or updated observations.
  */
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload {
+    
+    // register to do background work
+    [self startBackgroundJob];
+
     self.uploading = YES;
     self.syncingDeletes = YES;
     self.cancelled = NO;
@@ -69,6 +77,9 @@
     self.uploading = NO;
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
     [self.delegate uploadCancelledFor:nil];
+    
+    // un-register from doing background work
+    [self endBackgroundJob];
 }
 
 - (void)autouploadPendingContent {
@@ -120,10 +131,9 @@
         //[self.delegate uploadStartedFor:nextObservation];
         [self uploadOneRecordForObservation:nextObservation];
     } else {
+        [self stopUploadActivity];
+
         // notify finished with uploading
-        self.currentlyUploadingObservation = nil;
-        self.uploading = NO;
-        self.syncingDeletes = NO;
         [self.delegate uploadSessionFinished];
         
         if (self.shouldAutoupload) {
@@ -282,6 +292,8 @@
         self.syncingDeletes = NO;
         // notify finished with deletions
         [self.delegate deleteSessionFinished];
+        
+        // start uploads
         [self uploadNextObservation];
     }
 }
@@ -289,7 +301,12 @@
 - (void)stopUploadActivity {
     self.uploading = NO;
     self.syncingDeletes = NO;
+    self.currentlyUploadingObservation = nil;
+    
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    
+    // end long-running background job
+    [self endBackgroundJob];
 }
 
 #pragma mark - RKRequestDelegate
@@ -382,6 +399,25 @@
             }
         }
     }
+}
+
+#pragma mark - Long-running background task
+
+- (void)startBackgroundJob {
+    // register to do background work
+    UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Background Task Expired",
+                                          }];
+        
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    }];
+    self.bgTask = bgTask;
+}
+
+- (void)endBackgroundJob {
+    [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
 }
 
 #pragma mark - NSObject lifecycle

@@ -144,19 +144,6 @@
           thenUploadObservations:observationsToUpload];
 }
 
-- (void)appEnteredBackground {
-    if (self.isSyncing) {
-        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                         withProperties:@{
-                                          @"Via": @"App Entered Background",
-                                          }];
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        UploadManager *uploader = appDelegate.loginController.uploadManager;
-        [uploader cancelSyncsAndUploads];
-    }
-}
-
 - (void)stopSyncPressed {
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
@@ -982,11 +969,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appEnteredBackground)
-                                                 name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
     
     // NSFetchedResultsController request for my observations
