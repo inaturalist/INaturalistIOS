@@ -1,59 +1,43 @@
 //
-//  DisclosureCell.m
+//  SubtitleDisclosureCell.m
 //  iNaturalist
 //
-//  Created by Alex Shepard on 9/4/15.
+//  Created by Alex Shepard on 9/9/15.
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import "DisclosureCell.h"
+#import "SubtitleDisclosureCell.h"
 
-@implementation DisclosureCell
+@implementation SubtitleDisclosureCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        self.cellImageView = ({
-            UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
-            iv.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            
-            iv;
-        });
-        [self.contentView addSubview:self.cellImageView];
         
-        self.titleLabel = ({
+        self.subtitleLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
+            label.font = [UIFont systemFontOfSize:11.0f];
             
             label;
         });
-        [self.contentView addSubview:self.titleLabel];
-        
-        self.secondaryLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label;
-        });
-        [self.contentView addSubview:self.secondaryLabel];
-        
-        [self setNeedsUpdateConstraints];
+        [self.contentView addSubview:self.subtitleLabel];
         
         NSDictionary *views = @{
                                 @"iv": self.cellImageView,
                                 @"title": self.titleLabel,
+                                @"subtitle": self.subtitleLabel,
                                 @"secondary": self.secondaryLabel,
                                 };
         
+        
         self.cellConstraints = [NSMutableArray array];
-
         [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[iv(==34)]"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
-        
-        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[title]-0-|"
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-[subtitle]-|"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
@@ -66,6 +50,10 @@
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[iv]-12-[subtitle]-[secondary]-10-|"
+                                                                                          options:0
+                                                                                          metrics:0
+                                                                                            views:views]];
         
         [self.cellConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cellImageView
                                                                      attribute:NSLayoutAttributeWidth
@@ -74,19 +62,18 @@
                                                                      attribute:NSLayoutAttributeHeight
                                                                     multiplier:1.0f
                                                                       constant:0.0f]];
-
+        
+        [self.cellConstraints addObject:[NSLayoutConstraint constraintWithItem:self.subtitleLabel
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.titleLabel
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                    multiplier:1.0f
+                                                                      constant:0.0f]];
+    
     }
     
     return self;
-}
-
-- (void)updateConstraints {
-    if (self.cellConstraints && self.cellConstraints.count > 0) {
-        [self removeConstraints:self.cellConstraints];
-    }
-    [self addConstraints:self.cellConstraints];
-    
-    [super updateConstraints];
 }
 
 

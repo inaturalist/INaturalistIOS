@@ -11,14 +11,11 @@
 #import "AccuracyCircleView.h"
 #import "Analytics.h"
 
+@interface EditLocationViewController ()
+@property UISegmentedControl *mapTypeSegmentedControl;
+@end
+
 @implementation EditLocationViewController
-@synthesize mapView = _mapView;
-@synthesize delegate = _delegate;
-@synthesize currentLocation = _currentLocation;
-@synthesize currentLocationButton = _currentLocationButton;
-@synthesize mapTypeButton = _mapTypeButton;
-@synthesize crossHairView = _crossHairView;
-@synthesize accuracyCircleView = _accuracyCircleView;
 
 #pragma mark - View Controller lifecycle
 - (void)viewDidLoad
@@ -33,10 +30,23 @@
         [self.currentLocationButton setWidth:30];
     }
     if (!self.mapTypeButton) {
-        self.mapTypeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl 
-                                                                           target:self 
-                                                                           action:@selector(clickedMapTypeButton)];
+        
+        self.mapTypeSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                                   @"Standard",
+                                                                                   @"Satellite",
+                                                                                   @"Hybrid"
+                                                                                   ]];
+        self.mapTypeSegmentedControl.selectedSegmentIndex = 2;
+        [self.mapTypeSegmentedControl addTarget:self
+                                         action:@selector(mapTypeChanged:)
+                               forControlEvents:UIControlEventValueChanged];
+        
+        self.mapTypeButton = [[UIBarButtonItem alloc] initWithCustomView:self.mapTypeSegmentedControl];
     }
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                          target:nil
+                                                                          action:nil];
+    self.toolbarItems = @[ self.currentLocationButton, flex, self.mapTypeButton, flex ];
 
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
@@ -85,6 +95,12 @@
     readyToChangeLocation = YES;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setToolbarHidden:NO];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateEditLocation];
@@ -92,6 +108,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    [self.navigationController setToolbarHidden:YES];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
         [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
@@ -258,12 +276,9 @@
     [self updateAccuracyCircle];
 }
 
-# pragma mark MapTypeViewControllerDelegate
-- (void)mapTypeControllerDidChange:(MapTypeViewController *)controller mapType:(NSNumber *)mapType
-{
-    self.mapView.mapType = mapType.intValue;
+- (void)mapTypeChanged:(UISegmentedControl *)segmentedControl {
+    self.mapView.mapType = segmentedControl.selectedSegmentIndex;
 }
-
 
 @end
 

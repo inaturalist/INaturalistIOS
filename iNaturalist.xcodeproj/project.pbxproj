@@ -193,6 +193,7 @@
 		FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
 		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
+		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -587,6 +588,8 @@
 		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
+		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
+		FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubtitleDisclosureCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -895,6 +898,8 @@
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
 				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
 				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
+				FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */,
+				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
 				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 			);
@@ -1448,6 +1453,7 @@
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
 				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
+				FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,

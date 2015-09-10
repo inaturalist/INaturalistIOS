@@ -24,6 +24,7 @@
 #import "ProjectObservation.h"
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
+#import "SubtitleDisclosureCell.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -61,7 +62,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         tv.separatorInset = UIEdgeInsetsZero;
         
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
-        [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"locationDisclosure"];
+        [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"switch"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
@@ -147,9 +148,50 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
 }
 
-#pragma mark textview helper
+#pragma mark - textview helper
 - (NSString *)notesPlaceholder {
     return NSLocalizedString(@"Notes...", @"Placeholder for observation notes when making a new observation.");
+}
+
+#pragma mark - geocoding helper
+- (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.latitude.floatValue
+                                                 longitude:obs.longitude.floatValue];
+    
+    static CLGeocoder *geoCoder;
+    if (!geoCoder)
+        geoCoder = [[CLGeocoder alloc] init];
+    
+    [geoCoder cancelGeocode];       // cancel anything in flight
+    
+    [geoCoder reverseGeocodeLocation:loc
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       CLPlacemark *placemark = [placemarks firstObject];
+                       if (placemark) {
+                           @try {
+                               NSString *name = placemark.name ?: @"";
+                               NSString *locality = placemark.locality ?: @"";
+                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
+                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
+                               obs.placeGuess = [ @[ name,
+                                                     locality,
+                                                     administrativeArea,
+                                                     ISOcountryCode ] componentsJoinedByString:@", "];
+                               NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+                               [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
+                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                           } @catch (NSException *exception) {
+                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                   return;
+                               else
+                                   @throw exception;
+                           }
+                       }
+                   }];
 }
 
 #pragma mark - UISwitch targets
@@ -204,6 +246,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - EditLocation 
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
+    
+    if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
+        // nothing happens on null island
+        return;
+    }
+    
     self.observation.latitude = location.latitude;
     self.observation.longitude = location.longitude;
     self.observation.positionalAccuracy = location.accuracy;
@@ -211,7 +259,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [self.navigationController popToViewController:self animated:YES];
 
-    //[self reverseGeocodeCoordinates];
+    [self reverseGeocodeCoordinatesForObservation:self.observation];
 }
 
 #pragma mark - table view delegate / datasource
@@ -222,9 +270,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == ConfirmObsSectionPhotos) {
-        return 110;
+        return 100;
     } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 0) {
         return 88;
+    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 2) {
+        return 66;
     } else {
         return 44;
     }
@@ -426,12 +476,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             // do nothing
             break;
         case ConfirmObsSectionProjects: {
-            ProjectChooserViewController *projects = [[ProjectChooserViewController alloc] initWithNibName:nil bundle:nil];
-            projects.delegate = self;
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"unimplemented"
+                                                                           message:@"unimplemented"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                   }]];
+            [self presentViewController:alert animated:YES completion:nil];
             
-            projects.chosenProjects = [[self.observation.projectObservations allObjects] mutableCopy];
-
-            [self.navigationController pushViewController:projects animated:YES];
             break;
         }
         default:
@@ -548,12 +601,39 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (UITableViewCell *)locationCellInTableView:(UITableView *)tableView {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    SubtitleDisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
     
-    cell.titleLabel.text = [self.observation placeGuess];
+    if (self.observation.latitude && self.observation.longitude) {
+        
+        NSString *positionalAccuracy = nil;
+        if (self.observation.positionalAccuracy) {
+            positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy.integerValue];
+        } else {
+            positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
+        }
+        NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Lon: %.3f  Acc: %@",
+                                    self.observation.latitude.floatValue,
+                                    self.observation.longitude.floatValue,
+                                    positionalAccuracy];
+        cell.subtitleLabel.text = subtitleString;
+        
+        if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
+            cell.titleLabel.text = self.observation.placeGuess;
+        } else {
+            cell.titleLabel.text = NSLocalizedString(@"Location not geocoded", @"place guess when we have lat/lng but it's not geocoded");
+            
+            // try again
+            [self reverseGeocodeCoordinatesForObservation:self.observation];
+        }
+        
+    } else {
+        cell.titleLabel.text = NSLocalizedString(@"No location", @"place guess when we have no location information");
+    }
+        
     FAKIcon *pin = [FAKIonIcons iosLocationOutlineIconWithSize:24];
     [pin addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
     cell.cellImageView.image = [pin imageWithSize:CGSizeMake(30, 30)];
+    
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -564,7 +644,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
-    cell.subtitleLabel.text = self.observation.presentableGeoprivacy;
+    cell.secondaryLabel.text = self.observation.presentableGeoprivacy;
     
     FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:24];
     [globe addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
@@ -603,7 +683,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [project addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
     cell.cellImageView.image = [project imageWithSize:CGSizeMake(30, 30)];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }

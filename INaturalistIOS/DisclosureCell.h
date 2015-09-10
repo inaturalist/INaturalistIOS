@@ -11,5 +11,6 @@
 @interface DisclosureCell : UITableViewCell
 @property UIImageView *cellImageView;
 @property UILabel *titleLabel;
-@property UILabel *subtitleLabel;
+@property UILabel *secondaryLabel;      // to the right of the title
+@property NSMutableArray *cellConstraints;
 @end
