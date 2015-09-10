@@ -35,6 +35,7 @@
 #import "PartnerController.h"
 #import "Partner.h"
 #import "LoginController.h"
+#import "UploadManager.h"
 
 static const int CreditsSection = 3;
 
@@ -343,6 +344,22 @@ static const int AutouploadSwitchTag = 102;
         
         [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        if ([key isEqualToString:kInatAutouploadPrefKey]) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+            if (switcher.isOn) {
+                // start autouploading right away
+                if ([uploadManager shouldAutoupload]) {
+                    [uploadManager autouploadPendingContent];
+                }
+            } else {
+                // cancel autoupload if it's currently running
+                if (uploadManager.isUploading) {
+                    [uploadManager cancelSyncsAndUploads];
+                }
+            }
+        }
     }
 }
 
