@@ -989,9 +989,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 - (void)triggerAutoUpload {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey]) {
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        UploadManager *uploader = appDelegate.loginController.uploadManager;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if (uploader.shouldAutoupload) {
         [uploader autouploadPendingContent];
     }
 }
