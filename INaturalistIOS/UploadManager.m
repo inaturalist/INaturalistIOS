@@ -61,6 +61,9 @@
 }
 
 - (void)cancelSyncsAndUploads {
+    // can't cancel if we're not actually doing anything
+    if (!self.syncingDeletes && !self.uploading) { return; }
+    
     self.cancelled = YES;
     self.syncingDeletes = NO;
     self.uploading = NO;
