@@ -109,20 +109,20 @@
 
 #pragma mark - UIButton targets
 - (void)deletePressed:(UIButton *)button {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(deletePressedForIndex:)]) {
-        [self.delegate deletePressedForIndex:button.tag];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoScrollView:deletedIndex:)]) {
+        [self.delegate photoScrollView:self deletedIndex:button.tag];
     }
 }
 
 - (void)addPressed:(UIButton *)button {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(addPressed)]) {
-        [self.delegate addPressed];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoScrollViewAddPressed:)]) {
+        [self.delegate photoScrollViewAddPressed:self];
     }
 }
 
 - (void)setDefault:(UIButton *)button {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(setDefaultPressedForIndex:)]) {
-        [self.delegate setDefaultPressedForIndex:button.tag];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoScrollView:setDefaultIndex:)]) {
+        [self.delegate photoScrollView:self setDefaultIndex:button.tag];
     }
 }
 

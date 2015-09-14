@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class PhotoScrollView;
+
 @protocol PhotoScrollViewDelegate <NSObject>
-- (void)deletePressedForIndex:(NSInteger)idx;
-- (void)setDefaultPressedForIndex:(NSInteger)idx;
-- (void)addPressed;
+- (void)photoScrollView:(PhotoScrollView *)psv deletedIndex:(NSInteger)idx;
+- (void)photoScrollView:(PhotoScrollView *)psv setDefaultIndex:(NSInteger)idx;
+- (void)photoScrollViewAddPressed:(PhotoScrollView *)psv;
 @end
 
 @interface PhotoScrollView : UIView
