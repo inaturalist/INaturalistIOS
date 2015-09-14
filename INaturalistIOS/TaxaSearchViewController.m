@@ -385,7 +385,6 @@ static const int TaxonCellSubtitleTag = 3;
 #pragma mark - RecordSearchControllerDelegate
 - (void)recordSearchControllerSelectedRecord:(id)record {
     UINavigationController *navigationController = self.navigationController;
-    [navigationController popToRootViewControllerAnimated:NO];
     [self showTaxon:record inNavigationController:navigationController];
 }
 

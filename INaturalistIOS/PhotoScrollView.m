@@ -39,7 +39,7 @@
     
     NSInteger numCells = self.photos.count + 1;
 
-    // each photo 100 px wide?
+    // each photo 90 px wide?
     CGFloat width = numCells * 90;
     CGFloat height = self.bounds.size.height;
     self.scrollView.contentSize = CGSizeMake(width, height);
@@ -54,6 +54,7 @@
     
     // add new photo button
     self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.addButton.accessibilityLabel = @"Add Button";
     self.addButton.frame = CGRectMake(5, 5, 70, self.bounds.size.height - 30);
     self.addButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     self.addButton.layer.borderColor = [UIColor grayColor].CGColor;
@@ -68,6 +69,7 @@
     
     for (int i = 1; i < numCells; i++) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i * 80, 0, 80, self.bounds.size.height)];
+
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, self.bounds.size.height - 30)];
         iv.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -80,13 +82,13 @@
         [self.scrollView addSubview:view];
         
         UIButton *delete = [UIButton buttonWithType:UIButtonTypeSystem];
-        delete.tag = i;
+        delete.tag = i-1;
         [delete addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
-        delete.frame = CGRectMake(i * 80 + 60 - 5, 5, 20, 20);
+        delete.frame = CGRectMake(80-24-5, 5, 24, 24);
         [delete setTitle:@"X" forState:UIControlStateNormal];
         delete.tintColor = [UIColor blackColor];
         delete.backgroundColor = [UIColor grayColor];
-        [self.scrollView addSubview:delete];
+        [view addSubview:delete];
         
         if (i == 1) {
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + 70, 70, 20)];
@@ -95,12 +97,13 @@
             label.textColor = [UIColor grayColor];
             [view addSubview:label];
         } else {
-            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(5, 5 + 70, 70, 20)];
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.frame = CGRectMake(5, 5 + 70, 70, 20);
             [button setTitle:@"Set Default" forState:UIControlStateNormal];
-            button.backgroundColor = [UIColor orangeColor];
             button.tintColor = [UIColor grayColor];
+            button.titleLabel.textColor = [UIColor grayColor];
             button.titleLabel.font = [UIFont systemFontOfSize:11.0f];
-            button.tag = i;
+            button.tag = i-1;
             [button addTarget:self action:@selector(setDefault:) forControlEvents:UIControlEventTouchUpInside];
             [view addSubview:button];
         }

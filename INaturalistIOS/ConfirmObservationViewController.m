@@ -11,6 +11,9 @@
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+#import <QBImagePickerController/QBImagePickerController.h>
+#import <ImageIO/ImageIO.h>
 
 #import "ConfirmObservationViewController.h"
 #import "Observation.h"
@@ -26,6 +29,10 @@
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
 #import "PhotoScrollView.h"
+#import "ObservationPhoto.h"
+#import "ObsCameraOverlay.h"
+#import "Observation+AddAssets.h"
+#import "ConfirmPhotoViewController.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -36,7 +43,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionProjects
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate>
+@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate>
 @property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
@@ -126,7 +133,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {
-        // log it at least, also notify the user
+        // TODO: log it at least, also notify the user
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -153,6 +160,248 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (NSString *)notesPlaceholder {
     return NSLocalizedString(@"Notes...", @"Placeholder for observation notes when making a new observation.");
 }
+
+#pragma mark - PhotoScrollViewDelegate
+
+- (void)photoScrollView:(PhotoScrollView *)psv setDefaultIndex:(NSInteger)idx {
+    ObservationPhoto *originalDefault = self.observation.sortedObservationPhotos[0];
+    ObservationPhoto *newDefault = self.observation.sortedObservationPhotos[idx];
+    originalDefault.position = @(newDefault.position.integerValue);
+    newDefault.position = @(0);
+    
+    [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
+                          withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)photoScrollView:(PhotoScrollView *)psv deletedIndex:(NSInteger)idx {
+    ObservationPhoto *photo = self.observation.sortedObservationPhotos[idx];
+    NSPredicate *minusDeletedPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return ![evaluatedObject isEqual:photo];
+    }];
+    NSSet *newObsPhotos = [self.observation.observationPhotos filteredSetUsingPredicate:minusDeletedPredicate];
+    
+    self.observation.observationPhotos = newObsPhotos;
+    [photo deleteEntity];
+
+    // update sortable
+    for (int i = 0; i < self.observation.sortedObservationPhotos.count; i++) {
+        ObservationPhoto *op = self.observation.sortedObservationPhotos[i];
+        op.position = @(i);
+    }
+    
+    [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
+                          withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)photoScrollViewAddPressed:(PhotoScrollView *)psv {
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [self pushCamera];
+    } else {
+        [self pushLibrary];
+    }
+}
+
+- (void)pushLibrary {
+    // no camera available
+    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    imagePickerController.showsCancelButton = NO;           // so we get a back button
+    imagePickerController.groupTypes = @[
+                                         @(ALAssetsGroupSavedPhotos),
+                                         @(ALAssetsGroupAlbum)
+                                         ];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)pushCamera {
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.delegate = self;
+    picker.allowsEditing = NO;
+    picker.showsCameraControls = NO;
+    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+    
+    ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    
+    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+    [overlay configureFlashForMode:picker.cameraFlashMode];
+    
+    [overlay.close bk_addEventHandler:^(id sender) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    // hide flash if it's not available for the default camera
+    if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
+        overlay.flash.hidden = YES;
+    }
+    
+    [overlay.flash bk_addEventHandler:^(id sender) {
+        if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+        } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+        } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        }
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    // hide camera selector unless both front and rear cameras are available
+    if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
+        ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+        overlay.camera.hidden = YES;
+    }
+    
+    [overlay.camera bk_addEventHandler:^(id sender) {
+        if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+            picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        } else {
+            picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        }
+        // hide flash button if flash isn't available for the chosen camera
+        overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    overlay.noPhoto.hidden = YES;
+    
+    [overlay.shutter bk_addEventHandler:^(id sender) {
+        [picker takePicture];
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    [overlay.library bk_addEventHandler:^(id sender) {
+        [self pushLibrary];
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    picker.cameraOverlayView = overlay;
+    
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    // add to observation
+    
+    __weak __typeof__(self) weakSelf = self;
+    [self.observation addAssets:assets
+                      afterEach:^(ObservationPhoto *op) {
+                          __typeof__(self) strongSelf = weakSelf;
+                          if (strongSelf) {
+                              [strongSelf.tableView reloadData];
+                          }
+                      }];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark UIImagePickerControllerDelegate methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    // add metadata with geo
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                 longitude:[self.observation.visibleLongitude doubleValue]];
+    NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
+    [meta setValue:[self getGPSDictionaryForLocation:loc]
+            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+    confirm.metadata = meta;
+    
+    // set the follow up action
+    confirm.confirmFollowUpAction = ^(NSArray *assets) {
+        
+        __weak __typeof__(self) weakSelf = self;
+        [self.observation addAssets:assets afterEach:^(ObservationPhoto *op) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf.tableView reloadData];
+            }
+        }];
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+    };
+    
+    [picker pushViewController:confirm animated:YES];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    // workaround for a crash in Apple's didHideZoomSlider
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
+}
+
+// http://stackoverflow.com/a/5314634/720268
+- (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location {
+    NSMutableDictionary *gps = [NSMutableDictionary dictionary];
+    
+    // GPS tag version
+    [gps setObject:@"2.2.0.0" forKey:(NSString *)kCGImagePropertyGPSVersion];
+    
+    // Time and date must be provided as strings, not as an NSDate object
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss.SSSSSS"];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSTimeStamp];
+    [formatter setDateFormat:@"yyyy:MM:dd"];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSDateStamp];
+    
+    // Latitude
+    CGFloat latitude = location.coordinate.latitude;
+    if (latitude < 0) {
+        latitude = -latitude;
+        [gps setObject:@"S" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    } else {
+        [gps setObject:@"N" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:latitude] forKey:(NSString *)kCGImagePropertyGPSLatitude];
+    
+    // Longitude
+    CGFloat longitude = location.coordinate.longitude;
+    if (longitude < 0) {
+        longitude = -longitude;
+        [gps setObject:@"W" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    } else {
+        [gps setObject:@"E" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:longitude] forKey:(NSString *)kCGImagePropertyGPSLongitude];
+    
+    // Altitude
+    CGFloat altitude = location.altitude;
+    if (!isnan(altitude)){
+        if (altitude < 0) {
+            altitude = -altitude;
+            [gps setObject:@"1" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        } else {
+            [gps setObject:@"0" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        }
+        [gps setObject:[NSNumber numberWithFloat:altitude] forKey:(NSString *)kCGImagePropertyGPSAltitude];
+    }
+    
+    // Speed, must be converted from m/s to km/h
+    if (location.speed >= 0){
+        [gps setObject:@"K" forKey:(NSString *)kCGImagePropertyGPSSpeedRef];
+        [gps setObject:[NSNumber numberWithFloat:location.speed*3.6] forKey:(NSString *)kCGImagePropertyGPSSpeed];
+    }
+    
+    // Heading
+    if (location.course >= 0){
+        [gps setObject:@"T" forKey:(NSString *)kCGImagePropertyGPSTrackRef];
+        [gps setObject:[NSNumber numberWithFloat:location.course] forKey:(NSString *)kCGImagePropertyGPSTrack];
+    }
+    
+    return gps;
+}
+
 
 #pragma mark - geocoding helper
 - (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
@@ -389,7 +638,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionIdentify:
             if (indexPath.item == 0) {
-                TaxaSearchViewController *search = [[TaxaSearchViewController alloc] initWithNibName:nil bundle:nil];
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+
+                TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
+                search.hidesDoneButton = YES;
                 search.delegate = self;
                 search.query = self.observation.speciesGuess;
                 [self.navigationController pushViewController:search animated:YES];
@@ -525,10 +777,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)photoCellInTableView:(UITableView *)tableView {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
+    [[cell viewWithTag:0x999] removeFromSuperview];
+    
     PhotoScrollView *photoScrollView = [[PhotoScrollView alloc] initWithFrame:cell.contentView.bounds];
     photoScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    photoScrollView.tag = 0x999;
     
+    photoScrollView.delegate = self;
     photoScrollView.photos = self.observation.sortedObservationPhotos;
+    
     [cell.contentView addSubview:photoScrollView];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
