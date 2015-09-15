@@ -30,6 +30,7 @@
 #import "Analytics.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "ConfirmObservationViewController.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -95,20 +96,12 @@
                     po.project = weakSelf.project;
                 }
                 
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-                ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-                
-                detail.delegate = weakSelf;
-                detail.shouldShowBigSaveButton = YES;
-                
                 [o addAssets:confirmedAssets];
-                detail.observation = o;
-                
+
+                ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+                confirmObs.observation = o;
                 [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
-                [weakSelf.navigationController pushViewController:detail animated:YES];
-                
-                if (weakSelf.shouldContinueUpdatingLocation)
-                    [detail startUpdatingLocation];
+                [weakSelf.navigationController pushViewController:confirmObs animated:YES];
             }
         };
     }
