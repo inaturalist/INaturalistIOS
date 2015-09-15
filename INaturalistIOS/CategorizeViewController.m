@@ -506,7 +506,6 @@ static NSArray *ICONIC_TAXON_ORDER;
         [o addAssets:self.assets];
     }
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ConfirmObservationViewController *confirm = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
     confirm.observation = o;
     [self.navigationController pushViewController:confirm animated:YES];
