@@ -29,6 +29,7 @@
 #import "Project.h"
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
+#import "ConfirmObservationViewController.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define OBSERVE_TAB_INDEX   1
@@ -418,14 +419,11 @@ static char PROJECT_ASSOCIATED_KEY;
         po.project = project;
     }
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-    detail.observation = o;
-    detail.shouldShowBigSaveButton = YES;
-    detail.delegate = self;
+    ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+    confirmObs.observation = o;    
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav setNavigationBarHidden:NO];
-    [nav pushViewController:detail animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+    [nav pushViewController:confirmObs animated:YES];
 }
 
 #pragma mark - ObservationDetailViewController delegate
