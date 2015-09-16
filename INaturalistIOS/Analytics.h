@@ -15,6 +15,7 @@
 - (void)event:(NSString *)name;
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties;
 - (void)logAllPageViewForTarget:(UIViewController *)target;
+- (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
 - (void)timedEvent:(NSString *)name;
 - (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties;

@@ -127,6 +127,9 @@
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+                
+                User *me = self.loginController.fetchMe;
+                [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
             });
         }
     });

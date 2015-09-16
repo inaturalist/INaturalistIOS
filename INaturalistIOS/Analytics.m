@@ -98,6 +98,12 @@
 #endif
 }
 
+- (void)registerUserWithIdentifier:(NSString *)userIdentifier {
+#ifdef INatCrashlyticsKey
+    [[Crashlytics sharedInstance] setUserIdentifier:userIdentifier];
+#endif
+}
+
 @end
 
 
