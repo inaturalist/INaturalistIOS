@@ -747,7 +747,7 @@
                                        forState:UIControlStateNormal];
             
             if (uploadManager.isSyncingDeletes) {
-                self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing deletes...", @"Title of me header when syncing deletions.");
+                self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
             } else {
                 NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
                 NSInteger total = uploadManager.currentUploadSessionTotalObservations;
