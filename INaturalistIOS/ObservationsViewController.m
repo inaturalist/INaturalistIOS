@@ -821,11 +821,7 @@
                 });
             }
             
-            if (needingUploadCount > 0 && needingDeleteCount > 0) {
-                NSString *baseUploadAndDeleteCountStr = NSLocalizedString(@"%d To Upload, %d To Delete",
-                                                                          @"Count of observations to upload and delete.");
-                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadAndDeleteCountStr, needingUploadCount, needingDeleteCount];
-            } else if (needingUploadCount > 0) {
+            if (needingUploadCount > 0) {
                 NSString *baseUploadCountStr;
                 if (needingUploadCount == 1) {
                     baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
@@ -836,15 +832,8 @@
                 }
                 view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
             } else if (needingDeleteCount > 0) {
-                NSString *baseDeleteCountStr;
-                if (needingDeleteCount == 1) {
-                    baseDeleteCountStr = NSLocalizedString(@"%d Delete to Sync",
-                                                           @"Count of deletes to upload, singular.");
-                } else {
-                    baseDeleteCountStr = NSLocalizedString(@"%d Deletes To Sync",
-                                                           @"Count of observations to upload, plural.");
-                }
-                view.obsCountLabel.text = [NSString stringWithFormat:baseDeleteCountStr, needingDeleteCount];
+                view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
+                                                            @"Deletes pending sync.");
             }
         }
         
