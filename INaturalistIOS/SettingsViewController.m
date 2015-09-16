@@ -150,9 +150,6 @@ static const int AutouploadSwitchTag = 102;
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults removeObjectForKey:kINatAutocompleteNamesPrefKey];
-    [defaults removeObjectForKey:kINatAutomaticallyUploadPrefKey];
-    [defaults removeObjectForKey:kInatCategorizeNewObsPrefKey];
     [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
