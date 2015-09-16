@@ -955,6 +955,44 @@
 //        NSLog(@"ALERT: %@", error.localizedDescription);
 //    }
     
+    static NSString *FirstSignInKey = @"firstSignInSeen";
+    static NSString *SeenV262Key = @"seenVersion262";
+    
+    // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
+    // when the user saw the login prompt for the first time.
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:FirstSignInKey]) {
+        // completely new users default to categorization on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kInatCategorizeNewObsPrefKey];
+        
+        // completely new users default to autocomplete on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatAutocompleteNamesPrefKey];
+        
+        // completely new users default to autoupload on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kInatAutouploadPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:FirstSignInKey];
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV262Key];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    // new settings as of 2.6.2, for existing users
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:SeenV262Key]) {
+        // existing users default to autoupload off
+        [[NSUserDefaults standardUserDefaults] setBool:NO
+                                                forKey:kInatAutouploadPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV262Key];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
@@ -1026,51 +1064,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-    
-    // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
-    // when the user saw the login prompt for the first time.
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstSignInSeen"]) {
-        
-        // completely new users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kInatCategorizeNewObsPrefKey];
-        
-        // completely new users default to autocomplete on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kINatAutocompleteNamesPrefKey];
-        
-        // completely new users default to autoupload on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kINatAutomaticallyUploadPrefKey];
-
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                  forKey:@"firstSignInSeen"];
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:@"seenVersion254"];
-
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
-    // new settings as of 2.5.4, for existing users
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"seenVersion254"]) {
-        
-        // existing users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kInatCategorizeNewObsPrefKey];
-
-        // existing users default to autocomplete off
-        [[NSUserDefaults standardUserDefaults] setBool:NO
-                                                forKey:kINatAutocompleteNamesPrefKey];
-
-        // existing users default to autoupload off
-        [[NSUserDefaults standardUserDefaults] setBool:NO
-                                                forKey:kINatAutomaticallyUploadPrefKey];
-
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:@"seenVersion254"];
-        
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
     
     [self.navigationController setToolbarHidden:YES animated:YES];
     
