@@ -43,6 +43,10 @@
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "UploadManager.h"
+#import "DeletedRecord.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -574,7 +578,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (!self.observation.isDeleted && !self.didClickCancel) {
-        [self save];
+       // [self save];
     }
     [self keyboardDone];
     [self stopUpdatingLocation];
@@ -883,9 +887,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (buttonIndex == 0) {
         // no point in querying location anymore
         [self.locationManager stopUpdatingLocation];
-
+        
         [self.observation destroy];
         self.observation = nil;
+        
+        // trigger autoupload
+        [self triggerAutoUpload];
+
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
@@ -976,6 +985,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             // unanticpated exception
             @throw(exception);
         }
+    }
+}
+
+- (void)triggerAutoUpload {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if (uploader.shouldAutoupload) {
+        [uploader autouploadPendingContent];
     }
 }
 
@@ -1614,6 +1631,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return;
     }
     [self save];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }
@@ -1715,7 +1733,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (changes.count > 0) {
         self.observation.localUpdatedAt = now;
     }
-	[self.observation save];
+    
+    [self.observation save];
+    [self triggerAutoUpload];
 }
 
 - (IBAction)clickedCancel:(id)sender {

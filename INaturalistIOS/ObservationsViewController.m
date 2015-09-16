@@ -144,19 +144,6 @@
           thenUploadObservations:observationsToUpload];
 }
 
-- (void)appEnteredBackground {
-    if (self.isSyncing) {
-        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                         withProperties:@{
-                                          @"Via": @"App Entered Background",
-                                          }];
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        UploadManager *uploader = appDelegate.loginController.uploadManager;
-        [uploader cancelSyncsAndUploads];
-    }
-}
-
 - (void)stopSyncPressed {
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
@@ -984,11 +971,6 @@
                                                  name:kUserLoggedInNotificationName
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appEnteredBackground)
-                                                 name:UIApplicationDidEnterBackgroundNotification
-                                               object:nil];
-    
     // NSFetchedResultsController request for my observations
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
     
@@ -1068,6 +1050,10 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatAutocompleteNamesPrefKey];
         
+        // completely new users default to autoupload on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatAutomaticallyUploadPrefKey];
+
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                   forKey:@"firstSignInSeen"];
         [[NSUserDefaults standardUserDefaults] setBool:YES
@@ -1086,6 +1072,10 @@
         // existing users default to autocomplete off
         [[NSUserDefaults standardUserDefaults] setBool:NO
                                                 forKey:kINatAutocompleteNamesPrefKey];
+
+        // existing users default to autoupload off
+        [[NSUserDefaults standardUserDefaults] setBool:NO
+                                                forKey:kINatAutomaticallyUploadPrefKey];
 
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:@"seenVersion254"];

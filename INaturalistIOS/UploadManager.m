@@ -23,6 +23,7 @@
 
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
+@property UIBackgroundTaskIdentifier bgTask;
 @end
 
 @implementation UploadManager
@@ -33,6 +34,9 @@
  * Public method that serially uploads a list of observations.
  */
 - (void)uploadObservations:(NSArray *)observations {
+    // register to do background work
+    [self startBackgroundJob];
+
     self.uploading = YES;
     self.cancelled = NO;
     
@@ -47,6 +51,10 @@
  * then uploads a list of new or updated observations.
  */
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload {
+    
+    // register to do background work
+    [self startBackgroundJob];
+
     self.uploading = YES;
     self.syncingDeletes = YES;
     self.cancelled = NO;
@@ -61,11 +69,41 @@
 }
 
 - (void)cancelSyncsAndUploads {
+    // can't cancel if we're not actually doing anything
+    if (!self.syncingDeletes && !self.uploading) { return; }
+    
     self.cancelled = YES;
     self.syncingDeletes = NO;
     self.uploading = NO;
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
     [self.delegate uploadCancelledFor:nil];
+    
+    // un-register from doing background work
+    [self endBackgroundJob];
+}
+
+- (void)autouploadPendingContent {
+    if (!self.shouldAutoupload) { return; }
+    if (self.isUploading) { return; }
+    
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                  NSStringFromClass(klass)]]];
+    }
+    NSArray *observationsToUpload = [Observation needingUpload];
+    if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
+        
+        [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
+                         withProperties:@{
+                                          @"Via": @"Automatic Upload",
+                                          @"numDeletes": @(recordsToDelete.count),
+                                          @"numUploads": @(observationsToUpload.count),
+                                          }];
+        
+        [self syncDeletedRecords:recordsToDelete
+          thenUploadObservations:observationsToUpload];
+    }
 }
 
 #pragma mark - private methods
@@ -93,10 +131,16 @@
         //[self.delegate uploadStartedFor:nextObservation];
         [self uploadOneRecordForObservation:nextObservation];
     } else {
+        [self stopUploadActivity];
+
         // notify finished with uploading
-        self.currentlyUploadingObservation = nil;
-        self.uploading = NO;
         [self.delegate uploadSessionFinished];
+        
+        if (self.shouldAutoupload) {
+            // check to see if there's anything else to upload
+            // if so, upload it
+            [self autouploadPendingContent];
+        }
     }
 }
 
@@ -248,6 +292,8 @@
         self.syncingDeletes = NO;
         // notify finished with deletions
         [self.delegate deleteSessionFinished];
+        
+        // start uploads
         [self uploadNextObservation];
     }
 }
@@ -255,7 +301,12 @@
 - (void)stopUploadActivity {
     self.uploading = NO;
     self.syncingDeletes = NO;
+    self.currentlyUploadingObservation = nil;
+    
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    
+    // end long-running background job
+    [self endBackgroundJob];
 }
 
 #pragma mark - RKRequestDelegate
@@ -350,10 +401,51 @@
     }
 }
 
+#pragma mark - Long-running background task
+
+- (void)startBackgroundJob {
+    // register to do background work
+    UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Background Task Expired",
+                                          }];
+        
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    }];
+    self.bgTask = bgTask;
+}
+
+- (void)endBackgroundJob {
+    [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+}
+
 #pragma mark - NSObject lifecycle
 
+- (instancetype)init {
+    if (self = [super init]) {
+        // monitor reachability to trigger autoupload
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:RKReachabilityDidChangeNotification
+                                                   object:nil];
+    }
+    
+    return self;
+}
+
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - Reachability Updates
+
+- (void)reachabilityChanged:(NSNotification *)note {
+    if (self.shouldAutoupload) {
+        [self autouploadPendingContent];
+    }
 }
 
 #pragma mark - setters & getters
@@ -381,6 +473,20 @@
 
 - (NSInteger)currentUploadSessionTotalObservations {
     return _currentUploadSessionTotalObservations;
+}
+
+- (BOOL)shouldAutoupload {
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
+        return NO;
+    
+    if (![[[RKObjectManager sharedManager] client] isNetworkReachable])
+        return NO;
+    
+    if ([self isUploading])
+        return NO;
+    
+    return YES;
 }
 
 @end
