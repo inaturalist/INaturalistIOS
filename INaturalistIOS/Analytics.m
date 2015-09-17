@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FlurrySDK/Flurry.h>
+#import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
