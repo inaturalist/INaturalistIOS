@@ -6,7 +6,7 @@ inhibit_all_warnings!
 target :iNaturalist do
 	pod 'Fabric', '1.5.1'
 	pod 'Crashlytics', '3.3.1'
-	pod 'FlurrySDK', '6.2.0'
+	pod 'Flurry-iOS-SDK', '7.1.1'
 	pod 'Facebook-iOS-SDK', '3.20.0'
 	pod 'Bolts', '1.1.3'
 	pod 'FontAwesomeKit', '2.2.0'
