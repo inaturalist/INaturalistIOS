@@ -29,9 +29,7 @@ PODS:
   - Facebook-iOS-SDK (3.20.0):
     - Bolts (~> 1.0)
   - FileMD5Hash (0.0.1)
-  - Flurry-iOS-SDK (7.1.1):
-    - Flurry-iOS-SDK/FlurrySDK (= 7.1.1)
-  - Flurry-iOS-SDK/FlurrySDK (7.1.1)
+  - Flurry-iOS-SDK/FlurrySDK (7.1.0)
   - FontAwesomeKit (2.2.0):
     - FontAwesomeKit/Core (= 2.2.0)
     - FontAwesomeKit/FontAwesome (= 2.2.0)
@@ -130,7 +128,7 @@ DEPENDENCIES:
   - Fabric (= 1.5.1)
   - Facebook-iOS-SDK (= 3.20.0)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
-  - Flurry-iOS-SDK (= 7.1.1)
+  - Flurry-iOS-SDK/FlurrySDK (= 7.1.0)
   - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
@@ -192,7 +190,7 @@ SPEC CHECKSUMS:
   Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
   Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
   FileMD5Hash: d96615de89074573f05b8106441e15ac6241cfae
-  Flurry-iOS-SDK: 83fd4f40ae66e80d122fd2f6698f0e0c31021a63
+  Flurry-iOS-SDK: 7b3fe6c3344c82b73c4c84163652eada84fbfcf4
   FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
