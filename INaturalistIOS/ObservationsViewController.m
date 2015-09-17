@@ -966,8 +966,10 @@
             
             [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                         objectMapping:[User mapping]
-                                                              delegate:self];
+                                                            usingBlock:^(RKObjectLoader *loader) {
+                                                                loader.objectMapping = [User mapping];
+                                                                loader.delegate = self;
+                                                            }];
         }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
