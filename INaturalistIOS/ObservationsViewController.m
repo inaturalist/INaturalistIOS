@@ -71,6 +71,65 @@
     [self.tabBarController presentViewController:nav animated:YES completion:nil];
 }
 
+- (void)presentAutouploadAlert {
+    
+    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatDarkGreen]];
+    
+    // existing users see a one-time autoupload notice
+    NSString *alertTitle = NSLocalizedString(@"Introducing Autoupload!", @"title of autoupload introduction alert view");
+    
+    NSAttributedString *attrTitleText = [[NSAttributedString alloc] initWithString:alertTitle
+                                                                        attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                                                      NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
+                                                                                      }];
+
+    NSString *alertMsg = NSLocalizedString(@"Turn on Autoupload and your observations will be automatically uploaded to iNaturalist (shown every launch for testing)",
+                                           @"message of autoupload introduction alert view");
+    NSAttributedString *attrMsg = [[NSAttributedString alloc] initWithString:alertMsg
+                                                                  attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
+
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@""
+                                                                   message:@""
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert setValue:attrTitleText forKey:@"attributedTitle"];
+    [alert setValue:attrMsg forKey:@"attributedMessage"];
+    
+    // sets the color of the alert action cells only
+    alert.view.tintColor = [UIColor whiteColor];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"No Thanks", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                            }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Turn On", @"button title to turn on autoupload")
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                // enable the autoupload setting
+                                                [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                                                        forKey:kInatAutouploadPrefKey];
+                                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                                
+                                                // kick off autoupload if appropriate
+                                                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+                                                if ([uploadManager shouldAutoupload]) {
+                                                    [uploadManager autouploadPendingContent];
+                                                }
+                                                
+                                                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                            }]];
+    [self.navigationController presentViewController:alert animated:YES completion:^{
+        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
+        [[UILabel appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:nil];
+        [[UIButton appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
+        [[UIButton appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:nil];
+    }];
+
+}
+
 - (void)uploadOneObservation:(UIButton *)button {
     CGPoint buttonCenter = button.center;
     CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
@@ -975,8 +1034,9 @@
         
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:FirstSignInKey];
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:SeenV262Key];
+        // for testing purposes, show autoupload alert every launch
+        //[[NSUserDefaults standardUserDefaults] setBool:YES
+        //                                        forKey:SeenV262Key];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -987,10 +1047,13 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO
                                                 forKey:kInatAutouploadPrefKey];
         
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:SeenV262Key];
+        // for testing purposes, show autoupload alert every launch
+        //[[NSUserDefaults standardUserDefaults] setBool:YES
+        //                                        forKey:SeenV262Key];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [self presentAutouploadAlert];
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
