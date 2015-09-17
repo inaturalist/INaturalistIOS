@@ -251,8 +251,10 @@
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         
         if (recordToUpload.syncedAt) {
+            [[Analytics sharedClient] debugLog:@"Network - Put One Record During Upload"];
             [objectManager putObject:recordToUpload usingBlock:loaderBlock];
         } else {
+            [[Analytics sharedClient] debugLog:@"Network - Post One Record During Upload"];
             [objectManager postObject:recordToUpload usingBlock:loaderBlock];
         }
     } else {
@@ -282,6 +284,7 @@
                                     nextDelete.modelName.underscore.pluralize,
                                     nextDelete.recordID.intValue];
         
+        [[Analytics sharedClient] debugLog:@"Network - Delete One Record During Upload"];
         [[RKClient sharedClient] delete:nextDeletePath
                              usingBlock:^(RKRequest *request) {
                                  request.delegate = self;
