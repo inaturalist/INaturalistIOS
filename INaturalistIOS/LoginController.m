@@ -488,6 +488,7 @@ NSInteger INatMinPasswordLength = 6;
         return;
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Re-fetch Taxa after login"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         
