@@ -73,6 +73,10 @@
 
 - (void)presentAutouploadAlert {
     
+    if (![UIAlertController class]) {
+        return;
+    }
+    
     [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatDarkGreen]];
     
     // existing users see a one-time autoupload notice
