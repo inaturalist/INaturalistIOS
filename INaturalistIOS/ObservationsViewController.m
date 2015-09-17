@@ -1376,6 +1376,7 @@
 - (void)uploadSessionAuthRequired {
     [self syncStopped];
     
+    [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
                                       @"Via": @"Auth Required",
@@ -1396,6 +1397,7 @@
         [self syncStopped];
     });
 
+    [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
                      withProperties:@{
                                       @"Via": @"Upload Complete",
@@ -1415,11 +1417,14 @@
 }
 
 - (void)uploadCancelledFor:(INatModel *)object {
+    [[Analytics sharedClient] debugLog:@"Upload - Upload Cancelled"];
+
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     [self syncStopped];
 }
 
 - (void)uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", current, total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
@@ -1444,7 +1449,8 @@
 }
 
 - (void)uploadSuccessFor:(Observation *)observation {
-    
+    [[Analytics sharedClient] debugLog:@"Upload - Success"];
+
     [self configureHeaderForLoggedInUser];
     [self updateSyncBadge];
 
@@ -1469,6 +1475,8 @@
 }
 
 - (void)uploadProgress:(float)progress for:(Observation *)observation {
+    [[Analytics sharedClient] debugLog:@"Upload - Progress"];
+
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
     if ([self.tableView.visibleCells containsObject:cell]) {
@@ -1483,6 +1491,8 @@
 }
 
 - (void)uploadNonFatalError:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error %@", error.localizedDescription]];
+
     if (!self.nonFatalUploadErrors) {
         self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
     }
@@ -1490,6 +1500,8 @@
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
+
     [self syncStopped];
     
     if ([object isKindOfClass:ProjectObservation.class]) {
@@ -1544,6 +1556,8 @@
 }
 
 - (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
+
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
@@ -1553,15 +1567,21 @@
 }
 
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
+
     [self configureHeaderForLoggedInUser];
     [self updateSyncBadge];
 }
 
 - (void)deleteSessionFinished {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
+
     [self syncStopped];
 }
 
 - (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
+
     [self syncStopped];
     
     NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
