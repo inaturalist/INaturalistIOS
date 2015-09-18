@@ -127,9 +127,6 @@
                                             }]];
     [self.navigationController presentViewController:alert animated:YES completion:^{
         [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
-        [[UILabel appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:nil];
-        [[UIButton appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
-        [[UIButton appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:nil];
     }];
 
 }
