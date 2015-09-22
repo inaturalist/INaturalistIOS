@@ -249,12 +249,28 @@
     
     if (recordToUpload && loaderBlock) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        
+        NSString *className = NSStringFromClass(recordToUpload.class);
+
         if (recordToUpload.syncedAt) {
-            [[Analytics sharedClient] debugLog:@"Network - Put One Record During Upload"];
+            NSString *msg = [NSString stringWithFormat:@"Network - Put One %@ Record During Upload", className];
+            [[Analytics sharedClient] debugLog:msg];
+            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                             withProperties:@{
+                                              @"Type": className,
+                                              @"Method": @"PUT"
+                                              }];
+
             [objectManager putObject:recordToUpload usingBlock:loaderBlock];
         } else {
-            [[Analytics sharedClient] debugLog:@"Network - Post One Record During Upload"];
+            NSString *msg = [NSString stringWithFormat:@"Network - Post One %@ Record During Upload", className];
+            [[Analytics sharedClient] debugLog:msg];
+            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                             withProperties:@{
+                                              @"Type": className,
+                                              @"Method": @"POST"
+                                              }];
+
+
             [objectManager postObject:recordToUpload usingBlock:loaderBlock];
         }
     } else {
@@ -285,6 +301,12 @@
                                     nextDelete.recordID.intValue];
         
         [[Analytics sharedClient] debugLog:@"Network - Delete One Record During Upload"];
+        [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                         withProperties:@{
+                                          @"Type": nextDelete.modelName,
+                                          @"Method": @"DELETE"
+                                          }];
+
         [[RKClient sharedClient] delete:nextDeletePath
                              usingBlock:^(RKRequest *request) {
                                  request.delegate = self;
