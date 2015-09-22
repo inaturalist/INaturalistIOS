@@ -66,18 +66,10 @@
 #ifdef INatFlurryKey
     [Flurry logEvent:name timed:YES];
 #endif
-    
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:nil]; // no timed events in Crashlytics
-#endif
 }
 - (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
 #ifdef INatFlurryKey
     [Flurry logEvent:name withParameters:properties timed:YES];
-#endif
-    
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:properties];
 #endif
 }
 
