@@ -317,8 +317,12 @@
 
 - (void)checkNewActivity
 {
-    [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
-	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
+    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
+    if ([reachability isReachabilityDetermined] && [reachability isNetworkReachable] ) {
+        [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
+        [[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation"
+                            delegate:self];
+    }
 }
 
 - (void)loadData {
