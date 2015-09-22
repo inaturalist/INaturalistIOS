@@ -498,6 +498,8 @@ static char PROJECT_ASSOCIATED_KEY;
     if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
         UINavigationController *nc = (UINavigationController *)self.selectedViewController;
         return [nc.visibleViewController supportedInterfaceOrientations];
+    } else if ([self.selectedViewController isKindOfClass:[UIAlertController class]]) {
+        return UIInterfaceOrientationMaskAllButUpsideDown;
     } else {
         return [self.selectedViewController supportedInterfaceOrientations];
     }
