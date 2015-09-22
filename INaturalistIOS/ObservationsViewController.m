@@ -1112,8 +1112,6 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
-    
-    [self loadUserForHeader];
 }
 
 - (void)userSignedIn {
