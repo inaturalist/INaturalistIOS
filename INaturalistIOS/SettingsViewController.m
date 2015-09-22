@@ -15,6 +15,7 @@
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import "GPPSignIn.h"
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -348,7 +349,14 @@ static const int AutouploadSwitchTag = 102;
             if (switcher.isOn) {
                 // start autouploading right away
                 if ([uploadManager shouldAutoupload]) {
-                    [uploadManager autouploadPendingContent];
+                    if (uploadManager.isNetworkAvailableForUpload) {
+                        [uploadManager autouploadPendingContent];
+                    } else {
+                        if (uploadManager.shouldNotifyAboutNetworkState) {
+                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                       dismissAfter:4];
+                        }
+                    }
                 }
             } else {
                 // cancel autoupload if it's currently running

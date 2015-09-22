@@ -17,6 +17,10 @@
 @property (assign, getter=isUploading) BOOL uploading;
 @property (assign, getter=isSyncingDeletes) BOOL syncingDeletes;
 
+@property (assign, readonly) BOOL shouldNotifyAboutNetworkState;
+- (void)notifiedAboutNetworkState;
+@property (assign, readonly) BOOL isNetworkAvailableForUpload;
+
 @property (assign, readonly) BOOL shouldAutoupload;
 
 @property Observation *currentlyUploadingObservation;

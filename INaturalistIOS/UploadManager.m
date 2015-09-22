@@ -24,6 +24,7 @@
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
 @property UIBackgroundTaskIdentifier bgTask;
+@property NSDate *lastNetworkOutageNotificationDate;
 @end
 
 @implementation UploadManager
@@ -249,12 +250,28 @@
     
     if (recordToUpload && loaderBlock) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        
+        NSString *className = NSStringFromClass(recordToUpload.class);
+
         if (recordToUpload.syncedAt) {
-            [[Analytics sharedClient] debugLog:@"Network - Put One Record During Upload"];
+            NSString *msg = [NSString stringWithFormat:@"Network - Put One %@ Record During Upload", className];
+            [[Analytics sharedClient] debugLog:msg];
+            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                             withProperties:@{
+                                              @"Type": className,
+                                              @"Method": @"PUT"
+                                              }];
+
             [objectManager putObject:recordToUpload usingBlock:loaderBlock];
         } else {
-            [[Analytics sharedClient] debugLog:@"Network - Post One Record During Upload"];
+            NSString *msg = [NSString stringWithFormat:@"Network - Post One %@ Record During Upload", className];
+            [[Analytics sharedClient] debugLog:msg];
+            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                             withProperties:@{
+                                              @"Type": className,
+                                              @"Method": @"POST"
+                                              }];
+
+
             [objectManager postObject:recordToUpload usingBlock:loaderBlock];
         }
     } else {
@@ -285,6 +302,12 @@
                                     nextDelete.recordID.intValue];
         
         [[Analytics sharedClient] debugLog:@"Network - Delete One Record During Upload"];
+        [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
+                         withProperties:@{
+                                          @"Type": nextDelete.modelName,
+                                          @"Method": @"DELETE"
+                                          }];
+
         [[RKClient sharedClient] delete:nextDeletePath
                              usingBlock:^(RKRequest *request) {
                                  request.delegate = self;
@@ -479,17 +502,39 @@
 }
 
 - (BOOL)shouldAutoupload {
-    
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
-        return NO;
-    
-    if (![[[RKObjectManager sharedManager] client] isNetworkReachable])
         return NO;
     
     if ([self isUploading])
         return NO;
     
+    // restkit hasn't finished loading yet
+    if (![RKManagedObjectStore defaultObjectStore])
+        return NO;
+    
     return YES;
+}
+
+- (BOOL)isNetworkAvailableForUpload {
+    return [[[RKObjectManager sharedManager] client] isNetworkReachable];
+}
+
+- (BOOL)shouldNotifyAboutNetworkState {
+    if (!self.lastNetworkOutageNotificationDate) {
+        return YES;
+    }
+    
+    NSTimeInterval timeSinceLastNotify = [[NSDate date] timeIntervalSinceDate:self.lastNetworkOutageNotificationDate];
+    if (timeSinceLastNotify > 60 * 60 * 3) {
+        // 3 hours
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)notifiedAboutNetworkState {
+    self.lastNetworkOutageNotificationDate = [NSDate date];
 }
 
 @end

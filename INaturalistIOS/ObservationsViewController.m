@@ -13,6 +13,7 @@
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
 #import <SDWebImage/UIButton+WebCache.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -77,7 +78,7 @@
         return;
     }
     
-    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatDarkGreen]];
+    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatTint]];
     
     // existing users see a one-time autoupload notice
     NSString *alertTitle = NSLocalizedString(@"Introducing Autoupload!", @"title of autoupload introduction alert view");
@@ -120,7 +121,14 @@
                                                 INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                                                 UploadManager *uploadManager = appDelegate.loginController.uploadManager;
                                                 if ([uploadManager shouldAutoupload]) {
-                                                    [uploadManager autouploadPendingContent];
+                                                    if (uploadManager.isNetworkAvailableForUpload) {
+                                                        [uploadManager autouploadPendingContent];
+                                                    } else {
+                                                        if (uploadManager.shouldNotifyAboutNetworkState) {
+                                                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                                                       dismissAfter:4];
+                                                        }
+                                                    }
                                                 }
                                                 
                                                 [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -284,7 +292,7 @@
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
-        [[Analytics sharedClient] debugLog:@"Network - Load an observation"];
+        [[Analytics sharedClient] debugLog:@"Network - Refresh My Observations"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
@@ -317,8 +325,12 @@
 
 - (void)checkNewActivity
 {
-    [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
-	[[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation" delegate:self];
+    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
+    if ([reachability isReachabilityDetermined] && [reachability isNetworkReachable] ) {
+        [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
+        [[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation"
+                            delegate:self];
+    }
 }
 
 - (void)loadData {
@@ -1112,8 +1124,6 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
-    
-    [self loadUserForHeader];
 }
 
 - (void)userSignedIn {
@@ -1169,7 +1179,6 @@
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
-        [self loadUserForHeader];
     }
 
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
@@ -1394,6 +1403,9 @@
         [[[RKObjectManager sharedManager] objectStore] save:&error];
         
         [self syncStopped];
+        
+        // reload the Me user from the server
+        [self loadUserForHeader];
     });
 
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];

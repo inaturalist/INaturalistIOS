@@ -16,6 +16,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -991,8 +992,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)triggerAutoUpload {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
-    if (uploader.shouldAutoupload) {
-        [uploader autouploadPendingContent];
+    if ([uploader shouldAutoupload]) {
+        if (uploader.isNetworkAvailableForUpload) {
+            [uploader autouploadPendingContent];
+        } else {
+            if (uploader.shouldNotifyAboutNetworkState) {
+                [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                           dismissAfter:4];
+            }
+        }
     }
 }
 

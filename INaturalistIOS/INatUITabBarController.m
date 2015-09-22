@@ -43,7 +43,7 @@ static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
     INatTooltipView *makeFirstObsTooltip;
     UIAlertView *authAlertView;
 }
@@ -85,6 +85,10 @@ static char PROJECT_ASSOCIATED_KEY;
     [self fetchIconicTaxa];
     
     [super viewDidLoad];
+}
+
+- (void)dealloc {
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -494,6 +498,8 @@ static char PROJECT_ASSOCIATED_KEY;
     if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
         UINavigationController *nc = (UINavigationController *)self.selectedViewController;
         return [nc.visibleViewController supportedInterfaceOrientations];
+    } else if ([self.selectedViewController isKindOfClass:[UIAlertController class]]) {
+        return UIInterfaceOrientationMaskAllButUpsideDown;
     } else {
         return [self.selectedViewController supportedInterfaceOrientations];
     }
@@ -537,30 +543,43 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Fetch Iconic Taxa
 
 - (void)fetchIconicTaxa {
+    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
+    if (![reachability isReachabilityDetermined] || ![reachability isNetworkReachable]) {
+        return;
+    }
+    
     [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            // update timestamps on taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
-                                                                                                    saveError.localizedDescription]];
-                                                            }
-                                                        };
-                                                    }];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa" usingBlock:^(RKObjectLoader *loader) {
+        loader.delegate = self;
+        loader.objectMapping = [Taxon mapping];
+    }];
+}
+
+#pragma mark - RKObjectLoader & RKRequest delegates
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    // do nothing
+}
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
+    // update timestamps on taxa objects
+    NSDate *now = [NSDate date];
+    [objects enumerateObjectsUsingBlock:^(INatModel *o,
+                                          NSUInteger idx,
+                                          BOOL *stop) {
+        [o setSyncedAt:now];
+    }];
+    
+    NSError *saveError = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+    if (saveError) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
+                                            saveError.localizedDescription]];
+    }
+}
+
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    // do nothing
 }
 
 @end
