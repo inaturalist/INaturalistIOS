@@ -1395,6 +1395,9 @@
         [[[RKObjectManager sharedManager] objectStore] save:&error];
         
         [self syncStopped];
+        
+        // reload the Me user from the server
+        [self loadUserForHeader];
     });
 
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
