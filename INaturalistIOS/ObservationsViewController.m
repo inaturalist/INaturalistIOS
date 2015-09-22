@@ -1171,7 +1171,6 @@
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
-        [self loadUserForHeader];
     }
 
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
