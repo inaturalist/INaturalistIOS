@@ -24,6 +24,7 @@
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
 @property UIBackgroundTaskIdentifier bgTask;
+@property NSDate *lastNetworkOutageNotificationDate;
 @end
 
 @implementation UploadManager
@@ -501,17 +502,39 @@
 }
 
 - (BOOL)shouldAutoupload {
-    
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
-        return NO;
-    
-    if (![[[RKObjectManager sharedManager] client] isNetworkReachable])
         return NO;
     
     if ([self isUploading])
         return NO;
     
+    // restkit hasn't finished loading yet
+    if (![RKManagedObjectStore defaultObjectStore])
+        return NO;
+    
     return YES;
+}
+
+- (BOOL)isNetworkAvailableForUpload {
+    return [[[RKObjectManager sharedManager] client] isNetworkReachable];
+}
+
+- (BOOL)shouldNotifyAboutNetworkState {
+    if (!self.lastNetworkOutageNotificationDate) {
+        return YES;
+    }
+    
+    NSTimeInterval timeSinceLastNotify = [[NSDate date] timeIntervalSinceDate:self.lastNetworkOutageNotificationDate];
+    if (timeSinceLastNotify > 60 * 60 * 3) {
+        // 3 hours
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)notifiedAboutNetworkState {
+    self.lastNetworkOutageNotificationDate = [NSDate date];
 }
 
 @end

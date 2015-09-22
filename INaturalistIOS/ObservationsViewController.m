@@ -13,6 +13,7 @@
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
 #import <SDWebImage/UIButton+WebCache.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -120,7 +121,14 @@
                                                 INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                                                 UploadManager *uploadManager = appDelegate.loginController.uploadManager;
                                                 if ([uploadManager shouldAutoupload]) {
-                                                    [uploadManager autouploadPendingContent];
+                                                    if (uploadManager.isNetworkAvailableForUpload) {
+                                                        [uploadManager autouploadPendingContent];
+                                                    } else {
+                                                        if (uploadManager.shouldNotifyAboutNetworkState) {
+                                                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                                                       dismissAfter:4];
+                                                        }
+                                                    }
                                                 }
                                                 
                                                 [self.navigationController dismissViewControllerAnimated:YES completion:nil];
