@@ -284,7 +284,7 @@
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
-        [[Analytics sharedClient] debugLog:@"Network - Load an observation"];
+        [[Analytics sharedClient] debugLog:@"Network - Refresh My Observations"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
