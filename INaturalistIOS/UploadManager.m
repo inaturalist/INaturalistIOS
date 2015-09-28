@@ -25,6 +25,8 @@
 @property NSMutableArray *recordsToDelete;
 @property UIBackgroundTaskIdentifier bgTask;
 @property NSDate *lastNetworkOutageNotificationDate;
+// workaround for restkit bug
+@property NSMutableArray *failedObjectLoaders;
 @end
 
 @implementation UploadManager
@@ -376,6 +378,13 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    
+    // workaround for a bug where RestKit can release the objectLoader too early in error conditions
+    [self.failedObjectLoaders addObject:objectLoader];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.failedObjectLoaders removeObject:objectLoader];
+    });
+    
     // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
     if (!self.uploading) {
         return;
@@ -455,6 +464,7 @@
                                                  selector:@selector(reachabilityChanged:)
                                                      name:RKReachabilityDidChangeNotification
                                                    object:nil];
+        self.failedObjectLoaders = [NSMutableArray array];
     }
     
     return self;
