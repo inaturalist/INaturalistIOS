@@ -50,7 +50,6 @@
 
     NSFetchedResultsController *fetchedResultsController;
 }
-@property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @property MeHeaderView *meHeader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
@@ -1413,18 +1412,6 @@
                      withProperties:@{
                                       @"Via": @"Upload Complete",
                                       }];
-    
-    
-    if (self.nonFatalUploadErrors && self.nonFatalUploadErrors.count > 0) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
-                                                     message:[self.nonFatalUploadErrors componentsJoinedByString:@"\n\n"]
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-        
-        [self.nonFatalUploadErrors removeAllObjects];
-    }
 }
 
 - (void)uploadCancelledFor:(INatModel *)object {
@@ -1501,33 +1488,42 @@
     }
 }
 
-- (void)uploadNonFatalError:(NSError *)error {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error %@", error.localizedDescription]];
-
-    if (!self.nonFatalUploadErrors) {
-        self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
+- (void)uploadNonFatalErrorForObservation:(Observation *)observation {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
+    
+    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
+    if ([self.tableView.visibleCells containsObject:cell]) {
+        cell.subtitleLabel.hidden = NO;
+        cell.dateLabel.hidden = NO;
+        cell.uploadSpinner.hidden = YES;
+        [cell.uploadSpinner stopAnimating];
+        
+        cell.subtitleLabel.text = NSLocalizedString(@"Failed", @"subtitle for observation after it's partially failed uploading.");
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if ([self.tableView.visibleCells containsObject:cell]) {
+                [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                                      withRowAnimation:UITableViewRowAnimationFade];
+            }
+        });
     }
-    [self.nonFatalUploadErrors addObject:error.localizedDescription];
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
-
-    [self syncStopped];
     
     if ([object isKindOfClass:ProjectObservation.class]) {
+        // continue uploading, but mark this observation as needing validation
         ProjectObservation *po = (ProjectObservation *)object;
-        if (!self.nonFatalUploadErrors) {
-            self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
-        }
-        [self.nonFatalUploadErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
-                                              po.observation.speciesGuess,
-                                              po.observation.observedOnShortString,
-                                              po.project.title,
-                                              error.localizedDescription]];
-        [po deleteEntity];
-        
+        Observation *o = po.observation;
+        NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@: %@",
+                                                 @"Project validation error. first string is project title, second is the specific error");
+        o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, po.project.title, error.localizedDescription];
+
     } else if ([object isKindOfClass:ObservationFieldValue.class]) {
+        // continue uploading
+        
         // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
         // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
         // kueda 20140112
@@ -1537,6 +1533,9 @@
             [ofv deleteEntity];
         }
     } else {
+        // stop uploading
+        [self syncStopped];
+
         NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
         NSString *alertMessage;
         
