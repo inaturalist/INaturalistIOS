@@ -13,5 +13,6 @@
 - (NSArray *)childrenNeedingUpload;
 - (BOOL)needsUpload;
 + (NSArray *)needingUpload;
+- (void)finishedUpload:(BOOL)successful;
 
 @end
