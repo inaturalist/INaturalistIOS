@@ -106,6 +106,7 @@
 		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
+		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
@@ -392,6 +393,8 @@
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
+		FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationValidationErrorView.h; sourceTree = "<group>"; };
+		FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationValidationErrorView.m; sourceTree = "<group>"; };
 		FA1B37BA1AD88BBC002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BB1AD88BCF002A00A5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BC1AD88BE2002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -883,6 +886,8 @@
 				897569FE1B4557B500F0BFAD /* ObservationViewCell.m */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
+				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
+				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1470,6 +1475,7 @@
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
+				FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */,
 				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
