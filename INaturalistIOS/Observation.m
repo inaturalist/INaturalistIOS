@@ -439,11 +439,5 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return [NSArray arrayWithArray:recordsToUpload];
 }
 
-- (void)finishedUpload:(BOOL)successful {
-    if (successful) {
-        self.validationErrorMsg = nil;
-    }
-}
-
 
 @end
