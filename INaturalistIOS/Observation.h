@@ -67,9 +67,6 @@
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
-+ (NSArray *)needingUpload;
-- (BOOL)needsUpload;
-
 @end
 
 @interface Observation (PrimitiveAccessors)
