@@ -56,6 +56,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic identifications;
 @dynamic sortable;
 @dynamic uuid;
+@dynamic validationErrorMsg;
 
 + (NSArray *)all
 {
