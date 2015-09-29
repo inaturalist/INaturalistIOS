@@ -417,7 +417,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return NO;
 }
 
--(NSArray *)childrenNeedingUpload {
+- (NSArray *)childrenNeedingUpload {
     NSMutableArray *recordsToUpload = [NSMutableArray array];
     
     for (ObservationPhoto *op in self.observationPhotos) {
