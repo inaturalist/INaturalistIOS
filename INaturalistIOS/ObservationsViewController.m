@@ -585,121 +585,150 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
     
     ObservationViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
+    [self configureObservationViewCell:cell forIndexPath:indexPath];
+    return cell;
+}
+
+/*
+ * this is ugly - need to migrate this to 4 different cells
+ */
+- (void)configureObservationViewCell:(ObservationViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    // configure the photo
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-		if (op.photoKey == nil) {
+        if (op.photoKey == nil) {
             [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
-		} else {
-			cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        } else {
+            cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
             
             // if we can't find a square image...
             if (!cell.observationImage.image) {
                 // ...try again a few times, it's probably a new image in the process of being cut-down
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
-                        [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) {
+                        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
                     }
                 });
             }
-		}
-        
+        }
     } else {
         cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
     
+    // configure the title
     if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else {
         [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
     
-    if (o.placeGuess && o.placeGuess.length > 0) {
-        cell.subtitleLabel.text = o.placeGuess;
-    } else if (o.latitude) {
-        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
-    } else {
-        cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
-    }
-    
-	if (o.hasUnviewedActivity.boolValue) {
-		// make bubble red
-		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
-	} else {
-		// make bubble grey
-		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
-	}
-	
-	[cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
-	
-	if (o.activityCount > 0) {
-		cell.activityButton.hidden = NO;
-        cell.interactiveActivityButton.hidden = NO;
-	} else {
-		cell.activityButton.hidden = YES;
-        cell.interactiveActivityButton.hidden = YES;
-	}
-    
-    [cell.interactiveActivityButton addTarget:self
-                                  action:@selector(clickedActivity:event:)
-                        forControlEvents:UIControlEventTouchUpInside];
-	
-    cell.dateLabel.text = o.observedOnShortString;
-    
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (o.needsUpload) {
-        if ([[appDelegate.loginController.uploadManager currentlyUploadingObservation] isEqual:o]) {
-            cell.subtitleLabel.hidden = NO;
-            cell.dateLabel.hidden = YES;
-            cell.uploadButton.hidden = YES;
-            cell.activityButton.hidden = YES;
-            cell.uploadSpinner.hidden = NO;
-            [cell.uploadSpinner startAnimating];
-            cell.uploadSpinner.color = [UIColor whiteColor];
-            cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
-            cell.backgroundColor = [UIColor inatTint];
-            cell.titleLabel.textColor = [UIColor whiteColor];
-            cell.subtitleLabel.textColor = [UIColor whiteColor];
-            cell.observationImage.alpha = 1.0f;
-        } else {
-            cell.uploadButton.hidden = NO;
-            
-            cell.dateLabel.hidden = YES;
-            cell.activityButton.hidden = YES;
-            
-            [cell.uploadButton addTarget:self
-                                  action:@selector(uploadOneObservation:)
-                        forControlEvents:UIControlEventTouchUpInside];
-            cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+    cell.contentView.backgroundColor = [UIColor whiteColor];
 
-            if ([appDelegate.loginController.uploadManager isUploading]) {
+    // the rest of the configuration branches based on the upload state of the observation
+    
+    if (o.validationErrorMsg && o.validationErrorMsg > 0 && !appDelegate.loginController.uploadManager.isUploading) {
+        // only show validation errors if the observation hasn't been uploaded yet
+        
+        cell.contentView.backgroundColor = [UIColor lightGrayColor];
+        cell.subtitleLabel.hidden = NO;
+        cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
+        cell.subtitleLabel.textColor = [UIColor darkGrayColor];
+        cell.dateLabel.hidden = NO;
+        cell.uploadSpinner.hidden = YES;
+        cell.uploadButton.hidden = YES;
+        cell.activityButton.hidden = YES;
+        cell.observationImage.alpha = 1.0f;
+
+    } else if (o.needsUpload) {
+        
+        cell.uploadButton.hidden = NO;
+        cell.dateLabel.hidden = YES;
+        cell.activityButton.hidden = YES;
+        [cell.uploadButton addTarget:self
+                              action:@selector(uploadOneObservation:)
+                    forControlEvents:UIControlEventTouchUpInside];
+        cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+        
+        if (appDelegate.loginController.uploadManager.isUploading) {
+            if ([appDelegate.loginController.uploadManager.currentlyUploadingObservation isEqual:o]) {
+                // active upload
+                cell.subtitleLabel.hidden = NO;
+                cell.dateLabel.hidden = YES;
+                cell.uploadButton.hidden = YES;
+                cell.activityButton.hidden = YES;
+                cell.uploadSpinner.hidden = NO;
+                [cell.uploadSpinner startAnimating];
+                cell.uploadSpinner.color = [UIColor whiteColor];
+                cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
+                cell.backgroundColor = [UIColor inatTint];
+                cell.titleLabel.textColor = [UIColor whiteColor];
+                cell.subtitleLabel.textColor = [UIColor whiteColor];
+                cell.observationImage.alpha = 1.0f;
+            } else {
+                // waiting upload, with uploads happening
                 cell.uploadButton.enabled = NO;
                 cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
                 cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
                 cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
                 cell.observationImage.alpha = 0.5f;
-            } else {
-                cell.uploadButton.enabled = YES;
-                cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
-                cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
-                cell.titleLabel.textColor = [UIColor blackColor];
-                cell.observationImage.alpha = 1.0f;
             }
+        } else {
+            // waiting upload, with uploads not happening
+            cell.uploadButton.enabled = YES;
+            cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
+            cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
+            cell.titleLabel.textColor = [UIColor blackColor];
+            cell.observationImage.alpha = 1.0f;
         }
     } else {
+        // doesn't need upload
+        
+        if (o.placeGuess && o.placeGuess.length > 0) {
+            cell.subtitleLabel.text = o.placeGuess;
+        } else if (o.latitude) {
+            cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+        } else {
+            cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
+        }
+        
+        if (o.hasUnviewedActivity.boolValue) {
+            // make bubble red
+            [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
+        } else {
+            // make bubble grey
+            [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
+        }
+        [cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
+        
+        if (o.activityCount > 0) {
+            cell.activityButton.hidden = NO;
+            cell.interactiveActivityButton.hidden = NO;
+        } else {
+            cell.activityButton.hidden = YES;
+            cell.interactiveActivityButton.hidden = YES;
+        }
+
+        [cell.interactiveActivityButton addTarget:self
+                                           action:@selector(clickedActivity:event:)
+                                 forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.dateLabel.text = o.observedOnShortString;
+
         cell.uploadButton.hidden = YES;
         cell.dateLabel.hidden = NO;
-
+        
         cell.backgroundColor = [UIColor whiteColor];
         cell.subtitleLabel.textColor = [UIColor blackColor];
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
+
     }
-    
-    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
