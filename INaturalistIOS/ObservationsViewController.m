@@ -39,7 +39,10 @@
 #import "LoginViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UploadManagerNotificationDelegate.h"
-#import "ObservationViewCell.h"
+#import "ObservationViewNormalCell.h"
+#import "ObservationViewUploadingCell.h"
+#import "ObservationViewWaitingUploadCell.h"
+#import "ObservationViewErrorCell.h"
 #import "ObservationDetailViewController.h"
 #import "DeletedRecord.h"
 #import "UploadManager.h"
@@ -50,7 +53,6 @@
 
     NSFetchedResultsController *fetchedResultsController;
 }
-@property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @property MeHeaderView *meHeader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
@@ -585,123 +587,34 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
-    
-    ObservationViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationTableCell"];
-    
-    if (o.sortedObservationPhotos.count > 0) {
-        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-		if (op.photoKey == nil) {
-            [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
-		} else {
-			cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
-            
-            // if we can't find a square image...
-            if (!cell.observationImage.image) {
-                // ...try again a few times, it's probably a new image in the process of being cut-down
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if ([[tableView indexPathsForVisibleRows] containsObject:indexPath]) {
-                        [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
-                    }
-                });
-            }
-		}
-        
-    } else {
-        cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
-    }
-    
-    if (o.speciesGuess && o.speciesGuess.length > 0) {
-        [cell.titleLabel setText:o.speciesGuess];
-    } else {
-        [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
-    }
-    
-    if (o.placeGuess && o.placeGuess.length > 0) {
-        cell.subtitleLabel.text = o.placeGuess;
-    } else if (o.latitude) {
-        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
-    } else {
-        cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
-    }
-    
-	if (o.hasUnviewedActivity.boolValue) {
-		// make bubble red
-		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
-	} else {
-		// make bubble grey
-		[cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
-	}
-	
-	[cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
-	
-	if (o.activityCount > 0) {
-		cell.activityButton.hidden = NO;
-        cell.interactiveActivityButton.hidden = NO;
-	} else {
-		cell.activityButton.hidden = YES;
-        cell.interactiveActivityButton.hidden = YES;
-	}
-    
-    [cell.interactiveActivityButton addTarget:self
-                                  action:@selector(clickedActivity:event:)
-                        forControlEvents:UIControlEventTouchUpInside];
-	
-    cell.dateLabel.text = o.observedOnShortString;
-    
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (o.needsUpload) {
-        if ([[appDelegate.loginController.uploadManager currentlyUploadingObservation] isEqual:o]) {
-            cell.subtitleLabel.hidden = NO;
-            cell.dateLabel.hidden = YES;
-            cell.uploadButton.hidden = YES;
-            cell.activityButton.hidden = YES;
-            cell.uploadSpinner.hidden = NO;
-            [cell.uploadSpinner startAnimating];
-            cell.uploadSpinner.color = [UIColor whiteColor];
-            cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
-            cell.backgroundColor = [UIColor inatTint];
-            cell.titleLabel.textColor = [UIColor whiteColor];
-            cell.subtitleLabel.textColor = [UIColor whiteColor];
-            cell.observationImage.alpha = 1.0f;
-        } else {
-            cell.uploadButton.hidden = NO;
-            
-            cell.dateLabel.hidden = YES;
-            cell.activityButton.hidden = YES;
-            
-            [cell.uploadButton addTarget:self
-                                  action:@selector(uploadOneObservation:)
-                        forControlEvents:UIControlEventTouchUpInside];
-            cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
 
-            if ([appDelegate.loginController.uploadManager isUploading]) {
-                cell.uploadButton.enabled = NO;
-                cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
-                cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
-                cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
-                cell.observationImage.alpha = 0.5f;
-            } else {
-                cell.uploadButton.enabled = YES;
-                cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
-                cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
-                cell.titleLabel.textColor = [UIColor blackColor];
-                cell.observationImage.alpha = 1.0f;
-            }
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    if (o.validationErrorMsg && o.validationErrorMsg > 0 && ![appDelegate.loginController.uploadManager currentUploadWorkContainsObservation:o]) {
+        // only show validation error status if this obs has a validation error, and it's not being retried
+        ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
+        [self configureErrorCell:cell forIndexPath:indexPath];
+        return cell;
+    } else if (o.needsUpload) {
+        if (appDelegate.loginController.uploadManager.isUploading && [appDelegate.loginController.uploadManager.currentlyUploadingObservation isEqual:o]) {
+            // actively uploading this observation
+            ObservationViewUploadingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationUploadingCell"];
+            [self configureUploadingCell:cell forIndexPath:indexPath];
+            return cell;
+        } else {
+            // waiting upload, not actively uploading this observation
+            ObservationViewWaitingUploadCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationWaitingUploadCell"];
+            [self configureWaitingUploadCell:cell forIndexPath:indexPath];
+            return cell;
         }
     } else {
-        cell.uploadButton.hidden = YES;
-        cell.dateLabel.hidden = NO;
-
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.subtitleLabel.textColor = [UIColor blackColor];
-        cell.titleLabel.textColor = [UIColor blackColor];
-        cell.observationImage.alpha = 1.0f;
+        ObservationViewNormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationNormalCell"];
+        [self configureNormalCell:cell forIndexPath:indexPath];
+        return cell;
     }
-    
-    return cell;
 }
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 54.0f;
@@ -770,6 +683,119 @@
         [self performSegueWithIdentifier:@"observationDetail" sender:o];
     }
 }
+
+#pragma mark - TableViewCell helpers
+
+- (void)configureObservationCell:(ObservationViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    
+    // configure the photo
+    if (o.sortedObservationPhotos.count > 0) {
+        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
+        if (op.photoKey == nil) {
+            [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
+        } else {
+            cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+            
+            // if we can't find a square image...
+            if (!cell.observationImage.image) {
+                // ...try again a few times, it's probably a new image in the process of being cut-down
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) {
+                        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                });
+            }
+        }
+    } else {
+        cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
+    }
+    
+    // configure the title
+    if (o.speciesGuess && o.speciesGuess.length > 0) {
+        [cell.titleLabel setText:o.speciesGuess];
+    } else {
+        [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
+    }
+}
+
+- (void)configureErrorCell:(ObservationViewErrorCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    [self configureObservationCell:cell forIndexPath:indexPath];
+    
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    cell.dateLabel.text = o.observedOnShortString;
+    cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
+}
+
+- (void)configureUploadingCell:(ObservationViewUploadingCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    [self configureObservationCell:cell forIndexPath:indexPath];
+    
+    cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
+    [cell.uploadSpinner startAnimating];
+}
+
+- (void)configureWaitingUploadCell:(ObservationViewWaitingUploadCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    [self configureObservationCell:cell forIndexPath:indexPath];
+    
+    cell.subtitleLabel.text = NSLocalizedString(@"Waiting to upload...", @"Subtitle for observation when waiting to upload.");
+    [cell.uploadButton addTarget:self
+                          action:@selector(uploadOneObservation:)
+                forControlEvents:UIControlEventTouchUpInside];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.uploadManager.isUploading) {
+        // waiting upload, with uploads happening
+        cell.uploadButton.enabled = NO;
+        cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
+        cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
+        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
+        cell.observationImage.alpha = 0.5f;
+    } else {
+        // waiting upload, with uploads not happening
+        cell.uploadButton.enabled = YES;
+        cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
+        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
+        cell.titleLabel.textColor = [UIColor blackColor];
+        cell.observationImage.alpha = 1.0f;
+    }
+}
+
+- (void)configureNormalCell:(ObservationViewNormalCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    [self configureObservationCell:cell forIndexPath:indexPath];
+    
+    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    if (o.placeGuess && o.placeGuess.length > 0) {
+        cell.subtitleLabel.text = o.placeGuess;
+    } else if (o.latitude) {
+        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+    } else {
+        cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
+    }
+    
+    if (o.hasUnviewedActivity.boolValue) {
+        [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
+    } else {
+        [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
+    }
+    
+    [cell.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)o.activityCount] forState:UIControlStateNormal];
+    
+    if (o.activityCount > 0) {
+        cell.activityButton.hidden = NO;
+        cell.interactiveActivityButton.hidden = NO;
+    } else {
+        cell.activityButton.hidden = YES;
+        cell.interactiveActivityButton.hidden = YES;
+    }
+    
+    [cell.interactiveActivityButton addTarget:self
+                                       action:@selector(clickedActivity:event:)
+                             forControlEvents:UIControlEventTouchUpInside];
+    
+    cell.dateLabel.text = o.observedOnShortString;
+    
+}
+
 
 #pragma mark - Header helpers
 
@@ -1413,18 +1439,6 @@
                      withProperties:@{
                                       @"Via": @"Upload Complete",
                                       }];
-    
-    
-    if (self.nonFatalUploadErrors && self.nonFatalUploadErrors.count > 0) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Heads up",nil)
-                                                     message:[self.nonFatalUploadErrors componentsJoinedByString:@"\n\n"]
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-        
-        [self.nonFatalUploadErrors removeAllObjects];
-    }
 }
 
 - (void)uploadCancelledFor:(INatModel *)object {
@@ -1446,17 +1460,7 @@
     [self.meHeader startAnimatingUpload];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
-    ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
-    if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = NO;
-        cell.dateLabel.hidden = YES;
-        cell.uploadButton.hidden = YES;
-        cell.activityButton.hidden = YES;
-        cell.interactiveActivityButton.hidden = YES;
-        cell.uploadSpinner.hidden = NO;
-        [cell.uploadSpinner startAnimating];
-        cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
-    }
+    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)uploadSuccessFor:(Observation *)observation {
@@ -1466,68 +1470,37 @@
     [self updateSyncBadge];
 
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
-    ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
-    
-    if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = NO;
-        cell.dateLabel.hidden = NO;
-        cell.uploadSpinner.hidden = YES;
-        [cell.uploadSpinner stopAnimating];
-        
-        cell.subtitleLabel.text = NSLocalizedString(@"Finished", @"subtitle for observation after it's finished uploading.");
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if ([self.tableView.visibleCells containsObject:cell]) {
-                [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                                      withRowAnimation:UITableViewRowAnimationFade];
-            }
-        });
-    }
+    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)uploadProgress:(float)progress for:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
 
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
-    ObservationViewCell *cell = (ObservationViewCell *)[self.tableView cellForRowAtIndexPath:ip];
-    if ([self.tableView.visibleCells containsObject:cell]) {
-        cell.subtitleLabel.hidden = NO;
-        cell.dateLabel.hidden = YES;
-        cell.uploadButton.hidden = YES;
-        cell.activityButton.hidden = YES;
-        cell.uploadSpinner.hidden = NO;
-        [cell.uploadSpinner startAnimating];
-        cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
-    }
+    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)uploadNonFatalError:(NSError *)error {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error %@", error.localizedDescription]];
-
-    if (!self.nonFatalUploadErrors) {
-        self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
-    }
-    [self.nonFatalUploadErrors addObject:error.localizedDescription];
+- (void)uploadNonFatalErrorForObservation:(Observation *)observation {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
+    
+    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];    
 }
 
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
-
-    [self syncStopped];
     
     if ([object isKindOfClass:ProjectObservation.class]) {
+        // continue uploading, but mark this observation as needing validation
         ProjectObservation *po = (ProjectObservation *)object;
-        if (!self.nonFatalUploadErrors) {
-            self.nonFatalUploadErrors = [[NSMutableArray alloc] init];
-        }
-        [self.nonFatalUploadErrors addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (%@) couldn't be added to project %@: %@",nil),
-                                              po.observation.speciesGuess,
-                                              po.observation.observedOnShortString,
-                                              po.project.title,
-                                              error.localizedDescription]];
-        [po deleteEntity];
-        
+        Observation *o = po.observation;
+        NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@: %@",
+                                                 @"Project validation error. first string is project title, second is the specific error");
+        o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, po.project.title, error.localizedDescription];
+
     } else if ([object isKindOfClass:ObservationFieldValue.class]) {
+        // continue uploading
+        
         // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
         // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
         // kueda 20140112
@@ -1537,6 +1510,9 @@
             [ofv deleteEntity];
         }
     } else {
+        // stop uploading
+        [self syncStopped];
+
         NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
         NSString *alertMessage;
         

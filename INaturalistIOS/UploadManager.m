@@ -15,6 +15,7 @@
 #import "ObservationFieldValue.h"
 #import "ProjectObservation.h"
 #import "INaturalistAppDelegate.h"
+#import "Project.h"
 
 @interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
@@ -86,6 +87,20 @@
 }
 
 - (void)autouploadPendingContent {
+    [self autouploadPendingContentExcludeInvalids:NO];
+}
+
+- (BOOL)currentUploadWorkContainsObservation:(Observation *)observation {
+    return [self.observationsToUpload containsObject:observation];
+}
+
+#pragma mark - private methods
+
+/*
+ Upload all pending content. The exclude flag allows us to exclude any pending
+ content that failed to upload last time due to server-side data validation issues.
+ */
+- (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
     if (!self.shouldAutoupload) { return; }
     if (self.isUploading) { return; }
     
@@ -94,7 +109,17 @@
         [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
                                                                                   NSStringFromClass(klass)]]];
     }
+    
+    // invalid observations failed validation their last upload
+    NSPredicate *noInvalids = [NSPredicate predicateWithBlock:^BOOL(Observation *observation, NSDictionary *bindings) {
+        return !(observation.validationErrorMsg && observation.validationErrorMsg.length > 0);
+    }];
+    
     NSArray *observationsToUpload = [Observation needingUpload];
+    if (excludeInvalids) {
+        observationsToUpload = [observationsToUpload filteredArrayUsingPredicate:noInvalids];
+    }
+    
     if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
         
         [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
@@ -108,8 +133,6 @@
           thenUploadObservations:observationsToUpload];
     }
 }
-
-#pragma mark - private methods
 
 /**
  * Upload the next observation in our list of observations.
@@ -126,12 +149,14 @@
         // notify starting a new observation
         Observation *nextObservation = [self.observationsToUpload firstObject];
         
+        // clear any previous validation errors
+        nextObservation.validationErrorMsg = nil;
+        
         self.currentlyUploadingObservation = nextObservation;
         NSInteger idx = [self indexOfCurrentlyUploadingObservation] + 1;
         [self.delegate uploadStartedFor:nextObservation
                                  number:idx
                                      of:self.currentUploadSessionTotalObservations];
-        //[self.delegate uploadStartedFor:nextObservation];
         [self uploadOneRecordForObservation:nextObservation];
     } else {
         [self stopUploadActivity];
@@ -142,7 +167,9 @@
         if (self.shouldAutoupload) {
             // check to see if there's anything else to upload
             // if so, upload it
-            [self autouploadPendingContent];
+            // exclude anything that's failed validation, so we don't
+            // try to upload these observations over and over and over
+            [self autouploadPendingContentExcludeInvalids:YES];
         }
     }
 }
@@ -396,15 +423,60 @@
 
         [self stopUploadActivity];
         [self.delegate deleteFailedFor:failedDelete error:error];
-
-    } else {
-        // this masks all failures behind the observation failing to upload
-        // is this the correct move?
-        Observation *failedObservation = [self.observationsToUpload firstObject];
         
-        [self stopUploadActivity];
-        [self.delegate uploadFailedFor:failedObservation error:error];
+        return;
     }
+    
+    
+    if ([objectLoader.sourceObject isKindOfClass:ProjectObservation.class] && objectLoader.response.statusCode == 422) {
+        // server returns this code when the project validation fails
+        // this is a non-fatal error - start working on the next observation.
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Project Observation Error %@",
+                                            error.localizedDescription]];
+        
+        // mark this observation as needing validation
+        ProjectObservation *po = (ProjectObservation *)objectLoader.sourceObject;
+        Observation *o = po.observation;
+        NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@. %@",
+                                                 @"Project validation error. first string is project title, second is the specific error");
+        o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, po.project.title, error.localizedDescription];
+        
+        
+        [self.delegate uploadNonFatalErrorForObservation:o];
+        
+        // continue uploading other observations
+        self.currentlyUploadingObservation = nil;
+        [self.observationsToUpload removeObject:o];
+        [self uploadNextObservation];
+        
+        return;
+    }
+    
+    if ([objectLoader.sourceObject isKindOfClass:ObservationFieldValue.class]) {
+        
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Observation Field Value Error %@",
+                                            error.localizedDescription]];
+        
+        // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
+        // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
+        // kueda 20140112
+        ObservationFieldValue *ofv = (ObservationFieldValue *)objectLoader.sourceObject;
+        if (!ofv.observation) {
+            NSLog(@"ERROR: deleted mysterious ofv: %@", ofv);
+            [ofv deleteEntity];
+            
+            // continue uploading
+            [self uploadOneRecordForObservation:ofv.observation];
+            
+            return;
+        }
+        
+    }
+    
+    Observation *failedObservation = [self.observationsToUpload firstObject];
+    
+    [self stopUploadActivity];
+    [self.delegate uploadFailedFor:failedObservation error:error];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {

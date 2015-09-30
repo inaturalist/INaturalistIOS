@@ -56,6 +56,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic identifications;
 @dynamic sortable;
 @dynamic uuid;
+@dynamic validationErrorMsg;
 
 + (NSArray *)all
 {
@@ -416,7 +417,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return NO;
 }
 
--(NSArray *)childrenNeedingUpload {
+- (NSArray *)childrenNeedingUpload {
     NSMutableArray *recordsToUpload = [NSMutableArray array];
     
     for (ObservationPhoto *op in self.observationPhotos) {
@@ -437,5 +438,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     
     return [NSArray arrayWithArray:recordsToUpload];
 }
+
 
 @end

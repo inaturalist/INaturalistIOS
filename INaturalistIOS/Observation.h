@@ -52,6 +52,7 @@
 @property (nonatomic, retain) NSSet *identifications;
 @property (nonatomic, retain) NSString *sortable;
 @property (nonatomic, retain) NSString *uuid;
+@property (nonatomic, retain) NSString *validationErrorMsg;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
@@ -65,9 +66,6 @@
 - (Observation *)nextObservation;
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
-
-+ (NSArray *)needingUpload;
-- (BOOL)needsUpload;
 
 @end
 

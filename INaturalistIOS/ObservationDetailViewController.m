@@ -48,6 +48,7 @@
 #import "LoginController.h"
 #import "UploadManager.h"
 #import "DeletedRecord.h"
+#import "ObservationValidationErrorView.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -477,7 +478,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
+    
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    }
+    
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
         [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];

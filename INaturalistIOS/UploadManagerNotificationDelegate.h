@@ -22,7 +22,7 @@
 - (void)uploadFailedFor:(INatModel *)object error:(NSError *)error;
 - (void)uploadCancelledFor:(INatModel *)object;
 
-- (void)uploadNonFatalError:(NSError *)error;
+- (void)uploadNonFatalErrorForObservation:(Observation *)observation;
 
 - (void)deleteStartedFor:(DeletedRecord *)deletedRecord;
 - (void)deleteSuccessFor:(DeletedRecord *)deletedRecord;
