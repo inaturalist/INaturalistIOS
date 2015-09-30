@@ -37,7 +37,7 @@
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[dateLabel(==15)]->=0-[validationError(==22)]-3-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[dateLabel(==15)]->=0-[validationError(==22)]-5-|"
                                                                  options:NSLayoutFormatAlignAllTrailing
                                                                  metrics:0
                                                                    views:views]];
