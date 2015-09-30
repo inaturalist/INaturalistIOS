@@ -10,6 +10,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "INaturalistAppDelegate.h"
 #import "List.h"
@@ -161,6 +162,11 @@
     // tiny bit offwhite, so it stands up with or without the gradient mask
     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
     
+    [JDStatusBarNotification setDefaultStyle:^JDStatusBarStyle *(JDStatusBarStyle *style) {
+        style.barColor = [UIColor colorWithHexString:@"#969696"];
+        style.textColor = [UIColor whiteColor];
+        return style;
+    }];
 }
 
 - (void)reconfigureForNewBaseUrl {
