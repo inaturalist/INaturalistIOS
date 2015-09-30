@@ -90,6 +90,10 @@
     [self autouploadPendingContentExcludeInvalids:NO];
 }
 
+- (BOOL)currentUploadWorkContainsObservation:(Observation *)observation {
+    return [self.observationsToUpload containsObject:observation];
+}
+
 #pragma mark - private methods
 
 /*
