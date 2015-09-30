@@ -83,14 +83,14 @@
     [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatTint]];
     
     // existing users see a one-time autoupload notice
-    NSString *alertTitle = NSLocalizedString(@"Introducing Autoupload!", @"title of autoupload introduction alert view");
+    NSString *alertTitle = NSLocalizedString(@"Introducing Auto Upload!", @"title of autoupload introduction alert view");
     
     NSAttributedString *attrTitleText = [[NSAttributedString alloc] initWithString:alertTitle
                                                                         attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                                       NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
                                                                                       }];
 
-    NSString *alertMsg = NSLocalizedString(@"Turn on Autoupload and your observations will be automatically uploaded to iNaturalist (shown every launch for testing)",
+    NSString *alertMsg = NSLocalizedString(@"Turn on Auto Upload and your observations will be automatically uploaded to iNaturalist.",
                                            @"message of autoupload introduction alert view");
     NSAttributedString *attrMsg = [[NSAttributedString alloc] initWithString:alertMsg
                                                                   attributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor] }];
