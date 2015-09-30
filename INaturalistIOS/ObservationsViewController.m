@@ -1088,9 +1088,8 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO
                                                 forKey:kInatAutouploadPrefKey];
         
-        // for testing purposes, show autoupload alert every launch
-        //[[NSUserDefaults standardUserDefaults] setBool:YES
-        //                                        forKey:SeenV262Key];
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV262Key];
         
         [[NSUserDefaults standardUserDefaults] synchronize];
         
