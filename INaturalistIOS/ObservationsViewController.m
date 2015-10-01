@@ -1548,9 +1548,6 @@
     [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
 
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
-    [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
-                                        forState:UIControlStateNormal];
     
     if (uploadManager.isAutouploadEnabled) {
         // start animating the header after 3 seconds
