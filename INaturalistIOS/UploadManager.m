@@ -597,6 +597,10 @@
     return YES;
 }
 
+- (BOOL)isAutouploadEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
+}
+
 - (BOOL)isNetworkAvailableForUpload {
     return [[[RKObjectManager sharedManager] client] isNetworkReachable];
 }

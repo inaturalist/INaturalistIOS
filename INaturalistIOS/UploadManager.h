@@ -22,6 +22,7 @@
 @property (assign, readonly) BOOL isNetworkAvailableForUpload;
 
 @property (assign, readonly) BOOL shouldAutoupload;
+@property (assign, readonly) BOOL isAutouploadEnabled;
 
 @property Observation *currentlyUploadingObservation;
 
