@@ -80,7 +80,9 @@
     self.syncingDeletes = NO;
     self.uploading = NO;
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
-    [self.delegate uploadManager:self cancelledFor:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate uploadManager:self cancelledFor:nil];
+    });
     
     // un-register from doing background work
     [self endBackgroundJob];
@@ -154,16 +156,20 @@
         
         self.currentlyUploadingObservation = nextObservation;
         NSInteger idx = [self indexOfCurrentlyUploadingObservation] + 1;
-        [self.delegate uploadManager:self
-                    uploadStartedFor:nextObservation
-                              number:idx
-                                  of:self.currentUploadSessionTotalObservations];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self
+                        uploadStartedFor:nextObservation
+                                  number:idx
+                                      of:self.currentUploadSessionTotalObservations];
+        });
         [self uploadOneRecordForObservation:nextObservation];
     } else {
         [self stopUploadActivity];
 
         // notify finished with uploading
-        [self.delegate uploadManagerUploadSessionFinished:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManagerUploadSessionFinished:self];
+        });
         
         if (self.shouldAutoupload) {
             // check to see if there's anything else to upload
@@ -187,7 +193,9 @@
     }
 
     if (!observation.needsUpload) {
-        [self.delegate uploadManager:self uploadSuccessFor:observation];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self uploadSuccessFor:observation];
+        });
         self.currentlyUploadingObservation = nil;
         [self.observationsToUpload removeObject:observation];
         [self uploadNextObservation];
@@ -248,7 +256,9 @@
                         [op destroy];
                         
                         [self stopUploadActivity];
-                        [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
+                        });
                         
                         return;
                     }
@@ -264,8 +274,10 @@
                 
                 if (error) {
                     [self stopUploadActivity];
-                    [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
-
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
+                    });
+                    
                     return;
                 }
                 
@@ -306,7 +318,9 @@
         }
     } else {
         // notify finished with this observation
-        [self.delegate uploadManager:self uploadSuccessFor:observation];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self uploadSuccessFor:observation];
+        });
         self.currentlyUploadingObservation = nil;
         [self.observationsToUpload removeObject:observation];
         [self uploadNextObservation];
@@ -325,7 +339,9 @@
     if (self.recordsToDelete.count > 0) {
         // notify starting a new deletion
         DeletedRecord *nextDelete = [self.recordsToDelete firstObject];
-        [self.delegate uploadManager:self deleteStartedFor:nextDelete];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self deleteStartedFor:nextDelete];
+        });
         
         NSString *nextDeletePath = [NSString stringWithFormat:@"/%@/%d",
                                     nextDelete.modelName.underscore.pluralize,
@@ -347,7 +363,9 @@
     } else {
         self.syncingDeletes = NO;
         // notify finished with deletions
-        [self.delegate uploadManagerDeleteSessionFinished:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManagerDeleteSessionFinished:self];
+        });
         
         // start uploads
         [self uploadNextObservation];
@@ -370,14 +388,18 @@
     // check for 401 unauthorized
     if (response.statusCode == 401) {
         [self stopUploadActivity];
-        [self.delegate uploadManagerUploadSessionAuthRequired:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManagerUploadSessionAuthRequired:self];
+        });
         return;
     }
 
     if (request.method == RKRequestMethodDELETE) {
         DeletedRecord *thisDelete = [self.recordsToDelete firstObject];
         // update UI
-        [self.delegate uploadManager:self deleteSuccessFor:thisDelete];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self deleteSuccessFor:thisDelete];
+        });
         // debug log
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", thisDelete]];
         // update local work queue
@@ -423,7 +445,9 @@
         DeletedRecord *failedDelete = [self.recordsToDelete firstObject];
 
         [self stopUploadActivity];
-        [self.delegate uploadManager:self deleteFailedFor:failedDelete error:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self deleteFailedFor:failedDelete error:error];
+        });
         
         return;
     }
@@ -442,7 +466,9 @@
                                                  @"Project validation error. first string is project title, second is the specific error");
         o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, po.project.title, error.localizedDescription];
         
-        [self.delegate uploadManager:self nonFatalErrorForObservation:o];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self nonFatalErrorForObservation:o];
+        });
         
         // continue uploading other observations
         self.currentlyUploadingObservation = nil;
@@ -476,7 +502,9 @@
     Observation *failedObservation = [self.observationsToUpload firstObject];
     
     [self stopUploadActivity];
-    [self.delegate uploadManager:self uploadFailedFor:failedObservation error:error];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate uploadManager:self uploadFailedFor:failedObservation error:error];
+    });
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {
@@ -486,10 +514,14 @@
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {
         [self stopUploadActivity];
-        [self.delegate uploadManager:self uploadFailedFor:object error:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self uploadFailedFor:object error:error];
+        });
     } else {
         if (self.cancelled) {
-            [self.delegate uploadManager:self cancelledFor:object];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self cancelledFor:object];
+            });
         } else {
             Observation *thisObservation = nil;
             if ([object isKindOfClass:[Observation class]]) {
