@@ -1405,8 +1405,8 @@
 
 #pragma mark - Upload Notification Delegate
 
+- (void)uploadManagerUploadSessionAuthRequired:(UploadManager *)uploadManager {
 
-- (void)uploadSessionAuthRequired {
     [self syncStopped];
     
     [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
@@ -1420,7 +1420,7 @@
     [self presentSignupSplashWithReason:reasonMsg];
 }
 
-- (void)uploadSessionFinished {
+- (void)uploadManagerUploadSessionFinished:(UploadManager *)uploadManager {
     // allow any pending upload animations to finish
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // make sure any deleted records get gone
@@ -1440,15 +1440,15 @@
                                       }];
 }
 
-- (void)uploadCancelledFor:(INatModel *)object {
+- (void)uploadManager:(UploadManager *)uploadManager cancelledFor:(INatModel *)object {
     [[Analytics sharedClient] debugLog:@"Upload - Upload Cancelled"];
 
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     [self syncStopped];
 }
 
-- (void)uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", current, total]];
+- (void)uploadManager:(UploadManager *)uploadManager uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
@@ -1462,7 +1462,7 @@
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)uploadSuccessFor:(Observation *)observation {
+- (void)uploadManager:(UploadManager *)uploadManager uploadSuccessFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
 
     [self configureHeaderForLoggedInUser];
@@ -1472,21 +1472,22 @@
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)uploadProgress:(float)progress for:(Observation *)observation {
+
+- (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
 
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)uploadNonFatalErrorForObservation:(Observation *)observation {
+- (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];    
 }
 
-- (void)uploadFailedFor:(INatModel *)object error:(NSError *)error {
+- (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
     if ([object isKindOfClass:ProjectObservation.class]) {
@@ -1541,7 +1542,7 @@
     }
 }
 
-- (void)deleteStartedFor:(DeletedRecord *)deletedRecord {
+- (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
 
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -1552,20 +1553,20 @@
     [self.meHeader startAnimatingUpload];
 }
 
-- (void)deleteSuccessFor:(DeletedRecord *)deletedRecord {
+- (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
 
     [self configureHeaderForLoggedInUser];
     [self updateSyncBadge];
 }
 
-- (void)deleteSessionFinished {
+- (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
 
     [self syncStopped];
 }
 
-- (void)deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+- (void)uploadManager:(UploadManager *)uploadManager deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
 
     [self syncStopped];
