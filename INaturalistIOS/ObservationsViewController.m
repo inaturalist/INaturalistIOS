@@ -904,6 +904,7 @@
                                          value:paragraphStyle
                                          range:NSMakeRange(2, uploadIconString.length - 2)];
 
+                view.iconButton.tintColor = [UIColor whiteColor];
                 [view.iconButton setAttributedTitle:uploadIconString
                                            forState:UIControlStateNormal];
                 
