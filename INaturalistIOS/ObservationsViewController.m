@@ -350,7 +350,6 @@
 {
     [self loadData];
 	[self checkEmpty];
-    [[self tableView] reloadData];
 }
 
 - (void)updateSyncBadge {
@@ -826,44 +825,60 @@
     }
 }
 
+- (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
+    [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+    [view.iconButton setImage:nil forState:UIControlStateNormal];
+    [view.iconButton setTintColor:[UIColor whiteColor]];
+    view.iconButton.backgroundColor = [UIColor inatTint];
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+
+    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
+    [view.iconButton setAttributedTitle:stopIcon.attributedString
+                               forState:UIControlStateNormal];
+    
+    if (uploadManager.isSyncingDeletes) {
+        self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
+    } else {
+        NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
+        NSInteger total = uploadManager.currentUploadSessionTotalObservations;
+        if (total > 1) {
+            NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
+                                                                  @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
+            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
+        } else {
+            NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
+            NSString *speciesName = NSLocalizedString(@"Something...", nil);
+            if (uploadManager.currentlyUploadingObservation.speciesGuess) {
+                speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
+            }
+            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
+        }
+    }
+    
+    [view startAnimatingUpload];
+}
+
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
     NSUInteger needingUploadCount = [[Observation needingUpload] count];
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
-        [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
-        [view.iconButton setImage:nil forState:UIControlStateNormal];
-        [view.iconButton setTintColor:[UIColor whiteColor]];
-        view.iconButton.backgroundColor = [UIColor inatTint];
 
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploadManager = appDelegate.loginController.uploadManager;
         
         if (uploadManager.isUploading) {
-            FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
-            [view.iconButton setAttributedTitle:stopIcon.attributedString
-                                       forState:UIControlStateNormal];
-            
-            if (uploadManager.isSyncingDeletes) {
-                self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
-            } else {
-                NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
-                NSInteger total = uploadManager.currentUploadSessionTotalObservations;
-                if (total > 1) {
-                    NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
-                                                                          @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
-                    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
-                } else {
-                    NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
-                    NSString *speciesName = NSLocalizedString(@"Something...", nil);
-                    if (uploadManager.currentlyUploadingObservation.speciesGuess) {
-                        speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
+            if (uploadManager.isAutouploadEnabled) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (uploadManager.isUploading) {
+                        [self configureHeaderForActiveUploading:view];
                     }
-                    self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
-                }
+                });
+            } else {
+                [self configureHeaderForActiveUploading:view];
             }
-
-            [view startAnimatingUpload];
             
         } else {
             
@@ -1451,12 +1466,19 @@
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
-    [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
-                                        forState:UIControlStateNormal];
-    
-    [self configureHeaderForLoggedInUser];
-    [self.meHeader startAnimatingUpload];
+    if (uploadManager.isAutouploadEnabled) {
+        // if autoupload is on, delay a few seconds before the header animation starts
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self configureHeaderForLoggedInUser];
+            if (uploadManager.isUploading) {
+                [self.meHeader startAnimatingUpload];
+            }
+        });
+    } else {
+        // do the header animation right away
+        [self configureHeaderForLoggedInUser];
+        [self.meHeader startAnimatingUpload];
+    }
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -1549,14 +1571,25 @@
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [self.meHeader.iconButton setAttributedTitle:stopIcon.attributedString
                                         forState:UIControlStateNormal];
-    [self configureHeaderForLoggedInUser];
-    [self.meHeader startAnimatingUpload];
+    
+    if (uploadManager.isAutouploadEnabled) {
+        // start animating the header after 3 seconds
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self configureHeaderForLoggedInUser];
+            if (uploadManager.isUploading) {
+                [self.meHeader startAnimatingUpload];
+            }
+        });
+    } else {
+        // start animating the header right away
+        [self configureHeaderForLoggedInUser];
+        [self.meHeader startAnimatingUpload];
+    }
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
 
-    [self configureHeaderForLoggedInUser];
     [self updateSyncBadge];
 }
 
