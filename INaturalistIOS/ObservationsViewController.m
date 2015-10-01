@@ -335,20 +335,8 @@
     }
 }
 
-- (void)loadData {
-    // perform the iniital local fetch
-    NSError *fetchError;
-    [fetchedResultsController performFetch:&fetchError];
-    if (fetchError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error fetching: %@",
-                                            fetchError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-    }
-}
-
 - (void)reload
 {
-    [self loadData];
 	[self checkEmpty];
 }
 
@@ -543,6 +531,9 @@
     
     // now is a good time to check that we're displaying up to date sync info
     [self updateSyncBadge];
+    
+    // now is also a good time to reload the header
+    [self configureHeaderForLoggedInUser];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
