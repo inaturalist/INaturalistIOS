@@ -16,6 +16,7 @@
 #import "ProjectObservation.h"
 #import "INaturalistAppDelegate.h"
 #import "Project.h"
+#import "LoginController.h"
 
 @interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
@@ -616,6 +617,10 @@
 }
 
 - (BOOL)shouldAutoupload {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loginController.isLoggedIn)
+        return NO;
+    
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
         return NO;
     
