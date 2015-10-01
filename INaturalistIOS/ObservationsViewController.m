@@ -1512,56 +1512,35 @@
 - (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
-    if ([object isKindOfClass:ProjectObservation.class]) {
-        // continue uploading, but mark this observation as needing validation
-        ProjectObservation *po = (ProjectObservation *)object;
-        Observation *o = po.observation;
-        NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@: %@",
-                                                 @"Project validation error. first string is project title, second is the specific error");
-        o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, po.project.title, error.localizedDescription];
-
-    } else if ([object isKindOfClass:ObservationFieldValue.class]) {
-        // continue uploading
-        
-        // HACK: not sure where these observationless OFVs are coming from, so I'm just deleting
-        // them and hoping for the best. I did add some Flurry logging for ofv creation, though.
-        // kueda 20140112
-        ObservationFieldValue *ofv = (ObservationFieldValue *)object;
-        if (!ofv.observation) {
-            NSLog(@"ERROR: deleted mysterious ofv: %@", ofv);
-            [ofv deleteEntity];
+    // stop uploading
+    [self syncStopped];
+    
+    NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
+    NSString *alertMessage;
+    
+    if (error) {
+        if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
+            alertTitle = NSLocalizedString(@"Request timed out",nil);
+            alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
+        } else {
+            alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
         }
     } else {
-        // stop uploading
-        [self syncStopped];
-
-        NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
-        NSString *alertMessage;
-        
-        if (error) {
-            if (error.domain == RKErrorDomain && error.code == RKRequestConnectionTimeoutError) {
-                alertTitle = NSLocalizedString(@"Request timed out",nil);
-                alertMessage = NSLocalizedString(@"This can happen when your Internet connection is slow or intermittent.  Please try again the next time you're on WiFi.",nil);
-            } else {
-                alertMessage = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription];
-            }
-        } else {
-            alertMessage = NSLocalizedString(@"There was an unexpected error.",
-                                             @"Unresolvable and unknown error during observation upload.");
-        }
-        
-        [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
-                         withProperties:@{
-                                          @"Alert": alertMessage,
-                                          }];
-        
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                     message:alertMessage
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        alertMessage = NSLocalizedString(@"There was an unexpected error.",
+                                         @"Unresolvable and unknown error during observation upload.");
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
+                     withProperties:@{
+                                      @"Alert": alertMessage,
+                                      }];
+    
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                 message:alertMessage
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                       otherButtonTitles:nil];
+    [av show];
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {
