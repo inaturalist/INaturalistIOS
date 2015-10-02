@@ -1008,6 +1008,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             if (uploader.shouldNotifyAboutNetworkState) {
                 [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
                                            dismissAfter:4];
+                [uploader notifiedAboutNetworkState];
             }
         }
     }
