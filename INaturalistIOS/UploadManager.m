@@ -17,6 +17,7 @@
 #import "INaturalistAppDelegate.h"
 #import "Project.h"
 #import "LoginController.h"
+#import "NSURL+INaturalist.h"
 
 @interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
@@ -26,6 +27,8 @@
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
 @property UIBackgroundTaskIdentifier bgTask;
+@property RKReachabilityObserver *reachabilityObserver;
+
 @property NSDate *lastNetworkOutageNotificationDate;
 // workaround for restkit bug
 @property NSMutableArray *failedObjectLoaders;
@@ -565,6 +568,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         // monitor reachability to trigger autoupload
+        self.reachabilityObserver = [[RKReachabilityObserver alloc] initWithHost:[[NSURL inat_baseURL] absoluteString]];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
                                                      name:RKReachabilityDidChangeNotification
@@ -584,8 +588,10 @@
 #pragma mark - Reachability Updates
 
 - (void)reachabilityChanged:(NSNotification *)note {
-    if (self.shouldAutoupload) {
-        [self autouploadPendingContent];
+    if ([note.object isEqual:self.reachabilityObserver]) {
+        if (self.shouldAutoupload) {
+            [self autouploadPendingContent];
+        }
     }
 }
 
@@ -639,7 +645,7 @@
 }
 
 - (BOOL)isNetworkAvailableForUpload {
-    return [[[RKObjectManager sharedManager] client] isNetworkReachable];
+    return [self.reachabilityObserver isNetworkReachable];
 }
 
 - (BOOL)shouldNotifyAboutNetworkState {
