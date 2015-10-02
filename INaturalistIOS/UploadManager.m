@@ -568,7 +568,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         // monitor reachability to trigger autoupload
-        self.reachabilityObserver = [[RKReachabilityObserver alloc] initWithHost:[[NSURL inat_baseURL] absoluteString]];
+        self.reachabilityObserver = [[RKReachabilityObserver alloc] initWithHost:[[NSURL inat_baseURL] host]];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
                                                      name:RKReachabilityDidChangeNotification
