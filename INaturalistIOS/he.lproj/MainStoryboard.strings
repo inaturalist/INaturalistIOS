@@ -98,7 +98,7 @@
 "Gq1-rm-ccJ.text" = "Unknown";
 
 /* Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS"; */
-"H2L-mX-7uS.text" = "Subtitle";
+"H2L-mX-7uS.text" = "תת כותרת";
 
 /* Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB"; */
 "HB8-Oo-jRB.title" = "סגור";
