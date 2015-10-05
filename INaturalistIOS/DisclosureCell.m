@@ -81,6 +81,8 @@
 }
 
 - (void)updateConstraints {
+    // TODO: this is slow and unwieldy
+    
     if (self.cellConstraints && self.cellConstraints.count > 0) {
         [self removeConstraints:self.cellConstraints];
     }
