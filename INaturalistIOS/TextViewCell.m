@@ -13,8 +13,10 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.textView = ({
-            UITextView *tv = [[UITextView alloc] initWithFrame:self.bounds];
+            UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(10, 5, self.bounds.size.width - 20, self.bounds.size.height -10)];
             tv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            tv.font = [UIFont systemFontOfSize:13];
             
             tv;
         });
