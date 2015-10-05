@@ -14,6 +14,7 @@
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ConfirmObservationViewController.h"
 #import "Observation.h"
@@ -33,6 +34,7 @@
 #import "ObsCameraOverlay.h"
 #import "Observation+AddAssets.h"
 #import "ConfirmPhotoViewController.h"
+#import "FAKINaturalist.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -451,8 +453,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)captiveChanged:(UISwitch *)switcher {
-    // set observation captive - not in the local data model yet
-
+    self.observation.captive = [NSNumber numberWithBool:switcher.isOn];
 }
 
 #pragma mark - Project Chooser
@@ -777,16 +778,19 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)photoCellInTableView:(UITableView *)tableView {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
-    [[cell viewWithTag:0x999] removeFromSuperview];
+    PhotoScrollView *photoScrollView;
+    if (![cell viewWithTag:0x999]) {
+        photoScrollView = [[PhotoScrollView alloc] initWithFrame:cell.contentView.bounds];
+        photoScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        photoScrollView.tag = 0x999;
+        
+        photoScrollView.delegate = self;
+        
+        [cell.contentView addSubview:photoScrollView];
+    }
     
-    PhotoScrollView *photoScrollView = [[PhotoScrollView alloc] initWithFrame:cell.contentView.bounds];
-    photoScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-    photoScrollView.tag = 0x999;
-    
-    photoScrollView.delegate = self;
     photoScrollView.photos = self.observation.sortedObservationPhotos;
     
-    [cell.contentView addSubview:photoScrollView];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     return cell;
@@ -798,7 +802,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     Taxon *taxon = self.observation.taxon;
     if (taxon) {
         cell.titleLabel.text = taxon.defaultName;
-        if (taxon.isIconic) {
+        if ([taxon.isIconic boolValue]) {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
@@ -807,7 +811,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:nil];
         }
     } else {
-        cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:nil];
+        FAKIcon *question = [FAKINaturalist unknownSpeciesIconWithSize:44];
+        
+        [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+        cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
         cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
     }
     
@@ -820,9 +827,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = @"Help Me ID this Species";
-    FAKIcon *bouy = [FAKIonIcons helpBuoyIconWithSize:25];
-    [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *bouy = [FAKINaturalist lifebuoyIconWithSize:44];
+    [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -855,9 +862,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self.observation observedOnPrettyString];
-    FAKIcon *calendar = [FAKFontAwesome calendarIconWithSize:24];
-    [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *calendar = [FAKIonIcons iosCalendarOutlineIconWithSize:44];
+    [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -894,9 +901,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         cell.titleLabel.text = NSLocalizedString(@"No location", @"place guess when we have no location information");
     }
         
-    FAKIcon *pin = [FAKIonIcons iosLocationOutlineIconWithSize:24];
-    [pin addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [pin imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *pin = [FAKIonIcons iosLocationOutlineIconWithSize:44];
+    [pin addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [pin imageWithSize:CGSizeMake(44, 44)];
     
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
@@ -910,9 +917,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     cell.titleLabel.text = NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
     cell.secondaryLabel.text = self.observation.presentableGeoprivacy;
     
-    FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:24];
-    [globe addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [globe imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:44];
+    [globe addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [globe imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -924,9 +931,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     cell.titleLabel.text = NSLocalizedString(@"Is it captive or cultivated?", @"Captive / cultivated button title.");
     
-    FAKIcon *calendar = [FAKIonIcons iosCalendarOutlineIconWithSize:24];
-    [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *cage = [FAKINaturalist captiveIconWithSize:44];
+    [cage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [cage imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -943,9 +950,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = NSLocalizedString(@"Add to a Project", @"add to a project button title.");
-    FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:24];
-    [project addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-    cell.cellImageView.image = [project imageWithSize:CGSizeMake(30, 30)];
+    FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
+    [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
