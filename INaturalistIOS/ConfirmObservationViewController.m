@@ -153,7 +153,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.inatDescription = textView.text;
     
     if (textView.text.length == 0) {
-        textView.textColor = [UIColor grayColor];
+        textView.textColor = [UIColor colorWithHexString:@"#AAAAAA"];
         textView.text = self.notesPlaceholder;
     }
 }
