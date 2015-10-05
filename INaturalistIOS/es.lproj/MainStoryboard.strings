@@ -11,7 +11,7 @@
 "thU-yQ-HUV.text" = "Clasificar nuevas observaciones";
 
 /* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
-"g3B-dy-Lka.text" = "iNaturalist Network";
+"g3B-dy-Lka.text" = "Red de iNaturalist";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Guías";
@@ -41,7 +41,7 @@
 "6UX-BL-9DW.title" = "Proyectos";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
-"nla-WE-iqA.text" = "Username";
+"nla-WE-iqA.text" = "Usuario";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Tu nombre de usuario Nat";
@@ -299,7 +299,7 @@
 "pL9-Nd-0JB.headerTitle" = "Ayuda";
 
 /* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
-"sxb-6N-VGO.headerTitle" = "About";
+"sxb-6N-VGO.headerTitle" = "Acerca de";
 
 /* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
 "zPB-Sx-9Uh.text" = "Agradecimientos";

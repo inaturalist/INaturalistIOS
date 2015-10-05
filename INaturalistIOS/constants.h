@@ -18,6 +18,8 @@
 #define kINatAutocompleteNamesPrefKey @"INatAutocompleteNamesPrefKey"
 #define kInatCategorizeNewObsPrefKey @"INatCategorizeNewObsPrefKey"
 #define kInatCustomBaseURLStringKey @"InatCustomBaseURLStringKey"
+#define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
+
 
 #ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"

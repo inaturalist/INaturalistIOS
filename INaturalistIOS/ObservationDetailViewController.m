@@ -16,6 +16,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -43,6 +44,11 @@
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "UploadManager.h"
+#import "DeletedRecord.h"
+#import "ObservationValidationErrorView.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -472,7 +478,15 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
+    
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    }
+    
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
         [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];
@@ -574,7 +588,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (!self.observation.isDeleted && !self.didClickCancel) {
-        [self save];
+       // [self save];
     }
     [self keyboardDone];
     [self stopUpdatingLocation];
@@ -883,9 +897,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (buttonIndex == 0) {
         // no point in querying location anymore
         [self.locationManager stopUpdatingLocation];
-
+        
         [self.observation destroy];
         self.observation = nil;
+        
+        // trigger autoupload
+        [self triggerAutoUpload];
+
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
@@ -975,6 +994,22 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         } else {
             // unanticpated exception
             @throw(exception);
+        }
+    }
+}
+
+- (void)triggerAutoUpload {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if ([uploader shouldAutoupload]) {
+        if (uploader.isNetworkAvailableForUpload) {
+            [uploader autouploadPendingContent];
+        } else {
+            if (uploader.shouldNotifyAboutNetworkState) {
+                [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                           dismissAfter:4];
+                [uploader notifiedAboutNetworkState];
+            }
         }
     }
 }
@@ -1614,6 +1649,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return;
     }
     [self save];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }
@@ -1715,7 +1751,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (changes.count > 0) {
         self.observation.localUpdatedAt = now;
     }
-	[self.observation save];
+    
+    [self.observation save];
+    [self triggerAutoUpload];
 }
 
 - (IBAction)clickedCancel:(id)sender {

@@ -10,7 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <HexColors/HexColor.h>
+#import <HexColors/HexColors.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "CategorizeViewController.h"

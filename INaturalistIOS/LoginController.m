@@ -292,6 +292,8 @@ NSInteger INatMinPasswordLength = 6;
                                   user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: nil;
                                   user.siteId = [parsedData objectForKey:@"site_id"] ?: nil;
                                   
+                                  [[Analytics sharedClient] registerUserWithIdentifier:user.recordID.stringValue];
+                                  
                                   NSError *saveError = nil;
                                   [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                   if (saveError) {
@@ -486,6 +488,7 @@ NSInteger INatMinPasswordLength = 6;
         return;
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Re-fetch Taxa after login"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         

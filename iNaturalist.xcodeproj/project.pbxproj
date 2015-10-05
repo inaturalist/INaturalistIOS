@@ -103,9 +103,14 @@
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
 		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
-		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
+		897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */; };
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
+		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
+		FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */; };
+		FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */; };
+		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
+		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
@@ -168,6 +173,7 @@
 		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
 		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
+		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
@@ -389,14 +395,24 @@
 		890DE36B1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		890DE36C1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
 		893FE7171B525BFD00BC7CC4 /* config.h.example */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.h.example; sourceTree = SOURCE_ROOT; };
-		897569FD1B4557B500F0BFAD /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
-		897569FE1B4557B500F0BFAD /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
+		897569FD1B4557B500F0BFAD /* ObservationViewNormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewNormalCell.h; sourceTree = "<group>"; };
+		897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewNormalCell.m; sourceTree = "<group>"; };
 		899A00D21B53AADD0079162F /* ProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTableViewCell.h; sourceTree = "<group>"; };
 		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
 		9538BDDEB9B56A1D6B95F692 /* libPods-iNaturalist Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
+		FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationValidationErrorView.h; sourceTree = "<group>"; };
+		FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationValidationErrorView.m; sourceTree = "<group>"; };
+		FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewUploadingCell.h; sourceTree = "<group>"; };
+		FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewUploadingCell.m; sourceTree = "<group>"; };
+		FA0F1AFC1BBB411300533ED5 /* ObservationViewWaitingUploadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewWaitingUploadCell.h; sourceTree = "<group>"; };
+		FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewWaitingUploadCell.m; sourceTree = "<group>"; };
+		FA0F1AFF1BBB412C00533ED5 /* ObservationViewErrorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewErrorCell.h; sourceTree = "<group>"; };
+		FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewErrorCell.m; sourceTree = "<group>"; };
+		FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
+		FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
 		FA1B37BA1AD88BBC002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BB1AD88BCF002A00A5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BC1AD88BE2002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -406,6 +422,7 @@
 		FA1B37C21AD88EDC002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37C41AD88EED002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA1B37C51AD88EF3002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA3D905C1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA3D905D1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA3D90721A93FCF100BAA0EC /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -534,6 +551,8 @@
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
 		FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChiclet.h; sourceTree = "<group>"; };
 		FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryChiclet.m; sourceTree = "<group>"; };
+		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
+		FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+IOS9_Autorotate.m"; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
@@ -895,8 +914,16 @@
 				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
 				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
 				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
-				897569FD1B4557B500F0BFAD /* ObservationViewCell.h */,
-				897569FE1B4557B500F0BFAD /* ObservationViewCell.m */,
+				FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */,
+				FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */,
+				897569FD1B4557B500F0BFAD /* ObservationViewNormalCell.h */,
+				897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */,
+				FA0F1AFF1BBB412C00533ED5 /* ObservationViewErrorCell.h */,
+				FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */,
+				FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */,
+				FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */,
+				FA0F1AFC1BBB411300533ED5 /* ObservationViewWaitingUploadCell.h */,
+				FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
 				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
@@ -907,6 +934,8 @@
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 				FAFAF7031BA0EB1900CCADC2 /* PhotoScrollView.h */,
 				FAFAF7041BA0EB1900CCADC2 /* PhotoScrollView.m */,
+				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
+				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -960,6 +989,8 @@
 				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
 				1997410F15194E89006FBEA0 /* UploadManager.h */,
 				1997411015194E89006FBEA0 /* UploadManager.m */,
+				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
+				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1457,6 +1488,7 @@
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */,
 				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
 				FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
@@ -1496,6 +1528,7 @@
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
+				FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */,
 				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
@@ -1518,6 +1551,7 @@
 				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
+				FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
@@ -1540,7 +1574,7 @@
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
-				897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */,
+				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
 				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
 				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
 				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
@@ -1572,6 +1606,7 @@
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
+				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
@@ -1583,10 +1618,12 @@
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
+				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
 				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
+				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1711,6 +1748,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1754,6 +1792,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1905,6 +1944,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */,
 				FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */,
 				FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */,
 				FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */,
@@ -1914,7 +1954,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */;
+			currentVersion = FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

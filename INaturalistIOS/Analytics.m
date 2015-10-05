@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FlurrySDK/Flurry.h>
+#import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -66,18 +66,10 @@
 #ifdef INatFlurryKey
     [Flurry logEvent:name timed:YES];
 #endif
-    
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:nil]; // no timed events in Crashlytics
-#endif
 }
 - (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
 #ifdef INatFlurryKey
     [Flurry logEvent:name withParameters:properties timed:YES];
-#endif
-    
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:properties];
 #endif
 }
 
@@ -95,6 +87,12 @@
 - (void)debugLog:(NSString *)logMessage {
 #ifdef INatCrashlyticsKey
     CLS_LOG(@"%@", logMessage);
+#endif
+}
+
+- (void)registerUserWithIdentifier:(NSString *)userIdentifier {
+#ifdef INatCrashlyticsKey
+    [[Crashlytics sharedInstance] setUserIdentifier:userIdentifier];
 #endif
 }
 
@@ -166,6 +164,7 @@ NSString *kAnalyticsEventCreateObservation =                    @"Create Observa
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
 NSString *kAnalyticsEventSyncStopped =                          @"Sync Stopped";
 NSString *kAnalyticsEventSyncFailed =                           @"Sync Failed";
+NSString *kAnalyticsEventSyncOneRecord =                        @"Sync One Record";
 NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refresh Observations";
 
 // login

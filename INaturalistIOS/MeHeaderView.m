@@ -132,20 +132,20 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[uploadingSpinner]-8-[projects(==30)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]-10-[projects(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[uploadingSpinner]-8-[guides(==30)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]-10-[guides(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[projects(==30)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]-10-[projects(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[obsCount]-8-[guides(==30)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]-10-[guides(==30)]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];

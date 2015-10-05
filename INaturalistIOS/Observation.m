@@ -56,6 +56,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic identifications;
 @dynamic sortable;
 @dynamic uuid;
+@dynamic validationErrorMsg;
 
 + (NSArray *)all
 {
@@ -174,7 +175,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super awakeFromInsert];
     
     // unsafe to fetch in -awakeFromInsert
-    [self performSelector:@selector(computeLocalObservedOn)
+    [self performSelector:@selector(computeLocalObservedOnAndSortable)
                withObject:nil
                afterDelay:0];
 }
@@ -183,14 +184,17 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super awakeFromFetch];
     
     // safe to use getters & setters in -awakeFromFetch
-    [self computeLocalObservedOn];
+    [self computeLocalObservedOnAndSortable];
 }
 
-- (void)computeLocalObservedOn {
+- (void)computeLocalObservedOnAndSortable {
     if (!self.localObservedOn) {
         if (self.timeObservedAt) self.localObservedOn = self.timeObservedAt;
         else if (self.observedOn) self.localObservedOn = self.observedOn;
     }
+    
+    NSDate *sortableDate = self.localCreatedAt ? self.localCreatedAt : self.createdAt;
+    self.sortable = [NSString stringWithFormat:@"%f", sortableDate.timeIntervalSinceReferenceDate];
 }
 
 - (NSArray *)sortedObservationPhotos
@@ -347,9 +351,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)willSave
 {
     [super willSave];
-    NSDate *sortableDate = self.localCreatedAt ? self.localCreatedAt : self.createdAt;
-    NSString *sortable = [NSString stringWithFormat:@"%f", sortableDate.timeIntervalSinceReferenceDate];
-    [self setPrimitiveValue:sortable forKey:@"sortable"];
     
     if (!self.uuid && !self.recordID) {
         [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
@@ -416,7 +417,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return NO;
 }
 
--(NSArray *)childrenNeedingUpload {
+- (NSArray *)childrenNeedingUpload {
     NSMutableArray *recordsToUpload = [NSMutableArray array];
     
     for (ObservationPhoto *op in self.observationPhotos) {

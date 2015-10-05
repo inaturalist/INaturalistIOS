@@ -15,6 +15,7 @@
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import "GPPSignIn.h"
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -35,6 +36,7 @@
 #import "PartnerController.h"
 #import "Partner.h"
 #import "LoginController.h"
+#import "UploadManager.h"
 
 static const int CreditsSection = 3;
 
@@ -45,14 +47,21 @@ static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
 static const int VersionCellTag = 5;
 
-static const int AutocompleteNamesSwitchTag = 10;
-static const int CategorizeNewObsSwitchTag = 11;
-static const int AutocompleteNamesLabelTag = 12;
-static const int CategorizeNewObsLabelTag = 13;
 static const int NetworkDetailLabelTag = 14;
 static const int NetworkTextLabelTag = 15;
 static const int UsernameDetailLabelTag = 16;
 static const int UsernameTextLabelTag = 17;
+static const int AutomaticallyUploadLabelTag = 18;
+
+// labels for settings switcher rows are 50 + row index
+static const int AutocompleteNamesLabelTag = 50;
+static const int CategorizeNewObsLabelTag = 51;
+static const int AutouploadLabelTag = 52;
+
+// setting switchers are 100 + row index
+static const int AutocompleteNamesSwitchTag = 100;
+static const int CategorizeNewObsSwitchTag = 101;
+static const int AutouploadSwitchTag = 102;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -122,7 +131,7 @@ static const int UsernameTextLabelTag = 17;
     [Observation deleteAll];
 	[ObservationPhoto deleteAll];
     [ProjectUser deleteAll];
-    [ProjectObservation deleteAll]; 
+    [ProjectObservation deleteAll];
     for (DeletedRecord *dr in [DeletedRecord allObjects]) {
          [dr deleteEntity];
     }
@@ -142,8 +151,6 @@ static const int UsernameTextLabelTag = 17;
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults removeObjectForKey:kINatAutocompleteNamesPrefKey];
-    [defaults removeObjectForKey:kInatCategorizeNewObsPrefKey];
     [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -318,6 +325,8 @@ static const int UsernameTextLabelTag = 17;
         key = kINatAutocompleteNamesPrefKey;
     else if (switcher.tag == CategorizeNewObsSwitchTag)
         key = kInatCategorizeNewObsPrefKey;
+    else if (switcher.tag == AutouploadSwitchTag)
+        key = kInatAutouploadPrefKey;
     
     if (key) {
         NSString *analyticsEvent;
@@ -333,6 +342,29 @@ static const int UsernameTextLabelTag = 17;
         
         [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        if ([key isEqualToString:kInatAutouploadPrefKey]) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+            if (switcher.isOn) {
+                // start autouploading right away
+                if ([uploadManager shouldAutoupload]) {
+                    if (uploadManager.isNetworkAvailableForUpload) {
+                        [uploadManager autouploadPendingContent];
+                    } else {
+                        if (uploadManager.shouldNotifyAboutNetworkState) {
+                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                       dismissAfter:4];
+                        }
+                    }
+                }
+            } else {
+                // cancel autoupload if it's currently running
+                if (uploadManager.isUploading) {
+                    [uploadManager cancelSyncsAndUploads];
+                }
+            }
+        }
     }
 }
 
@@ -354,24 +386,28 @@ static const int UsernameTextLabelTag = 17;
     else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
 
-        if (indexPath.item == 0 || indexPath.item == 1) {
+        if (indexPath.item < 3) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
-            if(autoNameLabel){
+            if (autoNameLabel) {
                 autoNameLabel.textAlignment = NSTextAlignmentNatural;
             }
             UILabel *categoriesLabel = (UILabel *)[cell.contentView viewWithTag:CategorizeNewObsLabelTag];
-            if(categoriesLabel){
+            if (categoriesLabel) {
                 categoriesLabel.textAlignment = NSTextAlignmentNatural;
+            }
+            UILabel *autouploadLabel = (UILabel *)[cell.contentView viewWithTag:AutouploadLabelTag];
+            if (autouploadLabel) {
+                autouploadLabel.textAlignment = NSTextAlignmentNatural;
             }
             
             UISwitch *switcher;
-            if (![cell viewWithTag:10 + indexPath.item]) {
+            if (![cell viewWithTag:100 + indexPath.item]) {
                 
                 switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
                 switcher.translatesAutoresizingMaskIntoConstraints = NO;
-                switcher.tag = 10 + indexPath.item;
+                switcher.tag = 100 + indexPath.item;
                 switcher.enabled = YES;
                 [switcher addTarget:self
                              action:@selector(settingSwitched:)
@@ -391,14 +427,19 @@ static const int UsernameTextLabelTag = 17;
                                                                 multiplier:1.0f
                                                                   constant:0.0f]];
             } else {
-                switcher = (UISwitch *)[cell viewWithTag:10 + indexPath.item];
+                switcher = (UISwitch *)[cell viewWithTag:100 + indexPath.item];
             }
             
             if (switcher.tag == AutocompleteNamesSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
             else if (switcher.tag == CategorizeNewObsSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
+            else if (switcher.tag == AutouploadSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
+
         } else {
+            // iNaturalist Network setting
+            
             // main text in black
             cell.textLabel.enabled = YES;
             
@@ -460,7 +501,7 @@ static const int UsernameTextLabelTag = 17;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1) {
-        if (indexPath.item == 2) {
+        if (indexPath.item == 3) {
             // so the user can select again
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
@@ -493,9 +534,13 @@ static const int UsernameTextLabelTag = 17;
         } else if (indexPath.item == 1) {
             // skip categorization
             tooltipText = NSLocalizedString(@"Enable to make a quick, initial identification from high-level taxa when making a new observation.", @"tooltip text for skip categorization option.");
+        } else if (indexPath.item == 2) {
+            // automatically upload
+            tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
+                                            @"tooltip text for automatically upload option.");
         }
         
-        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:10+indexPath.item]
+        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
                                                     hostView:tableView
                                                  tooltipText:tooltipText
                                               arrowDirection:JDFTooltipViewArrowDirectionDown
