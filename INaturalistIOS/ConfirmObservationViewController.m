@@ -523,9 +523,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (indexPath.section == ConfirmObsSectionPhotos) {
         return 100;
     } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 0) {
-        return 88;
-    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 2) {
         return 66;
+    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 2) {
+        if (self.observation.latitude && self.observation.longitude) {
+            return 66;
+        } else {
+            return 44;
+        }
     } else {
         return 44;
     }
