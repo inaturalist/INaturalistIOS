@@ -57,6 +57,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic sortable;
 @dynamic uuid;
 @dynamic validationErrorMsg;
+@dynamic captive;
 
 + (NSArray *)all
 {
@@ -118,6 +119,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"id_please", @"idPlease",
          @"geoprivacy", @"geoprivacy",
          @"user_id", @"userID",
+         @"captive", @"captive",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
@@ -166,6 +168,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"idPlease", @"observation[id_please]",
          @"geoprivacy", @"observation[geoprivacy]",
          @"uuid", @"observation[uuid]",
+         @"captive", @"observation[captive_flag]",
          nil];
     }
     return defaultSerializationMapping;
