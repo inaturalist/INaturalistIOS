@@ -2,11 +2,26 @@
 
 @implementation FAKINaturalist
 
-+ (instancetype)inatWordmarkIconWithSize:(CGFloat)size { return [self iconWithCode:@"a" size:size]; }
+// Generated Code
++ (instancetype)inatWordmarkIconWithSize:(CGFloat)size { return [self iconWithCode:@"e" size:size]; }
++ (instancetype)arrowDownIconWithSize:(CGFloat)size { return [self iconWithCode:@"a" size:size]; }
++ (instancetype)arrowLeftIconWithSize:(CGFloat)size { return [self iconWithCode:@"b" size:size]; }
++ (instancetype)arrowRightIconWithSize:(CGFloat)size { return [self iconWithCode:@"c" size:size]; }
++ (instancetype)arrowUpIconWithSize:(CGFloat)size { return [self iconWithCode:@"d" size:size]; }
++ (instancetype)captiveIconWithSize:(CGFloat)size { return [self iconWithCode:@"f" size:size]; }
++ (instancetype)lifebuoyIconWithSize:(CGFloat)size { return [self iconWithCode:@"g" size:size]; }
++ (instancetype)unknownSpeciesIconWithSize:(CGFloat)size { return [self iconWithCode:@"h" size:size]; }
 
 + (NSDictionary *)allIcons {
     return @{
-             @"a" : @"inatWordmark",
+             @"e" : @"inatWordmark",
+             @"a" : @"arrowDown",
+             @"b" : @"arrowLeft",
+             @"c" : @"arrowRight",
+             @"d" : @"arrowUp",
+             @"f" : @"captive",
+             @"g" : @"lifebuoy",
+             @"h" : @"unknownSpecies",
              
              };
 }
