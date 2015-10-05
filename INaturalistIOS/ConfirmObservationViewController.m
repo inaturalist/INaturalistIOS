@@ -877,9 +877,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (UITableViewCell *)locationCellInTableView:(UITableView *)tableView {
-    SubtitleDisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
     
+    DisclosureCell *cell;
+
     if (self.observation.latitude && self.observation.longitude) {
+        
+        SubtitleDisclosureCell *subtitleCell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
+        cell = subtitleCell;
         
         NSString *positionalAccuracy = nil;
         if (self.observation.positionalAccuracy) {
@@ -891,21 +895,23 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                     self.observation.latitude.floatValue,
                                     self.observation.longitude.floatValue,
                                     positionalAccuracy];
-        cell.subtitleLabel.text = subtitleString;
+        subtitleCell.subtitleLabel.text = subtitleString;
         
         if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
-            cell.titleLabel.text = self.observation.placeGuess;
+            subtitleCell.titleLabel.text = self.observation.placeGuess;
         } else {
-            cell.titleLabel.text = NSLocalizedString(@"Location not geocoded", @"place guess when we have lat/lng but it's not geocoded");
+            subtitleCell.titleLabel.text = NSLocalizedString(@"Location not geocoded", @"place guess when we have lat/lng but it's not geocoded");
             
             // try again
             [self reverseGeocodeCoordinatesForObservation:self.observation];
         }
         
+        
     } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
         cell.titleLabel.text = NSLocalizedString(@"No location", @"place guess when we have no location information");
     }
-        
+    
     FAKIcon *pin = [FAKIonIcons iosLocationOutlineIconWithSize:44];
     [pin addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [pin imageWithSize:CGSizeMake(44, 44)];
