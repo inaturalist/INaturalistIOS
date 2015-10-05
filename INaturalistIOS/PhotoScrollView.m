@@ -93,7 +93,7 @@
         if (i == 1) {
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + 70, 70, 20)];
             label.text = @"Default";
-            label.font = [UIFont systemFontOfSize:11.0f];
+            label.font = [UIFont systemFontOfSize:13];
             label.textColor = [UIColor grayColor];
             [view addSubview:label];
         } else {
@@ -102,7 +102,7 @@
             [button setTitle:@"Set Default" forState:UIControlStateNormal];
             button.tintColor = [UIColor grayColor];
             button.titleLabel.textColor = [UIColor grayColor];
-            button.titleLabel.font = [UIFont systemFontOfSize:11.0f];
+            button.titleLabel.font = [UIFont systemFontOfSize:13];
             button.tag = i-1;
             [button addTarget:self action:@selector(setDefault:) forControlEvents:UIControlEventTouchUpInside];
             [view addSubview:button];
