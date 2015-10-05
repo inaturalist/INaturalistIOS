@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                       metrics:0
                                                                         views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-[save(==44)]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==44)]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
