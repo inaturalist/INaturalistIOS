@@ -787,6 +787,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         photoScrollView.delegate = self;
         
         [cell.contentView addSubview:photoScrollView];
+    } else {
+        photoScrollView = (PhotoScrollView *)[cell viewWithTag:0x999];
     }
     
     photoScrollView.photos = self.observation.sortedObservationPhotos;
