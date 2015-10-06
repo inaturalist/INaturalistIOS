@@ -50,7 +50,6 @@
                             withObject:self 
                             withObject:self.chosenProjects];
     }
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
