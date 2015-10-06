@@ -67,12 +67,28 @@
     
     [self.scrollView addSubview:self.addButton];
     
+    static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
+    if (!defaultPhotoStr) {
+        FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:13];
+        NSMutableAttributedString *defaultPhotoMutable = [[NSMutableAttributedString alloc] initWithAttributedString:check.attributedString];
+        [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+        [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@"Default"
+                                                                                    attributes:@{
+                                                                                                 NSFontAttributeName: [UIFont systemFontOfSize:11],
+                                                                                                 }]];
+        defaultPhotoStr = [[NSAttributedString alloc] initWithAttributedString:defaultPhotoMutable];
+    }
+    if (!nonDefaultPhotoStr) {
+        FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:13];
+        nonDefaultPhotoStr = [circle attributedString];
+    }
+    
+
     for (int i = 1; i < numCells; i++) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i * 80, 0, 80, self.bounds.size.height)];
 
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, self.bounds.size.height - 30)];
-        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, view.bounds.size.width - 20, view.bounds.size.width - 20)];
         iv.contentMode = UIViewContentModeScaleAspectFill;
         iv.clipsToBounds = YES;
         ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[i-1];
@@ -84,25 +100,28 @@
         UIButton *delete = [UIButton buttonWithType:UIButtonTypeSystem];
         delete.tag = i-1;
         [delete addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
-        delete.frame = CGRectMake(80-24-5, 5, 24, 24);
-        [delete setTitle:@"X" forState:UIControlStateNormal];
-        delete.tintColor = [UIColor blackColor];
+        delete.frame = CGRectMake(80-24-5, 10, 16, 16);
+        delete.center = CGPointMake(iv.frame.origin.x + iv.bounds.size.width, iv.frame.origin.y);
+        delete.layer.cornerRadius = 8;
+        FAKIcon *close = [FAKIonIcons closeIconWithSize:9];
+        [delete setAttributedTitle:close.attributedString forState:UIControlStateNormal];
+        delete.tintColor = [UIColor whiteColor];
         delete.backgroundColor = [UIColor grayColor];
         [view addSubview:delete];
         
         if (i == 1) {
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + 70, 70, 20)];
-            label.text = @"Default";
-            label.font = [UIFont systemFontOfSize:13];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 + view.bounds.size.width - 20, view.bounds.size.width - 20, 20)];
+            label.attributedText = defaultPhotoStr;
             label.textColor = [UIColor grayColor];
             [view addSubview:label];
         } else {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-            button.frame = CGRectMake(5, 5 + 70, 70, 20);
-            [button setTitle:@"Set Default" forState:UIControlStateNormal];
+            button.frame = CGRectMake(10, 10 + view.bounds.size.width - 20, view.bounds.size.width - 20, 20);
+            [button setAttributedTitle:nonDefaultPhotoStr forState:UIControlStateNormal];
             button.tintColor = [UIColor grayColor];
             button.titleLabel.textColor = [UIColor grayColor];
-            button.titleLabel.font = [UIFont systemFontOfSize:13];
+            button.titleLabel.textAlignment = NSTextAlignmentLeft;
+            button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             button.tag = i-1;
             [button addTarget:self action:@selector(setDefault:) forControlEvents:UIControlEventTouchUpInside];
             [view addSubview:button];
