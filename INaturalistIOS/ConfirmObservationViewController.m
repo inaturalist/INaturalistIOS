@@ -40,7 +40,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
     ConfirmObsSectionIdentify,
     ConfirmObsSectionNotes,
-    ConfirmObsSectionCaptive,
     ConfirmObsSectionProjectDetails,
     ConfirmObsSectionProjects
 };
@@ -515,7 +514,30 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - table view delegate / datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 6;
+    return 5;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch (section) {
+        case ConfirmObsSectionPhotos:
+            return 1;
+            break;
+        case ConfirmObsSectionIdentify:
+            return 2;
+            break;
+        case ConfirmObsSectionNotes:
+            return 5;
+            break;
+        case ConfirmObsSectionProjectDetails:
+            return self.observation.observationFieldValues.count;
+            break;
+        case ConfirmObsSectionProjects:
+            return 1;
+            break;
+        default:
+            return 0;
+            break;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -545,40 +567,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         case ConfirmObsSectionNotes:
             return 2;
             break;
-        case ConfirmObsSectionCaptive:
-            return 2;
-            break;
         case ConfirmObsSectionProjectDetails:
             return 34;
             break;
         case ConfirmObsSectionProjects:
             return 34;
-            break;
-        default:
-            return 0;
-            break;
-    }
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case ConfirmObsSectionPhotos:
-            return 1;
-            break;
-        case ConfirmObsSectionIdentify:
-            return 2;
-            break;
-        case ConfirmObsSectionNotes:
-            return 4;
-            break;
-        case ConfirmObsSectionCaptive:
-            return 1;
-            break;
-        case ConfirmObsSectionProjectDetails:
-            return 0;
-            break;
-        case ConfirmObsSectionProjects:
-            return 1;
             break;
         default:
             return 0;
@@ -616,15 +609,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return [self locationCellInTableView:tableView];
             } else if (indexPath.item == 3) {
                 return [self geoPrivacyCellInTableView:tableView];
+            } else if (indexPath.item == 4) {
+                return [self captiveCellInTableView:tableView];
             } else {
                 return [self illegalCellForIndexPath:indexPath];
             }
             break;
-        case ConfirmObsSectionCaptive:
-            return [self captiveCellInTableView:tableView];
-            break;
         case ConfirmObsSectionProjectDetails:
-            return [self illegalCellForIndexPath:indexPath];
+            return [self ofvCellForTableView:tableView indexPath:indexPath];
             break;
         case ConfirmObsSectionProjects:
             return [self addProjectCellInTableView:tableView];
@@ -726,9 +718,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // do nothing
             }
             break;
-        case ConfirmObsSectionCaptive:
-            // do nothing
-            break;
         case ConfirmObsSectionProjectDetails:
             // do nothing
             break;
@@ -759,9 +748,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return NSLocalizedString(@"What did you see?", @"title for identification section of new obs confirm screen.");
             break;
         case ConfirmObsSectionNotes:
-            return nil;
-            break;
-        case ConfirmObsSectionCaptive:
             return nil;
             break;
         case ConfirmObsSectionProjectDetails:
