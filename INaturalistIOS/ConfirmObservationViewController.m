@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     newDefault.position = @(0);
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
-                          withRowAnimation:UITableViewRowAnimationNone];
+                          withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)photoScrollView:(PhotoScrollView *)psv deletedIndex:(NSInteger)idx {
@@ -191,7 +191,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                          withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)photoScrollViewAddPressed:(PhotoScrollView *)psv {
