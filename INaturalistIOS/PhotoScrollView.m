@@ -40,7 +40,7 @@
     NSInteger numCells = self.photos.count + 1;
 
     // each photo 90 px wide?
-    CGFloat width = numCells * 90;
+    CGFloat width = numCells * (71 + 18) + 9;
     CGFloat height = self.bounds.size.height;
     self.scrollView.contentSize = CGSizeMake(width, height);
     
@@ -55,8 +55,7 @@
     // add new photo button
     self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.addButton.accessibilityLabel = @"Add Button";
-    self.addButton.frame = CGRectMake(5, 5, 70, self.bounds.size.height - 30);
-    self.addButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.addButton.frame = CGRectMake(9, 12, 71, 71);
     self.addButton.layer.borderColor = [UIColor grayColor].CGColor;
     self.addButton.layer.borderWidth = 1.0f;
     self.addButton.tintColor = [UIColor grayColor];
@@ -74,7 +73,7 @@
         [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
         [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@"Default"
                                                                                     attributes:@{
-                                                                                                 NSFontAttributeName: [UIFont systemFontOfSize:11],
+                                                                                                 NSFontAttributeName: [UIFont systemFontOfSize:12],
                                                                                                  }]];
         defaultPhotoStr = [[NSAttributedString alloc] initWithAttributedString:defaultPhotoMutable];
     }
@@ -82,13 +81,12 @@
         FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:13];
         nonDefaultPhotoStr = [circle attributedString];
     }
-    
 
     for (int i = 1; i < numCells; i++) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i * 80, 0, 80, self.bounds.size.height)];
-
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i * (71 + 18), 0, 71 + 18, self.bounds.size.height)];
+        
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, view.bounds.size.width - 20, view.bounds.size.width - 20)];
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(9, 12, 71, 71)];
         iv.contentMode = UIViewContentModeScaleAspectFill;
         iv.clipsToBounds = YES;
         ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[i-1];
@@ -100,28 +98,32 @@
         UIButton *delete = [UIButton buttonWithType:UIButtonTypeSystem];
         delete.tag = i-1;
         [delete addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
-        delete.frame = CGRectMake(80-24-5, 10, 16, 16);
+        delete.frame = CGRectMake(0, 0, 22, 22);
         delete.center = CGPointMake(iv.frame.origin.x + iv.bounds.size.width, iv.frame.origin.y);
-        delete.layer.cornerRadius = 8;
-        FAKIcon *close = [FAKIonIcons closeIconWithSize:9];
+        delete.layer.cornerRadius = 11;
+        FAKIcon *close = [FAKIonIcons closeIconWithSize:10];
         [delete setAttributedTitle:close.attributedString forState:UIControlStateNormal];
         delete.tintColor = [UIColor whiteColor];
         delete.backgroundColor = [UIColor grayColor];
         [view addSubview:delete];
         
         if (i == 1) {
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 + view.bounds.size.width - 20, view.bounds.size.width - 20, 20)];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(9, 12 + 71, 71 + 18, 21)];
             label.attributedText = defaultPhotoStr;
             label.textColor = [UIColor grayColor];
             [view addSubview:label];
         } else {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-            button.frame = CGRectMake(10, 10 + view.bounds.size.width - 20, view.bounds.size.width - 20, 20);
+            
+            // tweak the baseline of the empty circle
+            button.contentEdgeInsets = UIEdgeInsetsMake(0, 0, -2, 0);
+            
+            button.frame = CGRectMake(9, 12 + 71, 71 + 18, 21);
             [button setAttributedTitle:nonDefaultPhotoStr forState:UIControlStateNormal];
             button.tintColor = [UIColor grayColor];
             button.titleLabel.textColor = [UIColor grayColor];
-            button.titleLabel.textAlignment = NSTextAlignmentLeft;
             button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            button.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
             button.tag = i-1;
             [button addTarget:self action:@selector(setDefault:) forControlEvents:UIControlEventTouchUpInside];
             [view addSubview:button];

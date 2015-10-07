@@ -565,7 +565,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == ConfirmObsSectionPhotos) {
-        return 100;
+        return 108;
     } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 0) {
         return 66;
     } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 2) {
