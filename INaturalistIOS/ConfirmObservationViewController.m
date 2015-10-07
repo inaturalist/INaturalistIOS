@@ -220,8 +220,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                          @(ALAssetsGroupAlbum)
                                          ];
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
-    [self presentViewController:nav animated:YES completion:nil];
+    if (self.presentedViewController && [self.presentedViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+        [nav setNavigationBarHidden:NO animated:YES];
+        [nav pushViewController:imagePickerController animated:YES];
+    } else {
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 - (void)pushCamera {
