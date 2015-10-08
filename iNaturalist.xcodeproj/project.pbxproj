@@ -171,6 +171,8 @@
 		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
 		FA7558491B9A4BDF00762D7B /* ConfirmObservationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */; };
 		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
+		FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */; settings = {ASSET_TAGS = (); }; };
+		FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */; settings = {ASSET_TAGS = (); }; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
 		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
@@ -548,6 +550,10 @@
 		FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmObservationViewController.m; sourceTree = "<group>"; };
 		FA75584A1B9A599800762D7B /* DisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureCell.h; sourceTree = "<group>"; };
 		FA75584B1B9A599800762D7B /* DisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisclosureCell.m; sourceTree = "<group>"; };
+		FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObservationsViewController.h; sourceTree = "<group>"; };
+		FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservationsViewController.m; sourceTree = "<group>"; };
+		FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObservationHeaderView.h; sourceTree = "<group>"; };
+		FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservationHeaderView.m; sourceTree = "<group>"; };
 		FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardHeader.h; sourceTree = "<group>"; };
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
 		FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChiclet.h; sourceTree = "<group>"; };
@@ -858,6 +864,8 @@
 				19F87447152254FC00A65F9A /* ProjectDetailViewController.m */,
 				197A6055151155DE0061B83B /* ProjectListViewController.h */,
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
+				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
+				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
 				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
 				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
@@ -937,6 +945,8 @@
 				FAFAF7041BA0EB1900CCADC2 /* PhotoScrollView.m */,
 				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
 				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
+				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
+				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1592,7 +1602,9 @@
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
+				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
+				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,
 				FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */,
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,

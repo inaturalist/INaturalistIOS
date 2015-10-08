@@ -41,13 +41,13 @@
 #import "ObservationFieldValue.h"
 #import "ProjectObservationField.h"
 #import "ObservationField.h"
+#import "ProjectObservationsViewController.h"
+#import "ProjectUser.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
     ConfirmObsSectionIdentify,
     ConfirmObsSectionNotes,
-    ConfirmObsSectionProjectDetails,
-    ConfirmObsSectionProjects
 };
 
 @interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate>
@@ -79,7 +79,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"switch"];
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"ofv"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -548,14 +547,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 2;
             break;
         case ConfirmObsSectionNotes:
-            return 5;
-            break;
-        case ConfirmObsSectionProjectDetails:
-            return self.observation.observationFieldValues.count;
-            break;
-        case ConfirmObsSectionProjects:
-            // plus one for the choose projects row
-            return self.observation.projectObservations.count + 1;
+            return 6;
             break;
         default:
             return 0;
@@ -589,12 +581,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionNotes:
             return 2;
-            break;
-        case ConfirmObsSectionProjectDetails:
-            return 34;
-            break;
-        case ConfirmObsSectionProjects:
-            return 34;
             break;
         default:
             return 0;
@@ -634,18 +620,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return [self geoPrivacyCellInTableView:tableView];
             } else if (indexPath.item == 4) {
                 return [self captiveCellInTableView:tableView];
+            } else if (indexPath.item == 5) {
+                return [self projectsCellInTableView:tableView];
             } else {
                 return [self illegalCellForIndexPath:indexPath];
-            }
-            break;
-        case ConfirmObsSectionProjectDetails:
-            return [self ofvCellForTableView:tableView indexPath:indexPath];
-            break;
-        case ConfirmObsSectionProjects:
-            if (indexPath.item == self.observation.sortedProjectObservations.count) {
-                return [self addProjectCellInTableView:tableView];
-            } else {
-                return [self projectCellForTableView:tableView indexPath:indexPath];
             }
             break;
         default:
@@ -740,32 +718,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
                                                       } cancelBlock:nil
                                                          origin:self.view] showActionSheetPicker];
+            } else if (indexPath.item == 5) {
                 
+                ProjectObservationsViewController *projectsVC = [[ProjectObservationsViewController alloc] initWithNibName:nil bundle:nil];
+                projectsVC.observation = self.observation;
+                
+                NSMutableArray *projects = [NSMutableArray array];
+                [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [projects addObject:pu.project];
+                }];
+                
+                projectsVC.joinedProjects = [NSArray arrayWithArray:projects];
+                
+                [self.navigationController pushViewController:projectsVC animated:YES];
+            
             } else {
                 // do nothing
             }
             break;
-        case ConfirmObsSectionProjectDetails:
-            // do nothing
-            break;
-        case ConfirmObsSectionProjects: {
-            if (indexPath.item == self.observation.sortedProjectObservations.count) {
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-                ProjectChooserViewController *chooser = [storyboard instantiateViewControllerWithIdentifier:@"ProjectChooserViewController"];
-                chooser.delegate = self;
-                
-                NSMutableArray *projects = [[NSMutableArray alloc] init];
-                for (ProjectObservation *po in self.observation.projectObservations) {
-                    [projects addObject:po.project];
-                }
-                chooser.chosenProjects = projects;
-                
-                [self.navigationController pushViewController:chooser animated:YES];
-            } else {
-                // do nothing
-            }
-            break;
-        }
         default:
             // do nothing
             break;
@@ -782,12 +752,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionNotes:
             return nil;
-            break;
-        case ConfirmObsSectionProjectDetails:
-            return NSLocalizedString(@"More", @"title for project obs field section of new obs confirm screen.");
-            break;
-        case ConfirmObsSectionProjects:
-            return NSLocalizedString(@"Projects", @"title for projects  section of new obs confirm screen.");
             break;
         default:
             return nil;
@@ -976,62 +940,20 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 
-- (UITableViewCell *)addProjectCellInTableView:(UITableView *)tableView {
+- (UITableViewCell *)projectsCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = NSLocalizedString(@"Choose Projects", @"choose projects button title.");
+    cell.titleLabel.text = NSLocalizedString(@"Projects", @"choose projects button title.");
     FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
     [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    return cell;
-}
-
-- (UITableViewCell *)ofvCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ofv"];
-    
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"recordID" ascending:YES];
-    ObservationFieldValue *ofv = [self.observation.observationFieldValues sortedArrayUsingDescriptors:@[ sort ]][indexPath.item];
-    
-    cell.textLabel.text = ofv.observationField.name;
-    cell.textLabel.numberOfLines = 2;
-    
-    cell.detailTextLabel.text = ofv.value;
-    if (!ofv.value) {
-        cell.detailTextLabel.text = @"Test Value";
+    if (self.observation.projectObservations.count > 0) {
+        cell.secondaryLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.projectObservations.count];
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    return cell;
-}
-
-- (UITableViewCell *)projectCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
-    
-    ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.item];
-    Project *project = po.project;
-    
-    
-    cell.titleLabel.text = project.title;
-    cell.secondaryLabel.text = nil;
-    
-    NSURL *iconURL = [NSURL URLWithString:project.iconURL];
-    if (iconURL) {
-        [cell.cellImageView sd_setImageWithURL:iconURL];
-    } else {
-        FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
-        [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-        cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
-    }
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = UITableViewCellAccessoryNone;
-    cell.accessoryView = nil;
-    
     return cell;
 }
 
