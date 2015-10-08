@@ -138,7 +138,7 @@
 
 - (BOOL)projectIsSelected:(Project *)project {
     __block BOOL found = NO;
-    [[[self.observation.projectObservations allObjects] copy] enumerateObjectsUsingBlock:^(ProjectObservation * _Nonnull po, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[[self.observation.projectObservations allObjects] copy] enumerateObjectsUsingBlock:^(ProjectObservation *po, NSUInteger idx, BOOL *stop) {
         if ([po.project isEqual:project]) {
             found = YES;
             *stop = YES;
@@ -192,7 +192,7 @@
     }
     
     NSMutableArray *projects = [NSMutableArray array];
-    [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
         [projects addObject:pu.project];
     }];
     
