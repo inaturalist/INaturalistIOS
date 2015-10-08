@@ -724,7 +724,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 projectsVC.observation = self.observation;
                 
                 NSMutableArray *projects = [NSMutableArray array];
-                [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL * _Nonnull stop) {
+                [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
                     [projects addObject:pu.project];
                 }];
                 
