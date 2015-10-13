@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>203</string>
+	<string>209</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -65,8 +65,6 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>${PRODUCT_NAME} uses this information to automatically add locations to your observations.</string>
-	<key>UILaunchStoryboardName</key>
-	<string>Launch Screen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>MainStoryboard</string>
 	<key>UIRequiredDeviceCapabilities</key>

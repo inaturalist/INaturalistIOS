@@ -18,6 +18,7 @@
 #import "Partner.h"
 #import "User.h"
 #import "UploadManager.h"
+#import "SignUserForGolanProject.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -437,6 +438,10 @@ NSInteger INatMinPasswordLength = 6;
 
 - (void)executeSuccess:(NSDictionary *)results {
     @synchronized(self) {
+        
+        SignUserForGolanProject *golan = [[SignUserForGolanProject alloc] init];
+        [golan signUserForGolanProject];
+        
         if (self.currentSuccessBlock) {
             self.currentSuccessBlock(results);
         }

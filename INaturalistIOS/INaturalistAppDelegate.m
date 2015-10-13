@@ -37,6 +37,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "NSURL+INaturalist.h"
 
+
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
     RKManagedObjectStore *_inatObjectStore;
@@ -353,6 +354,9 @@
             [mainVC.view addSubview:priorSnapshot];
             self.window.rootViewController = mainVC;
             
+            self.golan = [[SignUserForGolanProject alloc] init];
+            [self.golan signUserForGolanProject];
+                        
             [UIView animateWithDuration:0.65f
                              animations:^{
                                  priorSnapshot.alpha = 0.0f;

@@ -25,14 +25,13 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        // Enable the use of Fabic without Flurry.
-#ifdef INatCrashlyticsKey
-        [Fabric with:@[CrashlyticsKit]];
+        _sharedClient = [[Analytics alloc] init];
+#ifdef INatFlurryKey
+        [Flurry startSession:INatFlurryKey];
 #endif
 
-#ifdef INatFlurryKey
-        _sharedClient = [[Analytics alloc] init];
-        [Flurry startSession:INatFlurryKey];
+#ifdef INatCrashlyticsKey
+        [Fabric with:@[CrashlyticsKit]];
 #endif
     });
     return _sharedClient;

@@ -43,6 +43,7 @@
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "SignUserForGolanProject.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -493,6 +494,24 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     UIView * bgview = [[UIView alloc] initWithFrame:frame];
     bgview.backgroundColor = [UIColor blackColor];
     [self.view addSubview:bgview];
+    
+    // Add golan project to observation.
+    Project *golanProject = [SignUserForGolanProject golanProject];
+    if(golanProject){
+        BOOL found = NO;
+        for(ProjectObservation *po in self.observation.projectObservations){
+            if([po.projectID intValue] == kGolanWildlifeProjectID){
+                found = YES;
+                break;
+            }
+        }
+        if(!found){
+            ProjectObservation *po = [ProjectObservation object];
+            po.observation = self.observation;
+            po.project = golanProject;
+            self.observation.localUpdatedAt = [NSDate date];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -910,9 +929,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         case 1:
             self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
             break;
-        case 2:
-            self.observation.geoprivacy = NSLocalizedString(@"private",nil);
-            break;
+//        case 2:
+//            self.observation.geoprivacy = NSLocalizedString(@"private",nil);
+//            break;
         default:
             break;
     }
@@ -1295,8 +1314,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"Open",nil),
-                                                                            NSLocalizedString(@"Obscured",nil),
-                                                                            NSLocalizedString(@"Private",nil), nil];
+                                                                            NSLocalizedString(@"Obscured",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
         if (self.tabBarController)

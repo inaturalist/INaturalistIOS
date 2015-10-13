@@ -20,6 +20,8 @@
 
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "SignUserForGolanProject.h"
+
 
 @implementation ProjectChooserViewController
 
@@ -177,9 +179,11 @@
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    cell.accessoryType = UITableViewCellAccessoryNone;
     ProjectUser *pu = [self.projectUsers objectAtIndex:indexPath.row];
-    [self.chosenProjects removeObject:pu.project];
+    if([pu.projectID intValue] != kGolanWildlifeProjectID){
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        [self.chosenProjects removeObject:pu.project];
+    }
 }
 
 #pragma mark - RKObjectLoaderDelegate

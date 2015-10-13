@@ -40,12 +40,12 @@
 #import "UploadManagerNotificationDelegate.h"
 #import "ObservationViewCell.h"
 
-
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate> {
     UIView *noContentView;
 
     NSFetchedResultsController *fetchedResultsController;
 }
+
 @property NSMutableArray *nonFatalUploadErrors;
 @property RKObjectLoader *meObjectLoader;
 @property MeHeaderView *meHeader;
@@ -826,6 +826,10 @@
 {
     [super viewDidLoad];
 
+    
+
+    
+    
 // if you need to test syncing lots of obs with the fetched results controller, do:
 //    [Observation deleteAll];
 //    for (int i = 0; i < 50; i++) {

@@ -78,7 +78,7 @@
 "EGB-Ac-Dg8.title" = "מדריכים";
 
 /* Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF"; */
-"EcO-h2-uOF.text" = "שם הזן";
+"EcO-h2-uOF.text" = "שם המין";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD"; */
 "Edp-cg-PsD.text" = "Title";
@@ -141,7 +141,7 @@
 "Obm-wO-wio.title" = "ביטול";
 
 /* Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM"; */
-"Ohz-Dw-0wM.text" = "שם הזן";
+"Ohz-Dw-0wM.text" = "שם המין";
 
 /* Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4"; */
 "P1E-WK-OB4.text" = "00:00 AM";
@@ -306,7 +306,7 @@
 "zPB-Sx-9Uh.text" = "תודות";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
-"pmm-Vg-XgJ.placeholder" = "שם הזן";
+"pmm-Vg-XgJ.placeholder" = "שם המין";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
 "qJK-jT-EPE.headerTitle" = "הערות";
@@ -358,3 +358,26 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "עריכת מיקום";
+
+"AFb-0q-aeK.normalTitle" = "מסכים";
+
+"FYt-db-0Ka.title" = "חזור";
+
+"4vK-Bt-6LG.title" = "אירועים בתצפית";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

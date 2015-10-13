@@ -18,6 +18,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UIImage+INaturalist.h"
 #import "INatWebController.h"
+#import "SignUserForGolanProject.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -46,8 +47,13 @@ static const int LeaveProjectAlertViewTag = 1;
 - (void)setupJoinButton
 {
     if (self.projectUser && ![self.projectUser isNew]) {
-        self.joinButton.title = NSLocalizedString(@"Leave",nil);
-        self.joinButton.tintColor = [UIColor blackColor];
+        if([self.projectUser.projectID intValue] == kGolanWildlifeProjectID){
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        else{
+            self.joinButton.title = NSLocalizedString(@"Leave",nil);
+            self.joinButton.tintColor = [UIColor blackColor];
+        }
     } else {
         self.joinButton.title = NSLocalizedString(@"Join",nil);
         self.joinButton.tintColor = [UIColor colorWithRed:155/255.0 

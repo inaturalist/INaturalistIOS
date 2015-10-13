@@ -87,12 +87,12 @@
             button;
         });
         [self addSubview:self.guidesButton];
-        
+        self.guidesButton.hidden = YES;
         NSDictionary *views = @{
                                 @"icon": self.iconButton,
                                 @"obsCount": self.obsCountLabel,
                                 @"projects": self.projectsButton,
-                                @"guides": self.guidesButton,
+                                @"guides": self.guidesButton
                                 };
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[obsCount]-|"
