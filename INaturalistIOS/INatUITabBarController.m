@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AVFoundation/AVFoundation.h>
 #import <BlocksKit+UIKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <objc/runtime.h>
 
@@ -441,7 +440,11 @@ static char PROJECT_ASSOCIATED_KEY;
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving new obs: %@",
                                             saveError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
+                                    message:saveError.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

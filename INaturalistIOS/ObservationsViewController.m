@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
@@ -263,7 +262,12 @@
         ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
         
         if (notify) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unavailable", nil)
+                                        message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+
             [self.refreshControl endRefreshing];
         }
         
@@ -807,7 +811,12 @@
         if (fetchError) {
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
                                                 fetchError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                        message:fetchError.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         
         if (me) {
@@ -1132,7 +1141,12 @@
     if (fetchError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
                                             fetchError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                    message:fetchError.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
     
     self.navigationItem.leftBarButtonItem = nil;
@@ -1267,7 +1281,12 @@
         if (saveError) {
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
                                                 saveError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+            
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
+                                        message:saveError.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         
         // triggers reconfiguration of the header

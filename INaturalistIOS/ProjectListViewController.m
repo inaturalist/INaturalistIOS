@@ -407,7 +407,11 @@ static const int ListedTaxonCellAddButtonTag = 4;
             errorMsg = error.localizedDescription;
     }
     
-    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]];
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Looks like there was an error", nil)
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 @end

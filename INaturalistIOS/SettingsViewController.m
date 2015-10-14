@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
 #import <JDFTooltips/JDFTooltips.h>
 #import <BlocksKit/BlocksKit+UIKit.h>

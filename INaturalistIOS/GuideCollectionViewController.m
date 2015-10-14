@@ -572,11 +572,21 @@ static const int GutterWidth  = 5;
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-    if (self.quiet) {
+    
+    if ([SVProgressHUD isVisible]) {
         [SVProgressHUD dismiss];
-    } else {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Failed to download guide",nil)];
+    }
+    
+    if (self.progress) {
+        self.progress.hidden = YES;
+    }
+    
+    if (!self.quiet) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide", nil)
+                                    message:error.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
 }
 
@@ -586,30 +596,33 @@ static const int GutterWidth  = 5;
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD dismiss];
+    }
+    
     if (self.progress) {
         self.progress.hidden = YES;
     }
     
     if (self.lastStatusCode == 200) {
-        if (self.quiet) {
-            [SVProgressHUD dismiss];
-        } else {
-            [SVProgressHUD showSuccessWithStatus:nil];
-        }
         
         NSError *error;
-        if ([self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
-            NSLog(@"wrote to file: %@", self.filePath);
-        } else {
-            NSLog(@"failed to write to %@, error: %@", self.filePath, error);
+        if (![self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to save guide", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         [self.controller loadXML:self.filePath];
     } else {
-        if (self.quiet) {
-            [SVProgressHUD dismiss];
-        } else {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)];
-
+        if (!self.quiet) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Guide download error", nil)
+                                        message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
     }
 }

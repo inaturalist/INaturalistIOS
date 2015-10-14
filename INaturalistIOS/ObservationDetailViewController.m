@@ -10,7 +10,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QBImagePickerController/QBImagePickerController.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>

@@ -228,7 +228,13 @@
                               if (error) {
                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
                                                                       error.localizedDescription]];
-                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                  [SVProgressHUD dismiss];
+                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
+                                                              message:error.localizedDescription
+                                                             delegate:nil
+                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                    otherButtonTitles:nil] show];
+
                               } else {
                                   [SVProgressHUD dismiss];
                                   
@@ -239,14 +245,23 @@
                                                self.confirmFollowUpAction(@[ asset ]);
                                            } else {
                                                [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
-                                               [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Error using newly saved image!",
-                                                                                                    @"Error message when we can't load a newly saved image")];
+                                               [SVProgressHUD dismiss];
+                                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error using newly saved image", @"Error title when we can't load a newly saved image")
+                                                                           message:NSLocalizedString(@"No asset found", @"Error message for asset fetch failure")
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                 otherButtonTitles:nil] show];
                                            }
                                            
                                        } failureBlock:^(NSError *error) {
                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
                                                                                error.localizedDescription]];
-                                           [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                           
+                                           [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Fetching Image Asset", @"image fetch error title")
+                                                                       message:error.localizedDescription
+                                                                      delegate:nil
+                                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                             otherButtonTitles:nil] show];
                                        }];
                                   
                               }
@@ -311,7 +326,6 @@
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving observation: %@",
                                             saveError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -358,7 +372,6 @@
         if (saveError) {
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
                                                 saveError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
             return;
         }
         

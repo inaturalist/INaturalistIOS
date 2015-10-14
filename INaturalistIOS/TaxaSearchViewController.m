@@ -75,7 +75,11 @@ static const int TaxonCellSubtitleTag = 3;
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
-                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
+                                                                                            message:saveError.localizedDescription
+                                                                                           delegate:nil
+                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                  otherButtonTitles:nil] show];
                                                                 return;
                                                             }
                                                             
@@ -83,24 +87,33 @@ static const int TaxonCellSubtitleTag = 3;
                                                             NSError *fetchError;
                                                             [fetchedResultsController performFetch:&fetchError];
                                                             if (fetchError) {
-                                                                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                                                                            message:fetchError.localizedDescription
+                                                                                           delegate:nil
+                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                  otherButtonTitles:nil] show];
                                                                 return;
                                                             }
                                                             
-                                                            if (modal) {
-                                                                if (objects.count > 0)
-                                                                    [SVProgressHUD showSuccessWithStatus:nil];
-                                                                else
-                                                                    [SVProgressHUD showErrorWithStatus:nil];
+                                                            if (modal && objects.count > 0) {
+                                                                [SVProgressHUD showSuccessWithStatus:nil];
                                                             }
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
+                                                                                        message:error.localizedDescription
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                              otherButtonTitles:nil] show];
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
+                                                                                        message:error.localizedDescription
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                              otherButtonTitles:nil] show];
                                                         };
                                             
                                                     }];
@@ -187,8 +200,11 @@ static const int TaxonCellSubtitleTag = 3;
     NSError *fetchError;
     [fetchedResultsController performFetch:&fetchError];
     if (fetchError) {
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-        NSLog(@"FETCH ERROR: %@", fetchError);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                    message:fetchError.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
     
     // setup our search controller

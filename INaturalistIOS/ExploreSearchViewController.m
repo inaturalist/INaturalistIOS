@@ -276,7 +276,11 @@
 - (void)searchForMyObservations {
 
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
@@ -287,31 +291,39 @@
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Fetching...", nil)];
     
     [searchController searchForLogin:[[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey] completionHandler:^(NSArray *results, NSError *error) {
+        
+        // dismiss the HUD
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD dismiss];
+        }
+
         if (error) {
-            
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchMine];
             
             if (results.count == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Can't find your user details. :(", nil)];
-                });
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                            message:NSLocalizedString(@"Can't find your user details.", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             } else if (results.count == 1) {
-                // dismiss the HUD
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found you!", nil)];
-                });
-                
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
                 [searchMenu showActiveSearch];
-
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Found conflicting user details. :(", nil)];
-                });
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                            message:NSLocalizedString(@"Found conflicting user details. :(", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             }
         }
         
@@ -322,7 +334,11 @@
 - (void)searchForNearbyObservations {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
     
@@ -362,41 +378,45 @@
 - (void)searchForTaxon:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Searching for organisms...", nil)];
     
     [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD dismiss];
+        }
+        
         if (error) {
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
 
             if (results.count == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such organisms found. :(", nil)];
-                });
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                            message:NSLocalizedString(@"No such organisms found. :(", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             } else if (results.count == 1) {
-                // dismiss the HUD
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found one!", nil)];
-                });
-                
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
                 
                 [searchMenu showActiveSearch];
                 
             } else {
-                
                 // allow the user to disambiguate the search results
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD dismiss];
-                });
-                
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
                 disambiguator.title = NSLocalizedString(@"Which organism?", nil);
                 disambiguator.searchOptions = results;
@@ -423,38 +443,44 @@
 - (void)searchForPerson:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Searching for people...", nil)];
 
     [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD dismiss];
+        }
+        
         if (error) {
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
             
             if (results.count == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such person found. :(", nil)];
-                });
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                            message:NSLocalizedString(@"No such person found. :(", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             } else if (results.count == 1) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found one!", nil)];
-                });
-                
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
                 [searchMenu showActiveSearch];
                 
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD dismiss];
-                });
-                
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
                 disambiguator.title = NSLocalizedString(@"Which person?", nil);
                 disambiguator.searchOptions = results;
@@ -480,15 +506,27 @@
 - (void)searchForLocation:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Searching for place...", nil)];
     
     [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD dismiss];
+        }
+
         if (error) {
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
@@ -509,34 +547,33 @@
                                       inRegion:nil  // if we're auth'd for location svcs, uses the user's location as the region
                              completionHandler:^(NSArray *placemarks, NSError *error) {
                                  if (error.code == kCLErrorNetwork) {
-                                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Please try again in a few moments.",
-                                                                                          @"Error message for the user, when the geocoder is telling us to slow down.")];
+                                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                 message:NSLocalizedString(@"Please try again in a few moments.", @"Error message for the user, when the geocoder is telling us to slow down.")
+                                                                delegate:nil
+                                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                       otherButtonTitles:nil] show];
                                  } else {
                                      if (placemarks.count == 0) {
+                                         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                     message:NSLocalizedString(@"No such place found. :(", nil)
+                                                                    delegate:nil
+                                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                           otherButtonTitles:nil] show];
+
                                          [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such place found. :(", nil)];
                                      } else {
                                          CLPlacemark *place = placemarks.firstObject;
-                                         [SVProgressHUD showSuccessWithStatus:place.name];
                                          [mapVC mapShouldZoomToCoordinates:place.location.coordinate showUserLocation:YES];
                                      }
                                  }
                              }];
             } else if (validPlaces.count == 1) {
-                // dismiss the HUD
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found one!", nil)];
-                });
-                
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
                 
                 [searchMenu showActiveSearch];
                 
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD dismiss];
-                });
-                
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
                 disambiguator.title = NSLocalizedString(@"Which place?", nil);
                 disambiguator.searchOptions = results;
@@ -563,38 +600,43 @@
 - (void)searchForProject:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Searching for project...", nil)];
     
     [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD dismiss];
+        }
+        
         if (error) {
-            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
             
             if (results.count == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such project found. :(", nil)];
-                });
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                                            message:NSLocalizedString(@"No such project found. :(", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             } else if (results.count == 1) {
-                // dismiss the HUD
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found one!", nil)];
-                });
-                
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
                 
                 [searchMenu showActiveSearch];
 
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [SVProgressHUD dismiss];
-                });
-                
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
                 disambiguator.title = NSLocalizedString(@"Which project?", nil);
                 disambiguator.searchOptions = results;
@@ -644,7 +686,7 @@
         hasFulfilledLocationFetch = YES;
         
         if ([SVProgressHUD isVisible]) {
-            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Found you!", nil)];
+            [SVProgressHUD dismiss];
         }
         
         [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate showUserLocation:YES];
@@ -703,7 +745,15 @@
     locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
                                                               block:^(NSTimer *timer) {
                                                                   if (shouldNotify) {
-                                                                    [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Unable to find location", nil)];
+                                                                      if ([SVProgressHUD isVisible]) {
+                                                                          [SVProgressHUD dismiss];
+                                                                      }
+                                                                      
+                                                                      [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Timeout", nil)
+                                                                                                  message:NSLocalizedString(@"Unable to find location", nil)
+                                                                                                 delegate:nil
+                                                                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                        otherButtonTitles:nil] show];
                                                                   }
                                                                   
                                                                   [locationManager stopUpdatingLocation];

@@ -257,7 +257,7 @@ static UIImage *defaultPersonImage;
 	if (self.observation.recordID
             && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
             && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Refreshing...",nil)];
+
         [[Analytics sharedClient] debugLog:@"Network - Refresh observation activity"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
@@ -278,8 +278,13 @@ static UIImage *defaultPersonImage;
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
 {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-	NSLog(@"Did fail with error: %@ for URL: %@", error.localizedDescription, request.URL);
+    [SVProgressHUD dismiss];
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Failed", nil)
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 #pragma mark - RKObjectLoaderDelegate
@@ -287,7 +292,9 @@ static UIImage *defaultPersonImage;
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
 	[self.refreshControl endRefreshing];
-    [SVProgressHUD showSuccessWithStatus:nil];
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD showSuccessWithStatus:nil];
+    }
 	
     if (objects.count == 0) return;
     

@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <BlocksKit/BlocksKit.h>
 
@@ -29,6 +28,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     NSArray *leaderboard;
     ExploreLeaderboardHeader *header;
     NSString *sortKey, *spanKey;
+    
+    UIActivityIndicatorView *loadingSpinner;
 }
 @end
 
@@ -54,6 +55,10 @@ static NSString *kSortSpeciesKey = @"species_count";
         tv;
     });
     [self.view addSubview:leaderboardTableView];
+    
+    loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    loadingSpinner.hidden = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingSpinner];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
                                                           attribute:NSLayoutAttributeCenterX
@@ -92,14 +97,20 @@ static NSString *kSortSpeciesKey = @"species_count";
     
     [[Analytics sharedClient] event:kAnalyticsEventNavigateExploreLeaderboard];
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading leaderboard", @"Loading message while a leaderboard is being downloaded from the web")];
+    loadingSpinner.hidden = NO;
+    [loadingSpinner startAnimating];
 
     [self.observationsController loadLeaderboardSpan:ExploreLeaderboardSpanMonth
                                           completion:^(NSArray *results, NSError *error) {
                                               if (error) {
                                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
                                                                                       error.localizedDescription]];
-                                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
+                                                                              message:error.localizedDescription
+                                                                             delegate:nil
+                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                    otherButtonTitles:nil] show];
+
                                                   return;
                                               }
                                               
@@ -107,8 +118,9 @@ static NSString *kSortSpeciesKey = @"species_count";
                                                   return [[obj2 valueForKeyPath:sortKey] compare:[obj1 valueForKeyPath:sortKey]];
                                               }];
                                               [leaderboardTableView reloadData];
-                                              [SVProgressHUD showSuccessWithStatus:nil];
-
+                                              
+                                              [loadingSpinner stopAnimating];
+                                              loadingSpinner.hidden = YES;
                                           }];
 }
 
@@ -122,7 +134,8 @@ static NSString *kSortSpeciesKey = @"species_count";
         spanKey = kSpanYearKey;
     }
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading leaderboard", @"Loading message while a leaderboard is being downloaded from the web")];
+    loadingSpinner.hidden = NO;
+    [loadingSpinner startAnimating];
     
     ExploreLeaderboardSpan span = [spanKey isEqualToString:kSpanYearKey] ? ExploreLeaderboardSpanYear : ExploreLeaderboardSpanMonth;
     [self.observationsController loadLeaderboardSpan:span
@@ -130,7 +143,11 @@ static NSString *kSortSpeciesKey = @"species_count";
                                               if (error) {
                                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
                                                                                       error.localizedDescription]];
-                                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
+                                                                              message:error.localizedDescription
+                                                                             delegate:nil
+                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                    otherButtonTitles:nil] show];
                                                   return;
                                               }
                                               
@@ -138,7 +155,9 @@ static NSString *kSortSpeciesKey = @"species_count";
                                                   return [[obj2 valueForKeyPath:sortKey] compare:[obj1 valueForKeyPath:sortKey]];
                                               }];
                                               [leaderboardTableView reloadData];
-                                              [SVProgressHUD showSuccessWithStatus:nil];
+
+                                              [loadingSpinner stopAnimating];
+                                              loadingSpinner.hidden = YES;
                                           }];
 }
 
