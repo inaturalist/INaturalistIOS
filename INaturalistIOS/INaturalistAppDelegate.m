@@ -184,6 +184,11 @@
     return _inatObjectStore;
 }
 
+- (void)rebuildCoreData {
+    RKManagedObjectStore *objectStore = [[RKObjectManager sharedManager] objectStore];
+    [objectStore deletePersistentStore];
+}
+
 - (void)configureRestKit
 {
     RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];

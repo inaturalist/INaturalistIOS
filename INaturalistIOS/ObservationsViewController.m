@@ -1211,6 +1211,11 @@
         [self checkForDeleted];
         [self checkNewActivity];
     }
+    
+    NSError *error;
+    [fetchedResultsController performFetch:&error];
+    [self.tableView reloadData];
+    [self checkEmpty];
 
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }

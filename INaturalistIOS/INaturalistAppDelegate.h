@@ -20,5 +20,6 @@
 - (void)showInitialSignupUI;
 
 - (void)reconfigureForNewBaseUrl;
+- (void)rebuildCoreData;
 
 @end
