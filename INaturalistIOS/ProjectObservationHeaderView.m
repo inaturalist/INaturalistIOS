@@ -24,7 +24,7 @@
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
             label.textColor = [UIColor darkGrayColor];
-            label.font = [UIFont systemFontOfSize:14.0f];
+            label.font = [UIFont systemFontOfSize:16.0f];
             
             label.numberOfLines = 2;
             [label setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
@@ -37,6 +37,8 @@
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
+            iv.layer.cornerRadius = 0.5f;
+            
             iv;
         });
         [self addSubview:self.projectThumbnailImageView];
@@ -48,20 +50,7 @@
             switcher;
         });
         [self addSubview:self.selectedSwitch];
-        
-        self.detailsLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.textColor = [UIColor darkGrayColor];
-            label.font = [UIFont systemFontOfSize:11.0f];
-            
-            label.text = NSLocalizedString(@"Project-specific observation details", @"details subtitle for project chooser rows");
-            
-            label;
-        });
-        [self addSubview:self.detailsLabel];
-        
+                
         UIView *edge = ({
             UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
             view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -75,29 +64,36 @@
         
         NSDictionary *views = @{
                                 @"title": self.projectTitleLabel,
-                                @"details": self.detailsLabel,
                                 @"thumb": self.projectThumbnailImageView,
                                 @"switch": self.selectedSwitch,
                                 @"edge": edge,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[thumb(==40)]-[title]-[switch]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[thumb(==40)]-[details]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-8.5-[thumb(==27)]-[title]-[switch]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[edge]-0-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-8.5-[thumb(==27)]-[edge]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[edge(==0.5)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:edge
+                                                         attribute:NSLayoutAttributeHeight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1.0f
+                                                          constant:0.5f]];
+
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:edge
+                                                         attribute:NSLayoutAttributeTrailing
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:self
+                                                         attribute:NSLayoutAttributeTrailing
+                                                        multiplier:1.0f
+                                                          constant:0.0f]];
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.projectThumbnailImageView
                                                          attribute:NSLayoutAttributeHeight
@@ -112,7 +108,7 @@
                                                             toItem:self
                                                          attribute:NSLayoutAttributeTop
                                                         multiplier:1.0f
-                                                          constant:2.0f]];
+                                                          constant:8.5]];
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.projectTitleLabel
                                                          attribute:NSLayoutAttributeCenterY
@@ -129,21 +125,6 @@
                                                          attribute:NSLayoutAttributeCenterY
                                                         multiplier:1.0f
                                                           constant:0.0f]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.detailsLabel
-                                                         attribute:NSLayoutAttributeBottom
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeBottom
-                                                        multiplier:1.0f
-                                                          constant:-2.0f]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.detailsLabel
-                                                         attribute:NSLayoutAttributeHeight
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:1.0f
-                                                          constant:22]];
         
     }
     

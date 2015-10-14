@@ -10,7 +10,7 @@
 
 @class Observation;
 
-@interface ProjectObservationsViewController : UIViewController
+@interface ProjectObservationsViewController : UITableViewController
 
 @property Observation *observation;
 @property NSArray *joinedProjects;

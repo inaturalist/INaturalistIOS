@@ -157,6 +157,8 @@
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
+		FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */; };
+		FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */; };
 		FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */; };
 		FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */; };
 		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
@@ -171,9 +173,10 @@
 		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
 		FA7558491B9A4BDF00762D7B /* ConfirmObservationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */; };
 		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
-		FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */; settings = {ASSET_TAGS = (); }; };
-		FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */; settings = {ASSET_TAGS = (); }; };
+		FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */; };
+		FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
+		FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */; };
 		FA7E5FDE1AC364E200783980 /* CategoryChiclet.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */; };
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -525,6 +528,10 @@
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+INaturalist.h"; sourceTree = "<group>"; };
 		FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+INaturalist.m"; sourceTree = "<group>"; };
+		FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldSimpleValueCell.h; sourceTree = "<group>"; };
+		FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsFieldSimpleValueCell.m; sourceTree = "<group>"; };
+		FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldLongTextValueCell.h; sourceTree = "<group>"; };
+		FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsFieldLongTextValueCell.m; sourceTree = "<group>"; };
 		FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+InatHelpers.h"; sourceTree = "<group>"; };
 		FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+InatHelpers.m"; sourceTree = "<group>"; };
 		FA6D69571B06A6CD000983F8 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
@@ -556,6 +563,8 @@
 		FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservationHeaderView.m; sourceTree = "<group>"; };
 		FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardHeader.h; sourceTree = "<group>"; };
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
+		FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObsFieldViewController.h; sourceTree = "<group>"; };
+		FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObsFieldViewController.m; sourceTree = "<group>"; };
 		FA7E5FDC1AC364E200783980 /* CategoryChiclet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChiclet.h; sourceTree = "<group>"; };
 		FA7E5FDD1AC364E200783980 /* CategoryChiclet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryChiclet.m; sourceTree = "<group>"; };
 		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
@@ -866,6 +875,8 @@
 				197A6056151155DE0061B83B /* ProjectListViewController.m */,
 				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
 				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
+				FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */,
+				FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */,
 				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
 				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
@@ -947,6 +958,10 @@
 				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
 				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
 				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
+				FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */,
+				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
+				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
+				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1485,6 +1500,7 @@
 				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
 				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
+				FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
 				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
@@ -1600,6 +1616,7 @@
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
+				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
@@ -1630,6 +1647,7 @@
 				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
+				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,

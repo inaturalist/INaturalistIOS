@@ -7,6 +7,8 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <ActionSheetPicker-3.0/ActionSheetPicker.h>
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
@@ -17,9 +19,15 @@
 #import "Analytics.h"
 #import "ProjectObservationField.h"
 #import "ObservationField.h"
+#import "ObservationFieldValue.h"
+#import "ObsFieldSimpleValueCell.h"
+#import "ObsFieldLongTextValueCell.h"
+#import "ProjectObsFieldViewController.h"
 
-@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
-@property UITableView *tableView;
+static NSString *SimpleFieldIdentifier = @"simple";
+static NSString *LongTextFieldIdentifier = @"longtext";
+
+@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate>
 @property RKObjectLoader *loader;
 @end
 
@@ -28,19 +36,16 @@
 #pragma mark - UIViewController lifecycle
 
 - (void)viewDidLoad {
-    self.tableView = ({
-        UITableView *tv = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        tv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        tv.delegate = self;
-        tv.dataSource = self;
-        
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-        
-        tv;
-    });
+    [super viewDidLoad];
     
-    [self.view addSubview:self.tableView];
+    self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
+    
+    self.tableView.backgroundColor = [UIColor colorWithHexString:@"#f1f7e5"];
+    self.tableView.estimatedRowHeight = 44.0f;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    [self.tableView registerClass:[ObsFieldSimpleValueCell class] forCellReuseIdentifier:SimpleFieldIdentifier];
+    [self.tableView registerClass:[ObsFieldLongTextValueCell class] forCellReuseIdentifier:LongTextFieldIdentifier];
     
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         
@@ -66,13 +71,64 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
+#pragma mark - UITextField delegate
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if ([textField.superview.superview isKindOfClass:[ObsFieldSimpleValueCell class]]) {
+        // this textfield needs to be cleared and the value set
+        ObsFieldSimpleValueCell *cell = (ObsFieldSimpleValueCell *)textField.superview.superview;
+        cell.valueLabel.text = textField.text;
+        [textField removeFromSuperview];
+        cell.valueLabel.hidden = NO;
+    }
+    [self saveVisibleObservationFieldValues];
+}
+
+#pragma mark - UIScrollView delegate
+
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView endEditing:YES];
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //[scrollView endEditing:YES];
+}
+
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    Project *project = [self projectForSection:indexPath.section];
+    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    
+    if ([field.observationField.datatype isEqualToString:@"text"]) {
+        if (field.observationField.allowedValuesArray.count > 1) {
+            ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
+            [self configureSimpleCell:cell forObsField:field];
+            return cell;
+        } else {
+            ObsFieldLongTextValueCell *cell = [tableView dequeueReusableCellWithIdentifier:LongTextFieldIdentifier];
+            [self configureLongTextCell:cell forObsField:field];
+            return cell;
+        }
+    } else if ([field.observationField.datatype isEqualToString:@"numeric"]) {
+        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
+        [self configureSimpleCell:cell forObsField:field];
+        return cell;
+    } else if ([field.observationField.datatype isEqualToString:@"date"]) {
+        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
+        [self configureSimpleCell:cell forObsField:field];
+        return cell;
+    }
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    
     [self configureCell:cell forIndexPath:indexPath];
-    
     return cell;
 }
 
@@ -84,14 +140,15 @@
     ProjectObservationHeaderView *header = [[ProjectObservationHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, height)];
     
     header.projectTitleLabel.text = project.title;
-    header.selectedSwitch.on = projectIsSelected;
+    [header.selectedSwitch setOn:projectIsSelected animated:NO];
     header.selectedSwitch.tag = section;
     [header.selectedSwitch addTarget:self action:@selector(selectedChanged:) forControlEvents:UIControlEventValueChanged];
-    header.detailsLabel.hidden = !projectIsSelected || project.projectObservationFields.count == 0;
     
     NSURL *url = [NSURL URLWithString:project.iconURL];
     if (url) {
         [header.projectThumbnailImageView sd_setImageWithURL:url];
+    } else {
+        // use standard projects
     }
     
     return header;
@@ -99,12 +156,37 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     Project *project = [self projectForSection:section];
-    BOOL projectIsSelected = [self projectIsSelected:project];
     
-    if (projectIsSelected && project.projectObservationFields.count > 0)
-        return 66;
-    else
-        return 44;
+    CGFloat baseHeight = 44;
+    NSDictionary *attrs = @{
+                            NSFontAttributeName: [UIFont systemFontOfSize:14],
+                            };
+    CGRect titleBoundingRect = [project.title boundingRectWithSize:CGSizeMake(199, CGFLOAT_MAX)
+                                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                                        attributes:attrs
+                                                           context:nil];
+    if (titleBoundingRect.size.height > 18) {
+        baseHeight += 3;
+    }
+    
+    return baseHeight;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Project *project = [self projectForSection:indexPath.section];
+    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    
+    UIFont *fieldFont = field.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
+
+    
+    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count == 1) {
+        return [self heightForLongTextProjectField:field inTableView:tableView font:fieldFont];
+    } else {
+        return [self heightForSimpleProjectField:field inTableView:tableView font:fieldFont];
+    }
+    
+    return 44;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -120,21 +202,225 @@
     return self.joinedProjects.count;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Project *project = [self projectForSection:indexPath.section];
+    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    NSArray *values = field.observationField.allowedValuesArray;
+    NSInteger initialSelection = 0;
+    ObservationFieldValue *ofv = field.observationField.observationFieldValues.anyObject;
+    if (ofv) {
+        initialSelection = [values indexOfObject:ofv.value];
+    }
+    
+    NSLog(@"datatype is %@", field.observationField.datatype);
+    
+    
+    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count > 1) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        ProjectObsFieldViewController *pofVC = [[ProjectObsFieldViewController alloc] initWithNibName:nil bundle:nil];
+        pofVC.projectObsField = field;
+        pofVC.obsFieldValue = [[field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+            return [ofv.observation isEqual:self.observation];
+        }] anyObject];
+
+        [self.navigationController pushViewController:pofVC animated:YES];
+        return;
+        
+        [[[ActionSheetStringPicker alloc] initWithTitle:field.observationField.name
+                                                   rows:values
+                                       initialSelection:initialSelection
+                                              doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                  NSLog(@"picked one!");
+                                                  if (ofv) {
+                                                      if (selectedIndex == 0) {
+                                                          // remove the value
+                                                          [ofv destroy];
+                                                      } else {
+                                                          // reset the existing value
+                                                          ofv.value = selectedValue;
+                                                      }
+                                                  } else {
+                                                      if (selectedIndex == 0) {
+                                                          // don't need to do anything, still default
+                                                      } else {
+                                                          // make new ofv
+                                                          ObservationFieldValue *ofv = [ObservationFieldValue object];
+                                                          ofv.observationField = field.observationField;
+                                                          ofv.observation = self.observation;
+                                                          ofv.value = selectedValue;
+                                                      }
+                                                  }
+                                                  [tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                                   withRowAnimation:UITableViewRowAnimationFade];
+                                              } cancelBlock:^(ActionSheetStringPicker *picker) {
+                                                  NSLog(@"cancelled");
+                                              } origin:self.view] showActionSheetPicker];
+    } else if ([field.observationField.datatype isEqualToString:@"text"]) {
+        // free text
+        
+        // deselect
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        // activate the textfield
+        ObsFieldLongTextValueCell *cell = (ObsFieldLongTextValueCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.textField becomeFirstResponder];
+        
+    } else if ([field.observationField.datatype isEqualToString:@"numeric"]) {
+        // numeric text entry
+        
+        // deselect
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+        // setup a textfield above the label
+        ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.valueLabel.hidden = YES;
+        
+        UITextField *tf = [[UITextField alloc] initWithFrame:cell.valueLabel.frame];
+        tf.keyboardType = UIKeyboardTypeNumberPad;
+        tf.textAlignment = NSTextAlignmentRight;
+        tf.returnKeyType = UIReturnKeyDone;
+        tf.text = cell.valueLabel.text;
+        tf.delegate = self;
+        [cell.contentView addSubview:tf];
+        
+        [tf becomeFirstResponder];
+
+    } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
+        // taxon picker
+        
+    } else if ([field.observationField.datatype isEqualToString:@"date"]) {
+        // date field
+        
+        ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        static NSDateFormatter *dateFormatter;
+        if (!dateFormatter) {
+            dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.dateFormat = @"dd MMM yyyy HH:mm:ss ZZZ";
+        }
+        NSDate *date;
+        if (cell.valueLabel.text && cell.valueLabel.text.length > 0) {
+            date = [dateFormatter dateFromString:cell.valueLabel.text];
+        }
+        if (!date) {
+            date = [NSDate date];
+        }
+        
+        __weak typeof(self) weakSelf = self;
+        [[[ActionSheetDatePicker alloc] initWithTitle:field.observationField.name
+                                       datePickerMode:UIDatePickerModeDateAndTime
+                                         selectedDate:date
+                                            doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+                                                NSDate *date = (NSDate *)selectedDate;
+                                                cell.valueLabel.text = [dateFormatter stringFromDate:date];
+                                                [weakSelf saveVisibleObservationFieldValues];
+                                         } cancelBlock:nil
+                                               origin:self.view] showActionSheetPicker];
+        
+    } else {
+        
+    }
+    
+}
+
 #pragma mark - UITableView helpers
+
+- (CGFloat)heightForSimpleProjectField:(ProjectObservationField *)field inTableView:(UITableView *)tableView font:(UIFont *)font {
+    NSDictionary *attrs = @{
+                            NSFontAttributeName: font,
+                            };
+    
+    CGFloat usableWidth = tableView.bounds.size.width * .6;
+    NSString *fieldName = field.observationField.name;
+    CGRect fieldBoundingRect = [fieldName boundingRectWithSize:CGSizeMake(usableWidth, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attrs
+                                                       context:nil];
+    return fieldBoundingRect.size.height + 24;
+}
+
+- (CGFloat)heightForLongTextProjectField:(ProjectObservationField *)field inTableView:(UITableView *)tableView font:(UIFont *)font {
+    NSDictionary *attrs = @{
+                            NSFontAttributeName: font,
+                            };
+
+    CGFloat usableWidth = tableView.bounds.size.width - 14;
+    NSString *fieldName = field.observationField.name;
+    CGRect fieldBoundingRect = [fieldName boundingRectWithSize:CGSizeMake(usableWidth, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:attrs
+                                                       context:nil];
+    // 44 for the value
+    return fieldBoundingRect.size.height + 44;
+    
+    // return 66;
+}
 
 - (void)configureCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     Project *project = [self projectForSection:indexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    
     cell.textLabel.text = field.observationField.name;
     cell.textLabel.textColor = [UIColor grayColor];
     cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
     cell.textLabel.numberOfLines = 2;
-    cell.indentationLevel = 2;
+    cell.indentationLevel = 3;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.backgroundColor = [UIColor clearColor];
-    cell.contentView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2f];
-    cell.accessoryView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2f];
+    cell.contentView.backgroundColor = [UIColor clearColor];
 }
+
+- (void)configureSimpleCell:(ObsFieldSimpleValueCell *)cell forObsField:(ProjectObservationField *)field {
+    cell.fieldLabel.text = field.observationField.name;
+    if (field.required.boolValue) {
+        cell.fieldLabel.font = [UIFont boldSystemFontOfSize:cell.fieldLabel.font.pointSize];
+    } else {
+        cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
+    }
+    
+    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+        return [ofv.observation isEqual:self.observation];
+    }];
+    
+    if (ofvs.count > 0) {
+        // pick one?
+        ObservationFieldValue *ofv = ofvs.anyObject;
+        cell.valueLabel.text = ofv.value ?: ofv.defaultValue;
+    } else {
+        // show default
+        NSString *defaultValue = field.observationField.allowedValuesArray.firstObject;
+        cell.valueLabel.text = defaultValue;
+    }
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+}
+
+- (void)configureLongTextCell:(ObsFieldLongTextValueCell *)cell forObsField:(ProjectObservationField *)field {
+    cell.fieldLabel.text = field.observationField.name;
+    
+    if (field.required.boolValue) {
+        cell.fieldLabel.font = [UIFont boldSystemFontOfSize:cell.fieldLabel.font.pointSize];
+    } else {
+        cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
+    }
+
+    cell.textField.delegate = self;
+    
+    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+        return [ofv.observation isEqual:self.observation];
+    }];
+    
+    if (ofvs.count > 0) {
+        // pick one?
+        ObservationFieldValue *ofv = ofvs.anyObject;
+        cell.textField.text = ofv.value ?: ofv.defaultValue;
+    } else {
+        cell.textField.text = nil;
+    }
+    
+    cell.accessoryType = UITableViewCellAccessoryNone;
+}
+
 
 - (BOOL)projectIsSelected:(Project *)project {
     __block BOOL found = NO;
@@ -152,22 +438,85 @@
 }
 
 - (void)selectedChanged:(UISwitch *)switcher {
-    Project *project = [self projectForSection:switcher.tag];
+    
+    NSInteger section = switcher.tag;
+    
+    NSMutableArray *indexPathsForSection = [NSMutableArray array];
+    if (!switcher.isOn) {
+        // we may have index paths to delete
+        for (int i = 0; i < [self.tableView numberOfRowsInSection:section]; i++) {
+            [indexPathsForSection addObject:[NSIndexPath indexPathForItem:i inSection:section]];
+        }
+    }
+    
+    Project *project = [self projectForSection:section];
     if (switcher.isOn) {
         ProjectObservation *po = [ProjectObservation object];
         po.observation = self.observation;
         po.project = project;
+        
+        NSMutableSet *existingOfvs = [NSMutableSet setWithSet:self.observation.observationFieldValues];
+        for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
+            ObservationFieldValue *ofv = [[existingOfvs objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+                return [obj.observationField isEqual:pof.observationField];
+            }] anyObject];
+            if (!ofv) {
+                ofv = [ObservationFieldValue object];
+                ofv.observation = self.observation;
+                ofv.observationField = pof.observationField;
+            }
+        }
     } else {
         for (ProjectObservation *po in [self.observation.projectObservations copy]) {
             if ([po.project isEqual:project]) {
+                for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
+                    ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+                        return [obj.observationField isEqual:pof.observationField];
+                    }] anyObject];
+                    [ofv deleteEntity];
+                }
+                
                 [self.observation removeProjectObservationsObject:po];
                 [po deleteEntity];
             }
         }
     }
     
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:switcher.tag]
-                  withRowAnimation:UITableViewRowAnimationFade];
+    // reload the table view in a fraction of a second
+    // allow the switcher animation to finish
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+}
+
+- (void)saveVisibleObservationFieldValues {
+    for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
+        Project *project = [self projectForSection:indexPath.section];
+        ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+        NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ovf, BOOL *stop) {
+            return [ovf.observation isEqual:self.observation];
+        }];
+        if (ofvs.count > 0) {
+            ObservationFieldValue *ofv = ofvs.anyObject;
+            ofv.value = [self currentValueForIndexPath:indexPath];
+        } else {
+            ObservationFieldValue *ofv = [ObservationFieldValue object];
+            ofv.observationField = field.observationField;
+            ofv.observation = self.observation;
+            ofv.value = [self currentValueForIndexPath:indexPath];
+        }
+    }
+}
+
+- (id)currentValueForIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if ([cell isKindOfClass:[ObsFieldSimpleValueCell class]]) {
+        return [[((ObsFieldSimpleValueCell *)cell) valueLabel] text];
+    } else if ([cell isKindOfClass:[ObsFieldLongTextValueCell class]]) {
+        return [[((ObsFieldLongTextValueCell *)cell) textField] text];
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - RKObjectLoaderDelegate

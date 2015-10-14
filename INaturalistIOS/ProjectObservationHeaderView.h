@@ -12,7 +12,6 @@
 
 @property UIImageView *projectThumbnailImageView;
 @property UILabel *projectTitleLabel;
-@property UILabel *detailsLabel;
 @property UISwitch *selectedSwitch;
 
 @end

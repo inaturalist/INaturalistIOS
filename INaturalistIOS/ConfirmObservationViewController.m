@@ -43,6 +43,9 @@
 #import "ObservationField.h"
 #import "ProjectObservationsViewController.h"
 #import "ProjectUser.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "UploadManager.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -96,9 +99,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         button.backgroundColor = [UIColor inatTint];
         button.tintColor = [UIColor whiteColor];
         button.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        [button setTitle:NSLocalizedString(@"Save", @"Title for save new observation button")
-                forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:button.titleLabel.font.pointSize];
+
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if ([appDelegate.loginController.uploadManager isAutouploadEnabled]) {
+            [button setTitle:NSLocalizedString(@"SHARE", @"Title for share new observation button")
+                    forState:UIControlStateNormal];
+        } else {
+            [button setTitle:NSLocalizedString(@"SAVE", @"Title for save new observation button")
+                    forState:UIControlStateNormal];
+        }
+
         [button addTarget:self action:@selector(saved:) forControlEvents:UIControlEventTouchUpInside];
         
         button;
@@ -119,7 +130,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                       metrics:0
                                                                         views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==44)]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
@@ -176,7 +187,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     newDefault.position = @(0);
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                          withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)photoScrollView:(PhotoScrollView *)psv deletedIndex:(NSInteger)idx {
@@ -661,9 +672,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                  selectedDate:self.observation.localObservedOn
                                                     doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
                                                         
+                                                        NSDate *date = (NSDate *)selectedDate;
+                                                        
+                                                        if ([date timeIntervalSinceNow] > 0) {
+                                                            NSString *alertTitle = NSLocalizedString(@"Invalid Date",
+                                                                                                     @"Invalid date alert title");
+                                                            NSString *alertMsg = NSLocalizedString(@"Cannot choose a date in the future.",
+                                                                                                   @"Alert message for invalid date");
+                                                            [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                        message:alertMsg
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:@"OK"
+                                                                              otherButtonTitles:nil] show];
+                                                            return;
+                                                        }
+                                                        
                                                         __strong typeof(weakSelf) strongSelf = self;
-                                                        strongSelf.observation.localObservedOn = selectedDate;
-                                                        strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
+                                                        strongSelf.observation.localObservedOn = date;
+                                                        strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:date];
                                                         
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                     withRowAnimation:UITableViewRowAnimationFade];

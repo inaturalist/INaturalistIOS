@@ -84,6 +84,7 @@
 
     for (int i = 1; i < numCells; i++) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i * (71 + 18), 0, 71 + 18, self.bounds.size.height)];
+        view.tag = 100 + i - 1;
         
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(9, 12, 71, 71)];
@@ -99,7 +100,7 @@
         delete.tag = i-1;
         [delete addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
         delete.frame = CGRectMake(0, 0, 22, 22);
-        delete.center = CGPointMake(iv.frame.origin.x + iv.bounds.size.width, iv.frame.origin.y);
+        delete.center = CGPointMake(iv.frame.origin.x + iv.bounds.size.width, iv.frame.origin.y + 4);
         delete.layer.cornerRadius = 11;
         FAKIcon *close = [FAKIonIcons closeIconWithSize:10];
         [delete setAttributedTitle:close.attributedString forState:UIControlStateNormal];
@@ -145,9 +146,61 @@
 }
 
 - (void)setDefault:(UIButton *)button {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(photoScrollView:setDefaultIndex:)]) {
-        [self.delegate photoScrollView:self setDefaultIndex:button.tag];
+    // swap the two
+    UIView *originalDefault = [self.scrollView viewWithTag:100 + 0];
+    CGPoint originalDefaultCenter = originalDefault.center;
+    UIView *newDefault = [self.scrollView viewWithTag:100 + button.tag];
+    CGPoint newDefaultCenter = newDefault.center;
+    
+    // bring the original & new to the top
+    // new at the top, original right below
+    [self.scrollView bringSubviewToFront:originalDefault];
+    [self.scrollView bringSubviewToFront:newDefault];
+    
+    for (UIView *view in originalDefault.subviews) {
+        if ([view isKindOfClass:[UIButton class]]) {
+            view.hidden = YES;
+        }
+        if ([view isKindOfClass:[UILabel class]]) {
+            view.hidden = YES;
+        }
+
     }
+    for (UIView *view in newDefault.subviews) {
+        if ([view isKindOfClass:[UIButton class]]) {
+            view.hidden = YES;
+        }
+    }
+    
+    
+    [UIView animateWithDuration:0.1f
+                     animations:^{
+                         newDefault.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                         originalDefault.transform = CGAffineTransformMakeScale(0.9, 0.9);
+
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.33f
+                                          animations:^{
+                                              [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+
+                                              // swap the two
+                                              originalDefault.center = newDefaultCenter;
+                                              newDefault.center = originalDefaultCenter;
+                                          } completion:^(BOOL finished) {
+                                              [UIView animateWithDuration:0.1f
+                                                               animations:^{
+                                                                   newDefault.transform = CGAffineTransformIdentity;
+                                                                   originalDefault.transform = CGAffineTransformIdentity;
+                                                               } completion:^(BOOL finished) {
+                                                                   if (self.delegate && [self.delegate respondsToSelector:@selector(photoScrollView:setDefaultIndex:)]) {
+                                                                       [self.delegate photoScrollView:self setDefaultIndex:button.tag];
+                                                                   }
+                                                               }];
+                                          }];
+                     }];
+    
+    
+
 }
 
 
