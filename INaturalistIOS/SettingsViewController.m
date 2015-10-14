@@ -123,22 +123,10 @@ static const int AutouploadSwitchTag = 102;
 {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate rebuildCoreData];
     
-	[Comment deleteAll];
-	[Identification deleteAll];
-	[User deleteAll];
-    [Observation deleteAll];
-	[ObservationPhoto deleteAll];
-    [ProjectUser deleteAll];
-    [ProjectObservation deleteAll];
-    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
-         [dr deleteEntity];
-    }
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
     [self localSignOut];
-    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
 - (void)localSignOut
