@@ -1282,7 +1282,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             textField.keyboardType = UIKeyboardTypeDecimalPad;
         }
     }
-    [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    
+    if (ofv.observationField.name) {
+        [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    }
+    
     return cell;
 }
 
