@@ -100,13 +100,13 @@
         return;
     }
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
 							 @"identification[observation_id]": self.observation.recordID,
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
@@ -124,12 +124,24 @@
         [SVProgressHUD showSuccessWithStatus:nil];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
-        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
+        [SVProgressHUD dismiss];
+        
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
 	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    [SVProgressHUD dismiss];
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate

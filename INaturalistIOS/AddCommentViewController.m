@@ -51,13 +51,13 @@
 }
 
 - (IBAction)clickedSave:(id)sender {
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"comment[body]": self.textView.text,
 							 @"comment[parent_id]": self.observation.recordID,
 							 @"comment[parent_type]": @"Observation"
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
@@ -66,12 +66,24 @@
         [SVProgressHUD showSuccessWithStatus:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
 	} else {
-        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
+        [SVProgressHUD dismiss];
+        
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding comment")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
 	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    [SVProgressHUD dismiss];
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 -(BOOL)prefersStatusBarHidden { return YES; }

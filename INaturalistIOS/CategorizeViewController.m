@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -358,7 +357,6 @@ static NSArray *ICONIC_TAXON_ORDER;
                                                                         error:&fetchError];
     if (fetchError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching categories: %@", fetchError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
     }
     
     // sort iconic taxa according to
@@ -521,7 +519,6 @@ static NSArray *ICONIC_TAXON_ORDER;
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
                                             saveError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

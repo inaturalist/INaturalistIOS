@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
@@ -263,7 +262,12 @@
         ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
         
         if (notify) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unavailable", nil)
+                                        message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+
             [self.refreshControl endRefreshing];
         }
         
@@ -621,14 +625,17 @@
             self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         }
         
-        [self configureHeaderForLoggedInUser];
-        
         [self.meHeader.projectsButton addTarget:self
                                          action:@selector(tappedProjects)
                                forControlEvents:UIControlEventTouchUpInside];
         [self.meHeader.guidesButton addTarget:self
                                        action:@selector(tappedGuides)
                              forControlEvents:UIControlEventTouchUpInside];
+        [self.meHeader.iconButton addTarget:self
+                                     action:@selector(sync:)
+                           forControlEvents:UIControlEventTouchUpInside];
+
+        [self configureHeaderForLoggedInUser];
 
         return self.meHeader;
         
@@ -807,7 +814,12 @@
         if (fetchError) {
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
                                                 fetchError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+            
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                        message:fetchError.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         
         if (me) {
@@ -822,13 +834,14 @@
     [view.iconButton setTintColor:[UIColor whiteColor]];
     view.iconButton.backgroundColor = [UIColor inatTint];
 
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UploadManager *uploadManager = appDelegate.loginController.uploadManager;
-
+    // allow cancel
     FAKIcon *stopIcon = [FAKIonIcons iosCloseOutlineIconWithSize:50];
     [view.iconButton setAttributedTitle:stopIcon.attributedString
                                forState:UIControlStateNormal];
+    view.iconButton.enabled = YES;
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploadManager = appDelegate.loginController.uploadManager;
     if (uploadManager.isSyncingDeletes) {
         self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
     } else {
@@ -861,99 +874,90 @@
         UploadManager *uploadManager = appDelegate.loginController.uploadManager;
         
         if (uploadManager.isUploading) {
-            if (uploadManager.isAutouploadEnabled) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (uploadManager.isUploading) {
-                        [self configureHeaderForActiveUploading:view];
-                    }
-                });
-            } else {
-                [self configureHeaderForActiveUploading:view];
-            }
-            
+            [self configureHeaderForActiveUploading:view];
         } else {
             
+            // cancel any existing upload animations
             [view stopAnimatingUpload];
             
             NSString *uploadButtonTitleText = NSLocalizedString(@"Upload", @"Title for upload button.");
-            NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
             
-            if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
-                FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:46];
-                NSMutableAttributedString *uploadIconString = [[NSMutableAttributedString alloc] initWithAttributedString:uploadIcon.attributedString];
-                // explicit linebreak because uilabel doesn't seem to be able to calculate number of lines required with a FAK glyph
-                NSString *uploadButtonSecondLine = [NSString stringWithFormat:@"\n%@", uploadButtonTitleText];
-                [uploadIconString appendAttributedString:[[NSAttributedString alloc] initWithString:uploadButtonSecondLine
-                                                                                         attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11] }]];
-                
-                // set a max line height on the "Upload" text line. required because the first line of the label is a 50pt glyph
-                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-                paragraphStyle.lineSpacing = 0;
-                paragraphStyle.maximumLineHeight = 11;
-                paragraphStyle.alignment = NSTextAlignmentCenter;
-                [uploadIconString addAttribute:NSParagraphStyleAttributeName
-                                         value:paragraphStyle
-                                         range:NSMakeRange(2, uploadIconString.length - 2)];
-
-                view.iconButton.tintColor = [UIColor whiteColor];
-                [view.iconButton setAttributedTitle:uploadIconString
-                                           forState:UIControlStateNormal];
-                
-                view.iconButton.titleLabel.numberOfLines = 2;
-                view.iconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    // only animate the upload button if it's still an upload button
-                    NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
-                    if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
-                        return;
-                    }
-                    
-                    [UIView animateWithDuration:0.2f
-                                     animations:^{
-                                         view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
-                                     } completion:^(BOOL finished) {
-                                         [UIView animateWithDuration:0.2f
-                                                          animations:^{
-                                                              view.iconButton.transform = CGAffineTransformMakeScale(0.95f, 0.95f);
-                                                          } completion:^(BOOL finished) {
-                                                              [UIView animateWithDuration:0.2f
-                                                                               animations:^{
-                                                                                   view.iconButton.transform = CGAffineTransformIdentity;
-                                                                               }];
-                                                          }];
-                                     }];
-                });
-            }
+            FAKIcon *uploadIcon = [FAKIonIcons iosCloudUploadIconWithSize:46];
+            NSMutableAttributedString *uploadIconString = [[NSMutableAttributedString alloc] initWithAttributedString:uploadIcon.attributedString];
+            // explicit linebreak because uilabel doesn't seem to be able to calculate number of lines required with a FAK glyph
+            NSString *uploadButtonSecondLine = [NSString stringWithFormat:@"\n%@", uploadButtonTitleText];
+            [uploadIconString appendAttributedString:[[NSAttributedString alloc] initWithString:uploadButtonSecondLine
+                                                                                     attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11] }]];
             
-            if (needingUploadCount > 0) {
-                NSString *baseUploadCountStr;
-                if (needingUploadCount == 1) {
-                    baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
-                                                           @"Count of observations to upload, singular.");
-                } else {
-                    baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
-                                                           @"Count of observations to upload, plural.");
+            // set a max line height on the "Upload" text line. required because the first line of the label is a 50pt glyph
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            paragraphStyle.lineSpacing = 0;
+            paragraphStyle.maximumLineHeight = 11;
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            [uploadIconString addAttribute:NSParagraphStyleAttributeName
+                                     value:paragraphStyle
+                                     range:NSMakeRange(2, uploadIconString.length - 2)];
+            
+            // image seems to override title text, so clear it
+            [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+            [view.iconButton setImage:nil forState:UIControlStateNormal];
+            
+            view.iconButton.backgroundColor = [UIColor inatTint];
+            view.iconButton.tintColor = [UIColor whiteColor];
+            [view.iconButton setAttributedTitle:uploadIconString
+                                       forState:UIControlStateNormal];
+            
+            // the upload icon is one line of attributed text
+            view.iconButton.titleLabel.numberOfLines = 2;
+            view.iconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            // allow interaction with the upload button
+            view.iconButton.enabled = YES;
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                // only animate the upload button if it's still an upload button
+                NSString *uploadButtonCurrentTitle = [[view.iconButton attributedTitleForState:UIControlStateNormal] string];
+                if (!uploadButtonCurrentTitle || [uploadButtonCurrentTitle rangeOfString:uploadButtonTitleText].location == NSNotFound) {
+                    return;
                 }
-                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
-            } else if (needingDeleteCount > 0) {
-                view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
-                                                            @"Deletes pending sync.");
-            }
+                
+                [UIView animateWithDuration:0.2f
+                                 animations:^{
+                                     view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
+                                 } completion:^(BOOL finished) {
+                                     [UIView animateWithDuration:0.2f
+                                                      animations:^{
+                                                          view.iconButton.transform = CGAffineTransformMakeScale(0.95f, 0.95f);
+                                                      } completion:^(BOOL finished) {
+                                                          [UIView animateWithDuration:0.2f
+                                                                           animations:^{
+                                                                               view.iconButton.transform = CGAffineTransformIdentity;
+                                                                           }];
+                                                      }];
+                                 }];
+            });
         }
         
-        if (![view.iconButton targetForAction:@selector(sync:) withSender:self]) {
-            [view.iconButton addTarget:self
-                                action:@selector(sync:)
-                      forControlEvents:UIControlEventTouchUpInside];
+        if (needingUploadCount > 0) {
+            NSString *baseUploadCountStr;
+            if (needingUploadCount == 1) {
+                baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
+                                                       @"Count of observations to upload, singular.");
+            } else {
+                baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
+                                                       @"Count of observations to upload, plural.");
+            }
+            view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
+        } else if (needingDeleteCount > 0) {
+            view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
+                                                        @"Deletes pending sync.");
         }
+        
         
     } else {
         [view.iconButton setAttributedTitle:nil forState:UIControlStateNormal];
         view.iconButton.backgroundColor = [UIColor clearColor];
-        [view.iconButton removeTarget:self
-                               action:@selector(sync:)
-                     forControlEvents:UIControlEventTouchUpInside];
+        view.iconButton.enabled = NO;
         
         // icon
         if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
@@ -1132,7 +1136,12 @@
     if (fetchError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
                                             fetchError.localizedDescription]];
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                    message:fetchError.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
     
     self.navigationItem.leftBarButtonItem = nil;
@@ -1267,7 +1276,12 @@
         if (saveError) {
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
                                                 saveError.localizedDescription]];
-            [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+            
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
+                                        message:saveError.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         
         // triggers reconfiguration of the header
@@ -1462,19 +1476,8 @@
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    if (uploadManager.isAutouploadEnabled) {
-        // if autoupload is on, delay a few seconds before the header animation starts
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self configureHeaderForLoggedInUser];
-            if (uploadManager.isUploading) {
-                [self.meHeader startAnimatingUpload];
-            }
-        });
-    } else {
-        // do the header animation right away
-        [self configureHeaderForLoggedInUser];
-        [self.meHeader startAnimatingUpload];
-    }
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader startAnimatingUpload];
     
     NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -1544,19 +1547,8 @@
 
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    if (uploadManager.isAutouploadEnabled) {
-        // start animating the header after 3 seconds
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self configureHeaderForLoggedInUser];
-            if (uploadManager.isUploading) {
-                [self.meHeader startAnimatingUpload];
-            }
-        });
-    } else {
-        // start animating the header right away
-        [self configureHeaderForLoggedInUser];
-        [self.meHeader startAnimatingUpload];
-    }
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader startAnimatingUpload];
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {

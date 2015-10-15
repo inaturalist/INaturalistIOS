@@ -113,7 +113,11 @@
 
 - (void)showTaxonDetailsForTaxonId:(NSInteger)taxonId {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
     
@@ -131,11 +135,19 @@
         };
         
         loader.onDidFailLoadWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                        message:err.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         };
         
         loader.onDidFailWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                        message:err.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         };
     }];
     
@@ -408,7 +420,11 @@
 - (void)addIdentificationWithTaxonId:(NSInteger)taxonId {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add identification", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
@@ -416,17 +432,22 @@
     
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Identification failed :(", nil)];
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
+                                            message:error.localizedDescription
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
             });
         } else {
             // if it wasn't an "agree" id, then we need to pop back through the taxon chooser to this VC
             [self.navigationController popToRootViewControllerAnimated:YES];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
-            });
             [self fetchObservationCommentsAndIds];
         }
     }];
@@ -435,7 +456,11 @@
 - (void)addComment:(NSString *)commentBody {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add comment", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
@@ -445,16 +470,22 @@
     [controller addComment:commentBody
             forObservation:self.observation
          completionHandler:^(RKResponse *response, NSError *error) {
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [SVProgressHUD dismiss];
+             });
+
              if (error) {
                  dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Comment failed :(", nil)];
+                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
+                                                 message:error.localizedDescription
+                                                delegate:nil
+                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                       otherButtonTitles:nil] show];
                  });
+
              } else {
                  [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
-                 // update the UI
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
-                 });
                  [self fetchObservationCommentsAndIds];
              }
     }];
@@ -470,7 +501,11 @@
     [controller loadCommentsAndIdentificationsForObservation:self.observation
                                            completionHandler:^(NSArray *results, NSError *error) {
                                                if (error) {
-                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot fetch comments and IDs", nil)
+                                                                               message:error.localizedDescription
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                     otherButtonTitles:nil] show];
                                                } else {
                                                    ExploreObservation *observation = (ExploreObservation *)results.firstObject;
                                                    

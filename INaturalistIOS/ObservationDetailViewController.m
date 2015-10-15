@@ -10,7 +10,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QBImagePickerController/QBImagePickerController.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
@@ -1283,7 +1282,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             textField.keyboardType = UIKeyboardTypeDecimalPad;
         }
     }
-    [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    
+    if (ofv.observationField.name) {
+        [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    }
+    
     return cell;
 }
 
