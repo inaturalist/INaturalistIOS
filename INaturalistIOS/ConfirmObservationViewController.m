@@ -818,6 +818,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         cell.titleLabel.text = taxon.defaultName;
         if ([taxon.isIconic boolValue]) {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.cellImageView.layer.borderWidth = 0.5f;
+            cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
             [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
