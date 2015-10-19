@@ -91,7 +91,7 @@
         iv.contentMode = UIViewContentModeScaleAspectFill;
         iv.image = [UIImage IFTTTDefaultLaunchImage];
         if (!iv.image) {
-            iv.image = [UIImage imageNamed:@"SignUp_OrangeFlower"];
+            iv.image = [UIImage imageNamed:@"Launch_Screen_4s_launch_screen_6plus.png"];
         }
         
         iv;
