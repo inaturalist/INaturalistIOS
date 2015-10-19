@@ -477,6 +477,20 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.captive = [NSNumber numberWithBool:switcher.isOn];
 }
 
+#pragma mark - UIButton targets
+
+- (void)taxonDeleted:(UIButton *)button {
+    self.observation.speciesGuess = nil;
+    self.observation.taxon = nil;
+    self.observation.taxonID = nil;
+    self.observation.iconicTaxonID = nil;
+    self.observation.iconicTaxonName = nil;
+    
+    NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
+    [self.tableView reloadRowsAtIndexPaths:@[ speciesIndexPath ]
+                          withRowAnimation:UITableViewRowAnimationFade];
+}
+
 #pragma mark - Project Chooser
 
 - (void)projectChooserViewController:(ProjectChooserViewController *)controller choseProjects:(NSArray *)projects {
@@ -827,6 +841,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         } else {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
+        
+        FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
+        [deleteIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+        [deleteButton setAttributedTitle:deleteIcon.attributedString forState:UIControlStateNormal];
+        [deleteButton addTarget:self action:@selector(taxonDeleted:) forControlEvents:UIControlEventTouchUpInside];
+        cell.accessoryView = deleteButton;
+        deleteButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     } else {
         FAKIcon *question = [FAKINaturalist unknownSpeciesIconWithSize:44];
         
@@ -836,7 +858,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
 
