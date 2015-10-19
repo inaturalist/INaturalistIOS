@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+#import <SDWebImage/UIImageView+WebCache.h>
 #import "DisclosureCell.h"
 
 @implementation DisclosureCell
@@ -88,6 +89,13 @@
     [self addConstraints:self.cellConstraints];
     
     [super updateConstraints];
+}
+
+- (void)prepareForReuse {
+    [self.cellImageView sd_cancelCurrentImageLoad];
+    self.cellImageView.layer.borderWidth = 0.0f;
+    self.cellImageView.layer.borderColor = nil;
+    self.cellImageView.layer.cornerRadius = 0.0f;
 }
 
 
