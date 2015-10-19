@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -11,10 +11,12 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SignUp_OrangeFlower" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Launch_Screen_4s_launch_screen_6plus.png" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+                    <animations/>
                 </imageView>
             </subviews>
+            <animations/>
             <color key="backgroundColor" red="0.38728412828947362" green="0.31491570723684209" blue="0.26973684210526316" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="ohQ-ca-M62" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="TXO-xV-w5F"/>
@@ -28,6 +30,6 @@
         </view>
     </objects>
     <resources>
-        <image name="SignUp_OrangeFlower" width="612" height="1086"/>
+        <image name="Launch_Screen_4s_launch_screen_6plus.png" width="1242" height="2208"/>
     </resources>
 </document>

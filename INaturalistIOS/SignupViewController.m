@@ -8,7 +8,7 @@
 
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "SignupViewController.h"
 #import "UIColor+INaturalist.h"
@@ -500,8 +500,11 @@
     
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating iNaturalist account...", @"Notice while we're creating an iNat account for them")
-                         maskType:SVProgressHUDMaskTypeGradient];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Creating iNaturalist account...",
+                                      @"Notice while we're creating an iNat account for them");
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     __weak typeof(self)weakSelf = self;
@@ -512,11 +515,15 @@
                                                 license:license
                                                 success:^(NSDictionary *info) {
                                                     __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                    
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                                    });
+
                                                     if (strongSelf.selectedPartner) {
                                                         [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                       completion:nil];
                                                     }
-                                                    [SVProgressHUD showSuccessWithStatus:nil];
                                                     if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                                                         [appDelegate showMainUI];
                                                     } else {
@@ -524,7 +531,11 @@
                                                     }
                                                 }
                                                 failure:^(NSError *error) {
-                                                    [SVProgressHUD dismiss];
+                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
+
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                                    });
 
                                                     NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                     NSString *alertMsg;

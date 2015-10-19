@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
@@ -102,7 +101,7 @@
         UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        view.center = loadingVC.view.center;
+        view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
         [view startAnimating];
         
         view;
@@ -157,11 +156,7 @@
         [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
         [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
     }
-    
-    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
-    // tiny bit offwhite, so it stands up with or without the gradient mask
-    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
-    
+        
     [JDStatusBarNotification setDefaultStyle:^JDStatusBarStyle *(JDStatusBarStyle *style) {
         style.barColor = [UIColor colorWithHexString:@"#969696"];
         style.textColor = [UIColor whiteColor];

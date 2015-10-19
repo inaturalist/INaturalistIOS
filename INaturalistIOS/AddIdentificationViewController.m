@@ -8,7 +8,7 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
 
 #import "AddIdentificationViewController.h"
@@ -106,8 +106,13 @@
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
-	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Saving...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
+    [[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
@@ -120,12 +125,11 @@
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+
 	if (response.statusCode == 200) {
-        [SVProgressHUD showSuccessWithStatus:nil];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
-        [SVProgressHUD dismiss];
-        
         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
                                     message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
                                    delegate:nil
@@ -135,7 +139,7 @@
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD dismiss];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
                                 message:error.localizedDescription

@@ -185,6 +185,7 @@
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
+		FA9BE2091BD580B2002A2608 /* Launch_Screen_4s_launch_screen_6plus.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9BE2081BD580B2002A2608 /* Launch_Screen_4s_launch_screen_6plus.png */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
@@ -583,6 +584,7 @@
 		FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+INaturalist.h"; sourceTree = "<group>"; };
 		FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+INaturalist.m"; sourceTree = "<group>"; };
 		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
+		FA9BE2081BD580B2002A2608 /* Launch_Screen_4s_launch_screen_6plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Launch_Screen_4s_launch_screen_6plus.png; sourceTree = "<group>"; };
 		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
@@ -761,6 +763,7 @@
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
 				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
+				FA9BE2081BD580B2002A2608 /* Launch_Screen_4s_launch_screen_6plus.png */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
@@ -1387,6 +1390,7 @@
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
 				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
+				FA9BE2091BD580B2002A2608 /* Launch_Screen_4s_launch_screen_6plus.png in Resources */,
 				893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
