@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "GuideCollectionViewController.h"
@@ -361,7 +361,10 @@ static const int GutterWidth  = 5;
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly
 {
     if (!quietly) {
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Loading...",nil);
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
     }
     NSMutableURLRequest *r = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -573,9 +576,9 @@ static const int GutterWidth  = 5;
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
-    if ([SVProgressHUD isVisible]) {
-        [SVProgressHUD dismiss];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
+    });
     
     if (self.progress) {
         self.progress.hidden = YES;
@@ -597,9 +600,9 @@ static const int GutterWidth  = 5;
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-    if ([SVProgressHUD isVisible]) {
-        [SVProgressHUD dismiss];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
+    });
     
     if (self.progress) {
         self.progress.hidden = YES;

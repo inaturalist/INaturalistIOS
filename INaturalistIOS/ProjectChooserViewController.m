@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
@@ -81,32 +81,9 @@
 
 
 #pragma mark - lifecycle
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
-    
-    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                        username,
-                        language,
-                        countryCode];
-        if (username && username.length > 0) {
-            [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
-            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
-            RKObjectManager *objectManager = [RKObjectManager sharedManager];
-            [objectManager loadObjectsAtResourcePath:url
-                                          usingBlock:^(RKObjectLoader *loader) {
-                                              loader.delegate = self;
-                                              // handle naked array in JSON by explicitly directing the loader which mapping to use
-                                              loader.objectMapping = [objectManager.mappingProvider objectMappingForClass:[ProjectUser class]];
-                                          }];
-        }
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -132,6 +109,34 @@
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
     }
+    
+    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                        username,
+                        language,
+                        countryCode];
+        if (username && username.length > 0) {
+            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
+            
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.labelText = NSLocalizedString(@"Loading...",nil);
+            hud.removeFromSuperViewOnHide = YES;
+            hud.dimBackground = YES;
+
+            RKObjectManager *objectManager = [RKObjectManager sharedManager];
+            [objectManager loadObjectsAtResourcePath:url
+                                          usingBlock:^(RKObjectLoader *loader) {
+                                              loader.delegate = self;
+                                              // handle naked array in JSON by explicitly directing the loader which mapping to use
+                                              loader.objectMapping = [objectManager.mappingProvider objectMappingForClass:[ProjectUser class]];
+                                          }];
+        }
+    }
+
     
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectChooser];
 }
@@ -187,9 +192,10 @@
 }
 
 #pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    [SVProgressHUD showSuccessWithStatus:nil];
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
@@ -214,7 +220,9 @@
     // getting deallocated after handling an error.  This is a kludge.
     self.loader = objectLoader;
     
-    [SVProgressHUD dismiss];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
     
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;

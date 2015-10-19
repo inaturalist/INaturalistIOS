@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "TaxaSearchViewController.h"
@@ -42,8 +42,12 @@ static const int TaxonCellSubtitleTag = 3;
     
     // only notify modally if we're fetching these taza from scratch
     BOOL modal = ((id <NSFetchedResultsSectionInfo>)[fetchedResultsController sections][0]).numberOfObjects == 0;
-    if (modal)
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+    if (modal) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Loading...",nil);
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+    }
     
     [[Analytics sharedClient] debugLog:@"Network - Taxa search"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
@@ -52,6 +56,10 @@ static const int TaxonCellSubtitleTag = 3;
                                                         loader.objectMapping = [Taxon mapping];
                                                         
                                                         loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
                                                             
                                                             // update timestamps on us and taxa objects
                                                             NSDate *now = [NSDate date];
@@ -94,13 +102,13 @@ static const int TaxonCellSubtitleTag = 3;
                                                                                   otherButtonTitles:nil] show];
                                                                 return;
                                                             }
-                                                            
-                                                            if (modal && objects.count > 0) {
-                                                                [SVProgressHUD showSuccessWithStatus:nil];
-                                                            }
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
+
                                                             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
                                                                                         message:error.localizedDescription
                                                                                        delegate:nil
@@ -109,6 +117,10 @@ static const int TaxonCellSubtitleTag = 3;
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
+
                                                             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
                                                                                         message:error.localizedDescription
                                                                                        delegate:nil

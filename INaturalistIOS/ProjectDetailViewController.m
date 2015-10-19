@@ -7,7 +7,7 @@
 //
 
 #import <TapkuLibrary/TapkuLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ProjectDetailViewController.h"
@@ -108,15 +108,19 @@ static const int LeaveProjectAlertViewTag = 1;
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)join
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Joining...",nil)];
+- (void)join {
+    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Joining...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     if (!self.projectUser) {
         self.projectUser = [ProjectUser object];
         self.projectUser.project = self.project;
         self.projectUser.projectID = self.project.recordID;
     }
-    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
     [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
@@ -124,10 +128,14 @@ static const int LeaveProjectAlertViewTag = 1;
     }];
 }
 
-- (void)leave
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Leaving...",nil)];
+- (void)leave {
     [[Analytics sharedClient] debugLog:@"Network - Leave a project"];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Leaving...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
@@ -367,8 +375,11 @@ static const int LeaveProjectAlertViewTag = 1;
 }
 
 #pragma mark - RKObjectLoader
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+    
     ProjectUser *pu = object;
     if (pu) {
         pu.syncedAt = [NSDate date];
@@ -376,12 +387,13 @@ static const int LeaveProjectAlertViewTag = 1;
         [self clickedClose:nil];
     }
     self.projectUser = pu;
-    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    [SVProgressHUD dismiss];
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+    
     if (objectLoader.response.statusCode == 401) {
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
                          withProperties:@{ @"From": @"Project Detail" }];
@@ -402,21 +414,6 @@ static const int LeaveProjectAlertViewTag = 1;
         [av show];
     }
 }
-
-#pragma mark - LoginViewControllerDelegate
-/*
- - (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    [self clickedJoin:nil];
-}
-
-- (void)loginViewControllerDidCancel:(LoginViewController *)controller
-{
-    if (self.projectUser) {
-        [self.projectUser destroy];
-    }
-}
- */
 
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

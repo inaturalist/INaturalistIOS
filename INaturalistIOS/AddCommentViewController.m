@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "AddCommentViewController.h"
 #import "Observation.h"
@@ -57,17 +57,20 @@
 							 @"comment[parent_type]": @"Observation"
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Saving...", nil);
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    
 	if (response.statusCode == 200) {
-        [SVProgressHUD showSuccessWithStatus:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
 	} else {
-        [SVProgressHUD dismiss];
-        
         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
                                     message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding comment")
                                    delegate:nil
@@ -77,7 +80,7 @@
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD dismiss];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
                                 message:error.localizedDescription

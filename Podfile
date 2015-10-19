@@ -35,9 +35,9 @@ target :iNaturalist do
 	pod 'SDWebImage', '3.7.3'
 	pod 'IFTTTLaunchImage', '0.4.4'
 	pod 'JDStatusBarNotification', '1.5.2'
+	pod 'MBProgressHUD', '0.9.1'
 	pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
 	pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
-	pod 'SVProgressHUD', :git => 'https://github.com/alexshepard/SVProgressHUD.git', :commit => 'c80b6cea04b966c3ff017d8e5d184c23f8af5cb4'
 end
 
 target :iNaturalistTests do

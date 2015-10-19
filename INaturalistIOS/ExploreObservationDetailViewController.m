@@ -11,7 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <RestKit/RestKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
@@ -428,22 +428,23 @@
         return;
     }
 
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Identification...", nil)];
-    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Adding Identification...", nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD dismiss];
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
 
         if (error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
-                                            message:error.localizedDescription
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
-            });
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             // if it wasn't an "agree" id, then we need to pop back through the taxon chooser to this VC
             [self.navigationController popToRootViewControllerAnimated:YES];
@@ -463,27 +464,27 @@
                           otherButtonTitles:nil] show];
         return;
     }
-
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Comment...", nil)];
     
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Adding Comment...", nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addComment:commentBody
             forObservation:self.observation
          completionHandler:^(RKResponse *response, NSError *error) {
              
              dispatch_async(dispatch_get_main_queue(), ^{
-                 [SVProgressHUD dismiss];
+                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
              });
 
              if (error) {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
-                                                 message:error.localizedDescription
-                                                delegate:nil
-                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                       otherButtonTitles:nil] show];
-                 });
-
+                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
+                                             message:error.localizedDescription
+                                            delegate:nil
+                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                   otherButtonTitles:nil] show];
              } else {
                  [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
                  [self fetchObservationCommentsAndIds];

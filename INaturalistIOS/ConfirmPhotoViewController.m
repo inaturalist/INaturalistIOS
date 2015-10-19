@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreLocation/CoreLocation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -205,7 +205,11 @@
     
     if (self.image) {
         // we need to save to the AssetsLibrary...
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving new photo...", @"status while saving your image")];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+
         // embed geo
         CLLocationManager *loc = [[CLLocationManager alloc] init];
         NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
@@ -225,10 +229,11 @@
         [lib writeImageToSavedPhotosAlbum:self.image.CGImage
                                  metadata:mutableMetadata
                           completionBlock:^(NSURL *newAssetUrl, NSError *error) {
+                              [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                              
                               if (error) {
                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
                                                                       error.localizedDescription]];
-                                  [SVProgressHUD dismiss];
                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
                                                               message:error.localizedDescription
                                                              delegate:nil
@@ -236,8 +241,6 @@
                                                     otherButtonTitles:nil] show];
 
                               } else {
-                                  [SVProgressHUD dismiss];
-                                  
                                   [lib assetForURL:newAssetUrl
                                        resultBlock:^(ALAsset *asset) {
                                            // be defensive
@@ -245,7 +248,6 @@
                                                self.confirmFollowUpAction(@[ asset ]);
                                            } else {
                                                [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
-                                               [SVProgressHUD dismiss];
                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error using newly saved image", @"Error title when we can't load a newly saved image")
                                                                            message:NSLocalizedString(@"No asset found", @"Error message for asset fetch failure")
                                                                           delegate:nil

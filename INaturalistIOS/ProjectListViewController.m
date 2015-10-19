@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
@@ -106,7 +106,12 @@ static const int ListedTaxonCellAddButtonTag = 4;
     self.navigationItem.rightBarButtonItem = self.stopSyncButton;
     self.lastSyncedAt = [NSDate date];
     self.tableView.scrollEnabled = NO;
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing list...",nil)];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Syncing list...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
@@ -114,11 +119,14 @@ static const int ListedTaxonCellAddButtonTag = 4;
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
 }
 
-- (void)stopSync
-{
-    self.navigationItem.rightBarButtonItem = self.syncButton;
-    self.tableView.scrollEnabled = YES;
-    [SVProgressHUD dismiss];
+- (void)stopSync {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.navigationItem.rightBarButtonItem = self.syncButton;
+        self.tableView.scrollEnabled = YES;
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+
     [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
     [self loadData];
     [[self tableView] reloadData];

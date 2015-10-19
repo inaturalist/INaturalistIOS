@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <FontAwesomeKit/FAKIonicons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -585,10 +585,10 @@
         return;
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Logging in...", @"Notice while we're logging them in")
-                             maskType:SVProgressHUDMaskTypeGradient];
-    });
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Logging in...", @"Notice while we're logging them in");
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
     
     __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
@@ -597,7 +597,7 @@
                                            success:^(NSDictionary *info) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [SVProgressHUD showSuccessWithStatus:nil];
+                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
                                                });
                                                if (strongSelf.selectedPartner) {
                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
@@ -609,8 +609,9 @@
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
                                                }
                                            } failure:^(NSError *error) {
+                                               __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [SVProgressHUD dismiss];
+                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
                                                });
 
                                                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");

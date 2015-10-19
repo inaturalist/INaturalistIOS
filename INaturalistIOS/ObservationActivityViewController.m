@@ -8,7 +8,7 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBPRogressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
@@ -228,10 +228,13 @@ static UIImage *defaultPersonImage;
 	[self agreeWithIdentification:identification];
 }
 
-- (void)agreeWithIdentification:(Identification *)identification
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Agreeing...",nil)];
-	NSDictionary *params = @{
+- (void)agreeWithIdentification:(Identification *)identification {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Agreeing...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
+    NSDictionary *params = @{
 							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":identification.taxonID
 							 };
@@ -266,19 +269,21 @@ static UIImage *defaultPersonImage;
 }
 
 #pragma mark - RKRequestDelegate
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
 //	NSLog(@"Did load response status code: %d for URL: %@", response.statusCode, response.URL);
 	if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound && response.statusCode == 200) {
 		[self refreshData];
 	} else {
-        [SVProgressHUD dismiss];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        });
 	}
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
-{
-    [SVProgressHUD dismiss];
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
     
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Failed", nil)
                                 message:error.localizedDescription
@@ -289,12 +294,11 @@ static UIImage *defaultPersonImage;
 
 #pragma mark - RKObjectLoaderDelegate
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
 	[self.refreshControl endRefreshing];
-    if ([SVProgressHUD isVisible]) {
-        [SVProgressHUD showSuccessWithStatus:nil];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
 	
     if (objects.count == 0) return;
     
@@ -306,6 +310,9 @@ static UIImage *defaultPersonImage;
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
 
 	[self.refreshControl endRefreshing];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
 	
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
