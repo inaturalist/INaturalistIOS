@@ -824,7 +824,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
             [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
         } else {
-            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:nil];
+            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
     } else {
         FAKIcon *question = [FAKINaturalist unknownSpeciesIconWithSize:44];
