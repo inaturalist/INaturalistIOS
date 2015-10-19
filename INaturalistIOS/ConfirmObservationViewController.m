@@ -838,6 +838,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
             [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+            cell.cellImageView.layer.cornerRadius = 3.0f;
         } else {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
