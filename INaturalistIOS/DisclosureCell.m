@@ -17,6 +17,8 @@
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
+            iv.contentMode = UIViewContentModeScaleAspectFill;
+            iv.clipsToBounds = YES;
             
             iv;
         });
