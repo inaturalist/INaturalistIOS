@@ -164,7 +164,6 @@
 		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
 		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
-		FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */; };
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
@@ -541,8 +540,6 @@
 		FA6D695B1B06B026000983F8 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
 		FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextFieldCell.h; sourceTree = "<group>"; };
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
-		FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorizeViewController.h; sourceTree = "<group>"; };
-		FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorizeViewController.m; sourceTree = "<group>"; };
 		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
 		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
@@ -832,8 +829,6 @@
 				19AE897B18DD0AA700505918 /* AddCommentViewController.m */,
 				19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */,
 				19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */,
-				FA6F164B1AC2483B0027FF1C /* CategorizeViewController.h */,
-				FA6F164C1AC2483B0027FF1C /* CategorizeViewController.m */,
 				FA7558471B9A4BDF00762D7B /* ConfirmObservationViewController.h */,
 				FA7558481B9A4BDF00762D7B /* ConfirmObservationViewController.m */,
 				FAC0F1671A9EAE3B000F20C4 /* ConfirmPhotoViewController.h */,
@@ -1570,7 +1565,6 @@
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
-				FA6F164D1AC2483C0027FF1C /* CategorizeViewController.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
 				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
