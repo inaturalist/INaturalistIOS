@@ -101,7 +101,7 @@
         UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        view.center = loadingVC.view.center;
+        view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
         [view startAnimating];
         
         view;
