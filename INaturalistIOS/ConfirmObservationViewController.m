@@ -102,7 +102,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         button.titleLabel.font = [UIFont boldSystemFontOfSize:button.titleLabel.font.pointSize];
 
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if ([appDelegate.loginController.uploadManager isAutouploadEnabled]) {
+        if (appDelegate.loginController.isLoggedIn && [appDelegate.loginController.uploadManager isAutouploadEnabled]) {
             [button setTitle:NSLocalizedString(@"SHARE", @"Title for share new observation button")
                     forState:UIControlStateNormal];
         } else {
