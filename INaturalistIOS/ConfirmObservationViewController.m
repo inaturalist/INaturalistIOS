@@ -851,7 +851,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         cell.accessoryView = deleteButton;
         deleteButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     } else {
-        FAKIcon *question = [FAKINaturalist unknownSpeciesIconWithSize:44];
+        FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
@@ -901,7 +901,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self.observation observedOnPrettyString];
-    FAKIcon *calendar = [FAKIonIcons iosCalendarOutlineIconWithSize:44];
+    FAKIcon *calendar = [FAKINaturalist iosCalendarOutlineIconWithSize:44];
     [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(44, 44)];
     

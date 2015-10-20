@@ -8,9 +8,10 @@
 + (instancetype)arrowLeftIconWithSize:(CGFloat)size { return [self iconWithCode:@"b" size:size]; }
 + (instancetype)arrowRightIconWithSize:(CGFloat)size { return [self iconWithCode:@"c" size:size]; }
 + (instancetype)arrowUpIconWithSize:(CGFloat)size { return [self iconWithCode:@"d" size:size]; }
-+ (instancetype)captiveIconWithSize:(CGFloat)size { return [self iconWithCode:@"f" size:size]; }
 + (instancetype)lifebuoyIconWithSize:(CGFloat)size { return [self iconWithCode:@"g" size:size]; }
-+ (instancetype)unknownSpeciesIconWithSize:(CGFloat)size { return [self iconWithCode:@"h" size:size]; }
++ (instancetype)speciesUnknownIconWithSize:(CGFloat)size { return [self iconWithCode:@"f" size:size]; }
++ (instancetype)iosCalendarOutlineIconWithSize:(CGFloat)size { return [self iconWithCode:@"h" size:size]; }
++ (instancetype)captiveIconWithSize:(CGFloat)size { return [self iconWithCode:@"i" size:size]; }
 
 + (NSDictionary *)allIcons {
     return @{
@@ -19,9 +20,10 @@
              @"b" : @"arrowLeft",
              @"c" : @"arrowRight",
              @"d" : @"arrowUp",
-             @"f" : @"captive",
              @"g" : @"lifebuoy",
-             @"h" : @"unknownSpecies",
+             @"f" : @"speciesUnknown",
+             @"h" : @"iosCalendarOutline",
+             @"i" : @"captive",
              
              };
 }
