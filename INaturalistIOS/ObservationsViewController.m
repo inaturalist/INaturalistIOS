@@ -50,11 +50,12 @@
     
     UIView *noContentView;
 
-    NSFetchedResultsController *fetchedResultsController;
+    NSFetchedResultsController *_fetchedResultsController;
 }
 @property RKObjectLoader *meObjectLoader;
 @property MeHeaderView *meHeader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
+@property (readonly) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation ObservationsViewController
@@ -145,7 +146,7 @@
     CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
     NSIndexPath *ip = [self.tableView indexPathForRowAtPoint:translatedCenter];
     
-    Observation *observation = [fetchedResultsController objectAtIndexPath:ip];
+    Observation *observation = [self.fetchedResultsController objectAtIndexPath:ip];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
                      withProperties:@{
@@ -350,7 +351,7 @@
 
 - (void)checkEmpty
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];      // only one section of observations in our tableview
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][0];      // only one section of observations in our tableview
 
     if ([sectionInfo numberOfObjects] == 0) {
 
@@ -500,7 +501,7 @@
 - (void)clickedActivity:(id)sender event:(UIEvent *)event {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
 	vc.observation = o;
@@ -516,7 +517,7 @@
 	
 	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    Observation *observation = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	
 	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
 											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
@@ -575,14 +576,14 @@
 
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 
     if (o.validationErrorMsg && o.validationErrorMsg > 0 && ![appDelegate.loginController.uploadManager currentUploadWorkContainsObservation:o]) {
@@ -673,7 +674,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
         return;
     } else {
@@ -684,7 +685,7 @@
 #pragma mark - TableViewCell helpers
 
 - (void)configureObservationCell:(ObservationViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     // configure the photo
     if (o.sortedObservationPhotos.count > 0) {
@@ -719,7 +720,7 @@
 - (void)configureErrorCell:(ObservationViewErrorCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     [self configureObservationCell:cell forIndexPath:indexPath];
     
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.dateLabel.text = o.observedOnShortString;
     cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
 }
@@ -760,7 +761,7 @@
 - (void)configureNormalCell:(ObservationViewNormalCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     [self configureObservationCell:cell forIndexPath:indexPath];
     
-    Observation *o = [fetchedResultsController objectAtIndexPath:indexPath];
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (o.placeGuess && o.placeGuess.length > 0) {
         cell.subtitleLabel.text = o.placeGuess;
     } else if (o.latitude) {
@@ -1029,6 +1030,46 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+#pragma mark - NSNotificationCenter
+
+- (void)userSignedIn {
+    [self refreshRequestedNotify:YES];
+}
+
+- (void)coreDataRebuilt {
+    _fetchedResultsController = nil;
+    [self.tableView reloadData];
+    [self loadUserForHeader];
+}
+
+#pragma mark - Fetched Results Controller helper
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (!_fetchedResultsController) {
+        // NSFetchedResultsController request for my observations
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
+        
+        // sort by common name, if available
+        request.sortDescriptors = @[
+                                    [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO],
+                                    [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO],
+                                    ];
+        
+        // no request predicate yet, all Observations in core data are "mine"
+        
+        // setup our fetched results controller
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                        managedObjectContext:[NSManagedObjectContext defaultContext]
+                                                                          sectionNameKeyPath:nil
+                                                                                   cacheName:nil];
+        // update our tableview based on changes in the fetched results
+        _fetchedResultsController.delegate = self;
+    }
+    
+    return _fetchedResultsController;
+}
+
 #pragma mark - View lifecycle
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -1111,28 +1152,15 @@
                                                  name:kUserLoggedInNotificationName
                                                object:nil];
     
-    // NSFetchedResultsController request for my observations
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Observation"];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(coreDataRebuilt)
+                                                 name:kInatCoreDataRebuiltNotification
+                                               object:nil];
     
-    // sort by common name, if available
-    request.sortDescriptors = @[
-                                [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:NO],
-                                [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO],
-                                ];
-    
-    // no request predicate yet, all Observations in core data are "mine"
-    
-    // setup our fetched results controller
-    fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                   managedObjectContext:[NSManagedObjectContext defaultContext]
-                                                                     sectionNameKeyPath:nil
-                                                                              cacheName:nil];
-    // update our tableview based on changes in the fetched results
-    fetchedResultsController.delegate = self;
     
     // perform the iniital local fetch
     NSError *fetchError;
-    [fetchedResultsController performFetch:&fetchError];
+    [self.fetchedResultsController performFetch:&fetchError];
     if (fetchError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
                                             fetchError.localizedDescription]];
@@ -1164,10 +1192,6 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
-}
-
-- (void)userSignedIn {
-    [self refreshRequestedNotify:YES];
 }
 
 - (void)settings {
@@ -1222,7 +1246,7 @@
     }
     
     NSError *error;
-    [fetchedResultsController performFetch:&error];
+    [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
     [self checkEmpty];
 
@@ -1263,6 +1287,7 @@
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - RKObjectLoaderDelegate
@@ -1479,7 +1504,7 @@
     [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
     
-    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -1489,7 +1514,7 @@
     [self configureHeaderForLoggedInUser];
     [self updateSyncBadge];
 
-    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -1497,14 +1522,14 @@
 - (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
 
-    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
     
-    NSIndexPath *ip = [fetchedResultsController indexPathForObject:observation];
+    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];    
 }
 

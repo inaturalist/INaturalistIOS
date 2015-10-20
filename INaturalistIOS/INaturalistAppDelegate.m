@@ -180,6 +180,8 @@
 - (void)rebuildCoreData {
     RKManagedObjectStore *objectStore = [[RKObjectManager sharedManager] objectStore];
     [objectStore deletePersistentStore];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kInatCoreDataRebuiltNotification
+                                                        object:nil];
 }
 
 - (void)configureRestKit
@@ -389,3 +391,5 @@
 
 
 @end
+
+NSString *kInatCoreDataRebuiltNotification = @"kInatCoreDataRebuiltNotification";
