@@ -33,7 +33,7 @@
         
         
         self.cellConstraints = [NSMutableArray array];
-        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[iv(==34)]"
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-7.5-[iv(==29)]"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
@@ -46,11 +46,11 @@
                                                                                           metrics:0
                                                                                             views:views]];
         
-        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[iv]-12-[title]-[secondary]-10-|"
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[iv]-15-[title]-[secondary]-10-|"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
-        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[iv]-12-[subtitle]-[secondary]-10-|"
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[iv]-15-[subtitle]-[secondary]-10-|"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];
