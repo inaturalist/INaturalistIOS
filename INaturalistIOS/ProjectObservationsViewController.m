@@ -23,12 +23,14 @@
 #import "ObsFieldSimpleValueCell.h"
 #import "ObsFieldLongTextValueCell.h"
 #import "ProjectObsFieldViewController.h"
+#import "TaxaSearchViewController.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
 
-@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate>
+@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate, TaxaSearchViewControllerDelegate>
 @property RKObjectLoader *loader;
+@property NSIndexPath *taxaSearchIndexPath;
 @end
 
 @implementation ProjectObservationsViewController
@@ -100,6 +102,33 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     //[scrollView endEditing:YES];
 }
 
+#pragma mark - TaxaSearchViewControllerDelegate
+
+- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
+    [self.navigationController popToViewController:self animated:YES];
+    
+    if (!self.taxaSearchIndexPath) { return; }
+    
+    Project *project = [self projectForSection:self.taxaSearchIndexPath.section];
+    ProjectObservationField *field = [project sortedProjectObservationFields][self.taxaSearchIndexPath.item];
+    
+    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+        return [ofv.observation isEqual:self.observation];
+    }];
+    
+    if (ofvs.count > 0) {
+        // pick one?
+        ObservationFieldValue *ofv = ofvs.anyObject;
+        ofv.value = [taxon.recordID stringValue];
+    }
+    
+    [self.tableView reloadRowsAtIndexPaths:@[ self.taxaSearchIndexPath ]
+                          withRowAnimation:UITableViewRowAnimationNone];
+    
+    self.taxaSearchIndexPath = nil;
+    [self saveVisibleObservationFieldValues];
+}
+
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -122,6 +151,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [self configureSimpleCell:cell forObsField:field];
         return cell;
     } else if ([field.observationField.datatype isEqualToString:@"date"]) {
+        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
+        [self configureSimpleCell:cell forObsField:field];
+        return cell;
+    } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
         [self configureSimpleCell:cell forObsField:field];
         return cell;
@@ -212,9 +245,6 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         initialSelection = [values indexOfObject:ofv.value];
     }
     
-    NSLog(@"datatype is %@", field.observationField.datatype);
-    
-    
     if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count > 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
@@ -288,6 +318,16 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
     } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
         // taxon picker
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        
+        TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
+        search.hidesDoneButton = YES;
+        search.delegate = self;
+        search.query = self.observation.speciesGuess;
+        [self.navigationController pushViewController:search animated:YES];
+        
+        // stash the selected index path so we know what ofv to update
+        self.taxaSearchIndexPath = indexPath;
         
     } else if ([field.observationField.datatype isEqualToString:@"date"]) {
         // date field
@@ -385,7 +425,17 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     if (ofvs.count > 0) {
         // pick one?
         ObservationFieldValue *ofv = ofvs.anyObject;
-        cell.valueLabel.text = ofv.value ?: ofv.defaultValue;
+        if ([field.observationField.datatype isEqualToString:@"taxon"]) {
+            Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
+            if (t) {
+                cell.valueLabel.text = t.name;
+            } else {
+                cell.valueLabel.text = ofv.value.length == 0 ? @"unknown" : ofv.value;
+            }
+
+        } else {
+            cell.valueLabel.text = ofv.value ?: ofv.defaultValue;
+        }
     } else {
         // show default
         NSString *defaultValue = field.observationField.allowedValuesArray.firstObject;
