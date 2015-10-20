@@ -983,9 +983,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     cell.titleLabel.text = NSLocalizedString(@"Is it captive or cultivated?", @"Captive / cultivated button title.");
     
-    FAKIcon *cage = [FAKINaturalist captiveIconWithSize:44];
-    [cage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-    cell.cellImageView.image = [cage imageWithSize:CGSizeMake(44, 44)];
+    FAKIcon *captive = [FAKINaturalist captiveIconWithSize:44];
+    [captive addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+    cell.cellImageView.image = [captive imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
