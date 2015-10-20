@@ -665,7 +665,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         case ConfirmObsSectionIdentify:
             if (indexPath.item == 0) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-
+                
                 TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
                 search.hidesDoneButton = YES;
                 search.delegate = self;
@@ -759,18 +759,25 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                       } cancelBlock:nil
                                                          origin:self.view] showActionSheetPicker];
             } else if (indexPath.item == 5) {
-                
-                ProjectObservationsViewController *projectsVC = [[ProjectObservationsViewController alloc] initWithNibName:nil bundle:nil];
-                projectsVC.observation = self.observation;
-                
-                NSMutableArray *projects = [NSMutableArray array];
-                [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
-                    [projects addObject:pu.project];
-                }];
-                
-                projectsVC.joinedProjects = [NSArray arrayWithArray:projects];
-                
-                [self.navigationController pushViewController:projectsVC animated:YES];
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                if (appDelegate.loginController.isLoggedIn) {
+                    ProjectObservationsViewController *projectsVC = [[ProjectObservationsViewController alloc] initWithNibName:nil bundle:nil];
+                    projectsVC.observation = self.observation;
+                    
+                    NSMutableArray *projects = [NSMutableArray array];
+                    [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
+                        [projects addObject:pu.project];
+                    }];
+                    projectsVC.joinedProjects = [NSArray arrayWithArray:projects];
+                    [self.navigationController pushViewController:projectsVC animated:YES];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in!", nil)
+                                                message:NSLocalizedString(@"You must be logged in to access projects.", nil)
+                                               delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                      otherButtonTitles:nil] show];
+                }
+
             
             } else {
                 // do nothing
