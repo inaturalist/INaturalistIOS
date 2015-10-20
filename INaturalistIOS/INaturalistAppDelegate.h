@@ -23,3 +23,6 @@
 - (void)rebuildCoreData;
 
 @end
+
+
+extern NSString *kInatCoreDataRebuiltNotification;
