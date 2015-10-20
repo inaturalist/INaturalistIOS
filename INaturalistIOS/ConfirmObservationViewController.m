@@ -715,6 +715,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
                 EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
                 map.delegate = self;
+                map.saveOnExit = YES;
                 
                 if (self.observation.visibleLatitude) {
                     INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude

@@ -111,7 +111,7 @@
     
     [self.navigationController setToolbarHidden:YES];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
+    if (self.saveOnExit && self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
         [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
     }
 }
@@ -201,10 +201,23 @@
     double distanceInDegrees = fabs(coord.longitude - self.mapView.centerCoordinate.longitude);
     double distanceInMeters = [self degreesToMeters:distanceInDegrees];
     return distanceInMeters;
-
 }
 
-#pragma mark - UIButton targets
+#pragma mark - UIBarButtonItem targets
+
+- (IBAction)clickedCancel:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidCancel:)]) {
+        [self.delegate performSelector:@selector(editLocationViewControllerDidCancel) withObject:self];
+    }
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)clickedDone:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
+        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
+    }
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)clickedCurrentLocationButton
 {
