@@ -9,6 +9,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <ActionSheetPicker-3.0/ActionSheetPicker.h>
+#import <FontAwesomeKit/FAKIonicons.h>
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
@@ -41,6 +42,16 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
+    
+    self.navigationItem.leftBarButtonItem = ({
+        FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:34];
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[backIcon imageWithSize:CGSizeMake(14, 34)]
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:self
+                                                                action:@selector(backPressed:)];
+        
+        item;
+    });
     
     self.tableView.backgroundColor = [UIColor colorWithHexString:@"#f1f7e5"];
     self.tableView.estimatedRowHeight = 44.0f;
@@ -77,6 +88,75 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [super viewDidAppear:animated];
     
     [self.tableView reloadData];
+}
+
+#pragma mark - UIBarButton targets
+
+- (void)backPressed:(UIBarButtonItem *)button {
+    NSString *projectNameFailingValidation = nil;
+    NSString *projectFieldFailingValidation = nil;
+    
+    BOOL validated = [self validateProjectObservationsForObservation:self.observation
+                                                       failedProject:&projectNameFailingValidation
+                                                         failedField:&projectFieldFailingValidation];
+    
+    if (validated) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        NSString *msg = [NSString stringWithFormat:NSLocalizedString(@"'%@' requires that you fill out the '%@' field.",nil),
+                         projectNameFailingValidation,
+                         projectFieldFailingValidation];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Required Field",nil)
+                                                     message:msg
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+}
+
+#pragma mark - ProjectObs & OFV helpers
+
+- (BOOL)validateProjectObservationsForObservation:(Observation *)observation
+                                    failedProject:(out NSString **)failedProject
+                                      failedField:(out NSString **)failedField {
+    
+    for (ProjectObservation *po in self.observation.sortedProjectObservations) {
+        for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
+            if (pof.required.boolValue) {
+                ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
+                    return [obj.observationField isEqual:pof.observationField];
+                }] anyObject];
+                if (!ofv || ofv.value == nil || ofv.value.length == 0) {
+                    *failedProject = pof.project.title;
+                    *failedField = pof.observationField.name;
+                    
+                    return false;
+                }
+            }
+        }
+    }
+    
+    return true;
+}
+
+- (void)saveVisibleObservationFieldValues {
+    for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
+        Project *project = [self projectForSection:indexPath.section];
+        ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+        NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ovf, BOOL *stop) {
+            return [ovf.observation isEqual:self.observation];
+        }];
+        if (ofvs.count > 0) {
+            ObservationFieldValue *ofv = ofvs.anyObject;
+            ofv.value = [self currentValueForIndexPath:indexPath];
+        } else {
+            ObservationFieldValue *ofv = [ObservationFieldValue object];
+            ofv.observationField = field.observationField;
+            ofv.observation = self.observation;
+            ofv.value = [self currentValueForIndexPath:indexPath];
+        }
+    }
 }
 
 #pragma mark - UITextField delegate
@@ -537,25 +617,6 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
     });
-}
-
-- (void)saveVisibleObservationFieldValues {
-    for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
-        Project *project = [self projectForSection:indexPath.section];
-        ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
-        NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ovf, BOOL *stop) {
-            return [ovf.observation isEqual:self.observation];
-        }];
-        if (ofvs.count > 0) {
-            ObservationFieldValue *ofv = ofvs.anyObject;
-            ofv.value = [self currentValueForIndexPath:indexPath];
-        } else {
-            ObservationFieldValue *ofv = [ObservationFieldValue object];
-            ofv.observationField = field.observationField;
-            ofv.observation = self.observation;
-            ofv.value = [self currentValueForIndexPath:indexPath];
-        }
-    }
 }
 
 - (id)currentValueForIndexPath:(NSIndexPath *)indexPath {
