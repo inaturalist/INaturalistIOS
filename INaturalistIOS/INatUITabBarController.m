@@ -29,6 +29,8 @@
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
 #import "ConfirmObservationViewController.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define OBSERVE_TAB_INDEX   1
@@ -311,7 +313,8 @@ static char PROJECT_ASSOCIATED_KEY;
         
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
-        if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (![appDelegate.loginController isLoggedIn] && ![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             if (![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
