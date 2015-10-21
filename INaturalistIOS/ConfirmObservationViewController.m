@@ -16,6 +16,7 @@
 #import <ImageIO/ImageIO.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ConfirmObservationViewController.h"
 #import "Observation.h"
@@ -152,7 +153,26 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (error) {
         // TODO: log it at least, also notify the user
     }
+    
+    [self triggerAutoUpload];
+
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)triggerAutoUpload {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if ([uploader shouldAutoupload]) {
+        if (uploader.isNetworkAvailableForUpload) {
+            [uploader autouploadPendingContent];
+        } else {
+            if (uploader.shouldNotifyAboutNetworkState) {
+                [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                           dismissAfter:4];
+                [uploader notifiedAboutNetworkState];
+            }
+        }
+    }
 }
 
 #pragma mark - UITextViewDelegate
