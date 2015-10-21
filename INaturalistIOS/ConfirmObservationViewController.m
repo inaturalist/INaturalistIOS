@@ -66,6 +66,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                          target:self
+                                                                                          action:@selector(cancelledNewObservation:)];
 
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -509,6 +513,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
     [self.tableView reloadRowsAtIndexPaths:@[ speciesIndexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];
+}
+
+- (void)cancelledNewObservation:(UIBarButtonItem *)item {
+    [self.observation deleteEntity];
+    self.observation = nil;
+    
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Project Chooser
