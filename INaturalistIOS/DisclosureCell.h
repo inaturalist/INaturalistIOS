@@ -13,4 +13,5 @@
 @property UILabel *titleLabel;
 @property UILabel *secondaryLabel;      // to the right of the title
 @property NSMutableArray *cellConstraints;
++ (CGFloat)heightForRowWithTitle:(NSString *)title inTableView:(UITableView *)tableView;
 @end

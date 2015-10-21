@@ -581,19 +581,41 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == ConfirmObsSectionPhotos) {
-        return 108;
-    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 0) {
-        return 66;
-    } else if (indexPath.section == ConfirmObsSectionNotes && indexPath.item == 2) {
-        if (self.observation.latitude && self.observation.longitude) {
-            return 66;
-        } else {
-            return 44;
-        }
-    } else {
-        return 44;
+    switch (indexPath.section) {
+        case ConfirmObsSectionPhotos:
+            return 108;
+            break;
+        case ConfirmObsSectionIdentify:
+            if (indexPath.item == 0) {
+                return [DisclosureCell heightForRowWithTitle:self.observation.taxon.defaultName ?: NSLocalizedString(@"Something...", nil)
+                                                 inTableView:tableView];
+            } else if (indexPath.item == 1) {
+                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Help Me ID This Species", nil)
+                                                 inTableView:tableView];
+            }
+        case ConfirmObsSectionNotes:
+            if (indexPath.item == 0) {
+                // notes
+                return 66;
+            } else if (indexPath.item == 1) {
+                // datetime
+                return 44;
+            } else if (indexPath.item == 2) {
+                // location
+                return (self.observation.latitude && self.observation.longitude) ? 66 : 44;
+            } else if (indexPath.item == 3) {
+                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Geo Privacy", nil)
+                                                 inTableView:tableView];
+            } else if (indexPath.item == 4) {
+                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Is It Captive or Cultivated?", nil)
+                                                 inTableView:tableView];
+            } else if (indexPath.item == 5) {
+                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Geo Privacy", nil)
+                                                 inTableView:tableView];
+            }
     }
+    
+    return 44;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -873,7 +895,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)helpIdCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = @"Help Me ID this Species";
+    cell.titleLabel.text = NSLocalizedString(@"Help Me ID This Species", nil);
     FAKIcon *bouy = [FAKINaturalist lifebuoyIconWithSize:44];
     [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
@@ -1020,8 +1042,5 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSLog(@"indexpath is %@", ip);
     NSAssert(NO, @"shouldn't reach here");
 }
-
-
-
 
 @end

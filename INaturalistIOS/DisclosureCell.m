@@ -28,6 +28,8 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
+            label.numberOfLines = 0;
+            
             label;
         });
         [self.contentView addSubview:self.titleLabel];
@@ -49,7 +51,7 @@
                                 };
         
         self.cellConstraints = [NSMutableArray array];
-
+        
         [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-7.5-[iv(==29)]"
                                                                                           options:0
                                                                                           metrics:0
@@ -99,8 +101,25 @@
     self.cellImageView.layer.borderColor = nil;
     self.cellImageView.layer.cornerRadius = 0.0f;
     
+    self.titleLabel.text = nil;
+    self.secondaryLabel.text = nil;
+    
     self.accessoryType = UITableViewCellAccessoryNone;
     self.accessoryView = nil;
+}
+
++ (CGFloat)heightForRowWithTitle:(NSString *)title inTableView:(UITableView *)tableView {
+    // 59 for cell image view to the left, 80 for the potential accessory view to the right
+    CGFloat usableWidth = tableView.bounds.size.width - 59 - 80;
+    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
+    UIFont *font = [UIFont systemFontOfSize:17.0f];
+    
+    CGRect textRect = [title boundingRectWithSize:maxSize
+                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                       attributes:@{ NSFontAttributeName: font }
+                                          context:nil];
+    
+    return MAX(44, textRect.size.height + 14); // 14 for padding
 }
 
 
