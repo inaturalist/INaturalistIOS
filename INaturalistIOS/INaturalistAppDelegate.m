@@ -36,6 +36,7 @@
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "NSURL+INaturalist.h"
+#import "DeletedRecord.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -178,8 +179,30 @@
 }
 
 - (void)rebuildCoreData {
+    /*
+     // this causes restkit/core data to descend into a nightmarish unstability
     RKManagedObjectStore *objectStore = [[RKObjectManager sharedManager] objectStore];
     [objectStore deletePersistentStore];
+    [objectStore save:nil];
+     */
+    
+    [Comment deleteAll];
+    [Identification deleteAll];
+    [User deleteAll];
+    [Observation deleteAll];
+    [ObservationPhoto deleteAll];
+    [ProjectUser deleteAll];
+    [ProjectObservation deleteAll];
+    [ObservationFieldValue deleteAll];
+    [User deleteAll];
+    
+    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
+        [dr deleteEntity];
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:kInatCoreDataRebuiltNotification
                                                         object:nil];
 }
