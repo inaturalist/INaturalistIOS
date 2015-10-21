@@ -1050,7 +1050,11 @@
 #pragma mark - NSNotificationCenter
 
 - (void)userSignedIn {
+    NSError *error = nil;
     [self.fetchedResultsController performFetch:&error];
+    if (error) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Fetch Error: %@", error.localizedDescription]];
+    }
     [self refreshRequestedNotify:YES];
 }
 
