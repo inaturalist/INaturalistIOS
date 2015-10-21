@@ -89,14 +89,13 @@ static const int AutouploadSwitchTag = 102;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
     
+    UILabel *usernameDetailTextLabel = (UILabel *)[usernameCell viewWithTag:UsernameDetailLabelTag];
+    
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        
-        UILabel *usernameDetailTextLabel = (UILabel *)[usernameCell viewWithTag:UsernameDetailLabelTag];
         usernameDetailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
-        usernameCell.detailTextLabel.text = NSLocalizedString(@"Unknown",nil);
+        usernameDetailTextLabel.text = NSLocalizedString(@"Unknown",nil);
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign in",nil);
     }
     
@@ -122,10 +121,12 @@ static const int AutouploadSwitchTag = 102;
 {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
     
+    [[[RKClient sharedClient] requestQueue] cancelAllRequests];
+
+    [self localSignOut];
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate rebuildCoreData];
-    
-    [self localSignOut];
 }
 
 - (void)localSignOut
