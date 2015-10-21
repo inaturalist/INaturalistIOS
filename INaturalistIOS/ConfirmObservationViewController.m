@@ -47,6 +47,7 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "UploadManager.h"
+#import "Analytics.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -151,17 +152,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.tableView reloadData];
 }
 
-- (void)saved:(UIButton *)button {
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
-    }
-    
-    [self triggerAutoUpload];
-
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
 
 - (void)triggerAutoUpload {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -516,10 +506,26 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
+    
     [self.observation deleteEntity];
     self.observation = nil;
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)saved:(UIButton *)button {
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
+    
+    NSError *error;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        // TODO: log it at least, also notify the user
+    }
+    
+    [self triggerAutoUpload];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Project Chooser
