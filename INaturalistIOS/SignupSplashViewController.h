@@ -21,7 +21,7 @@
 
 
 // expose UI elements for transition animator
-@property UILabel *logoLabel;
+@property UIImageView *logoImageView;
 @property UILabel *reasonLabel;
 @property SplitTextButton *loginFaceButton;
 @property SplitTextButton *loginGButton;

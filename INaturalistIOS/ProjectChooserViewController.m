@@ -33,9 +33,13 @@
 
 - (void)loadData
 {
+    
     self.projectUsers = [[ProjectUser all] sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
+    // be defensive
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
+    self.projectUsers = [self.projectUsers filteredArrayUsingPredicate:predicate];
 }
 
 - (IBAction)clickedCancel:(id)sender {

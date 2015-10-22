@@ -165,7 +165,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
-    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
+    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower2.jpg"];
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
     purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
     
@@ -206,29 +206,33 @@ static char PARTNER_ASSOCIATED_KEY;
     }
 
     
-    self.logoLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        int logoSize;
-        if ([self respondsToSelector:@selector(traitCollection)]) {
-            if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-                logoSize = 200;
-            } else {
-                logoSize = 160;
-            }
-        } else {
-            logoSize = 160;
-        }
-        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
-        [logo addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        
-        label.textAlignment = NSTextAlignmentCenter;
-        label.attributedText = logo.attributedString;
-        
-        label;
-    });
-    [self.view addSubview:self.logoLabel];
+//    self.logoLabel = ({
+//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+//        label.translatesAutoresizingMaskIntoConstraints = NO;
+//        
+//        int logoSize;
+//        if ([self respondsToSelector:@selector(traitCollection)]) {
+//            if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+//                logoSize = 200;
+//            } else {
+//                logoSize = 160;
+//            }
+//        } else {
+//            logoSize = 160;
+//        }
+//        FAKINaturalist *logo = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
+//        [logo addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+//        
+//        label.textAlignment = NSTextAlignmentCenter;
+//        label.attributedText = logo.attributedString;
+//        
+//        label;
+//    });
+//    [self.view addSubview:self.logoLabel];
+    self.logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"platformLogo"]];
+    self.logoImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.logoImageView];
+//    self.logoLabel.hidden = YES;
     
     self.reasonLabel = ({
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -499,7 +503,7 @@ static char PARTNER_ASSOCIATED_KEY;
     [self.view addSubview:self.signinEmailButton];
     
     NSDictionary *views = @{
-                            @"logo": self.logoLabel,
+                            @"logo": self.logoImageView,
                             @"bg": self.backgroundImageView,
                             @"face": self.loginFaceButton,
                             @"g": self.loginGButton,
@@ -641,7 +645,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     FAKINaturalist *inatWordmark = [FAKINaturalist inatWordmarkIconWithSize:logoSize];
     [inatWordmark addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    self.logoLabel.attributedText = inatWordmark.attributedString;
+//    self.logoLabel.attributedText = inatWordmark.attributedString;
 }
 
 #pragma mark - Partner alert helper

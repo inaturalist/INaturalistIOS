@@ -20,7 +20,7 @@
     // Check if the user is already member of golan wildlife project.
     Project *golanProject = [[self class] golanProject];
     if(golanProject == nil){
-        [self joinTheProject];
+        [self downloadUserProjects];
     }
 //    NSArray *projects = [ProjectUser objectsWithPredicate:nil];
 //    if(projects.count){
@@ -72,6 +72,42 @@
     }
 }
 
+- (void)downloadUserProjects{
+    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *language = [[NSLocale preferredLanguages] firstObject];
+    NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                      self.username,
+                      language,
+                      countryCode];
+    
+    RKObjectLoaderDidLoadObjectsBlock didLoadObjectsBlock = ^(NSArray *objects) {
+        BOOL found = NO;
+        for(ProjectUser *pu in objects){
+            // Check for the project id of Golan Wildlife.
+            if([pu.projectID intValue] == kGolanWildlifeProjectID){
+                found = YES;
+                break;
+            }
+        }
+        if(!found)
+            [self joinTheProject];
+    };
+    
+    
+    RKObjectMapping *mapping = [ProjectUser mapping];
+    
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        loader.objectMapping = mapping;
+                                                        
+                                                        loader.onDidLoadObjects = didLoadObjectsBlock;
+                                                        loader.onDidLoadResponse = nil;
+                                                        loader.onDidFailWithError = nil;
+                                                    }];
+
+    
+    
+}
 
 // RKObjectLoaderDelegate :::::::::::::::::::::::::::::::::::::::::::::::
 #pragma mark - RKObjectLoaderDelegate

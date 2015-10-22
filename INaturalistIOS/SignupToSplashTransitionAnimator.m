@@ -36,7 +36,7 @@
     splash.backgroundImageView.image = signup.backgroundImage;
 
     // splash screen UI elements start off-screen to the left
-    splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, -width, 0);
+    splash.logoImageView.frame = CGRectOffset(splash.logoImageView.frame, -width, 0);
     splash.reasonLabel.frame = CGRectOffset(splash.reasonLabel.frame, -width, 0);
     splash.loginFaceButton.frame = CGRectOffset(splash.loginFaceButton.frame, -width, 0);
     splash.loginGButton.frame = CGRectOffset(splash.loginGButton.frame, -width, 0);
@@ -56,7 +56,7 @@
                          }
 
                          // migrate all the splash screen stuff in from the right
-                         splash.logoLabel.frame = CGRectOffset(splash.logoLabel.frame, width, 0);
+                         splash.logoImageView.frame = CGRectOffset(splash.logoImageView.frame, width, 0);
                          splash.reasonLabel.frame = CGRectOffset(splash.reasonLabel.frame, width, 0);
                          splash.loginFaceButton.frame = CGRectOffset(splash.loginFaceButton.frame, width, 0);
                          splash.loginGButton.frame = CGRectOffset(splash.loginGButton.frame, width, 0);

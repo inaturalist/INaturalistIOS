@@ -1006,7 +1006,7 @@
 {
 	[super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservations];
-}
+}   
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

@@ -354,9 +354,13 @@
             [mainVC.view addSubview:priorSnapshot];
             self.window.rootViewController = mainVC;
             
-            self.golan = [[SignUserForGolanProject alloc] init];
-            [self.golan signUserForGolanProject];
-                        
+            User *theUser = [self.loginController fetchMe];
+            if(theUser){
+                self.golan = [[SignUserForGolanProject alloc] init];
+                self.golan.username = theUser.login;
+                [self.golan signUserForGolanProject];
+            }
+            
             [UIView animateWithDuration:0.65f
                              animations:^{
                                  priorSnapshot.alpha = 0.0f;
