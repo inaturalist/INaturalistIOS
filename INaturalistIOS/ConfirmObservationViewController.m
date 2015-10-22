@@ -61,6 +61,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (readonly) NSString *notesPlaceholder;
 @property CLLocationManager *locationManager;
 @property NSTimer *locationTimer;
+@property UITapGestureRecognizer *tapDismissTextViewGesture;
 @end
 
 @implementation ConfirmObservationViewController
@@ -69,6 +70,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tapDismissTextViewGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                             action:@selector(tapDismiss:)];
+    self.tapDismissTextViewGesture.numberOfTapsRequired = 1;
+    self.tapDismissTextViewGesture.numberOfTouchesRequired = 1;
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
@@ -191,6 +197,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         textView.textColor = [UIColor blackColor];
         textView.text = @"";
     }
+    
+    [self.view addGestureRecognizer:self.tapDismissTextViewGesture];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
@@ -200,11 +208,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         textView.textColor = [UIColor colorWithHexString:@"#AAAAAA"];
         textView.text = self.notesPlaceholder;
     }
+    
+    [self.view removeGestureRecognizer:self.tapDismissTextViewGesture];
 }
 
 #pragma mark - textview helper
+
 - (NSString *)notesPlaceholder {
     return NSLocalizedString(@"Notes...", @"Placeholder for observation notes when making a new observation.");
+}
+
+- (void)tapDismiss:(UITapGestureRecognizer *)tapGesture {
+    [self.tableView endEditing:YES];
 }
 
 #pragma mark - PhotoScrollViewDelegate
@@ -956,6 +971,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         default:
             return nil;
             break;
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if ([scrollView isEqual:self.tableView]) {
+        [self.tableView endEditing:YES];
     }
 }
 
