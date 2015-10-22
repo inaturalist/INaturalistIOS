@@ -70,6 +70,8 @@
             
             ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
             confirmObs.observation = o;
+            confirmObs.shouldContinueUpdatingLocation = self.shouldContinueUpdatingLocation;
+            
             [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
             [weakSelf.navigationController pushViewController:confirmObs animated:YES];
         };

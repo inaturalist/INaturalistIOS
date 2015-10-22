@@ -55,10 +55,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionNotes,
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate>
+@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate>
 @property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
+@property CLLocationManager *locationManager;
+@property NSTimer *locationTimer;
 @end
 
 @implementation ConfirmObservationViewController
@@ -142,6 +144,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                         views:views]];
 
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
+    
+    if (self.shouldContinueUpdatingLocation) {
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            [self.locationManager requestWhenInUseAuthorization];
+        } else {
+            [self startUpdatingLocation];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,6 +162,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.tableView reloadData];
 }
 
+- (void)dealloc {
+    [self stopUpdatingLocation];
+}
+
+#pragma mark - Autoupload Helper
 
 - (void)triggerAutoUpload {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -339,7 +354,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark UIImagePickerControllerDelegate methods
+#pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
@@ -439,8 +454,86 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     return gps;
 }
 
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    switch (status) {
+        case kCLAuthorizationStatusAuthorizedAlways:
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+            [self startUpdatingLocation];
+            break;
+        case kCLAuthorizationStatusNotDetermined:
+        case kCLAuthorizationStatusDenied:
+        case kCLAuthorizationStatusRestricted:
+        default:
+            // do nothing
+            break;
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+
+    if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
+    
+    // self.observation can be momentarily nil when it's being deleted
+    if (!self.observation) return;
+    
+    @try {
+        self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
+        self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
+        self.observation.privateLatitude = nil;
+        self.observation.privateLongitude = nil;
+        self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
+        self.observation.positioningMethod = @"gps";
+        
+        NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
+        
+        if (newLocation.horizontalAccuracy < 10) {
+            [self stopUpdatingLocation];
+        }
+        
+        if (self.observation.placeGuess.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
+            [self reverseGeocodeCoordinatesForObservation:self.observation];
+        }
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // if self.observation has been deleted or is otherwise inaccessible, do nothing
+            return;
+        } else {
+            // unanticpated exception
+            @throw(exception);
+        }
+    }
+}
+
+#pragma mark - Location Manager helpers
+
+- (void)stopUpdatingLocation {
+    [self.locationTimer invalidate];
+    [self.locationManager stopUpdatingLocation];
+}
+
+- (void)startUpdatingLocation {
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+    }
+    
+    if (!self.locationTimer) {
+        self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0
+                                                              target:self
+                                                            selector:@selector(stopUpdatingLocation)
+                                                            userInfo:nil
+                                                             repeats:NO];
+    }
+    
+    [self.locationManager startUpdatingLocation];
+}
+
 
 #pragma mark - geocoding helper
+
 - (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;

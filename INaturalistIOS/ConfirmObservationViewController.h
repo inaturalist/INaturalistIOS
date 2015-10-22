@@ -13,5 +13,6 @@
 @interface ConfirmObservationViewController : UIViewController
 
 @property Observation *observation;
+@property BOOL shouldContinueUpdatingLocation;
 
 @end
