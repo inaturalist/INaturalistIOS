@@ -82,10 +82,7 @@ static char PROJECT_ASSOCIATED_KEY;
         // Me tab
         self.selectedIndex = ME_TAB_INDEX;
     }
-    
-    // we'll use the iconic taxa during the new observation flow
-    [self fetchIconicTaxa];
-    
+        
     [super viewDidLoad];
 }
 
@@ -542,21 +539,6 @@ static char PROJECT_ASSOCIATED_KEY;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     [makeFirstObsTooltip hideAnimated:NO];
-}
-
-#pragma mark - Fetch Iconic Taxa
-
-- (void)fetchIconicTaxa {
-    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
-    if (![reachability isReachabilityDetermined] || ![reachability isNetworkReachable]) {
-        return;
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa" usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.objectMapping = [Taxon mapping];
-    }];
 }
 
 #pragma mark - RKObjectLoader & RKRequest delegates

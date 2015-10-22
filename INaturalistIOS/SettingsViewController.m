@@ -54,13 +54,11 @@ static const int AutomaticallyUploadLabelTag = 18;
 
 // labels for settings switcher rows are 50 + row index
 static const int AutocompleteNamesLabelTag = 50;
-static const int CategorizeNewObsLabelTag = 51;
-static const int AutouploadLabelTag = 52;
+static const int AutouploadLabelTag = 51;
 
 // setting switchers are 100 + row index
 static const int AutocompleteNamesSwitchTag = 100;
-static const int CategorizeNewObsSwitchTag = 101;
-static const int AutouploadSwitchTag = 102;
+static const int AutouploadSwitchTag = 101;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -311,8 +309,6 @@ static const int AutouploadSwitchTag = 102;
     
     if (switcher.tag == AutocompleteNamesSwitchTag)
         key = kINatAutocompleteNamesPrefKey;
-    else if (switcher.tag == CategorizeNewObsSwitchTag)
-        key = kInatCategorizeNewObsPrefKey;
     else if (switcher.tag == AutouploadSwitchTag)
         key = kInatAutouploadPrefKey;
     
@@ -374,16 +370,12 @@ static const int AutouploadSwitchTag = 102;
     else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
 
-        if (indexPath.item < 3) {
+        if (indexPath.item < 2) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
             if (autoNameLabel) {
                 autoNameLabel.textAlignment = NSTextAlignmentNatural;
-            }
-            UILabel *categoriesLabel = (UILabel *)[cell.contentView viewWithTag:CategorizeNewObsLabelTag];
-            if (categoriesLabel) {
-                categoriesLabel.textAlignment = NSTextAlignmentNatural;
             }
             UILabel *autouploadLabel = (UILabel *)[cell.contentView viewWithTag:AutouploadLabelTag];
             if (autouploadLabel) {
@@ -420,8 +412,6 @@ static const int AutouploadSwitchTag = 102;
             
             if (switcher.tag == AutocompleteNamesSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
-            else if (switcher.tag == CategorizeNewObsSwitchTag)
-                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey];
             else if (switcher.tag == AutouploadSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
 
@@ -489,7 +479,7 @@ static const int AutouploadSwitchTag = 102;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1) {
-        if (indexPath.item == 3) {
+        if (indexPath.item == 2) {
             // so the user can select again
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
@@ -520,9 +510,6 @@ static const int AutouploadSwitchTag = 102;
             // autocorrect
             tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
         } else if (indexPath.item == 1) {
-            // skip categorization
-            tooltipText = NSLocalizedString(@"Enable to make a quick, initial identification from high-level taxa when making a new observation.", @"tooltip text for skip categorization option.");
-        } else if (indexPath.item == 2) {
             // automatically upload
             tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
                                             @"tooltip text for automatically upload option.");

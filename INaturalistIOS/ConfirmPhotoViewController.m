@@ -48,25 +48,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // make sure we have some local iconic taxa before we try to categorize
-    // if we don't have any, try to load remotely
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
-        request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-        
-        NSError *fetchError;
-        self.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                                 error:&fetchError];
-
-        if (self.iconicTaxa.count == 0) {
-            [self loadRemoteIconicTaxa];
-        }
-        
-    }
-    
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){

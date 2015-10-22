@@ -16,7 +16,6 @@
 #define kINatAuthServiceExtToken @"INatAuthServiceExtToken"
 #define kINatAuthService @"INatAuthService"
 #define kINatAutocompleteNamesPrefKey @"INatAutocompleteNamesPrefKey"
-#define kInatCategorizeNewObsPrefKey @"INatCategorizeNewObsPrefKey"
 #define kInatCustomBaseURLStringKey @"InatCustomBaseURLStringKey"
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 

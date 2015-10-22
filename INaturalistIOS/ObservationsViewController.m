@@ -1142,10 +1142,6 @@
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
     if (![[NSUserDefaults standardUserDefaults] boolForKey:FirstSignInKey]) {
-        // completely new users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kInatCategorizeNewObsPrefKey];
-        
         // completely new users default to autocomplete on
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatAutocompleteNamesPrefKey];
