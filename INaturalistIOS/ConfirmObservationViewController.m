@@ -17,6 +17,9 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 
 #import "ConfirmObservationViewController.h"
 #import "Observation.h"
@@ -31,7 +34,6 @@
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
-#import "PhotoScrollView.h"
 #import "ObservationPhoto.h"
 #import "ObsCameraOverlay.h"
 #import "Observation+AddAssets.h"
@@ -48,6 +50,7 @@
 #import "LoginController.h"
 #import "UploadManager.h"
 #import "Analytics.h"
+#import "PhotoScrollViewCell.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -94,8 +97,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"photos"];
-        [tv registerClass:[UITableViewCell class] forCellReuseIdentifier:@"switch"];
+        [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -224,17 +226,21 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - PhotoScrollViewDelegate
 
-- (void)photoScrollView:(PhotoScrollView *)psv setDefaultIndex:(NSInteger)idx {
-    ObservationPhoto *originalDefault = self.observation.sortedObservationPhotos[0];
-    ObservationPhoto *newDefault = self.observation.sortedObservationPhotos[idx];
-    originalDefault.position = @(newDefault.position.integerValue);
-    newDefault.position = @(0);
+- (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
+    for (ObservationPhoto *photo in self.observation.observationPhotos) {
+        if (photo.position.integerValue == idx) {
+            photo.position = @(0);
+        } else if (photo.position.integerValue < idx) {
+            // needs to move down one
+            photo.position = @(photo.position.integerValue + 1);
+        }
+    }
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (void)photoScrollView:(PhotoScrollView *)psv deletedIndex:(NSInteger)idx {
+- (void)photoScrollView:(PhotoScrollViewCell *)psv deletedIndex:(NSInteger)idx {
     ObservationPhoto *photo = self.observation.sortedObservationPhotos[idx];
     NSPredicate *minusDeletedPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         return ![evaluatedObject isEqual:photo];
@@ -251,16 +257,54 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                          withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (void)photoScrollViewAddPressed:(PhotoScrollView *)psv {
+- (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
+    // show the hires photo?
+    ObservationPhoto *op = [self.observation.sortedObservationPhotos objectAtIndex:idx];
+    if (!op) return;
+    
+    NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
+        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
+        return [MHGalleryItem itemWithImage:img];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = YES;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = idx;
+    gallery.UICustomization = customization;
+    gallery.presentingFromImageView = [psv imageViewForIndex:idx];
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        __strong typeof(blockGallery)strongGallery = blockGallery;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
+
+}
+
+- (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [self pushCamera];
     } else {
         [self pushLibrary];
     }
 }
+
+#pragma mark - PhotoScrollView helpers
+
 
 - (void)pushLibrary {
     // no camera available
@@ -985,22 +1029,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - table view cell helpers
 
 - (UITableViewCell *)photoCellInTableView:(UITableView *)tableView {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
+    PhotoScrollViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
-    PhotoScrollView *photoScrollView;
-    if (![cell viewWithTag:0x999]) {
-        photoScrollView = [[PhotoScrollView alloc] initWithFrame:cell.contentView.bounds];
-        photoScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        photoScrollView.tag = 0x999;
-        
-        photoScrollView.delegate = self;
-        
-        [cell.contentView addSubview:photoScrollView];
-    } else {
-        photoScrollView = (PhotoScrollView *)[cell viewWithTag:0x999];
-    }
-    
-    photoScrollView.photos = self.observation.sortedObservationPhotos;
+    cell.photos = self.observation.sortedObservationPhotos;
+    cell.delegate = self;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
