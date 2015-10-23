@@ -204,7 +204,7 @@
 		FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */; };
 		FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
 		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
-		FAF47B321BD99FFC007CC407 /* PhotoChicletView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletView.m */; };
+		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 /* End PBXBuildFile section */
@@ -623,8 +623,8 @@
 		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
 		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
-		FAF47B301BD99FFC007CC407 /* PhotoChicletView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoChicletView.h; sourceTree = "<group>"; };
-		FAF47B311BD99FFC007CC407 /* PhotoChicletView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoChicletView.m; sourceTree = "<group>"; };
+		FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoChicletCell.h; sourceTree = "<group>"; };
+		FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoChicletCell.m; sourceTree = "<group>"; };
 		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
@@ -953,8 +953,8 @@
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
 				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
-				FAF47B301BD99FFC007CC407 /* PhotoChicletView.h */,
-				FAF47B311BD99FFC007CC407 /* PhotoChicletView.m */,
+				FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */,
+				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
 				FA5564851BD9A9340049803B /* PhotoScrollViewCell.h */,
 				FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */,
 				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
@@ -1549,7 +1549,7 @@
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
 				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
-				FAF47B321BD99FFC007CC407 /* PhotoChicletView.m in Sources */,
+				FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */,
 				19F62193150ECBEE00C58F28 /* List.m in Sources */,
 				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
 				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
