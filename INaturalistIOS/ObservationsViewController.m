@@ -734,6 +734,8 @@
     } else {
         [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
 }
 
 - (void)configureErrorCell:(ObservationViewErrorCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -749,6 +751,8 @@
     
     cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
     [cell.uploadSpinner startAnimating];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)configureWaitingUploadCell:(ObservationViewWaitingUploadCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -775,6 +779,8 @@
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)configureNormalCell:(ObservationViewNormalCell *)cell forIndexPath:(NSIndexPath *)indexPath {
