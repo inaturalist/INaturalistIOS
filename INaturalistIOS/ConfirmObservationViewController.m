@@ -1140,15 +1140,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     Taxon *taxon = self.observation.taxon;
     if (taxon) {
         cell.titleLabel.text = taxon.defaultName;
+        
+        cell.cellImageView.layer.borderWidth = 0.5f;
+        cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
+        cell.cellImageView.layer.cornerRadius = 3.0f;
+
         if ([taxon.isIconic boolValue]) {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-            cell.cellImageView.layer.borderWidth = 0.5f;
-            cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
-            cell.cellImageView.layer.cornerRadius = 3.0f;
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
             [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
-            cell.cellImageView.layer.cornerRadius = 3.0f;
         } else {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
