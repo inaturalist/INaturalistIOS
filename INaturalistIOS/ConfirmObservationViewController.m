@@ -662,6 +662,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [self.observation deleteEntity];
     self.observation = nil;
+    NSError *error;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        // TODO: log it at least, also notify the user
+    }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
