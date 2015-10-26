@@ -156,9 +156,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (self.shouldContinueUpdatingLocation) {
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
             [self.locationManager requestWhenInUseAuthorization];
-        } else {
-            [self startUpdatingLocation];
         }
+        
+        [self startUpdatingLocation];
     }
 }
 
@@ -538,11 +538,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (!self.observation) return;
     
     @try {
-        self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
-        self.observation.longitude =[NSNumber numberWithDouble:newLocation.coordinate.longitude];
+        self.observation.latitude = @(newLocation.coordinate.latitude);
+        self.observation.longitude = @(newLocation.coordinate.longitude);
         self.observation.privateLatitude = nil;
         self.observation.privateLongitude = nil;
-        self.observation.positionalAccuracy = [NSNumber numberWithDouble:newLocation.horizontalAccuracy];
+        self.observation.positionalAccuracy = @(newLocation.horizontalAccuracy);
         self.observation.positioningMethod = @"gps";
         
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
