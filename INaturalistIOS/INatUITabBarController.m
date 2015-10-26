@@ -423,7 +423,8 @@ static char PROJECT_ASSOCIATED_KEY;
     }
     
     ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
-    confirmObs.observation = o;    
+    confirmObs.observation = o;
+    confirmObs.shouldContinueUpdatingLocation = YES;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO animated:YES];
     [nav pushViewController:confirmObs animated:YES];
