@@ -975,6 +975,27 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
                                                       } cancelBlock:nil
                                                          origin:self.view] showActionSheetPicker];
+            } else if (indexPath.item == 4) {
+                // captive/cultivated
+                
+                NSArray *geoprivacyOptions = @[@"No", @"Yes"];
+                NSInteger selectedIndex = self.observation.captive.integerValue;
+                
+                __weak typeof(self) weakSelf = self;
+                [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Captive?", @"title for captive selector")
+                                                           rows:geoprivacyOptions
+                                               initialSelection:selectedIndex
+                                                      doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                          
+                                                          __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                          
+                                                          strongSelf.observation.captive = @(selectedIndex);
+                                                          
+                                                          [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                          
+                                                      } cancelBlock:nil
+                                                         origin:self.view] showActionSheetPicker];
             } else if (indexPath.item == 5) {
                 INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                 if (appDelegate.loginController.isLoggedIn) {
@@ -1201,11 +1222,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     cell.cellImageView.image = [captive imageWithSize:CGSizeMake(44, 44)];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = UITableViewCellAccessoryNone;
-    
-    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
-    [switcher addTarget:self action:@selector(captiveChanged:) forControlEvents:UIControlEventValueChanged];
-    cell.accessoryView = switcher;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
 }
