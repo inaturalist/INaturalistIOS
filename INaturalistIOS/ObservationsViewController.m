@@ -729,6 +729,8 @@
     // configure the title
     if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
+    } else if (o.inatDescription && o.inatDescription.length > 0) {
+        [cell.titleLabel setText:o.inatDescription];
     } else {
         [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
@@ -874,6 +876,8 @@
             NSString *speciesName = NSLocalizedString(@"Something...", nil);
             if (uploadManager.currentlyUploadingObservation.speciesGuess) {
                 speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
+            } else if (uploadManager.currentlyUploadingObservation.inatDescription) {
+                speciesName = uploadManager.currentlyUploadingObservation.inatDescription;
             }
             self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
         }
@@ -954,22 +958,23 @@
                                                       }];
                                  }];
             });
+            
+            if (needingUploadCount > 0) {
+                NSString *baseUploadCountStr;
+                if (needingUploadCount == 1) {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
+                                                           @"Count of observations to upload, singular.");
+                } else {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
+                                                           @"Count of observations to upload, plural.");
+                }
+                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
+            } else if (needingDeleteCount > 0) {
+                view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
+                                                            @"Deletes pending sync.");
+            }
         }
         
-        if (needingUploadCount > 0) {
-            NSString *baseUploadCountStr;
-            if (needingUploadCount == 1) {
-                baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
-                                                       @"Count of observations to upload, singular.");
-            } else {
-                baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
-                                                       @"Count of observations to upload, plural.");
-            }
-            view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
-        } else if (needingDeleteCount > 0) {
-            view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
-                                                        @"Deletes pending sync.");
-        }
         
         
     } else {
