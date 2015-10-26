@@ -784,7 +784,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return [DisclosureCell heightForRowWithTitle:self.observation.taxon.defaultName ?: NSLocalizedString(@"Something...", nil)
                                                  inTableView:tableView];
             } else if (indexPath.item == 1) {
-                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Help Me ID This Species", nil)
+                return [DisclosureCell heightForRowWithTitle:[self needsIDTitle]
                                                  inTableView:tableView];
             }
         case ConfirmObsSectionNotes:
@@ -798,13 +798,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // location
                 return (self.observation.latitude && self.observation.longitude) ? 66 : 44;
             } else if (indexPath.item == 3) {
-                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Geo Privacy", nil)
+                return [DisclosureCell heightForRowWithTitle:[self geoPrivacyTitle]
                                                  inTableView:tableView];
             } else if (indexPath.item == 4) {
-                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Is It Captive or Cultivated?", nil)
+                return [DisclosureCell heightForRowWithTitle:[self captiveTitle]
                                                  inTableView:tableView];
             } else if (indexPath.item == 5) {
-                return [DisclosureCell heightForRowWithTitle:NSLocalizedString(@"Geo Privacy", nil)
+                return [DisclosureCell heightForRowWithTitle:[self projectsTitle]
                                                  inTableView:tableView];
             }
     }
@@ -1106,7 +1106,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)helpIdCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = NSLocalizedString(@"Help Me ID This Species", nil);
+    cell.titleLabel.text = [self needsIDTitle];
     FAKIcon *bouy = [FAKINaturalist lifebuoyIconWithSize:44];
     [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
@@ -1200,7 +1200,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)geoPrivacyCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
+    cell.titleLabel.text = [self geoPrivacyTitle];
     cell.secondaryLabel.text = self.observation.presentableGeoprivacy;
     
     FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:44];
@@ -1215,8 +1215,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)captiveCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = NSLocalizedString(@"Is it captive or cultivated?", @"Captive / cultivated button title.");
-    
+    cell.titleLabel.text = [self captiveTitle];
+    cell.secondaryLabel.text = self.observation.captive.boolValue ? NSLocalizedString(@"Yes", nil) : NSLocalizedString(@"No", nil);
     FAKIcon *captive = [FAKINaturalist captiveIconWithSize:44];
     [captive addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [captive imageWithSize:CGSizeMake(44, 44)];
@@ -1231,7 +1231,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)projectsCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = NSLocalizedString(@"Projects", @"choose projects button title.");
+    cell.titleLabel.text = [self projectsTitle];
     FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
     [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
@@ -1247,7 +1247,25 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (UITableViewCell *)illegalCellForIndexPath:(NSIndexPath *)ip {
     NSLog(@"indexpath is %@", ip);
-    NSAssert(NO, @"shouldn't reach here");
+    NSAssert(NO, @"illegal cell for confirm screen");
+}
+
+#pragma mark - UITableViewCell title helpers
+
+- (NSString *)needsIDTitle {
+    return NSLocalizedString(@"Help Me ID This Species", nil);
+}
+
+- (NSString *)geoPrivacyTitle {
+    return NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
+}
+
+- (NSString *)captiveTitle {
+    return NSLocalizedString(@"It Is Captive or Cultivated", @"Captive / cultivated button title.");
+}
+
+- (NSString *)projectsTitle {
+    return NSLocalizedString(@"Projects", @"choose projects button title.");
 }
 
 @end
