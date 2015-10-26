@@ -236,6 +236,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         }
     }
     
+    [[Analytics sharedClient] event:kAnalyticsEventObservationNewDefaultPhoto
+                     withProperties:@{ @"Via": @"Confirm" }];
+    
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
 }
@@ -249,12 +252,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     self.observation.observationPhotos = newObsPhotos;
     [photo deleteEntity];
-
+    
     // update sortable
     for (int i = 0; i < self.observation.sortedObservationPhotos.count; i++) {
         ObservationPhoto *op = self.observation.sortedObservationPhotos[i];
         op.position = @(i);
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
+                     withProperties:@{ @"Via": @"Confirm" }];
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -290,6 +296,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [strongGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
+    
+    [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto
+                     withProperties:@{ @"Via": @"Confirm" }];
     
     [self presentMHGalleryController:gallery animated:YES completion:nil];
 
@@ -398,6 +407,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
     // add to observation
     
+    [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"Source": @"Library",
+                                      @"Count": @(assets.count)
+                                      }];
+    
     __weak __typeof__(self) weakSelf = self;
     [self.observation addAssets:assets
                       afterEach:^(ObservationPhoto *op) {
@@ -427,6 +443,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             forKey:((NSString * )kCGImagePropertyGPSDictionary)];
     confirm.metadata = meta;
     
+    [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"Source": @"Camera",
+                                      @"Count": @(1)
+                                      }];
+
     // set the follow up action
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
         
@@ -636,16 +659,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - UISwitch targets
 
 - (void)idPleaseChanged:(UISwitch *)switcher {
+    [[Analytics sharedClient] event:kAnalyticsEventObservationIDPleaseChanged
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"New Value": switcher.isOn ? @"Yes": @"No"
+                                      }];
+    
     self.observation.idPlease = [NSNumber numberWithBool:switcher.isOn];
-}
-
-- (void)captiveChanged:(UISwitch *)switcher {
-    self.observation.captive = [NSNumber numberWithBool:switcher.isOn];
 }
 
 #pragma mark - UIButton targets
 
 - (void)taxonDeleted:(UIButton *)button {
+    [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"New Value": @"No Taxon"
+                                      }];
+
     self.observation.speciesGuess = nil;
     self.observation.taxon = nil;
     self.observation.taxonID = nil;
@@ -672,7 +703,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)saved:(UIButton *)button {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"Projects": @(self.observation.projectObservations.count),
+                                      @"Photos": @(self.observation.observationPhotos.count),
+                                      @"OFVs": @(self.observation.observationFieldValues.count)
+                                      }];
     
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -703,6 +741,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     [self.observation removeProjectObservations:deletedProjects];
     
+    if (newProjects.count > 0 || deletedProjects.count > 0) {
+        [[Analytics sharedClient] event:kAnalyticsEventObservationProjectsChanged
+                         withProperties:@{
+                                          @"Via": @"Confirm",
+                                          }];
+    }
+    
     for (Project *project in newProjects) {
         ProjectObservation *po = [ProjectObservation object];
         po.observation = self.observation;
@@ -729,6 +774,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonID = taxon.iconicTaxonID;
     self.observation.speciesGuess = taxon.defaultName;
     
+    [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"New Value": taxon.defaultName
+                                      }];
+
     [self.navigationController popToViewController:self animated:YES];
 }
 
@@ -746,6 +797,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.positionalAccuracy = location.accuracy;
     self.observation.positioningMethod = location.positioningMethod;
     
+    [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      }];
+
     [self.navigationController popToViewController:self animated:YES];
 
     [self reverseGeocodeCoordinatesForObservation:self.observation];
@@ -955,20 +1011,27 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSLocalizedString(@"Private", @"private geoprivacy"),
                                                           ];
 
-                NSInteger selectedIndex = [geoprivacyOptions indexOfObject:self.observation.geoprivacy];
-                if (selectedIndex == NSNotFound) {
-                    selectedIndex = 0;
+                NSInteger initialSelection = [geoprivacyOptions indexOfObject:self.observation.geoprivacy];
+                if (initialSelection == NSNotFound) {
+                    initialSelection = 0;
                 }
                 
                 __weak typeof(self) weakSelf = self;
                 [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Select Privacy", @"title for geoprivacy selector")
                                                            rows:presentableGeoPrivacyOptions
-                                               initialSelection:selectedIndex
+                                               initialSelection:initialSelection
                                                       doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
                                                           
-                                                          __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                          if (initialSelection == selectedIndex) { return; }
                                                           
-                                                          strongSelf.observation.geoprivacy = geoprivacyOptions[selectedIndex];
+                                                          __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                          NSString *newValue = geoprivacyOptions[selectedIndex];
+                                                          
+                                                          strongSelf.observation.geoprivacy = newValue;
+
+                                                          [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
+                                                                           withProperties:@{ @"Via": @"Confirm",
+                                                                                             @"New Value": newValue}];
                                                           
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
@@ -978,14 +1041,20 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             } else if (indexPath.item == 4) {
                 // captive/cultivated
                 
-                NSArray *geoprivacyOptions = @[@"No", @"Yes"];
+                NSArray *captiveOptions = @[@"No", @"Yes"];
                 NSInteger selectedIndex = self.observation.captive.integerValue;
                 
                 __weak typeof(self) weakSelf = self;
                 [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Captive?", @"title for captive selector")
-                                                           rows:geoprivacyOptions
+                                                           rows:captiveOptions
                                                initialSelection:selectedIndex
                                                       doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                          
+                                                          [[Analytics sharedClient] event:kAnalyticsEventObservationCaptiveChanged
+                                                                           withProperties:@{
+                                                                                            @"Via": @"Confirm",
+                                                                                            @"New Value": selectedIndex == 0 ? @"No": @"Yes",
+                                                                                            }];
                                                           
                                                           __strong typeof(weakSelf) strongSelf = weakSelf;
                                                           
