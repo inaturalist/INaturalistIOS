@@ -2,18 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "Slideshow_01@1x.jpg"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "Slideshow_01@2x.jpg"
+      "filename" : "SignUp_OrangeFlower.jpg"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "Slideshow_01@3x.jpg"
+      "scale" : "3x"
     }
   ],
   "info" : {
