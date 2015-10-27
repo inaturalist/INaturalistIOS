@@ -868,23 +868,39 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
-- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    // can't declare even anonymous blocks in switch statements
-    void(^segueBlock)() = ^ {
-        [self performSegueWithIdentifier:@"EditLocationSegue" sender:self];
-    };
-    
+- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0:
             [self startUpdatingLocation];
             break;
-        case 1:
-            // can only -presentViewController once at a time
-            // on iOS 8/iPad, this action sheet was presented
-            // so perform the segue after the sheet has dismissed
-            dispatch_async(dispatch_get_main_queue(), segueBlock);
+        case 1: {
+            // show location chooser
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
+            map.delegate = self;
+            
+            if (self.observation.visibleLatitude) {
+                INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
+                                                                 longitude:self.observation.visibleLongitude
+                                                                  accuracy:self.observation.positionalAccuracy];
+                loc.positioningMethod = self.observation.positioningMethod;
+                [map setCurrentLocation:loc];
+            } else {
+                [map setCurrentLocation:nil];
+            }
+            
+            map.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                 target:map
+                                                                                                 action:@selector(clickedCancel:)];
+            map.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                                                                                                 target:map
+                                                                                                  action:@selector(clickedDone:)];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:map];
+            [self presentViewController:nav animated:YES completion:nil];
+
             break;
+        }
         default:
             break;
     }

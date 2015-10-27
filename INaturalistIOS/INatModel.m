@@ -144,6 +144,7 @@ static NSDateFormatter *jsDateFormatter = nil;
 + (void)deleteAll
 {
     for (INatModel *o in [self allObjects]) {
+        o.syncedAt = nil;
         [o deleteEntity];
     }
     NSError *error = nil;

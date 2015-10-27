@@ -53,6 +53,7 @@
 @property (nonatomic, retain) NSString *sortable;
 @property (nonatomic, retain) NSString *uuid;
 @property (nonatomic, retain) NSString *validationErrorMsg;
+@property (nonatomic, retain) NSNumber *captive;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
@@ -67,6 +68,7 @@
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
+- (NSString *)presentableGeoprivacy;
 @end
 
 @interface Observation (PrimitiveAccessors)

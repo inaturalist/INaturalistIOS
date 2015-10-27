@@ -123,10 +123,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)willSave
 {
     [super willSave];
-    if (!self.observation) {
-        [[Analytics sharedClient] event:kAnalyticsEventObservationlessOFVSaved
-                         withProperties:[NSDictionary dictionaryWithKeysAndObjects:@"stacktrace", [NSThread callStackSymbols], nil]];
-    }
 }
 
 @end

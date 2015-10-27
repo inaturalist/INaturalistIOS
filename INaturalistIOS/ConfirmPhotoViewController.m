@@ -24,12 +24,12 @@
 #import "ObservationDetailViewController.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
-#import "CategorizeViewController.h"
 #import "Observation.h"
 #import "Observation+AddAssets.h"
 #import "Analytics.h"
 #import "Project.h"
 #import "ProjectObservation.h"
+#import "ConfirmObservationViewController.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -48,68 +48,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // make sure we have some local iconic taxa before we try to categorize
-    // if we don't have any, try to load remotely
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey]) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
-        request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-        
-        NSError *fetchError;
-        self.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                                 error:&fetchError];
-
-        if (self.iconicTaxa.count == 0) {
-            [self loadRemoteIconicTaxa];
-        }
-        
-    }
-    
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
+            // go straight to making the observation
+            Observation *o = [Observation object];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && weakSelf.iconicTaxa.count > 0 && !weakSelf.taxon) {
-                // categorize the new observation before making it
-                CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
-                categorize.assets = confirmedAssets;
-                if (weakSelf.project) {
-                    categorize.project = weakSelf.project;
-                }
-                categorize.shouldContinueUpdatingLocation = weakSelf.shouldContinueUpdatingLocation;
-                [weakSelf transitionToCategorize:categorize];
-            } else {
-                // go straight to making the observation
-                Observation *o = [Observation object];
-                
-                if (weakSelf.taxon) {
-                    o.taxon = weakSelf.taxon;
-                    o.speciesGuess = weakSelf.taxon.defaultName ?: weakSelf.taxon.name;
-                }
-                
-                if (weakSelf.project) {
-                    ProjectObservation *po = [ProjectObservation object];
-                    po.observation = o;
-                    po.project = weakSelf.project;
-                }
-                
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-                ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-                
-                detail.delegate = weakSelf;
-                detail.shouldShowBigSaveButton = YES;
-                
-                [o addAssets:confirmedAssets];
-                detail.observation = o;
-                
-                [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
-                [weakSelf.navigationController pushViewController:detail animated:YES];
-                
-                if (weakSelf.shouldContinueUpdatingLocation)
-                    [detail startUpdatingLocation];
+            if (weakSelf.taxon) {
+                o.taxon = weakSelf.taxon;
+                o.speciesGuess = weakSelf.taxon.defaultName ?: weakSelf.taxon.name;
             }
+            
+            if (weakSelf.project) {
+                ProjectObservation *po = [ProjectObservation object];
+                po.observation = o;
+                po.project = weakSelf.project;
+            }
+            
+            [o addAssets:confirmedAssets];
+            
+            ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+            confirmObs.observation = o;
+            confirmObs.shouldContinueUpdatingLocation = self.shouldContinueUpdatingLocation;
+            
+            [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
+            [weakSelf.navigationController pushViewController:confirmObs animated:YES];
         };
     }
     
@@ -296,27 +260,6 @@
 
 - (void)dealloc {
     [[RKClient sharedClient].requestQueue cancelRequest:self.taxaLoader];
-}
-
-- (void)transitionToCategorize:(CategorizeViewController *)categorizeVC {
-    
-    UINavigationController *nav = self.navigationController;
-    [UIView animateWithDuration:0.1f
-                     animations:^{
-                         confirm.center = CGPointMake(confirm.center.x,
-                                                      self.view.bounds.size.height + (confirm.frame.size.height / 2));
-                         retake.center = CGPointMake(retake.center.x,
-                                                     self.view.bounds.size.height + (retake.frame.size.height / 2));
-                         multiImageView.frame = self.view.bounds;
-                     } completion:^(BOOL finished) {
-                         [nav pushViewController:categorizeVC animated:NO];
-                         
-                         confirm.center = CGPointMake(confirm.center.x,
-                                                      self.view.bounds.size.height - (confirm.frame.size.height / 2));
-                         retake.center = CGPointMake(retake.center.x,
-                                                     self.view.bounds.size.height - (retake.frame.size.height / 2));
-                         
-                     }];
 }
 
 #pragma mark - ObservationDetailViewController delegate

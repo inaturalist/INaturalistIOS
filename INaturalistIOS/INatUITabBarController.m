@@ -28,6 +28,9 @@
 #import "Project.h"
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
+#import "ConfirmObservationViewController.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define OBSERVE_TAB_INDEX   1
@@ -79,10 +82,7 @@ static char PROJECT_ASSOCIATED_KEY;
         // Me tab
         self.selectedIndex = ME_TAB_INDEX;
     }
-    
-    // we'll use the iconic taxa during the new observation flow
-    [self fetchIconicTaxa];
-    
+        
     [super viewDidLoad];
 }
 
@@ -310,7 +310,8 @@ static char PROJECT_ASSOCIATED_KEY;
         
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
-        if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (![appDelegate.loginController isLoggedIn] && ![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
             if (![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
@@ -421,14 +422,12 @@ static char PROJECT_ASSOCIATED_KEY;
         po.project = project;
     }
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    ObservationDetailViewController *detail = [storyboard instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-    detail.observation = o;
-    detail.shouldShowBigSaveButton = YES;
-    detail.delegate = self;
+    ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+    confirmObs.observation = o;
+    confirmObs.shouldContinueUpdatingLocation = YES;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav setNavigationBarHidden:NO];
-    [nav pushViewController:detail animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+    [nav pushViewController:confirmObs animated:YES];
 }
 
 #pragma mark - ObservationDetailViewController delegate
@@ -541,21 +540,6 @@ static char PROJECT_ASSOCIATED_KEY;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     [makeFirstObsTooltip hideAnimated:NO];
-}
-
-#pragma mark - Fetch Iconic Taxa
-
-- (void)fetchIconicTaxa {
-    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
-    if (![reachability isReachabilityDetermined] || ![reachability isNetworkReachable]) {
-        return;
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Fetch iconic taxa in tab bar"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa" usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.objectMapping = [Taxon mapping];
-    }];
 }
 
 #pragma mark - RKObjectLoader & RKRequest delegates

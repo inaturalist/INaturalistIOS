@@ -48,7 +48,7 @@
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
     
-    UIView *noContentView;
+    
 
     NSFetchedResultsController *_fetchedResultsController;
 }
@@ -56,6 +56,9 @@
 @property MeHeaderView *meHeader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 @property (readonly) NSFetchedResultsController *fetchedResultsController;
+@property UIView *noContentView;
+@property UILabel *noObservationsLabel;
+@property UIImageView *noObservationsImageView;
 @end
 
 @implementation ObservationsViewController
@@ -305,6 +308,20 @@
 														  delegate:self];
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
+        
+        if (self.noContentView && self.noContentView.superview) {
+            [UIView animateWithDuration:0.1f animations:^{
+                self.noObservationsLabel.text = NSLocalizedString(@"Downloading your observations from www.inaturalist.org", nil);
+                self.noObservationsImageView.image = ({
+                    FAKIcon *download = [FAKIonIcons iosCloudDownloadIconWithSize:200.0f];
+                    [download addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+                    [download imageWithSize:CGSizeMake(200.0f, 200.0f)];
+                });
+            }];
+        }
+        INatUITabBarController *tabBarVC = (INatUITabBarController *)self.tabBarController;
+        //tabBarVC de
+        //self.tabBarController
 	}
 }
 
@@ -355,8 +372,8 @@
 
     if ([sectionInfo numberOfObjects] == 0) {
 
-        if (!noContentView) {
-            noContentView = ({
+        if (!self.noContentView) {
+            self.noContentView = ({
                 
                 
                 // leave room for the header
@@ -367,7 +384,7 @@
                 
                 view.backgroundColor = [UIColor whiteColor];
                 
-                UILabel *noObservations = ({
+                self.noObservationsLabel = ({
                     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
                     label.translatesAutoresizingMaskIntoConstraints = NO;
                     
@@ -379,9 +396,9 @@
                     
                     label;
                 });
-                [view addSubview:noObservations];
+                [view addSubview:self.noObservationsLabel];
                 
-                UIImageView *binocs = ({
+                self.noObservationsImageView = ({
                     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
                     iv.translatesAutoresizingMaskIntoConstraints = NO;
                     
@@ -391,12 +408,12 @@
                     
                     iv;
                 });
-                [view addSubview:binocs];
+                [view addSubview:self.noObservationsImageView];
                 
                 NSDictionary *views = @{
                                         @"bottomLayout": self.bottomLayoutGuide,
-                                        @"noObservations": noObservations,
-                                        @"binocs": binocs,
+                                        @"noObservations": self.noObservationsLabel,
+                                        @"binocs": self.noObservationsImageView,
                                         };
                 
                 [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noObservations]-|"
@@ -408,7 +425,7 @@
                                                                              metrics:0
                                                                                views:views]];
 
-                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[noObservations(==20)]-0-[binocs]-100-|"
+                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[noObservations(==40)]-0-[binocs]-100-|"
                                                                              options:0
                                                                              metrics:0
                                                                                views:views]];
@@ -418,11 +435,11 @@
             });
             
         }
-        [self.view insertSubview:noContentView aboveSubview:self.tableView];
-        [noContentView setNeedsLayout];
+        [self.view insertSubview:self.noContentView aboveSubview:self.tableView];
+        [self.noContentView setNeedsLayout];
 
-    } else if (noContentView) {
-            [noContentView removeFromSuperview];
+    } else if (self.noContentView) {
+            [self.noContentView removeFromSuperview];
     }
 }
 
@@ -712,9 +729,13 @@
     // configure the title
     if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
+    } else if (o.inatDescription && o.inatDescription.length > 0) {
+        [cell.titleLabel setText:o.inatDescription];
     } else {
         [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
 }
 
 - (void)configureErrorCell:(ObservationViewErrorCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -730,6 +751,8 @@
     
     cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
     [cell.uploadSpinner startAnimating];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)configureWaitingUploadCell:(ObservationViewWaitingUploadCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -756,6 +779,8 @@
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)configureNormalCell:(ObservationViewNormalCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -857,6 +882,8 @@
             NSString *speciesName = NSLocalizedString(@"Something...", nil);
             if (uploadManager.currentlyUploadingObservation.speciesGuess) {
                 speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
+            } else if (uploadManager.currentlyUploadingObservation.inatDescription) {
+                speciesName = uploadManager.currentlyUploadingObservation.inatDescription;
             }
             self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
         }
@@ -937,22 +964,23 @@
                                                       }];
                                  }];
             });
+            
+            if (needingUploadCount > 0) {
+                NSString *baseUploadCountStr;
+                if (needingUploadCount == 1) {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
+                                                           @"Count of observations to upload, singular.");
+                } else {
+                    baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
+                                                           @"Count of observations to upload, plural.");
+                }
+                view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
+            } else if (needingDeleteCount > 0) {
+                view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
+                                                            @"Deletes pending sync.");
+            }
         }
         
-        if (needingUploadCount > 0) {
-            NSString *baseUploadCountStr;
-            if (needingUploadCount == 1) {
-                baseUploadCountStr = NSLocalizedString(@"%d Observation To Upload",
-                                                       @"Count of observations to upload, singular.");
-            } else {
-                baseUploadCountStr = NSLocalizedString(@"%d Observations To Upload",
-                                                       @"Count of observations to upload, plural.");
-            }
-            view.obsCountLabel.text = [NSString stringWithFormat:baseUploadCountStr, needingUploadCount];
-        } else if (needingDeleteCount > 0) {
-            view.obsCountLabel.text = NSLocalizedString(@"Deletes To Sync",
-                                                        @"Deletes pending sync.");
-        }
         
         
     } else {
@@ -1033,11 +1061,23 @@
 #pragma mark - NSNotificationCenter
 
 - (void)userSignedIn {
+    NSError *error = nil;
+    [self.fetchedResultsController performFetch:&error];
+    if (error) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Fetch Error: %@", error.localizedDescription]];
+    }
     [self refreshRequestedNotify:YES];
 }
 
 - (void)coreDataRebuilt {
+    self.lastRefreshAt = [NSDate distantPast];
+    [self.noContentView removeFromSuperview];
+    self.noContentView = nil;
+    
+    // rebuild the fetched results controller
     _fetchedResultsController = nil;
+    
+    // reload the tableview
     [self.tableView reloadData];
     [self loadUserForHeader];
 }
@@ -1113,10 +1153,6 @@
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
     if (![[NSUserDefaults standardUserDefaults] boolForKey:FirstSignInKey]) {
-        // completely new users default to categorization on
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:kInatCategorizeNewObsPrefKey];
-        
         // completely new users default to autocomplete on
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatAutocompleteNamesPrefKey];
@@ -1231,6 +1267,10 @@
     [super viewDidAppear:animated];
     
     [self updateSyncBadge];
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
+    [self.tableView reloadData];
+    [self checkEmpty];
 
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
@@ -1245,10 +1285,6 @@
         [self checkNewActivity];
     }
     
-    NSError *error;
-    [self.fetchedResultsController performFetch:&error];
-    [self.tableView reloadData];
-    [self checkEmpty];
 
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
@@ -1316,7 +1352,10 @@
     }
     
 	[self.refreshControl endRefreshing];
-    if (objects.count == 0) return;
+    if (objects.count == 0) {
+        [self checkEmpty];
+        return;
+    }
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
@@ -1505,7 +1544,10 @@
     [self.meHeader startAnimatingUpload];
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if (ip) {
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadSuccessFor:(Observation *)observation {
@@ -1515,7 +1557,10 @@
     [self updateSyncBadge];
 
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if (ip) {
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 
@@ -1523,14 +1568,20 @@
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
 
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if (ip) {
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationAutomatic];    
+    if (ip) {
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
