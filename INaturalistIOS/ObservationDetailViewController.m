@@ -90,38 +90,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 @interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate,MHGalleryDelegate>
 @property UIBarButtonItem *bigSave;
 @property RKObjectLoader *taxonLoader;
+@property (weak, nonatomic) IBOutlet DCRoundSwitch *captiveSwitch;
 @end
 
 @implementation ObservationDetailViewController
-
-@synthesize observedAtLabel;
-@synthesize latitudeLabel = _latitudeLabel;
-@synthesize longitudeLabel = _longitudeLabel;
-@synthesize positionalAccuracyLabel;
-@synthesize placeGuessField = _placeGuessField;
-@synthesize idPleaseSwitch = _idPleaseSwitch;
-@synthesize geoprivacyCell = _geoprivacyCell;
-@synthesize keyboardToolbar = _keyboardToolbar;
-@synthesize saveButton = _saveButton;
-@synthesize deleteButton = _deleteButton;
-@synthesize viewButton = _viewButton;
-@synthesize speciesGuessTextField = _speciesGuessTextField;
-@synthesize descriptionTextView;
-@synthesize delegate = _delegate;
-@synthesize observation = _observation;
-@synthesize observationPhotos = _observationPhotos;
-@synthesize observationFieldValues = _observationFieldValues;
-@synthesize coverflowView = _coverflowView;
-@synthesize locationManager = _locationManager;
-@synthesize locationTimer = _locationTimer;
-@synthesize geocoder = _geocoder;
-@synthesize currentActionSheet = _currentActionSheet;
-@synthesize locationUpdatesOn = _locationUpdatesOn;
-@synthesize observationWasNew = _observationWasNew;
-@synthesize lastImageReferenceURL = _lastImageReferenceURL;
-@synthesize ofvCells = _ofvCells;
-@synthesize ofvTaxaSearchControllerDelegate = _ofvTaxaSearchControllerDelegate;
-@synthesize taxonID = _taxonID;
 
 - (void)observationToUI
 {
@@ -151,7 +123,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     } else {
         self.positionalAccuracyLabel.text = NSLocalizedString(@"??? m", @"unknown positional accuracy");
     }
-    [descriptionTextView setText:self.observation.inatDescription];
+    [self.descriptionTextView setText:self.observation.inatDescription];
 
     // Species cell
     UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -187,6 +159,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (self.observation.geoprivacy) {
         self.geoprivacyCell.detailTextLabel.text = self.observation.geoprivacy;
     }
+    if (self.observation.captive) {
+        [self.captiveSwitch setOn:self.observation.captive.boolValue];
+    }
     
     // Note: populating dynamic table cell values probably occurs in tableView:cellForRowAtIndexPath:ß
 }
@@ -202,7 +177,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text] &&
         !(self.observation.inatDescription == nil && [self.descriptionTextView.text isEqualToString:@""])) {
-        [self.observation setInatDescription:[descriptionTextView text]];
+        [self.observation setInatDescription:[self.descriptionTextView text]];
     }
     if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text] &&
         !(self.observation.placeGuess == nil && [self.placeGuessField.text isEqualToString:@""])) {
@@ -225,7 +200,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.observation.positionalAccuracy = newAcc;
     }
     self.observation.idPlease = [NSNumber numberWithBool:self.idPleaseSwitch.on];
-    
+    self.observation.captive = @(self.captiveSwitch.on);
+
     for (NSString *key in self.ofvCells) {
         UITableViewCell *cell = [self.ofvCells objectForKey:key];
         NSUInteger ofvIndex = [self.observationFieldValues indexOfObjectPassingTest:^BOOL(ObservationFieldValue *obj, NSUInteger idx, BOOL *stop) {
@@ -414,6 +390,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     self.idPleaseSwitch.onText = NSLocalizedString(@"YES", nil);
     self.idPleaseSwitch.offText = NSLocalizedString(@"NO", nil);
+    self.captiveSwitch.onText = NSLocalizedString(@"YES", nil);
+    self.captiveSwitch.offText = NSLocalizedString(@"NO", nil);
     
     [self refreshCoverflowView];
     
@@ -1030,12 +1008,27 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 # pragma mark - TableViewDelegate methods
+
+/*
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 4 && indexPath.item == 2) {
+        // captive / cultivated
+        self.captiveSwitch = (DCRoundSwitch *)[cell viewWithTag:2];
+        self.captiveSwitch.onText = NSLocalizedString(@"Yes", nil);
+        self.captiveSwitch.offText = NSLocalizedString(@"No", nil);
+        self.captiveSwitch.on = self.observation.captive.boolValue;
+    } else if (indexPath.section == 4 && indexPath.item == 0) {
+        
+    }
+}
+ */
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == ProjectsSection) {
         return self.observation.projectObservations.count + 1;
     } else if (section == MoreSection) {
-        return self.observationFieldValues.count + 2;
+        return self.observationFieldValues.count + 3;
     } else {
         return [super tableView:tableView numberOfRowsInSection:section];
     }
@@ -1056,7 +1049,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         // otherwise reset the indexPath so the table view thinks it's retrieving the static cell at index 0
         indexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
     } else if (indexPath.section == MoreSection) {
-        if (indexPath.row > 1) {
+        if (indexPath.row > 2) {
             return [self tableView:tableView observationFieldValueCellForRowAtIndexPath:indexPath];
         }
     }
@@ -1195,8 +1188,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                 
                 [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[valueLabel]-0-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
             }
+            else if(indexPath.row == 2){
+                UITableViewCell *captiveCell = staticCell;
+                if(!captiveCell.constraints.count) {
+                    UILabel *captiveLabel = (UILabel *)[privacyCell viewWithTag:1];
+                    captiveLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                    captiveLabel.textAlignment = NSTextAlignmentNatural;
+
+                    UIView *switchView = (UIView *)[captiveCell viewWithTag:2];
+                    switchView.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    NSDictionary *views = @{@"captiveLabel":captiveLabel, @"switchView":switchView};
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[helpLabel]-3-[switchView(==96)]-11-|" options:0 metrics:0 views:views]];
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[helpLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[switchView]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+                }
+            }
         }
-        
     }
     
     return staticCell;
@@ -1362,7 +1373,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             [actionSheet showFromTabBar:self.tabBarController.tabBar];
         else
             [actionSheet showInView:self.view];
-    } else if (indexPath.section == MoreSection && indexPath.row > 1) {
+    } else if (indexPath.section == MoreSection && indexPath.row > 2) {
         [self didSelectObservationFieldValueRow:indexPath];
     } else {
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
