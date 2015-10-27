@@ -31,6 +31,7 @@
 #import "ConfirmObservationViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "User.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define OBSERVE_TAB_INDEX   1
@@ -54,6 +55,17 @@ static char PROJECT_ASSOCIATED_KEY;
 
 @implementation INatUITabBarController
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(userSignedIn)
+                                                     name:kUserLoggedInNotificationName
+                                                   object:nil];
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [self setObservationsTabBadge];
@@ -62,11 +74,7 @@ static char PROJECT_ASSOCIATED_KEY;
                                                  name:INatUserSavedObservationNotification 
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userSignedIn)
-                                                 name:kUserLoggedInNotificationName
-                                               object:nil];
-        
+    
     // tab bar delegate to intercept selection of the "observe" tab
     self.delegate = self;
     
@@ -311,8 +319,8 @@ static char PROJECT_ASSOCIATED_KEY;
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (![appDelegate.loginController isLoggedIn] && ![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
-            if (![Observation hasAtLeastOneEntity]) {
+        if (appDelegate.loginController.fetchMe.observationsCount.integerValue == 0) {
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && ![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
             }
@@ -539,7 +547,15 @@ static char PROJECT_ASSOCIATED_KEY;
     } else if (self.selectedViewController.presentedViewController) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-    [makeFirstObsTooltip hideAnimated:NO];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *user = appDelegate.loginController.fetchMe;
+    if (user.observationsCount.integerValue > 0) {
+        // user has made an observation
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [makeFirstObsTooltip hideAnimated:NO];
+    }
 }
 
 #pragma mark - RKObjectLoader & RKRequest delegates

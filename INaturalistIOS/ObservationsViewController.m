@@ -309,8 +309,11 @@
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
         
-        if (self.noContentView && self.noContentView.superview) {
-            [UIView animateWithDuration:0.1f animations:^{
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        User *user = appDelegate.loginController.fetchMe;
+        
+        if (user.observationsCount.integerValue > 0 && self.noContentView && self.noContentView.superview) {
+            [UIView animateWithDuration:0.2f animations:^{
                 self.noObservationsLabel.text = NSLocalizedString(@"Downloading your observations from www.inaturalist.org", nil);
                 self.noObservationsImageView.image = ({
                     FAKIcon *download = [FAKIonIcons iosCloudDownloadIconWithSize:200.0f];
@@ -319,9 +322,6 @@
                 });
             }];
         }
-        INatUITabBarController *tabBarVC = (INatUITabBarController *)self.tabBarController;
-        //tabBarVC de
-        //self.tabBarController
 	}
 }
 
