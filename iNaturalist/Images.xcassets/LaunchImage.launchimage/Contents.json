@@ -29,14 +29,14 @@
       "idiom" : "iphone",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Launch_Screen_4s_launch_screen_5.png",
+      "filename" : "Launch_Screen_4s_launch_screen_4s.png",
       "scale" : "2x"
     },
     {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "Launch_Screen_4s_launch_screen_4s.png",
+      "filename" : "Launch_Screen_4s_launch_screen_5.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
