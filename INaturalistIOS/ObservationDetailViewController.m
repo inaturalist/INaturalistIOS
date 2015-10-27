@@ -2203,7 +2203,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.observationFieldValues objectAtIndex:(indexPath.row - 2)];
+    return [self.observationFieldValues objectAtIndex:(indexPath.row - 3)];
 }
 
 - (void)clearCurrentObservationField
