@@ -165,7 +165,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
-    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower"];
+    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
     purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
     
