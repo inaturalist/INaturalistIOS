@@ -1009,20 +1009,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 # pragma mark - TableViewDelegate methods
 
-/*
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 4 && indexPath.item == 2) {
-        // captive / cultivated
-        self.captiveSwitch = (DCRoundSwitch *)[cell viewWithTag:2];
-        self.captiveSwitch.onText = NSLocalizedString(@"Yes", nil);
-        self.captiveSwitch.offText = NSLocalizedString(@"No", nil);
-        self.captiveSwitch.on = self.observation.captive.boolValue;
-    } else if (indexPath.section == 4 && indexPath.item == 0) {
-        
-    }
-}
- */
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == ProjectsSection) {
