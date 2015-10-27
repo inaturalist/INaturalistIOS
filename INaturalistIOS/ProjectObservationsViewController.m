@@ -656,7 +656,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [projects addObject:pu.project];
     }];
     
-    self.joinedProjects = [NSArray arrayWithArray:projects];
+    self.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
+        return [p1.title compare:p2.title];
+    }];
     
     [self.tableView reloadData];
 }

@@ -1075,7 +1075,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
                         [projects addObject:pu.project];
                     }];
-                    projectsVC.joinedProjects = [NSArray arrayWithArray:projects];
+                    
+                    projectsVC.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
+                        return [p1.title compare:p2.title];
+                    }];
+
                     [self.navigationController pushViewController:projectsVC animated:YES];
                 } else {
                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in!", nil)
