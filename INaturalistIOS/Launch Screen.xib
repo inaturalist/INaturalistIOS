@@ -11,7 +11,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SignUp_OrangeFlower" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iNat Logo for Launch Screen XIB" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
                     <animations/>
                 </imageView>
@@ -30,6 +30,6 @@
         </view>
     </objects>
     <resources>
-        <image name="SignUp_OrangeFlower" width="612" height="1086"/>
+        <image name="iNat Logo for Launch Screen XIB" width="414" height="736"/>
     </resources>
 </document>
