@@ -166,13 +166,10 @@ static const int GutterWidth  = 5;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
-        NSLog(@"guideTaxon.smallPhotoUrl: %@", guideTaxon.smallPhotoUrl);
         if (guideTaxon.smallPhotoUrl.host) {
-            NSLog(@"remote url, loading from web");
             [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
                    placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
         } else if (guideTaxon.smallPhotoUrl) {
-            NSLog(@"file url, loading from file");
             [img setImage:[UIImage imageWithContentsOfFile:guideTaxon.smallPhotoUrl.path]];
         }
         
