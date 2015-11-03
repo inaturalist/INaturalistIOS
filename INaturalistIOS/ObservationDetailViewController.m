@@ -1368,7 +1368,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)didSelectObservationFieldValueRow:(NSIndexPath *)indexPath
 {
-    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 2];
+    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 3];
     if (ofv.observationField.allowedValuesArray.count > 2) {
         NSInteger index = [ofv.observationField.allowedValuesArray indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
             return [obj isEqualToString:ofv.value];
