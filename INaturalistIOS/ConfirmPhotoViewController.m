@@ -54,6 +54,7 @@
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             // go straight to making the observation
             Observation *o = [Observation object];
+            o.localCreatedAt = [NSDate date];
             
             if (weakSelf.taxon) {
                 o.taxon = weakSelf.taxon;
