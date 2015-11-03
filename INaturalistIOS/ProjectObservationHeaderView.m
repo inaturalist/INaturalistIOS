@@ -51,6 +51,7 @@
         });
         [self addSubview:self.selectedSwitch];
                 
+        
         UIView *edge = ({
             UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
             view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -61,7 +62,6 @@
         });
         [self addSubview:edge];
         
-        
         NSDictionary *views = @{
                                 @"title": self.projectTitleLabel,
                                 @"thumb": self.projectThumbnailImageView,
@@ -69,32 +69,19 @@
                                 @"edge": edge,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-8.5-[thumb(==27)]-[title]-[switch]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[thumb(==29)]-15-[title]-[switch]-15-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-8.5-[thumb(==27)]-[edge]-0-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-59-[edge]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[edge(==0.5)]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
 
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:edge
-                                                         attribute:NSLayoutAttributeHeight
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:1.0f
-                                                          constant:0.5f]];
-
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:edge
-                                                         attribute:NSLayoutAttributeTrailing
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeTrailing
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.projectThumbnailImageView
                                                          attribute:NSLayoutAttributeHeight
                                                          relatedBy:NSLayoutRelationEqual
