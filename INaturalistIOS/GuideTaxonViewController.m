@@ -77,6 +77,7 @@ static const int WebViewTag = 1;
         ObservationDetailViewController *vc = [segue destinationViewController];
         [vc setDelegate:self];
         Observation *o = [Observation object];
+        o.localCreatedAt = [NSDate date];
         o.localObservedOn = [NSDate date];
         o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
         if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
