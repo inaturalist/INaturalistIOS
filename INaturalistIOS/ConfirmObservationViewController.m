@@ -1335,7 +1335,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (NSString *)captiveTitle {
-    return NSLocalizedString(@"It Is Captive or Cultivated", @"Captive / cultivated button title.");
+    return NSLocalizedString(@"Captive / Cultivated", @"Captive / cultivated button title.");
 }
 
 - (NSString *)projectsTitle {
