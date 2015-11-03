@@ -774,10 +774,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonID = taxon.iconicTaxonID;
     self.observation.speciesGuess = taxon.defaultName;
     
+    NSString *newTaxonName = taxon.defaultName ?: taxon.name;
+    if (!newTaxonName) { newTaxonName = @"Something"; }
+    
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
                                       @"Via": @"Confirm",
-                                      @"New Value": taxon.defaultName
+                                      @"New Value": newTaxonName,
                                       }];
 
     [self.navigationController popToViewController:self animated:YES];
