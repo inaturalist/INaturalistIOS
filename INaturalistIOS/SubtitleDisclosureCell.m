@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "SubtitleDisclosureCell.h"
 
 @implementation SubtitleDisclosureCell
@@ -19,6 +21,7 @@
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
             label.font = [UIFont systemFontOfSize:11.0f];
+            label.textColor = [UIColor colorWithHexString:@"#8e8e8e"];
             
             label;
         });
