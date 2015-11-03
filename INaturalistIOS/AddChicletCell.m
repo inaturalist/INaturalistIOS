@@ -38,7 +38,7 @@
                                                                      metrics:0
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[plus]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[plus]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
