@@ -6,6 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
+#import "UIColor-HTMLColors/UIColor+HTMLColors.h"
+
 #import "ObsFieldLongTextValueCell.h"
 
 @implementation ObsFieldLongTextValueCell
@@ -13,7 +15,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor colorWithHexString:@"#f1f7e5"];
         
         self.fieldLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];

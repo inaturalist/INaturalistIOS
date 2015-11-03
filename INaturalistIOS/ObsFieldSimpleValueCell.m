@@ -17,9 +17,7 @@
     
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
-        NSLog(@"content view width is %f", self.contentView.frame.size.width);
-        
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor colorWithHexString:@"#f1f7e5"];
         self.indentationLevel = 3;
         
         self.fieldLabel = ({

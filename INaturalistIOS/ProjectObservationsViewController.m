@@ -53,7 +53,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         item;
     });
     
-    self.tableView.backgroundColor = [UIColor colorWithHexString:@"#f1f7e5"];
+    self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.estimatedRowHeight = 44.0f;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
