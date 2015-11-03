@@ -46,7 +46,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         [self.contentView addSubview:self.collectionView];
         
         NSDictionary *views = @{ @"cv": self.collectionView };
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[cv]-0-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7.5-[cv]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];

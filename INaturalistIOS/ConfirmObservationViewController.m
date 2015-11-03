@@ -90,10 +90,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         tv.dataSource = self;
         tv.delegate = self;
         
-        // no separator inset
-        if ([tv respondsToSelector:@selector(setLayoutMargins:)]) {
-            tv.layoutMargins = UIEdgeInsetsZero;
-        }
+        tv.layoutMargins = UIEdgeInsetsMake(0, 59, 0, 0);
         
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
