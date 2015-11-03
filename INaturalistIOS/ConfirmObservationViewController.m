@@ -90,8 +90,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         tv.dataSource = self;
         tv.delegate = self;
         
-        tv.layoutMargins = UIEdgeInsetsMake(0, 59, 0, 0);
-        
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
         [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
@@ -886,11 +884,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        // no separator inset
-        cell.layoutMargins = UIEdgeInsetsZero;
-    }
-    cell.separatorInset = UIEdgeInsetsZero;
+    cell.separatorInset = UIEdgeInsetsMake(0, 59, 0, 0);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
