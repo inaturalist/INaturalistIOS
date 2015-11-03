@@ -7,6 +7,8 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "DisclosureCell.h"
 
 @implementation DisclosureCell
@@ -37,6 +39,8 @@
         self.secondaryLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            label.textColor = [UIColor colorWithHexString:@"#8e8e9e"];
             
             label;
         });
