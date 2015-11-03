@@ -23,8 +23,8 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
-            label.textColor = [UIColor darkGrayColor];
-            label.font = [UIFont systemFontOfSize:16.0f];
+            label.textColor = [UIColor blackColor];
+            label.font = [UIFont systemFontOfSize:17.0f];
             
             label.numberOfLines = 2;
             [label setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
