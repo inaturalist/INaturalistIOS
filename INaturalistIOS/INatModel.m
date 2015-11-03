@@ -31,7 +31,7 @@ static NSDateFormatter *jsDateFormatter = nil;
         prettyDateFormatter = [[NSDateFormatter alloc] init];
         [prettyDateFormatter setTimeZone:[NSTimeZone localTimeZone]];
         [prettyDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [prettyDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+        [prettyDateFormatter setTimeStyle:NSDateFormatterShortStyle];
     }
     return prettyDateFormatter;
 }
