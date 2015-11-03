@@ -6,6 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
+#import "UIColor-HTMLColors/UIColor+HTMLColors.h"
+
 #import "ProjectObservationHeaderView.h"
 
 @interface ProjectObservationHeaderView ()
@@ -37,7 +39,10 @@
             UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
             iv.translatesAutoresizingMaskIntoConstraints = NO;
             
-            iv.layer.cornerRadius = 0.5f;
+            iv.layer.cornerRadius = 2.0f;
+            iv.layer.borderColor = [UIColor colorWithHexString:@"#aaaaaa"].CGColor;
+            iv.layer.borderWidth = 1.0f;
+            iv.clipsToBounds = YES;
             
             iv;
         });
