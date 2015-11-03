@@ -263,14 +263,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         header.projectThumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
         [header.projectThumbnailImageView sd_setImageWithURL:url];
     } else {
+        // use standard projects icon
         header.projectThumbnailImageView.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
 
         FAKIcon *briefcase = [FAKIonIcons iosBriefcaseOutlineIconWithSize:16.0f];
         [briefcase addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
         [header.projectThumbnailImageView setImage:[briefcase imageWithSize:CGSizeMake(16, 16)]];
         header.projectThumbnailImageView.contentMode = UIViewContentModeCenter;
-
-        // use standard projects icon
     }
     
     return header;
