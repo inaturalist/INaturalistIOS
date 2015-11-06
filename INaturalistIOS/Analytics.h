@@ -130,6 +130,20 @@ extern NSString *kAnalyticsEventNewObservationCategorizeTaxon;
 extern NSString *kAnalyticsEventNewObservationSkipCategorize;
 extern NSString *kAnalyticsEventNewObservationSaveObservation;
 
+// observation edits
+extern NSString *kAnalyticsEventObservationCaptiveChanged;
+extern NSString *kAnalyticsEventObservationTaxonChanged;
+extern NSString *kAnalyticsEventObservationIDPleaseChanged;
+extern NSString *kAnalyticsEventObservationProjectsChanged;
+extern NSString *kAnalyticsEventObservationGeoprivacyChanged;
+extern NSString *kAnalyticsEventObservationNotesChanged;
+extern NSString *kAnalyticsEventObservationDateChanged;
+extern NSString *kAnalyticsEventObservationLocationChanged;
+extern NSString *kAnalyticsEventObservationAddPhoto;
+extern NSString *kAnalyticsEventObservationDeletePhoto;
+extern NSString *kAnalyticsEventObservationNewDefaultPhoto;
+extern NSString *kAnalyticsEventObservationViewHiresPhoto;
+
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;
 extern NSString *kAnalyticsEventSettingDisabled;

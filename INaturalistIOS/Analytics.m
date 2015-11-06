@@ -202,6 +202,20 @@ NSString *kAnalyticsEventNewObservationCategorizeTaxon =        @"New Obs - Cate
 NSString *kAnalyticsEventNewObservationSkipCategorize =         @"New Obs - Skip Categorize";
 NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save New Observation";
 
+// observation edits
+NSString *kAnalyticsEventObservationCaptiveChanged =            @"Obs - Captive Changed";
+NSString *kAnalyticsEventObservationTaxonChanged =              @"Obs - Taxon Changed";
+NSString *kAnalyticsEventObservationIDPleaseChanged =           @"Obs - ID Please Changed";
+NSString *kAnalyticsEventObservationProjectsChanged =           @"Obs - Projects Changed";
+NSString *kAnalyticsEventObservationGeoprivacyChanged =         @"Obs - Geoprivacy Changed";
+NSString *kAnalyticsEventObservationNotesChanged =              @"Obs - Notes Changed";
+NSString *kAnalyticsEventObservationDateChanged =               @"Obs - Date Changed";
+NSString *kAnalyticsEventObservationLocationChanged =           @"Obs - Location Changed";
+NSString *kAnalyticsEventObservationAddPhoto =                  @"Obs - Add Photo";
+NSString *kAnalyticsEventObservationDeletePhoto =               @"Obs - Delete Photo";
+NSString *kAnalyticsEventObservationNewDefaultPhoto =           @"Obs - New Default Photo";
+NSString *kAnalyticsEventObservationViewHiresPhoto =            @"Obs - View Hires Photo";
+
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
 NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabled";
