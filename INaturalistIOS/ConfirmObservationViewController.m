@@ -607,7 +607,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.locationManager stopUpdatingLocation];
 }
 
-- (void)startUpdatingLocation {    
+- (void)startUpdatingLocation {
     if (!self.locationTimer) {
         self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0
                                                               target:self
@@ -1167,8 +1167,22 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)speciesCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    Taxon *taxon = self.observation.taxon;
-    if (taxon) {
+    UIButton *deleteButton = ({
+        FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
+        [deleteIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+        [button setAttributedTitle:deleteIcon.attributedString forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(taxonDeleted:) forControlEvents:UIControlEventTouchUpInside];
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        
+        button;
+    });
+
+
+    if (self.observation.taxon) {
+        
+        Taxon *taxon = self.observation.taxon;
         cell.titleLabel.text = taxon.defaultName;
         
         cell.cellImageView.layer.borderWidth = 0.5f;
@@ -1184,20 +1198,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
         
-        FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
-        [deleteIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-        UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-        [deleteButton setAttributedTitle:deleteIcon.attributedString forState:UIControlStateNormal];
-        [deleteButton addTarget:self action:@selector(taxonDeleted:) forControlEvents:UIControlEventTouchUpInside];
         cell.accessoryView = deleteButton;
-        deleteButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        
     } else {
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
-        
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
+        
         if (self.observation.speciesGuess) {
             cell.titleLabel.text = self.observation.speciesGuess;
+            cell.accessoryView = deleteButton;
         } else {
             cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
         }
