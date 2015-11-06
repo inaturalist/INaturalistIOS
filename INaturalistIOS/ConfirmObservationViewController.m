@@ -62,7 +62,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
-@property CLLocationManager *locationManager;
+@property (readonly) CLLocationManager *locationManager;
 @property NSTimer *locationTimer;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @end
@@ -148,13 +148,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
-    if (self.shouldContinueUpdatingLocation) {
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            [self.locationManager requestWhenInUseAuthorization];
-        }
-        
-        [self startUpdatingLocation];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -163,6 +156,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor inatTint];
     [self.tableView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (self.shouldContinueUpdatingLocation) {
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
+        
+        [self startUpdatingLocation];
+    }
 }
 
 - (void)dealloc {
@@ -586,17 +591,23 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - Location Manager helpers
 
+- (CLLocationManager *)locationManager {
+    static CLLocationManager *lm;
+    
+    if (!lm) {
+        lm = [[CLLocationManager alloc] init];
+        lm.delegate = self;
+    }
+    
+    return lm;
+}
+
 - (void)stopUpdatingLocation {
     [self.locationTimer invalidate];
     [self.locationManager stopUpdatingLocation];
 }
 
-- (void)startUpdatingLocation {
-    if (!self.locationManager) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self;
-    }
-    
+- (void)startUpdatingLocation {    
     if (!self.locationTimer) {
         self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0
                                                               target:self
