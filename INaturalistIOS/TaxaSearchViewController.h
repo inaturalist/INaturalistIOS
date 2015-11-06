@@ -14,6 +14,7 @@
 @protocol TaxaSearchViewControllerDelegate <NSObject>
 @optional
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon;
+- (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess;
 @end
 
 @interface TaxaSearchViewController : UITableViewController <RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
@@ -23,6 +24,8 @@
 @property (nonatomic, strong) id <TaxaSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) BOOL hidesDoneButton;
+@property (nonatomic, assign) BOOL allowsFreeTextSelection;
+
 - (IBAction)clickedCancel:(id)sender;
 - (void)showTaxon:(Taxon *)taxon;
 - (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController;

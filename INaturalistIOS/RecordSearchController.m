@@ -106,9 +106,15 @@
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSObject *o = [self.searchResults objectAtIndex:indexPath.row];
+    NSObject *o;
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 0) {
+        o = nil;
+    } else {
+        o = [self.searchResults objectAtIndex:indexPath.row];
+    }
+    
     if ([self.delegate respondsToSelector:@selector(recordSearchControllerCellForRecord:inTableView:)]) {
-        return [self.searchDisplayController.searchContentsController performSelector:@selector(recordSearchControllerCellForRecord:inTableView:) 
+        return [self.searchDisplayController.searchContentsController performSelector:@selector(recordSearchControllerCellForRecord:inTableView:)
                                                                            withObject:o
                                                                            withObject:tableView];
     } else {
@@ -122,14 +128,37 @@
     }
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.searchResults.count;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 0) {
+        return 1;
+    } else {
+        return self.searchResults.count;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 1) {
+        return @"iNaturalist";
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 0) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
     if (self.delegate && [self.delegate respondsToSelector:@selector(recordSearchControllerSelectedRecord:)]) {
         [self.delegate performSelector:@selector(recordSearchControllerSelectedRecord:) 
                             withObject:[self.searchResults objectAtIndex:indexPath.row]];

@@ -14,6 +14,7 @@
 #import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
+#import "FAKINaturalist.h"
 
 @interface TaxaSearchViewController () <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
@@ -148,6 +149,12 @@ static const int TaxonCellSubtitleTag = 3;
     // be defensive
     if (indexPath) {
         
+        NSString *activeSearchText = self.searchDisplayController.searchBar.text;
+        if (self.taxaSearchController.allowsFreeTextSelection && activeSearchText.length > 0 && indexPath.section == 0) {
+            [self.delegate taxaSearchViewControllerChoseSpeciesGuess:activeSearchText];
+            return;
+        }
+
         Taxon *t;
         
         @try {
@@ -224,6 +231,7 @@ static const int TaxonCellSubtitleTag = 3;
         self.taxaSearchController = [[TaxaSearchController alloc] 
                                      initWithSearchDisplayController:self.searchDisplayController];
         self.taxaSearchController.delegate = self;
+        self.taxaSearchController.allowsFreeTextSelection = self.allowsFreeTextSelection;
     }
     
     // perform the remote fetch for these taxa
@@ -310,6 +318,37 @@ static const int TaxonCellSubtitleTag = 3;
 }
 
 #pragma mark - UITableViewDelegate
+
+- (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaxonOneNameCell"];
+    
+    FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
+    [unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+    
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
+    [imageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
+    
+    UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
+    titleLabel.text = self.searchDisplayController.searchBar.text;
+    titleLabel.font = [UIFont systemFontOfSize:titleLabel.font.pointSize];
+    
+    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"]
+                         forState:UIControlStateNormal];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"]
+                         forState:UIControlStateHighlighted];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
+    addButton.titleLabel.textColor = [UIColor whiteColor];
+    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryView = addButton;
+    
+    return cell;
+}
+
 - (UITableViewCell *)cellForTaxon:(Taxon *)t inTableView:(UITableView *)tableView {
     NSString *cellIdentifier = [t.name isEqualToString:t.defaultName] ? @"TaxonOneNameCell" : @"TaxonTwoNameCell";
     
@@ -333,6 +372,8 @@ static const int TaxonCellSubtitleTag = 3;
         
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
     [imageView sd_cancelCurrentImageLoad];
+    imageView.image = nil;
+    
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
     titleLabel.text = t.defaultName;
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
@@ -368,8 +409,12 @@ static const int TaxonCellSubtitleTag = 3;
     return 54;
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];
     return [sectionInfo numberOfObjects];
 }
 
@@ -417,7 +462,11 @@ static const int TaxonCellSubtitleTag = 3;
 }
 
 - (UITableViewCell *)recordSearchControllerCellForRecord:(NSObject *)record inTableView:(UITableView *)tableView {
-    return [self cellForTaxon:(Taxon *)record inTableView:tableView];
+    if (record) {
+        return [self cellForTaxon:(Taxon *)record inTableView:tableView];
+    } else {
+        return [self cellForUnknownTaxonInTableView:tableView];
+    }
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate

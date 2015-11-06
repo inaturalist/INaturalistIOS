@@ -776,8 +776,28 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                      withProperties:@{
                                       @"Via": @"Confirm",
                                       @"New Value": newTaxonName,
+                                      @"Is Taxon": @(YES),
                                       }];
 
+    [self.navigationController popToViewController:self animated:YES];
+}
+
+- (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess {
+    // clear out any previously set taxon information
+    self.observation.taxon = nil;
+    self.observation.taxonID = nil;
+    self.observation.iconicTaxonName = nil;
+    self.observation.iconicTaxonID = nil;
+
+    self.observation.speciesGuess = speciesGuess;
+    
+    [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
+                     withProperties:@{
+                                      @"Via": @"Confirm",
+                                      @"New Value": speciesGuess,
+                                      @"Is Taxon": @(NO),
+                                      }];
+    
     [self.navigationController popToViewController:self animated:YES];
 }
 
@@ -936,6 +956,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 search.hidesDoneButton = YES;
                 search.delegate = self;
                 search.query = self.observation.speciesGuess;
+                search.allowsFreeTextSelection = YES;
                 [self.navigationController pushViewController:search animated:YES];
             } else {
                 // do nothing
@@ -1164,7 +1185,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
-        cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
+        if (self.observation.speciesGuess) {
+            cell.titleLabel.text = self.observation.speciesGuess;
+        } else {
+            cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
+        }
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
