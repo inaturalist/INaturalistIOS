@@ -302,26 +302,20 @@
 {
 	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
 	if (username.length) {
-        [[Analytics sharedClient] debugLog:@"Network - Refresh My Observations"];
-		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
-													 objectMapping:[Observation mapping]
-														  delegate:self];
+        [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields&per_page=10", username]
+                                                     objectMapping:[Observation mapping]
+                                                          delegate:self];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
+                                                         objectMapping:[Observation mapping]
+                                                              delegate:self];
+        });
+
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        User *user = appDelegate.loginController.fetchMe;
-        
-        if (user.observationsCount.integerValue > 0 && self.noContentView && self.noContentView.superview) {
-            [UIView animateWithDuration:0.2f animations:^{
-                self.noObservationsLabel.text = NSLocalizedString(@"Downloading your observations from www.inaturalist.org", nil);
-                self.noObservationsImageView.image = ({
-                    FAKIcon *download = [FAKIonIcons iosCloudDownloadIconWithSize:200.0f];
-                    [download addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-                    [download imageWithSize:CGSizeMake(200.0f, 200.0f)];
-                });
-            }];
-        }
 	}
 }
 
