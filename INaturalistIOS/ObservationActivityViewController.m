@@ -348,8 +348,11 @@ static UIImage *defaultPersonImage;
     
     NSString *body = @"";
     CGFloat margin = 40;
+    CGFloat usableWidth = tableView.bounds.size.width - 80;
+
     if ([activity isKindOfClass:[Identification class]]) {
-        margin += 20;
+        margin += 40;
+        usableWidth -= 20;
         body = [((Identification *)activity).body stringByStrippingHTML];
     } else if ([activity isKindOfClass:[Comment class]]) {
         body = [((Comment *)activity).body stringByStrippingHTML];
@@ -360,7 +363,6 @@ static UIImage *defaultPersonImage;
     } else {
         float fontSize = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? 9 : 13;
         
-        CGFloat usableWidth = tableView.bounds.size.width - 80;
         CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
         UIFont *font = [UIFont systemFontOfSize:fontSize];
         
