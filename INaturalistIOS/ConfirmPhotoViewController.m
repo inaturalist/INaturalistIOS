@@ -52,6 +52,8 @@
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            
             // go straight to making the observation
             Observation *o = [Observation object];
             o.localCreatedAt = [NSDate date];
@@ -71,7 +73,7 @@
             
             ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
             confirmObs.observation = o;
-            confirmObs.shouldContinueUpdatingLocation = self.shouldContinueUpdatingLocation;
+            confirmObs.shouldContinueUpdatingLocation = strongSelf.shouldContinueUpdatingLocation;
             
             [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
             [weakSelf.navigationController pushViewController:confirmObs animated:YES];
