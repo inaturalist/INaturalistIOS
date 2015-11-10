@@ -170,6 +170,10 @@
 - (void)confirm {
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
     
+    // this can take a moment, so hide the retake/confirm buttons
+    confirm.hidden = YES;
+    retake.hidden = YES;
+    
     if (self.image) {
         // we need to save to the AssetsLibrary...
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
