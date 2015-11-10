@@ -575,8 +575,10 @@
             break;
             
         case NSFetchedResultsChangeMove:
-            [self.tableView moveRowAtIndexPath:indexPath
-                                   toIndexPath:newIndexPath];
+            if (![indexPath isEqual:newIndexPath]) {
+                [self.tableView moveRowAtIndexPath:indexPath
+                                       toIndexPath:newIndexPath];
+            }
             break;
             
         default:
