@@ -58,12 +58,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionNotes,
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate>
+@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+    
+    CLLocationManager *_locationManager;
+}
 @property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
 @property (readonly) CLLocationManager *locationManager;
-@property NSTimer *locationTimer;
+@property NSTimer *locationTimeout;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @end
 
@@ -544,9 +547,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             [self startUpdatingLocation];
             break;
-        case kCLAuthorizationStatusNotDetermined:
-        case kCLAuthorizationStatusDenied:
         case kCLAuthorizationStatusRestricted:
+        case kCLAuthorizationStatusDenied:
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Location Services Denied", nil)
+                                        message:NSLocalizedString(@"Cannot use your location", nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+            break;
+        case kCLAuthorizationStatusNotDetermined:
         default:
             // do nothing
             break;
@@ -592,29 +601,31 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - Location Manager helpers
 
 - (CLLocationManager *)locationManager {
-    static CLLocationManager *lm;
-    
-    if (!lm) {
-        lm = [[CLLocationManager alloc] init];
-        lm.delegate = self;
+    if (!_locationManager) {
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
     }
     
-    return lm;
+    return _locationManager;
 }
 
 - (void)stopUpdatingLocation {
-    [self.locationTimer invalidate];
+    [self.locationTimeout invalidate];
     [self.locationManager stopUpdatingLocation];
 }
 
 - (void)startUpdatingLocation {
-    if (!self.locationTimer) {
-        self.locationTimer = [NSTimer scheduledTimerWithTimeInterval:60.0
-                                                              target:self
-                                                            selector:@selector(stopUpdatingLocation)
-                                                            userInfo:nil
-                                                             repeats:NO];
+    
+    if (self.locationTimeout) {
+        // start the count over
+        [self.locationTimeout invalidate];
     }
+    
+    self.locationTimeout = [NSTimer scheduledTimerWithTimeInterval:60.0
+                                                            target:self
+                                                          selector:@selector(stopUpdatingLocation)
+                                                          userInfo:nil
+                                                           repeats:NO];
     
     [self.locationManager startUpdatingLocation];
 }
