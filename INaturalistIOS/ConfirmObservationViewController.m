@@ -966,6 +966,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     switch (indexPath.section) {
         case ConfirmObsSectionPhotos:
             // do nothing
@@ -1018,7 +1021,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                     withRowAnimation:UITableViewRowAnimationFade];
                                                         
                                                     } cancelBlock:nil
-                                                       origin:self.view] showActionSheetPicker];
+                                                       origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 2) {
                 // show location chooser
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
@@ -1074,7 +1077,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
 
                                                       } cancelBlock:nil
-                                                         origin:self.view] showActionSheetPicker];
+                                                         origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 4) {
                 // captive/cultivated
                 
@@ -1101,7 +1104,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
                                                           
                                                       } cancelBlock:nil
-                                                         origin:self.view] showActionSheetPicker];
+                                                         origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 5) {
                 INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                 if (appDelegate.loginController.isLoggedIn) {
