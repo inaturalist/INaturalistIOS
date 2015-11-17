@@ -13,7 +13,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import "GPPSignIn.h"
+#import <GooglePlus/GooglePlus.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 
 #import "SettingsViewController.h"
@@ -26,7 +26,7 @@
 #import "User.h"
 #import "DeletedRecord.h"
 #import "INatUITabBarController.h"
-#import "GTMOAuth2Authentication.h"
+//#import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
 #import "SignupSplashViewController.h"

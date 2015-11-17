@@ -51,25 +51,25 @@
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "appIcon_120x120-5.png",
+      "filename" : "appIcon_40.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "appIcon_120x120-4.png",
+      "filename" : "appIcon_80.png",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "appIcon_120x120-3.png",
+      "filename" : "appIcon_76x76 copy.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "appIcon_120x120-2.png",
+      "filename" : "appIcon_152x152.png",
       "scale" : "2x"
     }
   ],

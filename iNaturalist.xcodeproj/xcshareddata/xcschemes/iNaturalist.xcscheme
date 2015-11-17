@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
-               BuildableName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;.app"
-               BlueprintName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;"
+               BuildableName = "iNaturalist.app"
+               BlueprintName = "iNaturalist"
                ReferencedContainer = "container:iNaturalist.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
-            BuildableName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;.app"
-            BlueprintName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;"
+            BuildableName = "iNaturalist.app"
+            BlueprintName = "iNaturalist"
             ReferencedContainer = "container:iNaturalist.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +64,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
-            BuildableName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;.app"
-            BlueprintName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;"
+            BuildableName = "iNaturalist.app"
+            BlueprintName = "iNaturalist"
             ReferencedContainer = "container:iNaturalist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -87,8 +87,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
-            BuildableName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;.app"
-            BlueprintName = "&#x5ea;&#x5e6;&#x5e4;&#x5d9;&#x5d8;&#x5d1;&#x5e2;"
+            BuildableName = "iNaturalist.app"
+            BlueprintName = "iNaturalist"
             ReferencedContainer = "container:iNaturalist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

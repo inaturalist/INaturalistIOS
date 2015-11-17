@@ -27,7 +27,7 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "User.h"
-#import "GPPURLHandler.h"
+#import <GooglePlus/GooglePlus.h>
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"

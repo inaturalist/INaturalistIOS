@@ -248,7 +248,7 @@
 		191FB4D21601501A00C1F5DE /* ProjectObservationField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservationField.m; sourceTree = "<group>"; };
 		1922D99F14FEBF58003778B2 /* CrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossHairView.h; sourceTree = "<group>"; };
 		1922D9A014FEBF58003778B2 /* CrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossHairView.m; sourceTree = "<group>"; };
-		1927513314E9CCC9000ABAC4 /* תצפיטבע.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "תצפיטבע.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1927513314E9CCC9000ABAC4 /* iNaturalist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iNaturalist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1927513714E9CCC9000ABAC4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1927513914E9CCC9000ABAC4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -645,7 +645,7 @@
 		1927513414E9CCC9000ABAC4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1927513314E9CCC9000ABAC4 /* תצפיטבע.app */,
+				1927513314E9CCC9000ABAC4 /* iNaturalist.app */,
 				FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */,
 			);
 			name = Products;
@@ -1203,9 +1203,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1927513214E9CCC9000ABAC4 /* תצפיטבע */ = {
+		1927513214E9CCC9000ABAC4 /* iNaturalist */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "תצפיטבע" */;
+			buildConfigurationList = 1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */;
 			buildPhases = (
 				537BB181587740C4A2252975 /* Check Pods Manifest.lock */,
 				1927512F14E9CCC9000ABAC4 /* Sources */,
@@ -1215,14 +1215,15 @@
 				FA63FA2919E4D40F007306F9 /* Run Script */,
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
 				89AFC8311B7C816E0045D878 /* ShellScript */,
+				BF6B0C10C59862DDB1F29196 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "תצפיטבע";
+			name = iNaturalist;
 			productName = INaturalistIOS;
-			productReference = 1927513314E9CCC9000ABAC4 /* תצפיטבע.app */;
+			productReference = 1927513314E9CCC9000ABAC4 /* iNaturalist.app */;
 			productType = "com.apple.product-type.application";
 		};
 		FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */ = {
@@ -1234,6 +1235,7 @@
 				FADE28AD1B02D9AA00CA55FF /* Frameworks */,
 				FADE28AE1B02D9AA00CA55FF /* Resources */,
 				9D5253E631060D844242E2BF /* Copy Pods Resources */,
+				90E038A75BA1658BEE1CB76B /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1283,7 +1285,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1927513214E9CCC9000ABAC4 /* תצפיטבע */,
+				1927513214E9CCC9000ABAC4 /* iNaturalist */,
 				FADE28AF1B02D9AA00CA55FF /* iNaturalistTests */,
 			);
 		};
@@ -1383,6 +1385,21 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\" 345e342e4072648b2f39f3eb6ba91e02002087e3 772e463271ce4ae8d80b4c3f53bc00109ac88f7d6b23c21faeb89dff06cc74a6\n";
 		};
+		90E038A75BA1658BEE1CB76B /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9D5253E631060D844242E2BF /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1396,6 +1413,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BF6B0C10C59862DDB1F29196 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FA63FA2919E4D40F007306F9 /* Run Script */ = {
@@ -1594,7 +1626,7 @@
 /* Begin PBXTargetDependency section */
 		FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1927513214E9CCC9000ABAC4 /* תצפיטבע */;
+			target = 1927513214E9CCC9000ABAC4 /* iNaturalist */;
 			targetProxy = FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1726,7 +1758,7 @@
 					"-lsqlite3.0",
 					"$(inherited)",
 				);
-				PRODUCT_NAME = "תצפיטבע";
+				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1765,7 +1797,7 @@
 					"-lsqlite3.0",
 					"$(inherited)",
 				);
-				PRODUCT_NAME = "תצפיטבע";
+				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d49a850d-7038-4a4e-8dcd-fda43103342a";
 				SDKROOT = iphoneos;
@@ -1872,7 +1904,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "תצפיטבע" */ = {
+		1927515114E9CCC9000ABAC4 /* Build configuration list for PBXNativeTarget "iNaturalist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1927515214E9CCC9000ABAC4 /* Debug */,

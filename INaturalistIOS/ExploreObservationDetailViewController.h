@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <SlackTextViewController/Classes/SLKTextViewController.h>
+#import "SLKTextViewController.h"
 
 @class ExploreObservation;
 

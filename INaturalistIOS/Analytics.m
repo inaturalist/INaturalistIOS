@@ -31,7 +31,9 @@
 #endif
 
 #ifdef INatCrashlyticsKey
-        [Fabric with:@[CrashlyticsKit]];
+//        [Fabric with:@[CrashlyticsKit]];
+        [Fabric with:@[[Crashlytics class]]];
+
 #endif
     });
     return _sharedClient;

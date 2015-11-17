@@ -4,8 +4,8 @@ platform :ios, :deployment_target => '7.0'
 inhibit_all_warnings!
 
 target :iNaturalist do
-	pod 'Fabric', '1.2.8'
-	pod 'Crashlytics', '3.0.11'
+	pod 'Fabric'
+	pod 'Crashlytics'
 	pod 'FlurrySDK', '6.2.0'
 	pod 'Facebook-iOS-SDK', '3.20.0'
 	pod 'Bolts', '1.1.3'
@@ -16,7 +16,7 @@ target :iNaturalist do
 	pod 'AFNetworking', '1.3.4'
 	pod 'MHVideoPhotoGallery', '1.6.6'
 	pod 'UIColor-HTMLColors', '1.0.0'
-	pod 'SlackTextViewController', '1.5'
+	pod 'SlackTextViewController', '1.7.1'
 	pod 'SVPullToRefresh', '0.4.1'
 	pod 'PDKTStickySectionHeadersCollectionViewLayout', '0.1'
 	pod 'googleplus-ios-sdk', '1.7.1'
