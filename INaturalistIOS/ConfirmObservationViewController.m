@@ -207,7 +207,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
-    self.observation.inatDescription = textView.text;
+    if (![textView.text isEqualToString:self.observation.inatDescription]) {
+        // text changed, save it
+        self.observation.inatDescription = textView.text;
+        
+        [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged];
+    }
     
     if (textView.text.length == 0) {
         textView.textColor = [UIColor colorWithHexString:@"#AAAAAA"];
@@ -1000,6 +1005,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         
                                                         NSDate *date = (NSDate *)selectedDate;
                                                         
+                                                        if ([date timeIntervalSinceDate:self.observation.localObservedOn] == 0) {
+                                                            // nothing changed
+                                                            return;
+                                                        }
+                                                        
                                                         if ([date timeIntervalSinceNow] > 0) {
                                                             NSString *alertTitle = NSLocalizedString(@"Invalid Date",
                                                                                                      @"Invalid date alert title");
@@ -1012,6 +1022,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                               otherButtonTitles:nil] show];
                                                             return;
                                                         }
+                                                        
+                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged];
+
                                                         
                                                         __strong typeof(weakSelf) strongSelf = self;
                                                         strongSelf.observation.localObservedOn = date;
