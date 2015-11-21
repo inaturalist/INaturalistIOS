@@ -166,8 +166,12 @@ static const int GutterWidth  = 5;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
-        [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
-               placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
+        if (guideTaxon.smallPhotoUrl.host) {
+            [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
+                   placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
+        } else if (guideTaxon.smallPhotoUrl) {
+            [img setImage:[UIImage imageWithContentsOfFile:guideTaxon.smallPhotoUrl.path]];
+        }
         
         UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
         label.textAlignment = NSTextAlignmentNatural;

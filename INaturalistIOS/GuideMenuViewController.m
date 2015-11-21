@@ -196,7 +196,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         title.textColor = [UIColor blackColor];
                         title.text = NSLocalizedString(@"Download for offline use", nil);
                         subtitle.text = self.guide.ngzFileSize;
-                        imageView.image = [UIImage imageNamed:@"265-download"];
+                        imageView.image = [UIImage imageNamed:@"265-download-gray"];
                     } else {
                         title.textColor = [UIColor darkGrayColor];
                         title.text = NSLocalizedString(@"Download not available", nil);
