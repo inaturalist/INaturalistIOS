@@ -803,7 +803,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                      withProperties:@{
                                       @"Via": @"Confirm",
                                       @"New Value": newTaxonName,
-                                      @"Is Taxon": @(YES),
+                                      @"Is Taxon": @"Yes",
                                       }];
 
     [self.navigationController popToViewController:self animated:YES];
@@ -822,7 +822,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                      withProperties:@{
                                       @"Via": @"Confirm",
                                       @"New Value": speciesGuess,
-                                      @"Is Taxon": @(NO),
+                                      @"Is Taxon": @"No",
                                       }];
     
     [self.navigationController popToViewController:self animated:YES];
