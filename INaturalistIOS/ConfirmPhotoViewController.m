@@ -30,6 +30,7 @@
 #import "Project.h"
 #import "ProjectObservation.h"
 #import "ConfirmObservationViewController.h"
+#import "UIColor+INaturalist.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -98,13 +99,16 @@
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
-        button.backgroundColor = [UIColor blackColor];
-        button.layer.borderColor = [UIColor grayColor].CGColor;
-        button.layer.borderWidth = 1.0f;
+        button.backgroundColor = [UIColor grayColor];
         
-        [button setTitle:NSLocalizedString(@"Retake", @"Retake a photo")
+        button.layer.borderColor = [UIColor blackColor].CGColor;
+        button.layer.borderWidth = 0.5f;
+        
+        [button setTitle:NSLocalizedString(@"RETAKE", @"Retake a photo")
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:15.0f];
+
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
@@ -125,14 +129,15 @@
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
-        button.backgroundColor = [UIColor blackColor];
+        button.backgroundColor = [UIColor inatGreen];
         
-        button.layer.borderColor = [UIColor grayColor].CGColor;
-        button.layer.borderWidth = 1.0f;
+        button.layer.borderColor = [UIColor blackColor].CGColor;
+        button.layer.borderWidth = 0.5f;
         
-        [button setTitle:NSLocalizedString(@"Confirm", @"Confirm a new photo")
+        [button setTitle:NSLocalizedString(@"NEXT", @"Confirm a new photo")
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:15.0f];
         
         [button addTarget:self
                    action:@selector(confirm)
@@ -157,11 +162,11 @@
                                                                       metrics:0
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[confirm(==60)]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[confirm(==48)]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[retake(==60)]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[retake(==48)]-0-|"
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
