@@ -303,7 +303,7 @@ static char PROJECT_ASSOCIATED_KEY;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
         [self presentViewController:nav animated:YES completion:nil];
         
-        [self noPhotoTaxon:taxon project:project];
+        //[self noPhotoTaxon:taxon project:project];
         return;
 
     }

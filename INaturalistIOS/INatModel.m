@@ -8,8 +8,6 @@
 
 #import "INatModel.h"
 #import "DeletedRecord.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
 
 static NSDateFormatter *prettyDateFormatter = nil;
 static NSDateFormatter *shortDateFormatter = nil;

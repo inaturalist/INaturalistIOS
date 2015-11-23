@@ -152,6 +152,9 @@
 		FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */; };
 		FA4E730819FAD14E00A9AB5D /* ExploreObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */; };
 		FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */; };
+		FA51BA651C000A1900101807 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = FA51BA641C000A1900101807 /* Activity.m */; };
+		FA51BA681C0107EC00101807 /* AddFaveCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA51BA671C0107EC00101807 /* AddFaveCell.m */; };
+		FA51BA6B1C0159C000101807 /* ObsDetailActivityMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */; };
 		FA5564871BD9A9340049803B /* PhotoScrollViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */; };
 		FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55648C1BD9BC3C0049803B /* AddChicletCell.m */; };
 		FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
@@ -195,6 +198,13 @@
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
+		FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */; };
+		FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */; };
+		FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */; };
+		FACACA211BFD278F002223D7 /* ObsDetailInfoViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */; };
+		FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */; };
+		FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */; };
+		FACACA2A1BFD5199002223D7 /* ObsDetailSectionSelectorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
@@ -206,6 +216,7 @@
 		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
+		FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -518,6 +529,12 @@
 		FA4E72FE19FAD14E00A9AB5D /* ExploreObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationDetailViewController.m; sourceTree = "<group>"; };
 		FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationVisualizerViewController.h; sourceTree = "<group>"; };
 		FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationVisualizerViewController.m; sourceTree = "<group>"; };
+		FA51BA631C000A1900101807 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
+		FA51BA641C000A1900101807 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity.m; sourceTree = "<group>"; };
+		FA51BA661C0107EC00101807 /* AddFaveCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddFaveCell.h; sourceTree = "<group>"; };
+		FA51BA671C0107EC00101807 /* AddFaveCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddFaveCell.m; sourceTree = "<group>"; };
+		FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityMoreCell.h; sourceTree = "<group>"; };
+		FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityMoreCell.m; sourceTree = "<group>"; };
 		FA5564851BD9A9340049803B /* PhotoScrollViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoScrollViewCell.h; sourceTree = "<group>"; };
 		FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoScrollViewCell.m; sourceTree = "<group>"; };
 		FA55648B1BD9BC3C0049803B /* AddChicletCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddChicletCell.h; sourceTree = "<group>"; };
@@ -530,6 +547,7 @@
 		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
+		FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.10.xcdatamodel; sourceTree = "<group>"; };
 		FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+INaturalist.h"; sourceTree = "<group>"; };
 		FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+INaturalist.m"; sourceTree = "<group>"; };
 		FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldSimpleValueCell.h; sourceTree = "<group>"; };
@@ -604,6 +622,20 @@
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
 		FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupSplashViewController.h; sourceTree = "<group>"; };
 		FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupSplashViewController.m; sourceTree = "<group>"; };
+		FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailV2ViewController.h; sourceTree = "<group>"; };
+		FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailV2ViewController.m; sourceTree = "<group>"; };
+		FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailViewModel.h; sourceTree = "<group>"; };
+		FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModel.m; sourceTree = "<group>"; };
+		FACACA1C1BFD0CF7002223D7 /* PhotosPageControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosPageControlCell.h; sourceTree = "<group>"; };
+		FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosPageControlCell.m; sourceTree = "<group>"; };
+		FACACA1F1BFD278F002223D7 /* ObsDetailInfoViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailInfoViewModel.h; sourceTree = "<group>"; };
+		FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailInfoViewModel.m; sourceTree = "<group>"; };
+		FACACA221BFD27D6002223D7 /* ObsDetailActivityViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityViewModel.h; sourceTree = "<group>"; };
+		FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityViewModel.m; sourceTree = "<group>"; };
+		FACACA251BFD27E1002223D7 /* ObsDetailFavesViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailFavesViewModel.h; sourceTree = "<group>"; };
+		FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailFavesViewModel.m; sourceTree = "<group>"; };
+		FACACA281BFD5199002223D7 /* ObsDetailSectionSelectorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailSectionSelectorCell.h; sourceTree = "<group>"; };
+		FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailSectionSelectorCell.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
@@ -628,6 +660,8 @@
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
 		FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubtitleDisclosureCell.m; sourceTree = "<group>"; };
+		FAFFFBEB1BFFD6B5003B7B7B /* Fave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fave.h; path = ../Fave.h; sourceTree = "<group>"; };
+		FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Fave.m; path = ../Fave.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -773,10 +807,14 @@
 		19F621A1150ECD0100C58F28 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA51BA631C000A1900101807 /* Activity.h */,
+				FA51BA641C000A1900101807 /* Activity.m */,
 				19AE897118DD08A100505918 /* Comment.h */,
 				19AE897218DD08A100505918 /* Comment.m */,
 				190687C5151BF71F00D5B6E4 /* DeletedRecord.h */,
 				190687C6151BF71F00D5B6E4 /* DeletedRecord.m */,
+				FAFFFBEB1BFFD6B5003B7B7B /* Fave.h */,
+				FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */,
 				191C5C8217D3FACC0086DBEB /* Guide.h */,
 				191C5C8317D3FACC0086DBEB /* Guide.m */,
 				1955FCFB17F102FA004F57F2 /* GuideXML.h */,
@@ -895,6 +933,16 @@
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
+				FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */,
+				FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */,
+				FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */,
+				FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */,
+				FACACA1F1BFD278F002223D7 /* ObsDetailInfoViewModel.h */,
+				FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */,
+				FACACA221BFD27D6002223D7 /* ObsDetailActivityViewModel.h */,
+				FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */,
+				FACACA251BFD27E1002223D7 /* ObsDetailFavesViewModel.h */,
+				FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -962,6 +1010,14 @@
 				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
 				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
 				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
+				FACACA1C1BFD0CF7002223D7 /* PhotosPageControlCell.h */,
+				FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */,
+				FACACA281BFD5199002223D7 /* ObsDetailSectionSelectorCell.h */,
+				FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */,
+				FA51BA661C0107EC00101807 /* AddFaveCell.h */,
+				FA51BA671C0107EC00101807 /* AddFaveCell.m */,
+				FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */,
+				FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1508,6 +1564,7 @@
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
+				FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */,
 				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
@@ -1523,6 +1580,7 @@
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
+				FA51BA651C000A1900101807 /* Activity.m in Sources */,
 				FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */,
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
@@ -1558,6 +1616,7 @@
 				FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */,
 				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
+				FA51BA6B1C0159C000101807 /* ObsDetailActivityMoreCell.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
 				19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */,
 				FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */,
@@ -1565,9 +1624,11 @@
 				FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
+				FACACA211BFD278F002223D7 /* ObsDetailInfoViewModel.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
 				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
+				FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */,
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
 				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
@@ -1578,6 +1639,7 @@
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */,
+				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
@@ -1610,6 +1672,7 @@
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
+				FACACA2A1BFD5199002223D7 /* ObsDetailSectionSelectorCell.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
@@ -1618,6 +1681,7 @@
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
+				FA51BA681C0107EC00101807 /* AddFaveCell.m in Sources */,
 				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,
@@ -1628,6 +1692,7 @@
 				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
+				FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */,
 				FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
 				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
@@ -1637,6 +1702,7 @@
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
+				FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
@@ -1647,6 +1713,7 @@
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
+				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
@@ -1975,6 +2042,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */,
 				FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */,
 				FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */,
 				FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */,
@@ -1986,7 +2054,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */;
+			currentVersion = FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

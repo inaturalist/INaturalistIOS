@@ -18,6 +18,13 @@
         <attribute name="modelName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" syncable="YES"/>
     </entity>
+    <entity name="Fave" representedClassName="Fave" syncable="YES">
+        <attribute name="faveDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="userIconUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userLogin" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userRecordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="faves" inverseEntity="Observation" syncable="YES"/>
+    </entity>
     <entity name="Guide" representedClassName="Guide" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
@@ -97,6 +104,7 @@
         <attribute name="captive" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="favesCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="geoprivacy" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="hasUnviewedActivity" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="iconicTaxonID" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -132,6 +140,7 @@
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="validationErrorMsg" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="observation" inverseEntity="Comment" syncable="YES"/>
+        <relationship name="faves" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Fave" inverseName="observation" inverseEntity="Fave" syncable="YES"/>
         <relationship name="identifications" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Identification" inverseName="observation" inverseEntity="Identification" syncable="YES"/>
         <relationship name="observationFieldValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationFieldValue" inverseName="observation" inverseEntity="ObservationFieldValue" syncable="YES"/>
         <relationship name="observationPhotos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ObservationPhoto" inverseName="observation" inverseEntity="ObservationPhoto" syncable="YES"/>
@@ -329,11 +338,12 @@
     <elements>
         <element name="Comment" positionX="216" positionY="378" width="128" height="223"/>
         <element name="DeletedRecord" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="Fave" positionX="207" positionY="351" width="128" height="120"/>
         <element name="Guide" positionX="160" positionY="192" width="128" height="283"/>
         <element name="Identification" positionX="234" positionY="387" width="128" height="268"/>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="690"/>
+        <element name="Observation" positionX="160" positionY="192" width="128" height="720"/>
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
         <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="390"/>

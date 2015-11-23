@@ -45,6 +45,7 @@
 #import "ObservationDetailViewController.h"
 #import "DeletedRecord.h"
 #import "UploadManager.h"
+#import "ObsDetailV2ViewController.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
     
@@ -660,13 +661,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
         return;
     } else {
-        [self performSegueWithIdentifier:@"observationDetail" sender:o];
+        [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
     }
 }
 
@@ -1289,6 +1290,9 @@
                        direction:UIPageViewControllerNavigationDirectionForward
                         animated:YES
                       completion:nil];
+    } else if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
+        ObsDetailV2ViewController *ovc = [segue destinationViewController];
+        ovc.observation = (Observation *)sender;
     }
 }
 
