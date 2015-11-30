@@ -615,15 +615,20 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
-    [self.locationTimeout invalidate];
+    if (self.locationTimeout) {
+        [self.locationTimeout invalidate];
+        self.locationTimeout = nil;
+    }
+    
     [self.locationManager stopUpdatingLocation];
 }
 
 - (void)startUpdatingLocation {
     
+    // start the count over
     if (self.locationTimeout) {
-        // start the count over
         [self.locationTimeout invalidate];
+        self.locationTimeout = nil;
     }
     
     self.locationTimeout = [NSTimer scheduledTimerWithTimeInterval:60.0
