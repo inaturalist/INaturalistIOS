@@ -65,7 +65,6 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (IBAction)clickedViewButton:(id)sender {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-//    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *url =[NSString stringWithFormat:@"%@/projects/%@?locale=%@-%@",
                     INatWebBaseURL, self.project.cachedSlug, language, countryCode];

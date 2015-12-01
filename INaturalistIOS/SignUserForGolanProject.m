@@ -74,7 +74,6 @@
 
 - (void)downloadUserProjects{
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-//    NSString *language = [[NSLocale preferredLanguages] firstObject];
     NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
                       self.username,

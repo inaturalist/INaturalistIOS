@@ -18,7 +18,6 @@
     if (self) {
         self.model = Taxon.class;
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-//        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
         NSString *language = [NSLocale localeForCurrentLanguage];
         self.searchURL = [NSString stringWithFormat:@"/taxa/search?locale=%@-%@&q=%%@", language, countryCode];
     }
