@@ -323,7 +323,8 @@ static char SUMMARY_ASSOCIATED_KEY;
     NSString *wikipediaTitle = self.taxon.wikipediaTitle;
     NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
     NSString *urlString;
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+//    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
         urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];

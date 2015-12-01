@@ -184,7 +184,8 @@ static const int ListControlIndexNearby = 2;
 {
     self.allGuidesSyncedAt = [NSDate date];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+//    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *url =[NSString stringWithFormat:@"/guides.json?locale=%@-%@",
                     language,
                     countryCode];
@@ -212,7 +213,8 @@ static const int ListControlIndexNearby = 2;
     }
     self.nearbyGuidesSyncedAt = [NSDate date];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+//    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *url =[NSString stringWithFormat:@"/guides.json?latitude=%f&longitude=%f&locale=%@-%@",
                     self.lastLocation.coordinate.latitude,
                     self.lastLocation.coordinate.longitude,
@@ -227,7 +229,8 @@ static const int ListControlIndexNearby = 2;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+//    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *url =[NSString stringWithFormat:@"/guides/user/%@.json?locale=%@-%@",
                     username,
                     language,

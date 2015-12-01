@@ -11,5 +11,6 @@
 @interface NSLocale (INaturalist)
 
 + (NSString *)inat_serverFormattedLocale;
++ (NSString *)localeForCurrentLanguage;
 
 @end
