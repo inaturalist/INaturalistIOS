@@ -165,7 +165,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
-    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower2.jpg"];
+    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
     moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
     purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
     
@@ -229,8 +229,11 @@ static char PARTNER_ASSOCIATED_KEY;
 //        label;
 //    });
 //    [self.view addSubview:self.logoLabel];
-    self.logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"platformLogo"]];
+//    self.logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"platformLogo"]];
+    self.logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"platformLogoWithBck"]];
     self.logoImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.logoImageView.contentMode = UIViewContentModeScaleAspectFill;
+    
     [self.view addSubview:self.logoImageView];
 //    self.logoLabel.hidden = YES;
     
@@ -601,7 +604,7 @@ static char PARTNER_ASSOCIATED_KEY;
     constraintsForRegularClass = [NSArray arrayWithArray:mutableConstraints];
     [mutableConstraints removeAllObjects];
     
-    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo]-30-[reason]"
+    [mutableConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-35-[logo(<=250)]-30-[reason]"
                                                                                     options:0
                                                                                     metrics:0
                                                                                       views:views]];
