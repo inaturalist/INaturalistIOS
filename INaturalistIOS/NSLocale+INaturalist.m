@@ -12,9 +12,16 @@
 
 + (NSString *)inat_serverFormattedLocale {
     // iOS gives us en_US, server expects en-US
-    NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
+    NSString *localeString = [self localeForCurrentLanguage];
     NSString *serverLocaleIdentifier = [localeString stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
     return serverLocaleIdentifier;
 }
 
++ (NSString *)localeForCurrentLanguage {
+    NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
+    if([localeString isEqualToString:@"he"] || [localeString isEqualToString:@"he_IL"]) {
+        localeString = @"iw";
+    }
+    return localeString;
+}
 @end

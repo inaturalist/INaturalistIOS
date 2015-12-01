@@ -96,7 +96,7 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *username = [defaults objectForKey:INatUsernamePrefKey];
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *language = [NSLocale localeForCurrentLanguage];
         NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
                         username,
                         language,

@@ -175,7 +175,7 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncFeaturedProjects {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
     
     self.featuredProjectsSyncedAt = [NSDate date];
@@ -194,7 +194,7 @@ static const int ListControlIndexNearby = 2;
         return;
     }
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] firstObject];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *path = [NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
                       self.lastLocation.coordinate.latitude,
                       self.lastLocation.coordinate.longitude,
@@ -210,7 +210,7 @@ static const int ListControlIndexNearby = 2;
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
     if (username && username.length > 0) {
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] firstObject];
+        NSString *language = [NSLocale localeForCurrentLanguage];
         NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
                           username,
                           language,

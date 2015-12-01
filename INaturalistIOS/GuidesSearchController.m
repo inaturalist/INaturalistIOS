@@ -24,7 +24,7 @@ static NSString *CellIdentifier = @"GuideCell";
     if (self) {
         self.model = Guide.class;
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *language = [NSLocale localeForCurrentLanguage];
         self.searchURL = [NSString stringWithFormat:@"/guides/search.json?locale=%@-%@&q=%%@", language, countryCode];
     }
     return self;

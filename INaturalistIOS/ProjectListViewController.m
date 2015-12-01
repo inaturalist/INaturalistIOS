@@ -108,7 +108,7 @@ static const int ListedTaxonCellAddButtonTag = 4;
     self.tableView.scrollEnabled = NO;
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing list...",nil)];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    NSString *language = [NSLocale localeForCurrentLanguage];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
     [[Analytics sharedClient] debugLog:@"Network - Load project list"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
