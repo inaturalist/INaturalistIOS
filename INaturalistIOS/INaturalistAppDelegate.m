@@ -91,7 +91,7 @@
         iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         iv.image = [UIImage IFTTTDefaultLaunchImage];
         if (!iv.image) {
-            iv.image = [UIImage imageNamed:@"SignUp_OrangeFlower"];
+            iv.image = [UIImage imageNamed:@"splash_2_iphone_6p.jpg"];
         }
         
         iv;

@@ -57,7 +57,8 @@
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "YES"
+      language = "he">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

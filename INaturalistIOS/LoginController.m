@@ -71,7 +71,7 @@ NSInteger INatMinPasswordLength = 6;
     NSArray *perms = @[@"email"];
     FBSession *session = [[FBSession alloc] initWithAppID:nil
                                               permissions:perms
-                                          urlSchemeSuffix:@"inat"
+                                          urlSchemeSuffix:nil
                                        tokenCacheStrategy:nil];
     [FBSession setActiveSession:session];
     [session openWithBehavior:FBSessionLoginBehaviorForcingSafari

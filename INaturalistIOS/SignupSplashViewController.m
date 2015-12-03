@@ -165,14 +165,14 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                }];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     
-    orangeFlower = [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
-    moth = [UIImage imageNamed:@"SignUp_Moth.jpg"];
-    purpleFlower = [UIImage imageNamed:@"SignUp_PurpleFlower.jpg"];
+    orangeFlower = [UIImage imageNamed:@"splash_1_iphone_6p.jpg"];
+    moth = [UIImage imageNamed:@"splash_2_iphone_6p.jpg"];
+    purpleFlower = [UIImage imageNamed:@"splash_3_iphone_6p.jpg"];
     
     self.backgroundImageView = ({
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
-        
+
         iv.contentMode = UIViewContentModeScaleAspectFill;
         iv.image = orangeFlower;
         
