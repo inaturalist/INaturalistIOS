@@ -234,15 +234,6 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     return YES;
 }
 
-
-
-#pragma mark - UIScrollView delegate
-
-
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView endEditing:YES];
-}
-
 #pragma mark - TaxaSearchViewControllerDelegate
 
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
