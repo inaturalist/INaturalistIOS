@@ -29,9 +29,15 @@
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
 
-@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate, TaxaSearchViewControllerDelegate>
+@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate, TaxaSearchViewControllerDelegate> {
+    
+    UIToolbar *_keyboardToolbar;
+}
+
 @property RKObjectLoader *loader;
 @property NSIndexPath *taxaSearchIndexPath;
+@property UITapGestureRecognizer *tapAwayGesture;
+@property (readonly) UIToolbar *keyboardToolbar;
 @end
 
 @implementation ProjectObservationsViewController
@@ -90,9 +96,20 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self.tableView reloadData];
 }
 
+- (void)dealloc {
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - UIBarButton targets
 
 - (void)backPressed:(UIBarButtonItem *)button {
+    
+    // end editing on any rows
+    [self.tableView endEditing:YES];
+    
+    // save the ofvs
+    [self saveVisibleObservationFieldValues];
+    
     NSString *projectNameFailingValidation = nil;
     NSString *projectFieldFailingValidation = nil;
     
@@ -141,21 +158,33 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (void)saveVisibleObservationFieldValues {
+    
+    
     for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
         Project *project = [self projectForSection:indexPath.section];
-        ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
-        NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ovf, BOOL *stop) {
-            return [ovf.observation isEqual:self.observation];
+        ProjectObservationField *pof = [project sortedProjectObservationFields][indexPath.item];
+        ObservationField *field = pof.observationField;
+        
+        NSSet *ofvs = [field.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+            return [ofv.observation isEqual:self.observation];
         }];
         if (ofvs.count > 0) {
             ObservationFieldValue *ofv = ofvs.anyObject;
             ofv.value = [self currentValueForIndexPath:indexPath];
+            ofv.localUpdatedAt = [NSDate date];
         } else {
             ObservationFieldValue *ofv = [ObservationFieldValue object];
-            ofv.observationField = field.observationField;
+            ofv.observationField = field;
             ofv.observation = self.observation;
             ofv.value = [self currentValueForIndexPath:indexPath];
+            ofv.localUpdatedAt = [NSDate date];
         }
+    }
+    
+    NSError *error;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        // TODO: log it at least, also notify the user
     }
 }
 
@@ -172,14 +201,37 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self saveVisibleObservationFieldValues];
 }
 
-#pragma mark - UIScrollView delegate
-
-
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView endEditing:YES];
+- (void)tapAway:(UITapGestureRecognizer *)gesture {
+    [gesture.view endEditing:YES];
+    [gesture.view removeGestureRecognizer:gesture];
 }
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    //[scrollView endEditing:YES];
+
+- (UIToolbar *)keyboardToolbar {
+    if (!_keyboardToolbar) {
+        _keyboardToolbar = [[UIToolbar alloc] init];
+        _keyboardToolbar.barStyle = UIBarStyleDefault;
+        [_keyboardToolbar sizeToFit];
+
+        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                              target:nil
+                                                                              action:nil];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                              target:self
+                                                                              action:@selector(keyboardDone)];
+        _keyboardToolbar.items = @[ flex, done ];
+    }
+    
+    return _keyboardToolbar;
+}
+
+- (void)keyboardDone {
+    [self.tableView endEditing:YES];
+}
+
+#pragma mark UITextFieldDelegate methods
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [textField setInputAccessoryView:self.keyboardToolbar];
+    return YES;
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
@@ -200,6 +252,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         // pick one?
         ObservationFieldValue *ofv = ofvs.anyObject;
         ofv.value = [taxon.recordID stringValue];
+        ofv.localUpdatedAt = [NSDate date];
     }
     
     [self.tableView reloadRowsAtIndexPaths:@[ self.taxaSearchIndexPath ]
@@ -343,37 +396,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         }] anyObject];
 
         [self.navigationController pushViewController:pofVC animated:YES];
-        return;
-        
-        [[[ActionSheetStringPicker alloc] initWithTitle:field.observationField.name
-                                                   rows:values
-                                       initialSelection:initialSelection
-                                              doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                                  NSLog(@"picked one!");
-                                                  if (ofv) {
-                                                      if (selectedIndex == 0) {
-                                                          // remove the value
-                                                          [ofv destroy];
-                                                      } else {
-                                                          // reset the existing value
-                                                          ofv.value = selectedValue;
-                                                      }
-                                                  } else {
-                                                      if (selectedIndex == 0) {
-                                                          // don't need to do anything, still default
-                                                      } else {
-                                                          // make new ofv
-                                                          ObservationFieldValue *ofv = [ObservationFieldValue object];
-                                                          ofv.observationField = field.observationField;
-                                                          ofv.observation = self.observation;
-                                                          ofv.value = selectedValue;
-                                                      }
-                                                  }
-                                                  [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                   withRowAnimation:UITableViewRowAnimationFade];
-                                              } cancelBlock:^(ActionSheetStringPicker *picker) {
-                                                  NSLog(@"cancelled");
-                                              } origin:self.view] showActionSheetPicker];
+
     } else if ([field.observationField.datatype isEqualToString:@"text"]) {
         // free text
         
@@ -383,6 +406,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         // activate the textfield
         ObsFieldLongTextValueCell *cell = (ObsFieldLongTextValueCell *)[tableView cellForRowAtIndexPath:indexPath];
         [cell.textField becomeFirstResponder];
+        
+        self.tapAwayGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAway:)];
+        [self.tableView addGestureRecognizer:self.tapAwayGesture];
         
     } else if ([field.observationField.datatype isEqualToString:@"numeric"]) {
         // numeric text entry
@@ -403,6 +429,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [cell.contentView addSubview:tf];
         
         [tf becomeFirstResponder];
+        
+        self.tapAwayGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAway:)];
+        [self.tableView addGestureRecognizer:self.tapAwayGesture];
 
     } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
         // taxon picker
@@ -618,6 +647,12 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                 [po deleteEntity];
             }
         }
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Objectstore Save Error: %@", error.localizedDescription]];
     }
     
     // reload the table view in a fraction of a second
