@@ -20,12 +20,15 @@
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "ObsDetailActivityMoreCell.h"
+#import "UIColor+INaturalist.h"
 
 @implementation ObsDetailActivityViewModel
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         return 4;
+    } else if (section == self.observation.sortedActivity.count + 1) {
+        return 1;
     } else {
         if (self.observation.sortedActivity == 0) {
             // if activity hasn't been loaded from the server yet
@@ -49,7 +52,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1 + self.observation.sortedActivity.count;
+    return 2 + self.observation.sortedActivity.count;
 }
 
 - (Activity *)activityForSection:(NSInteger)section {
@@ -76,6 +79,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    } else if (indexPath.section == self.observation.sortedActivity.count + 1) {
+        return 44;
     } else {
         Activity *activity = [self activityForSection:indexPath.section];
         if ([activity isKindOfClass:[Comment class]]) {
@@ -118,13 +123,11 @@
     return MAX(44, textRect.size.height);
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([cell.reuseIdentifier isEqualToString:@"subtitle"]) {
-    }
-}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section < 2) {
+        return [UITableViewHeaderFooterView new];
+    } else if (section == self.observation.sortedActivity.count + 1) {
         return [UITableViewHeaderFooterView new];
     } else {
         UITableViewHeaderFooterView *view = [UITableViewHeaderFooterView new];
@@ -146,6 +149,33 @@
     if (indexPath.section == 0) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
+        if (indexPath.section == self.observation.sortedActivity.count + 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
+            
+            cell.textLabel.text = nil;
+            cell.detailTextLabel.text = nil;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            UIButton *addComment = [UIButton buttonWithType:UIButtonTypeSystem];
+            [addComment setTitle:NSLocalizedString(@"Comment", nil) forState:UIControlStateNormal];
+            [addComment setBackgroundColor:[UIColor inatTint]];
+            [addComment setTintColor:[UIColor whiteColor]];
+            addComment.layer.cornerRadius = 17.0f;
+            [addComment setFrame:CGRectMake(10, 5, (cell.bounds.size.width / 2) - 15, 34)];
+            [addComment addTarget:self action:@selector(addComment) forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:addComment];
+            
+            UIButton *addID = [UIButton buttonWithType:UIButtonTypeSystem];
+            [addID setTitle:NSLocalizedString(@"Suggest ID", nil) forState:UIControlStateNormal];
+            [addID setBackgroundColor:[UIColor inatTint]];
+            [addID setTintColor:[UIColor whiteColor]];
+            addID.layer.cornerRadius = 17.0f;
+            [addID setFrame:CGRectMake((cell.bounds.size.width / 2) + 5, 5, (cell.bounds.size.width / 2) - 15, 34)];
+            [addID addTarget:self action:@selector(addIdentification) forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:addID];
+            
+            return cell;
+        }
         if (indexPath.item == 0) {
             DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
             
@@ -284,6 +314,16 @@
             return cell;
         }
     }
+}
+
+#pragma mark - uibutton targets
+
+- (void)addComment {
+    [self.delegate inat_performSegueWithIdentifier:@"addComment"];
+}
+
+- (void)addIdentification {
+    [self.delegate inat_performSegueWithIdentifier:@"addIdentification"];
 }
 
 

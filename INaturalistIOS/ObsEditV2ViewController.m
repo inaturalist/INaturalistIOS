@@ -21,7 +21,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 
-#import "ConfirmObservationViewController.h"
+#import "ObsEditV2ViewController.h"
 #import "Observation.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionNotes,
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @end
 
-@implementation ConfirmObservationViewController
+@implementation ObsEditV2ViewController
 
 #pragma mark - uiviewcontroller lifecycle
 
@@ -210,8 +210,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
         // text changed, save it
         self.observation.inatDescription = textView.text;
-        
-        [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged];
+        [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
+                         withProperties:@{
+                                          @"Via": [self analyticsVia]
+                                          }];
     }
     
     if (textView.text.length == 0) {
@@ -245,7 +247,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationNewDefaultPhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -268,7 +270,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -306,7 +308,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     };
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self presentMHGalleryController:gallery animated:YES completion:nil];
 
@@ -417,7 +419,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Source": @"Library",
                                       @"Count": @(assets.count)
                                       }];
@@ -453,7 +455,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Source": @"Camera",
                                       @"Count": @(1)
                                       }];
@@ -688,7 +690,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)idPleaseChanged:(UISwitch *)switcher {
     [[Analytics sharedClient] event:kAnalyticsEventObservationIDPleaseChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": switcher.isOn ? @"Yes": @"No"
                                       }];
     
@@ -700,7 +702,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)taxonDeleted:(UIButton *)button {
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": @"No Taxon"
                                       }];
 
@@ -716,14 +718,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
-    
-    [self.observation deleteEntity];
-    self.observation = nil;
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
+    if (self.isMakingNewObservation) {
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
+        
+        [self.observation deleteEntity];
+        self.observation = nil;
+        NSError *error;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            // TODO: log it at least, also notify the user
+        }
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -733,7 +737,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Projects": @(self.observation.projectObservations.count),
                                       @"Photos": @(self.observation.observationPhotos.count),
                                       @"OFVs": @(self.observation.observationFieldValues.count)
@@ -771,7 +775,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (newProjects.count > 0 || deletedProjects.count > 0) {
         [[Analytics sharedClient] event:kAnalyticsEventObservationProjectsChanged
                          withProperties:@{
-                                          @"Via": @"Confirm",
+                                          @"Via": [self analyticsVia],
                                           }];
     }
     
@@ -806,7 +810,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": newTaxonName,
                                       @"Is Taxon": @"Yes",
                                       }];
@@ -825,7 +829,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": speciesGuess,
                                       @"Is Taxon": @"No",
                                       }];
@@ -849,7 +853,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       }];
 
     [self.navigationController popToViewController:self animated:YES];
@@ -1028,7 +1032,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                             return;
                                                         }
                                                         
-                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged];
+                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged\
+                                                                         withProperties:@{
+                                                                                          @"Via": [self analyticsVia]
+                                                                                          }];
 
                                                         
                                                         __strong typeof(weakSelf) strongSelf = self;
@@ -1088,7 +1095,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           strongSelf.observation.geoprivacy = newValue;
 
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
-                                                                           withProperties:@{ @"Via": @"Confirm",
+                                                                           withProperties:@{ @"Via": [self analyticsVia],
                                                                                              @"New Value": newValue}];
                                                           
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
@@ -1110,7 +1117,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationCaptiveChanged
                                                                            withProperties:@{
-                                                                                            @"Via": @"Confirm",
+                                                                                            @"Via": [self analyticsVia],
                                                                                             @"New Value": selectedIndex == 0 ? @"No": @"Yes",
                                                                                             }];
                                                           
@@ -1412,6 +1419,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (NSString *)projectsTitle {
     return NSLocalizedString(@"Projects", @"choose projects button title.");
+}
+
+#pragma mark - analytics helper
+
+- (NSString *)analyticsVia {
+    return self.isMakingNewObservation ? @"New" : @"Edit";
 }
 
 @end

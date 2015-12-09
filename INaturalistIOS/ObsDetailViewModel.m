@@ -31,7 +31,6 @@
 @interface ObsDetailViewModel ()
 
 @property NSInteger viewingPhoto;
-@property UITableView *tv;
 
 @end
 
@@ -48,8 +47,6 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // hack
-    self.tv = tableView;
-    
     return 0;
 }
 
@@ -101,32 +98,39 @@
     // photos
     PhotosPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
-    ObservationPhoto *op = self.observation.sortedObservationPhotos[self.viewingPhoto];
-    if (op.photoKey) {
-        cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
-    } else {
-        [cell.iv sd_setImageWithURL:op.largePhotoUrl];
+    if (self.observation.observationPhotos.count > 0) {
+        ObservationPhoto *op = self.observation.sortedObservationPhotos[self.viewingPhoto];
+        if (op.photoKey) {
+            cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
+        } else {
+            [cell.iv sd_setImageWithURL:op.largePhotoUrl];
+        }
     }
     
-    cell.pageControl.numberOfPages = self.observation.observationPhotos.count;
-    cell.pageControl.currentPage = self.viewingPhoto;
-    [cell.pageControl addTarget:self
-                         action:@selector(pageControlChanged:)
-               forControlEvents:UIControlEventValueChanged];
-    
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                     action:@selector(swiped:)];
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [cell addGestureRecognizer:swipeRight];
-    
-    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(swiped:)];
-    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-    [cell addGestureRecognizer:swipeLeft];
+    if (self.observation.observationPhotos.count > 1) {
+        cell.pageControl.hidden = NO;
+        cell.pageControl.numberOfPages = self.observation.observationPhotos.count;
+        cell.pageControl.currentPage = self.viewingPhoto;
+        [cell.pageControl addTarget:self
+                             action:@selector(pageControlChanged:)
+                   forControlEvents:UIControlEventValueChanged];
+        
+        
+        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                         action:@selector(swiped:)];
+        swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+        [cell addGestureRecognizer:swipeRight];
+        
+        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(swiped:)];
+        swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+        [cell addGestureRecognizer:swipeLeft];
+    } else {
+        cell.pageControl.hidden = YES;
+    }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    
     return cell;
 }
 
@@ -155,7 +159,7 @@
             cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
         
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryType = UITableViewCellAccessoryNone;
         
     } else {
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
@@ -287,7 +291,7 @@
     self.viewingPhoto = pageControl.currentPage;
     
     NSIndexPath *photoIp = [NSIndexPath indexPathForItem:1 inSection:0];
-    [self.tv reloadRowsAtIndexPaths:@[ photoIp ] withRowAnimation:UITableViewRowAnimationFade];
+    [self.delegate reloadRowAtIndexPath:photoIp];
 }
 
 #pragma mark - gestures
@@ -302,7 +306,7 @@
             // do nothing
         } else {
             self.viewingPhoto--;
-            [self.tv reloadRowsAtIndexPaths:@[ photoIp ] withRowAnimation:UITableViewRowAnimationFade];
+            [self.delegate reloadRowAtIndexPath:photoIp];
         }
 
     } else if (gesture.direction == UISwipeGestureRecognizerDirectionLeft) {
@@ -311,7 +315,7 @@
             // do nothing
         } else {
             self.viewingPhoto++;
-            [self.tv reloadRowsAtIndexPaths:@[ photoIp ] withRowAnimation:UITableViewRowAnimationFade];
+            [self.delegate reloadRowAtIndexPath:photoIp];
         }
     }
 }

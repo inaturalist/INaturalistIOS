@@ -15,6 +15,10 @@
 #import "ObsDetailInfoViewModel.h"
 #import "ObsDetailFavesViewModel.h"
 #import "Analytics.h"
+#import "AddCommentViewController.h"
+#import "AddIdentificationViewController.h"
+#import "ProjectObservationsViewController.h"
+#import "ObsEditV2ViewController.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -57,14 +61,53 @@
                                                                       metrics:0
                                                                         views:views]];
     
-    
-    NSInteger activity = self.observation.favesCount.integerValue +
-                        self.observation.identificationsCount.integerValue +
-                        self.observation.commentsCount.integerValue;
-    if (activity > 0) {
-        [self reloadObservation];
-    }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                                                                                           target:self
+                                                                                           action:@selector(editObs)];
+}
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self reloadObservation];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
+- (void)dealloc {
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+- (void)inat_performSegueWithIdentifier:(NSString *)identifier {
+    [self performSegueWithIdentifier:identifier sender:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"addComment"]) {
+        AddCommentViewController *vc = [segue destinationViewController];
+        vc.observation = self.observation;
+    } else if ([segue.identifier isEqualToString:@"addIdentification"]) {
+        AddIdentificationViewController *vc = [segue destinationViewController];
+        vc.observation = self.observation;
+    } else if ([segue.identifier isEqualToString:@"projects"]) {
+        ProjectObservationsViewController *vc = [segue destinationViewController];
+        vc.isReadOnly = YES;
+        vc.observation = self.observation;
+    }
+}
+
+- (void)editObs {
+    ObsEditV2ViewController *edit = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
+    edit.shouldContinueUpdatingLocation = NO;
+    edit.observation = self.observation;
+    edit.isMakingNewObservation = NO;
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:edit];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)reloadObservation {
@@ -131,6 +174,11 @@
     } else {
         return ObsDetailSectionNone;
     }
+}
+
+- (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                          withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {

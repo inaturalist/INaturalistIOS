@@ -8,6 +8,9 @@
 
 @import MapKit;
 
+#import <FontAwesomeKit/FAKIonIcons.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "ObsDetailInfoViewModel.h"
 #import "Observation.h"
 #import "DisclosureCell.h"
@@ -40,9 +43,11 @@
     } else if (indexPath.section == 1) {
         // map
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
+        cell.backgroundColor = [UIColor lightGrayColor];
         
         cell.textLabel.text = nil;
         cell.detailTextLabel.text = nil;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         if (self.observation.latitude.floatValue) {
             MKMapView *mv = [[MKMapView alloc] initWithFrame:cell.bounds];
@@ -54,12 +59,52 @@
             CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
             mv.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
             
+            MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
+            pin.coordinate = coords;
+            pin.title = @"Title";
+            [mv addAnnotation:pin];
+            
             [cell.contentView addSubview:mv];
+            
         }
+
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, cell.bounds.size.width - 20, 30)];
+        label.layer.cornerRadius = 3.0f;
+        label.clipsToBounds = YES;
+        label.backgroundColor = [UIColor whiteColor];
+        label.textColor = [UIColor grayColor];
+        label.font = [UIFont systemFontOfSize:12.0f];
+        label.textAlignment = NSTextAlignmentCenter;
         
+        [cell.contentView addSubview:label];
+
+        if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
+            label.text = self.observation.placeGuess;
+        } else {
+            label.text = NSLocalizedString(@"No location.", nil);
+        }
+
         
         return cell;
         
+    } else if (indexPath.section == 2) {
+        // projects
+        DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+        
+        cell.titleLabel.text = NSLocalizedString(@"Projects", nil);
+        FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
+        [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
+        cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
+        
+        cell.secondaryLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.projectObservations.count];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        if (self.observation.projectObservations.count > 0) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        return cell;
     }
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
@@ -78,8 +123,6 @@
         case 2:
             return nil;
             break;
-        case 3:
-            return NSLocalizedString(@"More Info", @"Header for more info section of obs detail");
         default:
             return nil;
             break;
@@ -92,11 +135,9 @@
             return [super tableView:tableView heightForHeaderInSection:section];
             break;
         case 1:
+        case 2:
         case 3:
             return 34;
-            break;
-        case 2:
-            return 2;
             break;
         default:
             return 0;
@@ -110,7 +151,11 @@
             return [super tableView:tableView heightForRowAtIndexPath:indexPath];
         } else if (indexPath.row == 4) {
             // notes
-            return 120;
+            if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
+                return 120;
+            } else {
+                return CGFLOAT_MIN;
+            }
         } else {
             return 44;
         }
@@ -129,16 +174,29 @@
         return 1;
     } else if (section == 2) {
         return 1;
-    } else if (section == 3) {
-        return 2;
     } else {
         return 0;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 3;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.item == 1) {
+        // show the full screen photo
+    } else if (indexPath.section == 1) {
+        // show the map view
+    } else if (indexPath.section == 2) {
+        if (self.observation.projectObservations.count > 0) {
+            // show the projects screen
+            [self.delegate inat_performSegueWithIdentifier:@"projects"];
+        }
+    }
+}
+
+#pragma mark - section type helper
 
 - (ObsDetailSection)sectionType {
     return ObsDetailSectionInfo;

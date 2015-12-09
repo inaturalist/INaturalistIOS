@@ -47,7 +47,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
+    if (self.isReadOnly) {
+        self.title = NSLocalizedString(@"Projects", nil);
+    } else {
+        self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
+    }
     
     self.navigationItem.leftBarButtonItem = ({
         FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:34];
@@ -104,6 +108,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 - (void)backPressed:(UIBarButtonItem *)button {
     
+    if (self.isReadOnly) {
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    }
+    
     // end editing on any rows
     [self.tableView endEditing:YES];
     
@@ -158,7 +167,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (void)saveVisibleObservationFieldValues {
-    
+    if (self.isReadOnly) {
+        return;
+    }
     
     for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
         Project *project = [self projectForSection:indexPath.section];
@@ -265,7 +276,6 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     Project *project = [self projectForSection:indexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     
@@ -304,11 +314,20 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     
     CGFloat height = [self tableView:tableView heightForHeaderInSection:section];
     ProjectObservationHeaderView *header = [[ProjectObservationHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, height)];
-    
     header.projectTitleLabel.text = project.title;
-    [header.selectedSwitch setOn:projectIsSelected animated:NO];
-    header.selectedSwitch.tag = section;
-    [header.selectedSwitch addTarget:self action:@selector(selectedChanged:) forControlEvents:UIControlEventValueChanged];
+
+    if (self.isReadOnly) {
+        header.infoButton.hidden = NO;
+        header.infoButton.tag = section;
+        
+        header.selectedSwitch.hidden = YES;
+    } else {
+        header.infoButton.hidden = YES;
+        header.selectedSwitch.hidden = NO;
+        [header.selectedSwitch setOn:projectIsSelected animated:NO];
+        header.selectedSwitch.tag = section;
+        [header.selectedSwitch addTarget:self action:@selector(selectedChanged:) forControlEvents:UIControlEventValueChanged];
+    }
     
     NSURL *url = [NSURL URLWithString:project.iconURL];
     if (url) {
@@ -373,10 +392,19 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.joinedProjects.count;
+    if (self.isReadOnly) {
+        return self.observation.projectObservations.count;
+    } else {
+        return self.joinedProjects.count;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.isReadOnly) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    
     Project *project = [self projectForSection:indexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     NSArray *values = field.observationField.allowedValuesArray;
@@ -601,7 +629,12 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (Project *)projectForSection:(NSInteger)section {
-    return [self.joinedProjects objectAtIndex:section];
+    if (self.isReadOnly) {
+        ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:section];
+        return po.project;
+    } else {
+        return [self.joinedProjects objectAtIndex:section];
+    }
 }
 
 - (void)selectedChanged:(UISwitch *)switcher {

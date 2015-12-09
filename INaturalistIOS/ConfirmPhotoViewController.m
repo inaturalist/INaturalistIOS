@@ -29,7 +29,7 @@
 #import "Analytics.h"
 #import "Project.h"
 #import "ProjectObservation.h"
-#import "ConfirmObservationViewController.h"
+#import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 
 #define CHICLETWIDTH 100.0f
@@ -72,12 +72,13 @@
             
             [o addAssets:confirmedAssets];
             
-            ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
-            confirmObs.observation = o;
-            confirmObs.shouldContinueUpdatingLocation = strongSelf.shouldContinueUpdatingLocation;
+            ObsEditV2ViewController *editObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
+            editObs.observation = o;
+            editObs.shouldContinueUpdatingLocation = strongSelf.shouldContinueUpdatingLocation;
+            editObs.isMakingNewObservation = YES;
             
             [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
-            [weakSelf.navigationController pushViewController:confirmObs animated:YES];
+            [weakSelf.navigationController pushViewController:editObs animated:YES];
         };
     }
     

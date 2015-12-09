@@ -19,6 +19,8 @@ typedef NS_ENUM(NSInteger, ObsDetailSection) {
 - (void)selectedSection:(ObsDetailSection)section;
 - (ObsDetailSection)activeSection;
 - (void)reloadObservation;
+- (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)inat_performSegueWithIdentifier:(NSString *)identifier;
 @end
 
 @class Observation;

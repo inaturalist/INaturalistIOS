@@ -28,7 +28,7 @@
 #import "Project.h"
 #import "SignupSplashViewController.h"
 #import "LoginController.h"
-#import "ConfirmObservationViewController.h"
+#import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "User.h"
@@ -438,7 +438,7 @@ static char PROJECT_ASSOCIATED_KEY;
         po.project = project;
     }
     
-    ConfirmObservationViewController *confirmObs = [[ConfirmObservationViewController alloc] initWithNibName:nil bundle:nil];
+    ObsEditV2ViewController *confirmObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
     confirmObs.observation = o;
     confirmObs.shouldContinueUpdatingLocation = YES;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
