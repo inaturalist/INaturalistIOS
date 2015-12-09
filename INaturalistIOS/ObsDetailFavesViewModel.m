@@ -61,29 +61,26 @@
         return cell;
 
     } else {
-    
+        
         DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
         
-        if (self.observation.sortedFaves.count == self.observation.favesCount.integerValue) {
-            Fave *fave = [self.observation.sortedFaves objectAtIndex:indexPath.item - 5];
-            NSURL *userIconUrl = [NSURL URLWithString:fave.userIconUrl];
-            if (userIconUrl) {
-                [cell.cellImageView sd_setImageWithURL:userIconUrl];
-                cell.cellImageView.layer.cornerRadius = 27.0 / 2;
-                cell.cellImageView.clipsToBounds = YES;
-            }
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            
-            dateFormatter.dateStyle = NSDateFormatterShortStyle;
-            dateFormatter.timeStyle = NSDateFormatterNoStyle;
-            
-            dateFormatter.doesRelativeDateFormatting = YES;
-            
-            cell.titleLabel.text = fave.userLogin;
-            cell.secondaryLabel.text = [dateFormatter stringFromDate:fave.faveDate];
-        } else {
-            cell.titleLabel.text = @"Loading...";
+        Fave *fave = [self.observation.sortedFaves objectAtIndex:indexPath.item - 5];
+        NSURL *userIconUrl = [NSURL URLWithString:fave.userIconUrl];
+        if (userIconUrl) {
+            [cell.cellImageView sd_setImageWithURL:userIconUrl];
+            cell.cellImageView.layer.cornerRadius = 27.0 / 2;
+            cell.cellImageView.clipsToBounds = YES;
         }
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        
+        dateFormatter.doesRelativeDateFormatting = YES;
+        
+        cell.titleLabel.text = fave.userLogin;
+        cell.secondaryLabel.text = [dateFormatter stringFromDate:fave.faveDate];
+        
         return cell;
     }
 }
@@ -146,14 +143,16 @@
 }
 
 - (BOOL)loggedInUserHasFavedThisObservation {
+    if (self.observation.faves.count < 1) {
+        return NO;
+    }
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        if (self.observation.faves.count > 0) {
-            for (Fave *fave in self.observation.faves) {
-                if (fave.userLogin == [[login fetchMe] login]) {
-                    return YES;
-                }
+        for (Fave *fave in self.observation.faves) {
+            if (fave.userLogin == [[login fetchMe] login]) {
+                return YES;
             }
         }
     }
