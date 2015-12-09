@@ -31,13 +31,13 @@
 #import "ProjectObservation.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
 @interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
-    MultiImageView *multiImageView;
     ALAssetsLibrary *lib;
     UIButton *retake, *confirm;
 }
@@ -77,6 +77,10 @@
             editObs.shouldContinueUpdatingLocation = strongSelf.shouldContinueUpdatingLocation;
             editObs.isMakingNewObservation = YES;
             
+            // for sizzle
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            [weakSelf.navigationController setDelegate:appDelegate];
+            
             [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
             [weakSelf.navigationController pushViewController:editObs animated:YES];
         };
@@ -84,7 +88,7 @@
     
     lib = [[ALAssetsLibrary alloc] init];
     
-    multiImageView = ({
+    self.multiImageView = ({
         MultiImageView *iv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -92,7 +96,7 @@
         
         iv;
     });
-    [self.view addSubview:multiImageView];
+    [self.view addSubview:self.multiImageView];
     
     retake = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -149,7 +153,7 @@
     [self.view addSubview:confirm];
     
     NSDictionary *views = @{
-                            @"image": multiImageView,
+                            @"image": self.multiImageView,
                             @"confirm": confirm,
                             @"retake": retake,
                             };
@@ -258,7 +262,7 @@
     [self.navigationController setToolbarHidden:YES animated:NO];
     
     if (self.image) {
-        multiImageView.images = @[ self.image ];
+        self.multiImageView.images = @[ self.image ];
     } else if (self.assets && self.assets.count > 0) {
         NSArray *images = [[self.assets bk_map:^id(ALAsset *asset) {
             return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
@@ -266,8 +270,8 @@
             // imageWithCGImage can return nil, which bk_map converts to NSNull
             return obj && obj != [NSNull null];
         }];
-        multiImageView.images = images;
-        multiImageView.hidden = NO;
+        self.multiImageView.images = images;
+        self.multiImageView.hidden = NO;
     }
 }
 

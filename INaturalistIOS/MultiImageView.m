@@ -22,6 +22,10 @@
 
 @implementation MultiImageView
 
+- (NSArray *)imageViews {
+    return @[ one, two, three, four ];
+}
+
 - (void)setImages:(NSArray *)images {
     NSAssert(images.count < 5, @"MultiImageView can display at most four images.");
     
@@ -81,7 +85,7 @@
         three = [[UIImageView alloc] initWithFrame:frame];
         four = [[UIImageView alloc] initWithFrame:frame];
         
-        for (UIImageView *iv in @[one, two, three, four]) {
+        for (UIImageView *iv in [self imageViews]) {
             iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
             iv.hidden = YES;
             iv.contentMode = UIViewContentModeScaleAspectFill;
@@ -100,7 +104,7 @@
 
 - (void)layoutSubviews {
     
-    for (UIImageView *iv in @[one, two, three, four]) {
+    for (UIImageView *iv in [self imageViews]) {
         iv.layer.borderWidth = _borderWidth;
         iv.layer.borderColor = _borderColor.CGColor;
     }

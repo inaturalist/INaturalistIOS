@@ -209,6 +209,7 @@
 		FACACA2A1BFD5199002223D7 /* ObsDetailSectionSelectorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
+		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
@@ -646,6 +647,8 @@
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
+		FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmPhotoToEditObsTransitionAnimator.h; sourceTree = "<group>"; };
+		FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmPhotoToEditObsTransitionAnimator.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
@@ -1306,9 +1309,19 @@
 		FAA872D21B15124D00366521 /* Sizzle */ = {
 			isa = PBXGroup;
 			children = (
+				FAD6F0AD1C17C32B0097899F /* New Obs Animators */,
 				FAE924CC1B1E5B1000B43B46 /* Signup / Login Animators */,
 			);
 			name = Sizzle;
+			sourceTree = "<group>";
+		};
+		FAD6F0AD1C17C32B0097899F /* New Obs Animators */ = {
+			isa = PBXGroup;
+			children = (
+				FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */,
+				FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */,
+			);
+			name = "New Obs Animators";
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
@@ -1620,6 +1633,7 @@
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
 				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
+				FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */,
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
@@ -1883,6 +1897,7 @@
 					"-lsqlite3.0",
 					"$(inherited)",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.inaturalist.inaturalist-editobs";
 				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1923,6 +1938,7 @@
 					"-lsqlite3.0",
 					"$(inherited)",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.inaturalist.inaturalist-editobs";
 				PRODUCT_NAME = iNaturalist;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

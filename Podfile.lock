@@ -113,6 +113,7 @@ PODS:
   - SWRevealViewController (2.3.0)
   - TapkuLibrary (0.3.8)
   - UIColor-HTMLColors (1.0.0)
+  - VICMAImageView (1.0)
   - VTAcknowledgementsViewController (0.15)
   - XMLReader (0.0.2)
 
@@ -152,6 +153,7 @@ DEPENDENCIES:
   - SWRevealViewController (= 2.3.0)
   - TapkuLibrary (= 0.3.8)
   - UIColor-HTMLColors (= 1.0.0)
+  - VICMAImageView (~> 1.0)
   - VTAcknowledgementsViewController (= 0.15)
 
 EXTERNAL SOURCES:
@@ -212,6 +214,7 @@ SPEC CHECKSUMS:
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
   TapkuLibrary: 7a406dac46eff8595e191557eba88959f97f69b7
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
+  VICMAImageView: 9f1811d4482ebe37b7eb09f640018554a81a21b2
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   XMLReader: c7e54b707c368e2fa545d8313276b4de13a36ff5
 

@@ -62,7 +62,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     CLLocationManager *_locationManager;
 }
-@property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
 @property (readonly) CLLocationManager *locationManager;

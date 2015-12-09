@@ -15,5 +15,6 @@
 @property Observation *observation;
 @property BOOL shouldContinueUpdatingLocation;
 @property BOOL isMakingNewObservation;
+@property UITableView *tableView;
 
 @end

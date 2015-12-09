@@ -17,7 +17,6 @@
 static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 
 @interface PhotoScrollViewCell () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
-@property UICollectionView *collectionView;
 @property NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 @end
 
