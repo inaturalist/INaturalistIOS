@@ -14,6 +14,7 @@
 #import "ObsDetailInfoViewModel.h"
 #import "Observation.h"
 #import "DisclosureCell.h"
+#import "ObsDetailMapCell.h"
 
 @implementation ObsDetailInfoViewModel
 
@@ -42,46 +43,25 @@
         }
     } else if (indexPath.section == 1) {
         // map
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
-        cell.backgroundColor = [UIColor lightGrayColor];
-        
-        cell.textLabel.text = nil;
-        cell.detailTextLabel.text = nil;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
         
         if (self.observation.latitude.floatValue) {
-            MKMapView *mv = [[MKMapView alloc] initWithFrame:cell.bounds];
-            mv.mapType = MKMapTypeHybrid;
-            mv.userInteractionEnabled = NO;
-            mv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            
             CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
             CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
-            mv.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
+            cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
             
             MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
             pin.coordinate = coords;
             pin.title = @"Title";
-            [mv addAnnotation:pin];
-            
-            [cell.contentView addSubview:mv];
-            
+            [cell.mapView addAnnotation:pin];
+        } else {
+            cell.mapView.hidden = YES;
         }
 
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, cell.bounds.size.width - 20, 30)];
-        label.layer.cornerRadius = 3.0f;
-        label.clipsToBounds = YES;
-        label.backgroundColor = [UIColor whiteColor];
-        label.textColor = [UIColor grayColor];
-        label.font = [UIFont systemFontOfSize:12.0f];
-        label.textAlignment = NSTextAlignmentCenter;
-        
-        [cell.contentView addSubview:label];
-
         if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
-            label.text = self.observation.placeGuess;
+            cell.locationNameLabel.text = self.observation.placeGuess;
         } else {
-            label.text = NSLocalizedString(@"No location.", nil);
+            cell.locationNameLabel.text = NSLocalizedString(@"No location.", nil);
         }
 
         

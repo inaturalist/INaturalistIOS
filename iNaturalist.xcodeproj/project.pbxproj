@@ -122,6 +122,8 @@
 		FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20171A13F67200928102 /* ExploreSearchView.m */; };
 		FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */; };
 		FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */; };
+		FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */; };
+		FA426A4E1C17B6C80054563D /* ObsDetailAddActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
 		FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
@@ -469,6 +471,10 @@
 		FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutocompleteSearchItem.m; sourceTree = "<group>"; };
 		FA3F202F1A141AEE00928102 /* ShortcutSearchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShortcutSearchItem.h; sourceTree = "<group>"; };
 		FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShortcutSearchItem.m; sourceTree = "<group>"; };
+		FA426A491C17B6590054563D /* ObsDetailMapCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailMapCell.h; sourceTree = "<group>"; };
+		FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailMapCell.m; sourceTree = "<group>"; };
+		FA426A4C1C17B6C80054563D /* ObsDetailAddActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddActivityCell.h; sourceTree = "<group>"; };
+		FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailAddActivityCell.m; sourceTree = "<group>"; };
 		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
@@ -1018,6 +1024,10 @@
 				FA51BA671C0107EC00101807 /* AddFaveCell.m */,
 				FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */,
 				FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */,
+				FA426A491C17B6590054563D /* ObsDetailMapCell.h */,
+				FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */,
+				FA426A4C1C17B6C80054563D /* ObsDetailAddActivityCell.h */,
+				FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1649,6 +1659,7 @@
 				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
+				FA426A4E1C17B6C80054563D /* ObsDetailAddActivityCell.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
@@ -1689,6 +1700,7 @@
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
+				FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */,
 				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,

@@ -21,6 +21,7 @@
 #import "TaxonPhoto.h"
 #import "ObsDetailActivityMoreCell.h"
 #import "UIColor+INaturalist.h"
+#import "ObsDetailAddActivityCell.h"
 
 @implementation ObsDetailActivityViewModel
 
@@ -150,29 +151,10 @@
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
         if (indexPath.section == self.observation.sortedActivity.count + 1) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
+            ObsDetailAddActivityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addActivity"];
             
-            cell.textLabel.text = nil;
-            cell.detailTextLabel.text = nil;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            UIButton *addComment = [UIButton buttonWithType:UIButtonTypeSystem];
-            [addComment setTitle:NSLocalizedString(@"Comment", nil) forState:UIControlStateNormal];
-            [addComment setBackgroundColor:[UIColor inatTint]];
-            [addComment setTintColor:[UIColor whiteColor]];
-            addComment.layer.cornerRadius = 17.0f;
-            [addComment setFrame:CGRectMake(10, 5, (cell.bounds.size.width / 2) - 15, 34)];
-            [addComment addTarget:self action:@selector(addComment) forControlEvents:UIControlEventTouchUpInside];
-            [cell.contentView addSubview:addComment];
-            
-            UIButton *addID = [UIButton buttonWithType:UIButtonTypeSystem];
-            [addID setTitle:NSLocalizedString(@"Suggest ID", nil) forState:UIControlStateNormal];
-            [addID setBackgroundColor:[UIColor inatTint]];
-            [addID setTintColor:[UIColor whiteColor]];
-            addID.layer.cornerRadius = 17.0f;
-            [addID setFrame:CGRectMake((cell.bounds.size.width / 2) + 5, 5, (cell.bounds.size.width / 2) - 15, 34)];
-            [addID addTarget:self action:@selector(addIdentification) forControlEvents:UIControlEventTouchUpInside];
-            [cell.contentView addSubview:addID];
+            [cell.commentButton addTarget:self action:@selector(addComment) forControlEvents:UIControlEventTouchUpInside];            
+            [cell.suggestIDButton addTarget:self action:@selector(addIdentification) forControlEvents:UIControlEventTouchUpInside];
             
             return cell;
         }

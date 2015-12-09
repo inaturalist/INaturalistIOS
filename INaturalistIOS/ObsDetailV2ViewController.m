@@ -111,6 +111,10 @@
 }
 
 - (void)reloadObservation {
+    if (self.observation.needsUpload) {
+        // don't clobber any local edits to this observation
+        return;
+    }
     // load the full observation from the server, to fetch comments, ids & faves
     [[Analytics sharedClient] debugLog:@"Network - Load complete observation details"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
