@@ -25,6 +25,11 @@
 - (void)prepareForReuse {
     [self.iv sd_cancelCurrentImageLoad];
     self.pageControl.currentPage = 0;
+    self.captiveContainer.hidden = YES;
+    // clear all targets/actions
+    [self.captiveInfoButton removeTarget:nil
+                                  action:NULL
+                        forControlEvents:UIControlEventAllEvents];
 }
 
 @end

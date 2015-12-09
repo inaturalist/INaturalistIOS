@@ -12,5 +12,7 @@
 
 @property IBOutlet UIPageControl *pageControl;
 @property IBOutlet UIImageView *iv;
+@property IBOutlet UIView *captiveContainer;
+@property IBOutlet UIButton *captiveInfoButton;
 
 @end

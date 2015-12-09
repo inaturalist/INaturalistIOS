@@ -781,11 +781,35 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <animations/>
                                                 </pageControl>
+                                                <view contentMode="scaleToFill" id="th2-JB-3xR">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Captive / Cultivated" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fMy-Kd-WzB">
+                                                            <rect key="frame" x="8" y="11" width="265" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
+                                                            <animations/>
+                                                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="0Ws-WT-X6J">
+                                                            <rect key="frame" x="290" y="10" width="22" height="22"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                            <animations/>
+                                                        </button>
+                                                    </subviews>
+                                                    <animations/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                </view>
                                             </subviews>
                                             <animations/>
                                         </tableViewCellContentView>
                                         <animations/>
                                         <connections>
+                                            <outlet property="captiveContainer" destination="th2-JB-3xR" id="sQb-SD-ZcS"/>
+                                            <outlet property="captiveInfoButton" destination="0Ws-WT-X6J" id="13U-SV-IGE"/>
                                             <outlet property="iv" destination="4wO-6a-UDP" id="bMi-Tx-Cj2"/>
                                             <outlet property="pageControl" destination="QCF-pe-ZaA" id="dJu-ac-aRq"/>
                                         </connections>

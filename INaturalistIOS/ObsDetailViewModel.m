@@ -129,6 +129,11 @@
         cell.pageControl.hidden = YES;
     }
     
+    cell.captiveContainer.hidden = !self.observation.captive.boolValue;
+    [cell.captiveInfoButton addTarget:self
+                               action:@selector(captiveInfoPressed)
+                     forControlEvents:UIControlEventTouchUpInside];
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
@@ -292,6 +297,17 @@
     
     NSIndexPath *photoIp = [NSIndexPath indexPathForItem:1 inSection:0];
     [self.delegate reloadRowAtIndexPath:photoIp];
+}
+
+- (void)captiveInfoPressed {
+    NSString *captiveTitle = NSLocalizedString(@"What does captive / cultivated mean?", @"title for alert explaining what captive means");
+    NSString *captiveMsg = NSLocalizedString(@"Captive / cultivated means that the organism exists where it was observed because humans intended it to be there. iNaturalist is about observing wild organisms, and our scientific data partners are not interested in observations of pets, gardens, or animals in zoos.", @"message explaining what captive / cultivated means for iNaturalist");
+    
+    [[[UIAlertView alloc] initWithTitle:captiveTitle
+                                message:captiveMsg
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 #pragma mark - gestures
