@@ -1,0 +1,5 @@
+/* Localized versions of Info.plist keys */
+// TODO figure out how to use ${PRODUCT_NAME} here
+"NSLocationWhenInUseUsageDescription" = "iNaturalist استخدام مكانك للاضافه عند انتاج الرصد إنشاء واستخدام الخدمات الأخرى.";
+
+"CFBundleDisplayName" = "تطسبيطفع";

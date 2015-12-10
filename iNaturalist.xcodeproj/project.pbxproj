@@ -391,6 +391,9 @@
 		898D14241BC69C4C000D3F2F /* SignUserForGolanProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUserForGolanProject.m; sourceTree = "<group>"; };
 		899A00D21B53AADD0079162F /* ProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTableViewCell.h; sourceTree = "<group>"; };
 		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
+		89EF1D291C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		89EF1D2A1C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		89EF1D2B1C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9538BDDEB9B56A1D6B95F692 /* libPods-iNaturalist Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
@@ -1279,6 +1282,7 @@
 				it,
 				pt,
 				he,
+				ar,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -1644,6 +1648,7 @@
 				FA1B37C11AD88C06002A00A5 /* it */,
 				FA1B37C41AD88EED002A00A5 /* pt */,
 				890DE36A1B41357000207219 /* he */,
+				89EF1D291C19A9820068EF53 /* ar */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
@@ -1659,6 +1664,7 @@
 				FA1B37BD1AD88BE3002A00A5 /* it */,
 				FA1B37C51AD88EF3002A00A5 /* pt */,
 				890DE36B1B41357000207219 /* he */,
+				89EF1D2A1C19A9820068EF53 /* ar */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1674,6 +1680,7 @@
 				FA1B37BB1AD88BCF002A00A5 /* it */,
 				FA1B37C21AD88EDC002A00A5 /* pt */,
 				890DE36C1B41357000207219 /* he */,
+				89EF1D2B1C19A9820068EF53 /* ar */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
