@@ -10,6 +10,12 @@
 
 @interface AddFaveCell : UITableViewCell
 
-@property IBOutlet UIButton *addFaveButton;
+@property IBOutlet UIView *faveContainer;
+
+@property IBOutlet UILabel *starLabel;
+@property IBOutlet UILabel *faveActionLabel;
+@property IBOutlet UILabel *faveCountLabel;
+
+@property BOOL faved;
 
 @end

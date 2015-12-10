@@ -35,28 +35,23 @@
     return ObsDetailSectionFaves;
 }
 
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 4) {
+        return 54;
+    } else {
+        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item < 4) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else if (indexPath.item == 4) {
         // fave button
         AddFaveCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addFave"];
-        
-        if ([self loggedInUserHasFavedThisObservation]) {
-            [cell.addFaveButton setTitle:@"Faved" forState:UIControlStateNormal];
-            cell.addFaveButton.backgroundColor = [UIColor inatTint];
-            [cell.addFaveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        } else {
-            [cell.addFaveButton setTitle:@"Add to Favorites" forState:UIControlStateNormal];
-            cell.addFaveButton.backgroundColor = [UIColor whiteColor];
-            cell.addFaveButton.tintColor = [UIColor inatTint];
-            cell.addFaveButton.titleLabel.textColor = [UIColor inatTint];
-            [cell.addFaveButton setTitleColor:[UIColor inatTint] forState:UIControlStateNormal];
-        }
-        
-        [cell.addFaveButton addTarget:self
-                               action:@selector(addFavePressed:)
-                     forControlEvents:UIControlEventTouchUpInside];
+        cell.faveCountLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.sortedFaves.count];        
+        [cell setFaved:[self loggedInUserHasFavedThisObservation]];
         
         return cell;
 
@@ -85,8 +80,10 @@
     }
 }
 
-
-- (void)addFavePressed:(UIButton *)button {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item != 4) {
+        return;
+    }
     
     NSString *requestPath = nil;
     NSString *hudText;
@@ -114,8 +111,8 @@
    forHTTPHeaderField:@"Authorization"];
     [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
 
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:button.superview.superview.superview animated:YES];
-    hud.removeFromSuperViewOnHide =
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:tableView.superview animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
     NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request

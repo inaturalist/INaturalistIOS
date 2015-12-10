@@ -195,6 +195,8 @@
 		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
 		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
+		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
+		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */; };
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
@@ -618,6 +620,10 @@
 		FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupToSplashTransitionAnimator.m; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
+		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
+		FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityAuthorCell.m; sourceTree = "<group>"; };
+		FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityBodyCell.h; sourceTree = "<group>"; };
+		FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityBodyCell.m; sourceTree = "<group>"; };
 		FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchViewController.h; sourceTree = "<group>"; };
 		FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreSearchViewController.m; sourceTree = "<group>"; };
 		FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlusAuthViewController.h; sourceTree = "<group>"; };
@@ -1031,6 +1037,10 @@
 				FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */,
 				FA426A4C1C17B6C80054563D /* ObsDetailAddActivityCell.h */,
 				FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */,
+				FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */,
+				FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */,
+				FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */,
+				FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1630,6 +1640,7 @@
 				19F62193150ECBEE00C58F28 /* List.m in Sources */,
 				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
 				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
+				FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
 				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
@@ -1673,6 +1684,7 @@
 				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
+				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
 				FA426A4E1C17B6C80054563D /* ObsDetailAddActivityCell.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,

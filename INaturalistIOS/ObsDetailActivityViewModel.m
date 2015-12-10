@@ -22,6 +22,8 @@
 #import "ObsDetailActivityMoreCell.h"
 #import "UIColor+INaturalist.h"
 #import "ObsDetailAddActivityCell.h"
+#import "ObsDetailActivityAuthorCell.h"
+#import "ObsDetailActivityBodyCell.h"
 
 @implementation ObsDetailActivityViewModel
 
@@ -159,25 +161,37 @@
             return cell;
         }
         if (indexPath.item == 0) {
-            DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+            ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
             
             Activity *activity = [self activityForSection:indexPath.section];
             if (activity) {
                 NSURL *userIconUrl = [NSURL URLWithString:activity.user.userIconURL];
                 if (userIconUrl) {
-                    [cell.cellImageView sd_setImageWithURL:userIconUrl];
-                    cell.cellImageView.layer.cornerRadius = 27.0 / 2;
-                    cell.cellImageView.clipsToBounds = YES;
-                } else {
-                    cell.cellImageView.image = nil;
+                    [cell.authorImageView sd_setImageWithURL:userIconUrl];
+                    cell.authorImageView.layer.cornerRadius = 27.0 / 2;
+                    cell.authorImageView.clipsToBounds = YES;
                 }
+                
                 NSDateFormatter *dateFormatter = [NSDateFormatter new];
                 dateFormatter.dateStyle = NSDateFormatterShortStyle;
                 dateFormatter.timeStyle = NSDateFormatterNoStyle;
                 dateFormatter.doesRelativeDateFormatting = YES;
-
-                cell.titleLabel.text = activity.user.login;
-                cell.secondaryLabel.text = [dateFormatter stringFromDate:activity.createdAt];
+                cell.dateLabel.text = [dateFormatter stringFromDate:activity.createdAt];
+                cell.dateLabel.textColor = [UIColor lightGrayColor];
+                
+                if ([activity isKindOfClass:[Identification class]]) {
+                    NSString *identificationAuthor = [NSString stringWithFormat:NSLocalizedString(@"%@'s ID", @"identification author attribution"), activity.user.login];
+                    NSMutableAttributedString *idAuthorAttrStr = [[NSMutableAttributedString alloc] initWithString:identificationAuthor
+                                                                                                        attributes:@{ NSForegroundColorAttributeName: [UIColor lightGrayColor] }];
+                    [idAuthorAttrStr addAttribute:NSForegroundColorAttributeName
+                                            value:[UIColor blueColor]
+                                            range:[identificationAuthor rangeOfString:activity.user.login]];
+                    cell.authorNameLabel.attributedText = idAuthorAttrStr;
+                } else {
+                    NSAttributedString *commentAuthorAttrStr = [[NSAttributedString alloc] initWithString:activity.user.login
+                                                                                               attributes:@{ NSForegroundColorAttributeName: [UIColor blueColor] }];
+                    cell.authorNameLabel.attributedText = commentAuthorAttrStr;
+                }
             }
 
             return cell;
