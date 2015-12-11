@@ -6,6 +6,9 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
+#import <BlocksKit/BlocksKit.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"
 #import "ObsDetailViewModel.h"
@@ -19,6 +22,9 @@
 #import "AddIdentificationViewController.h"
 #import "ProjectObservationsViewController.h"
 #import "ObsEditV2ViewController.h"
+#import "ObsDetailSelectorHeaderView.h"
+#import "ObsDetailAddActivityFooter.h"
+#import "ObservationPhoto.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -47,6 +53,8 @@
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.tableView registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
     [self.tableView registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
+    [self.tableView registerClass:[ObsDetailSelectorHeaderView class] forHeaderFooterViewReuseIdentifier:@"selectorHeader"];
+    [self.tableView registerClass:[ObsDetailAddActivityFooter class] forHeaderFooterViewReuseIdentifier:@"addActivityFooter"];
     
     NSDictionary *views = @{
                             @"tv": self.tableView,
@@ -82,8 +90,40 @@
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
 }
 
-- (void)inat_performSegueWithIdentifier:(NSString *)identifier {
-    [self performSegueWithIdentifier:identifier sender:nil];
+- (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
+    if ([identifier isEqualToString:@"photos"]) {
+        NSNumber *photoIndex = (NSNumber *)object;
+        // can't do this in storyboards
+        
+        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
+            return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
+                                  galleryType:MHGalleryTypeImage];
+        }];
+        
+        MHUICustomization *customization = [[MHUICustomization alloc] init];
+        customization.showOverView = NO;
+        customization.showMHShareViewInsteadOfActivityViewController = NO;
+        customization.hideShare = NO;
+        customization.useCustomBackButtonImageOnImageViewer = NO;
+        
+        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+        gallery.galleryItems = galleryData;
+        gallery.presentationIndex = photoIndex.integerValue;
+        gallery.UICustomization = customization;
+        
+        __weak MHGalleryController *blockGallery = gallery;
+        
+        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+            __strong typeof(blockGallery)strongGallery = blockGallery;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [strongGallery dismissViewControllerAnimated:YES completion:nil];
+            });
+        };
+
+        [self presentMHGalleryController:gallery animated:YES completion:nil];
+    } else {
+        [self performSegueWithIdentifier:identifier sender:object];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -97,6 +137,9 @@
         ProjectObservationsViewController *vc = [segue destinationViewController];
         vc.isReadOnly = YES;
         vc.observation = self.observation;
+    } else if ([segue.identifier isEqualToString:@"taxon"]) {
+        TaxonDetailViewController *vc = [segue destinationViewController];
+        vc.taxon = (Taxon *)sender;
     }
 }
 

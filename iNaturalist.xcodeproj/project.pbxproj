@@ -123,11 +123,13 @@
 		FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F202D1A141AD800928102 /* AutocompleteSearchItem.m */; };
 		FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */; };
 		FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */; };
-		FA426A4E1C17B6C80054563D /* ObsDetailAddActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
 		FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
 		FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19661B30EEE60066CA22 /* PartnerController.m */; };
+		FA4D56B91C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */; };
+		FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */; };
+		FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */; };
 		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
 		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
 		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
@@ -208,7 +210,6 @@
 		FACACA211BFD278F002223D7 /* ObsDetailInfoViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */; };
 		FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */; };
 		FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */; };
-		FACACA2A1BFD5199002223D7 /* ObsDetailSectionSelectorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
@@ -476,8 +477,6 @@
 		FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShortcutSearchItem.m; sourceTree = "<group>"; };
 		FA426A491C17B6590054563D /* ObsDetailMapCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailMapCell.h; sourceTree = "<group>"; };
 		FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailMapCell.m; sourceTree = "<group>"; };
-		FA426A4C1C17B6C80054563D /* ObsDetailAddActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddActivityCell.h; sourceTree = "<group>"; };
-		FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailAddActivityCell.m; sourceTree = "<group>"; };
 		FA4529E61A03F70200147895 /* ExploreRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreRegion.h; sourceTree = "<group>"; };
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
@@ -485,6 +484,12 @@
 		FA4C19631B30EE890066CA22 /* Partner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Partner.m; sourceTree = "<group>"; };
 		FA4C19651B30EEE60066CA22 /* PartnerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartnerController.h; sourceTree = "<group>"; };
 		FA4C19661B30EEE60066CA22 /* PartnerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartnerController.m; sourceTree = "<group>"; };
+		FA4D56B71C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailSelectorHeaderView.h; sourceTree = "<group>"; };
+		FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailSelectorHeaderView.m; sourceTree = "<group>"; };
+		FA4D56BA1C1A3A2900C5C5AE /* ObsDetailSelectorButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailSelectorButton.h; sourceTree = "<group>"; };
+		FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailSelectorButton.m; sourceTree = "<group>"; };
+		FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddActivityFooter.h; sourceTree = "<group>"; };
+		FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailAddActivityFooter.m; sourceTree = "<group>"; };
 		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
 		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
 		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
@@ -647,8 +652,6 @@
 		FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityViewModel.m; sourceTree = "<group>"; };
 		FACACA251BFD27E1002223D7 /* ObsDetailFavesViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailFavesViewModel.h; sourceTree = "<group>"; };
 		FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailFavesViewModel.m; sourceTree = "<group>"; };
-		FACACA281BFD5199002223D7 /* ObsDetailSectionSelectorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailSectionSelectorCell.h; sourceTree = "<group>"; };
-		FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailSectionSelectorCell.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
@@ -1027,20 +1030,22 @@
 				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
 				FACACA1C1BFD0CF7002223D7 /* PhotosPageControlCell.h */,
 				FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */,
-				FACACA281BFD5199002223D7 /* ObsDetailSectionSelectorCell.h */,
-				FACACA291BFD5199002223D7 /* ObsDetailSectionSelectorCell.m */,
 				FA51BA661C0107EC00101807 /* AddFaveCell.h */,
 				FA51BA671C0107EC00101807 /* AddFaveCell.m */,
 				FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */,
 				FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */,
 				FA426A491C17B6590054563D /* ObsDetailMapCell.h */,
 				FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */,
-				FA426A4C1C17B6C80054563D /* ObsDetailAddActivityCell.h */,
-				FA426A4D1C17B6C80054563D /* ObsDetailAddActivityCell.m */,
 				FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */,
 				FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */,
 				FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */,
 				FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */,
+				FA4D56B71C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.h */,
+				FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */,
+				FA4D56BA1C1A3A2900C5C5AE /* ObsDetailSelectorButton.h */,
+				FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */,
+				FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */,
+				FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1621,6 +1626,7 @@
 				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
+				FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */,
 				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
@@ -1685,7 +1691,6 @@
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
 				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
-				FA426A4E1C17B6C80054563D /* ObsDetailAddActivityCell.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
@@ -1709,16 +1714,17 @@
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
-				FACACA2A1BFD5199002223D7 /* ObsDetailSectionSelectorCell.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
+				FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
 				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				FA51BA681C0107EC00101807 /* AddFaveCell.m in Sources */,
+				FA4D56B91C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m in Sources */,
 				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,

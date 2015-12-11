@@ -7,19 +7,14 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ObsDetailActivityAuthorCell.h"
 
 @implementation ObsDetailActivityAuthorCell
 
 - (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    [self configureTextFieldColors];
 }
 
 - (void)prepareForReuse {
@@ -27,6 +22,13 @@
     self.authorImageView.image = nil;
     self.authorNameLabel.text = nil;
     self.dateLabel.text = nil;
+    
+    [self configureTextFieldColors];
+}
+
+- (void)configureTextFieldColors {
+    self.authorNameLabel.textColor = [UIColor colorWithHexString:@"#8e8e93"];
+    self.dateLabel.textColor = [UIColor colorWithHexString:@"#8e8e93"];
 }
 
 @end

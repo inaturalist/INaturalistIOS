@@ -21,19 +21,17 @@
 #import "TaxonPhoto.h"
 #import "ObsDetailActivityMoreCell.h"
 #import "UIColor+INaturalist.h"
-#import "ObsDetailAddActivityCell.h"
 #import "ObsDetailActivityAuthorCell.h"
 #import "ObsDetailActivityBodyCell.h"
+#import "ObsDetailAddActivityFooter.h"
 
 @implementation ObsDetailActivityViewModel
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 4;
-    } else if (section == self.observation.sortedActivity.count + 1) {
-        return 1;
+        return [super tableView:tableView numberOfRowsInSection:section];
     } else {
-        if (self.observation.sortedActivity == 0) {
+        if (self.observation.sortedActivity.count == 0) {
             // if activity hasn't been loaded from the server yet
             return 0;
         }
@@ -55,7 +53,8 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2 + self.observation.sortedActivity.count;
+    // each comment/id is its own section
+    return [super numberOfSectionsInTableView:tableView] + self.observation.sortedActivity.count - 1;
 }
 
 - (Activity *)activityForSection:(NSInteger)section {
@@ -68,22 +67,43 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section < 2) {
-        return CGFLOAT_MIN;
-    } else {
-        return 15;
+    switch (section) {
+        case 0:
+        case 1:
+            return [super tableView:tableView heightForHeaderInSection:section];
+            break;
+        default:
+            return 30;
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return CGFLOAT_MIN;
+    if (section == self.observation.sortedActivity.count) {
+        return 64;
+    } else {
+        return CGFLOAT_MIN;
+    }
+}
+
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (section == self.observation.sortedActivity.count) {
+        ObsDetailAddActivityFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"addActivityFooter"];
+        [footer.commentButton addTarget:self
+                                 action:@selector(addComment)
+                       forControlEvents:UIControlEventTouchUpInside];
+        [footer.suggestIDButton addTarget:self
+                                   action:@selector(addIdentification)
+                         forControlEvents:UIControlEventTouchUpInside];
+        return footer;
+    } else {
+        return nil;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else if (indexPath.section == self.observation.sortedActivity.count + 1) {
-        return 44;
     } else {
         Activity *activity = [self activityForSection:indexPath.section];
         if ([activity isKindOfClass:[Comment class]]) {
@@ -129,19 +149,16 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section < 2) {
-        return [UITableViewHeaderFooterView new];
-    } else if (section == self.observation.sortedActivity.count + 1) {
-        return [UITableViewHeaderFooterView new];
+        return [super tableView:tableView viewForHeaderInSection:section];
     } else {
         UITableViewHeaderFooterView *view = [UITableViewHeaderFooterView new];
-        view.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.3f];
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
-        view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 15);
+        view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 30);
         [view addSubview:({
             UIView *thread = [UIView new];
             thread.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin;
-            thread.frame = CGRectMake(15 + 27 / 2.0 - 5, 0, 10, 15);
-            thread.backgroundColor = [UIColor grayColor];
+            thread.frame = CGRectMake(15 + 27 / 2.0 - 5, 0, 7, 30);
+            thread.backgroundColor = [UIColor colorWithHexString:@"#d8d8d8"];
             thread;
         })];
         return view;
@@ -152,14 +169,6 @@
     if (indexPath.section == 0) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
-        if (indexPath.section == self.observation.sortedActivity.count + 1) {
-            ObsDetailAddActivityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addActivity"];
-            
-            [cell.commentButton addTarget:self action:@selector(addComment) forControlEvents:UIControlEventTouchUpInside];            
-            [cell.suggestIDButton addTarget:self action:@selector(addIdentification) forControlEvents:UIControlEventTouchUpInside];
-            
-            return cell;
-        }
         if (indexPath.item == 0) {
             ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
             
@@ -315,11 +324,11 @@
 #pragma mark - uibutton targets
 
 - (void)addComment {
-    [self.delegate inat_performSegueWithIdentifier:@"addComment"];
+    [self.delegate inat_performSegueWithIdentifier:@"addComment" sender:nil];
 }
 
 - (void)addIdentification {
-    [self.delegate inat_performSegueWithIdentifier:@"addIdentification"];
+    [self.delegate inat_performSegueWithIdentifier:@"addIdentification" sender:nil];
 }
 
 

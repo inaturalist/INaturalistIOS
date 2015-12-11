@@ -8,6 +8,7 @@
 
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObsDetailViewModel.h"
 #import "Observation.h"
@@ -26,7 +27,7 @@
 #import "ObsDetailActivityViewModel.h"
 #import "ObsDetailFavesViewModel.h"
 #import "UIColor+INaturalist.h"
-#import "ObsDetailSectionSelectorCell.h"
+#import "ObsDetailSelectorHeaderView.h"
 
 @interface ObsDetailViewModel ()
 
@@ -47,11 +48,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // hack
-    return 0;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    if (section == 0) {
+        return 3;
+    } else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -63,8 +68,6 @@
             return [self photoCellForTableView:tableView];
         } else if (indexPath.item == 2) {
             return [self taxonCellForTableView:tableView indexPath:indexPath];
-        } else if (indexPath.item == 3) {
-            return [self sectionSelectorCellForTableView:tableView];
         }
     } else {
         return nil;
@@ -241,42 +244,53 @@
     return cell;
 }
 
-- (UITableViewCell *)sectionSelectorCellForTableView:(UITableView *)tableView {
-    ObsDetailSectionSelectorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sectionSelector"];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    [cell.infoButton addTarget:self
-                        action:@selector(selectedInfo:)
-              forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.activityButton addTarget:self
-                            action:@selector(selectedActivity:)
-                  forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    [cell.favesButton addTarget:self
-                         action:@selector(selectedFaves:)
-               forControlEvents:UIControlEventTouchUpInside];
-    
-    if (self.sectionType == ObsDetailSectionInfo) {
-        cell.infoButton.enabled = NO;
-    } else if (self.sectionType == ObsDetailSectionActivity) {
-        cell.activityButton.enabled = NO;
-    } else if (self.sectionType == ObsDetailSectionFaves) {
-        cell.favesButton.enabled = NO;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return nil;
+    } else if (section == 1) {
+        ObsDetailSelectorHeaderView *selector = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"selectorHeader"];
+        
+        [selector.infoButton addTarget:self
+                                action:@selector(selectedInfo:)
+                      forControlEvents:UIControlEventTouchUpInside];
+        
+        [selector.activityButton addTarget:self
+                                    action:@selector(selectedActivity:)
+                          forControlEvents:UIControlEventTouchUpInside];
+        selector.activityButton.count = self.observation.sortedActivity.count;
+        
+        [selector.favesButton addTarget:self
+                                 action:@selector(selectedFaves:)
+                       forControlEvents:UIControlEventTouchUpInside];
+        selector.favesButton.count = self.observation.faves.count;
+
+        
+        if (self.sectionType == ObsDetailSectionInfo) {
+            selector.infoButton.enabled = NO;
+        } else if (self.sectionType == ObsDetailSectionActivity) {
+            selector.activityButton.enabled = NO;
+        } else if (self.sectionType == ObsDetailSectionFaves) {
+            selector.favesButton.enabled = NO;
+        }
+
+        return selector;
     }
-    
-    
-    return cell;
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.item == 1) {
-        return 160;
+    if (indexPath.section == 0) {
+        if (indexPath.item == 0) {
+            // user
+            return 44;
+        } else if (indexPath.item == 1) {
+            return 200;
+        } else if (indexPath.item == 2) {
+            return 44;
+        }
     }
     
-    return 44;
+    return CGFLOAT_MIN;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -284,7 +298,31 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 0.5;
+    if (section == 0) {
+        return CGFLOAT_MIN;
+    } else if (section == 1) {
+        return 69.0f;
+    }
+    return CGFLOAT_MIN;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        if (indexPath.item == 0) {
+            // do nothing
+        } else if (indexPath.item == 1) {
+            // photos segue
+            [self.delegate inat_performSegueWithIdentifier:@"photos" sender:@(self.viewingPhoto)];
+        } else if (indexPath.item == 2) {
+            // taxa segue
+            if (self.observation.taxon) {
+                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:self.observation.taxon];
+            } else if (self.observation.taxonID) {
+                Taxon *t = [[Taxon objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue]] firstObject];
+                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:t];
+            }
+        }
+    }
 }
 
 #pragma mark - UITableView helpers
