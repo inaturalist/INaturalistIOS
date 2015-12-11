@@ -20,6 +20,10 @@
 @property (nonatomic, retain) NSString * userIconURL;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *identifications;
+@property (nonatomic, retain) NSNumber * observationsCount;
+@property (nonatomic, retain) NSNumber * identificationsCount;
+@property (nonatomic, retain) NSString * mediumUserIconURL;
+@property (nonatomic, retain) NSNumber * siteId;
 @end
 
 @interface User (CoreDataGeneratedAccessors)

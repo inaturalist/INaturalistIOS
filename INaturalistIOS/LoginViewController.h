@@ -7,27 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Three20/Three20.h>
-#import "GPPSignIn.h"
 
+@class SplitTextButton;
+@class Partner;
 
-@class LoginViewController;
+@interface LoginViewController : UIViewController
 
-@protocol LoginViewControllerDelegate <NSObject>
-@optional
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller;
-- (void)loginViewControllerDidCancel:(LoginViewController *)controller;
-- (void)loginViewControllerFailedToLogIn:(LoginViewController *)controller;
-@end
-
-@interface LoginViewController : UITableViewController <RKRequestDelegate, UIAlertViewDelegate, TTWebControllerDelegate,GPPSignInDelegate>
-
-@property (nonatomic, weak) id <LoginViewControllerDelegate> delegate;
-@property (weak, nonatomic) IBOutlet UITextField *usernameField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordField;
-
-- (IBAction)signIn:(id)sender;
-- (IBAction)cancel:(id)sender;
-- (void)failedLogin;
-- (void)failedLogin:(NSString *)msg;
+@property UIImage *backgroundImage;
+@property BOOL cancellable;
+@property UITableView *loginTableView;
+@property SplitTextButton *gButton, *faceButton;
+@property UILabel *orLabel;
+@property Partner *selectedPartner;
 @end

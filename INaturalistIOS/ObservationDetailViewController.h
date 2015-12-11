@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
-#import "PhotoViewController.h"
 #import "EditLocationViewController.h"
 #import "ProjectChooserViewController.h"
 #import "TaxaSearchViewController.h"
@@ -27,13 +26,8 @@
 @end
 
 @interface OFVTaxaSearchControllerDelegate : NSObject <TaxaSearchViewControllerDelegate>
-@property (nonatomic, strong) ObservationDetailViewController *controller;
+@property (nonatomic, weak) ObservationDetailViewController *controller;
 @property (nonatomic, strong) NSIndexPath *indexPath;
-@end
-
-@interface TaxonLoader : NSObject <RKObjectLoaderDelegate>
-@property (nonatomic, strong) ObservationDetailViewController *viewController;
-- (id)initWithViewController:(ObservationDetailViewController *)viewController;
 @end
 
 @interface ObservationDetailViewController : UITableViewController <
@@ -44,7 +38,6 @@
     UIImagePickerControllerDelegate, 
     TKCoverflowViewDelegate, 
     TKCoverflowViewDataSource,
-    PhotoViewControllerDelegate, 
     CLLocationManagerDelegate, 
     EditLocationViewControllerDelegate,
     ProjectChooserViewControllerDelegate,
@@ -74,7 +67,6 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) NSTimer *locationTimer;
 @property (nonatomic, strong) CLGeocoder *geocoder;
-@property (nonatomic, strong) UIPopoverController *popOver;
 @property (nonatomic, strong) UIActionSheet *currentActionSheet;
 @property (nonatomic, assign) BOOL locationUpdatesOn;
 @property (nonatomic, assign) BOOL observationWasNew;
@@ -82,13 +74,13 @@
 @property (nonatomic, strong) NSMutableDictionary *ofvCells;
 @property (nonatomic, strong) OFVTaxaSearchControllerDelegate *ofvTaxaSearchControllerDelegate;
 @property (nonatomic, strong) NSString *taxonID;
-@property (nonatomic, strong) TaxonLoader *taxonLoader;
 @property (nonatomic, assign) BOOL didClickCancel;
+
+@property (nonatomic, assign) BOOL shouldShowBigSaveButton;
 
 - (void)focusOnPrevField;
 - (void)focusOnNextField;
 - (BOOL)focusOnFieldAtIndexPath:(NSIndexPath *)indexPath;
-- (void)clickedClear;
 - (void)keyboardDone;
 - (void)clickedSave;
 - (void)clickedDelete;
@@ -104,22 +96,18 @@
 
 - (void)addPhoto:(ObservationPhoto *)op;
 - (void)removePhoto:(ObservationPhoto *)op;
-- (void)initCoverflowView;
 - (void)refreshCoverflowView;
-- (void)resizeHeaderView;
 - (void)reverseGeocodeCoordinates;
 
 - (void)startUpdatingLocation;
 - (void)stopUpdatingLocation;
 
-- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)deleteActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)geoprivacyActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 - (void)dismissActionSheet;
-- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element;
 - (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -128,6 +116,5 @@
 - (NSArray *)projectsRequireField:(ObservationField *)observationField;
 - (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath;
 - (void)clearCurrentObservationField;
-- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info;
 
 @end

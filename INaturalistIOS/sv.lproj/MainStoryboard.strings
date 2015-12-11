@@ -2,7 +2,16 @@
 "0Fk-rY-9h1.title" = "Ändra";
 
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
-"0Q2-fy-dMQ.text" = "Starta handledning";
+"0Q2-fy-dMQ.text" = "Handledning";
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Fyll i namnen automatiskt";
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Kategorisera nya observationer";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
+"g3B-dy-Lka.text" = "iNaturalist Network";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Fältguider";
@@ -31,8 +40,8 @@
 /* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
 "6UX-BL-9DW.title" = "Projekt";
 
-/* Class = "IBUILabel"; text = "Username"; ObjectID = "718-d6-pVr"; */
-"718-d6-pVr.text" = "Användarnamn";
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
+"nla-WE-iqA.text" = "Username";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Ditt iNat användarnamn";
@@ -101,7 +110,7 @@
 "IvC-UJ-yev.text" = "Kontakta support";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "Älskar iNaturalist? Betygsätt oss";
+"r3a-dI-zLW.text" = "Älskar du iNaturalist? Betygsätt oss";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Välj projekt";
@@ -280,11 +289,20 @@
 /* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
 "oWq-bA-sYY.headerTitle" = "Ditt iNaturalist konto";
 
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
+"LbD-zB-zU2.headerTitle" = "App-inställningar";
+
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Logga in med Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "Hjälp";
+
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
+"sxb-6N-VGO.headerTitle" = "Om";
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Tack till";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "Artnamn";
@@ -339,4 +357,3 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Ändra plats";
-

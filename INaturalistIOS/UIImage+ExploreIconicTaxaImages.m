@@ -12,13 +12,13 @@
 
 + (UIImage *)imageForIconicTaxon:(NSString *)iconicTaxon {
     
-    NSString *candidateName = [NSString stringWithFormat:@"%@-200px.png", [iconicTaxon lowercaseString]];
+    NSString *candidateName = [NSString stringWithFormat:@"ic_%@", [iconicTaxon lowercaseString]];
     UIImage *candidate = [UIImage imageNamed:candidateName];
     
     if (candidate)
         return candidate;
     else
-        return [UIImage imageNamed:@"unknown-200px.png"];
+        return [UIImage imageNamed:@"ic_unknown"];
 }
 
 @end

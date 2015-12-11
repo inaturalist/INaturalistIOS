@@ -15,7 +15,7 @@
 - (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
 @end
 
-@interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate, RKObjectLoaderDelegate>
+@interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate>
 @property (nonatomic, strong) Taxon *taxon;
 @property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;
 @property (nonatomic, strong) UIViewController *delegate;

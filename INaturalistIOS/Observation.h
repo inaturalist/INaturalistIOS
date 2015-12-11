@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
+#import "Uploadable.h"
 
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
 @class Taxon, Comment, Identification;
 
-@interface Observation : INatModel
+@interface Observation : INatModel <Uploadable>
 
 @property (nonatomic, retain) NSString * speciesGuess;
 @property (nonatomic, retain) NSNumber * taxonID;
@@ -51,6 +52,8 @@
 @property (nonatomic, retain) NSSet *identifications;
 @property (nonatomic, retain) NSString *sortable;
 @property (nonatomic, retain) NSString *uuid;
+@property (nonatomic, retain) NSString *validationErrorMsg;
+@property (nonatomic, retain) NSNumber *captive;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
@@ -65,6 +68,7 @@
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
+- (NSString *)presentableGeoprivacy;
 @end
 
 @interface Observation (PrimitiveAccessors)

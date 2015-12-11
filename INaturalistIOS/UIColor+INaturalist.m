@@ -6,11 +6,30 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "UIColor+INaturalist.h"
 
 @implementation UIColor (INaturalist)
 + (UIColor *)inatTint
 {
-    return [UIColor colorWithRed:114.0/255.0 green:173.0/255.0 blue:34.0/255.0 alpha:1];
+    return [UIColor colorWithHexString:@"#74ac00"];
 }
+
++ (UIColor *)inatDarkGreen {
+    return [UIColor colorWithHexString:@"#5a7700"];
+}
+
++ (UIColor *)inatInactiveGreyTint {
+    return [UIColor colorWithHexString:@"#666666"];
+}
+
++ (UIColor *)inatDarkGray {
+    return [UIColor colorWithHexString:@"#5D5D5D"];
+}
+
++ (UIColor *)inatLightGray {
+    return [UIColor colorWithHexString:@"#7B7B7B"];
+}
+
 @end

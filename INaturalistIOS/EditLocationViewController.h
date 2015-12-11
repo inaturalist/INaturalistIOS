@@ -25,13 +25,14 @@
 {
     BOOL readyToChangeLocation;
 }
-@property (weak, nonatomic) UIViewController *delegate;
+@property (weak, nonatomic) id <EditLocationViewControllerDelegate> delegate;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) INatLocation *currentLocation;
 @property (strong, nonatomic) UIBarButtonItem *currentLocationButton;
 @property (strong, nonatomic) UIBarButtonItem *mapTypeButton;
 @property (weak, nonatomic) IBOutlet CrossHairView *crossHairView;
 @property (weak, nonatomic) IBOutlet AccuracyCircleView *accuracyCircleView;
+@property BOOL saveOnExit;
 
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedDone:(id)sender;

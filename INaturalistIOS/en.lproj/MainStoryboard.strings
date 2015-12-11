@@ -3,7 +3,20 @@
 "0Fk-rY-9h1.title" = "Edit";
 
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
-"0Q2-fy-dMQ.text" = "Launch tutorial";
+"0Q2-fy-dMQ.text" = "Tutorial";
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Autocomplete names";
+
+/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Automatically upload";
+
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Categorize new observations";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
+"g3B-dy-Lka.text" = "iNaturalist Network";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Guides";
@@ -32,8 +45,8 @@
 /* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
 "6UX-BL-9DW.title" = "Projects";
 
-/* Class = "IBUILabel"; text = "Username"; ObjectID = "718-d6-pVr"; */
-"718-d6-pVr.text" = "Username";
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
+"nla-WE-iqA.text" = "Username";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Your iNat username";
@@ -102,7 +115,7 @@
 "IvC-UJ-yev.text" = "Contact support";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "Love iNat? Rate Us";
+"r3a-dI-zLW.text" = "Love iNat? Rate us";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Choose projects";
@@ -281,11 +294,20 @@
 /* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
 "oWq-bA-sYY.headerTitle" = "Your iNaturalist Account";
 
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
+"LbD-zB-zU2.headerTitle" = "App Settings";
+
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Sign in with Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "Help";
+
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
+"sxb-6N-VGO.headerTitle" = "About";
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Acknowledgements";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "Species name";
@@ -340,3 +362,13 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Edit Location";
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Categorize new observations"
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Autocomplete names"
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Acknowledgements"
+

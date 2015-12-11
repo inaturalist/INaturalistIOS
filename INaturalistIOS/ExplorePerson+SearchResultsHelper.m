@@ -31,12 +31,13 @@ static UIImage *userIconPlaceholder;
 
 - (NSURL *)searchResult_ThumbnailUrl {
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg", (long)self.personId]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
+                                 INatMediaBaseURL, (long)self.personId]];
 }
 
 - (UIImage *)searchResult_PlaceholderImage {
     if (!userIconPlaceholder) {
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:30.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:30.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
     }

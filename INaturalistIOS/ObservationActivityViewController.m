@@ -8,8 +8,9 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBPRogressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationActivityViewController.h"
 #import "Observation.h"
@@ -22,8 +23,6 @@
 #import "AddIdentificationViewController.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
-#import "PhotoViewController.h"
-#import "PhotoSource.h"
 #import "TaxonPhoto.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
@@ -40,6 +39,8 @@ static const int IdentificationCellAgreeTag = 9;
 static const int IdentificationCellTaxonScientificNameTag = 10;
 static const int IdentificationCellBodyTag = 11;
 
+static UIImage *defaultPersonImage;
+
 @interface ObservationActivityViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *addCommentButton;
@@ -47,7 +48,6 @@ static const int IdentificationCellBodyTag = 11;
 @property (strong, nonatomic) NSArray *comments;
 @property (strong, nonatomic) NSArray *identifications;
 @property (strong, nonatomic) NSArray *activities;
-@property (strong, nonatomic) NSMutableArray *rowHeights;
 
 - (void)initUI;
 - (void)clickedAddComment;
@@ -59,16 +59,22 @@ static const int IdentificationCellBodyTag = 11;
 
 @implementation ObservationActivityViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
+    
+    defaultPersonImage = ({
+        FAKIcon *personIcon = [FAKIonIcons iosPersonOutlineIconWithSize:40];
+        [personIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+        [personIcon imageWithSize:CGSizeMake(40, 40)];
+    });
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification
                                                object:[Observation managedObjectContext]];
 	
 	RefreshControl *refresh = [[RefreshControl alloc] init];
-	refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to Refresh"];
+	refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh",nil)];
 	[refresh addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
 	self.refreshControl = refresh;
 }
@@ -152,11 +158,6 @@ static const int IdentificationCellBodyTag = 11;
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
 	NSArray *allActivities = [self.comments arrayByAddingObjectsFromArray:self.identifications];
 	self.activities = [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
-	
-	self.rowHeights = [NSMutableArray arrayWithCapacity:self.activities.count];
-	for (int x = 0; x < self.activities.count; x++) {
-		[self.rowHeights addObject:[NSNull null]];
-	}
 }
 
 - (void)reload
@@ -181,6 +182,10 @@ static const int IdentificationCellBodyTag = 11;
 		AddIdentificationViewController *vc = segue.destinationViewController;
 		vc.observation = self.observation;
 	}
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Actions
@@ -217,13 +222,17 @@ static const int IdentificationCellBodyTag = 11;
 	[self agreeWithIdentification:identification];
 }
 
-- (void)agreeWithIdentification:(Identification *)identification
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Agreeing...",nil)];
-	NSDictionary *params = @{
+- (void)agreeWithIdentification:(Identification *)identification {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Agreeing...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
+    NSDictionary *params = @{
 							 @"identification[observation_id]":self.observation.recordID,
 							 @"identification[taxon_id]":identification.taxonID
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Add Identification (Agree)"];
 	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
@@ -232,6 +241,7 @@ static const int IdentificationCellBodyTag = 11;
 - (void)markAsRead
 {
 	if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
+        [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
 		[[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID] params:nil delegate:self];
 		self.observation.hasUnviewedActivity = [NSNumber numberWithBool:NO];
 		NSError *error = nil;
@@ -244,7 +254,8 @@ static const int IdentificationCellBodyTag = 11;
 	if (self.observation.recordID
             && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
             && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Refreshing...",nil)];
+
+        [[Analytics sharedClient] debugLog:@"Network - Refresh observation activity"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
@@ -252,39 +263,49 @@ static const int IdentificationCellBodyTag = 11;
 }
 
 #pragma mark - RKRequestDelegate
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
 //	NSLog(@"Did load response status code: %d for URL: %@", response.statusCode, response.URL);
 	if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound && response.statusCode == 200) {
 		[self refreshData];
 	} else {
-        [SVProgressHUD dismiss];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        });
 	}
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
-{
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-	NSLog(@"Did fail with error: %@ for URL: %@", error.localizedDescription, request.URL);
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Failed", nil)
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 #pragma mark - RKObjectLoaderDelegate
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
 	[self.refreshControl endRefreshing];
-    [SVProgressHUD showSuccessWithStatus:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
 	
     if (objects.count == 0) return;
     
     NSError *error = nil;
-    [self.rowHeights removeAllObjects];
     [[[RKObjectManager sharedManager] objectStore] save:&error];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
 
 	[self.refreshControl endRefreshing];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
 	
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
@@ -321,43 +342,37 @@ static const int IdentificationCellBodyTag = 11;
     return self.activities.count;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     INatModel *activity = self.activities[indexPath.row];
-    int defaultHeight = [activity isKindOfClass:[Identification class]] ? 80 : 60;
-	if (self.rowHeights[indexPath.row] == [NSNull null]) {
-		NSString *body;
-		float margin = 31.0; // sort of a buffer to capture metadata line height and some uncertainty with text height calc
-		if ([activity isKindOfClass:[Identification class]]) {
-			body = [((Identification *)activity).body stringByStrippingHTML];
-            margin = defaultHeight + 20;
-		} else {
-			body = [((Comment *)activity).body stringByStrippingHTML];
-            margin = 31;
-		}
-		
-		if (body.length == 0) {
-			self.rowHeights[indexPath.row] = @(defaultHeight);
-			return defaultHeight;
-		} else {
-            float fontSize;
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                fontSize = 9;
-            } else {
-                fontSize = 13;
-            }
-			CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:fontSize]
-                           constrainedToSize:CGSizeMake(252.0, 10000.0)
-                               lineBreakMode:NSLineBreakByWordWrapping];
-			float height = MAX(defaultHeight, size.height+margin);
-			self.rowHeights[indexPath.row] = [NSNumber numberWithFloat:height];
-			return height;
-		}
-	} else {
-		NSNumber *height = self.rowHeights[indexPath.row];
-		return height.floatValue;
-	}
-	return defaultHeight;
+    CGFloat defaultHeight = [activity isKindOfClass:[Identification class]] ? 90.0 : 60.0;
+    
+    NSString *body = @"";
+    CGFloat margin = 40;
+    CGFloat usableWidth = tableView.bounds.size.width - 80;
+
+    if ([activity isKindOfClass:[Identification class]]) {
+        margin += 40;
+        usableWidth -= 20;
+        body = [((Identification *)activity).body stringByStrippingHTML];
+    } else if ([activity isKindOfClass:[Comment class]]) {
+        body = [((Comment *)activity).body stringByStrippingHTML];
+    }
+    
+    if (body.length == 0) {
+        return defaultHeight;
+    } else {
+        float fontSize = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? 9 : 13;
+        
+        CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
+        UIFont *font = [UIFont systemFontOfSize:fontSize];
+        
+        CGRect textRect = [body boundingRectWithSize:maxSize
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:@{ NSFontAttributeName: font }
+                                             context:nil];
+        
+        return MAX(defaultHeight, textRect.size.height + margin);
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -377,10 +392,30 @@ static const int IdentificationCellBodyTag = 11;
         
         [imageView sd_cancelCurrentImageLoad];
         [imageView sd_setImageWithURL:[NSURL URLWithString:comment.user.userIconURL]
-                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
+                     placeholderImage:defaultPersonImage];
 
         body.text = [comment.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];
+        
+        // Adding auto layout.
+        body.textAlignment = NSTextAlignmentNatural;
+        body.translatesAutoresizingMaskIntoConstraints = NO;
+        byline.textAlignment = NSTextAlignmentNatural;
+        byline.translatesAutoresizingMaskIntoConstraints = NO;
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        if(!cell.constraints.count){
+            NSDictionary *views = @{@"body":body,@"byline":byline,@"imageView":imageView};
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[imageView(==45)]-[body]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[imageView(==45)]-[byline]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-7-[imageView(==45)]->=0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[body][byline(==21)]-4-|" options:0 metrics:0 views:views]];
+        }
+        
+        
+        
 	} else {
 		cell = [tableView dequeueReusableCellWithIdentifier:IdentificationCellIdentifier forIndexPath:indexPath];
 		UIImageView *imageView = (UIImageView *)[cell viewWithTag:IdentificationCellImageTag];
@@ -396,7 +431,7 @@ static const int IdentificationCellBodyTag = 11;
 		
         [imageView sd_cancelCurrentImageLoad];
         [imageView sd_setImageWithURL:[NSURL URLWithString:identification.user.userIconURL]
-                     placeholderImage:[UIImage imageNamed:@"usericon.png"]];
+                     placeholderImage:defaultPersonImage];
 		
         taxonImageView.image = nil;
         [taxonImageView sd_cancelCurrentImageLoad];
@@ -425,6 +460,81 @@ static const int IdentificationCellBodyTag = 11;
 		} else {
 			agreeButton.hidden = NO;
 		}
+        
+        // get "my" current identification
+        Identification *myCurrentIdentification = nil;
+        for (Identification *eachId in self.identifications) {
+            if ([eachId.user.login isEqualToString:username] && eachId.isCurrent) {
+                // this is my current
+                myCurrentIdentification = eachId;
+            }
+        }
+        
+        if (myCurrentIdentification) {
+            if ([identification isEqual:myCurrentIdentification]) {
+                // can't agree with "my" current identification
+                agreeButton.hidden = YES;
+            } else if ([identification.taxon isEqual:myCurrentIdentification.taxon]) {
+                // can't agree with IDs whose taxon matches "my" current identification
+                agreeButton.hidden = YES;
+            } else {
+                // not mine, not same taxon as mine, can agree
+                agreeButton.hidden = NO;
+            }
+        } else {
+            // no current id, can agree
+            agreeButton.hidden = NO;
+        }
+        
+        // Adding auto layout.
+        if(!cell.constraints.count){
+            title.translatesAutoresizingMaskIntoConstraints = NO;
+            title.textAlignment = NSTextAlignmentNatural;
+            taxonName.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonName.textAlignment = NSTextAlignmentNatural;
+            taxonScientificName.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonScientificName.textAlignment = NSTextAlignmentNatural;
+            byline.translatesAutoresizingMaskIntoConstraints = NO;
+            byline.textAlignment = NSTextAlignmentNatural;
+            body.translatesAutoresizingMaskIntoConstraints = NO;
+            body.textAlignment = NSTextAlignmentNatural;
+            imageView.translatesAutoresizingMaskIntoConstraints = NO;
+            taxonImageView.translatesAutoresizingMaskIntoConstraints = NO;
+            agreeButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"title":title,@"taxonName":taxonName,
+                                    @"taxonScientificName":taxonScientificName,
+                                    @"byline":byline,@"body":body,@"imageView":imageView,
+                                    @"agreeButton":agreeButton,@"taxonImageView":taxonImageView};
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[imageView(==45)]-[taxonImageView(==45)]-[title]->=8-[agreeButton]-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[imageView(==45)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[taxonImageView(==45)]" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title(==19)][taxonName(==title)][taxonScientificName(==taxonName)]->=0-[body][byline(==21)]->=0-|" options:0 metrics:0 views:views]];
+            
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[agreeButton(==34)]" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:body attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:taxonImageView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:body attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:byline attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:byline attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:taxonImageView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonName attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonScientificName attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonName attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:taxonScientificName attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+        }
+        
 	}
 	
     return cell;

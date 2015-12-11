@@ -6,67 +6,348 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
-
-#import "INaturalistAppDelegate.h"
-#import "LoginViewController.h"
-#import "INatWebController.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <FacebookSDK/FacebookSDK.h>
-#import "GTLPlusConstants.h"
-#import "GTMOAuth2Authentication.h"
-#import "NXOAuth2.h"
-#import "UIColor+INaturalist.h"
+#import <FontAwesomeKit/FAKIonicons.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+#import <NXOAuth2Client/NXOAuth2.h>
+
+#import "LoginViewController.h"
+#import "LoginController.h"
 #import "Analytics.h"
-#import "GooglePlusAuthViewController.h"
+#import "INaturalistAppDelegate.h"
+#import "SplitTextButton.h"
+#import "EditableTextFieldCell.h"
+#import "RoundedButtonCell.h"
+#import "UIColor+INAturalist.h"
+#import "INatWebController.h"
 
-static const NSInteger FacebookAssertionType = 1;
-static const NSInteger GoogleAssertionType = 2;
 
-@interface LoginViewController(){
-    NSString    *ExternalAccessToken;
-    NSString    *INatAccessToken;
-    NSString    *AccountType;
-    UIAlertView *av;
-    BOOL        isLoginCompleted;
-    NSInteger   lastAssertionType;
-    BOOL        tryingGoogleReauth;
+@interface LoginViewController () <UITableViewDataSource, UITableViewDelegate, INatWebControllerDelegate> {
+    NSString *username, *password;
 }
-
 @end
 
 @implementation LoginViewController
-@synthesize usernameField, passwordField, delegate;
-
-- (IBAction)cancel:(id)sender {
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidCancel:)]) {
-        [self.delegate performSelector:@selector(loginViewControllerDidCancel:) withObject:self];
-    }
-}
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    // adujst the title font for Spanish
-    NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([currentLanguage compare:@"es"] == NSOrderedSame){
-        [self.navigationController.navigationBar setTitleTextAttributes:
-         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
+    
+    self.title = NSLocalizedString(@"Log In", @"title of the log in screen");
+    
+    if (self.cancellable) {
+        UIImage *closeImage = ({
+            FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:40];
+            [close addAttribute:NSForegroundColorAttributeName
+                          value:[UIColor whiteColor]];
+            [close imageWithSize:CGSizeMake(40, 40)];
+        });
+        __weak typeof(self)weakSelf = self;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
+                                                                                     style:UIBarButtonItemStylePlain
+                                                                                   handler:^(id sender) {
+                                                                                       __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                                       [strongSelf dismissViewControllerAnimated:YES
+                                                                                                                      completion:nil];
+                                                                                   }];
+        self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
     }
-    [self initGoogleLogin];
-    [self initOAuth2Service];
-    AccountType = kINatAuthService;
-    av = nil;
-    isLoginCompleted = NO;
+    
+    UIImageView *background = ({
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        iv.image = self.backgroundImage ?: [UIImage imageNamed:@"SignUp_OrangeFlower.jpg"];
+
+        iv;
+    });
+    [self.view addSubview:background];
+    
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+        UIVisualEffectView *blurView = ({
+            UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            
+            UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
+            view.frame = self.view.bounds;
+            view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            view;
+        });
+        [self.view addSubview:blurView];
+    } else {
+        UIView *scrim = ({
+            UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
+            view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            
+            view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6f];
+            
+            view;
+        });
+        [self.view addSubview:scrim];
+    }
+    
+    self.loginTableView = ({
+        UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        tv.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        tv.dataSource = self;
+        tv.delegate = self;
+        
+        tv.scrollEnabled = NO;
+        
+        tv.backgroundColor = [UIColor clearColor];
+        tv.separatorColor = [UIColor clearColor];
+        
+        [tv registerClass:[EditableTextFieldCell class] forCellReuseIdentifier:@"TextField"];
+        [tv registerClass:[RoundedButtonCell class] forCellReuseIdentifier:@"Button"];
+
+        tv;
+    });
+    [self.view addSubview:self.loginTableView];
+    
+    self.orLabel = ({
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        label.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
+        label.text = NSLocalizedString(@"Or Log In with:", @"label above alternate login option buttons (ie g+, facebook)");
+        label.textAlignment = NSTextAlignmentCenter;
+        
+        label;
+    });
+    [self.view addSubview:self.orLabel];
+    
+    UIView *socialContainer = ({
+        UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        view;
+    });
+    [self.view addSubview:socialContainer];
+    
+    self.gButton = ({
+        SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        NSString *google = NSLocalizedString(@"Google", @"Name of Google for the G+ signin button");
+        NSDictionary *attrs = @{
+                                NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
+                                };
+        
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:google
+                                                                                attributes:attrs];
+
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialGoogleplusIconWithSize:25.0f].attributedString;
+        
+        
+        [button bk_addEventHandler:^(id sender) {
+            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                            message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                  otherButtonTitles:nil] show];
+                return;
+            }
+            
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            __weak typeof(self)weakSelf = self;
+            [appDelegate.loginController loginWithGoogleUsingNavController:self.navigationController
+                                                                   success:^(NSDictionary *info) {
+                                                                       __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                       if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
+                                                                           [appDelegate showMainUI];
+                                                                       } else {
+                                                                           [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                                       }
+                                                                       if (strongSelf.selectedPartner) {
+                                                                           [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                                         completion:nil];
+                                                                       }
+                                                                   } failure:^(NSError *error) {
+                                                                       NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+                                                                       NSString *alertMsg;
+                                                                       if (error) {
+                                                                           alertMsg = error.localizedDescription;
+                                                                       } else {
+                                                                           alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                        @"Unknown google login error");
+                                                                       }
+                                                                       [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                                   message:alertMsg
+                                                                                                  delegate:nil
+                                                                                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                         otherButtonTitles:nil] show];
+                                                                   }];
+        
+        } forControlEvents:UIControlEventTouchUpInside];
+
+        button;
+    });
+    [socialContainer addSubview:self.gButton];
+    
+    self.faceButton = ({
+        SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        NSString *face = NSLocalizedString(@"Facebook", @"Name of Facebook for the Facebook signin button");
+        NSDictionary *attrs = @{
+                                NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
+                                };
+        
+        button.trailingTitleLabel.textAlignment = NSTextAlignmentCenter;
+        button.trailingTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:face
+                                                                                attributes:attrs];
+
+        button.leadingTitleLabel.attributedText = [FAKIonIcons socialFacebookIconWithSize:25.0f].attributedString;
+
+        [button bk_addEventHandler:^(id sender) {
+            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                            message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                  otherButtonTitles:nil] show];
+                return;
+            }
+            
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            __weak typeof(self)weakSelf = self;
+            [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
+                    [appDelegate showMainUI];
+                } else {
+                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                }
+                if (strongSelf.selectedPartner) {
+                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                  completion:nil];
+                }
+            } failure:^(NSError *error) {
+                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+                NSString *alertMsg;
+                if (error) {
+                    alertMsg = error.localizedDescription;
+                } else {
+                    alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+                                            @"Unknown facebook login error");
+                }
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                           message:alertMsg
+                                          delegate:nil
+                                 cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            }];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        button;
+
+    });
+    [socialContainer addSubview:self.faceButton];
+    
+    UIView *spacer = [UIView new];
+    UIView *spacer2 = [UIView new];
+    
+    __weak typeof(self)weakSelf = self;
+    [@[spacer, spacer2] bk_each:^(UIView *view) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        view.frame = CGRectZero;
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        [strongSelf.view addSubview:view];
+    }];
+    
+    NSDictionary *views = @{
+                            @"tv": self.loginTableView,
+                            @"spacer": spacer,
+                            @"spacer2": spacer2,
+                            @"or": self.orLabel,
+                            @"g": self.gButton,
+                            @"face": self.faceButton,
+                            @"top": self.topLayoutGuide,
+                            @"social": socialContainer,
+                            };
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginTableView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.loginTableView
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[or]-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:socialContainer
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0f
+                                                           constant:0.0f]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:socialContainer
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0f
+                                                           constant:290.0f]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[g]-[face(==g)]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[g]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[face]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[top]-20-[tv(==152)]"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[or]-20-[social(==44)]-100-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+
+
+
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.translucent = NO;
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
+    
+    [self.navigationController setNavigationBarHidden:NO];
+
+    // setup custom navigation bar style
+    // white button tint
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+                                                                      NSForegroundColorAttributeName:
+                                                                          [UIColor whiteColor]
+                                                                      }];
+    
+    // completely clear navbar background
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+    [self.navigationController.navigationBar setTranslucent:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -79,402 +360,324 @@ static const NSInteger GoogleAssertionType = 2;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateLogin];
 }
 
-- (void)viewDidUnload
-{
-    [self setUsernameField:nil];
-    [self setPasswordField:nil];
-    [self removeOAuth2Observers];
-    [super viewDidUnload];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-- (IBAction)signIn:(id)sender {
-    //INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
-    AccountType = nil;
-    AccountType = kINatAuthService;
-    isLoginCompleted = NO;
-    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:AccountType
-                                                              username:[usernameField text]
-                                                              password:[passwordField text]];
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // if the VC catches a tap, it means nobody else did
+    // resign first responder from the textfield subviews
+    [self.view endEditing:YES];
 }
 
-#pragma mark - RKRequestDelegate methods
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-    if (response.statusCode == 200 || response.statusCode == 304) {
-        [SVProgressHUD dismiss];
-        NSString *jsonString = [[NSString alloc] initWithData:response.body
-                                                     encoding:NSUTF8StringEncoding];
-        NSError* error = nil;
-        id<RKParser> parser = [[RKParserRegistry sharedRegistry] parserForMIMEType:@"application/json"];
-        NSDictionary *parsedData = [parser objectFromString:jsonString error:&error];
-        if (parsedData == nil && error) {
-            // Parser error...
-            [self failedLogin];
-            return;
-        }
-        NSString *userName = [parsedData objectForKey:@"login"];
-        [[NSUserDefaults standardUserDefaults] setValue:userName
-                                                 forKey:INatUsernamePrefKey];
-        [[NSUserDefaults standardUserDefaults] setValue:[passwordField text] 
-                                                 forKey:INatPasswordPrefKey];
-        [[NSUserDefaults standardUserDefaults] setValue:INatAccessToken
-                                                 forKey:INatTokenPrefKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerDidLogIn:)]) {
-            [self.delegate loginViewControllerDidLogIn:self];
-        }
-        [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+#pragma mark TableView datasource/delegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0)
+        return 2;
+    else
+        return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 1)
+        return 20.0f;
+    else
+        return 0.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return [UIView new];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        EditableTextFieldCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TextField"];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [self configureEditableTextCell:cell forIndexPath:indexPath];
+        
+        return cell;
     } else {
-        [self failedLogin];
+        RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Button"];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.roundedButton.tintColor = [UIColor whiteColor];
+        cell.roundedButton.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.6f];
+        cell.roundedButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+        
+        [cell.roundedButton setTitle:NSLocalizedString(@"Log in", @"Title for login button")
+                            forState:UIControlStateNormal];
+        
+        __weak typeof(self)weakSelf = self;
+        [cell.roundedButton bk_addEventHandler:^(id sender) {
+            [weakSelf loginAction];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.roundedButton.enabled = NO;
+        cell.roundedButton.alpha = 0.5f;
+        
+        return cell;
     }
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error
-{
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    bool jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    bool authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-    if (jsonParsingError || authFailure) {
-        [self failedLogin];
-    } else if (!av){
-        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                        message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an unexpected error: %@", @"error message with the error") , error.localizedDescription]
-                                       delegate:self 
-                              cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                              otherButtonTitles:nil];
-        [av show];
-    }
-    [SVProgressHUD dismiss];
-}
+#pragma mark - Editable Text Cell config helper
 
-- (void)failedLogin
-{
-    [self failedLogin:nil];
-}
+- (void)configureEditableTextCell:(EditableTextFieldCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.backgroundColor = [UIColor clearColor];
+    
+    cell.textField.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
+    cell.textField.tintColor = [UIColor whiteColor];
+    cell.textField.textColor = [UIColor whiteColor];
+    
+    cell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    cell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    cell.textField.keyboardType = UIKeyboardTypeDefault;
+    
+    NSString *placeholderText;
+    UIColor *placeholderTint = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
+    NSDictionary *placeholderAttrs = @{
+                                       NSForegroundColorAttributeName: placeholderTint,
+                                       };
+    
+    if (indexPath.item == 0) {
+        placeholderText = NSLocalizedString(@"Username", @"Placeholder text for the username text field in signup");
+        
+        cell.textField.rightViewMode = UITextFieldViewModeAlways;
+        cell.textField.rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15.0, cell.textField.frame.size.height)];
+        // left icons
+        cell.activeLeftAttributedString = [FAKIonIcons iosPersonIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosPersonOutlineIconWithSize:30].attributedString;
+        
+        __weak typeof(self)weakSelf = self;
+        [cell.textField bk_addEventHandler:^(id sender) {
+            // just in case this cell scrolls off the screen
+            username = [cell.textField.text copy];
+            [weakSelf validateLoginButton];
+        } forControlEvents:UIControlEventEditingChanged];
+        
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            
+            // scroll to make password field visible
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item +  1
+                                                             inSection:indexPath.section];
+            [strongSelf.loginTableView scrollToRowAtIndexPath:nextIndexPath
+                                             atScrollPosition:UITableViewScrollPositionTop
+                                                     animated:YES];
+            
+            // switch keyboard focus to username field
+            EditableTextFieldCell *nextCell = (EditableTextFieldCell *)[strongSelf.loginTableView cellForRowAtIndexPath:nextIndexPath];
+            if (nextCell && [nextCell isKindOfClass:[EditableTextFieldCell class]]) {
+                [nextCell.textField becomeFirstResponder];
+            }
 
-- (void)failedLogin:(NSString *)msg
-{
-    //[[RKClient sharedClient] setUsername:nil];
-    //[[RKClient sharedClient] setPassword:nil];
-    if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
-    INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    [RKClient.sharedClient setValue:nil forHTTPHeaderField:@"Authorization"];
-    [app.photoObjectManager.client setValue:nil forHTTPHeaderField:@"Authorization"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatUsernamePrefKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatPasswordPrefKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatTokenPrefKey];
+            // don't hide the keyboard
+            return NO;
+        };
+        
+    } else {
+        placeholderText = NSLocalizedString(@"Password", @"Placeholder text for the password text field in signup");
+        
+        cell.textField.secureTextEntry = YES;
+        
+        // left icons
+        cell.activeLeftAttributedString = [FAKIonIcons iosLockedIconWithSize:30].attributedString;
+        cell.inactiveLeftAttributedString = [FAKIonIcons iosLockedOutlineIconWithSize:30].attributedString;
 
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(loginViewControllerFailedToLogIn:)]) {
-        [self.delegate loginViewControllerFailedToLogIn:self];
+        // right view
+        cell.textField.rightViewMode = UITextFieldViewModeAlways;
+        cell.textField.rightView = ({
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.frame = CGRectMake(0, 0, 65, 44);
+            
+            button.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+            button.tintColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5f];
+            
+            [button setTitle:NSLocalizedString(@"Forgot?", @"Title for forgot password button.")
+                    forState:UIControlStateNormal];
+            
+            __weak typeof(self)weakSelf = self;
+            [button bk_addEventHandler:^(id sender) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                               delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                      otherButtonTitles:nil] show];
+                    return;
+                }
+
+                INatWebController *webController = [[INatWebController alloc] init];
+                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
+                [webController setUrl:url];
+                webController.delegate = strongSelf;
+                [strongSelf.navigationController pushViewController:webController animated:YES];
+
+            } forControlEvents:UIControlEventTouchUpInside];
+            
+            button;
+        });
+        
+        __weak typeof(self)weakSelf = self;
+        [cell.textField bk_addEventHandler:^(id sender) {
+            // just in case this cell scrolls off the screen
+            password = [cell.textField.text copy];
+            [weakSelf validateLoginButton];
+        } forControlEvents:UIControlEventEditingChanged];
+        
+        cell.textField.bk_shouldReturnBlock = ^(UITextField *tf) {
+            [weakSelf loginAction];
+            
+            // hide keyboard
+            [tf resignFirstResponder];
+
+            return NO;
+        };
+
     }
     
-    if (!av){
-        if (!msg) {
-            msg = NSLocalizedString(@"Username or password were invalid.", nil);
-        }
-        av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sign in failed",nil)
-                                    message:msg
-                                   delegate:self 
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil];
-        [av show];
-    }
-    isLoginCompleted = YES;
-    [SVProgressHUD dismiss];
+    cell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText
+                                                                           attributes:placeholderAttrs];
+
 }
 
-#pragma mark UITextFieldDelegate methods
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [textField resignFirstResponder];
-    if (textField == usernameField) {
-        [passwordField becomeFirstResponder];
-    } else if (textField == passwordField) {
-        [self signIn:nil];
-    }
-    return YES;
-}
+#pragma mark - Login helper
 
-#pragma mark UITableView delegate methods
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)loginAction {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        if (!av){
-            av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                     message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-            [av show];
-        }
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
         return;
     }
-    if (indexPath.section == 1) { //Facebook
-        lastAssertionType = FacebookAssertionType;
-        isLoginCompleted = NO;
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing in...",nil)];
-        [self openFacebookSession];
+    
+    // validators
+    BOOL isValid = YES;
+    NSString *alertMsg;
+    if (!username) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Username",
+                                     @"Error for bad username hwne making account.");
     }
-    else if (indexPath.section == 2) {// Google+
-        lastAssertionType = GoogleAssertionType;
-        isLoginCompleted = NO;
-        
-        GPPSignIn *signin = [GPPSignIn sharedInstance];
-        
-        // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
-        // @"plus.login plus.me userinfo.email"
-        __block NSString *scopes;
-        [signin.scopes enumerateObjectsUsingBlock:^(NSString *scope, NSUInteger idx, BOOL *stop) {
-            if (idx == 0)
-                scopes = [NSString stringWithString:scope];
-            else
-                scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
-        }];
-        
-        GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:scopes
-                                                                                    clientID:signin.clientID
-                                                                                clientSecret:nil
-                                                                            keychainItemName:nil
-                                                                                    delegate:self
-                                                                            finishedSelector:@selector(viewController:finishedAuth:error:)];
-        [self.navigationController pushViewController:vc animated:YES];
+    if (!password || password.length < INatMinPasswordLength) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+                                     @"Error for bad password when making account");
     }
-    else if (indexPath.section == 3) {
-        lastAssertionType = 0;
-        UINavigationController *nc = self.navigationController;
-        INatWebController *webController = [[INatWebController alloc] init];
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-        [webController openURL:url];
-        webController.delegate = self;
-        [nc pushViewController:webController animated:YES];
-     }
-    else if (indexPath.section == 4) {
-        UINavigationController *nc = self.navigationController;
-        INatWebController *webController = [[INatWebController alloc] init];
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
-        [webController openURL:url];
-        webController.delegate = self;
-        [nc pushViewController:webController animated:YES];
+    if (!isValid) {
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+        if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
+
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Logging in...", @"Notice while we're logging them in");
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.loginController loginWithUsername:username
+                                          password:password
+                                           success:^(NSDictionary *info) {
+                                               __strong typeof(weakSelf)strongSelf = weakSelf;
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                               });
+                                               if (strongSelf.selectedPartner) {
+                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                 completion:nil];
+                                               }
+                                               if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
+                                                   [appDelegate showMainUI];
+                                               } else {
+                                                   [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                               }
+                                           } failure:^(NSError *error) {
+                                               __strong typeof(weakSelf)strongSelf = weakSelf;
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                               });
+
+                                               NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+                                               NSString *alertMsg;
+                                               if (error) {
+                                                   if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
+                                                       alertMsg = NSLocalizedString(@"Incorrect username or password.",
+                                                                                    @"Error msg when we get a 401 from the server");
+                                                   } else {
+                                                       alertMsg = error.localizedDescription;
+                                                   }
+                                               } else {
+                                                   alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
+                                                                                @"Unknown iNat login error");
+                                               }
+                                               [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                           message:alertMsg
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                 otherButtonTitles:nil] show];
+                                           }];
 }
 
-#pragma mark UIAlertViewDelegate methods
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    av = nil;
-    if (buttonIndex == 0) return;
-    NSURL *url = [NSURL URLWithString:
-                  [NSString stringWithFormat:@"%@/users/new.mobile", INatWebBaseURL]];
-    [[UIApplication sharedApplication] openURL:url];
+- (void)validateLoginButton {
+    NSIndexPath *buttonIndexPath = [NSIndexPath indexPathForItem:0 inSection:1];
+    RoundedButtonCell *buttonCell = (RoundedButtonCell *)[self.loginTableView cellForRowAtIndexPath:buttonIndexPath];
+    
+    if (buttonCell && [buttonCell isKindOfClass:[RoundedButtonCell class]]) {
+        if (password.length > 2 && username.length > 2) {
+            buttonCell.roundedButton.enabled = YES;
+            buttonCell.roundedButton.alpha = 1.0f;
+        } else {
+            buttonCell.roundedButton.enabled = NO;
+            buttonCell.roundedButton.alpha = 0.5f;
+        }
+    }
 }
 
-#pragma mark - TTWebControllerDelegate
-- (BOOL)webController:(TTWebController *)controller 
-              webView:(UIWebView *)webView 
-shouldStartLoadWithRequest:(NSURLRequest *)request 
-       navigationType:(UIWebViewNavigationType)navigationType
-{
-    if ([request.URL.path isEqualToString:@"/users"] || [request.URL.path hasPrefix:@"/users/new"] || [request.URL.path hasPrefix:@"/forgot_password"]) {
+#pragma mark - INatWebViewController delegate
+
+- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
+    if ([request.URL.path hasPrefix:@"/forgot_password"]) {
         return YES;
     }
     [self.navigationController popViewControllerAnimated:YES];
-    if (av) [av dismissWithClickedButtonIndex:0 animated:YES];
-    av = nil;
-    NSString *title, *message;
-    if ([controller.URL.path hasPrefix:@"/forgot_password"]) {
-        title = @"Check Your Email";
-        message = @"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.";
-    } else {
-        [[Analytics sharedClient] event:kAnalyticsEventSignup];
-        title = NSLocalizedString(@"Welcome to iNaturalist!", nil);
-        message = NSLocalizedString(@"Now that you've signed up you can sign in with the username and password you just created.  Don't forget to check for your confirmation email as well.", nil);
+    
+    // webviews may trigger their delegate methods more than once
+    static UIAlertView *av;
+    if (av) {
+        [av dismissWithClickedButtonIndex:0 animated:YES];
+        av = nil;
     }
-    av = [[UIAlertView alloc] initWithTitle:title
-                                    message:message
-                                   delegate:self
+    
+    NSString *alertTitle = NSLocalizedString(@"Check your email",
+                                             @"title of alert after you reset your password");
+    NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
+                                           @"body of alert after you reset your password");
+    
+    av = [[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil];
     [av show];
-    return NO;
-}
-
-#pragma mark - Facebook calls
-
-- (void)sessionStateChanged:(FBSession *)session
-                      state:(FBSessionState) state
-                      error:(NSError *)error
-{
-    switch (state) {
-        case FBSessionStateOpen:
-//            NSLog(@"session.accessTokenData.accessToken %@", session.accessTokenData.accessToken);
-            ExternalAccessToken = [session.accessTokenData.accessToken copy];
-            AccountType = nil;
-            AccountType = kINatAuthServiceExtToken;
-            [[NXOAuth2AccountStore sharedStore]
-             requestAccessToAccountWithType:AccountType
-             assertionType:[NSURL URLWithString:@"http://facebook.com"]
-             assertion:ExternalAccessToken];
-            [[Analytics sharedClient] event:kAnalyticsEventLogin
-                             withProperties:@{ @"Via": @"Facebook" }];
-            break;
-        case FBSessionStateClosed:
-//            NSLog(@"session FBSessionStateClosed");
-        case FBSessionStateClosedLoginFailed:
-//            NSLog(@"session FBSessionStateClosedLoginFailed");
-            // Once the user has logged in, we want them to
-            // be looking at the root view.
-            [FBSession.activeSession closeAndClearTokenInformation];
-            ExternalAccessToken = nil;
-            break;
-        default:
-            break;
-    }
     
-    if (error) {
-        if (error.code == 2) {
-            [self failedLogin:NSLocalizedString(@"Either you didn't grant access to your Facebook account, or the request timed out. Try again if you want to sign in using your Facebook account, and make sure to grant access.", nil)];
-        } else {
-            [self failedLogin:error.localizedDescription];
-        }
-    }
-}
-
-- (void)openFacebookSession
-{
-    NSArray *permissions = [NSArray arrayWithObjects:@"email", @"offline_access", @"user_photos", @"friends_photos", @"user_groups", nil];
-    FBSession *session = [[FBSession alloc] initWithAppID:nil
-                                              permissions:permissions
-                                          urlSchemeSuffix:@"inat"
-                                       tokenCacheStrategy:nil];
-    [FBSession setActiveSession:session];
-    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent
-            completionHandler:
-     ^(FBSession *session, FBSessionState state, NSError *error) {
-         [self sessionStateChanged:session state:state error:error];
-     }];
-}
-
-#pragma mark - Google methods
-
--(void) initGoogleLogin{
-    // Google+ init
-    GPPSignIn   *googleSignIn = [GPPSignIn sharedInstance];
-    googleSignIn.clientID = GoogleClientId;
-    googleSignIn.scopes = [NSArray arrayWithObjects:
-                           kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
-                           kGTLAuthScopePlusMe,
-                           @"https://www.googleapis.com/auth/userinfo.email", nil];
-    googleSignIn.delegate = self;
-    [googleSignIn trySilentAuthentication];
-}
-
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
-          finishedAuth:(GTMOAuth2Authentication *)auth
-                 error:(NSError *)error
-{
-    [self finishedWithAuth:auth error:error];
-}
-
-- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
-{
-    //    NSLog(@"Google Received error %@ and auth object %@ [auth accessToken] %@ ",error, auth, [auth accessToken]);
-    if (error || (!auth.accessToken && tryingGoogleReauth)) {
-        NSString *msg = error.localizedDescription;
-        if (!msg) {
-            msg = NSLocalizedString(@"Google sign in failed", nil);
-        }
-        [self failedLogin:msg];
-        tryingGoogleReauth = NO;
-    } else if (!auth.accessToken && !tryingGoogleReauth) {
-        tryingGoogleReauth = YES;
-        [[GPPSignIn sharedInstance] signOut];
-        [self initGoogleLogin];
-    } else {
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Google+" }];
-        ExternalAccessToken = [[auth accessToken] copy];
-        AccountType = nil;
-        AccountType = kINatAuthServiceExtToken;
-        [[NXOAuth2AccountStore sharedStore]
-         requestAccessToAccountWithType:AccountType
-         assertionType:[NSURL URLWithString:@"http://google.com"]
-         assertion:ExternalAccessToken];
-        tryingGoogleReauth = NO;
-    }
-}
-
-
-#pragma mark - OAuth2 methods
-
--(void) initOAuth2Service{
-    [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreAccountsDidChangeNotification
-                                                      object:[NXOAuth2AccountStore sharedStore]
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *aNotification){
-                                                      if (!isLoginCompleted) {
-                                                          [self finishWithAuth2Login];
-                                                      }
-                                                  }];
-    [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
-                                                      object:[NXOAuth2AccountStore sharedStore]
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *aNotification){
-                                                      // Do something with the error
-                                                      if (!isLoginCompleted) {
-                                                          if (lastAssertionType != 0) {
-                                                              [self failedLogin:NSLocalizedString(@"Authentication credentials were invalid. This can happen if you recently disconnected your acount from the 3rd party provider (e.g. Facebook). Please try again in a few minutes. You can also check the Settings app, where there may be additional 3rd party permissions to review.", nil)];
-                                                          } else {
-                                                              [self failedLogin];
-                                                          }
-                                                      }
-                                                  }];
-}
-
-
--(void) finishWithAuth2Login{
-    [SVProgressHUD dismiss];
-    NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
-    BOOL loginSucceeded = NO;
-    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:AccountType]) {
-        NSString *accessT = [[account accessToken] accessToken];
-        if (accessT && [accessT length] > 0){
-            INatAccessToken = nil;
-            INatAccessToken = [NSString stringWithFormat:@"Bearer %@", accessT ];
-            loginSucceeded = YES;
-        }
-    }
-    if (loginSucceeded){
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"iNaturalist" }];
-        isLoginCompleted = YES;
-        [[NSUserDefaults standardUserDefaults]
-         setValue:INatAccessToken
-         forKey:INatTokenPrefKey];
-        INaturalistAppDelegate *app = [[UIApplication sharedApplication] delegate];
-        [RKClient.sharedClient setValue:INatAccessToken forHTTPHeaderField:@"Authorization"];
-        [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
-        [app.photoObjectManager.client setValue:INatAccessToken forHTTPHeaderField:@"Authorization"];
-        [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
-        [self removeOAuth2Observers];
-        [[RKClient sharedClient] get:@"/users/edit.json" delegate:self];
-    }
-    else [self failedLogin];
-}
-
--(void) removeOAuth2Observers{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NXOAuth2AccountStoreAccountsDidChangeNotification object:[NXOAuth2AccountStore sharedStore]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NXOAuth2AccountStoreDidFailToRequestAccessNotification object:[NXOAuth2AccountStore sharedStore]];
+    return YES;
 }
 
 @end

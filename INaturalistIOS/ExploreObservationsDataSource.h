@@ -47,6 +47,7 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 
 @property NSOrderedSet *observations;
 @property (readonly) NSArray *mappableObservations;
+@property (readonly) NSArray *observationsWithPhotos;
 @property NSArray *activeSearchPredicates;
 @property ExploreRegion *limitingRegion;
 

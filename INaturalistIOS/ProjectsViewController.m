@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
 #import "ProjectListViewController.h"
@@ -14,27 +15,24 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "LoginController.h"
+#import "UIImage+INaturalist.h"
+#import "ProjectTableViewCell.h"
+#import "UIColor+INaturalist.h"
+#import "NSURL+INaturalist.h"
 
-static const int ProjectCellImageTag = 1;
-static const int ProjectCellTitleTag = 2;
-static const int ListControlIndexUser = 0;
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
+@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
+@end
+
 @implementation ProjectsViewController
-@synthesize projects = _projects;
-@synthesize loader = _loader;
-@synthesize projectUsersSyncedAt = _lastSyncedAt;
-@synthesize featuredProjectsSyncedAt = _featuredProjectsSyncedAt;
-@synthesize nearbyProjectsSyncedAt = _nearbyProjectsSyncedAt;
-@synthesize noContentLabel = _noContentLabel;
-@synthesize projectsSearchController = _projectsSearchController;
-@synthesize listControl = _listControl;
-@synthesize listControlItem = _listControlItem;
-@synthesize locationManager = _locationManager;
-@synthesize lastLocation = _lastLocation;
-@synthesize syncButton = _syncButton;
-@synthesize syncActivityItem = _syncActivityItem;
+
+#pragma mark - load* methods are loading locally from core data
 
 - (void)loadData
 {
@@ -54,60 +52,57 @@ static const int ListControlIndexNearby = 2;
             break;
     }
     [self checkEmpty];
-    [self.tableView reloadData];
     
     if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [self sync];
     }
 }
 
-- (void)loadUserProjects
-{
+- (void)loadUserProjects {
     NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
-    self.projects = [NSMutableArray arrayWithArray:[projectUsers valueForKey:@"project"]];
+    // be defensive
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
+    self.projects = [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
+    [self.tableView reloadData];
 }
 
-- (void)loadFeaturedProjects
-{
-    self.projects = [NSMutableArray arrayWithArray:[Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]]];
+- (void)loadFeaturedProjects {
+    self.projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
+    [self.tableView reloadData];
 }
 
-- (void)loadNearbyProjects
-{
+- (void)loadNearbyProjects {
+    // get all projects with a location
     NSFetchRequest *request = [Project fetchRequest];
     request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
     request.fetchLimit = 500;
-    NSArray *projects = [Project objectsWithFetchRequest:request];
-    self.projects = [NSMutableArray arrayWithArray:[projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
-        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue 
+    NSArray *projectsWithLocations = [Project objectsWithFetchRequest:request];
+    
+    // anything less than 310 miles away is "nearby"
+    NSPredicate *nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
+                                                     longitude:p.longitude.doubleValue];
+        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
+        return d.doubleValue < 500000; // meters
+    }];
+    NSArray *nearbyProjects = [projectsWithLocations filteredArrayUsingPredicate:nearbyPredicate];
+    
+    // sort nearby projects by how near they are (self.lastLocation)
+    NSComparator nearnessComparator = ^NSComparisonResult(Project *p1, Project *p2) {
+        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
                                                             longitude:p1.longitude.doubleValue];
-        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue 
+        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
                                                             longitude:p2.longitude.doubleValue];
         NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
         NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
         return [p1Distance compare:p2Distance];
-    }]];
-    [self.projects filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue 
-                                                     longitude:p.longitude.doubleValue];
-        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
-        return d.doubleValue < 500000; // meters
-    }]];
-}
+    };
+    NSArray *projectsSortedByNearness = [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
 
-- (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
-                                                    delegate:self 
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-        return;
-    }
-    [self sync];
+    self.projects = projectsSortedByNearness;
+    [self.tableView reloadData];
 }
 
 - (void)checkEmpty
@@ -143,6 +138,21 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
+#pragma mark - sync* methods are fetching from inaturalist.org
+
+- (IBAction)clickedSync:(id)sender {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
+                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+        return;
+    }
+    [self sync];
+}
+
 - (void)sync
 {
     self.navigationItem.rightBarButtonItem = self.syncActivityItem;
@@ -159,20 +169,16 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
-- (void)syncFeaturedProjects
-{
+- (void)syncFeaturedProjects {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Project mapping] 
-                                                      delegate:self];
+    NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
+    
     self.featuredProjectsSyncedAt = [NSDate date];
+    [self syncProjectsWithPath:path];
 }
 
-- (void)syncNearbyProjects
-{
-    self.nearbyProjectsSyncedAt = [NSDate date];
+- (void)syncNearbyProjects {
     if (!self.lastLocation) {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
                                                      message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
@@ -180,46 +186,97 @@ static const int ListControlIndexNearby = 2;
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-        [self stopSync];
+        [self syncFinished];
         return;
     }
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
-                    self.lastLocation.coordinate.latitude,
-                    self.lastLocation.coordinate.longitude,
-                    language,
-                    countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Project mapping] 
-                                                      delegate:self];
+    NSString *language = [[NSLocale preferredLanguages] firstObject];
+    NSString *path = [NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
+                      self.lastLocation.coordinate.latitude,
+                      self.lastLocation.coordinate.longitude,
+                      language,
+                      countryCode];
+    
+    self.nearbyProjectsSyncedAt = [NSDate date];
+    [self syncProjectsWithPath:path];
 }
 
-- (void)syncUserProjects
-{
+- (void)syncUserProjects {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                    username,
-                    language,
-                    countryCode];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[ProjectUser mapping]
-                                                          delegate:self];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] firstObject];
+        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                          username,
+                          language,
+                          countryCode];
+        
+        self.projectUsersSyncedAt = [NSDate date];
+        [self syncProjectsWithPath:path];
     } else {
-        [self stopSync];
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        [self syncFinished];
+        self.projectUsersSyncedAt = nil;
+
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects" }];
+
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.reason = NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.");
+        splash.skippable = NO;
+        splash.cancellable = YES;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     }
-    self.projectUsersSyncedAt = [NSDate date];
 }
 
-- (void)stopSync
+- (void)syncProjectsWithPath:(NSString *)path {
+    
+    RKObjectMapping *mapping = nil;
+    if ([path rangeOfString:@"projects/user"].location != NSNotFound) {
+        mapping = [ProjectUser mapping];
+    } else {
+        mapping = [Project mapping];
+    }
+    
+    [[Analytics sharedClient] debugLog:@"Network - Load projects"];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        loader.objectMapping = mapping;
+                                                        loader.delegate = self;
+                                                    }];
+    
+}
+
+- (void)showSignupPrompt {
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
+                                                      object:self
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                      strongSelf.projectUsersSyncedAt = nil;
+                                                      [weakSelf sync];
+                                                  }];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Projects" }];
+
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.cancellable = YES;
+    svc.skippable = NO;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.tabBarController presentViewController:nav
+                                        animated:YES
+                                      completion:nil];
+}
+
+
+- (void)syncFinished
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
 }
 
 - (UIBarButtonItem *)listControlItem
@@ -233,12 +290,14 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"Joined",nil), NSLocalizedString(@"Featured",nil), NSLocalizedString(@"Nearby",nil), nil]];
-        _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        _listControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                   NSLocalizedString(@"Joined",nil),
+                                                                   NSLocalizedString(@"Featured",nil),
+                                                                   NSLocalizedString(@"Nearby",nil)
+                                                                   ]];
+        _listControl.tintColor = [UIColor inatTint];
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        //NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+        NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
         
         [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
@@ -250,35 +309,47 @@ static const int ListControlIndexNearby = 2;
 {
     if (!_syncActivityItem) {
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
+        aiv.color = [UIColor inatTint];
         [aiv startAnimating];
         _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
     }
     return _syncActivityItem;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+
+#pragma mark - View lifecycle
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectListViewController *vc = [segue destinationViewController];
-        if ([sender isKindOfClass:Project.class]) {
-            [vc setProject:sender];
-        } else {
-            Project *p = [self.projects 
-                          objectAtIndex:[[self.tableView 
-                                          indexPathForSelectedRow] row]];
-            [vc setProject:p];
-        }
-    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        vc.delegate = self;
+        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
     }
 }
 
-#pragma mark - View lifecycle
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
+            [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *briefcaseFilled = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [briefcaseFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
     if (!self.projectsSearchController) {
         self.projectsSearchController = [[ProjectsSearchController alloc] 
@@ -292,10 +363,20 @@ static const int ListControlIndexNearby = 2;
         self.locationManager.delegate = self;
         self.locationManager.distanceFilter = 1000;
     }
+    
+    // try to sync "featured" projects automatically
+    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
+        self.navigationItem.rightBarButtonItem = self.syncActivityItem;
+        [self syncFeaturedProjects];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];
@@ -306,15 +387,13 @@ static const int ListControlIndexNearby = 2;
                            flex, 
                            nil]];
     
-    if (self.locationManager) {
-        [self.locationManager startUpdatingLocation];
-    }
-    [self loadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopSync];
+    [super viewWillDisappear:animated];
+    
+    [self syncFinished];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -329,14 +408,23 @@ static const int ListControlIndexNearby = 2;
         ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenProjects]) {
         
         TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial6en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"About Projects", @"Title for projects tutorial screen");
+        vc.tutorialImage = [UIImage imageNamed:@"tutorial_projects"];
+        vc.tutorialTitle = NSLocalizedString(@"Projects are collections of observations with a common purpose", @"Title for projects tutorial screen");
+        vc.tutorialSubtitleOne = NSLocalizedString(@"Join projects to select them when you record observations", @"Subtitle above image for projects tutorial screen");
+        NSString *tutorialSubtitleTwoBase = NSLocalizedString(@"Visit %@ to create your own projects",
+                                                              @"Subtitle below image for projects tutorial screen. The string is the URL for iNat (or partner site)");
+        vc.tutorialSubtitleTwo = [NSString stringWithFormat:tutorialSubtitleTwoBase, [NSURL inat_baseURL]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self presentViewController:vc animated:YES completion:nil];
         });
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenProjects];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
+    if (self.locationManager) {
+        [self.locationManager startUpdatingLocation];
+    }
+    [self loadData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -350,6 +438,10 @@ static const int ListControlIndexNearby = 2;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -361,36 +453,53 @@ static const int ListControlIndexNearby = 2;
 {
     static NSString *CellIdentifier = @"ProjectCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[ProjectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
-    title.text = p.title;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+    cell.titleLabel.text = p.title;
+    [cell.projectImage sd_cancelCurrentImageLoad];
+    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self performSegueWithIdentifier:@"ProjectListSegue" sender:self];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Project *selectedProject = nil;
+    
+    // be defensive
+    @try {
+        selectedProject = [self.projects objectAtIndex:indexPath.item];
+    }
+    @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSRangeException])
+            selectedProject = nil;
+        else
+            @throw exception;
+    }
+    
+    if (selectedProject && [selectedProject isKindOfClass:[Project class]])
+        [self performSegueWithIdentifier:@"ProjectListSegue" sender:selectedProject];
 }
 
-#pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
+#pragma mark - CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
+    self.lastLocation = newLocation;
+}
+
+#pragma mark - RKRequest and RKObjectLoader delegates
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
     }
     
-    if ([objectLoader.resourcePath rangeOfString:@"featured"].location != NSNotFound) {
+    if ([objectLoader.URL.path rangeOfString:@"featured"].location != NSNotFound) {
         NSArray *rejects = [Project objectsWithPredicate:
                             [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
         for (Project *p in rejects) {
@@ -401,7 +510,7 @@ static const int ListControlIndexNearby = 2;
                 p.syncedAt = now;
             }
         }
-    } else if ([objectLoader.resourcePath rangeOfString:@"projects/user"].location != NSNotFound) {
+    } else if ([objectLoader.URL.path rangeOfString:@"projects/user"].location != NSNotFound) {
         NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
         for (ProjectUser *pu in rejects) {
             [pu deleteEntity];
@@ -410,61 +519,65 @@ static const int ListControlIndexNearby = 2;
     
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
+        [[Analytics sharedClient] debugLog:logMsg];
+    }
     
-    [self stopSync];
+    [self syncFinished];
     [self loadData];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // was running into a bug in release build config where the object loader was 
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
+    [self syncFinished];
     
-    [self stopSync];
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-        // Unauthorized
-        case 401:
-            authFailure = true;
-        // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
+    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    NSString *errorMsg = error.localizedDescription;
     
     if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        [self showSignupPrompt];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                    delegate:self 
+                                                    delegate:nil
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
     }
 }
 
-#pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    self.projectUsersSyncedAt = nil;
-    [self sync];
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    bool authFailure = false;
+    NSString *errorMsg;
+    switch (response.statusCode) {
+        case 401:
+            // Unauthorized
+            authFailure = true;
+            break;
+        case 422:
+            // UNPROCESSABLE ENTITY
+            
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+            break;
+        default:
+            return;
+            break;
+    }
+    
+    if (authFailure) {
+        [self syncFinished];
+        [self showSignupPrompt];
+    } else if (errorMsg) {
+        [self syncFinished];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
 }
 
-#pragma mark - CLLocationManagerDelegate
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
-    self.lastLocation = newLocation;
-}
-
-- (void)viewDidUnload {
-    [self setSyncButton:nil];
-    [super viewDidUnload];
-}
 @end

@@ -9,39 +9,14 @@
 #import "TKCoverflowCoverView+INaturalist.h"
 
 @implementation TKCoverflowCoverView (INaturalist)
-- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletedBlock)completedBlock
+
+- (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completion
 {
-    TKCoverflowCoverView *boundCover = self;
-    [imageView setImageWithURL:url
-                    placeholderImage:placeholder
-                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                               if (!error) {
-                                   [boundCover setRemotelyLoadedImage:image];
-                               }
-                               completedBlock(image, error, cacheType);
-                           }];
+    [self.imageView sd_setImageWithURL:url
+                      placeholderImage:placeholder
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 completion(image, error, cacheType, imageURL);
+                             }];
 }
 
-- (void)setRemotelyLoadedImage:(UIImage *)img
-{
-    UIImage *image = img;
-	
-	float w = image.size.width;
-	float h = image.size.height;
-	float factor = self.bounds.size.width / (h>w?h:w);
-	h = factor * h;
-	w = factor * w;
-    float x = (imageView.frame.size.width - w) / 2; // this is the key difference, not sure why they use the overall frame in the original
-	float y = baseline - h > 0 ? baseline - h : 0;
-	imageView.frame = CGRectMake(x, y, w, h);
-	imageView.image = image;
-	gradientLayer.frame = CGRectMake(x, y + h, w, h);
-	reflected.frame = CGRectMake(x, y + h, w, h);
-	reflected.image = image;
-}
-
-- (void)setIsReflected:(bool)isReflected
-{
-    [reflected setHidden:!isReflected];
-}
 @end

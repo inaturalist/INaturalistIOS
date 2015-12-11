@@ -6,7 +6,10 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "INaturalistAppDelegate.h"
 #import "List.h"
@@ -24,17 +27,27 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "User.h"
-#import <Three20/Three20.h>
-#import <FacebookSDK/FacebookSDK.h>
 #import "GPPURLHandler.h"
 #import "NXOAuth2.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "LoginController.h"
+#import "INatUITabBarController.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "NSURL+INaturalist.h"
+#import "DeletedRecord.h"
+
+@interface INaturalistAppDelegate () {
+    NSManagedObjectModel *managedObjectModel;
+    RKManagedObjectStore *_inatObjectStore;
+}
+
+@property (readonly) RKManagedObjectStore *inatObjectStore;
+
+@end
 
 @implementation INaturalistAppDelegate
-
-@synthesize window = _window;
-@synthesize photoObjectManager = _photoObjectManager;
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
@@ -46,51 +59,165 @@
                                                                         annotation:annotation]);
 }
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self setupAnalytics];
+    
+    // we need a login controller to handle google auth, can't do this in the background
+    self.loginController = [[LoginController alloc] init];
+
+    [self showLoadingScreen];
+    
+    [self configureApplicationInBackground];
+    
+    return YES;
+}
+
+- (void)setupAnalytics {
     // setup analytics
     [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];
     
     // log all page views for the tab bar controller
     [[Analytics sharedClient] logAllPageViewForTarget:self.window.rootViewController];
+}
 
-    // Override point for customization after application launch.
-    [self configureRestKit];
-    [self configureThree20];
-    [self configureOAuth2Client];
+- (void)showLoadingScreen {
+    UIViewController *loadingVC = [[UIViewController alloc] initWithNibName:nil bundle:nil];
     
+    UIImageView *launchImageView = ({
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
+        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        iv.contentMode = UIViewContentModeScaleAspectFill;
+        iv.image = [UIImage imageNamed:@"Launch_Screen_4s_launch_screen_6plus.png"];
+        
+        iv;
+    });
+    [loadingVC.view addSubview:launchImageView];
+    
+    UIActivityIndicatorView *spinner = ({
+        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        
+        view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
+        [view startAnimating];
+        
+        view;
+    });
+    [loadingVC.view addSubview:spinner];
+    
+    [self.window setRootViewController:loadingVC];
+}
+
+- (void)configureApplicationInBackground {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        [self configureGlobalStyles];
+        
+        [self configureRestKit];
+        [self configureOAuth2Client];
+        
+        if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+                
+                User *me = self.loginController.fetchMe;
+                [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
+            });
+        }
+    });
+}
+
+
+- (void)configureGlobalStyles {
     // set global styles
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        
         [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
+        
+        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+        
+        // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
+                                                             forState:UIControlStateSelected];
+        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
+                                                             forState:UIControlStateNormal];
+        
         [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
         [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
         [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
         [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
     }
-    
-    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
-    // tiny bit offwhite, so it stands up with or without the gradient mask
-    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:.95 green:.97 blue:.96 alpha:1.0]];
+        
+    [JDStatusBarNotification setDefaultStyle:^JDStatusBarStyle *(JDStatusBarStyle *style) {
+        style.barColor = [UIColor colorWithHexString:@"#969696"];
+        style.textColor = [UIColor whiteColor];
+        return style;
+    }];
+}
 
-    return YES;
+- (void)reconfigureForNewBaseUrl {
+    [self configureRestKit];
+}
+
+- (RKManagedObjectStore *)inatObjectStore {
+    if (!_inatObjectStore) {
+        _inatObjectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"
+                                                        usingSeedDatabaseName:nil
+                                                           managedObjectModel:[self getManagedObjectModel]
+                                                                     delegate:self];
+    }
+    
+    return _inatObjectStore;
+}
+
+- (void)rebuildCoreData {
+    /*
+     // this causes restkit/core data to descend into a nightmarish unstability
+    RKManagedObjectStore *objectStore = [[RKObjectManager sharedManager] objectStore];
+    [objectStore deletePersistentStore];
+    [objectStore save:nil];
+     */
+    
+    [Comment deleteAll];
+    [Identification deleteAll];
+    [User deleteAll];
+    [Observation deleteAll];
+    [ObservationPhoto deleteAll];
+    [ProjectUser deleteAll];
+    [ProjectObservation deleteAll];
+    [ObservationFieldValue deleteAll];
+    [User deleteAll];
+    
+    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
+        [dr deleteEntity];
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kInatCoreDataRebuiltNotification
+                                                        object:nil];
 }
 
 - (void)configureRestKit
 {
-    RKObjectManager* manager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatBaseURL]];
-    manager.objectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite" 
-                                                       usingSeedDatabaseName:nil 
-                                                          managedObjectModel:[self getManagedObjectModel] 
-                                                                    delegate:self];
+    RKObjectManager *manager = [RKObjectManager objectManagerWithBaseURL:[NSURL inat_baseURL]];
+    manager.objectStore = [self inatObjectStore];
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //[RKClient.sharedClient setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    //[RKClient.sharedClient setPassword:[defaults objectForKey:INatPasswordPrefKey]];
-    [RKClient.sharedClient setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
-    [RKClient.sharedClient setAuthenticationType: RKRequestAuthenticationTypeNone];
+    //[manager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
+    //[manager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
+    [manager.client setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
+    [manager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
     
     // User Agent
     UIDevice *d = [UIDevice currentDevice];
@@ -100,7 +227,7 @@
                            d.systemName, 
                            d.systemVersion, 
                            d.model];
-    [RKClient.sharedClient setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    [manager.client setValue:userAgent forHTTPHeaderField:@"User-Agent"];
     NSDictionary *userAgentDict = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:userAgentDict];
     
@@ -145,7 +272,7 @@
     dateFormatter.locale = [NSLocale currentLocale];
     [RKObjectMapping addDefaultDateFormatter:dateFormatter];
     
-    [[[RKObjectManager sharedManager] client] requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
+    [manager.client requestQueue].showsNetworkActivityIndicatorWhenBusy = YES;
     
     // DEBUG
 //        RKLogConfigureByName("RestKit", RKLogLevelWarning);
@@ -154,11 +281,11 @@
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];
-    
+    [RKClient setSharedClient:manager.client];
     
     // setup photo object manager
     self.photoObjectManager = [RKObjectManager objectManagerWithBaseURL:[NSURL URLWithString:INatMediaBaseURL]];
-    self.photoObjectManager.objectStore = [manager objectStore];
+    self.photoObjectManager.objectStore = [self inatObjectStore];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class 
                                 toResourcePath:@"/observation_photos/:recordID\\.json"];
     [self.photoObjectManager.router routeClass:ObservationPhoto.class
@@ -214,13 +341,6 @@
     return managedObjectModel;
 }
 
-- (void)configureThree20
-{
-    [[TTURLRequestQueue mainQueue] setMaxContentLength:0];
-    TTNavigator* navigator = [TTNavigator navigator];
-    navigator.window = self.window;
-}
-
 -(void) configureOAuth2Client{
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {
@@ -228,11 +348,12 @@
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     };
     //
-    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code",INatBaseURL,INatClientID ]];
+    NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code", [NSURL inat_baseURLForAuthentication], INatClientID ]];
     [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
                                              secret:INatClientSecret
                                    authorizationURL:authorizationURL
-                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/token", INatBaseURL]]
+                                           tokenURL:[NSURL URLWithString:@"/oauth/token"
+                                                           relativeToURL:[NSURL inat_baseURLForAuthentication]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthService];
     
@@ -243,18 +364,55 @@
     [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
                                              secret:INatClientSecret
                                    authorizationURL:authorizationURL
-                                           tokenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/assertion_token.json", INatBaseURL]]
+                                           tokenURL:[NSURL URLWithString:@"/oauth/assertion_token.json"
+                                                           relativeToURL:[NSURL inat_baseURLForAuthentication]]
                                         redirectURL:[NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"]
                                      forAccountType:kINatAuthServiceExtToken];
 }
 
-- (BOOL)loggedIn
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    //return (username && username.length > 0);
-    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
-    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+- (BOOL)loggedIn {
+    return self.loginController.isLoggedIn;
 }
 
+- (void)showMainUI {
+    if (![self.window.rootViewController isKindOfClass:[INatUITabBarController class]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIView *priorSnapshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            UIViewController *mainVC = [storyboard instantiateInitialViewController];
+            
+            [mainVC.view addSubview:priorSnapshot];
+            self.window.rootViewController = mainVC;
+            
+            [UIView animateWithDuration:0.65f
+                             animations:^{
+                                 priorSnapshot.alpha = 0.0f;
+                             } completion:^(BOOL finished) {
+                                 [priorSnapshot removeFromSuperview];
+                             }];
+        });
+    }
+}
+
+- (void)showInitialSignupUI {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"App Launch" }];
+    
+    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    splash.skippable = YES;
+    splash.cancellable = NO;
+    splash.animateIn = YES;
+    splash.skipAction = ^{
+        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+    };
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+    nav.delegate = self;
+    [self.window setRootViewController:nav];
+}
+
+
+
 @end
+
+NSString *kInatCoreDataRebuiltNotification = @"kInatCoreDataRebuiltNotification";

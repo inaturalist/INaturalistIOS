@@ -6,10 +6,17 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
+#import <JDFTooltips/JDFTooltips.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import "GPPSignIn.h"
+#import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "SettingsViewController.h"
-#import "LoginViewController.h"
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "ProjectUser.h"
@@ -18,18 +25,48 @@
 #import "Identification.h"
 #import "User.h"
 #import "DeletedRecord.h"
-#import "TutorialViewController.h"
 #import "INatUITabBarController.h"
 #import "GTMOAuth2Authentication.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "PartnerController.h"
+#import "Partner.h"
+#import "LoginController.h"
+#import "UploadManager.h"
+
+static const int CreditsSection = 3;
 
 static const int UsernameCellTag = 0;
 static const int AccountActionCellTag = 1;
 static const int TutorialActionCellTag = 2;
 static const int ContactActionCellTag = 3;
 static const int RateUsCellTag = 4;
-static const int VersionCellTag = 4;
+static const int VersionCellTag = 5;
+
+static const int NetworkDetailLabelTag = 14;
+static const int NetworkTextLabelTag = 15;
+static const int UsernameDetailLabelTag = 16;
+static const int UsernameTextLabelTag = 17;
+static const int AutomaticallyUploadLabelTag = 18;
+
+// labels for settings switcher rows are 50 + row index
+static const int AutocompleteNamesLabelTag = 50;
+static const int AutouploadLabelTag = 51;
+
+// setting switchers are 100 + row index
+static const int AutocompleteNamesSwitchTag = 100;
+static const int AutouploadSwitchTag = 101;
+
+@interface SettingsViewController () <UIActionSheetDelegate> {
+    UITapGestureRecognizer *tapAway;
+    JDFTooltipView *tooltip;
+    UIActionSheet *changeNetworkActionSheet;
+}
+@property PartnerController *partnerController;
+@end
 
 @implementation SettingsViewController
 
@@ -41,22 +78,22 @@ static const int VersionCellTag = 4;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
-    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
-    UITableViewCell *creditsCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
     usernameCell.tag = UsernameCellTag;
     accountActionCell.tag = AccountActionCellTag;
     tutorialActionCell.tag = TutorialActionCellTag;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
-    creditsCell.backgroundView = nil;
+    
+    UILabel *usernameDetailTextLabel = (UILabel *)[usernameCell viewWithTag:UsernameDetailLabelTag];
     
     if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
+        usernameDetailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
     } else {
-        usernameCell.detailTextLabel.text = NSLocalizedString(@"Unknown",nil);
+        usernameDetailTextLabel.text = NSLocalizedString(@"Unknown",nil);
         accountActionCell.textLabel.text = NSLocalizedString(@"Sign in",nil);
     }
     
@@ -66,15 +103,6 @@ static const int VersionCellTag = 4;
                         [info objectForKey:@"CFBundleVersion"]];
     
     [self.tableView reloadData];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    NSLog(@"%@ %@ %@",segue, segue.identifier , [segue identifier]);
-    if ([segue.identifier compare: @"SignInFromSettingsSegue"] == NSOrderedSame) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        [vc setDelegate:self];
-    }
 }
 
 - (void)clickedSignOut
@@ -89,53 +117,87 @@ static const int VersionCellTag = 4;
 
 - (void)signOut
 {
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Signing out...",nil)];
-    for (UIViewController *vc in self.tabBarController.viewControllers) {
-        if ([vc isKindOfClass:UINavigationController.class]) {
-            [(UINavigationController *)vc popToRootViewControllerAnimated:NO];
-        }
-    }
-	[Comment deleteAll];
-	[Identification deleteAll];
-	[User deleteAll];
-    [Observation deleteAll];
-	[ObservationPhoto deleteAll];
-    [ProjectUser deleteAll];
-    [ProjectObservation deleteAll]; 
-    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
-         [dr deleteEntity];
-    }
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    [[Analytics sharedClient] event:kAnalyticsEventLogout];
+    
+    [[[RKClient sharedClient] requestQueue] cancelAllRequests];
+
     [self localSignOut];
-    [SVProgressHUD showSuccessWithStatus:nil];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate rebuildCoreData];
 }
 
 - (void)localSignOut
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    // clear g+
     if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
+
+    // clear preference cached signin info & preferences
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:INatUsernamePrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults synchronize];
+    [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // clear cached RKClient authentication details
     [RKClient.sharedClient setUsername:nil];
     [RKClient.sharedClient setPassword:nil];
+    [RKClient.sharedClient setValue:nil forHTTPHeaderField:@"Authorization"];
+    
+    // since we've removed any custom base URL, reconfigure RestKit again
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate reconfigureForNewBaseUrl];
+    
+    // remove OAuth account stuff
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
-    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:kINatAuthService]) {
+    for (NXOAuth2Account *account in sharedStore.accounts) {
         [sharedStore removeAccount:account];
     }
+    
+    // update UI
     [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
     [self initUI];
 }
 
 - (void)launchTutorial
 {
-    TutorialViewController *vc = [[TutorialViewController alloc] initWithDefaultTutorial];
-    UINavigationController *modalNavController = [[UINavigationController alloc]
-                                                  initWithRootViewController:vc];
-    [self presentViewController:modalNavController animated:YES completion:nil];
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTutorial];
+    
+    NSArray *tutorialImages = @[
+                                [UIImage imageNamed:@"tutorial1"],
+                                [UIImage imageNamed:@"tutorial2"],
+                                [UIImage imageNamed:@"tutorial3"],
+                                [UIImage imageNamed:@"tutorial4"],
+                                [UIImage imageNamed:@"tutorial5"],
+                                [UIImage imageNamed:@"tutorial6"],
+                                [UIImage imageNamed:@"tutorial7"],
+                                ];
+    
+    NSArray *galleryData = [tutorialImages bk_map:^id(UIImage *image) {
+        return [MHGalleryItem itemWithImage:image];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = YES;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = 0;
+    gallery.UICustomization = customization;
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTutorial];
+            [blockGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
 }
 
 - (void)sendSupportEmail
@@ -163,6 +225,25 @@ static const int VersionCellTag = 4;
 #endif
 }
 
+- (void)launchCredits {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateAcknowledgements];
+    
+    VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
+    
+    NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@",
+                         NSLocalizedString(@"Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life. ", @"funding thank yous"),
+                         NSLocalizedString(@"iNaturalist is made by every single person who participates in our community. The people who build the software, maintain our infrastructure, and foster collaborations are Joelle Belmonte, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
+                         NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain, ionicons by Ben Sperry, and icons by Luis Prado and Roman Shlyakov from the Noun Project. iNaturalist is also deeply grateful to the Cocoapods community, and to the contributions of our own open source community. See https://github.com/inaturalist/INaturalistIOS.", @"open source contributions"),
+                         NSLocalizedString(@"We are grateful for the translation assistance provided by the following members of the crowdin.com community: Carlos Alonso, Gabriel Fabiano Benzoni, cgalindo, Claudine Cyr, eldadzz, jacquesboivin, harum koh, Angelo Loula, myerssusan, nagatowell, natleclaire, James Page, Juliana Gatti Pereira, sgravel8596, sudachi, T.O, testamorta, tiwamura, vilseskog, and vonmatter. To join the iNaturalist iOS translation team, please visit https://crowdin.com/project/inaturalistios.", @"inat ios translation team, alphabetically"),
+                         @"IUCN category II places provided by IUCN and UNEP-WCMC (2015), The World Database on Protected Areas (WDPA) [On-line], [11/2014], Cambridge, UK: UNEP-WCMC. Available at: www.protectedplanet.net."];
+
+    creditsVC.headerText = credits;
+    UILabel *label = creditsVC.tableView.tableHeaderView.subviews.firstObject;
+    label.textAlignment = NSTextAlignmentLeft;
+    
+    [self.navigationController pushViewController:creditsVC animated:YES];
+}
+
 - (void)networkUnreachableAlert
 {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
@@ -174,10 +255,31 @@ static const int VersionCellTag = 4;
 }
 
 #pragma mark - lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(initUI)
+                                                 name:kUserLoggedInNotificationName
+                                               object:nil];
+
+    self.partnerController = [[PartnerController alloc] init];
+    
+    self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self initUI];
+    
+    // don't show a toolbar in Settings
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -190,19 +292,255 @@ static const int VersionCellTag = 4;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
 }
 
+- (void)selectedPartner:(Partner *)partner {
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [appDelegate.loginController loggedInUserSelectedPartner:partner
+                                                  completion:^{
+                                                      [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeCompleted];
+                                                      [weakSelf.tableView reloadData];
+                                                  }];
+}
+
+#pragma mark - UISwitch target
+
+- (void)settingSwitched:(UISwitch *)switcher {
+    NSString *key;
+    
+    if (switcher.tag == AutocompleteNamesSwitchTag)
+        key = kINatAutocompleteNamesPrefKey;
+    else if (switcher.tag == AutouploadSwitchTag)
+        key = kInatAutouploadPrefKey;
+    
+    if (key) {
+        NSString *analyticsEvent;
+        
+        if (switcher.isOn) {
+            analyticsEvent = kAnalyticsEventSettingEnabled;
+        } else {
+            analyticsEvent = kAnalyticsEventSettingDisabled;
+        }
+        
+        [[Analytics sharedClient] event:analyticsEvent
+                         withProperties:@{ @"setting": key }];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        if ([key isEqualToString:kInatAutouploadPrefKey]) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+            if (switcher.isOn) {
+                // start autouploading right away
+                if ([uploadManager shouldAutoupload]) {
+                    if (uploadManager.isNetworkAvailableForUpload) {
+                        [uploadManager autouploadPendingContent];
+                    } else {
+                        if (uploadManager.shouldNotifyAboutNetworkState) {
+                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                       dismissAfter:4];
+                        }
+                    }
+                }
+            } else {
+                // cancel autoupload if it's currently running
+                if (uploadManager.isUploading) {
+                    [uploadManager cancelSyncsAndUploads];
+                }
+            }
+        }
+    }
+}
+
 #pragma mark - UITableView
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 3 && indexPath.row == 0) {
+    if (indexPath.section == 4 && indexPath.row == 0) {
         cell.textLabel.text = self.versionText;
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.backgroundView = nil;
         cell.tag = VersionCellTag;
+        
+    }
+    else if (indexPath.section == 0 && indexPath.row == 0) {
+        // Set the alignment for username.
+//        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+        [self setupConstraintsForUsernameCell:cell];
+    }
+    else if (indexPath.section == 1) {
+        cell.userInteractionEnabled = YES;
+
+        if (indexPath.item < 2) {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
+            if (autoNameLabel) {
+                autoNameLabel.textAlignment = NSTextAlignmentNatural;
+            }
+            UILabel *autouploadLabel = (UILabel *)[cell.contentView viewWithTag:AutouploadLabelTag];
+            if (autouploadLabel) {
+                autouploadLabel.textAlignment = NSTextAlignmentNatural;
+            }
+            
+            UISwitch *switcher;
+            if (![cell viewWithTag:100 + indexPath.item]) {
+                
+                switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                switcher.translatesAutoresizingMaskIntoConstraints = NO;
+                switcher.tag = 100 + indexPath.item;
+                switcher.enabled = YES;
+                [switcher addTarget:self
+                             action:@selector(settingSwitched:)
+                   forControlEvents:UIControlEventValueChanged];
+                
+                [cell.contentView addSubview:switcher];
+                
+                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
+                                                                             options:0
+                                                                             metrics:0
+                                                                               views:@{ @"switcher": switcher }]];
+                [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:cell.contentView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                multiplier:1.0f
+                                                                  constant:0.0f]];
+            } else {
+                switcher = (UISwitch *)[cell viewWithTag:100 + indexPath.item];
+            }
+            
+            if (switcher.tag == AutocompleteNamesSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+            else if (switcher.tag == AutouploadSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
+
+        } else {
+            // iNaturalist Network setting
+            
+            // main text in black
+            cell.textLabel.enabled = YES;
+            
+            // put user object changing site id
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            User *me = [appDelegate.loginController fetchMe];
+            UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
+            [self setupConstraintsForNetworkCell:cell];
+            if (me) {
+                Partner *p = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+                detailTextLabel.text = p.name;
+            } else {
+                detailTextLabel.text = @"iNaturalist";
+            }
+            
+        }
+    }
+    else if (indexPath.section == 2) {  // Handles help section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
+    else if (indexPath.section == 3) {  // Handles Acknowledgements section
+        cell.textLabel.textAlignment = NSTextAlignmentNatural;
+    }
+}
+
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if ([actionSheet isEqual:changeNetworkActionSheet]) {
+        if (buttonIndex == 0) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            User *me = [appDelegate.loginController fetchMe];
+            if (!me) { return; }
+            
+            NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
+                return p.name;
+            }];
+            
+            Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+            
+            __weak typeof(self) weakSelf = self;
+            [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
+                                                       rows:partnerNames
+                                           initialSelection:[partnerNames indexOfObject:currentPartner.name]
+                                                  doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                      // update base url
+                                                      Partner *p = strongSelf.partnerController.partners[selectedIndex];
+                                                      if (![p isEqual:currentPartner]) {
+                                                          [weakSelf selectedPartner:p];
+                                                      }
+                                                  }
+                                                cancelBlock:nil
+                                                     origin:self.view] showActionSheetPicker];
+        }
     }
 }
 
 #pragma mark - UITableViewDataSource
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.section == 1) {
+        if (indexPath.item == 2) {
+            // so the user can select again
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            
+            NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+            if (!username) {
+                [self presentSignup];
+            } else {
+                [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeBegan];
+                // show SERIOUS alert
+                NSString *alertMsg = NSLocalizedString(@"Changing your iNaturalist Network affiliation will alter some parts of the app, like what taxa appear in searches, but it will also allow the new network partner to view and download all of your data. Are you sure you want to do this?",
+                                                       @"alert msg before changing the network affiliation.");
+                NSString *cancelBtnMsg = NSLocalizedString(@"No, don't change my affiliation", @"cancel button before changing network affiliation.");
+                NSString *continueBtnMsg = NSLocalizedString(@"Yes, change my affiliation", @"continue button before changing network affiliation.");
+                
+                changeNetworkActionSheet = [[UIActionSheet alloc] initWithTitle:alertMsg
+                                                                       delegate:self
+                                                              cancelButtonTitle:cancelBtnMsg
+                                                         destructiveButtonTitle:nil
+                                                              otherButtonTitles:continueBtnMsg, nil];
+                [changeNetworkActionSheet showFromTabBar:self.tabBarController.tabBar];
+            }
+            
+            return;
+        }
+        // show popover
+        NSString *tooltipText;
+        if (indexPath.item == 0) {
+            // autocorrect
+            tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
+        } else if (indexPath.item == 1) {
+            // automatically upload
+            tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
+                                            @"tooltip text for automatically upload option.");
+        }
+        
+        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
+                                                    hostView:tableView
+                                                 tooltipText:tooltipText
+                                              arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                       width:200.0f
+                                         showCompletionBlock:^{
+                                             if (!tapAway) {
+                                                 tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                                                     [tooltip hideAnimated:YES];
+                                                 }];
+                                                 [self.view addGestureRecognizer:tapAway];
+                                             }
+                                             tapAway.enabled = YES;
+                                         } hideCompletionBlock:^{
+                                             tapAway.enabled = NO;
+                                         }];
+        [tooltip show];
+        
+        
+        return;
+    } else if (indexPath.section == CreditsSection) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self launchCredits];
+        return;
+    }
+    
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (cell.tag) {
@@ -211,7 +549,7 @@ static const int VersionCellTag = 4;
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                    [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
                 }
@@ -222,7 +560,7 @@ static const int VersionCellTag = 4;
                 [self clickedSignOut];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                    [self performSegueWithIdentifier:@"SignInFromSettingsSegue" sender:self];
+                    [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
                 }
@@ -243,6 +581,17 @@ static const int VersionCellTag = 4;
     }
 }
 
+- (void)presentSignup {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Settings" }];
+
+    SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    signup.cancellable = YES;
+    signup.skippable = NO;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self presentViewController:nav animated:YES completion:nil];
+}
 
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -254,14 +603,68 @@ static const int VersionCellTag = 4;
     }
 }
 
-#pragma mark - loginViewController Delegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controlle{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        usernameCell.detailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        [self.tableView reloadData];
+
+- (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{
+    if(!cell.constraints.count){
+        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
+        detailTextLabel.textAlignment = NSTextAlignmentNatural;
+        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UILabel *textLabel = (UILabel *)[cell viewWithTag:NetworkTextLabelTag];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textAlignment = NSTextAlignmentNatural;
+        
+        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[textLabel]-[detailTextLabel]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     }
 }
 
+- (void)setupConstraintsForUsernameCell:(UITableViewCell *)cell{
+    if(!cell.constraints.count){
+        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:UsernameDetailLabelTag];
+        detailTextLabel.textAlignment = NSTextAlignmentCenter;
+        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        UILabel *textLabel = (UILabel *)[cell viewWithTag:UsernameTextLabelTag];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:-8.0]];
+        
+        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 @end
+
+
+
+
+
+
+
+
+
+
+
+

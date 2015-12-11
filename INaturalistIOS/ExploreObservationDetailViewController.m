@@ -11,7 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <RestKit/RestKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
@@ -34,6 +34,9 @@
 #import "ExploreObservationsDataSource.h"
 #import "ExploreObservationsController.h"
 #import "ExploreObservationPhoto+BestAvailableURL.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "NSURL+INaturalist.h"
 
 @interface ExploreObservationDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, TaxaSearchViewControllerDelegate> {
     ExploreObservation *_observation;
@@ -63,8 +66,8 @@
         share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                target:self
                                                                                action:@selector(action)];
-        FAKIcon *tagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:30.0f];
-        FAKIcon *smallTagIcon = [FAKIonIcons ios7PricetagOutlineIconWithSize:25.0f];
+        FAKIcon *tagIcon = [FAKIonIcons iosPricetagOutlineIconWithSize:30.0f];
+        FAKIcon *smallTagIcon = [FAKIonIcons iosPricetagOutlineIconWithSize:25.0f];
         [tagIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
         UIBarButtonItem *tag = [[UIBarButtonItem alloc] initWithImage:[tagIcon imageWithSize:CGSizeMake(30, 30)]
                                                   landscapeImagePhone:[smallTagIcon imageWithSize:CGSizeMake(25, 25)]
@@ -83,7 +86,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.bounces = YES;
-    self.undoShakingEnabled = NO;
     self.keyboardPanningEnabled = YES;
     self.inverted = NO;
     
@@ -91,7 +93,8 @@
     [self.tableView registerClass:[ExploreIdentificationCell class] forCellReuseIdentifier:@"IdentificationCell"];
     [self.tableView registerClass:[ExploreCommentCell class] forCellReuseIdentifier:@"CommentCell"];
     
-    self.textView.placeholder = @"Add a comment";
+    self.textView.placeholder = NSLocalizedString(@"Add a comment", @"text placeholder");
+    self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -110,11 +113,16 @@
 
 - (void)showTaxonDetailsForTaxonId:(NSInteger)taxonId {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
     
     NSString *path = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId];
+    [[Analytics sharedClient] debugLog:@"Network - Load taxon details"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [Taxon mapping];
@@ -127,11 +135,19 @@
         };
         
         loader.onDidFailLoadWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                        message:err.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         };
         
         loader.onDidFailWithError = ^(NSError *err) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Couldn't load Taxon Details", nil)];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't load Taxon Details", nil)
+                                        message:err.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         };
     }];
     
@@ -152,11 +168,8 @@
 
 - (void)tag {
     if (![[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                    message:NSLocalizedString(@"No anonymous identifications!", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self showSignupWithReason:NSLocalizedString(@"You must be logged in to identify observations.",
+                                                     @"Reason for signup prompt when trying to add an ID in explore.")];
         return;
     }
     
@@ -171,11 +184,13 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (actionSheet == shareActionSheet) {
+        NSString *observationPath = [NSString stringWithFormat:@"/observations/%ld", (long)self.observation.observationId];
+        NSURL *observationURL = [[NSURL inat_baseURL] URLByAppendingPathComponent:observationPath];
+
         switch (buttonIndex) {
             case 0:
                 // open in safari
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld",
-                                                                                 (long)self.observation.observationId]]];
+                [[UIApplication sharedApplication] openURL:observationURL];
                 break;
             case 1:
                 // share
@@ -197,11 +212,8 @@
                                      withProperties:@{ @"Via": @"Agree" }];
                     [self addIdentificationWithTaxonId:selectedIdentification.identificationTaxonId];
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                                message:NSLocalizedString(@"No anonymous identifications!", nil)
-                                               delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                      otherButtonTitles:nil] show];
+                    [self showSignupWithReason:NSLocalizedString(@"You must be logged in to identify observations.",
+                                                                 @"Reason for signup prompt when trying to add an ID in explore.")];
                 }
                 break;
             default:
@@ -222,7 +234,8 @@
 #pragma mark - ActionSheet targets
 
 - (void)shareObservation:(ExploreObservation *)observation {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inaturalist.org/observations/%ld", (long)self.observation.observationId]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
+                                       INatWebBaseURL, (long)self.observation.observationId]];
     UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                            applicationActivities:nil];
     activity.completionHandler = ^(NSString *activityType, BOOL completed) {
@@ -252,8 +265,7 @@
 - (void)setObservation:(ExploreObservation *)observation {
     _observation = observation;
     
-    if (![observation commentsAndIdentificationsSynchronized])
-        [self fetchObservationCommentsAndIds];
+    [self fetchObservationCommentsAndIds];
     
     [self.view setNeedsLayout];
 }
@@ -396,11 +408,8 @@
     if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
         [self addComment:self.textView.text];
     } else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in", nil)
-                                    message:NSLocalizedString(@"No anonymous comments!", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self showSignupWithReason:NSLocalizedString(@"You must be logged in to comment.",
+                                                     @"Reason for signup prompt when trying to add a comment in explore.")];
     }
     
     [super didPressRightButton:sender];
@@ -411,25 +420,35 @@
 - (void)addIdentificationWithTaxonId:(NSInteger)taxonId {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add identification", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
 
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Identification...", nil)];
-    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Adding Identification...", nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addIdentificationTaxonId:taxonId forObservation:self.observation completionHandler:^(RKResponse *response, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        });
+
         if (error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Identification failed :(", nil)];
-            });
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add identification", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         } else {
             // if it wasn't an "agree" id, then we need to pop back through the taxon chooser to this VC
             [self.navigationController popToRootViewControllerAnimated:YES];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
-            });
             [self fetchObservationCommentsAndIds];
         }
     }];
@@ -438,26 +457,36 @@
 - (void)addComment:(NSString *)commentBody {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot add comment", nil)];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
+                                    message:NSLocalizedString(@"Network unavailable", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
         return;
     }
-
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Adding Comment...", nil)];
     
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Adding Comment...", nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     ExploreObservationsController *controller = [[ExploreObservationsController alloc] init];
     [controller addComment:commentBody
             forObservation:self.observation
          completionHandler:^(RKResponse *response, NSError *error) {
+             
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+             });
+
              if (error) {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Comment failed :(", nil)];
-                 });
+                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot add comment", nil)
+                                             message:error.localizedDescription
+                                            delegate:nil
+                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                   otherButtonTitles:nil] show];
              } else {
                  [[Analytics sharedClient] event:kAnalyticsEventExploreAddComment];
-                 // update the UI
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"Added!", nil)];
-                 });
                  [self fetchObservationCommentsAndIds];
              }
     }];
@@ -473,7 +502,11 @@
     [controller loadCommentsAndIdentificationsForObservation:self.observation
                                            completionHandler:^(NSArray *results, NSError *error) {
                                                if (error) {
-                                                   [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot fetch comments and IDs", nil)
+                                                                               message:error.localizedDescription
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                     otherButtonTitles:nil] show];
                                                } else {
                                                    ExploreObservation *observation = (ExploreObservation *)results.firstObject;
                                                    
@@ -494,4 +527,46 @@
     
 }
 
+#pragma mark - Login / Signup prompt
+
+- (void)showSignupWithReason:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Explore Detail" }];
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.skippable = NO;
+    svc.cancellable = YES;
+    svc.reason = reason;
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+@end
+
+
+
+// ##################################################
+// Category for Slack text view.
+// Fixing placeholder label's width for RTL localization.
+// ##################################################
+@interface SLKTextView(FixBoundsForPlaceholder)
+
+- (CGRect)slk_placeholderRectThatFits:(CGRect)bounds;
+
+@end
+
+@implementation SLKTextView(FixBoundsForPlaceholder)
+
+- (CGRect)slk_placeholderRectThatFits:(CGRect)bounds{
+    CGRect rect = CGRectZero;
+    rect.size = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).size;
+    // *3.0 to add space on the right hand side.
+    rect.size.width -= self.textContainerInset.left * 3.0;
+    rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
+    CGFloat padding = self.textContainer.lineFragmentPadding;
+    rect.origin.x += padding;
+    return rect;
+}
 @end

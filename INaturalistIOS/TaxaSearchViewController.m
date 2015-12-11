@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "TaxaSearchViewController.h"
@@ -14,6 +14,7 @@
 #import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
+#import "FAKINaturalist.h"
 
 @interface TaxaSearchViewController () <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
@@ -42,15 +43,24 @@ static const int TaxonCellSubtitleTag = 3;
     
     // only notify modally if we're fetching these taza from scratch
     BOOL modal = ((id <NSFetchedResultsSectionInfo>)[fetchedResultsController sections][0]).numberOfObjects == 0;
-    if (modal)
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+    if (modal) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Loading...",nil);
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+    }
     
+    [[Analytics sharedClient] debugLog:@"Network - Taxa search"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         
                                                         loader.objectMapping = [Taxon mapping];
                                                         
                                                         loader.onDidLoadObjects = ^(NSArray *objects) {
+                                                            
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
                                                             
                                                             // update timestamps on us and taxa objects
                                                             NSDate *now = [NSDate date];
@@ -74,7 +84,11 @@ static const int TaxonCellSubtitleTag = 3;
                                                             NSError *saveError = nil;
                                                             [[[RKObjectManager sharedManager] objectStore] save:&saveError];
                                                             if (saveError) {
-                                                                [SVProgressHUD showErrorWithStatus:saveError.localizedDescription];
+                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
+                                                                                            message:saveError.localizedDescription
+                                                                                           delegate:nil
+                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                  otherButtonTitles:nil] show];
                                                                 return;
                                                             }
                                                             
@@ -82,24 +96,37 @@ static const int TaxonCellSubtitleTag = 3;
                                                             NSError *fetchError;
                                                             [fetchedResultsController performFetch:&fetchError];
                                                             if (fetchError) {
-                                                                [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
+                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                                                                            message:fetchError.localizedDescription
+                                                                                           delegate:nil
+                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                  otherButtonTitles:nil] show];
                                                                 return;
                                                             }
-                                                            
-                                                            if (modal) {
-                                                                if (objects.count > 0)
-                                                                    [SVProgressHUD showSuccessWithStatus:nil];
-                                                                else
-                                                                    [SVProgressHUD showErrorWithStatus:nil];
-                                                            }
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
+
+                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
+                                                                                        message:error.localizedDescription
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                              otherButtonTitles:nil] show];
                                                         };
                                                         
                                                         loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                                                            });
+
+                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
+                                                                                        message:error.localizedDescription
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                              otherButtonTitles:nil] show];
                                                         };
                                             
                                                     }];
@@ -122,6 +149,12 @@ static const int TaxonCellSubtitleTag = 3;
     // be defensive
     if (indexPath) {
         
+        NSString *activeSearchText = self.searchDisplayController.searchBar.text;
+        if (self.taxaSearchController.allowsFreeTextSelection && activeSearchText.length > 0 && indexPath.section == 0) {
+            [self.delegate taxaSearchViewControllerChoseSpeciesGuess:activeSearchText];
+            return;
+        }
+
         Taxon *t;
         
         @try {
@@ -186,8 +219,11 @@ static const int TaxonCellSubtitleTag = 3;
     NSError *fetchError;
     [fetchedResultsController performFetch:&fetchError];
     if (fetchError) {
-        [SVProgressHUD showErrorWithStatus:fetchError.localizedDescription];
-        NSLog(@"FETCH ERROR: %@", fetchError);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                    message:fetchError.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
     
     // setup our search controller
@@ -195,6 +231,7 @@ static const int TaxonCellSubtitleTag = 3;
         self.taxaSearchController = [[TaxaSearchController alloc] 
                                      initWithSearchDisplayController:self.searchDisplayController];
         self.taxaSearchController.delegate = self;
+        self.taxaSearchController.allowsFreeTextSelection = self.allowsFreeTextSelection;
     }
     
     // perform the remote fetch for these taxa
@@ -281,6 +318,37 @@ static const int TaxonCellSubtitleTag = 3;
 }
 
 #pragma mark - UITableViewDelegate
+
+- (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaxonOneNameCell"];
+    
+    FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
+    [unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+    
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
+    [imageView sd_cancelCurrentImageLoad];
+    [imageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
+    
+    UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
+    titleLabel.text = self.searchDisplayController.searchBar.text;
+    titleLabel.font = [UIFont systemFontOfSize:titleLabel.font.pointSize];
+    
+    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"]
+                         forState:UIControlStateNormal];
+    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"]
+                         forState:UIControlStateHighlighted];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
+    addButton.titleLabel.textColor = [UIColor whiteColor];
+    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryView = addButton;
+    
+    return cell;
+}
+
 - (UITableViewCell *)cellForTaxon:(Taxon *)t inTableView:(UITableView *)tableView {
     NSString *cellIdentifier = [t.name isEqualToString:t.defaultName] ? @"TaxonOneNameCell" : @"TaxonTwoNameCell";
     
@@ -304,6 +372,8 @@ static const int TaxonCellSubtitleTag = 3;
         
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
     [imageView sd_cancelCurrentImageLoad];
+    imageView.image = nil;
+    
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
     titleLabel.text = t.defaultName;
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
@@ -339,8 +409,12 @@ static const int TaxonCellSubtitleTag = 3;
     return 54;
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];
     return [sectionInfo numberOfObjects];
 }
 
@@ -384,12 +458,15 @@ static const int TaxonCellSubtitleTag = 3;
 #pragma mark - RecordSearchControllerDelegate
 - (void)recordSearchControllerSelectedRecord:(id)record {
     UINavigationController *navigationController = self.navigationController;
-    [navigationController popToRootViewControllerAnimated:NO];
     [self showTaxon:record inNavigationController:navigationController];
 }
 
 - (UITableViewCell *)recordSearchControllerCellForRecord:(NSObject *)record inTableView:(UITableView *)tableView {
-    return [self cellForTaxon:(Taxon *)record inTableView:tableView];
+    if (record) {
+        return [self cellForTaxon:(Taxon *)record inTableView:tableView];
+    } else {
+        return [self cellForUnknownTaxonInTableView:tableView];
+    }
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate

@@ -6,8 +6,9 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectListViewController.h"
 #import "Observation.h"
@@ -20,23 +21,24 @@
 #import "TaxonDetailViewController.h"
 #import "ProjectDetailViewController.h"
 #import "Analytics.h"
+#import "INatUITabBarController.h"
+#import "UIImage+INaturalist.h"
 
 static const int ListedTaxonCellImageTag = 1;
 static const int ListedTaxonCellTitleTag = 2;
 static const int ListedTaxonCellSubtitleTag = 3;
+static const int ListedTaxonCellAddButtonTag = 4;
+
+@interface ProjectListViewController ()
+@property (nonatomic, strong) ProjectUser *projectUser;
+@property (nonatomic, assign) BOOL detailsPresented;
+@property (nonatomic, strong) NSArray *listedTaxa;
+@property (nonatomic, strong) RKObjectLoader *loader;
+@property (nonatomic, strong) NSDate *lastSyncedAt;
+@property (strong, nonatomic) UIBarButtonItem *stopSyncButton;
+@end
 
 @implementation ProjectListViewController
-@synthesize project = _project;
-@synthesize projectUser = _projectUser;
-@synthesize listedTaxa = _listedTaxa;
-@synthesize projectIcon = _projectIcon;
-@synthesize projectTitle = _projectTitle;
-@synthesize projectSubtitle = _projectSubtitle;
-@synthesize loader = _loader;
-@synthesize lastSyncedAt = _lastSyncedAt;
-@synthesize syncButton = _syncButton;
-@synthesize stopSyncButton = _stopSyncButton;
-@synthesize detailsPresented = _detailsPresented;
 
 - (IBAction)clickedSync:(id)sender {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -71,13 +73,32 @@ static const int ListedTaxonCellSubtitleTag = 3;
             lt = [self.listedTaxa objectAtIndex:indexPath.row-1];
         }
     }
-    [self performSegueWithIdentifier:@"AddObservationSegue" sender:lt];
+    
+    // be defensive
+    if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"ProjectList" }];
+        [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:lt.taxon
+                                                                                     project:self.project];
+    } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+        // can't present from the tab bar while it's out of the view hierarchy
+        // so dismiss the presented view (ie the parent of this taxon details VC)
+        // and then trigger the new observation flow once the tab bar is back
+        // in thei heirarchy.
+        INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+        [tabBar dismissViewControllerAnimated:YES
+                                   completion:^{
+                                       [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                        withProperties:@{ @"From": @"ProjectList" }];
+                                       [tabBar triggerNewObservationFlowForTaxon:lt.taxon
+                                                                         project:self.project];
+                                   }];
+    }
 }
 
 - (void)sync
 {
     if (!self.stopSyncButton) {
-        self.stopSyncButton = [[UIBarButtonItem alloc] 
+        self.stopSyncButton = [[UIBarButtonItem alloc]
                                initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                target:self 
                                action:@selector(stopSync)];
@@ -85,31 +106,36 @@ static const int ListedTaxonCellSubtitleTag = 3;
     self.navigationItem.rightBarButtonItem = self.stopSyncButton;
     self.lastSyncedAt = [NSDate date];
     self.tableView.scrollEnabled = NO;
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Syncing list...",nil)];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Syncing list...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/lists/%d.json?locale=%@-%@", self.project.listID.intValue, language, countryCode   ];
+    [[Analytics sharedClient] debugLog:@"Network - Load project list"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url delegate:self];
 }
 
-- (void)stopSync
-{
-    self.navigationItem.rightBarButtonItem = self.syncButton;
-    self.tableView.scrollEnabled = YES;
-    [SVProgressHUD dismiss];
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+- (void)stopSync {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.navigationItem.rightBarButtonItem = self.syncButton;
+        self.tableView.scrollEnabled = YES;
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+
+    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
     [self loadData];
     [[self tableView] reloadData];
 }
 
 - (void)loadData
 {
-    NSArray *sorts = [NSArray arrayWithObjects:
-                      [[NSSortDescriptor alloc] initWithKey:@"ancestry" ascending:YES], 
-                      [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:YES], 
-                      nil];
-    self.listedTaxa = [NSMutableArray arrayWithArray:
-                       [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts]];
+    NSArray *sorts = @[ [[NSSortDescriptor alloc] initWithKey:@"taxonName" ascending:YES] ];
+    self.listedTaxa = [self.project.projectList.listedTaxa.allObjects sortedArrayUsingDescriptors:sorts];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -120,22 +146,7 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"] || [segue.identifier isEqualToString:@"AddObservationRowSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
-        Observation *o = [Observation object];
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = o;
-        po.project = self.project;
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        if ([sender isKindOfClass:ListedTaxon.class]) {
-            ListedTaxon *lt = sender;
-            o.taxon = lt.taxon;
-            o.speciesGuess = lt.taxonDefaultName;
-        }
-        [vc setObservation:o];
-    } else if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
+    if ([segue.identifier isEqualToString:@"SciTaxonSegue"] || [segue.identifier isEqualToString:@"ComTaxonSegue"]) {
         NSInteger row = [[self.tableView indexPathForSelectedRow] row];
         if (!self.project.observationsRestrictedToList) {
             row -= 1;
@@ -161,8 +172,23 @@ static const int ListedTaxonCellSubtitleTag = 3;
     }
     
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
-                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
+                        placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
+    
+    // Adding auto layout.
+    self.projectTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    self.projectTitle.textAlignment = NSTextAlignmentNatural;
+    self.projectIcon.translatesAutoresizingMaskIntoConstraints = NO;
+    self.detailsButton.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSDictionary *views = @{@"icon":self.projectIcon, @"title":self.projectTitle, @"detailsButton":self.detailsButton};
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[icon(==70)]-[title]-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[icon(==70)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[title][detailsButton(==20)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+    
     
     CAGradientLayer *lyr = [CAGradientLayer layer];
     lyr.colors = [NSArray arrayWithObjects:
@@ -176,8 +202,9 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES];
     [super viewWillAppear:animated];
+
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -199,19 +226,40 @@ static const int ListedTaxonCellSubtitleTag = 3;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopSync];
     [super viewWillDisappear:animated];
+    [self stopSync];
 }
 
-- (void)viewDidUnload {
-    [self setProjectIcon:nil];
-    [self setProjectTitle:nil];
-    [self setProjectSubtitle:nil];
-    [self setSyncButton:nil];
-    [super viewDidUnload];
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.item == 0) {
+        // be defensive
+        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"ProjectList" }];
+            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:nil
+                                                                                         project:self.project];
+        } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            // can't present from the tab bar while it's out of the view hierarchy
+            // so dismiss the presented view (ie the parent of this taxon details VC)
+            // and then trigger the new observation flow once the tab bar is back
+            // in thei heirarchy.
+            INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+            [tabBar dismissViewControllerAnimated:YES
+                                       completion:^{
+                                           [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                            withProperties:@{ @"From": @"ProjectList" }];
+                                           [tabBar triggerNewObservationFlowForTaxon:nil
+                                                                             project:self.project];
+                                       }];
+        }
+    }
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.project.observationsRestrictedToList) {
@@ -237,24 +285,66 @@ static const int ListedTaxonCellSubtitleTag = 3;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        
     }
-    
-    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"] 
-                         forState:UIControlStateNormal];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
-                         forState:UIControlStateHighlighted];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
-    addButton.titleLabel.textColor = [UIColor whiteColor];
-    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.accessoryView = addButton;
+
+    // Check if the button aleady exists, Adding the buttons only once.
+    if([cell.contentView viewWithTag:ListedTaxonCellAddButtonTag] == nil){
+        
+        UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        addButton.tag = ListedTaxonCellAddButtonTag;
+        [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"]
+                             forState:UIControlStateNormal];
+        [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"]
+                             forState:UIControlStateHighlighted];
+        [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+        [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
+        addButton.titleLabel.textColor = [UIColor whiteColor];
+        addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+        [addButton addTarget:self action:@selector(clickedAdd:event:) forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryView = nil;
+        [cell.contentView addSubview:addButton];
+    }
     
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:ListedTaxonCellImageTag];
     [imageView sd_cancelCurrentImageLoad];
-        UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
+    UILabel *titleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellTitleTag];
+    UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
+    
+    // Adding auto layout.
+    if(!cell.constraints.count){
+        UIButton *addButton = (UIButton *)[cell.contentView viewWithTag:ListedTaxonCellAddButtonTag];
+
+        addButton.translatesAutoresizingMaskIntoConstraints = NO;
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        titleLabel.textAlignment = NSTextAlignmentNatural;
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        subtitleLabel.textAlignment = NSTextAlignmentNatural;
+        
+        NSDictionary *views = @{@"addButton":addButton, @"imageView":imageView, @"titleLabel":titleLabel};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==43)]-[titleLabel]-[addButton(==50)]-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[imageView(==43)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        // Handle subtitle label is available on that cell.
+        if(subtitleLabel){
+            NSDictionary *titleAndSubtitle = @{@"titleLabel":titleLabel, @"subtitleLabel":subtitleLabel};
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[titleLabel][subtitleLabel(==21)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:titleAndSubtitle]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:titleLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            
+            [cell addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:titleLabel attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+        }
+        else{
+            [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[titleLabel]-5-|" options:0 metrics:0 views:views]];
+        }
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[addButton(==35)]" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+    }
+    
     if (lt) {
         titleLabel.text = lt.taxonDefaultName;
     }
@@ -274,7 +364,6 @@ static const int ListedTaxonCellSubtitleTag = 3;
                 titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
             }
         } else {
-            UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:ListedTaxonCellSubtitleTag];
             subtitleLabel.text = lt.taxonName;
         }
     } else {
@@ -326,12 +415,11 @@ static const int ListedTaxonCellSubtitleTag = 3;
             errorMsg = error.localizedDescription;
     }
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                 message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Looks like there was an error", nil)
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 @end

@@ -10,6 +10,7 @@
 
 #import "GuidesSearchController.h"
 #import "Guide.h"
+#import "UIImage+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -43,7 +44,7 @@ static NSString *CellIdentifier = @"GuideCell";
     title.text = g.title;
     
     [imageView sd_setImageWithURL:[NSURL URLWithString:g.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"guides"]];
+                 placeholderImage:[UIImage inat_defaultGuideImage]];
     return cell;
 }
 

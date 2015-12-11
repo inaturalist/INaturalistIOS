@@ -11,54 +11,79 @@
 #import "AccuracyCircleView.h"
 #import "Analytics.h"
 
-@implementation EditLocationViewController
-@synthesize mapView = _mapView;
-@synthesize delegate = _delegate;
-@synthesize currentLocation = _currentLocation;
-@synthesize currentLocationButton = _currentLocationButton;
-@synthesize mapTypeButton = _mapTypeButton;
-@synthesize crossHairView = _crossHairView;
-@synthesize accuracyCircleView = _accuracyCircleView;
+@interface EditLocationViewController ()
+@property UISegmentedControl *mapTypeSegmentedControl;
+@end
 
-#pragma mark - View lifecycle
+@implementation EditLocationViewController
+
+#pragma mark - View Controller lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationController setToolbarHidden:NO];
-    [[[self navigationController] toolbar] setBarStyle:UIBarStyleDefault];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
     if (!self.currentLocationButton) {
-        self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location.png"]
+        self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location"]
                                                                       style:UIBarButtonItemStyleBordered 
                                                                      target:self 
                                                                      action:@selector(clickedCurrentLocationButton)];
         [self.currentLocationButton setWidth:30];
     }
     if (!self.mapTypeButton) {
-        self.mapTypeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl 
-                                                                           target:self 
-                                                                           action:@selector(clickedMapTypeButton)];
+        
+        self.mapTypeSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                                   @"Standard",
+                                                                                   @"Satellite",
+                                                                                   @"Hybrid"
+                                                                                   ]];
+        self.mapTypeSegmentedControl.selectedSegmentIndex = 2;
+        [self.mapTypeSegmentedControl addTarget:self
+                                         action:@selector(mapTypeChanged:)
+                               forControlEvents:UIControlEventValueChanged];
+        
+        self.mapTypeButton = [[UIBarButtonItem alloc] initWithCustomView:self.mapTypeSegmentedControl];
     }
-    [self setToolbarItems:[NSArray arrayWithObjects:self.currentLocationButton, flex, self.mapTypeButton, nil]];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                          target:nil
+                                                                          action:nil];
+    self.toolbarItems = @[ self.currentLocationButton, flex, self.mapTypeButton, flex ];
+
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
         double lon = [self.currentLocation.longitude doubleValue];
-        [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(lat, lon) animated:YES];
-        MKCoordinateRegion region;
-        region.center.latitude = lat;
-        region.center.longitude = lon;
-        double meters;
-        if (self.currentLocation.accuracy) {
-            meters = MAX([self.currentLocation.accuracy longValue], 20);
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lon);
+        if (CLLocationCoordinate2DIsValid(coord)) {
+            [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(lat, lon) animated:YES];
+            MKCoordinateRegion region;
+            region.center.latitude = lat;
+            region.center.longitude = lon;
+            double meters;
+            if (self.currentLocation.accuracy) {
+                meters = MAX([self.currentLocation.accuracy longValue], 20);
+            } else {
+                meters = 500;
+                self.currentLocation.accuracy = [NSNumber numberWithInt:meters];
+            }
+            double accuracyInDegrees = [self metersToDegrees:meters];
+            region.span.latitudeDelta = accuracyInDegrees * 5;
+            region.span.longitudeDelta = accuracyInDegrees * 5;
+            
+            // be defensive
+            @try {
+                [self.mapView setRegion:[self.mapView regionThatFits:region]];
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSInvalidArgumentException]) {
+                    // do nothing
+                } else {
+                    @throw exception;
+                }
+            }
         } else {
-            meters = 500;
-            self.currentLocation.accuracy = [NSNumber numberWithInt:meters];
+            // null island
+            [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(0, 0)];
         }
-        double accuracyInDegrees = [self metersToDegrees:meters];
-        region.span.latitudeDelta = accuracyInDegrees * 5;
-        region.span.longitudeDelta = accuracyInDegrees * 5;
-        [self.mapView setRegion:[self.mapView regionThatFits:region]];
     } else {
+        // null island
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
         self.currentLocation = [[INatLocation alloc] initWithLatitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude]
@@ -70,17 +95,25 @@
     readyToChangeLocation = YES;
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    [self setMapView:nil];
-    [self setMapTypeButton:nil];
-    [self setCrossHairView:nil];
-    [self setAccuracyCircleView:nil];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setToolbarHidden:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateEditLocation];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.navigationController setToolbarHidden:YES];
+    
+    if (self.saveOnExit && self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
+        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -100,6 +133,34 @@
     [self updateAccuracyCircle];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"MapTypeSegue"]) {
+        MapTypeViewController *vc = [segue destinationViewController];
+        vc.delegate = self;
+        vc.mapType = self.mapView.mapType;
+    }
+}
+
+#pragma mark - helpers for accuracy & accuracy circle
+
+- (void)resetAccuracy
+{
+    CGRect r = self.view.frame;
+    double pixelAcc = MIN(r.size.width, r.size.height) / 5;
+    self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:pixelAcc]];
+}
+
+- (void)updateAccuracyCircle
+{
+    [self.accuracyCircleView setHidden:NO];
+    self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
+    self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
+}
+
+
+#pragma mark - setter for currentLocation
+
 - (void)setCurrentLocation:(INatLocation *)currentLocation
 {
     _currentLocation = currentLocation;
@@ -109,6 +170,8 @@
                                  animated:YES];
     }
 }
+
+#pragma mark - meters / degrees / pixel conversion helpers
 
 - (double)degreesToMeters:(double)degrees
 {
@@ -138,21 +201,22 @@
     double distanceInDegrees = fabs(coord.longitude - self.mapView.centerCoordinate.longitude);
     double distanceInMeters = [self degreesToMeters:distanceInDegrees];
     return distanceInMeters;
-
 }
+
+#pragma mark - UIBarButtonItem targets
 
 - (IBAction)clickedCancel:(id)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidCancel:)]) {
         [self.delegate performSelector:@selector(editLocationViewControllerDidCancel) withObject:self];
     }
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)clickedDone:(id)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
         [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
     }
-    [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)clickedCurrentLocationButton
@@ -225,33 +289,8 @@
     [self updateAccuracyCircle];
 }
 
-# pragma mark MapTypeViewControllerDelegate
-- (void)mapTypeControllerDidChange:(MapTypeViewController *)controller mapType:(NSNumber *)mapType
-{
-    self.mapView.mapType = mapType.intValue;
-}
-
-- (void)resetAccuracy
-{
-    CGRect r = self.view.frame;
-    double pixelAcc = MIN(r.size.width, r.size.height) / 5;
-    self.currentLocation.accuracy = [NSNumber numberWithDouble:[self pixelsToMeters:pixelAcc]];
-}
-
-- (void)updateAccuracyCircle
-{
-    [self.accuracyCircleView setHidden:NO];
-    self.accuracyCircleView.radius = [self metersToPixels:[self.currentLocation.accuracy doubleValue]];
-    self.accuracyCircleView.label.text = [NSString stringWithFormat:@"Acc: %d m", [self.currentLocation.accuracy intValue]];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"MapTypeSegue"]) {
-        MapTypeViewController *vc = [segue destinationViewController];
-        vc.delegate = self;
-        vc.mapType = self.mapView.mapType;
-    }
+- (void)mapTypeChanged:(UISegmentedControl *)segmentedControl {
+    self.mapView.mapType = segmentedControl.selectedSegmentIndex;
 }
 
 @end

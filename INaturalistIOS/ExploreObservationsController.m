@@ -16,6 +16,9 @@
 #import "ExploreProject.h"
 #import "ExplorePerson.h"
 #import "Taxon.h"
+#import "NSURL+INaturalist.h"
+#import "NSLocale+INaturalist.h"
+#import "Analytics.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -63,7 +66,7 @@
     }
 
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [self fetchObservationsShouldNotify:YES];
+        [self fetchObservationsShouldNotify:NO];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
                                              code:-1008
@@ -185,10 +188,14 @@
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    NSString *baseURL = @"http://www.inaturalist.org/observations.json";
     NSString *pathPattern = @"/observations.json";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
+    
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        query = [query stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+    }
     
     BOOL hasActiveLocationPredicate = NO;
     
@@ -197,7 +204,6 @@
         for (ExploreSearchPredicate *predicate in predicates) {
             if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
-                baseURL = [NSString stringWithFormat:@"http://www.inaturalist.org/observations/%@.json", predicate.searchPerson.login];
                 pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
@@ -243,6 +249,7 @@
         [self.notificationDelegate startedObservationFetch];
     }
     
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
         // can't infer search mappings via keypath
@@ -328,6 +335,12 @@
     }];
 }
 
+- (NSArray *)observationsWithPhotos {
+    return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
+        return observation.observationPhotos.count > 0;
+    }];
+}
+
 - (BOOL)hasActiveLocationSearchPredicate {
     return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *p) {
         return p.type == ExploreSearchPredicateTypeLocation;
@@ -335,6 +348,7 @@
 }
 
 - (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
     [self postToPath:@"/identifications"
               params:@{ @"identification[observation_id]": @(observation.observationId),
                         @"identification[taxon_id]": @(taxonId) }
@@ -342,6 +356,7 @@
 }
 
 - (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
+    [[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
     [self postToPath:@"/comments"
               params:@{ @"comment[body]": commentBody,
                         @"comment[parent_id]": @(observation.observationId),
@@ -350,6 +365,7 @@
 }
 
 - (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
+    
     [[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
         request.params = params;
         
@@ -365,6 +381,12 @@
 
 - (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler {
     NSString *path = [NSString stringWithFormat:@"/observations/%ld.json", (long)observation.observationId];
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
+    }
+    
+    [[Analytics sharedClient] debugLog:@"Network - Explore fetch comments and IDs for observation"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         loader.method = RKRequestMethodGET;
         loader.objectMapping = [ExploreMappingProvider observationMapping];
@@ -407,9 +429,9 @@
     }
     d2 = today;
 
-    
-    NSString *url = @"http://www.inaturalist.org/observations/user_stats.json";
-    NSString *query = [NSString stringWithFormat:@"?d1=%@&d2=%@", d1, d2];
+    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:nil];
+    components.path = @"/observations/user_stats.json";
+    NSString *query = [NSString stringWithFormat:@"d1=%@&d2=%@", d1, d2];
     
     // apply active search predicates to the query
     if (predicates.count > 0) {
@@ -426,7 +448,8 @@
         }
     }
     
-    return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, query]];
+    components.query = query;
+    return [components URL];
 }
 
 
@@ -495,6 +518,5 @@
     
     return YES;
 }
-
 
 @end

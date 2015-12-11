@@ -51,7 +51,7 @@ static NSDateFormatter *shortDateFormatter = nil;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         //self.contentView.backgroundColor = [UIColor whiteColor];
         
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:20.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:20.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(20.0f, 20.0f)];
 
@@ -72,6 +72,7 @@ static NSDateFormatter *shortDateFormatter = nil;
             
             label.textColor = [UIColor colorForIconicTaxon:nil];
             label.font = [UIFont boldSystemFontOfSize:14.0f];
+            label.textAlignment = NSTextAlignmentNatural;
             
             label;
         });
@@ -83,6 +84,7 @@ static NSDateFormatter *shortDateFormatter = nil;
             
             label.textColor = [UIColor inatGray];
             label.font = [UIFont italicSystemFontOfSize:11.0f];
+            label.textAlignment = NSTextAlignmentNatural;
             
             label;
         });
@@ -106,7 +108,7 @@ static NSDateFormatter *shortDateFormatter = nil;
             
             label.textColor = [UIColor inatGray];
             label.font = [UIFont systemFontOfSize:10.0f];
-            label.textAlignment = NSTextAlignmentRight;
+            label.textAlignment = NSTextAlignmentCenter;
             
             label;
         });
@@ -157,12 +159,17 @@ static NSDateFormatter *shortDateFormatter = nil;
                                                                  metrics:0
                                                                    views:views]];
     
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-5-[identificationImageView(==50)]-5-[identificationScientificNameLabel]-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
     // scientific name indented four pixels more than common name
     [self addConstraint:[NSLayoutConstraint constraintWithItem:identificationScientificNameLabel
-                                                     attribute:NSLayoutAttributeLeft
+                                                     attribute:NSLayoutAttributeLeading
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:identificationCommonNameLabel
-                                                     attribute:NSLayoutAttributeLeft
+                                                     attribute:NSLayoutAttributeLeading
                                                     multiplier:1.0f
                                                       constant:4.0f]];
     

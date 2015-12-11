@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
 
 // for example: "Critters named 'Butterfly'", or "Persone chiamato 'alex shepard'"
 @property (readonly) NSString *colloquialSearchPhrase;
+@property (readonly) NSString *searchTerm;      // for example: Butterfly
 
 + (instancetype)predicateForTaxon:(Taxon *)taxon;
 + (instancetype)predicateForLocation:(ExploreLocation *)location;

@@ -34,6 +34,8 @@ static int ProgressViewTag = 102;
 static int ProgressLabelTag = 103;
 static int AboutSection = 1;
 static int DownloadRow = 2;
+static int DetailCellTextTag = 10;
+static int DetailCellDetailTag = 11;
 static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)viewDidLoad
@@ -146,6 +148,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
             cell = [tableView dequeueReusableCellWithIdentifier:TextCellIdentifier forIndexPath:indexPath];
             UITextView *textView = (UITextView *)[cell viewWithTag:TextCellTextViewTag];
             textView.text = [self.guide.desc stringByStrippingHTML];
+            textView.textAlignment = NSTextAlignmentNatural;
         } else {
             if (indexPath.row < 2) {
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
@@ -153,21 +156,32 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                 cell.userInteractionEnabled = NO;
             }
             if (indexPath.row == 0) {
-                cell.textLabel.text = NSLocalizedString(@"Editor", nil);
-                cell.detailTextLabel.text = self.guide.compiler;
+                // Adding auto layout for cell.
+                [self setupConstraintsForCell:cell];
+                UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
+                UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
+                textLabel.text = NSLocalizedString(@"Editor", nil);
+                detailTextLabel.text = self.guide.compiler;
             } else if (indexPath.row == 1) {
-                cell.textLabel.text = NSLocalizedString(@"License", nil);
-                cell.detailTextLabel.text = self.guide.license;
+                // Adding auto layout for cell.
+                [self setupConstraintsForCell:cell];
+                UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
+                UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
+                textLabel.text = NSLocalizedString(@"License", nil);
+                detailTextLabel.text = self.guide.license;
             } else {
                 if (self.isDownloading) {
                     cell = [tableView dequeueReusableCellWithIdentifier:ProgressCellIdentifier forIndexPath:indexPath];
                     self.progress = (UIProgressView *)[cell viewWithTag:ProgressViewTag];
                     UILabel *label = (UILabel *)[cell viewWithTag:ProgressLabelTag];
+                    label.textAlignment = NSTextAlignmentNatural;
                     label.text = NSLocalizedString(@"Downloading...", nil);
                 } else {
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
                     UILabel *title = (UILabel *)[cell viewWithTag:202];
+                    title.textAlignment = NSTextAlignmentNatural;
                     UILabel *subtitle = (UILabel *)[cell viewWithTag:203];
+                    subtitle.textAlignment = NSTextAlignmentNatural;
                     UIImageView *imageView = (UIImageView *)[cell viewWithTag:201];
                     if (self.guide.ngzDownloadedAt) {
                         title.textColor = [UIColor blackColor];
@@ -177,17 +191,17 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         [fmt setDateStyle:NSDateFormatterMediumStyle];
                         [fmt setTimeStyle:NSDateFormatterMediumStyle];
                         subtitle.text = [fmt stringFromDate:self.guide.ngzDownloadedAt];
-                        imageView.image = [UIImage imageNamed:@"258-checkmark.png"];
+                        imageView.image = [UIImage imageNamed:@"258-checkmark"];
                     } else if (self.guide.ngzURL) {
                         title.textColor = [UIColor blackColor];
                         title.text = NSLocalizedString(@"Download for offline use", nil);
                         subtitle.text = self.guide.ngzFileSize;
-                        imageView.image = [UIImage imageNamed:@"265-download.png"];
+                        imageView.image = [UIImage imageNamed:@"265-download-gray"];
                     } else {
                         title.textColor = [UIColor darkGrayColor];
                         title.text = NSLocalizedString(@"Download not available", nil);
                         subtitle.text = NSLocalizedString(@"Guide editor must enable this feature.", nil);
-                        imageView.image = [UIImage imageNamed:@"265-download-gray.png"];
+                        imageView.image = [UIImage imageNamed:@"265-download-gray"];
                     }
                 }
             }
@@ -201,12 +215,19 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 {
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
     NSArray *pieces = [tag componentsSeparatedByString:@"="];
+    // Adding auto layout for cell.
+    [self setupConstraintsForCell:cell];
+    UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
+    UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
+    
     if (pieces.count == 1) {
-        cell.textLabel.text = pieces[0];
+        textLabel.text = pieces[0];
     } else {
-        cell.textLabel.text = pieces[1];
+        textLabel.text = pieces[1];
     }
-    cell.detailTextLabel.text = [[self.tagCounts objectForKey:tag] stringValue];
+    textLabel.textAlignment = NSTextAlignmentNatural;
+    detailTextLabel.text = [[self.tagCounts objectForKey:tag] stringValue];
+//    detailTextLabel.textAlignment = NSTextAlignmentNatural;
     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     cell.userInteractionEnabled = YES;
     UIView *bgv = [[UIView alloc] initWithFrame:cell.frame];
@@ -226,7 +247,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
     CGSize labelSize = [self.guide.desc.stringByStrippingHTML sizeWithFont:[UIFont systemFontOfSize:15.0]
                                                          constrainedToSize:constraintSize
-                                                             lineBreakMode:UILineBreakModeWordWrap];
+                                                             lineBreakMode:NSLineBreakByWordWrapping];
     return labelSize.height + 20;
 }
 
@@ -246,6 +267,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
     view.backgroundColor = [UIColor grayColor];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(68, 0, 252, 22)];
+    label.textAlignment = NSTextAlignmentNatural;
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
     label.text = title;
@@ -322,6 +344,9 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 {
     if (buttonIndex == 0) {
         [self.guide deleteNGZ];
+        
+        [[Analytics sharedClient] event:kAnalyticsEventDeleteDownloadedGuide];
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDeletedNGZForGuide:)]) {
             [self.delegate guideMenuControllerGuideDeletedNGZForGuide:self.guide];
         }
@@ -348,6 +373,9 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void)downloadNGZ
 {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventDownloadGuideStarted];
+    
     self.ngzFilePath = self.guide.ngzPath;
     NSString *ngzURL = self.guide.ngzURL;
     NSURL *url = [NSURL URLWithString:ngzURL];
@@ -417,6 +445,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     if (self.lastStatusCode == 200) {
         if ([self.receivedData writeToFile:self.ngzFilePath options:NSDataWritingAtomic error:&error]) {
             NSLog(@"wrote to file: %@", self.ngzFilePath);
+            [[Analytics sharedClient] event:kAnalyticsEventDownloadGuideCompleted];
         } else {
             NSLog(@"failed to write to %@, error: %@", self.ngzFilePath, error);
         }
@@ -448,6 +477,57 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     [self.tableView reloadData];
     [self stopDownloadNGZ];
 }
+
+- (void)setupConstraintsForCell:(UITableViewCell *)cell{
+    if(!cell.constraints.count){
+        UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textAlignment = NSTextAlignmentNatural;
+        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
+        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        CGFloat leftOffset;
+        CGFloat rightOffset;
+        NSLocaleLanguageDirection currentLanguageDirection = [NSLocale characterDirectionForLanguage:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]];
+        if(currentLanguageDirection == kCFLocaleLanguageDirectionRightToLeft){
+            leftOffset = 8.0;
+            rightOffset = 68.0;
+        }
+        else{
+            leftOffset = 68.0;
+            rightOffset = 8.0;
+        }
+        
+        NSDictionary *metrics = @{@"leftOffset":@(leftOffset), @"rightOffset":@(rightOffset)};
+        
+        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leftOffset-[textLabel]-[detailTextLabel]-rightOffset-|" options:0 metrics:metrics views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:metrics views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:metrics views:views]];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @end
                                     

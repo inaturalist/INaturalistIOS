@@ -2,7 +2,16 @@
 "0Fk-rY-9h1.title" = "編集";
 
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
-"0Q2-fy-dMQ.text" = "チュートリアルを起動";
+"0Q2-fy-dMQ.text" = "チュートリアル";
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "名称のオートコンプリート";
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "新規観察記録を分類する";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
+"g3B-dy-Lka.text" = "iNaturalistネットワーク";
 
 /* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "ガイド";
@@ -31,8 +40,8 @@
 /* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
 "6UX-BL-9DW.title" = "プロジェクト";
 
-/* Class = "IBUILabel"; text = "Username"; ObjectID = "718-d6-pVr"; */
-"718-d6-pVr.text" = "ユーザー名:";
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
+"nla-WE-iqA.text" = "ユーザー名";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "あなたのiNat ユーザー名";
@@ -101,7 +110,7 @@
 "IvC-UJ-yev.text" = "サポートへのお問い合わせ";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "iNatが大好きですか？私たちを是非評価してください";
+"r3a-dI-zLW.text" = "iNatが大好きですか？評価してください";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "プロジェクトの選択";
@@ -280,11 +289,20 @@
 /* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
 "oWq-bA-sYY.headerTitle" = "あなたの iNaturalist アカウント";
 
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
+"LbD-zB-zU2.headerTitle" = "アプリの設定";
+
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Googleでサインイン";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "ヘルプ";
+
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
+"sxb-6N-VGO.headerTitle" = "このアプリについて";
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "謝辞";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "種名";
@@ -311,7 +329,7 @@
 "s0d-iz-ydn.title" = "観察記録";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "INaturalist.org にサインインします";
+"tW8-NR-sj7.headerTitle" = "iNaturalist.org にサインインします";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
 "tiA-DP-jEV.title" = "ログイン";
@@ -339,4 +357,3 @@
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "位置情報を編集";
-

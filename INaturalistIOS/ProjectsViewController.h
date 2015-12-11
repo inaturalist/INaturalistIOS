@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LoginViewController.h"
 #import "ProjectsSearchController.h"
 
-@interface ProjectsViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate>
-@property (nonatomic, strong) NSMutableArray *projects;
-@property (nonatomic, strong) RKObjectLoader *loader;
+@interface ProjectsViewController : UITableViewController <CLLocationManagerDelegate>
+@property (nonatomic, strong) NSArray *projects;
 @property (nonatomic, strong) NSDate *projectUsersSyncedAt;
 @property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
 @property (nonatomic, strong) NSDate *nearbyProjectsSyncedAt;
@@ -27,8 +25,4 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
-- (void)loadData;
-- (void)sync;
-- (void)stopSync;
-- (void)checkEmpty;
 @end

@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <BlocksKit/BlocksKit.h>
 
@@ -14,6 +13,8 @@
 #import "ExploreObservationsController.h"
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
+#import "Taxon.h"
+#import "Analytics.h"
 
 static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
@@ -27,6 +28,8 @@ static NSString *kSortSpeciesKey = @"species_count";
     NSArray *leaderboard;
     ExploreLeaderboardHeader *header;
     NSString *sortKey, *spanKey;
+    
+    UIActivityIndicatorView *loadingSpinner;
 }
 @end
 
@@ -36,6 +39,8 @@ static NSString *kSortSpeciesKey = @"species_count";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Leaderboard", @"Title for leaderboard page.");
     
     leaderboardTableView = ({
         UITableView *tv =[[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -50,6 +55,10 @@ static NSString *kSortSpeciesKey = @"species_count";
         tv;
     });
     [self.view addSubview:leaderboardTableView];
+    
+    loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    loadingSpinner.hidden = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingSpinner];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
                                                           attribute:NSLayoutAttributeCenterX
@@ -84,12 +93,24 @@ static NSString *kSortSpeciesKey = @"species_count";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading leaderboard", @"Loading message while a leaderboard is being downloaded from the web")];
+    [super viewWillAppear:animated];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateExploreLeaderboard];
+    
+    loadingSpinner.hidden = NO;
+    [loadingSpinner startAnimating];
 
     [self.observationsController loadLeaderboardSpan:ExploreLeaderboardSpanMonth
                                           completion:^(NSArray *results, NSError *error) {
                                               if (error) {
-                                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
+                                                                                      error.localizedDescription]];
+                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
+                                                                              message:error.localizedDescription
+                                                                             delegate:nil
+                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                    otherButtonTitles:nil] show];
+
                                                   return;
                                               }
                                               
@@ -97,8 +118,9 @@ static NSString *kSortSpeciesKey = @"species_count";
                                                   return [[obj2 valueForKeyPath:sortKey] compare:[obj1 valueForKeyPath:sortKey]];
                                               }];
                                               [leaderboardTableView reloadData];
-                                              [SVProgressHUD showSuccessWithStatus:nil];
-
+                                              
+                                              [loadingSpinner stopAnimating];
+                                              loadingSpinner.hidden = YES;
                                           }];
 }
 
@@ -112,13 +134,20 @@ static NSString *kSortSpeciesKey = @"species_count";
         spanKey = kSpanYearKey;
     }
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading leaderboard", @"Loading message while a leaderboard is being downloaded from the web")];
+    loadingSpinner.hidden = NO;
+    [loadingSpinner startAnimating];
     
     ExploreLeaderboardSpan span = [spanKey isEqualToString:kSpanYearKey] ? ExploreLeaderboardSpanYear : ExploreLeaderboardSpanMonth;
     [self.observationsController loadLeaderboardSpan:span
                                           completion:^(NSArray *results, NSError *error) {
                                               if (error) {
-                                                  [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+                                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
+                                                                                      error.localizedDescription]];
+                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
+                                                                              message:error.localizedDescription
+                                                                             delegate:nil
+                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                    otherButtonTitles:nil] show];
                                                   return;
                                               }
                                               
@@ -126,7 +155,9 @@ static NSString *kSortSpeciesKey = @"species_count";
                                                   return [[obj2 valueForKeyPath:sortKey] compare:[obj1 valueForKeyPath:sortKey]];
                                               }];
                                               [leaderboardTableView reloadData];
-                                              [SVProgressHUD showSuccessWithStatus:nil];
+
+                                              [loadingSpinner stopAnimating];
+                                              loadingSpinner.hidden = YES;
                                           }];
 }
 
@@ -210,20 +241,53 @@ static NSString *kSortSpeciesKey = @"species_count";
                                 action:@selector(spanned)
                       forControlEvents:UIControlEventValueChanged];
         
-        if (self.observationsController.activeSearchPredicates.count > 0) {
-            header.title.text = [NSString stringWithFormat:NSLocalizedString(@"Leaderboard for %@", @"Title for specific leaderboard. The substituted string are parameters for the leaderboard."),
-                                 self.observationsController.combinedColloquialSearchPhrase];
-        } else {
-            header.title.text = NSLocalizedString(@"Global Leaderboard", @"Leaderboard title for global leaderboards");
+        __block NSString *locationProject = @"";        // location and/or project
+        __block NSString *taxonPerson = @"";            // organism and/or person
+        
+        [self.observationsController.activeSearchPredicates bk_each:^(ExploreSearchPredicate *predicate) {
+            BOOL predicateIsLocative = NO;
+            
+            switch (predicate.type) {
+                case ExploreSearchPredicateTypeLocation:
+                case ExploreSearchPredicateTypeProject:
+                    predicateIsLocative = YES;
+                case ExploreSearchPredicateTypeCritter:
+                case ExploreSearchPredicateTypePerson:
+                default:
+                    break;
+            }
+            
+            NSString *str = predicateIsLocative ? locationProject : taxonPerson;
+            
+            if ([str isEqualToString:@""]) {
+                str = [predicate.searchTerm copy];
+            } else {
+                str = [str stringByAppendingFormat:@" %@", predicate.searchTerm];
+            }
+            
+            if (predicateIsLocative) {
+                locationProject = str;
+            } else {
+                taxonPerson = str;
+            }
+        }];
+        
+        if (!locationProject || [locationProject isEqualToString:@""]) {
+            locationProject = NSLocalizedString(@"Worldwide", @"Indicator that the leaderboard is global, not specific to a project or a place");
         }
-    }
+        if (!taxonPerson || [taxonPerson isEqualToString:@""]) {
+            taxonPerson = NSLocalizedString(@"All Species", @"Indicator that the leaderboard applies to all species, not just a specific taxon.");
+        }
+        
+        header.title.text = [NSString stringWithFormat:@"%@, %@", locationProject, taxonPerson];
     
+    }
     
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 120.0f;
+    return 100.0f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -232,14 +296,27 @@ static NSString *kSortSpeciesKey = @"species_count";
 
 - (void)configureCell:(ExploreLeaderboardCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *leaderboardRecord = [leaderboard objectAtIndex:indexPath.item];
-    NSNumber *obsCount = [leaderboardRecord valueForKeyPath:kSortObservationsKey];
-    NSNumber *speciesCount = [leaderboardRecord valueForKeyPath:kSortSpeciesKey];
+    NSInteger obsCount = [[leaderboardRecord valueForKeyPath:kSortObservationsKey] integerValue];
+    NSInteger speciesCount = [[leaderboardRecord valueForKeyPath:kSortSpeciesKey] integerValue];
     NSString *username = [leaderboardRecord valueForKeyPath:@"user_login"];
     NSString *userIconUrl = [leaderboardRecord valueForKeyPath:@"user_icon"];
     
     cell.username.text = username;
-    cell.observationCount.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount.integerValue];
-    cell.speciesCount.text = [NSString stringWithFormat:@"Species: %ld", (long)speciesCount.integerValue];
+    
+    // the leaderboard API call can return users who are on the species leaderboard but not the
+    // obs leaderboard, leaving them with 0 apparent observations in the JSON. this is obviously
+    // incorrect, but we don't want to do another API call for every row, so just show * like on
+    // the web.
+    if (obsCount > 0) {
+        cell.observationCount.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount];
+    } else {
+        cell.observationCount.text = @"Observations: *";
+    }
+    if (speciesCount > 0) {
+        cell.speciesCount.text = [NSString stringWithFormat:@"Species: %ld", (long)speciesCount];
+    } else {
+        cell.speciesCount.text = @"Species: *";
+    }
     
     // embolden the sort key for the leaderboard
     if ([sortKey isEqualToString:kSortObservationsKey]) {
@@ -257,12 +334,13 @@ static NSString *kSortSpeciesKey = @"species_count";
     if (![userIconUrl isEqual:[NSNull null]] && ![userIconUrl isEqualToString:@""]) {
         [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:userIconUrl]];
     } else {
-        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:@"http://www.inaturalist.org/attachment_defaults/users/icons/defaults/thumb.png"]];
+        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/attachment_defaults/users/icons/defaults/thumb.png",
+                                                                INatMediaBaseURL]]];
     }
     
     [cell.sortControl addTarget:self action:@selector(sorted) forControlEvents:UIControlEventTouchUpInside];
     
-    cell.rank.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
+    cell.rank.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row + 1];
 }
 
 @end

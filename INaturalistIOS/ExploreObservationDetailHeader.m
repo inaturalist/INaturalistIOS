@@ -47,7 +47,7 @@ static UIImage *userIconPlaceholder;
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        FAKIcon *person = [FAKIonIcons ios7PersonIconWithSize:30.0f];
+        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:30.0f];
         [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
         userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
 
@@ -72,7 +72,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont boldSystemFontOfSize:17.0f];
             label.textColor = [UIColor colorForIconicTaxon:nil];
-            
+            label.textAlignment = NSTextAlignmentNatural;
             label;
         });
         [self addSubview:self.commonNameLabel];
@@ -83,7 +83,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont italicSystemFontOfSize:12.0f];
             label.textColor = [UIColor inatBlack];
-            
+            label.textAlignment = NSTextAlignmentNatural;
             label;
         });
         [self addSubview:self.scientificNameLabel];
@@ -136,6 +136,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont systemFontOfSize:15.0f];
             label.textColor = [UIColor blackColor];
+            label.textAlignment = NSTextAlignmentNatural;
             
             label;
         });
@@ -145,7 +146,7 @@ static UIImage *userIconPlaceholder;
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
-            FAKIcon *mapPin = [FAKIonIcons ios7LocationIconWithSize:12.0f];
+            FAKIcon *mapPin = [FAKIonIcons iosLocationIconWithSize:12.0f];
             [mapPin addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
             label.attributedText = mapPin.attributedString;
             
@@ -159,6 +160,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont systemFontOfSize:12.0f];
             label.textColor = [UIColor inatBlack];
+            label.textAlignment = NSTextAlignmentNatural;
             
             label;
         });
@@ -170,6 +172,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont systemFontOfSize:10.0f];
             label.textColor = [UIColor inatGray];
+            label.textAlignment = NSTextAlignmentNatural;
             
             label;
         });
@@ -181,7 +184,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont systemFontOfSize:12.0f];
             label.textColor = [UIColor inatBlack];
-            label.textAlignment = NSTextAlignmentRight;
+            label.textAlignment = NSTextAlignmentCenter;
             
             label;
         });
@@ -193,7 +196,7 @@ static UIImage *userIconPlaceholder;
             
             label.font = [UIFont systemFontOfSize:12.0f];
             label.textColor = [UIColor inatBlack];
-            label.textAlignment = NSTextAlignmentRight;
+            label.textAlignment = NSTextAlignmentCenter;
             
             label;
         });
@@ -287,10 +290,10 @@ static UIImage *userIconPlaceholder;
         
         // map pin is left aligned with observer name label
         [self addConstraint:[NSLayoutConstraint constraintWithItem:mapPinLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:observerNameLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:0.0f]];
         // map pin is bottom aligned with observer avatar image (-1px)
@@ -304,10 +307,10 @@ static UIImage *userIconPlaceholder;
         
         // observed location is left aligned with map pin's right (+3px)
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedLocationLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:mapPinLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:3.0f]];
         // observed location is baseline aligned with map pin's baseline
@@ -320,19 +323,19 @@ static UIImage *userIconPlaceholder;
                                                           constant:0.0f]];
         // observed location is right aligned with observed time label's left edge
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedLocationLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                          relatedBy:NSLayoutRelationLessThanOrEqual
                                                             toItem:observedTimeLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                         multiplier:1.0f
                                                           constant:0.0f]];
 
         // observed accuracy is left aligned with map's right (+3px)
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observedAccuracyLabel
-                                                         attribute:NSLayoutAttributeLeft
+                                                         attribute:NSLayoutAttributeLeading
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:mapPinLabel
-                                                         attribute:NSLayoutAttributeRight
+                                                         attribute:NSLayoutAttributeTrailing
                                                         multiplier:1.0f
                                                           constant:3.0f]];
         // observed accuracy is bottom aligned with observed location's top
@@ -424,8 +427,8 @@ static UIImage *userIconPlaceholder;
     self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:12.0f];
     
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
-    NSString *observerAvatarUrlString = [NSString stringWithFormat:@"http://www.inaturalist.org/attachments/users/icons/%ld-thumb.jpg",
-                                         (long)observation.observerId];
+    NSString *observerAvatarUrlString = [NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
+                                         INatMediaBaseURL, (long)observation.observerId];
     [observerAvatarImageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
                                placeholderImage:userIconPlaceholder
                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {

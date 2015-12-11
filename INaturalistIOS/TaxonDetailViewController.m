@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <TapkuLibrary/TapkuLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <objc/runtime.h>
 
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
@@ -17,12 +17,43 @@
 #import "ObservationDetailViewController.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "INatUITabBarController.h"
+#import "NSURL+INaturalist.h"
+#import "INatWebController.h"
 
 static const int DefaultNameTag = 1;
 static const int TaxonNameTag = 2;
 static const int TaxonImageTag = 3;
 static const int TaxonImageAttributionTag = 4;
 static const int TaxonDescTag = 1;
+
+static char SUMMARY_ASSOCIATED_KEY;
+
+@interface Taxon (Summary)
+@property (readonly) NSAttributedString *attributedSummary;
+@end
+
+@implementation Taxon (Summary)
+// extracting attributed strings from HTML is expensive
+// stash the attributed summary in an associated object on the taxon itself
+- (NSAttributedString *)attributedSummary {
+    NSAttributedString *_attributedSummary = objc_getAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY);
+    if (!_attributedSummary) {
+        NSData *sumData = [self.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *sumOpts = @{
+                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                                  };
+        _attributedSummary = [[NSAttributedString alloc] initWithData:sumData
+                                                              options:sumOpts
+                                                   documentAttributes:nil
+                                                                error:nil];
+        objc_setAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY, _attributedSummary, OBJC_ASSOCIATION_COPY);
+
+    }
+    return _attributedSummary;
+}
+@end
 
 @implementation TaxonDetailViewController
 
@@ -73,20 +104,25 @@ static const int TaxonDescTag = 1;
         [self.delegate performSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:) 
                             withObject:self.taxon];
     } else {
-        [self performSegueWithIdentifier:@"AddObservationSegue" sender:nil];
-    }
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"AddObservationSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        Observation *o = [Observation object];
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        o.taxon = self.taxon;
-        o.speciesGuess = self.taxon.defaultName;
-        [vc setObservation:o];
+        // be defensive
+        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TaxonDetails" }];
+            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:self.taxon
+                                                                                         project:nil];
+        } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
+            // can't present from the tab bar while it's out of the view hierarchy
+            // so dismiss the presented view (ie the parent of this taxon details VC)
+            // and then trigger the new observation flow once the tab bar is back
+            // in thei heirarchy.
+            INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
+            [tabBar dismissViewControllerAnimated:YES
+                                       completion:^{
+                                           [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
+                                                            withProperties:@{ @"From": @"TaxonDetails" }];
+                                           [tabBar triggerNewObservationFlowForTaxon:self.taxon
+                                                                             project:nil];
+                                       }];
+        }
     }
 }
 
@@ -98,6 +134,9 @@ static const int TaxonDescTag = 1;
     UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
     
     defaultNameLabel.text = self.taxon.defaultName;
+    defaultNameLabel.textAlignment = NSTextAlignmentNatural;
+    taxonNameLabel.textAlignment = NSTextAlignmentNatural;
+    attributionLabel.textAlignment = NSTextAlignmentNatural;
     if (self.taxon.rankLevel.intValue >= 20) {
         taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@", [self.taxon.rank capitalizedString], self.taxon.name];
         taxonNameLabel.font = [UIFont systemFontOfSize:taxonNameLabel.font.pointSize];
@@ -121,24 +160,57 @@ static const int TaxonDescTag = 1;
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     self.clearsSelectionOnViewWillAppear = YES;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSString *url = [NSString stringWithFormat:@"%@/taxa/%@.json", INatBaseURL, self.taxon.recordID];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[Taxon mapping]
-                                                          delegate:self];
+        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%@.json", self.taxon.recordID]
+                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
+
+        __weak typeof(self)weakSelf = self;
+        RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
+            
+            // save into core data
+            NSError *saveError = nil;
+            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+            if (saveError) {
+                NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
+                                    saveError.localizedDescription];
+                [[Analytics sharedClient] debugLog:errMsg];
+                return;
+            }
+            
+            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", self.taxon.recordID];
+            Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
+            if (taxon) {
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                strongSelf.taxon = taxon;
+                [strongSelf initUI];
+                [strongSelf.tableView reloadData];
+            }
+        };
+        
+        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [Taxon mapping];
+                                                            loader.onDidLoadObject = loadedTaxonBlock;
+                                                            // If something went wrong, just ignore it.
+                                                            // Because, you know, that's always a good idea.
+                                                        }];
     }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
     [self.navigationController setToolbarHidden:YES];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -155,10 +227,9 @@ static const int TaxonDescTag = 1;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        CGSize s = [[self.taxon.wikipediaSummary stringByRemovingHTML] sizeWithFont:[UIFont systemFontOfSize:15] 
-                                                                  constrainedToSize:CGSizeMake(320, 320) 
-                                                                      lineBreakMode:NSLineBreakByWordWrapping];
-        return s.height + 10;
+        return [self.taxon.attributedSummary boundingRectWithSize:CGSizeMake(320, 320)
+                                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                                          context:nil].size.height + 10;
     }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -173,7 +244,7 @@ static const int TaxonDescTag = 1;
     if (!self.sectionHeaderViews) {
         self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
     }
-    NSNumber *key = [NSNumber numberWithInt:section];
+    NSNumber *key = @(section);
     if ([self.sectionHeaderViews objectForKey:key]) {
         return [self.sectionHeaderViews objectForKey:key];
     }
@@ -183,6 +254,7 @@ static const int TaxonDescTag = 1;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
     label.font = [UIFont boldSystemFontOfSize:17];
     label.textColor = [UIColor darkGrayColor];
+    label.textAlignment = NSTextAlignmentNatural;
     switch (section) {
         case 0:
             label.text = NSLocalizedString(@"Description",nil);
@@ -203,17 +275,18 @@ static const int TaxonDescTag = 1;
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.section == 0 && indexPath.row == 0) {
-        TTStyledTextLabel *descLabel = (TTStyledTextLabel *)[cell viewWithTag:TaxonDescTag];
-        descLabel.text = [TTStyledText textFromXHTML:self.taxon.wikipediaSummary
-                                          lineBreaks:NO 
-                                                URLs:YES];
-        [descLabel sizeToFit];
-        descLabel.textColor = [UIColor blackColor];
-        descLabel.backgroundColor = [UIColor whiteColor];
+        UILabel *label = (UILabel *)[cell viewWithTag:TaxonDescTag];
+        label.attributedText = self.taxon.attributedSummary;
+        label.textAlignment = NSTextAlignmentNatural;
+        label.numberOfLines = 0;
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor whiteColor];
+        [label sizeToFit];
     } else if (indexPath.section == 1 && indexPath.row == 0) {
         UILabel *title = (UILabel *)[cell viewWithTag:1];
         if (self.taxon.conservationStatusName) {
             title.text = NSLocalizedString(self.taxon.conservationStatusName.humanize, nil);
+            title.textAlignment = NSTextAlignmentNatural;
             if ([self.taxon.conservationStatusName isEqualToString:@"vulnerable"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"endangered"] ||
                 [self.taxon.conservationStatusName isEqualToString:@"critically_endangered"]) {
@@ -249,37 +322,25 @@ static const int TaxonDescTag = 1;
     
     NSString *wikipediaTitle = self.taxon.wikipediaTitle;
     NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
-    NSString *url;
+    NSString *urlString;
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
-        url = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
+        urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
     } else if (buttonIndex == 1) {
-        url = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
+        urlString = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
     } else if (buttonIndex == 2) {
         if (!wikipediaTitle) {
             wikipediaTitle = escapedName;
         }
-        url = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
+        urlString = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
     } else {
         return;
     }
-    TTNavigator* navigator = [TTNavigator navigator];
-    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
-}
-
-#pragma - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
-    [object save];
-    self.taxon = (Taxon *)object;
-    [self initUI];
-    [self.tableView reloadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    // If something went wrong, just ignore it. Because, you know, that's always a good idea.
+    
+    INatWebController *web = [[INatWebController alloc] initWithNibName:nil bundle:nil];
+    web.url = [NSURL URLWithString:urlString];
+    [self.navigationController pushViewController:web animated:YES];
 }
 
 @end

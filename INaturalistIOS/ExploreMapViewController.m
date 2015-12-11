@@ -25,12 +25,14 @@
 #import "ExploreObservation.h"
 #import "ExploreRegion.h"
 #import "MKMapView+ZoomLevel.h"
-
+#import "NSURL+INaturalist.h"
+#import "ExploreContainerViewController.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
     MKMapView *mapView;
     NSTimer *mapChangedTimer;
+    BOOL mapViewHasRenderedTiles;
 }
 
 @end
@@ -59,8 +61,10 @@
             if (container.selectedViewController == self) {
                 
                 // if the limiting region was cleared, then re-apply it once the map returns
-                if (!self.observationDataSource.limitingRegion)
+                // avoid doing this if the map hasn't rendered at least once (ie a fresh launch)
+                if (!self.observationDataSource.limitingRegion && mapViewHasRenderedTiles) {
                     self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+                }
             }
         }
     }
@@ -70,6 +74,9 @@
     // wait to set the delegate and receive regionDidChange notifications until
     // after the view has completely finished loading
     mapView.delegate = self;
+    
+    
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -81,6 +88,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    mapViewHasRenderedTiles = NO;
     
     mapView = ({
         // use autolayout
@@ -132,7 +140,8 @@
     
     // compile candidates for adding to the map
     NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
-        return MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
+        return CLLocationCoordinate2DIsValid(candidate.coordinate) &&
+            MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
     }];
     
     // remove anything that's not in candidates, or that's not in the first 100
@@ -160,7 +169,7 @@
         [mapView removeOverlays:mapView.overlays];
         
         CLLocationCoordinate2D newCenter;
-        int overlayLocationId = 0;
+        NSInteger overlayLocationId = 0;
         for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
             if (predicate.type == ExploreSearchPredicateTypeLocation) {
                 newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
@@ -187,21 +196,33 @@
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered {
+    //sentinal that the mapview has rendered at least once
+    mapViewHasRenderedTiles = YES;
+}
+
 - (void)mapView:(MKMapView *)mv regionWillChangeAnimated:(BOOL)animated {
     [mapChangedTimer invalidate];
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
-    [mapChangedTimer invalidate];
-    
-    // give the user a bit to keep scrolling before we make a new API call
-    mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
-                                                           block:^(NSTimer *timer) {
-                                                               // notify the observation data source that we have a new limiting region
-                                                               ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                               self.observationDataSource.limitingRegion = region;
-                                                           }
-                                                         repeats:NO];
+    if ([self.navigationController.topViewController isKindOfClass:[ExploreContainerViewController class]]) {
+        ExploreContainerViewController *container = (ExploreContainerViewController *)self.navigationController.topViewController;
+        if ([container.selectedViewController isEqual:self] && [self.tabBarController.selectedViewController isEqual:self.navigationController]) {
+            [mapChangedTimer invalidate];
+            
+            __weak typeof(self) weakSelf = self;
+            // give the user a bit to keep scrolling before we make a new API call
+            mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
+                                                                   block:^(NSTimer *timer) {
+                                                                       __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                                       // notify the observation data source that we have a new limiting region
+                                                                       ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
+                                                                       strongSelf.observationDataSource.limitingRegion = region;
+                                                                   }
+                                                                 repeats:NO];
+        }
+    }
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation
@@ -219,10 +240,10 @@
     }
     
     // style for iconic taxon of the observation
-    FAKIcon *mapMarker = [FAKIonIcons ios7LocationIconWithSize:25.0f];
+    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
     ExploreObservation *observation = (ExploreObservation *)annotation;
     [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
-    FAKIcon *mapOutline = [FAKIonIcons ios7LocationOutlineIconWithSize:25.0f];
+    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:25.0f];
     [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:observation.iconicTaxonName] darkerColor]];
     
     // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
@@ -258,7 +279,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
     
     // close icon
-    FAKIcon *closeIcon = [FAKIonIcons ios7CloseEmptyIconWithSize:34.0f];
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
     [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
     UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
     
@@ -277,8 +298,8 @@
 
 - (void)addOverlaysForLocationId:(NSInteger)locationId {
     // fetch the geometry file
-    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.inaturalist.org/places/geometry/%ld.geojson",
-                                       (long)locationId]];
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"/places/geometry/%ld.geojson", (long)locationId]
+                        relativeToURL:[NSURL inat_baseURL]];
     NSData *data = [NSData dataWithContentsOfURL:URL];
     
     // don't do any overlay work if we can't get a geometry file from inat.org
@@ -313,6 +334,7 @@
         NSLog(@"error deserializing MapKit shape from GeoJSON: %@", error.localizedDescription);
         return;
     }
+    
     
     if ([shape isKindOfClass:[NSArray class]]) {
         // some geometries contain multiple shapes (ie San Francisco County)

@@ -147,11 +147,11 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
-    detail.observation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
+    detail.observation = [self.observationDataSource.observationsWithPhotos objectAtIndex:indexPath.item];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
     
     // close icon
-    FAKIcon *closeIcon = [FAKIonIcons ios7CloseEmptyIconWithSize:34.0f];
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
     [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
     UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
     
@@ -171,13 +171,13 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.observationDataSource.observations.count;
+    return self.observationDataSource.observationsWithPhotos.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ExploreGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ExploreGridCellId
                                                                       forIndexPath:indexPath];
-    [cell setObservation:[self.observationDataSource.observations objectAtIndex:indexPath.item]];
+    [cell setObservation:[self.observationDataSource.observationsWithPhotos objectAtIndex:indexPath.item]];
     return cell;
 }
 
@@ -193,13 +193,20 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
                      forControlEvents:UIControlEventTouchUpInside];
         
         return header;
+    } else {
+        // not supposed to return nil from this method
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                            withReuseIdentifier:@"Unused"
+                                                                                   forIndexPath:indexPath];
+        view.hidden = YES;
+        return view;
     }
 }
 
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observations.count > 0)
+    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observationsWithPhotos.count > 0)
         return CGSizeMake(collectionView.frame.size.width, 44);
     else
         return CGSizeMake(0, 0);

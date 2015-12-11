@@ -57,35 +57,6 @@
     return [self.xml atXPath:[NSString stringWithFormat:@"descendant::GuidePhoto/href[@type='remote' and @size='%@']", size]].text;
 }
 
-- (NSString *)bestLocalImagePathForSize:(NSString *)size
-{
-    NSString *p = [self localImagePathForSize:size];
-    if (!p && [size isEqualToString:@"large"]) {
-        p = [self localImagePathForSize:@"medium"];
-    }
-    if (!p && [size isEqualToString:@"medium"]) {
-        p = [self localImagePathForSize:@"small"];
-    }
-    if (!p && [size isEqualToString:@"small"]) {
-        p = [self localImagePathForSize:@"thumb"];
-    }
-    return p;
-}
-- (NSString *)bestRemoteImageURLForSize:(NSString *)size
-{
-    NSString *p = [self remoteImageURLForSize:size];
-    if (!p && [size isEqualToString:@"large"]) {
-        p = [self remoteImageURLForSize:@"medium"];
-    }
-    if (!p && [size isEqualToString:@"medium"]) {
-        p = [self remoteImageURLForSize:@"small"];
-    }
-    if (!p && [size isEqualToString:@"small"]) {
-        p = [self remoteImageURLForSize:@"thumb"];
-    }
-    return p;
-}
-
 - (NSString *)name
 {
     if (!_name) {
@@ -109,4 +80,52 @@
     }
     return _taxonID;
 }
+
+#pragma mark - INatPhoto
+
+- (NSURL *)largePhotoUrl {
+    NSString *size = @"large";
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localImagePathForSize:size]])
+        return [NSURL URLWithString:[self localImagePathForSize:size]];
+    else if ([self remoteImageURLForSize:size])
+        return [NSURL URLWithString:[self remoteImageURLForSize:size]];
+    else
+        return [self mediumPhotoUrl];
+}
+
+- (NSURL *)mediumPhotoUrl {
+    NSString *size = @"medium";
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localImagePathForSize:size]])
+        return [NSURL URLWithString:[self localImagePathForSize:size]];
+    else if ([self remoteImageURLForSize:size])
+        return [NSURL URLWithString:[self remoteImageURLForSize:size]];
+    else
+        return [self smallPhotoUrl];
+}
+
+- (NSURL *)smallPhotoUrl {
+    NSString *size = @"small";
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localImagePathForSize:size]])
+        return [NSURL URLWithString:[self localImagePathForSize:size]];
+    else if ([self remoteImageURLForSize:size])
+        return [NSURL URLWithString:[self remoteImageURLForSize:size]];
+    else
+        return [self thumbPhotoUrl];
+}
+
+- (NSURL *)thumbPhotoUrl {
+    NSString *size = @"thumb";
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self localImagePathForSize:size]])
+        return [NSURL URLWithString:[self localImagePathForSize:size]];
+    else if ([self remoteImageURLForSize:size])
+        return [NSURL URLWithString:[self remoteImageURLForSize:size]];
+    else
+        return nil;
+}
+
+
 @end

@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LoginViewController.h"
 #import "GuidesSearchController.h"
 #import "GuideViewController.h"
 
-@interface GuidesViewController : UITableViewController <RKObjectLoaderDelegate, LoginViewControllerDelegate, CLLocationManagerDelegate, GuideViewControllerDelegate>
+@interface GuidesViewController : UITableViewController <CLLocationManagerDelegate, GuideViewControllerDelegate>
 @property (nonatomic, strong) NSArray *guides;
-@property (nonatomic, strong) RKObjectLoader *loader;
 @property (nonatomic, strong) NSDate *guideUsersSyncedAt;
 //@property (nonatomic, strong) NSDate *featuredGuidesSyncedAt;
 @property (nonatomic, strong) NSDate *allGuidesSyncedAt;
@@ -30,11 +28,4 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
 
 - (IBAction)clickedSync:(id)sender;
-- (void)loadData;
-- (void)sync;
-- (void)syncAllGuides;
-- (void)syncNearbyGuides;
-- (void)syncUserGuides;
-- (void)stopSync;
-- (void)checkEmpty;
 @end

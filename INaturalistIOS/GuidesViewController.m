@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "GuidesViewController.h"
 #import "Guide.h"
@@ -14,8 +15,14 @@
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
+#import "SignupSplashViewController.h"
+#import "LoginController.h"
+#import "UIImage+INaturalist.h"
+#import "NSURL+INaturalist.h"
+#import "UIColor+INaturalist.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -23,21 +30,10 @@ static const int ListControlIndexAll = 0;
 static const int ListControlIndexUser = 1;
 static const int ListControlIndexNearby = 2;
 
+@interface GuidesViewController () <RKRequestDelegate, RKObjectLoaderDelegate>
+@end
+
 @implementation GuidesViewController
-@synthesize guides = _guides;
-@synthesize loader = _loader;
-@synthesize guideUsersSyncedAt = _lastSyncedAt;
-@synthesize allGuidesSyncedAt = _allGuidesSyncedAt;
-@synthesize nearbyGuidesSyncedAt = _nearbyGuidesSyncedAt;
-@synthesize noContentLabel = _noContentLabel;
-@synthesize guidesSearchController = _guidesSearchController;
-@synthesize listControl = _listControl;
-@synthesize listControlItem = _listControlItem;
-@synthesize locationManager = _locationManager;
-@synthesize lastLocation = _lastLocation;
-@synthesize syncButton = _syncButton;
-@synthesize searchBar = _searchBar;
-@synthesize syncActivityItem = _syncActivityItem;
 
 - (void)loadData
 {
@@ -60,10 +56,13 @@ static const int ListControlIndexNearby = 2;
     [self checkEmpty];
     [self.tableView reloadData];
     
-    if (syncNeeded && RKClient.sharedClient.reachabilityObserver.isNetworkReachable) {
+    if (syncNeeded &&
+        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
         [self sync:NO];
     } else {
-        [self stopSync];
+        [self syncFinished];
     }
 }
 
@@ -114,16 +113,18 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
+        [self sync:YES];
+    } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
                                                      message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
                                                     delegate:self
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-        return;
     }
-    [self sync:YES];
 }
 
 - (void)checkEmpty
@@ -135,7 +136,7 @@ static const int ListControlIndexNearby = 2;
             self.noContentLabel = [[UILabel alloc] init];
             self.noContentLabel.backgroundColor = [UIColor clearColor];
             self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.textAlignment = UITextAlignmentCenter;
+            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
             self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         }
         
@@ -190,9 +191,7 @@ static const int ListControlIndexNearby = 2;
     NSString *url =[NSString stringWithFormat:@"/guides.json?locale=%@-%@",
                     language,
                     countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Guide mapping]
-                                                      delegate:self];
+    [self syncGuidesWithUrlString:url];
 }
 
 - (void)syncNearbyGuides
@@ -211,7 +210,7 @@ static const int ListControlIndexNearby = 2;
                                                otherButtonTitles:nil];
             [av show];
         }
-        [self stopSync];
+        [self syncFinished];
         return;
     }
     self.nearbyGuidesSyncedAt = [NSDate date];
@@ -222,9 +221,8 @@ static const int ListControlIndexNearby = 2;
                     self.lastLocation.coordinate.longitude,
                     language,
                     countryCode];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                 objectMapping:[Guide mapping]
-                                                      delegate:self];
+    
+    [self syncGuidesWithUrlString:url];
 }
 
 - (void)syncUserGuides
@@ -238,19 +236,51 @@ static const int ListControlIndexNearby = 2;
                     language,
                     countryCode];
     if (username && username.length > 0) {
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                     objectMapping:[Guide mapping]
-                                                          delegate:self];
+        [self syncGuidesWithUrlString:url];
         self.guideUsersSyncedAt = [NSDate date];
     } else {
-        [self stopSync];
+        [self syncFinished];
     }
 }
 
-- (void)stopSync
+- (void)syncGuidesWithUrlString:(NSString *)urlString {
+    [[Analytics sharedClient] debugLog:@"Network - Sync guides"];
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager loadObjectsAtResourcePath:urlString
+                                  usingBlock:^(RKObjectLoader *loader) {
+                                      loader.delegate = self;
+                                      loader.objectMapping = [Guide mapping];
+                                  }];
+}
+
+- (void)syncFinished
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelAllRequests];
+}
+    
+- (void)showSignupPrompt {
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
+                                                      object:self
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                      strongSelf.guideUsersSyncedAt = nil;
+                                                      [strongSelf sync];
+                                                  }];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Guides" }];
+
+    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+    svc.skippable = NO;
+    svc.cancellable = YES;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+    // for sizzle
+    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    [self.tabBarController presentViewController:nav
+                                        animated:YES
+                                      completion:nil];
 }
 
 - (UIBarButtonItem *)listControlItem
@@ -264,11 +294,14 @@ static const int ListControlIndexNearby = 2;
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"All",nil), NSLocalizedString(@"Your Guides",nil), NSLocalizedString(@"Nearby",nil),nil]];
-        _listControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
+        _listControl = [[UISegmentedControl alloc] initWithItems:@[
+                                                                   NSLocalizedString(@"All",nil),
+                                                                   NSLocalizedString(@"Your Guides",nil),
+                                                                   NSLocalizedString(@"Nearby",nil),
+                                                                   ]];
+        _listControl.tintColor = [UIColor inatTint];
+
+        NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
         
         [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
@@ -280,6 +313,7 @@ static const int ListControlIndexNearby = 2;
 {
     if (!_syncActivityItem) {
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
+        aiv.color = [UIColor inatTint];
         [aiv startAnimating];
         _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
     }
@@ -299,17 +333,36 @@ static const int ListControlIndexNearby = 2;
                                           indexPathForSelectedRow] row]];
         }
         GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
-        gx.xmlURL = [INatBaseURL stringByAppendingFormat:@"/guides/%@.xml", g.recordID];
+        gx.xmlURL =[[NSURL URLWithString:[NSString stringWithFormat:@"/guides/%@.xml", g.recordID]
+                           relativeToURL:[NSURL inat_baseURL]] absoluteString];
         vc.guide = gx;
         vc.title = g.title;
         vc.guideDelegate = self;
-    } else if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        vc.delegate = self;
     }
 }
 
 #pragma mark - View lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        
+        self.navigationController.tabBarItem.image = ({
+            FAKIcon *bookOutline = [FAKIonIcons iosBookOutlineIconWithSize:35];
+            [bookOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [bookOutline imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+        self.navigationController.tabBarItem.selectedImage =({
+            FAKIcon *bookFilled = [FAKIonIcons iosBookIconWithSize:35];
+            [bookFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+            [bookFilled imageWithSize:CGSizeMake(34, 45)];
+        });
+        
+    }
+    
+    return self;
+}
+
 
 - (void)viewDidLoad
 {
@@ -331,6 +384,8 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];
@@ -342,15 +397,12 @@ static const int ListControlIndexNearby = 2;
                            flex,
                            nil]];
     
-    if (self.locationManager) {
-        [self.locationManager startUpdatingLocation];
-    }
-    [self loadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopSync];
+    [super viewWillDisappear:animated];
+    
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -365,14 +417,22 @@ static const int ListControlIndexNearby = 2;
         ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenGuides]) {
         
         TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial6en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"About Guides", @"Title for guides tutorial screen");
+        vc.tutorialImage = [UIImage imageNamed:@"tutorial_guides"];
+        vc.tutorialTitle = NSLocalizedString(@"Guides are lists of species", @"Title for guides tutorial screen");
+        vc.tutorialSubtitleOne = NSLocalizedString(@"Guides are created and shared by the iNaturalist community", @"Subtitle above image for guides tutorial screen");
+        vc.tutorialSubtitleTwo = NSLocalizedString(@"Visit iNaturalist.org to create your own guides", @"Subtitle below image for guides tutorial screen");
+
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self presentViewController:vc animated:YES completion:nil];
         });
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenGuides];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
+    if (self.locationManager) {
+        [self.locationManager startUpdatingLocation];
+    }
+    [self loadData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -384,6 +444,10 @@ static const int ListControlIndexNearby = 2;
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source
@@ -407,8 +471,9 @@ static const int ListControlIndexNearby = 2;
     [imageView sd_cancelCurrentImageLoad];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
+    title.textAlignment = NSTextAlignmentNatural;
     [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"guides"]];
+                 placeholderImage:[UIImage inat_defaultGuideImage]];
     
     return cell;
 }
@@ -418,82 +483,16 @@ static const int ListControlIndexNearby = 2;
     [self performSegueWithIdentifier:@"GuideDetailSegue" sender:self];
 }
 
-#pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        Guide *g = (Guide *)o;
-        [g setSyncedAt:now];
-    }
-    
-    NSArray *rejects = [Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil", now]];
-    for (Guide *g in rejects) {
-        [g deleteEntity];
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    [self stopSync];
-    [self loadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // was running into a bug in release build config where the object loader was
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
-    
-    [self stopSync];
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-            // Unauthorized
-        case 401:
-            authFailure = true;
-            // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-    
-    if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
-    } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-    }
-}
-
-#pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    self.guideUsersSyncedAt = nil;
-    [self sync];
-}
-
 #pragma mark - CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     self.lastLocation = newLocation;
-    if (!self.nearbyGuidesSyncedAt) {
+    if (!self.nearbyGuidesSyncedAt &&
+        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
+        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
+        
         [self syncNearbyGuides];
     }
-}
-
-- (void)viewDidUnload {
-    [self setSyncButton:nil];
-    [self setSyncActivityItem:nil];
-    [super viewDidUnload];
 }
 
 #pragma mark - GuideViewControllerDelegate
@@ -514,4 +513,87 @@ static const int ListControlIndexNearby = 2;
         [g save];
     }
 }
+
+#pragma mark - RKRequest and RKObjectLoader delegates
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    [self syncFinished];
+    
+    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
+    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
+    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
+    NSString *errorMsg = error.localizedDescription;
+    
+    if (jsonParsingError || authFailure) {
+        [self showSignupPrompt];
+    } else {
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+    }
+
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
+    NSDate *now = [NSDate date];
+    for (INatModel *o in objects) {
+        Guide *g = (Guide *)o;
+        [g setSyncedAt:now];
+    }
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
+                         now];
+    
+    NSArray *rejects = [Guide objectsWithPredicate:pred];
+    
+    for (Guide *g in rejects) {
+        [g deleteEntity];
+    }
+    
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@",
+                            error.localizedDescription];
+        [[Analytics sharedClient] debugLog:logMsg];
+    }
+    
+    [self syncFinished];
+    [self loadData];
+}
+
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    bool authFailure = false;
+    NSString *errorMsg;
+    switch (response.statusCode) {
+        case 401:
+            // Unauthorized
+            authFailure = true;
+            break;
+        case 422:
+            // UNPROCESSABLE ENTITY
+            
+            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
+            break;
+        default:
+            return;
+            break;
+    }
+    
+    if (authFailure) {
+        [self syncFinished];
+        [self showSignupPrompt];
+    } else if (errorMsg) {
+        [self syncFinished];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
+                                                    delegate:nil
+                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                           otherButtonTitles:nil];
+        [av show];
+    }
+}
+
 @end

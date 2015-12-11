@@ -8,6 +8,7 @@
 
 #import "Guide.h"
 #import "List.h"
+#import "NSURL+INaturalist.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 
@@ -69,7 +70,8 @@ static RKManagedObjectMapping *defaultMapping = nil;
 
 - (NSString *)xmlURL
 {
-    return [NSString stringWithFormat:@"%@/guides/%@.xml", INatBaseURL, self.recordID];
+    return [[NSURL URLWithString:[NSString stringWithFormat:@"/guides/%@.xml", self.recordID]
+                   relativeToURL:[NSURL inat_baseURL]] absoluteString];
 }
 
 // TODO when guide deleted, remove associated data

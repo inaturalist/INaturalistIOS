@@ -15,6 +15,7 @@
 - (void)event:(NSString *)name;
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties;
 - (void)logAllPageViewForTarget:(UIViewController *)target;
+- (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
 - (void)timedEvent:(NSString *)name;
 - (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
@@ -36,6 +37,8 @@ extern NSString *kAnalyticsEventNavigateExploreList;
 extern NSString *kAnalyticsEventNavigateExploreObsDetails;
 extern NSString *kAnalyticsEventNavigateExploreTaxonDetails;
 
+extern NSString *kAnalyticsEventNavigateExploreLeaderboard;
+
 extern NSString *kAnalyticsEventNavigateGuides;             // list of guides
 extern NSString *kAnalyticsEventNavigateGuideCollection;    // collection of taxa photos in guide
 extern NSString *kAnalyticsEventNavigateGuideMenu;          // guide details menu
@@ -45,6 +48,9 @@ extern NSString *kAnalyticsEventNavigateGuidePhoto;         // custom photo view
 extern NSString *kAnalyticsEventNavigateSettings;
 extern NSString *kAnalyticsEventNavigateTutorial;
 extern NSString *kAnalyticsEventNavigateLogin;
+extern NSString *kAnalyticsEventNavigateSignup;
+extern NSString *kAnalyticsEventNavigateSignupSplash;
+extern NSString *kAnalyticsEventNavigateAcknowledgements;
 
 extern NSString *kAnalyticsEventNavigateMap;
 
@@ -84,11 +90,68 @@ extern NSString *kAnalyticsEventExploreObservationShare;
 // observations activites
 extern NSString *kAnalyticsEventCreateObservation;
 extern NSString *kAnalyticsEventSyncObservation;
+extern NSString *kAnalyticsEventSyncStopped;
+extern NSString *kAnalyticsEventSyncFailed;
+extern NSString *kAnalyticsEventSyncOneRecord;
 extern NSString *kAnalyticsEventObservationsPullToRefresh;
 
 // login
 extern NSString *kAnalyticsEventLogin;
+extern NSString *kAnalyticsEventLoginFailed;
 extern NSString *kAnalyticsEventSignup;
+extern NSString *kAnalyticsEventLogout;
+extern NSString *kAnalyticsEventForgotPassword;
+
+// signup splash
+extern NSString *kAnalyticsEventSplashFacebook;
+extern NSString *kAnalyticsEventSplashGoogle;
+extern NSString *kAnalyticsEventSplashSignupEmail;
+extern NSString *kAnalyticsEventSplashLogin;
+extern NSString *kAnalyticsEventSplashCancel;
+extern NSString *kAnalyticsEventSplashSkip;
+
+// partners
+extern NSString *kAnalyticsEventPartnerAlertPresented;
+extern NSString *kAnalyticsEventPartnerAlertResponse;
 
 // model integrity
 extern NSString *kAnalyticsEventObservationlessOFVSaved;
+
+// new observation flow
+extern NSString *kAnalyticsEventNewObservationStart;
+extern NSString *kAnalyticsEventNewObservationShutter;
+extern NSString *kAnalyticsEventNewObservationLibraryStart;
+extern NSString *kAnalyticsEventNewObservationLibraryPicked;
+extern NSString *kAnalyticsEventNewObservationNoPhoto;
+extern NSString *kAnalyticsEventNewObservationCancel;
+extern NSString *kAnalyticsEventNewObservationConfirmPhotos;
+extern NSString *kAnalyticsEventNewObservationRetakePhotos;
+extern NSString *kAnalyticsEventNewObservationCategorizeTaxon;
+extern NSString *kAnalyticsEventNewObservationSkipCategorize;
+extern NSString *kAnalyticsEventNewObservationSaveObservation;
+
+// observation edits
+extern NSString *kAnalyticsEventObservationCaptiveChanged;
+extern NSString *kAnalyticsEventObservationTaxonChanged;
+extern NSString *kAnalyticsEventObservationIDPleaseChanged;
+extern NSString *kAnalyticsEventObservationProjectsChanged;
+extern NSString *kAnalyticsEventObservationGeoprivacyChanged;
+extern NSString *kAnalyticsEventObservationNotesChanged;
+extern NSString *kAnalyticsEventObservationDateChanged;
+extern NSString *kAnalyticsEventObservationLocationChanged;
+extern NSString *kAnalyticsEventObservationAddPhoto;
+extern NSString *kAnalyticsEventObservationDeletePhoto;
+extern NSString *kAnalyticsEventObservationNewDefaultPhoto;
+extern NSString *kAnalyticsEventObservationViewHiresPhoto;
+
+// settings
+extern NSString *kAnalyticsEventSettingEnabled;
+extern NSString *kAnalyticsEventSettingDisabled;
+extern NSString *kAnalyticsEventSettingsNetworkChangeBegan;
+extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
+
+// guides
+extern NSString *kAnalyticsEventDownloadGuideStarted;
+extern NSString *kAnalyticsEventDownloadGuideCompleted;
+extern NSString *kAnalyticsEventDeleteDownloadedGuide;
+

@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "GuideCollectionViewController.h"
@@ -18,6 +18,7 @@
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "ImageStore.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -160,31 +161,29 @@ static const int GutterWidth  = 5;
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
     [img sd_cancelCurrentImageLoad];
-    img.image = [UIImage imageNamed:@"iconic_taxon_unknown.png"];
-    img.contentMode = UIViewContentModeCenter;
+    img.image = [UIImage imageNamed:@"ic_unknown"];
+    img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
-    NSString *size = [self currentImageSize];
-    NSString *localImagePath = [guideTaxon bestLocalImagePathForSize:size];
-    if (localImagePath) {
-        img.image = [UIImage imageWithContentsOfFile:localImagePath];
-        img.contentMode = UIViewContentModeScaleAspectFill;
-    } else {
-        NSString *remoteImageURL = [guideTaxon bestRemoteImageURLForSize:size];
-        if (remoteImageURL) {
-            [img sd_setImageWithURL:[NSURL URLWithString:remoteImageURL]
-                   placeholderImage:[UIImage imageNamed:@"iconic_taxon_unknown.png"]];
-            img.contentMode = UIViewContentModeScaleAspectFill;
+    
+    if (guideTaxon) {
+        if (guideTaxon.smallPhotoUrl.host) {
+            [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
+                   placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
+        } else if (guideTaxon.smallPhotoUrl) {
+            [img setImage:[UIImage imageWithContentsOfFile:guideTaxon.smallPhotoUrl.path]];
+        }
+        
+        UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
+        label.textAlignment = NSTextAlignmentNatural;
+        if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
+            label.font = [UIFont italicSystemFontOfSize:12.0];
+            label.text = guideTaxon.name;
+        } else {
+            label.font = [UIFont systemFontOfSize:12.0];
+            label.text = guideTaxon.displayName;
         }
     }
     
-    UILabel *label = (UILabel *)[cell viewWithTag:CellLabelTag];
-    if (!guideTaxon.displayName || [guideTaxon.displayName isEqualToString:guideTaxon.name]) {
-        label.font = [UIFont italicSystemFontOfSize:12.0];
-        label.text = guideTaxon.name;
-    } else {
-        label.font = [UIFont systemFontOfSize:12.0];
-        label.text = guideTaxon.displayName;
-    }
     return cell;
 }
 
@@ -366,7 +365,10 @@ static const int GutterWidth  = 5;
 - (void)downloadXML:(NSString *)url quietly:(BOOL)quietly
 {
     if (!quietly) {
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Loading...",nil);
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
     }
     NSMutableURLRequest *r = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -377,9 +379,8 @@ static const int GutterWidth  = 5;
     }
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
     d.quiet = quietly;
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:r
-                                                                  delegate:d
-                                                          startImmediately:YES];
+    [[[NSURLConnection alloc] initWithRequest:r
+                                     delegate:d] start];
 }
 
 - (NSString *)currentXPath
@@ -412,7 +413,17 @@ static const int GutterWidth  = 5;
 
 - (GuideTaxonXML *)guideTaxonAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [items objectAtIndex:indexPath.row];
+    GuideTaxonXML *guideTaxon = nil;
+    @try {
+        guideTaxon = [items objectAtIndex:indexPath.row];
+    } @catch (NSException *exception) {
+        // return nil in case of range exceptions
+        if (![exception.name isEqualToString:NSRangeException]) {
+            @throw exception;
+        }
+    } @finally {
+        return guideTaxon;
+    }
 }
 
 // http://stackoverflow.com/questions/12999510/uicollectionview-animation-custom-layout
@@ -569,14 +580,20 @@ static const int GutterWidth  = 5;
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
-    [SVProgressHUD dismiss];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
+    });
+    
+    if (self.progress) {
+        self.progress.hidden = YES;
+    }
+    
     if (!self.quiet) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
-                                                     message:error.localizedDescription
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide", nil)
+                                    message:error.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
     }
 }
 
@@ -586,27 +603,34 @@ static const int GutterWidth  = 5;
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
+    });
+    
     if (self.progress) {
         self.progress.hidden = YES;
     }
     
-    [SVProgressHUD dismiss];
-    
     if (self.lastStatusCode == 200) {
+        
         NSError *error;
-        if ([self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
-            NSLog(@"wrote to file: %@", self.filePath);
-        } else {
-            NSLog(@"failed to write to %@, error: %@", self.filePath, error);
+        if (![self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to save guide", nil)
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
         }
         [self.controller loadXML:self.filePath];
-    } else if (!self.quiet) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
-                                                     message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+    } else {
+        if (!self.quiet) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Guide download error", nil)
+                                        message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+        }
     }
 }
 

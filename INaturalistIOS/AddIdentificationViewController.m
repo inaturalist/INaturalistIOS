@@ -8,7 +8,7 @@
 
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
 
 #import "AddIdentificationViewController.h"
@@ -17,8 +17,9 @@
 #import "TaxonPhoto.h"
 #import "Analytics.h"
 
-@interface AddIdentificationViewController () <RKRequestDelegate>
-
+@interface AddIdentificationViewController () <RKRequestDelegate> {
+    BOOL viewHasPresented;
+}
 @property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
@@ -30,20 +31,23 @@
 
 @implementation AddIdentificationViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
-
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
 	if (!self.taxon) {
-		[self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+        if (viewHasPresented) {
+            // user is trying to cancel adding an ID
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+        }
 	}
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    viewHasPresented = YES;
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddIdentification];
 }
 
@@ -60,18 +64,55 @@
     }
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (IBAction)cancelAction:(id)sender {
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)saveAction:(id)sender {
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
+    
+    BOOL inputValidated = YES;
+    NSString *alertMsg;
+    
+    if (!self.observation || !self.observation.recordID) {
+        inputValidated = NO;
+        alertMsg = NSLocalizedString(@"Unable to add an identification to this observation. Please try again later.",
+                                     @"Failure message when making an identification");
+    } else if (!self.taxon || !self.taxon.recordID) {
+        inputValidated = NO;
+        alertMsg = NSLocalizedString(@"Unable to identify this observation to that species. Please try again later.",
+                                     @"Failure message when making an identification");
+    }
+    
+    if (!inputValidated) {
+        NSString *alertTitle = NSLocalizedString(@"Identification Failed", @"Title of identification failure alert");
+        if (!alertMsg) {
+            alertMsg = NSLocalizedString(@"Unknown error while making an identification.", @"Unknown error");
+        }
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
 							 @"identification[observation_id]": self.observation.recordID,
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
-	[[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
+    [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Saving...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
+    [[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
@@ -84,16 +125,27 @@
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+
 	if (response.statusCode == 200) {
-        [SVProgressHUD showSuccessWithStatus:nil];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
-        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
 	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
@@ -102,8 +154,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
 	[self taxonToUI];
-	
-	NSLog(@"chose taxon: %@", taxon.defaultName);
 }
 
 - (void)taxonToUI
@@ -125,10 +175,10 @@
                    placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
         }
         self.speciesGuessTextField.enabled = NO;
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
         self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.taxon.iconicTaxonName];
     } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
         self.speciesGuessTextField.enabled = YES;
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }

@@ -23,13 +23,10 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.mapTypeControl.selectedSegmentIndex = self.mapType;
 }
 
-- (void)viewDidUnload {
-    [self setMapTypeControl:nil];
-    [super viewDidUnload];
-}
 
 - (IBAction)choseMapType:(id)sender {
     UISegmentedControl *control = (UISegmentedControl *)sender;
@@ -50,6 +47,6 @@
                             withObject:self 
                             withObject:mapType];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

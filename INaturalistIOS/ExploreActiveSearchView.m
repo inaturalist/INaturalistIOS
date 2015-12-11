@@ -32,7 +32,7 @@
             self.activeSearchLabel = ({
                 UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
                 label.translatesAutoresizingMaskIntoConstraints = NO;
-                
+                label.textAlignment = NSTextAlignmentNatural;
                 label.font = [UIFont systemFontOfSize:11.0f];
                 label.numberOfLines = 0;
                 label.textColor = [UIColor whiteColor];
@@ -41,7 +41,7 @@
             [view addSubview:self.activeSearchLabel];
 
             self.removeActiveSearchButton = ({
-                FAKIcon *close = [FAKIonIcons ios7CloseEmptyIconWithSize:30.0f];
+                FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
                 [close addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
                 
                 UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];

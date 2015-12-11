@@ -8,15 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@class LoginController;
+
 @interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
-{
-    NSManagedObjectModel *managedObjectModel;
-}
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) RKObjectManager *photoObjectManager;
+@property (strong, nonatomic) LoginController *loginController;
 
-- (void)configureRestKit;
-- (void)configureThree20;
 - (BOOL)loggedIn;
-- (NSManagedObjectModel *)getManagedObjectModel;
+- (void)showMainUI;
+- (void)showInitialSignupUI;
+
+- (void)reconfigureForNewBaseUrl;
+- (void)rebuildCoreData;
+
 @end
+
+
+extern NSString *kInatCoreDataRebuiltNotification;

@@ -7,13 +7,17 @@
 //
 
 #import <TapkuLibrary/TapkuLibrary.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ProjectDetailViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "UIImage+INaturalist.h"
+#import "INatWebController.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -58,8 +62,10 @@ static const int LeaveProjectAlertViewTag = 1;
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"%@/projects/%@?locale=%@-%@",
                     INatWebBaseURL, self.project.cachedSlug, language, countryCode];
-    TTNavigator* navigator = [TTNavigator navigator];
-    [navigator openURLAction:[TTURLAction actionWithURLPath:url]];
+    
+    INatWebController *web = [[INatWebController alloc] initWithNibName:nil bundle:nil];
+    web.url = [NSURL URLWithString:url];
+    [self.navigationController pushViewController:web animated:YES];
 }
 
 - (IBAction)clickedJoin:(id)sender {
@@ -84,7 +90,16 @@ static const int LeaveProjectAlertViewTag = 1;
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
         } else {
-            [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+            [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                             withProperties:@{ @"From": @"Project Detail" }];
+
+            SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+            signup.reason = NSLocalizedString(@"You must be signed in to join a project.", @"Reason text for signup prompt while trying to join a project.");
+            signup.cancellable = YES;
+            signup.skippable = NO;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+            nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+            [self presentViewController:nav animated:YES completion:nil];
         }
     }
 }
@@ -93,9 +108,14 @@ static const int LeaveProjectAlertViewTag = 1;
     [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)join
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Joining...",nil)];
+- (void)join {
+    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Joining...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     if (!self.projectUser) {
         self.projectUser = [ProjectUser object];
         self.projectUser.project = self.project;
@@ -108,21 +128,18 @@ static const int LeaveProjectAlertViewTag = 1;
     }];
 }
 
-- (void)leave
-{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Leaving...",nil)];
+- (void)leave {
+    [[Analytics sharedClient] debugLog:@"Network - Leave a project"];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Leaving...",nil);
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
     [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
         loader.delegate = self;
         loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
     }];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"LoginSegue"]) {
-        LoginViewController *vc = (LoginViewController *)[segue.destinationViewController topViewController];
-        [vc setDelegate:self];
-    }
 }
 
 - (NSString *)projectDescription
@@ -145,8 +162,10 @@ static const int LeaveProjectAlertViewTag = 1;
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     [self.projectIcon sd_setImageWithURL:[NSURL URLWithString:self.project.iconURL]
-                        placeholderImage:[UIImage imageNamed:@"projects.png"]];
+                        placeholderImage:[UIImage inat_defaultProjectImage]];
     self.projectTitle.text = self.project.title;
     
     CAGradientLayer *lyr = [CAGradientLayer layer];
@@ -159,16 +178,20 @@ static const int LeaveProjectAlertViewTag = 1;
     
     [self setupJoinButton];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([currentLanguage compare:@"es"] == NSOrderedSame){
-        [self.navigationController.navigationBar setTitleTextAttributes:
-         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:17] forKey:UITextAttributeFont]];
+    if ([currentLanguage isEqualToString:@"es"]) {
+        NSDictionary *attrs = @{
+                                NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
+                                };
+        self.navigationController.navigationBar.titleTextAttributes = attrs;
     }
-
-    [super viewDidLoad];
+    // Adding auto layout for header view.
+    [self setupConstraintsForHeader];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self.navigationController setToolbarHidden:YES animated:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
@@ -184,11 +207,8 @@ static const int LeaveProjectAlertViewTag = 1;
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
-- (void)viewDidUnload {
-    [self setProjectIcon:nil];
-    [self setProjectTitle:nil];
-    [self setJoinButton:nil];
-    [super viewDidUnload];
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (NSInteger)heightForHTML:(NSString *)html
@@ -238,7 +258,7 @@ static const int LeaveProjectAlertViewTag = 1;
     if (!self.sectionHeaderViews) {
         self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
     }
-    NSNumber *key = [NSNumber numberWithInt:section];
+    NSNumber *key = @(section);
     if ([self.sectionHeaderViews objectForKey:key]) {
         return [self.sectionHeaderViews objectForKey:key];
     }
@@ -248,6 +268,7 @@ static const int LeaveProjectAlertViewTag = 1;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
     label.font = [UIFont boldSystemFontOfSize:17];
     label.textColor = [UIColor darkGrayColor];
+    label.textAlignment = NSTextAlignmentNatural;
     switch (section) {
         case 0:
             label.text = NSLocalizedString(@"Description",nil);
@@ -270,44 +291,72 @@ static const int LeaveProjectAlertViewTag = 1;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    TTStyledTextLabel *rowContent;
+    UILabel *rowContent;
+    NSString *divAlignment = [self divAlignmentForCurrentLanguage];
     if (indexPath.section == 0 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        rowContent = (UILabel *)[cell viewWithTag:1];
+        // Adding auto layout to support RTL for sizeToFit
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectDescription]]
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            NSString *htmlString = [NSString stringWithFormat:@"<div style='text-align:%@;'>%@</div>",divAlignment, [self projectDescription]];
+            
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     } else if (indexPath.section == 1 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:1];
+        rowContent = (UILabel *)[cell viewWithTag:1];
+        // Adding auto layout to support RTL for sizeToFit
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
-            rowContent.text = [TTStyledText textFromXHTML:[NSString stringWithFormat:@"<div>%@</div>", [self projectTerms]]
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            NSString *htmlString = [NSString stringWithFormat:@"<div style='text-align:%@;'>%@</div>",divAlignment, [self projectTerms]];
+            
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
+            
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     } else if (indexPath.section == 2 && indexPath.row == 0) {
-        rowContent = (TTStyledTextLabel *)[cell viewWithTag:2];
+        rowContent = (UILabel *)[cell viewWithTag:2];
+        // Adding auto layout to support RTL for sizeToFit.
+        [self setupConstraintsForCell:cell andLabel:rowContent];
         if (!rowContent.text) {
             NSArray *terms = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
             NSMutableString *termsString;
             if (self.project.projectObservationRuleTerms && self.project.projectObservationRuleTerms.length > 0) {
-                termsString = [NSMutableString stringWithString:@"<div><ul>"];
+                termsString = [NSMutableString stringWithFormat:@"<div style='text-align:%@;'><ul>",divAlignment];
                 for (NSString *term in terms) {
                     [termsString appendString:[NSString stringWithFormat:@"\n<li>- %@</li>", term]];
                 }
                 [termsString appendString:@"</ul></div>"];
             } else {
-                termsString = [NSMutableString stringWithFormat:@"<div>%@.</div>", NSLocalizedString(@"No observation rules", nil)];
+                termsString = [NSMutableString stringWithFormat:@"<div style='text-align:%@;'>%@.</div>",divAlignment, NSLocalizedString(@"No observation rules", nil)];
             }
-            rowContent.text = [TTStyledText textFromXHTML:termsString
-                                               lineBreaks:YES
-                                                     URLs:YES];
+            
+            rowContent.attributedText = [[NSAttributedString alloc] initWithData:[termsString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                         options:@{
+                                                                                   NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                   NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)
+                                                                                   }
+                                                              documentAttributes:nil
+                                                                           error:nil];
             [rowContent sizeToFit];
             rowContent.backgroundColor = [UIColor whiteColor];
+            rowContent.numberOfLines = 0;
         }
     }
     return cell;
@@ -326,8 +375,11 @@ static const int LeaveProjectAlertViewTag = 1;
 }
 
 #pragma mark - RKObjectLoader
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+    
     ProjectUser *pu = object;
     if (pu) {
         pu.syncedAt = [NSDate date];
@@ -335,14 +387,24 @@ static const int LeaveProjectAlertViewTag = 1;
         [self clickedClose:nil];
     }
     self.projectUser = pu;
-    [SVProgressHUD showSuccessWithStatus:nil];
 }
 
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    [SVProgressHUD dismiss];
+- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
+    
     if (objectLoader.response.statusCode == 401) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Project Detail" }];
+
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.reason = NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.");
+        signup.cancellable = YES;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
@@ -350,19 +412,6 @@ static const int LeaveProjectAlertViewTag = 1;
                                            cancelButtonTitle:NSLocalizedString(@"OK",nil)
                                            otherButtonTitles:nil];
         [av show];
-    }
-}
-
-#pragma mark - LoginViewControllerDelegate
-- (void)loginViewControllerDidLogIn:(LoginViewController *)controller
-{
-    [self clickedJoin:nil];
-}
-
-- (void)loginViewControllerDidCancel:(LoginViewController *)controller
-{
-    if (self.projectUser) {
-        [self.projectUser destroy];
     }
 }
 
@@ -377,4 +426,62 @@ static const int LeaveProjectAlertViewTag = 1;
         [self leave];
     }
 }
+
+
+- (void)setupConstraintsForHeader{
+    self.projectIcon.translatesAutoresizingMaskIntoConstraints = NO;
+    self.projectTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    self.projectTitle.textAlignment = NSTextAlignmentNatural;
+    
+    NSDictionary *views = @{@"projectIcon":self.projectIcon, @"projectTitle":self.projectTitle};
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[projectIcon(==70)]-[projectTitle]-10-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[projectIcon(==70)]" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[projectTitle]-5-|" options:0 metrics:0 views:views]];
+}
+
+
+/*!
+ * Adding auto layout to support RTL for sizeToFit.
+ */
+- (void)setupConstraintsForCell:(UITableViewCell *)cell andLabel:(UILabel *)label{
+    if(!label.constraints.count){
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        NSDictionary *views = @{@"label":label};
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[label]-5-|" options:0 metrics:0 views:views]];
+        
+        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[label]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+        
+    }
+}
+
+/*!
+ * Get the alignment for div based on current language.
+ */
+- (NSString *)divAlignmentForCurrentLanguage{
+    NSLocaleLanguageDirection currentLanguageDirection = [NSLocale characterDirectionForLanguage:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]];
+    if(currentLanguageDirection == kCFLocaleLanguageDirectionRightToLeft)
+        return @"right";
+    
+    return @"left";
+}
+
+
+
+
 @end
+
+
+
+
+
+
+
+
+
+
+

@@ -9,6 +9,13 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <QBImagePickerController/QBImagePickerController.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+#import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <MHVideoPhotoGallery/MHGallery.h>
+#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
+#import <JDStatusBarNotification/JDStatusBarNotification.h>
 
 #import "ObservationDetailViewController.h"
 #import "Observation.h"
@@ -17,8 +24,6 @@
 #import "ObservationField.h"
 #import "ObservationFieldValue.h"
 #import "ObservationPageViewController.h"
-#import "PhotoViewController.h"
-#import "PhotoSource.h"
 #import "Project.h"
 #import "ProjectObservation.h"
 #import "ProjectObservationField.h"
@@ -33,11 +38,18 @@
 #import "TKCoverflowCoverView+INaturalist.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
-#import "TutorialSinglePageViewController.h"
+#import "ObsCameraOverlay.h"
+#import "ConfirmPhotoViewController.h"
+#import "Observation+AddAssets.h"
+#import "UIImage+INaturalist.h"
+#import "NSURL+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "UploadManager.h"
+#import "DeletedRecord.h"
+#import "ObservationValidationErrorView.h"
 
-static const int PhotoActionSheetTag = 0;
 static const int LocationActionSheetTag = 1;
-static const int ObservedOnActionSheetTag = 2;
 static const int DeleteActionSheetTag = 3;
 static const int ViewActionSheetTag = 4;
 static const int GeoprivacyActionSheetTag = 5;
@@ -75,39 +87,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 @end
 
+@interface ObservationDetailViewController () <UIImagePickerControllerDelegate,UINavigationControllerDelegate,QBImagePickerControllerDelegate,MHGalleryDelegate>
+@property UIBarButtonItem *bigSave;
+@property RKObjectLoader *taxonLoader;
+@property (weak, nonatomic) IBOutlet DCRoundSwitch *captiveSwitch;
+@end
 
 @implementation ObservationDetailViewController
-
-@synthesize observedAtLabel;
-@synthesize latitudeLabel = _latitudeLabel;
-@synthesize longitudeLabel = _longitudeLabel;
-@synthesize positionalAccuracyLabel;
-@synthesize placeGuessField = _placeGuessField;
-@synthesize idPleaseSwitch = _idPleaseSwitch;
-@synthesize geoprivacyCell = _geoprivacyCell;
-@synthesize keyboardToolbar = _keyboardToolbar;
-@synthesize saveButton = _saveButton;
-@synthesize deleteButton = _deleteButton;
-@synthesize viewButton = _viewButton;
-@synthesize speciesGuessTextField = _speciesGuessTextField;
-@synthesize descriptionTextView;
-@synthesize delegate = _delegate;
-@synthesize observation = _observation;
-@synthesize observationPhotos = _observationPhotos;
-@synthesize observationFieldValues = _observationFieldValues;
-@synthesize coverflowView = _coverflowView;
-@synthesize locationManager = _locationManager;
-@synthesize locationTimer = _locationTimer;
-@synthesize geocoder = _geocoder;
-@synthesize popOver = _popOver;
-@synthesize currentActionSheet = _currentActionSheet;
-@synthesize locationUpdatesOn = _locationUpdatesOn;
-@synthesize observationWasNew = _observationWasNew;
-@synthesize lastImageReferenceURL = _lastImageReferenceURL;
-@synthesize ofvCells = _ofvCells;
-@synthesize ofvTaxaSearchControllerDelegate = _ofvTaxaSearchControllerDelegate;
-@synthesize taxonID = _taxonID;
-@synthesize taxonLoader = _taxonLoader;
 
 - (void)observationToUI
 {
@@ -129,19 +115,23 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.longitudeLabel.text = nil;
     }
     
-    if (self.observation.positionalAccuracy) {
-        [positionalAccuracyLabel setText:self.observation.positionalAccuracy.description];
+    if (self.observation.positionalAccuracy && self.observation.positionalAccuracy.integerValue > 0) {
+        NSString *positionalBaseStr = NSLocalizedString(@"%d m",
+                                                        @"positional accuracy. the %d is the number of meters, the m is english shorthand for meters.");
+        self.positionalAccuracyLabel.text = [NSString stringWithFormat:positionalBaseStr,
+                                             self.observation.positionalAccuracy.integerValue];
     } else {
-        self.positionalAccuracyLabel.text = nil;
+        self.positionalAccuracyLabel.text = NSLocalizedString(@"??? m", @"unknown positional accuracy");
     }
-    [descriptionTextView setText:self.observation.inatDescription];
-    
+    [self.descriptionTextView setText:self.observation.inatDescription];
+
+    // Species cell
     UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
     UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
     img.layer.cornerRadius = 5.0f;
     img.clipsToBounds = YES;
-
+    
     [img sd_cancelCurrentImageLoad];
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
     img.image = iconicTaxonImage;
@@ -155,10 +145,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         if (self.speciesGuessTextField.text.length == 0 && self.observation.speciesGuess.length == 0) {
             self.speciesGuessTextField.text = self.observation.taxon.defaultName;
         }
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
         self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.observation.taxon.iconicTaxonName];
     } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify.png"];
+        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
         self.speciesGuessTextField.enabled = YES;
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }
@@ -169,6 +159,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (self.observation.geoprivacy) {
         self.geoprivacyCell.detailTextLabel.text = self.observation.geoprivacy;
     }
+    if (self.observation.captive) {
+        [self.captiveSwitch setOn:self.observation.captive.boolValue];
+    }
     
     // Note: populating dynamic table cell values probably occurs in tableView:cellForRowAtIndexPath:ß
 }
@@ -176,16 +169,18 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)uiToObservation
 {
     if (!self.speciesGuessTextField) return;
-    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text]
-        && self.observation.speciesGuess.length != self.speciesGuessTextField.text.length) {
+    
+    // if observation text is nil, and textfield/view text is @"", they're equivalent and don't need saving.
+    if (![self.observation.speciesGuess isEqualToString:self.speciesGuessTextField.text] &&
+        !(self.observation.speciesGuess == nil && [self.speciesGuessTextField.text isEqualToString:@""])) {
         [self.observation setSpeciesGuess:[self.speciesGuessTextField text]];
     }
-    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text]
-        && self.observation.inatDescription.length != self.descriptionTextView.text.length) {
-        [self.observation setInatDescription:[descriptionTextView text]];
+    if (![self.observation.inatDescription isEqualToString:self.descriptionTextView.text] &&
+        !(self.observation.inatDescription == nil && [self.descriptionTextView.text isEqualToString:@""])) {
+        [self.observation setInatDescription:[self.descriptionTextView text]];
     }
-    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text]
-        && self.observation.placeGuess.length != self.placeGuessField.text.length) {
+    if (![self.observation.placeGuess isEqualToString:self.placeGuessField.text] &&
+        !(self.observation.placeGuess == nil && [self.placeGuessField.text isEqualToString:@""])) {
         [self.observation setPlaceGuess:[self.placeGuessField text]];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -205,7 +200,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.observation.positionalAccuracy = newAcc;
     }
     self.observation.idPlease = [NSNumber numberWithBool:self.idPleaseSwitch.on];
-    
+    self.observation.captive = @(self.captiveSwitch.on);
+
     for (NSString *key in self.ofvCells) {
         UITableViewCell *cell = [self.ofvCells objectForKey:key];
         NSUInteger ofvIndex = [self.observationFieldValues indexOfObjectPassingTest:^BOOL(ObservationFieldValue *obj, NSUInteger idx, BOOL *stop) {
@@ -243,6 +239,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             ofv.value = textField.text;
         }
     }
+}
+
+- (void)dealloc {
+    [[RKClient sharedClient].requestQueue cancelRequest:self.taxonLoader];
 }
 
 - (void)initUI
@@ -303,12 +303,12 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.activityButton.frame];
     imageView.contentMode = UIViewContentModeCenter;
 	if (self.observation.hasUnviewedActivity.boolValue) {
-        imageView.image = [UIImage imageNamed:@"08-chat-red.png"];
+        imageView.image = [UIImage imageNamed:@"08-chat-red"];
 	} else {
-        imageView.image = [UIImage imageNamed:@"08-chat.png"];
+        imageView.image = [UIImage imageNamed:@"08-chat"];
 	}
     [self.activityButton insertSubview:imageView atIndex:0];
-	[self.activityButton setTitle:[NSString stringWithFormat:@"%d", self.observation.activityCount] forState:UIControlStateNormal];
+	[self.activityButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.observation.activityCount] forState:UIControlStateNormal];
 	
 	if (!self.activityBarButton) {
         self.activityBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityButton];
@@ -317,6 +317,17 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (!self.observation.recordID) {
         [self.activityButton setHidden:YES];
     }
+    
+    UIButton *bigSaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    bigSaveButton.frame = CGRectMake(0, 0, 150, 44);
+    bigSaveButton.tintColor = [UIColor whiteColor];
+    [bigSaveButton setTitle:NSLocalizedString(@"Save",nil) forState:UIControlStateNormal];
+    bigSaveButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    bigSaveButton.titleLabel.font = [UIFont boldSystemFontOfSize:36];
+    [bigSaveButton addTarget:self action:@selector(clickedSave) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.bigSave = [[UIBarButtonItem alloc] initWithCustomView:bigSaveButton];
+    self.bigSave.tintColor = [UIColor whiteColor];
     
     UIBarButtonItem *flex = [[UIBarButtonItem alloc]
                              initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
@@ -329,18 +340,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	fixed.width = self.activityButton.frame.size.width;
     
     UIViewController *tbvc = [self getToolbarViewController];
-    [tbvc setToolbarItems:[NSArray arrayWithObjects:
-                           self.deleteButton,
-                           flex,
-                           fixed,
-                           flex,
-                           self.saveButton, 
-                           flex,
-						   self.activityBarButton,
-                           flex,
-						   self.viewButton,
-                           nil]
-                 animated:NO];
+    if (self.shouldShowBigSaveButton) {
+        [tbvc setToolbarItems:@[
+                                flex,
+                                self.bigSave,
+                                flex
+                                ]];
+    } else {
+        [tbvc setToolbarItems:[NSArray arrayWithObjects:
+                               self.deleteButton,
+                               flex,
+                               fixed,
+                               flex,
+                               self.saveButton,
+                               flex,
+                               self.activityBarButton,
+                               flex,
+                               self.viewButton,
+                               nil]
+                     animated:NO];
+    }
     [tbvc.navigationController setToolbarHidden:NO animated:YES];
     
     if (!self.keyboardToolbar) {
@@ -371,24 +390,51 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     
     self.idPleaseSwitch.onText = NSLocalizedString(@"YES", nil);
     self.idPleaseSwitch.offText = NSLocalizedString(@"NO", nil);
+    self.captiveSwitch.onText = NSLocalizedString(@"YES", nil);
+    self.captiveSwitch.offText = NSLocalizedString(@"NO", nil);
     
     [self refreshCoverflowView];
     
     BOOL taxonIDSetExplicitly = self.taxonID && self.taxonID.length > 0;
     BOOL taxonFullyLoaded = self.observation && self.observation.taxon && self.observation.taxon.fullyLoaded;
-    if (self.observation && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
+    if (self.observation && self.observation.taxon && (taxonIDSetExplicitly || !taxonFullyLoaded)) {
         NSUInteger taxonID = self.taxonID ? self.taxonID.intValue : self.observation.taxonID.intValue;
-        Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %d", taxonID]];
+        NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonID];
+        Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
         if (t && t.fullyLoaded) {
             self.observation.taxon = t;
         } else if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-            NSString *url = [NSString stringWithFormat:@"%@/taxa/%d.json", INatBaseURL, taxonID];
-            if (!self.taxonLoader) {
-                self.taxonLoader = [[TaxonLoader alloc] initWithViewController:self];
-            }
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                         objectMapping:[Taxon mapping]
-                                                              delegate:self.taxonLoader];
+            NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonID]
+                                          relativeToURL:[NSURL inat_baseURL]] absoluteString];
+            __weak typeof(self) weakSelf = self;
+            
+            RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                
+                Taxon *loadedTaxon = (Taxon *)object;
+                loadedTaxon.syncedAt = [NSDate date];
+                
+                // save into core data
+                NSError *saveError = nil;
+                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+                if (saveError) {
+                    NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
+                                        saveError.localizedDescription];
+                    [[Analytics sharedClient] debugLog:errMsg];
+                    return;
+                }
+                
+                Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
+                strongSelf.observation.taxon = t;
+                [strongSelf observationToUI];
+            };
+            
+            self.taxonLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:urlString];
+            self.taxonLoader.objectMapping = [Taxon mapping];
+            self.taxonLoader.onDidLoadObject = taxonLoadedBlock;
+            [[Analytics sharedClient] debugLog:@"Network - Load a partially loaded taxon"];
+            [self.taxonLoader sendAsynchronously];
+            
         } else {
             NSLog(@"no network, ignore");
         }
@@ -409,12 +455,30 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    }
+    
+    // user prefs determine autocorrection/spellcheck behavior of the species guess field
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeSentences];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeDefault];
+    } else {
+        [self.speciesGuessTextField setAutocorrectionType:UITextAutocapitalizationTypeNone];
+        [self.speciesGuessTextField setSpellCheckingType:UITextSpellCheckingTypeNo];
+    }
+
     // Do any additional setup after loading the view from its nib.
     self.ofvTaxaSearchControllerDelegate = [[OFVTaxaSearchControllerDelegate alloc] initWithController:self];
     NSString *currentLanguage = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([currentLanguage compare:@"es"] == NSOrderedSame){
-        [self.navigationController.navigationBar setTitleTextAttributes:
-         [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:18] forKey:UITextAttributeFont]];
+    if ([currentLanguage isEqualToString:@"es"]) {
+        NSDictionary *attrs = @{ NSFontAttributeName: [UIFont boldSystemFontOfSize:18] };
+        self.navigationController.navigationBar.titleTextAttributes = attrs;
     }
     
     // add a black view to the top so pulling won't show whitespace
@@ -427,46 +491,56 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    // this is dumb, but the TTPhotoViewController forcibly sets the bar style, so we need to reset it
-    self.getToolbarViewController.navigationController.navigationBar.translucent = NO;
-    self.getToolbarViewController.navigationController.toolbar.translucent = NO;
+    [super viewWillAppear:animated];
+
     if (self.observation) {
         [self reloadObservationFieldValues];
     }
-    self.navigationController.toolbar.barStyle = UIBarStyleDefault;
-    self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
-    self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    
+    if (self.shouldShowBigSaveButton) {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.translucent = NO;
+        self.navigationController.toolbar.barTintColor = [UIColor inatTint];
+        self.navigationController.toolbar.tintColor = [UIColor whiteColor];
+    } else {
+        self.navigationController.toolbar.barStyle = UIBarStyleDefault;
+        self.navigationController.toolbar.translucent = NO;
+        self.navigationController.toolbar.barTintColor = [UIColor whiteColor];
+        self.navigationController.toolbar.tintColor = [UIColor inatTint];
+    }
 
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialSeenEditObs]) {
-        
-        TutorialSinglePageViewController *vc = [[TutorialSinglePageViewController alloc] initWithNibName:nil bundle:nil];
-        vc.tutorialImage = [UIImage imageNamed:@"tutorial3en.png"];
-        vc.tutorialTitle = NSLocalizedString(@"Make A Detailed Observation", @"Title for observation details tutorial screen");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self presentViewController:vc animated:YES completion:nil];
-        });
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultsKeyTutorialSeenEditObs];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
-    [self initUI];
-    if (self.observation.isNew && 
-        (
-         self.observation.latitude == nil || // observation has no coordinates yet
-         self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
-         )) {
-        [self startUpdatingLocation];
-    }
     [super viewDidAppear:animated];
+
+    [self initUI];
+    
+    
+    
+    @try {
+        if (self.observation.isNew &&
+            (
+             self.observation.latitude == nil || // observation has no coordinates yet
+             self.locationUpdatesOn                              // location updates already started, but view trashed due to mem warning
+             )) {
+                [self startUpdatingLocation];
+            }
+    } @catch (NSException *exception) {
+        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
+            // for whatever reason (deleted via sync? deleted?) this observation
+            // isn't valid. only safe thing to do is get out of the observation
+            // detail view controller.
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            @throw exception;
+        }
+    }
     [self.getToolbarViewController.navigationController setToolbarHidden:NO
                                                                 animated:animated];
     
+    [self.coverflowView setCurrentCoverAtIndex:0 animated:YES];
+
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
@@ -491,27 +565,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (!self.observation.isDeleted && !self.didClickCancel) {
-        [self save];
+       // [self save];
     }
     [self keyboardDone];
+    [self stopUpdatingLocation];
     [super viewWillDisappear:animated];
 }
 
-- (void)viewDidUnload
-{
-    [self setSpeciesGuessTextField:nil];
-    [self setObservedAtLabel:nil];
-    [self setLatitudeLabel:nil];
-    [self setLongitudeLabel:nil];
-    [self setPositionalAccuracyLabel:nil];
-    [self setDescriptionTextView:nil];
-    [self setPlaceGuessField:nil];
-    [self setIdPleaseSwitch:nil];
-    [self setGeoprivacyCell:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 
 #pragma mark UITextFieldDelegate methods
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -540,29 +600,30 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 #pragma mark UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    // workaround for a crash in Apple's didHideZoomSlider
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:YES completion:nil];
-    });
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
-    if (image) {
-        [self pickedImage:image withInfo:info];
-    } else if (referenceURL) {
-        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        [assetsLib assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef iref = [rep fullResolutionImage];
-            if (iref) {
-                [self pickedImage:[UIImage imageWithCGImage:iref] withInfo:info];
-            }
-        } failureBlock:^(NSError *error) {
-            NSLog(@"error: %@", error);
+    // add metadata with geo
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
+                                                 longitude:[self.observation.visibleLongitude doubleValue]];
+    NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
+    [meta setValue:[self getGPSDictionaryForLocation:loc]
+            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+    confirm.metadata = meta;
+    
+    // set the follow up action
+    confirm.confirmFollowUpAction = ^(NSArray *assets) {
+        
+        __weak __typeof__(self) weakSelf = self;
+        [self.observation addAssets:assets afterEach:^(ObservationPhoto *op) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            [strongSelf addPhoto:op];
         }];
-    } else {
-        NSLog(@"ERROR: no image specified.");
-    }
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+    };
+    
+    [picker pushViewController:confirm animated:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -570,40 +631,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:nil];
     });
-}
-
-- (void)pickedImage:(UIImage *)image withInfo:(NSDictionary *)info
-{
-    NSURL *referenceURL = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
-    ObservationPhoto *op = [ObservationPhoto object];
-    op.position = [NSNumber numberWithInt:self.observation.observationPhotos.count+1];
-    [op setObservation:self.observation];
-    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-    [ImageStore.sharedImageStore store:image forKey:op.photoKey];
-    [self addPhoto:op];
-    op.localCreatedAt = [NSDate date];
-	op.localUpdatedAt = [NSDate date];
-    
-    if (referenceURL) {
-        self.lastImageReferenceURL = referenceURL;
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import metadata?", nil)
-                                                     message:NSLocalizedString(@"Do you want to set the date, time, and location of this observation from the photo's metadata?",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"No", nil)
-                                           otherButtonTitles:NSLocalizedString(@"Yes",nil), nil];
-        [av show];
-    } else {
-        ALAssetsLibrary *assetsLib = [[ALAssetsLibrary alloc] init];
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
-                                                     longitude:[self.observation.visibleLongitude doubleValue]];
-        
-        NSMutableDictionary *meta = [NSMutableDictionary dictionaryWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
-        [meta setValue:[self getGPSDictionaryForLocation:loc]
-                forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-        [assetsLib writeImageToSavedPhotosAlbum:image.CGImage
-                                       metadata:meta
-                                completionBlock:nil];
-    }
 }
 
 // http://stackoverflow.com/a/5314634/720268
@@ -669,100 +696,128 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark TKCoverflowViewDelegate methods
-- (void)initCoverflowView
-{
-    float width = [UIScreen mainScreen].bounds.size.width,
-          height = width / 1.342,
-          coverDim = height - 10,
-          coverWidth = coverDim,
-          coverHeight = coverDim;
-    CGRect r = CGRectMake(0, 0, width, height);
-    self.coverflowView = [[TKCoverflowView alloc] initWithFrame:r];
-	self.coverflowView.coverflowDelegate = self;
-	self.coverflowView.dataSource = self;
-    self.coverflowView.coverSize = CGSizeMake(coverWidth, coverHeight);
-    [self.coverflowView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-    [self.tableView.tableHeaderView addSubview:self.coverflowView];
-}
 
 - (void)refreshCoverflowView
 {
-    if (!self.coverflowView) {
-        [self initCoverflowView];
-    }
-    if (self.coverflowView.superview != self.tableView.tableHeaderView) {
-        [self.tableView.tableHeaderView addSubview:self.coverflowView];
-    }
-    self.coverflowView.numberOfCovers = [self.observationPhotos count];
-    if (self.coverflowView.numberOfCovers == 0) {
-        [self.coverflowView setHidden:YES];
-    } else {
-        [self.coverflowView setHidden:NO];
-    }
+    [self.tableView reloadData];
+    [self.coverflowView reloadData];
+    
     [self.coverflowView setNeedsDisplay];
     [self.coverflowView setNeedsLayout];
-    [self resizeHeaderView];
 }
 
-- (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverAtIndex:(int)index
-{
+- (NSInteger)numberOfCoversInCoverflowView:(TKCoverflowView *)coverflowView {
+    return self.observationPhotos.count;
+}
+
+- (TKCoverflowCoverView *)coverflowView:(TKCoverflowView *)coverflowView coverForIndex:(NSInteger)index {
     TKCoverflowCoverView *cover = [coverflowView dequeueReusableCoverView];
-    CGRect r = CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height);
-    if (cover) {
-        cover.frame = r;
-    } else {
-        cover = [[TKCoverflowCoverView alloc] initWithFrame:r];
+    
+    if (!cover) {
+        cover = [[TKCoverflowCoverView alloc] initWithFrame:CGRectMake(0, 0, coverflowView.coverSize.width, coverflowView.coverSize.height)
+                                                 reflection:YES];
+        cover.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
-    cover.baseline = coverflowView.frame.size.height - 20;
+
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
+
 	if (op.photoKey == nil) {
         TKCoverflowCoverView *boundCover = cover;
-        cover.imageView.contentMode = UIViewContentModeCenter;
-        NSString *imageURL;
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            imageURL = op.mediumURL ? op.mediumURL : op.smallURL;
-        } else {
-            imageURL = op.smallURL;
-        }
-        [cover setImageWithURL:[NSURL URLWithString:imageURL]
-              placeholderImage:[UIImage imageNamed:@"121-landscape.png"]
-                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                         if (error) {
-                             boundCover.image = [UIImage imageNamed:@"184-warning.png"];
-                             [boundCover setIsReflected:NO];
-                         } else {
-                             boundCover.imageView.contentMode = UIViewContentModeScaleAspectFill;
-                         }
-                     }];
+        
+        [cover.imageView sd_setImageWithURL:[NSURL URLWithString:op.mediumURL ?: op.smallURL]
+                           placeholderImage:[UIImage imageNamed:@"121-landscape"]
+                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                      if (error) {
+                                          boundCover.image = [UIImage imageNamed:@"184-warning"];
+                                      }
+                                  }];
 	} else {
 		UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey];
+		if (!img) img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
 		if (img) cover.image = img;
 	}
     return cover;
 }
 
-- (void)coverflowView:(TKCoverflowView*)coverflowView coverAtIndexWasBroughtToFront:(int)index
-{
-	// required but not required
-}
-
-- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasSingleTapped:(int)index
-{
+- (void)coverflowView:(TKCoverflowView *)coverflowView coverAtIndexWasTappedInFront:(NSInteger)index tapCount:(NSInteger)tapCount {
     ObservationPhoto *op = [self.observationPhotos objectAtIndex:index];
     if (!op) return;
-    NSString *photoSourceTitle = [NSString 
-                                  stringWithFormat:@"Photos for %@", 
-                                  (self.observation.speciesGuess ? self.observation.speciesGuess : @"Something")];
-    PhotoSource *photoSource = [[PhotoSource alloc] 
-                                initWithPhotos:self.observationPhotos 
-                                title:photoSourceTitle];
-    PhotoViewController *vc = [[PhotoViewController alloc] initWithPhoto:op];
-    vc.delegate = self;
-    vc.photoSource = photoSource;
-    UIViewController *tbvc = self.getToolbarViewController;
-    [tbvc.navigationController setToolbarHidden:YES];
-    [tbvc.navigationController pushViewController:vc animated:YES];
+    
+    NSArray *galleryData = [self.observationPhotos bk_map:^id(ObservationPhoto *op) {
+        return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
+                              galleryType:MHGalleryTypeImage];
+    }];
+    
+    MHUICustomization *customization = [[MHUICustomization alloc] init];
+    customization.showOverView = NO;
+    customization.showMHShareViewInsteadOfActivityViewController = NO;
+    customization.hideShare = NO;
+    customization.useCustomBackButtonImageOnImageViewer = NO;
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+    gallery.galleryItems = galleryData;
+    gallery.presentationIndex = index;
+    gallery.UICustomization = customization;
+    
+    gallery.galleryDelegate = self;
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        __strong typeof(blockGallery)strongGallery = blockGallery;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongGallery dismissViewControllerAnimated:YES completion:nil];
+        });
+    };
+    
+    __weak typeof(self) weakSelf = self;
+    [self presentMHGalleryController:gallery animated:YES completion:^{
+        // add a delete button
+        NSMutableArray *toolbarItems = [gallery.imageViewerViewController.toolbar.items mutableCopy];
+        [toolbarItems removeLastObject];
+        [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                                handler:^(id sender) {
+                                                                                    __strong typeof(blockGallery)strongGallery = blockGallery;
+                                                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                                    
+                                                                                    ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
+
+                                                                                    [strongGallery dismissViewControllerAnimated:YES
+                                                                                                                dismissImageView:nil
+                                                                                                                      completion:nil];
+                                                                                    [strongSelf.observationPhotos removeObject:op];
+                                                                                    [op deleteEntity];
+                                                                                    [strongSelf refreshCoverflowView];
+                                                                                }]];
+        gallery.imageViewerViewController.toolbar.items = toolbarItems;
+    }];
+}
+
+// need to re-add the delete button each time the user goes forward or backward
+- (void)galleryController:(MHGalleryController *)galleryController didShowIndex:(NSInteger)index {
+    __weak MHGalleryController *blockGallery = galleryController;
+
+    NSMutableArray *toolbarItems = [galleryController.imageViewerViewController.toolbar.items mutableCopy];
+    [toolbarItems removeLastObject];
+    
+    __weak typeof(self)weakSelf = self;
+    [toolbarItems addObject:[[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                            handler:^(id sender) {
+                                                                                __strong typeof(blockGallery)strongGallery = blockGallery;
+                                                                                __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                                                
+                                                                                ObservationPhoto *op = strongSelf.observationPhotos[strongGallery.presentationIndex];
+
+                                                                                [strongGallery dismissViewControllerAnimated:YES
+                                                                                                            dismissImageView:nil
+                                                                                                                  completion:nil];
+                                                                                [strongSelf.observationPhotos removeObject:op];
+                                                                                [op deleteEntity];
+                                                                                [strongSelf refreshCoverflowView];
+                                                                            }]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        galleryController.imageViewerViewController.toolbar.items = toolbarItems;
+    });
 }
 
 #pragma mark UIViewController
@@ -776,9 +831,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     switch (actionSheet.tag) {
-        case PhotoActionSheetTag:
-            [self photoActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
-            break;
         case DeleteActionSheetTag:
             [self deleteActionSheet:actionSheet clickedButtonAtIndex:buttonIndex];
             break;
@@ -794,64 +846,39 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
-- (void)photoActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSInteger sourceType;
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        switch (buttonIndex) {
-            case 0:
-                sourceType = UIImagePickerControllerSourceTypeCamera;
-                break;
-            case 1:
-                sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                break;
-            default:
-                return;
-        }
-    } else {
-        if (buttonIndex == 0) {
-            sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        } else {
-            return;
-        }
-    }
-    
-    [self uiToObservation];
-    UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
-    [ipc setDelegate:self];
-    [ipc setSourceType:sourceType];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-                                permittedArrowDirections:UIPopoverArrowDirectionAny
-                                                animated:YES];
-            });
-        });
-        self.popOver = popover;
-    } else {
-        [self presentViewController:ipc animated:YES completion:nil];
-    }
-}
-
-- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    // can't declare even anonymous blocks in switch statements
-    void(^segueBlock)() = ^ {
-        [self performSegueWithIdentifier:@"EditLocationSegue" sender:self];
-    };
-    
+- (void)locationActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0:
             [self startUpdatingLocation];
             break;
-        case 1:
-            // can only -presentViewController once at a time
-            // on iOS 8/iPad, this action sheet was presented
-            // so perform the segue after the sheet has dismissed
-            dispatch_async(dispatch_get_main_queue(), segueBlock);
+        case 1: {
+            // show location chooser
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+            EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
+            map.delegate = self;
+            
+            if (self.observation.visibleLatitude) {
+                INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
+                                                                 longitude:self.observation.visibleLongitude
+                                                                  accuracy:self.observation.positionalAccuracy];
+                loc.positioningMethod = self.observation.positioningMethod;
+                [map setCurrentLocation:loc];
+            } else {
+                [map setCurrentLocation:nil];
+            }
+            
+            map.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                 target:map
+                                                                                                 action:@selector(clickedCancel:)];
+            map.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                                                                                                 target:map
+                                                                                                  action:@selector(clickedDone:)];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:map];
+            [self presentViewController:nav animated:YES completion:nil];
+
             break;
+        }
         default:
             break;
     }
@@ -863,9 +890,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (buttonIndex == 0) {
         // no point in querying location anymore
         [self.locationManager stopUpdatingLocation];
-
+        
         [self.observation destroy];
         self.observation = nil;
+        
+        // trigger autoupload
+        [self triggerAutoUpload];
+
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
             [self.delegate observationDetailViewControllerDidSave:self];
         }
@@ -879,8 +911,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 - (void)viewActionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
-        NSURL *url = [NSURL URLWithString:
-                      [NSString stringWithFormat:@"%@/observations/%d", INatWebBaseURL, [self.observation.recordID intValue]]];
+        NSString *observationPath = [NSString stringWithFormat:@"/observations/%d", [self.observation.recordID intValue]];
+        NSURL *url = [[NSURL inat_baseURL] URLByAppendingPathComponent:observationPath];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
@@ -890,7 +922,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self uiToObservation];
     switch (buttonIndex) {
         case 0:
-            self.observation.geoprivacy = NSLocalizedString( @"open_adj",nil);
+            self.observation.geoprivacy = NSLocalizedString(@"open",nil);
             break;
         case 1:
             self.observation.geoprivacy = NSLocalizedString(@"obscured",nil);
@@ -906,6 +938,8 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 }
 
 #pragma mark PhotoViewControllerDelegate
+/*
+ TODO: need to re-implement delete photo
 - (void)photoViewControllerDeletePhoto:(id<TTPhoto>)photo
 {
     ObservationPhoto *op = (ObservationPhoto *)photo;
@@ -913,12 +947,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [op deleteEntity];
     [self refreshCoverflowView];
 }
+ */
 
 #pragma mark CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     if (!self.locationUpdatesOn) return;
+    
+    // self.observation can be momentarily nil when it's being deleted
+    if (!self.observation) return;
     
     @try {
         self.observation.latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
@@ -953,13 +991,30 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
 }
 
+- (void)triggerAutoUpload {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if ([uploader shouldAutoupload]) {
+        if (uploader.isNetworkAvailableForUpload) {
+            [uploader autouploadPendingContent];
+        } else {
+            if (uploader.shouldNotifyAboutNetworkState) {
+                [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                           dismissAfter:4];
+                [uploader notifiedAboutNetworkState];
+            }
+        }
+    }
+}
+
 # pragma mark - TableViewDelegate methods
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == ProjectsSection) {
         return self.observation.projectObservations.count + 1;
     } else if (section == MoreSection) {
-        return self.observationFieldValues.count + 2;
+        return self.observationFieldValues.count + 3;
     } else {
         return [super tableView:tableView numberOfRowsInSection:section];
     }
@@ -980,16 +1035,173 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         // otherwise reset the indexPath so the table view thinks it's retrieving the static cell at index 0
         indexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
     } else if (indexPath.section == MoreSection) {
-        if (indexPath.row > 1) {
+        if (indexPath.row > 2) {
             return [self tableView:tableView observationFieldValueCellForRowAtIndexPath:indexPath];
         }
     }
-    return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    UITableViewCell *staticCell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    if(indexPath.section == 0){ // Adding auto layout for species
+        if(!staticCell.constraints.count){
+            UILabel *speciesLabel = (UILabel *)[staticCell viewWithTag:2];
+            speciesLabel.textAlignment = NSTextAlignmentNatural;
+            speciesLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            UIImageView *img = (UIImageView *)[staticCell viewWithTag:1];
+            img.translatesAutoresizingMaskIntoConstraints = NO;
+            UIButton *rightButton = (UIButton *)[staticCell viewWithTag:3];
+            rightButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"image":img, @"label":speciesLabel, @"button":rightButton};
+            
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[image(==34)]-[label][button(==32)]-11-|" options:0 metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[image(==34)]-5-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[label(==44)]-0-|" options:0 metrics:0 views:views]];
+            [staticCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[button(==34)]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 1){    // Adding auto layout for notes cell
+        UITextView *notesTextview = (UITextView *)[staticCell viewWithTag:1];
+        notesTextview.textAlignment = NSTextAlignmentNatural;
+    }
+    else if(indexPath.section == 2){    // Adding auto layout for location cell
+        UITableViewCell *locationCell = staticCell;
+        if(!locationCell.constraints.count){
+            UIView *spinnerView = (UIView *)[locationCell viewWithTag:1];
+            spinnerView.translatesAutoresizingMaskIntoConstraints = NO;
+            UIImageView *locationIcon = (UIImageView *)[locationCell viewWithTag:2];
+            locationIcon.translatesAutoresizingMaskIntoConstraints = NO;
+            UILabel *latLabel = (UILabel *)[locationCell viewWithTag:3];
+            latLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            latLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *latValueLabel = (UILabel *)[locationCell viewWithTag:4];
+            latValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            latValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *lonValueLabel = (UILabel *)[locationCell viewWithTag:5];
+            lonValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            lonValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *lonLabel = (UILabel *)[locationCell viewWithTag:6];
+            lonLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            lonLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *accLabel = (UILabel *)[locationCell viewWithTag:7];
+            accLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            accLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *accValueLabel = (UILabel *)[locationCell viewWithTag:8];
+            accValueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            accValueLabel.textAlignment = NSTextAlignmentNatural;
+            UILabel *locationLabel = (UILabel *)[locationCell viewWithTag:10];
+            locationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            locationLabel.textAlignment = NSTextAlignmentNatural;
+            
+            NSDictionary *views = @{@"spinner":spinnerView, @"locationIcon":locationIcon,
+                                    @"latLabel":latLabel,@"latValueLabel":latValueLabel,@"lonLabel":lonLabel,
+                                    @"lonValueLabel":lonValueLabel,@"accLabel":accLabel,@"accValueLabel":accValueLabel,
+                                    @"locationLabel":locationLabel};
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[locationIcon(==20)]-[locationLabel]-|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[locationIcon(==20)]-29-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[locationLabel][latLabel(==21)]|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-37-[latLabel(==23)][latValueLabel(==64)]-11-[lonLabel(==24)][lonValueLabel(==64)]-[accLabel(==24)][accValueLabel(==40)]->=0-|" options:0 metrics:0 views:views]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:latValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:lonLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:lonValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraint:[NSLayoutConstraint constraintWithItem:accValueLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:latLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+            
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[spinner(==20)]-29-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            [locationCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[spinner(==20)]" options:0 metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 3){
+        UITableViewCell *dateCell = staticCell;
+        if(!dateCell.constraints.count){
+            UILabel *dateLabel = (UILabel *)[dateCell viewWithTag:1];
+            dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            dateLabel.textAlignment = NSTextAlignmentNatural;
+            UIImageView *dateIcon = (UIImageView *)[dateCell viewWithTag:2];
+            dateIcon.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSDictionary *views = @{@"dateLabel":dateLabel,@"dateIcon":dateIcon};
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[dateIcon(==23)]-15-[dateLabel]-|" options:0 metrics:0 views:views]];
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[dateIcon(==25)]-10-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+            
+            [dateCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[dateLabel]|" options:0 metrics:0 views:views]];
+        }
+    }
+    else if(indexPath.section == 4){
+        if(indexPath.row == 0){
+            UITableViewCell *moreCell = staticCell;
+            if(!moreCell.constraints.count){
+                UILabel *helpLabel = (UILabel *)[moreCell viewWithTag:1];
+                helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                helpLabel.textAlignment = NSTextAlignmentNatural;
+                UIView *switchView = (UIView *)[moreCell viewWithTag:2];
+                switchView.translatesAutoresizingMaskIntoConstraints = NO;
+                
+                NSDictionary *views = @{@"helpLabel":helpLabel,@"switchView":switchView};
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[helpLabel]-3-[switchView(==96)]-11-|" options:0 metrics:0 views:views]];
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[helpLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                
+                [moreCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[switchView]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            }
+        }
+        else if(indexPath.row == 1){
+            UITableViewCell *privacyCell = staticCell;
+            if(!privacyCell.constraints.count){
+                UILabel *privacyLabel = (UILabel *)[privacyCell viewWithTag:1];
+                privacyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                privacyLabel.textAlignment = NSTextAlignmentNatural;
+                UILabel *valueLabel = (UILabel *)[privacyCell viewWithTag:2];
+                valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                valueLabel.textAlignment = NSTextAlignmentCenter;
+                
+                NSDictionary *views = @{@"privacyLabel":privacyLabel,@"valueLabel":valueLabel};
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[privacyLabel]-3-[valueLabel(==100)]-11-|" options:0 metrics:0 views:views]];
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[privacyLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                
+                [privacyCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[valueLabel]-0-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+            }
+            else if(indexPath.row == 2){
+                UITableViewCell *captiveCell = staticCell;
+                if(!captiveCell.constraints.count) {
+                    UILabel *captiveLabel = (UILabel *)[privacyCell viewWithTag:1];
+                    captiveLabel.translatesAutoresizingMaskIntoConstraints = NO;
+                    captiveLabel.textAlignment = NSTextAlignmentNatural;
+
+                    UIView *switchView = (UIView *)[captiveCell viewWithTag:2];
+                    switchView.translatesAutoresizingMaskIntoConstraints = NO;
+                    
+                    NSDictionary *views = @{@"captiveLabel":captiveLabel, @"switchView":switchView};
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[helpLabel]-3-[switchView(==96)]-11-|" options:0 metrics:0 views:views]];
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[helpLabel]-0-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
+                    
+                    [captiveCell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[switchView]-5-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+                }
+            }
+        }
+    }
+    
+    return staticCell;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView projectCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"ProjectCell"];
     [cell setBackgroundColor:[UIColor whiteColor]];
     ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:indexPath.row];
@@ -999,7 +1211,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [imageView sd_cancelCurrentImageLoad];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     [imageView sd_setImageWithURL:[NSURL URLWithString:po.project.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     [imageView setBackgroundColor:[UIColor clearColor]];
     [cell.contentView addSubview:imageView];
     
@@ -1047,7 +1259,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         NSArray *nibObjects = [[NSBundle mainBundle] loadNibNamed:ObservationFieldValueStaticCell owner:self options:nil];
         cell = [nibObjects objectAtIndex:0];
         UILabel *leftLabel = (UILabel *)[cell viewWithTag:1];
+        leftLabel.textAlignment = NSTextAlignmentNatural;
         UILabel *rightLabel = (UILabel *)[cell viewWithTag:2];
+        rightLabel.textAlignment = NSTextAlignmentCenter;
         leftLabel.text = ofv.observationField.name;
         rightLabel.text = ofv.value == nil ? ofv.defaultValue : ofv.value;
         if ([self projectsRequireField:ofv.observationField].count > 0) {
@@ -1081,7 +1295,11 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             textField.keyboardType = UIKeyboardTypeDecimalPad;
         }
     }
-    [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    
+    if (ofv.observationField.name) {
+        [self.ofvCells setObject:cell forKey:ofv.observationField.name];
+    }
+    
     return cell;
 }
 
@@ -1099,14 +1317,32 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Edit location",nil)];
         [locationActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [locationActionSheet setCancelButtonIndex:2];
-        [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        if (self.tabBarController)
+            [locationActionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [locationActionSheet showInView:self.view];
     } else if (indexPath.section == ObservedOnTableViewSection) {
-        [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date",nil)
+        
+        [ActionSheetDatePicker showPickerWithTitle:NSLocalizedString(@"Choose a date", nil)
                                     datePickerMode:UIDatePickerModeDateAndTime
-                                      selectedDate:self.observation.localObservedOn ? self.observation.localObservedOn : [NSDate date]
-                                            target:self
-                                            action:@selector(doneDatePicker:element:)
-                                            origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
+                                      selectedDate:self.observation.localObservedOn ?: [NSDate date]
+                                         doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+                                             
+                                             self.observation.localObservedOn = selectedDate;
+                                             self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
+                                             self.observedAtLabel.text = [self.observation observedOnPrettyString];
+                                             
+                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                                 [self.getToolbarViewController.navigationController setToolbarHidden:NO animated:YES];
+                                             });
+                                             [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+                                         } cancelBlock:^(ActionSheetDatePicker *picker) {
+                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                                 [self.getToolbarViewController.navigationController setToolbarHidden:NO animated:YES];
+                                             });
+                                             [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+                                         } origin:[self tableView:self.tableView cellForRowAtIndexPath:indexPath]];
+        
     } else if (indexPath.section == ProjectsSection && indexPath.row < self.observation.projectObservations.count) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == MoreSection && indexPath.row == 1) {
@@ -1114,13 +1350,16 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                  delegate:self 
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                    destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Open_adj",nil),
+                                                        otherButtonTitles:NSLocalizedString(@"Open",nil),
                                                                             NSLocalizedString(@"Obscured",nil),
                                                                             NSLocalizedString(@"Private",nil), nil];
         actionSheet.tag = GeoprivacyActionSheetTag;
         self.currentActionSheet = actionSheet;
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    } else if (indexPath.section == MoreSection && indexPath.row > 1) {
+        if (self.tabBarController)
+            [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        else
+            [actionSheet showInView:self.view];
+    } else if (indexPath.section == MoreSection && indexPath.row > 2) {
         [self didSelectObservationFieldValueRow:indexPath];
     } else {
         [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
@@ -1129,7 +1368,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (void)didSelectObservationFieldValueRow:(NSIndexPath *)indexPath
 {
-    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 2];
+    ObservationFieldValue *ofv = [self.observationFieldValues objectAtIndex:indexPath.row - 3];
     if (ofv.observationField.allowedValuesArray.count > 2) {
         NSInteger index = [ofv.observationField.allowedValuesArray indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
             return [obj isEqualToString:ofv.value];
@@ -1138,19 +1377,22 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             index = 0;
         }
         UITableViewCell *cell = [self tableView:self.tableView observationFieldValueCellForRowAtIndexPath:indexPath];
-        [ActionSheetStringPicker showPickerWithTitle:ofv.observationField.name
-                                                rows:ofv.observationField.allowedValuesArray
-                                    initialSelection:index
-                                           doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                               UILabel *label = (UILabel *)[cell viewWithTag:2];
-                                               label.text = selectedValue;
-                                               ofv.value = selectedValue;
-                                               [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                           }
-                                         cancelBlock:^(ActionSheetStringPicker *picker) {
-                                             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                         }
-                                              origin:cell];
+        // be defensive
+        if (self.view.window) {
+            [ActionSheetStringPicker showPickerWithTitle:ofv.observationField.name
+                                                    rows:ofv.observationField.allowedValuesArray
+                                        initialSelection:index
+                                               doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                                   UILabel *label = (UILabel *)[cell viewWithTag:2];
+                                                   label.text = selectedValue;
+                                                   ofv.value = selectedValue;
+                                                   [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                               }
+                                             cancelBlock:^(ActionSheetStringPicker *picker) {
+                                                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                             }
+                                                  origin:cell];
+        }
     } else if ([ofv.observationField.datatype isEqualToString:@"taxon"]) {
         [self performSegueWithIdentifier:@"OFVTaxonSegue" sender:self];
     } else {
@@ -1192,6 +1434,36 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return MAX(defaultHeight, size.height);
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        if (self.observationPhotos.count == 0) {
+            return nil;
+        } else {
+            CGRect r = CGRectMake(0, 0, tableView.bounds.size.width, [tableView.delegate tableView:tableView heightForHeaderInSection:section]);
+            self.coverflowView = [[TKCoverflowView alloc] initWithFrame:r];
+            self.coverflowView.coverflowDelegate = self;
+            self.coverflowView.coverflowDataSource = self;
+            self.coverflowView.coverSize = CGSizeMake(r.size.width - 80, r.size.height - 40);
+            self.coverflowView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            return self.coverflowView;
+        }
+    }
+    
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        if (self.observationPhotos.count == 0) {
+            return 44;
+        } else {
+            return tableView.bounds.size.width / 1.342;
+        }
+    } else {
+        return 44;
     }
 }
 
@@ -1245,7 +1517,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 #pragma mark - TaxaSearchViewControllerDelegate
 - (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
 {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.observation.taxon = taxon;
     self.observation.taxonID = taxon.recordID;
     self.observation.iconicTaxonName = taxon.iconicTaxonName;
@@ -1321,14 +1593,14 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (cell) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
         // check prev siblings
-        for (int row = indexPath.row-1; row >= 0; row--) {
+        for (NSInteger row = indexPath.row-1; row >= 0; row--) {
             if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
                 return;
             }
         }
         // check prev sections
-        for (int section = indexPath.section-1; section >= 0; section--) {
-            for (int row = [self.tableView numberOfRowsInSection:section]-1; row >= 0; row--) {
+        for (NSInteger section = indexPath.section-1; section >= 0; section--) {
+            for (NSInteger row = [self.tableView numberOfRowsInSection:section]-1; row >= 0; row--) {
                 if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
                     return;
                 }
@@ -1347,13 +1619,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (cell) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
         // check next siblings
-        for (int row = indexPath.row+1; row < [self.tableView numberOfRowsInSection:indexPath.section]; row++) {
+        for (NSInteger row = indexPath.row+1; row < [self.tableView numberOfRowsInSection:indexPath.section]; row++) {
             if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:indexPath.section]]) {
                 return;
             }
         }
         // check next sections
-        for (int section = indexPath.section+1; section < self.tableView.numberOfSections; section++) {
+        for (NSInteger section = indexPath.section+1; section < self.tableView.numberOfSections; section++) {
             for (int row = 0; row < [self.tableView numberOfRowsInSection:section]; row++) {
                 if ([self focusOnFieldAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]) {
                     return;
@@ -1393,6 +1665,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         return;
     }
     [self save];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(observationDetailViewControllerDidSave:)]) {
         [self.delegate observationDetailViewControllerDidSave:self];
     }
@@ -1437,25 +1710,29 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                destructiveButtonTitle:NSLocalizedString(@"Delete observation",nil)
                                                     otherButtonTitles:nil];
     actionSheet.tag = DeleteActionSheetTag;
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
-    } else {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    [actionSheet showFromBarButtonItem:self.deleteButton animated:YES];
+    
+    // be defensive
+    if (self.view.window) {
+        [actionSheet showFromBarButtonItem:self.viewButton animated:YES];
     }
 }
 
 - (void)clickedView
 {
+    NSString *viewBaseText = NSLocalizedString(@"View on %@", @"Open one of my observations on iNat.org or a partner site.");
+    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:NO];
+    NSString *viewText = [NSString stringWithFormat:viewBaseText, components.host];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil 
                                                              delegate:self 
                                                     cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"View on iNaturalist.org",nil), nil];
+                                                    otherButtonTitles:viewText, nil];
     actionSheet.tag = ViewActionSheetTag;
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+    
+    // be defensive
+    if (self.view.window) {
         [actionSheet showFromBarButtonItem:self.viewButton animated:YES];
-    } else {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
     }
 }
 
@@ -1490,7 +1767,9 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (changes.count > 0) {
         self.observation.localUpdatedAt = now;
     }
-	[self.observation save];
+    
+    [self.observation save];
+    [self triggerAutoUpload];
 }
 
 - (IBAction)clickedCancel:(id)sender {
@@ -1508,24 +1787,164 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)clickedAddPhoto:(id)sender {
-    UIActionSheet *photoChoice = [[UIActionSheet alloc] init];
-    photoChoice.tag = PhotoActionSheetTag;
-    [photoChoice setDelegate:self];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Take a photo",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:2];
-    } else {
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Choose from library",nil)];
-        [photoChoice addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
-        [photoChoice setCancelButtonIndex:1];
+- (void)reverseGeocodeLocation:(CLLocation *)loc forObservation:(Observation *)obs {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
     }
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        [photoChoice showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+    
+    static CLGeocoder *geoCoder;
+    if (!geoCoder)
+        geoCoder = [[CLGeocoder alloc] init];
+    
+    [geoCoder cancelGeocode];       // cancel anything in flight
+    
+    [geoCoder reverseGeocodeLocation:loc
+                   completionHandler:^(NSArray *placemarks, NSError *error) {
+                       CLPlacemark *placemark = [placemarks firstObject];
+                       if (placemark) {
+                           @try {
+                               NSString *name = placemark.name ?: @"";
+                               NSString *locality = placemark.locality ?: @"";
+                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
+                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
+                               obs.placeGuess = [ @[ name,
+                                                     locality,
+                                                     administrativeArea,
+                                                     ISOcountryCode ] componentsJoinedByString:@", "];
+                           } @catch (NSException *exception) {
+                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                   return;
+                               else
+                                   @throw exception;
+                           }
+                       }
+                   }];
+    
+}
+
+#pragma mark - QBImagePicker delegate
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+    // add to observation
+    
+    __weak __typeof__(self) weakSelf = self;
+    [self.observation addAssets:assets
+                      afterEach:^(ObservationPhoto *op) {
+                          __typeof__(self) strongSelf = weakSelf;
+                          if (strongSelf) {
+                              [strongSelf addPhoto:op];
+                          }
+                      }];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (void)openLibrary {
+    // qbimagepicker for library multi-select
+    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    imagePickerController.showsCancelButton = NO;           // so we get a back button
+    imagePickerController.groupTypes = @[
+                                         @(ALAssetsGroupSavedPhotos),
+                                         @(ALAssetsGroupAlbum)
+                                         ];
+    
+    
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:imagePickerController animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
+    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
+                                                                                               style:UIBarButtonItemStylePlain
+                                                                                              target:imagePickerController
+                                                                                              action:@selector(done:)];
+}
+
+
+- (IBAction)clickedAddPhoto:(id)sender {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.showsCameraControls = NO;
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+        
+        ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+        
+        picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+        [overlay configureFlashForMode:picker.cameraFlashMode];
+        
+        [overlay.close bk_addEventHandler:^(id sender) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide flash if it's not available for the default camera
+        if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
+            overlay.flash.hidden = YES;
+        }
+
+        [overlay.flash bk_addEventHandler:^(id sender) {
+            if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+            } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+                picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+            }
+            [overlay configureFlashForMode:picker.cameraFlashMode];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        // hide camera selector unless both front and rear cameras are available
+        if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
+            ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+            overlay.camera.hidden = YES;
+        }
+
+        [overlay.camera bk_addEventHandler:^(id sender) {
+            if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+            } else {
+                picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
+            // hide flash button if flash isn't available for the chosen camera
+            overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        overlay.noPhoto.hidden = YES;
+        
+        [overlay.shutter bk_addEventHandler:^(id sender) {
+            [picker takePicture];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        [overlay.library bk_addEventHandler:^(id sender) {
+            [self openLibrary];
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        picker.cameraOverlayView = overlay;
+        
+        [self presentViewController:picker animated:YES completion:nil];
     } else {
-        [photoChoice showFromTabBar:self.tabBarController.tabBar];
+        // no camera available
+        QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.allowsMultipleSelection = YES;
+        imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.showsCancelButton = NO;           // so we get a back button
+        imagePickerController.groupTypes = @[
+                                             @(ALAssetsGroupSavedPhotos),
+                                             @(ALAssetsGroupAlbum)
+                                             ];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -1614,33 +2033,13 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 {
     [self.observationPhotos addObject:op];
     [self refreshCoverflowView];
-    [self.coverflowView setCurrentIndex:self.coverflowView.numberOfCovers-1];
+    [self.coverflowView setCurrentCoverIndex:[self.coverflowView.coverflowDataSource numberOfCoversInCoverflowView:self.coverflowView] - 1];
 }
 
 - (void)removePhoto:(ObservationPhoto *)op
 {
     [self.observationPhotos removeObject:op];
-    self.coverflowView.numberOfCovers = self.observationPhotos.count;
-    [self resizeHeaderView];
-}
-
-- (void)resizeHeaderView
-{
-    if (!self.coverflowView) return;
-    UIView *headerView = self.tableView.tableHeaderView;
-    CGRect r = headerView.bounds;
-    if (self.observationPhotos.count > 0) {
-        [headerView setBounds:
-         CGRectMake(0, 0, r.size.width, self.coverflowView.bounds.size.height)];
-    } else {
-        [headerView setBounds:
-         CGRectMake(0, 0, r.size.width, 0)];
-    }
-    [self.tableView setNeedsLayout];
-    [self.tableView setNeedsDisplay];
-    [headerView setNeedsLayout];
-    [headerView setNeedsDisplay];
-    [self.tableView setTableHeaderView:headerView];
+    [self refreshCoverflowView];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -1752,18 +2151,31 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         self.geocoder = [[CLGeocoder alloc] init];
     }
     [self.geocoder cancelGeocode];
+    __weak typeof (self)weakSelf = self;
+    
     [self.geocoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         CLPlacemark *pm = [placemarks firstObject]; 
         if (pm) {
-            self.observation.placeGuess = [[NSArray arrayWithObjects:
-                                            pm.name, 
-                                            pm.locality, 
-                                            pm.administrativeArea, 
-                                            pm.ISOcountryCode, 
-                                            nil] 
-                                           componentsJoinedByString:@", "];
-            if (self.placeGuessField) {
-                self.placeGuessField.text = self.observation.placeGuess;
+            // self.observation may not be accessible
+            // if it's been deleted for example
+            @try {
+                NSString *name = pm.name ?: @"";
+                NSString *locality = pm.locality ?: @"";
+                NSString *administrativeArea = pm.administrativeArea ?: @"";
+                NSString *ISOcountryCode = pm.ISOcountryCode ?: @"";
+                strongSelf.observation.placeGuess = [ @[ name,
+                                                         locality,
+                                                         administrativeArea,
+                                                         ISOcountryCode ] componentsJoinedByString:@", "];
+                if (strongSelf.placeGuessField) {
+                    strongSelf.placeGuessField.text = strongSelf.observation.placeGuess;
+                }
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                    return;
+                else
+                    @throw exception;
             }
         }
     }];
@@ -1774,14 +2186,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (!self.currentActionSheet) return;
     [self.currentActionSheet dismissWithClickedButtonIndex:0 animated:YES];
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-}
-
-- (void)doneDatePicker:(NSDate *)selectedDate element:(id)element
-{
-    self.observation.localObservedOn = selectedDate;
-    self.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:selectedDate];
-    self.observedAtLabel.text = [self.observation observedOnPrettyString];
-    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (NSArray *)projectsRequireField:(ObservationField *)observationField
@@ -1799,7 +2203,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 
 - (ObservationFieldValue *)observationFieldValueForIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.observationFieldValues objectAtIndex:(indexPath.row - 2)];
+    return [self.observationFieldValues objectAtIndex:(indexPath.row - 3)];
 }
 
 - (void)clearCurrentObservationField
@@ -1814,35 +2218,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     }
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-}
-
-@end
-
-@implementation TaxonLoader
-
-@synthesize viewController = _viewController;
-
-- (id)initWithViewController:(ObservationDetailViewController *)viewController
-{
-    self = [super init];
-    if (self) {
-        _viewController = viewController;
-    }
-    return self;
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object
-{
-    [object save];
-    if (self.viewController.observation) {
-        self.viewController.observation.taxon = (Taxon *)object;
-        [self.viewController observationToUI];
-    }
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error
-{
-    // if something went wrong, just ignore it
 }
 
 @end

@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (INaturalist)
++ (UIColor *)inatDarkGreen;
 + (UIColor *)inatTint;
++ (UIColor *)inatInactiveGreyTint;
++ (UIColor *)inatDarkGray;
++ (UIColor *)inatLightGray;
 @end

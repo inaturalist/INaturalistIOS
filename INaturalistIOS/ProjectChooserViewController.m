@@ -6,16 +6,20 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectChooserViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
 #import "Analytics.h"
+#import "UIImage+INaturalist.h"
 
-static const int ProjectCellImageTag = 1;
-static const int ProjectCellTitleTag = 2;
+#import "ProjectTableViewCell.h"
+
+#import "SignupSplashViewController.h"
+#import "INaturalistAppDelegate+TransitionAnimators.h"
 
 @implementation ProjectChooserViewController
 
@@ -77,36 +81,22 @@ static const int ProjectCellTitleTag = 2;
 
 
 #pragma mark - lifecycle
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
-    
-    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                        username,
-                        language,
-                        countryCode];
-        if (username && username.length > 0) {
-            [SVProgressHUD showWithStatus:NSLocalizedString(@"Loading...",nil)];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:url
-                                                         objectMapping:[ProjectUser mapping]
-                                                              delegate:self];
-        }
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self checkEmpty];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     for (int i = 0; i < self.projectUsers.count; i++) {
         ProjectUser *pu = [self.projectUsers objectAtIndex:i];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
@@ -120,12 +110,44 @@ static const int ProjectCellTitleTag = 2;
         }
     }
     
+    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                        username,
+                        language,
+                        countryCode];
+        if (username && username.length > 0) {
+            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
+            
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.labelText = NSLocalizedString(@"Loading...",nil);
+            hud.removeFromSuperViewOnHide = YES;
+            hud.dimBackground = YES;
+
+            RKObjectManager *objectManager = [RKObjectManager sharedManager];
+            [objectManager loadObjectsAtResourcePath:url
+                                          usingBlock:^(RKObjectLoader *loader) {
+                                              loader.delegate = self;
+                                              // handle naked array in JSON by explicitly directing the loader which mapping to use
+                                              loader.objectMapping = [objectManager.mappingProvider objectMappingForClass:[ProjectUser class]];
+                                          }];
+        }
+    }
+
+    
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectChooser];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectChooser];
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source
@@ -137,15 +159,13 @@ static const int ProjectCellTitleTag = 2;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ProjectCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:ProjectCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    UILabel *title = (UILabel *)[cell viewWithTag:ProjectCellTitleTag];
-    title.text = pu.project.title;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
-                 placeholderImage:[UIImage imageNamed:@"projects"]];
+    cell.titleLabel.text = pu.project.title;
+    [cell.projectImage sd_cancelCurrentImageLoad];
+    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
+                 placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
@@ -172,9 +192,10 @@ static const int ProjectCellTitleTag = 2;
 }
 
 #pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    [SVProgressHUD showSuccessWithStatus:nil];
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
@@ -199,7 +220,9 @@ static const int ProjectCellTitleTag = 2;
     // getting deallocated after handling an error.  This is a kludge.
     self.loader = objectLoader;
     
-    [SVProgressHUD dismiss];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    });
     
     NSString *errorMsg;
     bool jsonParsingError = false, authFailure = false;
@@ -219,7 +242,17 @@ static const int ProjectCellTitleTag = 2;
     }
     
     if (jsonParsingError || authFailure) {
-        [self performSegueWithIdentifier:@"LoginSegue" sender:self];
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Project Chooser" }];
+        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        svc.skippable = NO;
+        svc.cancellable = YES;
+        svc.reason = NSLocalizedString(@"You must be logged in to do that.", @"Login reason prompt from project chooser.");
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        // for sizzle
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]

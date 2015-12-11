@@ -56,6 +56,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic identifications;
 @dynamic sortable;
 @dynamic uuid;
+@dynamic validationErrorMsg;
+@dynamic captive;
 
 + (NSArray *)all
 {
@@ -116,6 +118,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"uuid", @"uuid",
          @"id_please", @"idPlease",
          @"geoprivacy", @"geoprivacy",
+         @"user_id", @"userID",
+         @"captive", @"captive",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
@@ -164,6 +168,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"idPlease", @"observation[id_please]",
          @"geoprivacy", @"observation[geoprivacy]",
          @"uuid", @"observation[uuid]",
+         @"captive", @"observation[captive_flag]",
          nil];
     }
     return defaultSerializationMapping;
@@ -173,7 +178,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super awakeFromInsert];
     
     // unsafe to fetch in -awakeFromInsert
-    [self performSelector:@selector(computeLocalObservedOn)
+    [self performSelector:@selector(computeLocalObservedOnAndSortable)
                withObject:nil
                afterDelay:0];
 }
@@ -182,14 +187,17 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super awakeFromFetch];
     
     // safe to use getters & setters in -awakeFromFetch
-    [self computeLocalObservedOn];
+    [self computeLocalObservedOnAndSortable];
 }
 
-- (void)computeLocalObservedOn {
+- (void)computeLocalObservedOnAndSortable {
     if (!self.localObservedOn) {
         if (self.timeObservedAt) self.localObservedOn = self.timeObservedAt;
         else if (self.observedOn) self.localObservedOn = self.observedOn;
     }
+    
+    NSDate *sortableDate = self.localCreatedAt ? self.localCreatedAt : self.createdAt;
+    self.sortable = [NSString stringWithFormat:@"%f", sortableDate.timeIntervalSinceReferenceDate];
 }
 
 - (NSArray *)sortedObservationPhotos
@@ -346,9 +354,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)willSave
 {
     [super willSave];
-    NSDate *sortableDate = self.createdAt ? self.createdAt : self.localCreatedAt;
-    NSString *sortable = [NSString stringWithFormat:@"%f-%d", sortableDate.timeIntervalSinceReferenceDate, self.recordID.intValue];
-    [self setPrimitiveValue:sortable forKey:@"sortable"];
+    
     if (!self.uuid && !self.recordID) {
         [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
     }
@@ -361,6 +367,91 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         dr.recordID = self.recordID;
         dr.modelName = NSStringFromClass(self.class);
     }
+}
+
++ (NSArray *)needingUpload {
+    // all observations that need sync are upload candidates
+    NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
+    [needingUpload addObjectsFromArray:[self needingSync]];
+    
+    // also, all observations whose uploadable children need sync
+    
+    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+        if (op.observation) {
+            [needingUpload addObject:op.observation];
+        } else {
+            [op destroy];
+        }
+    }
+    
+    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
+        if (ofv.observation) {
+            [needingUpload addObject:ofv.observation];
+        } else {
+            [ofv destroy];
+        }
+    }
+    
+    for (ProjectObservation *po in [ProjectObservation needingSync]) {
+        if (po.observation) {
+            [needingUpload addObject:po.observation];
+        } else {
+            [po destroy];
+        }
+    }
+    
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
+        return [o1.localCreatedAt compare:o2.localCreatedAt];
+    }];
+}
+
+- (BOOL)needsUpload {
+    // needs upload if this obs needs sync, or any children need sync
+    if (self.needsSync) { return YES; }
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) { return YES; }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) { return YES; }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) { return YES; }
+    }
+    return NO;
+}
+
+- (NSArray *)childrenNeedingUpload {
+    NSMutableArray *recordsToUpload = [NSMutableArray array];
+    
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) {
+            [recordsToUpload addObject:op];
+        }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) {
+            [recordsToUpload addObject:ofv];
+        }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) {
+            [recordsToUpload addObject:po];
+        }
+    }
+    
+    return [NSArray arrayWithArray:recordsToUpload];
+}
+
+- (NSString *)presentableGeoprivacy {
+    
+    if ([self.geoprivacy isEqualToString:@"private"]) {
+        return NSLocalizedString(@"Private", @"private geoprivacy");
+    } else if ([self.geoprivacy isEqualToString:@"obscured"]) {
+        return NSLocalizedString(@"Obscured", @"obscured geoprivacy");
+    } else {
+        return NSLocalizedString(@"Open", @"open geoprivacy");
+    }
+    
 }
 
 @end

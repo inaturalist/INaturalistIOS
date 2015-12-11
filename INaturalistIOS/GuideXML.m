@@ -182,7 +182,7 @@
 
 - (NSString *)imagePathForTaxonAtPosition:(NSInteger)position size:(NSString *)size fromXPath:(NSString *)xpath
 {
-    NSString *imgXPath = [NSString stringWithFormat:@"(%@)[%d]/GuidePhoto[1]/href[@type='local' and @size='%@']", xpath, position, size];
+    NSString *imgXPath = [NSString stringWithFormat:@"(%@)[%ld]/GuidePhoto[1]/href[@type='local' and @size='%@']", xpath, (long)position, size];
     RXMLElement *href = [self atXPath:imgXPath];
     if (href) {
         NSString *imgPath = [self.dirPath stringByAppendingPathComponent:href.text];
@@ -196,17 +196,17 @@
 - (NSString *)imageURLForTaxonAtPosition:(NSInteger)position size:(NSString *)size fromXPath:(NSString *)xpath
 {
     RXMLElement *href = [self atXPath:
-                              [NSString stringWithFormat:@"%@[%d]/GuidePhoto[1]/href[@type='remote' and @size='%@']", xpath, position, size]];
+                              [NSString stringWithFormat:@"%@[%ld]/GuidePhoto[1]/href[@type='remote' and @size='%@']", xpath, (long)position, size]];
     return href.text;
 }
 
 - (NSString *)displayNameForTaxonAtPosition:(NSInteger)position fromXpath:(NSString *)xpath
 {
-    return [[self atXPath:[NSString stringWithFormat:@"(%@)[%d]/displayName", xpath, position]] text];
+    return [[self atXPath:[NSString stringWithFormat:@"(%@)[%ld]/displayName", xpath, (long)position]] text];
 }
 - (NSString *)nameForTaxonAtPosition:(NSInteger)position fromXpath:(NSString *)xpath
 {
-    return [[self atXPath:[NSString stringWithFormat:@"(%@)[%d]/name", xpath, position]] text];
+    return [[self atXPath:[NSString stringWithFormat:@"(%@)[%ld]/name", xpath, (long)position]] text];
 }
 
 - (NSString *)ngzURL

@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "AddCommentViewController.h"
 #import "Observation.h"
@@ -23,16 +23,13 @@
 
 @implementation AddCommentViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     self.navigationController.navigationBar.translucent = NO;
-	[super viewWillAppear:animated];
 	[self.textView becomeFirstResponder];
+    self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -45,31 +42,51 @@
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddComment];
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 - (IBAction)clickedCancel:(id)sender {
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)clickedSave:(id)sender {
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...",nil)];
 	NSDictionary *params = @{
 							 @"comment[body]": self.textView.text,
 							 @"comment[parent_id]": self.observation.recordID,
 							 @"comment[parent_type]": @"Observation"
 							 };
+    [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Saving...", nil);
 	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    
 	if (response.statusCode == 200) {
-        [SVProgressHUD showSuccessWithStatus:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
 	} else {
-        [SVProgressHUD showErrorWithStatus:@"An unknown error occured. Please try again."];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding comment")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
 	}
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 -(BOOL)prefersStatusBarHidden { return YES; }

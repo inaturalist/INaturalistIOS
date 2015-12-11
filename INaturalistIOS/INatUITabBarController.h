@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Three20/Three20.h>
 
-@interface INatUITabBarController : UITabBarController <TTNavigatorDelegate>
+@class Taxon;
+@class Project;
+
+@interface INatUITabBarController : UITabBarController
+
 - (void)handleUserSavedObservationNotification:(NSNotification *)notification;
 - (void)setObservationsTabBadge;
+- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project;
 @end
