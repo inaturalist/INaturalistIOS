@@ -60,9 +60,9 @@
 #pragma mark UITableView delegate/datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 1) {
+    } else if (indexPath.section == 2) {
         if (indexPath.item == 0) {
             // notes
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
@@ -79,7 +79,7 @@
             
             return cell;
         }
-    } else if (indexPath.section == 2) {
+    } else if (indexPath.section == 3) {
         // map
         ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
         cell.mapView.delegate = self;
@@ -106,7 +106,7 @@
         
         return cell;
         
-    } else if (indexPath.section == 3) {
+    } else if (indexPath.section == 4) {
         // projects
         DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
         
@@ -137,7 +137,7 @@
         case 1:
             return [super tableView:tableView titleForHeaderInSection:section];
             break;
-        case 2:
+        case 3:
             return NSLocalizedString(@"Location", @"Header for location section of obs detail");
             break;
         default:
@@ -152,8 +152,8 @@
         case 1:
             return [super tableView:tableView heightForHeaderInSection:section];
             break;
-        case 2:
         case 3:
+        case 4:
             return 34;
             break;
         default:
@@ -163,9 +163,9 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 1) {
+    } else if (indexPath.section == 2) {
         if (indexPath.row == 0) {
             // notes
             if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
@@ -177,10 +177,10 @@
             // data quality
             return 44;
         }
-    } else if (indexPath.section == 2) {
+    } else if (indexPath.section == 3) {
         // maps
         return 180;
-    } else if (indexPath.section == 3) {
+    } else if (indexPath.section == 4) {
         // projects
         return 44;
     }
@@ -189,11 +189,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
-    } else if (section == 1) {
-        return 2;
     } else if (section == 2) {
+        return 2;
+    } else if (section == 3) {
         return 1;
     } else {
         return 0;
@@ -202,15 +202,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // locations & projects
-    return [super numberOfSectionsInTableView:tableView] + 2;
+    return [super numberOfSectionsInTableView:tableView] + 3;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 1) {
-        // show the map view
     } else if (indexPath.section == 2) {
+        // show the map view
+    } else if (indexPath.section == 3) {
         if (self.observation.projectObservations.count > 0) {
             // show the projects screen
             [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];

@@ -28,7 +28,7 @@
 @implementation ObsDetailActivityViewModel
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
     } else {
         if (self.observation.sortedActivity.count == 0) {
@@ -54,12 +54,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // each comment/id is its own section
-    return [super numberOfSectionsInTableView:tableView] + self.observation.sortedActivity.count - 1;
+    return [super numberOfSectionsInTableView:tableView] + self.observation.sortedActivity.count;
 }
 
 - (Activity *)activityForSection:(NSInteger)section {
-    // 1st section is observation metadata
-    return self.observation.sortedActivity[section - 1];
+    // first 2 sections are for is observation metadata
+    return self.observation.sortedActivity[section - 2];
 }
 
 - (ObsDetailSection)sectionType {
@@ -67,18 +67,17 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-        case 1:
-            return [super tableView:tableView heightForHeaderInSection:section];
-            break;
-        default:
-            return 30;
+    if (section < 2) {
+        return [super tableView:tableView heightForHeaderInSection:section];
+    } else if (section == 2) {
+        return 0;
+    } else {
+        return 30;
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == self.observation.sortedActivity.count) {
+    if (section == self.observation.sortedActivity.count + 1) {
         return 64;
     } else {
         return CGFLOAT_MIN;
@@ -87,7 +86,7 @@
 
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == self.observation.sortedActivity.count) {
+    if (section == self.observation.sortedActivity.count + 1) {
         ObsDetailAddActivityFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"addActivityFooter"];
         [footer.commentButton addTarget:self
                                  action:@selector(addComment)
@@ -102,7 +101,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     } else {
         Activity *activity = [self activityForSection:indexPath.section];
@@ -166,7 +165,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
         if (indexPath.item == 0) {

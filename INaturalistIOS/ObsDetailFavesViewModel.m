@@ -25,7 +25,7 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
     } else {
         // 1 for the fave/unfave button
@@ -34,7 +34,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [super numberOfSectionsInTableView:tableView];
+    return [super numberOfSectionsInTableView:tableView] + 1;
 }
 
 - (ObsDetailSection)sectionType {
@@ -42,7 +42,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     } else {
         if (indexPath.item == 0) {
@@ -54,7 +54,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
         if (indexPath.item == 0) {
@@ -91,9 +91,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section < 2) {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 1 && indexPath.item == 0) {
+    } else if (indexPath.item == 0) {
         
         NSString *requestPath = nil;
         NSString *hudText;
@@ -158,7 +158,7 @@
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
         for (Fave *fave in self.observation.faves) {
-            if (fave.userLogin == [[login fetchMe] login]) {
+            if ([fave.userLogin isEqualToString:[[login fetchMe] login]]) {
                 return YES;
             }
         }
