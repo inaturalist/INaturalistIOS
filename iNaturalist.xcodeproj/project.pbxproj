@@ -130,6 +130,7 @@
 		FA4D56B91C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */; };
 		FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */; };
 		FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */; };
+		FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */; };
 		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
 		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
 		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
@@ -490,6 +491,8 @@
 		FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailSelectorButton.m; sourceTree = "<group>"; };
 		FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddActivityFooter.h; sourceTree = "<group>"; };
 		FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailAddActivityFooter.m; sourceTree = "<group>"; };
+		FA4D56C01C1A6C7100C5C5AE /* ObsDetailNotesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailNotesCell.h; sourceTree = "<group>"; };
+		FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNotesCell.m; sourceTree = "<group>"; };
 		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
 		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
 		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
@@ -1046,6 +1049,8 @@
 				FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */,
 				FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */,
 				FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */,
+				FA4D56C01C1A6C7100C5C5AE /* ObsDetailNotesCell.h */,
+				FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1680,6 +1685,7 @@
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */,
+				FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */,
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,

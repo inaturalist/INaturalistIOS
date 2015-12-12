@@ -16,6 +16,7 @@
 #import "DisclosureCell.h"
 #import "ObsDetailMapCell.h"
 #import "UIColor+ExploreColors.h"
+#import "ObsDetailNotesCell.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -65,10 +66,14 @@
     } else if (indexPath.section == 2) {
         if (indexPath.item == 0) {
             // notes
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
-            cell.textLabel.text = NSLocalizedString(@"Notes", @"notes for obs detail");
-            cell.detailTextLabel.text = self.observation.inatDescription;
-            cell.detailTextLabel.numberOfLines = 0;
+            ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
+            cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+            
+            NSError *err;
+            cell.notesTextView.attributedText = [[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                 options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
+                                                                      documentAttributes:nil
+                                                                                   error:&err];
             
             return cell;
         } else if (indexPath.item == 1) {
@@ -193,7 +198,7 @@
         return [super tableView:tableView numberOfRowsInSection:section];
     } else if (section == 2) {
         return 2;
-    } else if (section == 3) {
+    } else if (section == 3 || section == 4) {
         return 1;
     } else {
         return 0;
