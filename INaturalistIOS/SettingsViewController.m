@@ -170,14 +170,14 @@ static const int UsernameTextLabelTag = 17;
 - (void)launchTutorial
 {
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTutorial];
-    
+
     NSArray *tutorialImages = @[
                                 [UIImage imageNamed:@"tutorial1"],
                                 [UIImage imageNamed:@"tutorial2"],
                                 [UIImage imageNamed:@"tutorial3"],
                                 [UIImage imageNamed:@"tutorial4"],
                                 [UIImage imageNamed:@"tutorial5"],
-                                [UIImage imageNamed:@"tutorial6"],
+                                /* [UIImage imageNamed:@"tutorial6"], */// remove guide screen.
                                 [UIImage imageNamed:@"tutorial7"],
                                 ];
     
