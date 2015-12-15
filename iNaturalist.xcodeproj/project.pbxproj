@@ -102,6 +102,13 @@
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
 		60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60F6CEC016E29AD60031504A /* Localizable.strings */; };
 		87DEE8A53F881DE44DA97A42 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7825C3137F65B9AB7DAA1BAC /* libPods-iNaturalist.a */; };
+		892270101C201AB200A0750F /* tutorial1en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 892270091C201AB200A0750F /* tutorial1en@2x.png */; };
+		892270111C201AB200A0750F /* tutorial2en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700A1C201AB200A0750F /* tutorial2en@2x.png */; };
+		892270121C201AB200A0750F /* tutorial3en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700B1C201AB200A0750F /* tutorial3en@2x.png */; };
+		892270131C201AB200A0750F /* tutorial4en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700C1C201AB200A0750F /* tutorial4en@2x.png */; };
+		892270141C201AB200A0750F /* tutorial5en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700D1C201AB200A0750F /* tutorial5en@2x.png */; };
+		892270151C201AB200A0750F /* tutorial6en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700E1C201AB200A0750F /* tutorial6en@2x.png */; };
+		892270161C201AB200A0750F /* tutorial7en@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922700F1C201AB200A0750F /* tutorial7en@2x.png */; };
 		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
 		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
 		898D14251BC69C4C000D3F2F /* SignUserForGolanProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 898D14241BC69C4C000D3F2F /* SignUserForGolanProject.m */; };
@@ -384,6 +391,13 @@
 		890DE36A1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		890DE36B1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		890DE36C1B41357000207219 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
+		892270091C201AB200A0750F /* tutorial1en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial1en@2x.png"; sourceTree = "<group>"; };
+		8922700A1C201AB200A0750F /* tutorial2en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial2en@2x.png"; sourceTree = "<group>"; };
+		8922700B1C201AB200A0750F /* tutorial3en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial3en@2x.png"; sourceTree = "<group>"; };
+		8922700C1C201AB200A0750F /* tutorial4en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial4en@2x.png"; sourceTree = "<group>"; };
+		8922700D1C201AB200A0750F /* tutorial5en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial5en@2x.png"; sourceTree = "<group>"; };
+		8922700E1C201AB200A0750F /* tutorial6en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial6en@2x.png"; sourceTree = "<group>"; };
+		8922700F1C201AB200A0750F /* tutorial7en@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tutorial7en@2x.png"; sourceTree = "<group>"; };
 		893FE7171B525BFD00BC7CC4 /* config.h.example */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.h.example; sourceTree = SOURCE_ROOT; };
 		897569FD1B4557B500F0BFAD /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
 		897569FE1B4557B500F0BFAD /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
@@ -706,6 +720,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				892270081C201A4A00A0750F /* TutorialImages */,
 				893FE7171B525BFD00BC7CC4 /* config.h.example */,
 				FA6F87661B0E996B0019B157 /* fonts */,
 				1904E5F117FB7DAC00725804 /* guides */,
@@ -953,6 +968,20 @@
 				877B526621D376BBB82550CD /* Pods-iNaturalistTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		892270081C201A4A00A0750F /* TutorialImages */ = {
+			isa = PBXGroup;
+			children = (
+				892270091C201AB200A0750F /* tutorial1en@2x.png */,
+				8922700A1C201AB200A0750F /* tutorial2en@2x.png */,
+				8922700B1C201AB200A0750F /* tutorial3en@2x.png */,
+				8922700C1C201AB200A0750F /* tutorial4en@2x.png */,
+				8922700D1C201AB200A0750F /* tutorial5en@2x.png */,
+				8922700E1C201AB200A0750F /* tutorial6en@2x.png */,
+				8922700F1C201AB200A0750F /* tutorial7en@2x.png */,
+			);
+			name = TutorialImages;
 			sourceTree = "<group>";
 		};
 		FA3D90F41A95146D00BAA0EC /* Leaderboard */ = {
@@ -1305,14 +1334,21 @@
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
+				892270121C201AB200A0750F /* tutorial3en@2x.png in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
+				892270161C201AB200A0750F /* tutorial7en@2x.png in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
+				892270151C201AB200A0750F /* tutorial6en@2x.png in Resources */,
 				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
+				892270111C201AB200A0750F /* tutorial2en@2x.png in Resources */,
 				FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */,
+				892270101C201AB200A0750F /* tutorial1en@2x.png in Resources */,
+				892270141C201AB200A0750F /* tutorial5en@2x.png in Resources */,
+				892270131C201AB200A0750F /* tutorial4en@2x.png in Resources */,
 				893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
