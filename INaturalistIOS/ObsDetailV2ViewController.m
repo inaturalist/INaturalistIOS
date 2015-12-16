@@ -25,6 +25,7 @@
 #import "ObsDetailSelectorHeaderView.h"
 #import "ObsDetailAddActivityFooter.h"
 #import "ObservationPhoto.h"
+#import "LocationViewController.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -140,6 +141,9 @@
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxon = (Taxon *)sender;
+    } else if ([segue.identifier isEqualToString:@"map"]) {
+        LocationViewController *location = [segue destinationViewController];
+        location.observation = self.observation;
     }
 }
 

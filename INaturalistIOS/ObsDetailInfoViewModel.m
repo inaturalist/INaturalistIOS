@@ -17,6 +17,7 @@
 #import "ObsDetailMapCell.h"
 #import "UIColor+ExploreColors.h"
 #import "ObsDetailNotesCell.h"
+#import "ObsDetailDataQualityCell.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -77,37 +78,44 @@
             
             return cell;
         } else if (indexPath.item == 1) {
-            // data quality
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
-            cell.textLabel.text = NSLocalizedString(@"DATA QUALITY", @"data quality notes");
-            cell.detailTextLabel.text = self.observation.qualityGrade ?: @"Needs ID";
+            // map
+            ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
+            cell.mapView.delegate = self;
+            cell.mapView.userInteractionEnabled = NO;
+            
+            if (self.observation.latitude.floatValue) {
+                CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+                CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
+                cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
+                
+                MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
+                pin.coordinate = coords;
+                pin.title = @"Title";
+                [cell.mapView addAnnotation:pin];
+            } else {
+                cell.mapView.hidden = YES;
+            }
+            
+            if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
+                cell.locationNameLabel.text = self.observation.placeGuess;
+            } else {
+                cell.locationNameLabel.text = NSLocalizedString(@"No location.", nil);
+            }
             
             return cell;
         }
     } else if (indexPath.section == 3) {
-        // map
-        ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
-        cell.mapView.delegate = self;
+        // data quality
+        ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
         
-        if (self.observation.latitude.floatValue) {
-            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
-            CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
-            cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
-            
-            MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
-            pin.coordinate = coords;
-            pin.title = @"Title";
-            [cell.mapView addAnnotation:pin];
+        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+            cell.dataQuality = ObsDataQualityResearch;
+        } else if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
+            cell.dataQuality = ObsDataQualityNeedsID;
         } else {
-            cell.mapView.hidden = YES;
+            // must be casual?
+            cell.dataQuality = ObsDataQualityCasual;
         }
-
-        if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
-            cell.locationNameLabel.text = self.observation.placeGuess;
-        } else {
-            cell.locationNameLabel.text = NSLocalizedString(@"No location.", nil);
-        }
-
         
         return cell;
         
@@ -143,8 +151,11 @@
             return [super tableView:tableView titleForHeaderInSection:section];
             break;
         case 3:
-            return NSLocalizedString(@"Location", @"Header for location section of obs detail");
+            // data quality
+            return NSLocalizedString(@"Data Quality", @"Header for data quality section of obs detail");
             break;
+        case 2:     // notes/map - no header
+        case 4:     // projects - no header
         default:
             return nil;
             break;
@@ -161,6 +172,7 @@
         case 4:
             return 34;
             break;
+        case 2:
         default:
             return 0;
             break;
@@ -179,12 +191,12 @@
                 return CGFLOAT_MIN;
             }
         } else if (indexPath.row == 1) {
-            // data quality
-            return 44;
+            // maps
+            return 180;
         }
     } else if (indexPath.section == 3) {
-        // maps
-        return 180;
+        // data quality
+        return 80;
     } else if (indexPath.section == 4) {
         // projects
         return 44;
@@ -197,8 +209,10 @@
     if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
     } else if (section == 2) {
+        // notes/map
         return 2;
     } else if (section == 3 || section == 4) {
+        // data quality, projects
         return 1;
     } else {
         return 0;
@@ -206,7 +220,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // locations & projects
+    // notes/map, data quality, projects
     return [super numberOfSectionsInTableView:tableView] + 3;
 }
 
@@ -214,10 +228,23 @@
     if (indexPath.section < 2) {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
-        // show the map view
+        // notes / map
+        if (indexPath.item == 1) {
+            // map
+            // map
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            
+            if (self.observation.latitude) {
+                // show the map view
+                [self.delegate inat_performSegueWithIdentifier:@"map" sender:nil];
+            }
+        }
     } else if (indexPath.section == 3) {
+        // data quality
+        // do nothing
+    } else if (indexPath.section == 4) {
+        // projects
         if (self.observation.projectObservations.count > 0) {
-            // show the projects screen
             [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];
         }
     }
