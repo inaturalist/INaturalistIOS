@@ -1462,7 +1462,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     cell.secondaryLabel.text = nil;
     
     cell.textLabel.text = @"Delete";
-    
+    cell.textLabel.textColor = [UIColor redColor];
     
     return cell;
 }
