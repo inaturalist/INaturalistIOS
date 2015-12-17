@@ -8,6 +8,7 @@
 
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
@@ -25,6 +26,13 @@
 #import "ObsDetailActivityBodyCell.h"
 #import "ObsDetailAddActivityFooter.h"
 #import "ObsDetailTaxonCell.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "NSURL+INaturalist.h"
+#import "Analytics.h"
+
+@interface ObsDetailActivityViewModel () <RKRequestDelegate>
+@end
 
 @implementation ObsDetailActivityViewModel
 
@@ -269,6 +277,28 @@
 
 - (ObsDetailActivityMoreCell *)moreCellInTableView:(UITableView *)tableView withActivity:(Activity *)activity {
     ObsDetailActivityMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityMore"];
+    
+    if ([activity isKindOfClass:[Identification class]]) {
+        Identification *identification = (Identification *)activity;
+        
+        // can't agree with your identification
+        cell.agreeButton.enabled = ![self loggedInUserProducedActivity:activity];
+        
+        Taxon *t = [self taxonForIdentificationByLoggedInUser];
+        if (t) {
+            // can't agree with an identification that matches your own
+            if ([t.recordID isEqual:identification.taxon.recordID]) {
+                cell.agreeButton.enabled = NO;
+            }
+        }
+        
+        cell.agreeButton.tag = identification.taxon.recordID.integerValue;
+    }
+    
+    [cell.agreeButton addTarget:self
+                         action:@selector(agree:)
+               forControlEvents:UIControlEventTouchUpInside];
+    
     return cell;
 }
 
@@ -281,11 +311,7 @@
         cell.taxonNameLabel.textColor = identification.isCurrent ? [UIColor blackColor] : [UIColor lightGrayColor];
         
         cell.taxonNameLabel.text = taxon.defaultName;
-        
-        cell.taxonImageView.layer.borderWidth = 0.5f;
-        cell.taxonImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
-        cell.taxonImageView.layer.cornerRadius = 3.0f;
-        
+                
         if ([taxon.isIconic boolValue]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         } else if (taxon.taxonPhotos.count > 0) {
@@ -309,6 +335,72 @@
 
 - (void)addIdentification {
     [self.delegate inat_performSegueWithIdentifier:@"addIdentification" sender:nil];
+}
+
+- (void)agree:(UIButton *)button {
+    // add an identification
+    
+    [[Analytics sharedClient] debugLog:@"Network - Obs Detail Add Comment"];
+    [[Analytics sharedClient] event:kAnalyticsEventObservationAddIdentification
+                     withProperties:@{ @"Via": @"View Obs Agree" }];
+    
+    NSDictionary *params = @{
+                             @"identification[observation_id]": self.observation.recordID,
+                             @"identification[taxon_id]": @(button.tag),
+                             };
+    
+    [[RKClient sharedClient] post:@"/identifications"
+                           params:params
+                         delegate:self];
+}
+
+- (BOOL)loggedInUserProducedActivity:(Activity *)activity {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    if (login.isLoggedIn) {
+        User *loggedInUser = [login fetchMe];
+        if ([loggedInUser.login isEqualToString:activity.user.login]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (Taxon *)taxonForIdentificationByLoggedInUser {
+    // get "my" current identification
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    if (login.isLoggedIn) {
+        User *loggedInUser = [login fetchMe];
+        for (Identification *eachId in self.observation.identifications) {
+            if ([eachId.user.login isEqualToString:loggedInUser.login] && eachId.isCurrent) {
+                return eachId.taxon;
+            }
+        }
+    }
+    return nil;
+}
+
+#pragma mark - RKRequestDelegate
+
+- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    if (response.statusCode == 200) {
+        [self.delegate reloadObservation];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+    }
+}
+
+- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
 }
 
 

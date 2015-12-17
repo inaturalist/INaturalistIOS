@@ -144,6 +144,7 @@ extern NSString *kAnalyticsEventObservationDeletePhoto;
 extern NSString *kAnalyticsEventObservationNewDefaultPhoto;
 extern NSString *kAnalyticsEventObservationViewHiresPhoto;
 extern NSString *kAnalyticsEventObservationDelete;
+extern NSString *kAnalyticsEventObservationAddIdentification;
 
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;

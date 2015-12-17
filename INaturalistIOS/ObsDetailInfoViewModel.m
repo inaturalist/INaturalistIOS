@@ -24,7 +24,7 @@
 
 @implementation ObsDetailInfoViewModel
 
-#pragma mark MKMapViewDelegate -
+#pragma mark - MKMapViewDelegate
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     if ([annotation isKindOfClass:[MKUserLocation class]])
@@ -59,7 +59,7 @@
 }
 
 
-#pragma mark UITableView delegate/datasource
+#pragma mark - UITableView delegate/datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section < 2) {

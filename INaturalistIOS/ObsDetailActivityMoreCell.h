@@ -10,7 +10,6 @@
 
 @interface ObsDetailActivityMoreCell : UITableViewCell
 
-@property IBOutlet UIButton *moreButton;
 @property IBOutlet UIButton *agreeButton;
 
 @end

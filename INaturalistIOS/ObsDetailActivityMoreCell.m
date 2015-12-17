@@ -14,18 +14,20 @@
 @implementation ObsDetailActivityMoreCell
 
 - (void)awakeFromNib {
-    FAKIcon *moreIcon = [FAKIonIcons iosMoreOutlineIconWithSize:40.0f];
-    [moreIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-    [self.moreButton setAttributedTitle:moreIcon.attributedString forState:UIControlStateNormal];
-    [self.moreButton setTitleColor:[UIColor inatTint] forState:UIControlStateNormal];
-    
-    [self.agreeButton setTitleColor:[UIColor inatTint] forState:UIControlStateNormal];
+    [self.agreeButton setTitleColor:[UIColor inatTint]
+                           forState:UIControlStateNormal];
+    [self.agreeButton setTitleColor:[UIColor lightGrayColor]
+                           forState:UIControlStateDisabled];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)prepareForReuse {
+    [self.agreeButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
 }
 
 @end

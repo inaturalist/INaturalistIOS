@@ -216,6 +216,7 @@ NSString *kAnalyticsEventObservationDeletePhoto =               @"Obs - Delete P
 NSString *kAnalyticsEventObservationNewDefaultPhoto =           @"Obs - New Default Photo";
 NSString *kAnalyticsEventObservationViewHiresPhoto =            @"Obs - View Hires Photo";
 NSString *kAnalyticsEventObservationDelete =                    @"Obs - Delete";
+NSString *kAnalyticsEventObservationAddIdentification =         @"Obs - Add Identification";
 
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
