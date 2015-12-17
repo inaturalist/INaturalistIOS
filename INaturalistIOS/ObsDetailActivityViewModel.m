@@ -24,6 +24,7 @@
 #import "ObsDetailActivityAuthorCell.h"
 #import "ObsDetailActivityBodyCell.h"
 #import "ObsDetailAddActivityFooter.h"
+#import "ObsDetailTaxonCell.h"
 
 @implementation ObsDetailActivityViewModel
 
@@ -169,148 +170,36 @@
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
         if (indexPath.item == 0) {
-            ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
-            
-            Activity *activity = [self activityForSection:indexPath.section];
-            if (activity) {
-                NSURL *userIconUrl = [NSURL URLWithString:activity.user.userIconURL];
-                if (userIconUrl) {
-                    [cell.authorImageView sd_setImageWithURL:userIconUrl];
-                    cell.authorImageView.layer.cornerRadius = 27.0 / 2;
-                    cell.authorImageView.clipsToBounds = YES;
-                }
-                
-                NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateStyle = NSDateFormatterShortStyle;
-                dateFormatter.timeStyle = NSDateFormatterNoStyle;
-                dateFormatter.doesRelativeDateFormatting = YES;
-                cell.dateLabel.text = [dateFormatter stringFromDate:activity.createdAt];
-                cell.dateLabel.textColor = [UIColor lightGrayColor];
-                
-                if ([activity isKindOfClass:[Identification class]]) {
-                    NSString *identificationAuthor = [NSString stringWithFormat:NSLocalizedString(@"%@'s ID", @"identification author attribution"), activity.user.login];
-                    NSMutableAttributedString *idAuthorAttrStr = [[NSMutableAttributedString alloc] initWithString:identificationAuthor
-                                                                                                        attributes:@{ NSForegroundColorAttributeName: [UIColor lightGrayColor] }];
-                    [idAuthorAttrStr addAttribute:NSForegroundColorAttributeName
-                                            value:[UIColor blueColor]
-                                            range:[identificationAuthor rangeOfString:activity.user.login]];
-                    cell.authorNameLabel.attributedText = idAuthorAttrStr;
-                } else {
-                    NSAttributedString *commentAuthorAttrStr = [[NSAttributedString alloc] initWithString:activity.user.login
-                                                                                               attributes:@{ NSForegroundColorAttributeName: [UIColor blueColor] }];
-                    cell.authorNameLabel.attributedText = commentAuthorAttrStr;
-                }
-            }
-
-            return cell;
+            // each section starts with an author row
+            return [self authorCellInTableView:tableView
+                                  withActivity:[self activityForSection:indexPath.section]];
         } else if (indexPath.item == 1) {
             Activity *activity = [self activityForSection:indexPath.section];
             if ([activity isKindOfClass:[Comment class]]) {
-                // body
-                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
-                
-                UITextView *tv = [[UITextView alloc] initWithFrame:CGRectZero];
-                tv.font = [UIFont systemFontOfSize:12.0f];
-                tv.translatesAutoresizingMaskIntoConstraints = NO;
-                tv.text = activity.body;
-                tv.dataDetectorTypes = UIDataDetectorTypeLink;
-                tv.editable = NO;
-                tv.scrollEnabled = NO;
-                [cell.contentView addSubview:tv];
-                
-                NSDictionary *views = @{ @"tv": tv };
-                
-                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[tv]-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-                
-                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-
-                
-                NSError *err;
-                tv.attributedText = [[NSAttributedString alloc] initWithData:[activity.body dataUsingEncoding:NSUTF8StringEncoding]
-                                                                     options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
-                                                          documentAttributes:nil
-                                                                       error:&err];
-
-                return cell;
+                // comments follow with a body row
+                return [self activityBodyCellInTableView:tableView
+                                            withBodyText:activity.body];
             } else if ([activity isKindOfClass:[Identification class]]) {
-                Identification *i = (Identification *)activity;
-                // taxon
-                DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
-                
-                Taxon *taxon = i.taxon;
-                
-                if (taxon) {
-                    
-                    cell.titleLabel.textColor = i.isCurrent ? [UIColor blackColor] : [UIColor lightGrayColor];
-
-                    cell.titleLabel.text = taxon.defaultName;
-                    
-                    cell.cellImageView.layer.borderWidth = 0.5f;
-                    cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
-                    cell.cellImageView.layer.cornerRadius = 3.0f;
-                    
-                    if ([taxon.isIconic boolValue]) {
-                        cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-                    } else if (taxon.taxonPhotos.count > 0) {
-                        TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-                        [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
-                    } else {
-                        cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-                    }
-                    
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }
-                
-                return cell;
+                // identifications follow with a taxon row
+                return [self taxonCellInTableView:tableView
+                               withIdentification:(Identification *)activity];
             }
         } else if (indexPath.item == 2) {
             // must be identification
             Identification *i = (Identification *)[self activityForSection:indexPath.section];
             if (i.body && i.body.length > 0) {
-                // body
-                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"subtitle"];
-                
-                UITextView *tv = [[UITextView alloc] initWithFrame:CGRectZero];
-                tv.translatesAutoresizingMaskIntoConstraints = NO;
-                tv.font = [UIFont systemFontOfSize:12.0f];
-                tv.text = i.body;
-                tv.dataDetectorTypes = UIDataDetectorTypeLink;
-                tv.editable = NO;
-                tv.scrollEnabled = NO;
-                [cell.contentView addSubview:tv];
-                
-                NSDictionary *views = @{ @"tv": tv };
-                
-                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[tv]-|"
-                                                                           options:0
-                                                                           metrics:0
-                                                                              views:views]];
-                
-                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-
-                NSError *err;
-                tv.attributedText = [[NSAttributedString alloc] initWithData:[i.body dataUsingEncoding:NSUTF8StringEncoding]
-                                                                     options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
-                                                          documentAttributes:nil
-                                                                       error:&err];
-                
-                return cell;
+                // this id has a text body
+                return [self activityBodyCellInTableView:tableView
+                                            withBodyText:i.body];
             } else {
-                ObsDetailActivityMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityMore"];
-                return cell;
+                // the "more" cell for ids, currently has an agree button
+                return [self moreCellInTableView:tableView
+                                    withActivity:[self activityForSection:indexPath.section]];
             }
         } else if (indexPath.item == 3) {
-            ObsDetailActivityMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityMore"];
-            return cell;
+            // the "more" cell for ids, currently has an agree button
+            return [self moreCellInTableView:tableView
+                                withActivity:[self activityForSection:indexPath.section]];
         } else {
             // impossibru!
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
@@ -318,6 +207,96 @@
             return cell;
         }
     }
+}
+
+
+#pragma mark - tableviewcell helpers
+
+- (ObsDetailActivityBodyCell *)activityBodyCellInTableView:(UITableView *)tableView withBodyText:(NSString *)bodyText {
+    // body
+    ObsDetailActivityBodyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityBody"];
+    
+    NSError *err = nil;
+    cell.bodyTextView.attributedText = [[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
+                                                                        options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
+                                                             documentAttributes:nil
+                                                                          error:&err];
+    
+    cell.bodyTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+    cell.bodyTextView.editable = NO;
+    cell.bodyTextView.scrollEnabled = NO;
+        
+    return cell;
+}
+
+- (ObsDetailActivityAuthorCell *)authorCellInTableView:(UITableView *)tableView withActivity:(Activity *)activity {
+    ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
+    
+    if (activity) {
+        NSURL *userIconUrl = [NSURL URLWithString:activity.user.userIconURL];
+        if (userIconUrl) {
+            [cell.authorImageView sd_setImageWithURL:userIconUrl];
+            cell.authorImageView.layer.cornerRadius = 27.0 / 2;
+            cell.authorImageView.clipsToBounds = YES;
+        }
+        
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        dateFormatter.doesRelativeDateFormatting = YES;
+        cell.dateLabel.text = [dateFormatter stringFromDate:activity.createdAt];
+        cell.dateLabel.textColor = [UIColor lightGrayColor];
+        
+        if ([activity isKindOfClass:[Identification class]]) {
+            NSString *identificationAuthor = [NSString stringWithFormat:NSLocalizedString(@"%@'s ID", @"identification author attribution"), activity.user.login];
+            NSMutableAttributedString *idAuthorAttrStr = [[NSMutableAttributedString alloc] initWithString:identificationAuthor
+                                                                                                attributes:@{ NSForegroundColorAttributeName: [UIColor lightGrayColor] }];
+            [idAuthorAttrStr addAttribute:NSForegroundColorAttributeName
+                                    value:[UIColor blueColor]
+                                    range:[identificationAuthor rangeOfString:activity.user.login]];
+            cell.authorNameLabel.attributedText = idAuthorAttrStr;
+        } else {
+            NSAttributedString *commentAuthorAttrStr = [[NSAttributedString alloc] initWithString:activity.user.login
+                                                                                       attributes:@{ NSForegroundColorAttributeName: [UIColor blueColor] }];
+            cell.authorNameLabel.attributedText = commentAuthorAttrStr;
+        }
+    }
+
+    return cell;
+}
+
+- (ObsDetailActivityMoreCell *)moreCellInTableView:(UITableView *)tableView withActivity:(Activity *)activity {
+    ObsDetailActivityMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityMore"];
+    return cell;
+}
+
+- (ObsDetailTaxonCell *)taxonCellInTableView:(UITableView *)tableView withIdentification:(Identification *)identification {
+
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxon"];
+    
+    Taxon *taxon = identification.taxon;
+    if (taxon) {
+        cell.taxonNameLabel.textColor = identification.isCurrent ? [UIColor blackColor] : [UIColor lightGrayColor];
+        
+        cell.taxonNameLabel.text = taxon.defaultName;
+        
+        cell.taxonImageView.layer.borderWidth = 0.5f;
+        cell.taxonImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
+        cell.taxonImageView.layer.cornerRadius = 3.0f;
+        
+        if ([taxon.isIconic boolValue]) {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+        } else if (taxon.taxonPhotos.count > 0) {
+            TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
+            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+        } else {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+        }
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    return cell;
 }
 
 #pragma mark - uibutton targets

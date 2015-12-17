@@ -143,6 +143,7 @@ extern NSString *kAnalyticsEventObservationAddPhoto;
 extern NSString *kAnalyticsEventObservationDeletePhoto;
 extern NSString *kAnalyticsEventObservationNewDefaultPhoto;
 extern NSString *kAnalyticsEventObservationViewHiresPhoto;
+extern NSString *kAnalyticsEventObservationDelete;
 
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;

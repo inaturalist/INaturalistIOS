@@ -56,9 +56,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
     ConfirmObsSectionIdentify,
     ConfirmObsSectionNotes,
+    ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate, UIActionSheetDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -174,6 +175,41 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)dealloc {
     [self stopUpdatingLocation];
+}
+
+#pragma mark - UIActionSheet delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // cancel, do nothing
+    } else if (buttonIndex == 0) {
+        // delete this observation
+        [[Analytics sharedClient] event:kAnalyticsEventObservationDelete];
+        
+        // delete locally
+        [self.observation deleteEntity];
+        self.observation = nil;
+        NSError *error;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            // TODO: log it at least, also notify the user
+        }
+        
+        // trigger the delete to happen on the server
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loginController.uploadManager.shouldAutoupload) {
+            [appDelegate.loginController.uploadManager autouploadPendingContent];
+        }
+        
+        // pop to the root view controller
+        UITabBarController *tab = (UITabBarController *)self.presentingViewController;
+        UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
+        
+        [tab dismissViewControllerAnimated:YES completion:^{
+            [nav popToRootViewControllerAnimated:YES];
+        }];
+        
+    }
 }
 
 #pragma mark - Autoupload Helper
@@ -863,7 +899,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - table view delegate / datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    if (self.isMakingNewObservation) {
+        // + 1 for the delete button
+        return 6;
+    } else {
+        return 5;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -876,6 +917,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionNotes:
             return 6;
+            break;
+        case ConfirmObsSectionDelete:
+            return 1;
             break;
         default:
             return 0;
@@ -927,6 +971,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 0;
             break;
         case ConfirmObsSectionIdentify:
+        case ConfirmObsSectionDelete:
             return 34;
             break;
         case ConfirmObsSectionNotes:
@@ -972,6 +1017,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return [self illegalCellForIndexPath:indexPath];
             }
             break;
+        case ConfirmObsSectionDelete:
+            if (indexPath.item == 0) {
+                return [self deleteCellInTableView:tableView];
+            }
         default:
             return [self illegalCellForIndexPath:indexPath];
             break;
@@ -1158,6 +1207,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // do nothing
             }
             break;
+        case ConfirmObsSectionDelete:
+            // show alertview
+            [[[UIActionSheet alloc] initWithTitle:@"Are you sure? This is permanent!"
+                                         delegate:self
+                                cancelButtonTitle:@"Never mind"
+                           destructiveButtonTitle:@"Bombs away"
+                                otherButtonTitles:nil] showInView:self.view];
+            
+            break;
         default:
             // do nothing
             break;
@@ -1166,13 +1224,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case ConfirmObsSectionPhotos:
-            return nil;
-            break;
         case ConfirmObsSectionIdentify:
             return NSLocalizedString(@"What did you see?", @"title for identification section of new obs confirm screen.");
             break;
+        case ConfirmObsSectionPhotos:
         case ConfirmObsSectionNotes:
+        case ConfirmObsSectionDelete:
             return nil;
             break;
         default:
@@ -1394,6 +1451,19 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    return cell;
+}
+
+- (UITableViewCell *)deleteCellInTableView:(UITableView *)tableView {
+    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    
+    cell.titleLabel.text = nil;
+    cell.cellImageView.image = nil;
+    cell.secondaryLabel.text = nil;
+    
+    cell.textLabel.text = @"Delete";
+    
+    
     return cell;
 }
 
