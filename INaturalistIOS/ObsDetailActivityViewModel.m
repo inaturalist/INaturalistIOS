@@ -134,16 +134,18 @@
 }
 
 - (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    CGFloat usableWidth = tableView.bounds.size.width - 16;
+    // 24 for some padding on the left/right
+    CGFloat usableWidth = tableView.bounds.size.width - 24;
     CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
-    UIFont *font = [UIFont systemFontOfSize:12.0f];
+    UIFont *font = [UIFont systemFontOfSize:14.0f];
     
     CGRect textRect = [text boundingRectWithSize:maxSize
                                          options:NSStringDrawingUsesLineFragmentOrigin
                                       attributes:@{ NSFontAttributeName: font }
                                          context:nil];
     
-    return MAX(44, textRect.size.height);
+    // 16 for some padding above/below
+    return MAX(44, textRect.size.height + 16);
 }
 
 
