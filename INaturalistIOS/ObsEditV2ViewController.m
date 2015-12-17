@@ -51,6 +51,7 @@
 #import "UploadManager.h"
 #import "Analytics.h"
 #import "PhotoScrollViewCell.h"
+#import "ObsCenteredLabelCell.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -97,6 +98,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
         [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
+        [tv registerClass:[ObsCenteredLabelCell class] forCellReuseIdentifier:@"singleButton"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
         tv.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -1455,14 +1457,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (UITableViewCell *)deleteCellInTableView:(UITableView *)tableView {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    ObsCenteredLabelCell *cell = [tableView dequeueReusableCellWithIdentifier:@"singleButton"];
     
-    cell.titleLabel.text = nil;
-    cell.cellImageView.image = nil;
-    cell.secondaryLabel.text = nil;
-    
-    cell.textLabel.text = @"Delete";
-    cell.textLabel.textColor = [UIColor redColor];
+    cell.centeredLabel.textColor = [UIColor redColor];
+    cell.centeredLabel.text = NSLocalizedString(@"Delete", nil);
+    cell.centeredLabel.font = [UIFont boldSystemFontOfSize:17.0f];
     
     return cell;
 }

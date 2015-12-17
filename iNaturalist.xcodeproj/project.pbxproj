@@ -196,6 +196,7 @@
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
 		FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */; };
+		FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
@@ -627,6 +628,8 @@
 		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
 		FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
 		FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCenteredLabelCell.h; sourceTree = "<group>"; };
+		FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCenteredLabelCell.m; sourceTree = "<group>"; };
 		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
@@ -1066,6 +1069,8 @@
 				FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */,
 				FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */,
 				FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */,
+				FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */,
+				FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1667,6 +1672,7 @@
 				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
 				19F62196150ECC0200C58F28 /* ListedTaxon.m in Sources */,
 				FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */,
+				FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
 				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
