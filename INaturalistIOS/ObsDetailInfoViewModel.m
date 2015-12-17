@@ -186,7 +186,7 @@
         if (indexPath.row == 0) {
             // notes
             if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
-                return 120;
+                return [self heightForRowInTableView:tableView withBodyText:self.observation.inatDescription];
             } else {
                 return CGFLOAT_MIN;
             }
@@ -204,6 +204,22 @@
     
     return CGFLOAT_MIN;
 }
+
+- (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
+    // 24 for some padding on the left/right
+    CGFloat usableWidth = tableView.bounds.size.width - 24;
+    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
+    UIFont *font = [UIFont systemFontOfSize:14.0f];
+    
+    CGRect textRect = [text boundingRectWithSize:maxSize
+                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                      attributes:@{ NSFontAttributeName: font }
+                                         context:nil];
+    
+    // 37 for notes label+padding above, and 8 for padding below
+    return MAX(44, textRect.size.height + 37 + 8);
+}
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section < 2) {
