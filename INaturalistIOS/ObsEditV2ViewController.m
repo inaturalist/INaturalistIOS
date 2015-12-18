@@ -69,6 +69,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (readonly) CLLocationManager *locationManager;
 @property NSTimer *locationTimeout;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
+@property CLGeocoder *geoCoder;
 @end
 
 @implementation ObsEditV2ViewController
@@ -176,6 +177,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)dealloc {
+    if (self.geoCoder) {
+        [self.geoCoder cancelGeocode];
+    }
+    
     [self stopUpdatingLocation];
 }
 
@@ -621,6 +626,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         self.observation.positionalAccuracy = @(newLocation.horizontalAccuracy);
         self.observation.positioningMethod = @"gps";
         
+        self.observation.localUpdatedAt = [NSDate date];
+        
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
         
@@ -690,36 +697,35 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.latitude.floatValue
                                                  longitude:obs.longitude.floatValue];
     
-    static CLGeocoder *geoCoder;
-    if (!geoCoder)
-        geoCoder = [[CLGeocoder alloc] init];
+    if (!self.geoCoder)
+        self.geoCoder = [[CLGeocoder alloc] init];
     
-    [geoCoder cancelGeocode];       // cancel anything in flight
+    [self.geoCoder cancelGeocode];       // cancel anything in flight
     
-    [geoCoder reverseGeocodeLocation:loc
-                   completionHandler:^(NSArray *placemarks, NSError *error) {
-                       CLPlacemark *placemark = [placemarks firstObject];
-                       if (placemark) {
-                           @try {
-                               NSString *name = placemark.name ?: @"";
-                               NSString *locality = placemark.locality ?: @"";
-                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
-                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
-                               obs.placeGuess = [ @[ name,
-                                                     locality,
-                                                     administrativeArea,
-                                                     ISOcountryCode ] componentsJoinedByString:@", "];
-                               NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
-                               [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
-                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
-                           } @catch (NSException *exception) {
-                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
-                                   return;
-                               else
-                                   @throw exception;
-                           }
-                       }
-                   }];
+    [self.geoCoder reverseGeocodeLocation:loc
+                        completionHandler:^(NSArray *placemarks, NSError *error) {
+                            CLPlacemark *placemark = [placemarks firstObject];
+                            if (placemark) {
+                                @try {
+                                    NSString *name = placemark.name ?: @"";
+                                    NSString *locality = placemark.locality ?: @"";
+                                    NSString *administrativeArea = placemark.administrativeArea ?: @"";
+                                    NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
+                                    obs.placeGuess = [ @[ name,
+                                                          locality,
+                                                          administrativeArea,
+                                                          ISOcountryCode ] componentsJoinedByString:@", "];
+                                    NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+                                    [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
+                                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                                } @catch (NSException *exception) {
+                                    if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                        return;
+                                    else
+                                        @throw exception;
+                                }
+                            }
+                        }];
 }
 
 #pragma mark - UISwitch targets
@@ -779,6 +785,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Photos": @(self.observation.observationPhotos.count),
                                       @"OFVs": @(self.observation.observationFieldValues.count)
                                       }];
+    
+    self.observation.localUpdatedAt = [NSDate date];
     
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -842,6 +850,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonID = taxon.iconicTaxonID;
     self.observation.speciesGuess = taxon.defaultName;
     
+    self.observation.localUpdatedAt = [NSDate date];
+
     NSString *newTaxonName = taxon.defaultName ?: taxon.name;
     if (!newTaxonName) { newTaxonName = @"Something"; }
     
@@ -862,6 +872,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonName = nil;
     self.observation.iconicTaxonID = nil;
 
+    self.observation.localUpdatedAt = [NSDate date];
+
     self.observation.speciesGuess = speciesGuess;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
@@ -874,7 +886,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 }
 
-#pragma mark - EditLocation 
+#pragma mark - EditLocationDelegate
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
     
@@ -887,6 +899,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.longitude = location.longitude;
     self.observation.positionalAccuracy = location.accuracy;
     self.observation.positioningMethod = location.positioningMethod;
+    self.observation.placeGuess = nil;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
                      withProperties:@{
@@ -896,6 +909,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 
     [self reverseGeocodeCoordinatesForObservation:self.observation];
+}
+
+- (void)editLocationViewControllerDidCancel:(EditLocationViewController *)controller {
+    [self.navigationController popToViewController:self animated:YES];
 }
 
 #pragma mark - table view delegate / datasource
@@ -1102,7 +1119,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
                 EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
                 map.delegate = self;
-                map.saveOnExit = YES;
                 
                 if (self.observation.visibleLatitude) {
                     INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
