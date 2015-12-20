@@ -259,7 +259,8 @@ static UIImage *defaultPersonImage;
             && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         [SVProgressHUD showWithStatus:NSLocalizedString(@"Refreshing...",nil)];
         [[Analytics sharedClient] debugLog:@"Network - Refresh observation activity"];
-		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
+        NSString *language = [NSLocale localeForCurrentLanguage];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@?locale=%@", self.observation.recordID,language]
 													 objectMapping:[Observation mapping]
 														  delegate:self];
 	}

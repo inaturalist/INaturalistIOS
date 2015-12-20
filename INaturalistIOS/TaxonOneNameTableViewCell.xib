@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -14,25 +15,34 @@
                 <rect key="frame" x="0.0" y="0.0" width="287" height="53"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" minimumFontSize="10" id="3">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Scientific name" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                         <rect key="frame" x="56" y="11" width="217" height="31"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <animations/>
                         <fontDescription key="fontDescription" name="Helvetica-BoldOblique" family="Helvetica" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view tag="1" contentMode="scaleAspectFit" id="4" customClass="UIImageView">
+                    <view tag="1" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="UIImageView">
                         <rect key="frame" x="5" y="5" width="43" height="43"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="43" id="DOW-tl-bS8"/>
+                            <constraint firstAttribute="height" constant="43" id="aOH-mI-83v"/>
+                        </constraints>
                     </view>
                 </subviews>
+                <animations/>
+                <constraints>
+                    <constraint firstItem="3" firstAttribute="leading" secondItem="4" secondAttribute="trailing" constant="8" id="E8y-vY-GHG"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="3" secondAttribute="bottom" constant="3" id="ES4-u4-6Hd"/>
+                    <constraint firstItem="4" firstAttribute="centerY" secondItem="N5I-Zu-JgQ" secondAttribute="centerY" id="JSw-z5-zav"/>
+                    <constraint firstItem="4" firstAttribute="leading" secondItem="N5I-Zu-JgQ" secondAttribute="leadingMargin" constant="-3" id="Nsm-ut-sff"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="3" secondAttribute="trailing" constant="6" id="lax-c2-W4j"/>
+                    <constraint firstItem="3" firstAttribute="top" secondItem="N5I-Zu-JgQ" secondAttribute="topMargin" constant="3" id="zzz-Ee-fDP"/>
+                </constraints>
             </tableViewCellContentView>
+            <animations/>
         </tableViewCell>
     </objects>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

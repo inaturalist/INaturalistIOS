@@ -165,7 +165,8 @@ static char SUMMARY_ASSOCIATED_KEY;
     self.clearsSelectionOnViewWillAppear = YES;
     [self initUI];
     if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%@.json", self.taxon.recordID]
+        NSString *language = [NSLocale localeForCurrentLanguage];
+        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%@.json?locale=%@", self.taxon.recordID, language]
                                       relativeToURL:[NSURL inat_baseURL]] absoluteString];
 
         __weak typeof(self)weakSelf = self;

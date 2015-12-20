@@ -306,6 +306,7 @@ static const int TaxonCellSubtitleTag = 3;
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
     [imageView sd_cancelCurrentImageLoad];
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
+    titleLabel.textAlignment = NSTextAlignmentNatural;
     titleLabel.text = t.defaultName;
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
     imageView.image = iconicTaxonImage;
@@ -323,6 +324,7 @@ static const int TaxonCellSubtitleTag = 3;
         }
     } else {
         UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:TaxonCellSubtitleTag];
+        subtitleLabel.textAlignment = NSTextAlignmentNatural;
         if (t.isGenusOrLower) {
             subtitleLabel.text = t.name;
             subtitleLabel.font = [UIFont italicSystemFontOfSize:subtitleLabel.font.pointSize];
