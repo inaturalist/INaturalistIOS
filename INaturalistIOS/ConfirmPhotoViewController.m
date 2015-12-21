@@ -71,7 +71,9 @@
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && weakSelf.iconicTaxa.count > 0 && !weakSelf.taxon) {
+            // Don't display categorize screen option, for now.
+            BOOL shouldCheckForCategorize = NO;
+            if (shouldCheckForCategorize && [[NSUserDefaults standardUserDefaults] boolForKey:kInatCategorizeNewObsPrefKey] && weakSelf.iconicTaxa.count > 0 && !weakSelf.taxon) {
                 // categorize the new observation before making it
                 CategorizeViewController *categorize = [[CategorizeViewController alloc] initWithNibName:nil bundle:nil];
                 categorize.assets = confirmedAssets;
