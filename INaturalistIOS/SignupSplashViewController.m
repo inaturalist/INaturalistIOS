@@ -332,6 +332,8 @@ static char PARTNER_ASSOCIATED_KEY;
         button;
     });
     [self.view addSubview:self.loginFaceButton];
+    // For now, facebook and google login isn't supported
+    self.loginFaceButton.hidden = YES;
     
     self.loginGButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
@@ -404,6 +406,8 @@ static char PARTNER_ASSOCIATED_KEY;
         button;
     });
     [self.view addSubview:self.loginGButton];
+    // For now, facebook and google login isn't supported
+    self.loginGButton.hidden = YES;
     
     self.signupEmailButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];

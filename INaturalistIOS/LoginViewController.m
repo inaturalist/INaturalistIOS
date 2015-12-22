@@ -118,6 +118,8 @@
         label;
     });
     [self.view addSubview:self.orLabel];
+    // For now, facebook and google login isn't supported
+    self.orLabel.hidden = YES;
     
     UIView *socialContainer = ({
         UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
@@ -188,6 +190,8 @@
         button;
     });
     [socialContainer addSubview:self.gButton];
+    // For now, facebook and google login isn't supported
+    self.gButton.hidden = YES;
     
     self.faceButton = ({
         SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
@@ -248,6 +252,8 @@
 
     });
     [socialContainer addSubview:self.faceButton];
+    // For now, facebook and google login isn't supported
+    self.faceButton.hidden = YES;
     
     UIView *spacer = [UIView new];
     UIView *spacer2 = [UIView new];

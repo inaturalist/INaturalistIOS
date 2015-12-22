@@ -40,6 +40,21 @@
     // be defensive
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
     self.projectUsers = [self.projectUsers filteredArrayUsingPredicate:predicate];
+    
+    // Find the Golan project and put it at index 0 to be the first.
+    ProjectUser *golanProject;
+    for(ProjectUser *pu in self.projectUsers) {
+        if([pu.projectID intValue] == kGolanWildlifeProjectID) {
+            golanProject = pu;
+            break;
+        }
+    }
+    if(golanProject) {
+        NSMutableArray *mArray = [self.projectUsers mutableCopy];
+        [mArray removeObject:golanProject];
+        [mArray insertObject:golanProject atIndex:0];
+        self.projectUsers = [mArray copy];
+    }
 }
 
 - (IBAction)clickedCancel:(id)sender {
