@@ -643,8 +643,44 @@ static const int UsernameTextLabelTag = 17;
 
 
 
+// ##################################################
+// Category for MHGallery
+// Fixing navigation and back button locations.
+// ##################################################
 
+@interface MHGalleryImageViewerViewController (fixingiOS9)
+- (void)updateToolBarForItem:(MHGalleryItem*)item;
+@end
 
+@implementation MHGalleryImageViewerViewController (fixingiOS9)
 
+- (void)updateToolBarForItem:(MHGalleryItem*)item{
+    UIBarButtonItem *flex = [UIBarButtonItem.alloc initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                        target:self
+                                                                        action:nil];
+    UIBarButtonItem *fixed = [UIBarButtonItem.alloc initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                         target:self
+                                                                         action:nil];
+    fixed.width = 30;
+    SEL selector = NSSelectorFromString(@"enableOrDisbaleBarbButtons");
+
+    if([self respondsToSelector:selector])
+        [self performSelector:selector withObject:nil];
+    
+    UIBarButtonItem *leftBarButton = [self valueForKey:@"leftBarButton"];
+    UIBarButtonItem *rightBarButton = [self valueForKey:@"rightBarButton"];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
+        self.toolbar.items = @[flex,rightBarButton,flex,leftBarButton,flex,fixed];
+        UIBarButtonItem *doneBarButton = self.navigationItem.rightBarButtonItem;
+        self.navigationItem.leftBarButtonItem = doneBarButton;
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    else {
+        self.toolbar.items = @[flex,leftBarButton,flex,rightBarButton,flex,fixed];
+    }
+}
+
+@end
 
 
