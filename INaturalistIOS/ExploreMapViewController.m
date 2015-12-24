@@ -74,10 +74,14 @@
     // wait to set the delegate and receive regionDidChange notifications until
     // after the view has completely finished loading
     mapView.delegate = self;
-    
-    
-    
 }
+
+- (void)resetPredicateByLocation {
+    // notify the observation data source that we have a new limiting region
+    ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+    self.observationDataSource.limitingRegion = region;
+}
+
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -210,6 +214,7 @@
         ExploreContainerViewController *container = (ExploreContainerViewController *)self.navigationController.topViewController;
         if ([container.selectedViewController isEqual:self] && [self.tabBarController.selectedViewController isEqual:self.navigationController]) {
             [mapChangedTimer invalidate];
+            
             
             __weak typeof(self) weakSelf = self;
             // give the user a bit to keep scrolling before we make a new API call

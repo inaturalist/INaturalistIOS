@@ -36,6 +36,9 @@
     // show the selected view controller
     UIViewController *content = [self.viewControllers objectAtIndex:control.selectedSegmentIndex];
     [self displayContentController:content];
+    
+    // TODO: update observation predicate.
+//    if([control isKindOfClass:[Explore]])
 }
 
 - (void)displayContentController:(UIViewController*)content {

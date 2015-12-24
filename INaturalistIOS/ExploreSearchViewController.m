@@ -39,7 +39,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "SignupSplashViewController.h"
 #import "UIColor+INaturalist.h"
-
+#import "SignUserForGolanProject.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
@@ -61,6 +61,8 @@
     UIBarButtonItem *leaderboardItem;
     UIBarButtonItem *spinnerItem;
     UIActivityIndicatorView *spinner;
+    // Reference to the golan proejct, used for quick filter by project.
+    ExploreProject *golanExploreProject;
 }
 
 @end
@@ -105,6 +107,8 @@
         observationsController.notificationDelegate = self;
         
         searchController = [[ExploreSearchController alloc] init];
+        
+        [self searchForGolanProject];
     }
     return self;
 }
@@ -236,6 +240,47 @@
                                                                       metrics:0
                                                                         views:views]];
 }
+
+/// Find which controller is being displayed and update predicate accordingly
+//- (void)displayContentController:(UIViewController*)content {
+//    [super displayContentController:content];
+//    
+//    for (ExploreSearchPredicate *predicate in observationsController.activeSearchPredicates) {
+//        if (predicate.type == ExploreSearchPredicateTypeLocation) {
+//            NSLog(@"");
+//        }
+//    }
+//    
+//    // check first if the user isn't activly searching for something.
+//    if([[self activeSearchText] isEqual:[NSNull null]] || [[self activeSearchText] isEqualToString:@""]) {
+//        if([content isKindOfClass:[ExploreMapViewController class]]) {
+//            if(golanExploreProject) {
+//                [observationsController removeSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
+//            }
+//            [mapVC resetPredicateByLocation];
+//        }
+//        else if([content isKindOfClass:[ExploreGridViewController class]] || [content isKindOfClass:[ExploreListViewController class]]) {
+//            // observations controller will fetch observations using this predicate
+//            if(golanExploreProject) {
+//                for (ExploreSearchPredicate *predicate in observationsController.activeSearchPredicates) {
+//                    if (predicate.type == ExploreSearchPredicateTypeLocation) {
+//                        [observationsController removeSearchPredicate:predicate];
+//                    }
+//                }
+//                ExploreRegion *region = [[ExploreRegion alloc] init];
+//                //(latitude = 32.538696864360602, longitude = 35.302336202911135)
+//                //(latitude = 33.583818694791482, longitude = 36.179391797088897)
+//                region.swCoord = CLLocationCoordinate2DMake(32.538696864360602, 35.302336202911135);
+//                region.neCoord = CLLocationCoordinate2DMake(33.583818694791482, 36.179391797088897);
+//                observationsController.limitingRegion = region;
+//                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
+//                
+//                [searchMenu showActiveSearch];
+//            }
+//        }
+//        
+//    }
+//}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -617,6 +662,30 @@
     }];    
 }
 
+/// Searching for golan explore project for quick filter.
+- (void)searchForGolanProject {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
+        return;
+    }
+    Project *golanProject = [SignUserForGolanProject golanProject];
+    if(golanProject) {
+        [searchController searchForProject:golanProject.title completionHandler:^(NSArray *results, NSError *error) {
+            if (error) {
+                [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+            } else {
+                if(results.count == 1) {
+                    golanExploreProject = results.firstObject;
+                }
+                else {
+                    NSLog(@"ERROR: Couldn't find golan explore project.");
+                }
+                
+            }
+            
+        }];
+    }
+}
 
 #pragma mark - CLLocationManagerDelegate
 

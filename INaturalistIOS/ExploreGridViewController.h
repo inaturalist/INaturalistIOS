@@ -13,5 +13,6 @@
 
 @interface ExploreGridViewController : ExploreObservationVisualizerViewController <ExploreViewControllerControlIcon>
 
+- (void)resetPredicateByProject;
 
 @end

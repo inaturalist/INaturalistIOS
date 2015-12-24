@@ -99,6 +99,11 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     
 }
 
+/// Reset the observations to project.
+- (void)resetPredicateByProject {
+    
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     // presenting from this collection view is screwing up the content inset
     // reset it here
