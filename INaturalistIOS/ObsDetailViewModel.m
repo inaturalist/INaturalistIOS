@@ -253,7 +253,13 @@
         [selector.activityButton addTarget:self
                                     action:@selector(selectedActivity:)
                           forControlEvents:UIControlEventTouchUpInside];
-        selector.activityButton.count = self.observation.sortedActivity.count;
+        
+        // only show the activity count if there's unviewed activity on this obs
+        if (self.observation.hasUnviewedActivity.boolValue) {
+            selector.activityButton.count = self.observation.sortedActivity.count;
+        } else {
+            selector.activityButton.count = 0;
+        }
         
         [selector.favesButton addTarget:self
                                  action:@selector(selectedFaves:)
