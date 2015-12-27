@@ -918,12 +918,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - table view delegate / datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.isMakingNewObservation) {
-        // + 1 for the delete button
-        return 6;
-    } else {
-        return 5;
-    }
+    // if making a new obs, no delete section
+    return self.isMakingNewObservation ? 3 : 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
