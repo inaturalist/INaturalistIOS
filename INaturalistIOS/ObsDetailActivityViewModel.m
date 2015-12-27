@@ -31,10 +31,20 @@
 #import "NSURL+INaturalist.h"
 #import "Analytics.h"
 
-@interface ObsDetailActivityViewModel () <RKRequestDelegate>
+@interface ObsDetailActivityViewModel () <RKRequestDelegate> {
+    BOOL hasSeenNewActivity;
+}
 @end
 
 @implementation ObsDetailActivityViewModel
+
+#pragma mark - uiviewcontroller lifecycle
+
+- (void)dealloc {
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - uitableview datasource/delegate
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section < 2) {
@@ -62,17 +72,13 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (!hasSeenNewActivity) {
+        [self markActivityAsSeen];
+        hasSeenNewActivity = YES;
+    }
+    
     // each comment/id is its own section
     return [super numberOfSectionsInTableView:tableView] + self.observation.sortedActivity.count;
-}
-
-- (Activity *)activityForSection:(NSInteger)section {
-    // first 2 sections are for is observation metadata
-    return self.observation.sortedActivity[section - 2];
-}
-
-- (ObsDetailSection)sectionType {
-    return ObsDetailSectionActivity;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -175,6 +181,7 @@
     }
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
@@ -219,6 +226,17 @@
     }
 }
 
+
+#pragma mark - section helpers
+
+- (Activity *)activityForSection:(NSInteger)section {
+    // first 2 sections are for is observation metadata
+    return self.observation.sortedActivity[section - 2];
+}
+
+- (ObsDetailSection)sectionType {
+    return ObsDetailSectionActivity;
+}
 
 #pragma mark - tableviewcell helpers
 
@@ -347,6 +365,21 @@
                          delegate:self];
 }
 
+#pragma mark - misc helpers
+
+- (void)markActivityAsSeen {
+    // check for network
+    if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
+        [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
+        [[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID]
+                              params:nil
+                            delegate:self];
+        self.observation.hasUnviewedActivity = [NSNumber numberWithBool:NO];
+        NSError *error = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+    }
+}
+
 - (BOOL)loggedInUserProducedActivity:(Activity *)activity {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
@@ -377,23 +410,39 @@
 #pragma mark - RKRequestDelegate
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    if (response.statusCode == 200) {
+    // set "seen" call returns 204 on success, add ID returns 200
+    if (response.statusCode == 200 || response.statusCode == 204) {
+        // either id or refresh activity, reload the UI for the obs if the request succeeded
         [self.delegate reloadObservation];
     } else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
+            // identification
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                        message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+        } else {
+            // refresh activity
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                        message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+        }
     }
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    if ([request.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                    message:error.localizedDescription
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+    } else {
+        // refresh activity
+    }
 }
 
 
