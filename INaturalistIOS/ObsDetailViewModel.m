@@ -258,8 +258,8 @@
         [selector.favesButton addTarget:self
                                  action:@selector(selectedFaves:)
                        forControlEvents:UIControlEventTouchUpInside];
-        selector.favesButton.count = self.observation.faves.count;
-
+        // don't show faves count for now
+        selector.favesButton.count = 0;
         
         if (self.sectionType == ObsDetailSectionInfo) {
             selector.infoButton.enabled = NO;
