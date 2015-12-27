@@ -236,8 +236,15 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // notes/map, data quality, projects
-    return [super numberOfSectionsInTableView:tableView] + 3;
+    // notes/map, data quality
+    NSInteger numSections = [super numberOfSectionsInTableView:tableView] + 2;
+    
+    if (self.observation.projectObservations.count > 0) {
+        // show projects section
+        numSections++;
+    }
+    
+    return numSections;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
