@@ -1472,8 +1472,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ObsCenteredLabelCell *cell = [tableView dequeueReusableCellWithIdentifier:@"singleButton"];
     
     cell.centeredLabel.textColor = [UIColor redColor];
-    cell.centeredLabel.text = NSLocalizedString(@"Delete", nil);
-    cell.centeredLabel.font = [UIFont boldSystemFontOfSize:17.0f];
+    cell.centeredLabel.text = NSLocalizedString(@"Delete Observation", @"text of delete obs button");
+    cell.centeredLabel.font = [UIFont systemFontOfSize:17.0f];
     
     return cell;
 }
