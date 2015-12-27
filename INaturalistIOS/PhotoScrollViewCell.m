@@ -7,6 +7,7 @@
 //
 
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "PhotoScrollViewCell.h"
 #import "PhotoChicletCell.h"
@@ -139,8 +140,16 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         PhotoChicletCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoChiclet" forIndexPath:indexPath];
         
         ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[indexPath.item - 1];
-        cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey forSize:ImageStoreSmallSize];
-                
+        if (obsPhoto.photoKey) {
+            cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
+                                                                    forSize:ImageStoreSmallSize];
+        } else if (obsPhoto.squareURL) {
+            NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
+            if (squarePhotoUrl) {
+                [cell.photoImageView sd_setImageWithURL:squarePhotoUrl];
+            }
+        }
+        
         [cell.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.defaultButton addTarget:self action:@selector(defaultPressed:) forControlEvents:UIControlEventTouchUpInside];
         
