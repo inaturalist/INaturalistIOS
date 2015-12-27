@@ -259,16 +259,9 @@
         
         if ([activity isKindOfClass:[Identification class]]) {
             NSString *identificationAuthor = [NSString stringWithFormat:NSLocalizedString(@"%@'s ID", @"identification author attribution"), activity.user.login];
-            NSMutableAttributedString *idAuthorAttrStr = [[NSMutableAttributedString alloc] initWithString:identificationAuthor
-                                                                                                attributes:@{ NSForegroundColorAttributeName: [UIColor lightGrayColor] }];
-            [idAuthorAttrStr addAttribute:NSForegroundColorAttributeName
-                                    value:[UIColor blueColor]
-                                    range:[identificationAuthor rangeOfString:activity.user.login]];
-            cell.authorNameLabel.attributedText = idAuthorAttrStr;
+            cell.authorNameLabel.text = identificationAuthor;
         } else {
-            NSAttributedString *commentAuthorAttrStr = [[NSAttributedString alloc] initWithString:activity.user.login
-                                                                                       attributes:@{ NSForegroundColorAttributeName: [UIColor blueColor] }];
-            cell.authorNameLabel.attributedText = commentAuthorAttrStr;
+            cell.authorNameLabel.text = activity.user.login;
         }
     }
 
