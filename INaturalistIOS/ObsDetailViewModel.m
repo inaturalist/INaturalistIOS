@@ -28,6 +28,7 @@
 #import "ObsDetailFavesViewModel.h"
 #import "UIColor+INaturalist.h"
 #import "ObsDetailSelectorHeaderView.h"
+#import "ObsDetailTaxonCell.h"
 
 @interface ObsDetailViewModel ()
 
@@ -143,47 +144,43 @@
 }
 
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxon"];
+
     
     Taxon *taxon = self.observation.taxon;
     if (!taxon && self.observation.taxonID && self.observation.taxonID.integerValue != 0) {
         taxon = [[Taxon objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue]] firstObject];
     }
-    
+
+    cell.taxonNameLabel.textColor = [UIColor blackColor];
+
     if (taxon) {
-        
-        cell.titleLabel.text = taxon.defaultName;
-        
-        cell.cellImageView.layer.borderWidth = 0.5f;
-        cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
-        cell.cellImageView.layer.cornerRadius = 3.0f;
+        cell.taxonNameLabel.text = taxon.defaultName;
         
         if ([taxon.isIconic boolValue]) {
-            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-            [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
         } else {
-            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
         
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-        cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
+        cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
         
         if (self.observation.speciesGuess) {
-            cell.titleLabel.text = self.observation.speciesGuess;
+            cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
-            cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
+            cell.taxonNameLabel.text = NSLocalizedString(@"Something...", nil);
         }
     }
     
     if (!taxon.fullyLoaded) {
         // fetch complete taxon
-        
         if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             
             
@@ -238,7 +235,6 @@
         } else {
             NSLog(@"no network, ignore");
         }
-        
     }
     
     return cell;
