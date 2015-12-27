@@ -131,7 +131,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
-    [self.view addSubview:self.saveButton];
     
     NSDictionary *views = @{
                             @"tv": self.tableView,
@@ -142,15 +141,30 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[save]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    
+    if (self.isMakingNewObservation) {
+        [self.view addSubview:self.saveButton];
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[save]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                               target:self
+                                                                                               action:@selector(saved)];
+    }
 
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
