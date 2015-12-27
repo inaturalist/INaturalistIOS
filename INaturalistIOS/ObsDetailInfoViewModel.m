@@ -266,10 +266,50 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+    if (section == 3) {
+        // data quality
+        UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        infoButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [infoButton addTarget:self
+                       action:@selector(dataQualityInfo:)
+             forControlEvents:UIControlEventTouchUpInside];
+        
+        [view addSubview:infoButton];
+        
+        NSDictionary *views = @{ @"info": infoButton };
+        
+        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[info]-|"
+                                                                    options:0
+                                                                    metrics:0
+                                                                       views:views]];
+        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[info]-0-|"
+                                                                     options:0
+                                                                     metrics:0
+                                                                       views:views]];
+
+        
+    }
+}
+
 #pragma mark - section type helper
 
 - (ObsDetailSection)sectionType {
     return ObsDetailSectionInfo;
+}
+
+#pragma mark - button targets
+
+- (void)dataQualityInfo:(UIButton *)button {
+    NSString *captiveTitle = NSLocalizedString(@"What does data quality mean?", @"title for alert explaining what data quality means");
+    NSString *captiveMsg = NSLocalizedString(@"The data quality assessment is a summary of an observation's accuracy.\nAll observations start as \"Needs ID\", and achieve \"Research\" grade when the observation has a date, geo data, and a photo, and when the iNat community agrees on an ID.\nObservations change to \"Casual\" grade if the conditions aren't met, if the organism looks captive or cultivated, or if date or geo data looks inaccurate to the community.", @"message explaining what data quality means for iNaturalist");
+    
+    [[[UIAlertView alloc] initWithTitle:captiveTitle
+                                message:captiveMsg
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                      otherButtonTitles:nil] show];
+    
 }
 
 @end
