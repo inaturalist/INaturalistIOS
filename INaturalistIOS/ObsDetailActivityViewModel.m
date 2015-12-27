@@ -319,10 +319,19 @@
     
     Taxon *taxon = identification.taxon;
     if (taxon) {
-        cell.taxonNameLabel.textColor = identification.isCurrent ? [UIColor blackColor] : [UIColor lightGrayColor];
         
-        cell.taxonNameLabel.text = taxon.defaultName;
-                
+        if (identification.isCurrent) {
+            cell.taxonNameLabel.text = taxon.defaultName;
+        } else {
+            NSDictionary *strikeThrough = @{
+                                            NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle],
+                                            NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                            };
+            
+            cell.taxonNameLabel.attributedText = [[NSAttributedString alloc] initWithString:taxon.defaultName
+                                                                                 attributes:strikeThrough];
+        }
+        
         if ([taxon.isIconic boolValue]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         } else if (taxon.taxonPhotos.count > 0) {
