@@ -785,6 +785,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         if (error) {
             // TODO: log it at least, also notify the user
         }
+    } else {
+        [self.observation.managedObjectContext rollback];
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
