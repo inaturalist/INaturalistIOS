@@ -286,7 +286,12 @@
             // user
             return 44;
         } else if (indexPath.item == 1) {
-            return 200;
+            // wider tableview shows more photo,
+            if (tableView.bounds.size.width > 369) {
+                return 253;
+            } else {
+                return 200;
+            }
         } else if (indexPath.item == 2) {
             return 44;
         }
