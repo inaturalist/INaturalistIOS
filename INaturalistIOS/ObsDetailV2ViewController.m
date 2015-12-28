@@ -73,12 +73,11 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                                            target:self
                                                                                            action:@selector(editObs)];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
-    [self reloadObservation];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
+                                                 name:NSManagedObjectContextDidSaveNotification
+                                               object:[Observation managedObjectContext]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -89,42 +88,6 @@
 
 - (void)dealloc {
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
-}
-
-- (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
-    if ([identifier isEqualToString:@"photos"]) {
-        NSNumber *photoIndex = (NSNumber *)object;
-        // can't do this in storyboards
-        
-        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
-            return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
-                                  galleryType:MHGalleryTypeImage];
-        }];
-        
-        MHUICustomization *customization = [[MHUICustomization alloc] init];
-        customization.showOverView = NO;
-        customization.showMHShareViewInsteadOfActivityViewController = NO;
-        customization.hideShare = NO;
-        customization.useCustomBackButtonImageOnImageViewer = NO;
-        
-        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
-        gallery.galleryItems = galleryData;
-        gallery.presentationIndex = photoIndex.integerValue;
-        gallery.UICustomization = customization;
-        
-        __weak MHGalleryController *blockGallery = gallery;
-        
-        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
-            __strong typeof(blockGallery)strongGallery = blockGallery;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [strongGallery dismissViewControllerAnimated:YES completion:nil];
-            });
-        };
-
-        [self presentMHGalleryController:gallery animated:YES completion:nil];
-    } else {
-        [self performSegueWithIdentifier:identifier sender:object];
-    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -174,7 +137,49 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - notifications
+
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
+    [self.tableView reloadData];
+}
+
 #pragma mark - obs detail view model delegate
+
+- (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
+    if ([identifier isEqualToString:@"photos"]) {
+        NSNumber *photoIndex = (NSNumber *)object;
+        // can't do this in storyboards
+        
+        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
+            return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
+                                  galleryType:MHGalleryTypeImage];
+        }];
+        
+        MHUICustomization *customization = [[MHUICustomization alloc] init];
+        customization.showOverView = NO;
+        customization.showMHShareViewInsteadOfActivityViewController = NO;
+        customization.hideShare = NO;
+        customization.useCustomBackButtonImageOnImageViewer = NO;
+        
+        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+        gallery.galleryItems = galleryData;
+        gallery.presentationIndex = photoIndex.integerValue;
+        gallery.UICustomization = customization;
+        
+        __weak MHGalleryController *blockGallery = gallery;
+        
+        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+            __strong typeof(blockGallery)strongGallery = blockGallery;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [strongGallery dismissViewControllerAnimated:YES completion:nil];
+            });
+        };
+        
+        [self presentMHGalleryController:gallery animated:YES completion:nil];
+    } else {
+        [self performSegueWithIdentifier:identifier sender:object];
+    }
+}
 
 - (void)selectedSection:(ObsDetailSection)section {
     switch (section) {
