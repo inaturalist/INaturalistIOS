@@ -107,7 +107,8 @@
     } else if (indexPath.section == 3) {
         // data quality
         ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         if ([self.observation.qualityGrade isEqualToString:@"research"]) {
             cell.dataQuality = ObsDataQualityResearch;
         } else if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {

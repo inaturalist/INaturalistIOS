@@ -67,6 +67,7 @@
             return cell;
         } else {
             ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             Fave *fave = [self.observation.sortedFaves objectAtIndex:indexPath.item - 1];
             NSURL *userIconUrl = [NSURL URLWithString:fave.userIconUrl];

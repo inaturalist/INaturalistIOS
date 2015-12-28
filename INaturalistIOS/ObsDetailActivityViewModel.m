@@ -220,7 +220,7 @@
         } else {
             // impossibru!
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
-            
+
             return cell;
         }
     }
@@ -243,7 +243,8 @@
 - (ObsDetailActivityBodyCell *)activityBodyCellInTableView:(UITableView *)tableView withBodyText:(NSString *)bodyText {
     // body
     ObsDetailActivityBodyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityBody"];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     NSError *err = nil;
     cell.bodyTextView.attributedText = [[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
                                                                         options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
@@ -259,7 +260,8 @@
 
 - (ObsDetailActivityAuthorCell *)authorCellInTableView:(UITableView *)tableView withActivity:(Activity *)activity {
     ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     if (activity) {
         NSURL *userIconUrl = [NSURL URLWithString:activity.user.userIconURL];
         if (userIconUrl) {
@@ -288,7 +290,8 @@
 
 - (ObsDetailActivityMoreCell *)moreCellInTableView:(UITableView *)tableView withActivity:(Activity *)activity {
     ObsDetailActivityMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityMore"];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     if ([activity isKindOfClass:[Identification class]]) {
         Identification *identification = (Identification *)activity;
         
@@ -316,6 +319,7 @@
 - (ObsDetailTaxonCell *)taxonCellInTableView:(UITableView *)tableView withIdentification:(Identification *)identification {
 
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxon"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     Taxon *taxon = identification.taxon;
     if (taxon) {
