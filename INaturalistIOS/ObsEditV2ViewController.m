@@ -163,7 +163,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
-                                                                                               action:@selector(saved)];
+                                                                                               action:@selector(saved:)];
     }
 
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
