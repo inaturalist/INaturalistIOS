@@ -131,6 +131,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
+    // wait to add to self.view, since we don't always need it
     
     NSDictionary *views = @{
                             @"tv": self.tableView,
@@ -143,6 +144,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                         views:views]];
     
     if (self.isMakingNewObservation) {
+        // new obs confirm has a save button
         [self.view addSubview:self.saveButton];
         
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
@@ -153,14 +155,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                           options:0
                                                                           metrics:0
                                                                             views:views]];
-
+        
+        // new obs confirm has no Done nav bar button
         self.navigationItem.rightBarButtonItem = nil;
     } else {
+        // save existing obs has no save button
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
                                                                           options:0
                                                                           metrics:0
                                                                             views:views]];
 
+        // save existing obs has a Done nav bar button
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
                                                                                                action:@selector(saved:)];
