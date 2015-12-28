@@ -269,7 +269,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
-        // text changed, save it
+        // text changed
         self.observation.inatDescription = textView.text;
         [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
                          withProperties:@{
@@ -798,6 +798,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)saved:(UIButton *)button {
+    [self.view endEditing:YES];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
                      withProperties:@{
