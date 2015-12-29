@@ -30,6 +30,7 @@
 #import "LoginController.h"
 #import "NSURL+INaturalist.h"
 #import "Analytics.h"
+#import "ObsDetailNoInteractionHeaderFooter.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -102,14 +103,29 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == self.observation.sortedActivity.count + 1) {
-        ObsDetailAddActivityFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"addActivityFooter"];
-        [footer.commentButton addTarget:self
-                                 action:@selector(addComment)
-                       forControlEvents:UIControlEventTouchUpInside];
-        [footer.suggestIDButton addTarget:self
-                                   action:@selector(addIdentification)
-                         forControlEvents:UIControlEventTouchUpInside];
-        return footer;
+        if (self.observation.recordID) {
+            ObsDetailAddActivityFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"addActivityFooter"];
+            [footer.commentButton addTarget:self
+                                     action:@selector(addComment)
+                           forControlEvents:UIControlEventTouchUpInside];
+            [footer.suggestIDButton addTarget:self
+                                       action:@selector(addIdentification)
+                             forControlEvents:UIControlEventTouchUpInside];
+            return footer;
+        } else {
+            NSString *noInteraction;
+
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            if (appDelegate.loginController.isLoggedIn) {
+                noInteraction = NSLocalizedString(@"Upload this observation to enable comments & identifications.", nil);
+            } else {
+                noInteraction = NSLocalizedString(@"Login and upload this observation to enable comments & identifications.", nil);
+            }
+            
+            ObsDetailNoInteractionHeaderFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"noInteraction"];
+            footer.noInteractionLabel.text = noInteraction;
+            return footer;
+        }
     } else {
         return nil;
     }

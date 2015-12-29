@@ -26,6 +26,8 @@
 #import "ObsDetailAddActivityFooter.h"
 #import "ObservationPhoto.h"
 #import "LocationViewController.h"
+#import "ObsDetailNoInteractionHeaderFooter.h"
+#import "ObsDetailAddFaveHeader.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -52,10 +54,13 @@
     self.tableView.sectionFooterHeight = CGFLOAT_MIN;
     
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    
     [self.tableView registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
     [self.tableView registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
     [self.tableView registerClass:[ObsDetailSelectorHeaderView class] forHeaderFooterViewReuseIdentifier:@"selectorHeader"];
     [self.tableView registerClass:[ObsDetailAddActivityFooter class] forHeaderFooterViewReuseIdentifier:@"addActivityFooter"];
+    [self.tableView registerClass:[ObsDetailNoInteractionHeaderFooter class] forHeaderFooterViewReuseIdentifier:@"noInteraction"];
+    [self.tableView registerClass:[ObsDetailAddFaveHeader class] forHeaderFooterViewReuseIdentifier:@"addFave"];
     
     NSDictionary *views = @{
                             @"tv": self.tableView,
