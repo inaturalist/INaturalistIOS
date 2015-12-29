@@ -29,6 +29,8 @@
 #import "UIColor+INaturalist.h"
 #import "ObsDetailSelectorHeaderView.h"
 #import "ObsDetailTaxonCell.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 @interface ObsDetailViewModel ()
 
@@ -89,10 +91,24 @@
         }
         cell.titleLabel.text = user.login;
     } else {
-        cell.titleLabel.text = @"Nobody";
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loginController.isLoggedIn) {
+            // obs was created locally, but not yet uploaded
+            User *me = [appDelegate.loginController fetchMe];
+            
+            NSURL *userIconUrl = [NSURL URLWithString:[me userIconURL]];
+            if (userIconUrl) {
+                [cell.cellImageView sd_setImageWithURL:userIconUrl];
+                cell.cellImageView.layer.cornerRadius = 27.0 / 2;
+                cell.cellImageView.clipsToBounds = YES;
+            }
+            cell.titleLabel.text = me.login;
+        } else {
+            cell.titleLabel.text = NSLocalizedString(@"Me", nil);
+        }
     }
+
     cell.secondaryLabel.text = self.observation.observedOnShortString;
-    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
