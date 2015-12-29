@@ -86,6 +86,14 @@
     [self.tableView reloadData];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (!self.observation.needsSync) {
+        [self reloadObservation];
+    }
+}
+
 - (void)dealloc {
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
 }
