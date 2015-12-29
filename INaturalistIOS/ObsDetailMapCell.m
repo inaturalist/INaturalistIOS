@@ -7,6 +7,7 @@
 //
 
 #import "ObsDetailMapCell.h"
+#import "FAKINaturalist.h"
 
 @implementation ObsDetailMapCell
 
@@ -15,6 +16,14 @@
     
     self.locationNameLabel.layer.cornerRadius = 5.0f;
     self.locationNameLabel.clipsToBounds = YES;
+    
+    self.noLocationLabel.attributedText = ({
+        FAKIcon *noLocation = [FAKINaturalist speciesUnknownIconWithSize:80];
+        [noLocation addAttribute:NSForegroundColorAttributeName
+                           value:[UIColor whiteColor]];
+        
+        noLocation.attributedString;
+    });
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -26,6 +35,7 @@
 - (void)prepareForReuse {
     self.locationNameLabel.text = nil;
     self.mapView.hidden = NO;
+    self.noLocationLabel.hidden = YES;
     [self.mapView removeAnnotations:self.mapView.annotations];
 }
 

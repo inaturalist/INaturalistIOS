@@ -84,6 +84,9 @@
             cell.mapView.userInteractionEnabled = NO;
             
             if (self.observation.latitude.floatValue) {
+                cell.mapView.hidden = NO;
+                cell.noLocationLabel.hidden = YES;
+                
                 CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
                 CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
@@ -94,6 +97,7 @@
                 [cell.mapView addAnnotation:pin];
             } else {
                 cell.mapView.hidden = YES;
+                cell.noLocationLabel.hidden = NO;
             }
             
             if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {

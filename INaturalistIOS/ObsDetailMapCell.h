@@ -14,5 +14,6 @@
 
 @property IBOutlet UILabel *locationNameLabel;
 @property IBOutlet MKMapView *mapView;
+@property IBOutlet UILabel *noLocationLabel;
 
 @end
