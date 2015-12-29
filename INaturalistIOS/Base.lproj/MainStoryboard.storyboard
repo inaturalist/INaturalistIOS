@@ -760,9 +760,17 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aVK-lf-sng">
+                                                    <rect key="frame" x="15" y="8" width="290" height="64.5"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="cantDetermineDataQualityLabel" destination="aVK-lf-sng" id="gJA-O1-sfu"/>
                                             <outlet property="casualCheckMark" destination="gNg-CF-5w6" id="1nF-ek-yOr"/>
                                             <outlet property="casualLabel" destination="sFv-C3-tQc" id="63O-ST-Dqw"/>
                                             <outlet property="needsIDCheckMark" destination="aGV-hu-Qk0" id="dpe-5F-57P"/>

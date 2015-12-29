@@ -112,18 +112,23 @@
         // data quality
         ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
-            cell.dataQuality = ObsDataQualityResearch;
-        } else if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
-            cell.dataQuality = ObsDataQualityNeedsID;
+        
+        if (self.observation.recordID) {
+            if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+                cell.dataQuality = ObsDataQualityResearch;
+            } else if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
+                cell.dataQuality = ObsDataQualityNeedsID;
+            } else {
+                // must be casual?
+                cell.dataQuality = ObsDataQualityCasual;
+            }
         } else {
-            // must be casual?
-            cell.dataQuality = ObsDataQualityCasual;
+            // not uploaded yet
+            cell.dataQuality = ObsDataQualityNone;
         }
         
         return cell;
-        
+    
     } else if (indexPath.section == 4) {
         // projects
         DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];

@@ -24,6 +24,8 @@
 @property IBOutlet UILabel *needsIDCheckMark;
 @property IBOutlet UILabel *researchCheckMark;
 
+@property IBOutlet UILabel *cantDetermineDataQualityLabel;
+
 @property UIView *casualToNeedsIDBar;
 @property UIView *needsIDToResearchBar;
 @end
@@ -57,6 +59,20 @@
     self.researchCheckMark.clipsToBounds = YES;
     self.researchCheckMark.attributedText = check.attributedString;
 
+    self.cantDetermineDataQualityLabel.attributedText = ({
+        NSString *uploadPrompt = NSLocalizedString(@"Please upload to determine data quality", nil);
+        NSString *learnMorePrompt = NSLocalizedString(@"Learn more about data quality >", nil);
+        
+        NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:uploadPrompt attributes:nil];
+        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:nil]];
+        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:learnMorePrompt
+                                                                     attributes:@{
+                                                                                  NSForegroundColorAttributeName: [UIColor inatTint]
+                                                                                  }
+                                      ]];
+        
+        attr;
+    });
     
     self.casualToNeedsIDBar = ({
         UIView *view = [UIView new];
@@ -175,6 +191,8 @@
         
         self.casualToNeedsIDBar.backgroundColor = [UIColor colorWithHexString:@"#c8c7cc"];
         self.needsIDToResearchBar.backgroundColor = [UIColor colorWithHexString:@"#c8c7cc"];
+        
+        self.cantDetermineDataQualityLabel.hidden = YES;
     } else if (dataQuality == ObsDataQualityNeedsID) {
         self.casualLabel.textColor = [UIColor inatTint];
         self.casualCheckMark.textColor = [UIColor whiteColor];
@@ -191,6 +209,7 @@
         self.casualToNeedsIDBar.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.8f];
         self.needsIDToResearchBar.backgroundColor = [UIColor colorWithHexString:@"#c8c7cc"];
         
+        self.cantDetermineDataQualityLabel.hidden = YES;
     } else if (dataQuality == ObsDataQualityResearch) {
         self.casualLabel.textColor = [UIColor inatTint];
         self.casualCheckMark.textColor = [UIColor whiteColor];
@@ -206,11 +225,44 @@
         
         self.casualToNeedsIDBar.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.8f];
         self.needsIDToResearchBar.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.8f];
+        
+        self.cantDetermineDataQualityLabel.hidden = YES;
+    } else if (dataQuality == ObsDataQualityNone) {
+        self.casualLabel.hidden = YES;
+        self.casualCheckMark.hidden = YES;
+        
+        self.needsIDLabel.hidden = YES;
+        self.needsIDCheckMark.hidden = YES;
+        
+        self.researchLabel.hidden = YES;
+        self.researchCheckMark.hidden = YES;
+        
+        self.casualToNeedsIDBar.hidden = YES;
+        self.needsIDToResearchBar.hidden = YES;
+        
+        self.cantDetermineDataQualityLabel.hidden = NO;
+        
     }
 }
 
 - (ObsDataQuality)dataQuality {
     return _dataQuality;
+}
+
+- (void)prepareForReuse {
+    self.casualLabel.hidden = NO;
+    self.casualCheckMark.hidden = NO;
+    
+    self.needsIDLabel.hidden = NO;
+    self.needsIDCheckMark.hidden = NO;
+    
+    self.researchLabel.hidden = NO;
+    self.researchCheckMark.hidden = NO;
+    
+    self.casualToNeedsIDBar.hidden = NO;
+    self.needsIDToResearchBar.hidden = NO;
+    
+    self.cantDetermineDataQualityLabel.hidden = YES;
 }
 
 @end

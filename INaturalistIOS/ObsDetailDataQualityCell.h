@@ -11,7 +11,8 @@
 typedef NS_ENUM(NSInteger, ObsDataQuality) {
     ObsDataQualityCasual,
     ObsDataQualityNeedsID,
-    ObsDataQualityResearch
+    ObsDataQualityResearch,
+    ObsDataQualityNone
 };
 
 @interface ObsDetailDataQualityCell : UITableViewCell
