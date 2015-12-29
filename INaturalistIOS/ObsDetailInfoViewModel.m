@@ -274,7 +274,12 @@
         }
     } else if (indexPath.section == 3) {
         // data quality
-        // do nothing
+        if (self.observation.recordID) {
+            // do nothing
+        } else {
+            // show about data quality
+            [self showDataQualityInfo];
+        }
     } else if (indexPath.section == 4) {
         // projects
         if (self.observation.projectObservations.count > 0) {
@@ -289,7 +294,7 @@
         UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
         infoButton.translatesAutoresizingMaskIntoConstraints = NO;
         [infoButton addTarget:self
-                       action:@selector(dataQualityInfo:)
+                       action:@selector(showDataQualityInfo)
              forControlEvents:UIControlEventTouchUpInside];
         
         [view addSubview:infoButton];
@@ -317,7 +322,7 @@
 
 #pragma mark - button targets
 
-- (void)dataQualityInfo:(UIButton *)button {
+- (void)showDataQualityInfo {
     NSString *captiveTitle = NSLocalizedString(@"What does data quality mean?", @"title for alert explaining what data quality means");
     NSString *captiveMsg = NSLocalizedString(@"The data quality assessment is a summary of an observation's accuracy.\nAll observations start as \"Needs ID\", and achieve \"Research\" grade when the observation has a date, geo data, and a photo, and when the iNat community agrees on an ID.\nObservations change to \"Casual\" grade if the conditions aren't met, if the organism looks captive or cultivated, or if date or geo data looks inaccurate to the community.", @"message explaining what data quality means for iNaturalist");
     
