@@ -89,7 +89,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (!self.observation.needsSync) {
+    if (!self.observation.needsUpload) {
         [self reloadObservation];
     }
 }
