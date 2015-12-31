@@ -20,6 +20,7 @@
 
 @property ExploreActiveSearchView *activeSearchFilterView;
 @property (nonatomic, assign) id <ActiveSearchTextDelegate> activeSearchTextDelegate;
+@property (nonatomic, assign) BOOL isDuringSearch;
 
 - (void)hideOptionSearch;
 - (void)showOptionSearch;
@@ -27,7 +28,6 @@
 
 - (void)showActiveSearch;
 - (void)hideActiveSearch;
-
 
 @end
 

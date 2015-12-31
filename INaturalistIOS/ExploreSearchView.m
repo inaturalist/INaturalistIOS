@@ -20,7 +20,6 @@
     UIView *optionsContainerView;
     UITableView *optionsTableView;
     UISearchBar *optionsSearchBar;
-    
     UITapGestureRecognizer *tapAwayGesture;
 }
 @end
@@ -196,6 +195,7 @@
 }
 
 - (void)hideActiveSearch {
+    self.isDuringSearch = NO;
     self.activeSearchFilterView.activeSearchLabel.text = @"";
     self.activeSearchFilterView.hidden = YES;
 }
@@ -257,6 +257,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.isDuringSearch = YES;
     if (indexPath.section == 0) {
         // autocomplete cells
         AutocompleteSearchItem *item = [self.autocompleteItems objectAtIndex:indexPath.row];

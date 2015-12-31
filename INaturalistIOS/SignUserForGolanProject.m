@@ -113,7 +113,7 @@
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
 {
-    if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
+    if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn] && objects.count) {
         Project *theProject = [objects objectAtIndex:0];
         // Joining the project.
         @try{

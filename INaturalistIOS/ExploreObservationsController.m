@@ -19,6 +19,7 @@
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"
+#import "SignUserForGolanProject.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -248,6 +249,8 @@
         
         [self.notificationDelegate startedObservationFetch];
     }
+    // Add random number to cancel the server cache.
+    path = [path stringByAppendingFormat:@"&rand=%d",arc4random()%1000];
     
     [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
@@ -271,15 +274,30 @@
                 return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
             }];
             
-            self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
-            
+            // Find the page in path.
+            NSArray *paths = [path componentsSeparatedByString:@"&"];
+            int page = 0;
+            for(NSString *item in paths) {
+                if([item rangeOfString:@"_"].location == NSNotFound && [item rangeOfString:@"page"].location != NSNotFound) {
+                    page = [[[item componentsSeparatedByString:@"="] lastObject] intValue];
+                    break;
+                }
+            }
+            if(page == 0 || (page > 0 && orderedObservations.count > 0)) {
+                if(page == 0)
+                    self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+                else
+                    self.observations = [[NSOrderedSet alloc] initWithArray:[self.observations.array arrayByAddingObjectsFromArray:orderedObservations]];
+               
+            }
+            NSString *thePath = path;
             if (shouldNotify) {
-                if (array.count > 0)
+                if (array.count > 0 || page > 0)
                     [self.notificationDelegate finishedObservationFetch];
                 else {
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                                 code:-1014
-                                                            userInfo:@{ NSLocalizedDescriptionKey: @"No observations found." }];
+                                                            userInfo:@{ NSLocalizedDescriptionKey:NSLocalizedString(@"No observations found.", nil)}];
                     [self.notificationDelegate failedObservationFetch:error];
                 }
             }
@@ -319,6 +337,13 @@
 }
 
 - (BOOL)activeSearchLimitedByCurrentMapRegion {
+    if(self.activeSearchPredicates) {
+        for(ExploreSearchPredicate *predicate in self.activeSearchPredicates) {
+            if(predicate.searchProject.projectId == kGolanWildlifeProjectID)
+                return NO;
+        }
+    }
+//    return NO;
     return self.limitingRegion && ![self hasActiveLocationSearchPredicate];
 }
 

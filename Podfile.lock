@@ -132,7 +132,7 @@ DEPENDENCIES:
   - FlurrySDK (= 6.2.0)
   - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
-  - googleplus-ios-sdk (= 1.7.1)
+  - googleplus-ios-sdk
   - HexColors (= 2.2.1)
   - IFTTTLaunchImage (= 0.4.1)
   - JDFTooltips (= 1.0)

@@ -115,7 +115,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     searchMenu = ({
         ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
         view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -242,45 +241,36 @@
 }
 
 /// Find which controller is being displayed and update predicate accordingly
-//- (void)displayContentController:(UIViewController*)content {
-//    [super displayContentController:content];
-//    
-//    for (ExploreSearchPredicate *predicate in observationsController.activeSearchPredicates) {
-//        if (predicate.type == ExploreSearchPredicateTypeLocation) {
-//            NSLog(@"");
-//        }
-//    }
-//    
-//    // check first if the user isn't activly searching for something.
-//    if([[self activeSearchText] isEqual:[NSNull null]] || [[self activeSearchText] isEqualToString:@""]) {
-//        if([content isKindOfClass:[ExploreMapViewController class]]) {
-//            if(golanExploreProject) {
-//                [observationsController removeSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
-//            }
-//            [mapVC resetPredicateByLocation];
-//        }
-//        else if([content isKindOfClass:[ExploreGridViewController class]] || [content isKindOfClass:[ExploreListViewController class]]) {
-//            // observations controller will fetch observations using this predicate
-//            if(golanExploreProject) {
-//                for (ExploreSearchPredicate *predicate in observationsController.activeSearchPredicates) {
-//                    if (predicate.type == ExploreSearchPredicateTypeLocation) {
-//                        [observationsController removeSearchPredicate:predicate];
-//                    }
-//                }
-//                ExploreRegion *region = [[ExploreRegion alloc] init];
-//                //(latitude = 32.538696864360602, longitude = 35.302336202911135)
-//                //(latitude = 33.583818694791482, longitude = 36.179391797088897)
-//                region.swCoord = CLLocationCoordinate2DMake(32.538696864360602, 35.302336202911135);
-//                region.neCoord = CLLocationCoordinate2DMake(33.583818694791482, 36.179391797088897);
-//                observationsController.limitingRegion = region;
-//                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
-//                
-//                [searchMenu showActiveSearch];
-//            }
-//        }
-//        
-//    }
-//}
+- (void)displayContentController:(UIViewController*)content {
+    [super displayContentController:content];
+    // check first if the user isn't activly searching for something.
+    if(!searchMenu.isDuringSearch) {
+        if([content isKindOfClass:[ExploreMapViewController class]]) {
+            if(golanExploreProject) {
+                [observationsController removeSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
+            }
+            [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+            [searchMenu hideActiveSearch];
+            [mapVC mapShouldZoomToCoordinates:locationManager.location.coordinate showUserLocation:YES];
+        }
+        else if([content isKindOfClass:[ExploreGridViewController class]] || [content isKindOfClass:[ExploreListViewController class]]) {
+            // clear any stashed objects
+            observationsController.observations = [NSOrderedSet orderedSet];
+            // observations controller will fetch observations using this predicate
+            if(golanExploreProject) {
+                // Clean previous predicates
+                [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+                // Set the region for Golan
+                ExploreRegion *region = [[ExploreRegion alloc] init];
+                region.swCoord = CLLocationCoordinate2DMake(32.538696864360602, 35.302336202911135);
+                region.neCoord = CLLocationCoordinate2DMake(33.583818694791482, 36.179391797088897);
+                observationsController.limitingRegion = region;
+                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:golanExploreProject]];
+                [searchMenu showActiveSearch];
+            }
+        }
+    }
+}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -339,6 +329,7 @@
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchMine];
             
             if (results.count == 0) {
+                searchMenu.isDuringSearch = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Can't find your user details. :(", nil)];
                 });
@@ -421,6 +412,7 @@
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
 
             if (results.count == 0) {
+                searchMenu.isDuringSearch = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such organisms found. :(", nil)];
                 });
@@ -482,6 +474,7 @@
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
             
             if (results.count == 0) {
+                searchMenu.isDuringSearch = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such person found. :(", nil)];
                 });
@@ -621,6 +614,7 @@
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
             
             if (results.count == 0) {
+                searchMenu.isDuringSearch = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No such project found. :(", nil)];
                 });
@@ -807,6 +801,9 @@
 }
 
 - (void)failedObservationFetch:(NSError *)error {
+//    if(error.code == -1014 && searchMenu.isDuringSearch)
+//        searchMenu.isDuringSearch = NO;
+    
     [SVProgressHUD showErrorWithStatus:error.localizedDescription];
     // set the right bar button item to the reload button
     self.navigationItem.rightBarButtonItem = leaderboardItem;

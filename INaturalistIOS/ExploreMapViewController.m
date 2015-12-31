@@ -27,6 +27,7 @@
 #import "MKMapView+ZoomLevel.h"
 #import "NSURL+INaturalist.h"
 #import "ExploreContainerViewController.h"
+#import "SignUserForGolanProject.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -65,6 +66,9 @@
                 if (!self.observationDataSource.limitingRegion && mapViewHasRenderedTiles) {
                     self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
                 }
+                // Reset the observations' array to clear and fetch only the updated ones.
+                self.observationDataSource.observations = [[NSOrderedSet alloc] init];
+                [self.observationDataSource reload];
             }
         }
     }
@@ -75,13 +79,6 @@
     // after the view has completely finished loading
     mapView.delegate = self;
 }
-
-- (void)resetPredicateByLocation {
-    // notify the observation data source that we have a new limiting region
-    ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
-    self.observationDataSource.limitingRegion = region;
-}
-
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -184,6 +181,9 @@
                 newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
                                                        predicate.searchProject.longitude);
                 overlayLocationId = predicate.searchProject.locationId;
+                // Don't change location for golan project.
+                if(predicate.searchProject.projectId == kGolanWildlifeProjectID)
+                    shouldZoomToNewCenter = NO;
             }
         }
         

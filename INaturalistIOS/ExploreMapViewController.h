@@ -14,6 +14,5 @@
 @interface ExploreMapViewController : ExploreObservationVisualizerViewController <ExploreViewControllerControlIcon>
 
 - (void)mapShouldZoomToCoordinates:(CLLocationCoordinate2D)coords showUserLocation:(BOOL)showUserLocation;
-- (void)resetPredicateByLocation;
 
 @end

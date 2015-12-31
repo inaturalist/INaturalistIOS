@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>228</string>
+	<string>233</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -63,6 +63,11 @@
 	<string>817547005026685</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>${PRODUCT_NAME} uses this information to automatically add locations to your observations.</string>
 	<key>UIMainStoryboardFile</key>
@@ -71,6 +76,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
