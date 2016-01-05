@@ -18,7 +18,7 @@
     self.locationNameLabel.clipsToBounds = YES;
     
     self.noLocationLabel.attributedText = ({
-        FAKIcon *noLocation = [FAKINaturalist speciesUnknownIconWithSize:80];
+        FAKIcon *noLocation = [FAKINaturalist noLocationIconWithSize:80];
         [noLocation addAttribute:NSForegroundColorAttributeName
                            value:[UIColor whiteColor]];
         
