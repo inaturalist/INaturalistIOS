@@ -60,11 +60,22 @@
             return 2;
         } else if ([activity isKindOfClass:[Identification class]]) {
             Identification *identification = (Identification *)activity;
-            if (identification.body && identification.body.length > 0) {
-                return 4;
-            } else {
-                return 3;
+
+            NSInteger baseRows = 3;
+            
+            Taxon *myIdTaxon = [self taxonForIdentificationByLoggedInUser];
+            // can't agree with my ID, can't agree with an ID that matches my own
+            if ([self loggedInUserProducedActivity:activity] || (myIdTaxon && [myIdTaxon.recordID isEqual:identification.taxon.recordID])) {
+                // can't agree with your own identification
+                // so don't show row with agree button
+                baseRows--;
             }
+
+            if (identification.body && identification.body.length > 0) {
+                baseRows++;
+            }
+            
+            return baseRows;
         } else {
             // impossibru
             return 0;
