@@ -31,6 +31,7 @@
 #import "ObsDetailTaxonCell.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "UIColor+ExploreColors.h"
 
 @interface ObsDetailViewModel ()
 
@@ -125,6 +126,20 @@
         } else {
             [cell.iv sd_setImageWithURL:op.largePhotoUrl];
         }
+    } else {
+        // show iconic taxon image
+        FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:self.observation.iconicTaxonName
+                                                       withSize:200];
+        UIColor *taxonColor = [UIColor blackColor];
+        if (self.observation.iconicTaxonName) {
+            taxonColor = [UIColor colorForIconicTaxon:self.observation.iconicTaxonName];
+        }
+
+        [taxonIcon addAttribute:NSForegroundColorAttributeName
+                           value:taxonColor];
+        
+        cell.iv.image = [taxonIcon imageWithSize:CGSizeMake(200, 200)];
+        cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
     }
     
     if (self.observation.observationPhotos.count > 1) {
@@ -187,7 +202,9 @@
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
-        
+        // the question icon has a rendered border
+        cell.taxonImageView.layer.borderWidth = 0.0f;
+
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
@@ -343,7 +360,9 @@
             // do nothing
         } else if (indexPath.item == 1) {
             // photos segue
-            [self.delegate inat_performSegueWithIdentifier:@"photos" sender:@(self.viewingPhoto)];
+            if (self.observation.observationPhotos.count > 0) {
+                [self.delegate inat_performSegueWithIdentifier:@"photos" sender:@(self.viewingPhoto)];
+            }
         } else if (indexPath.item == 2) {
             // taxa segue
             if (self.observation.taxon) {
