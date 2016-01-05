@@ -18,7 +18,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UIImage+INaturalist.h"
 #import "INatWebController.h"
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 

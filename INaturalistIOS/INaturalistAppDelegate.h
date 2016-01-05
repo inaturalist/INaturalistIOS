@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
 
 @class LoginController;
 
@@ -15,7 +15,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) RKObjectManager *photoObjectManager;
 @property (strong, nonatomic) LoginController *loginController;
-@property (strong, nonatomic) SignUserForGolanProject *golan;
+@property (strong, nonatomic) GolanProjectUtil *golan;
 - (BOOL)loggedIn;
 - (void)showMainUI;
 - (void)showInitialSignupUI;

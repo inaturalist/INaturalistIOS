@@ -19,7 +19,7 @@
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;

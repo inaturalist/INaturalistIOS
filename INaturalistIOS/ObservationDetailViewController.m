@@ -43,7 +43,9 @@
 #import "Observation+AddAssets.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
+#import "INaturalistAppDelegate.h"
+#import "GolanProjectModel.h"
 
 static const int LocationActionSheetTag = 1;
 static const int DeleteActionSheetTag = 3;
@@ -496,7 +498,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     [self.view addSubview:bgview];
     
     // Add golan project to observation.
-    Project *golanProject = [SignUserForGolanProject golanProject];
+    Project *golanProject = [GolanProjectUtil golanProject];
     if(golanProject){
         BOOL found = NO;
         for(ProjectObservation *po in self.observation.projectObservations){
@@ -509,6 +511,26 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             ProjectObservation *po = [ProjectObservation object];
             po.observation = self.observation;
             po.project = golanProject;
+            self.observation.localUpdatedAt = [NSDate date];
+        }
+    }
+    // Check if the user is signed up for the smart projects from server.
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    GolanProjectUtil *golanProjectUtil = appDelegate.golan;
+    NSArray *smartProjects = [golanProjectUtil smartProjectsForObservation];
+    for(GolanProjectModel *pModel in smartProjects) {
+        BOOL found = NO;
+        for(ProjectObservation *po in self.observation.projectObservations) {
+            if([po.projectID isEqualToNumber:pModel.projectID]) {
+                found = YES;
+                break;
+            }
+        }
+        // Add the project to the list if it isn't wildlife project and the flag indicates for appearance
+        if(!found && [pModel.projectID intValue] != kGolanWildlifeProjectID && pModel.menuFlag == 1) {
+            ProjectObservation *po = [ProjectObservation object];
+            po.observation = self.observation;
+            po.project = pModel.projectFromServer;
             self.observation.localUpdatedAt = [NSDate date];
         }
     }

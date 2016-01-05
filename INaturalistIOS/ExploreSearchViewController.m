@@ -39,7 +39,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "SignupSplashViewController.h"
 #import "UIColor+INaturalist.h"
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
@@ -662,7 +662,7 @@
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Network unavailable, cannot search iNaturalist.org", nil)];
         return;
     }
-    Project *golanProject = [SignUserForGolanProject golanProject];
+    Project *golanProject = [GolanProjectUtil golanProject];
     if(golanProject) {
         [searchController searchForProject:golanProject.title completionHandler:^(NSArray *results, NSError *error) {
             if (error) {

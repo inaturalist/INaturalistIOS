@@ -111,8 +111,9 @@
 		8922702A1C20237700A0750F /* tutorial6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8922702C1C20237700A0750F /* tutorial6@2x.png */; };
 		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
 		897569FF1B4557B500F0BFAD /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewCell.m */; };
-		898D14251BC69C4C000D3F2F /* SignUserForGolanProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 898D14241BC69C4C000D3F2F /* SignUserForGolanProject.m */; };
+		898D14251BC69C4C000D3F2F /* GolanProjectUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 898D14241BC69C4C000D3F2F /* GolanProjectUtil.m */; };
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
+		C87A71EA1C3BCAFD00DB8F03 /* GolanProjectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C87A71E91C3BCAFD00DB8F03 /* GolanProjectModel.m */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
@@ -415,14 +416,16 @@
 		893FE7171B525BFD00BC7CC4 /* config.h.example */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.h.example; sourceTree = SOURCE_ROOT; };
 		897569FD1B4557B500F0BFAD /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
 		897569FE1B4557B500F0BFAD /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
-		898D14231BC69C4C000D3F2F /* SignUserForGolanProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUserForGolanProject.h; sourceTree = "<group>"; };
-		898D14241BC69C4C000D3F2F /* SignUserForGolanProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUserForGolanProject.m; sourceTree = "<group>"; };
+		898D14231BC69C4C000D3F2F /* GolanProjectUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GolanProjectUtil.h; sourceTree = "<group>"; };
+		898D14241BC69C4C000D3F2F /* GolanProjectUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GolanProjectUtil.m; sourceTree = "<group>"; };
 		899A00D21B53AADD0079162F /* ProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTableViewCell.h; sourceTree = "<group>"; };
 		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
 		89EF1D291C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		89EF1D2A1C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		89EF1D2B1C19A9820068EF53 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9538BDDEB9B56A1D6B95F692 /* libPods-iNaturalist Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C87A71E81C3BCAFD00DB8F03 /* GolanProjectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GolanProjectModel.h; sourceTree = "<group>"; };
+		C87A71E91C3BCAFD00DB8F03 /* GolanProjectModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GolanProjectModel.m; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
@@ -970,8 +973,10 @@
 				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
 				1997410F15194E89006FBEA0 /* UploadManager.h */,
 				1997411015194E89006FBEA0 /* UploadManager.m */,
-				898D14231BC69C4C000D3F2F /* SignUserForGolanProject.h */,
-				898D14241BC69C4C000D3F2F /* SignUserForGolanProject.m */,
+				898D14231BC69C4C000D3F2F /* GolanProjectUtil.h */,
+				898D14241BC69C4C000D3F2F /* GolanProjectUtil.m */,
+				C87A71E81C3BCAFD00DB8F03 /* GolanProjectModel.h */,
+				C87A71E91C3BCAFD00DB8F03 /* GolanProjectModel.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1591,7 +1596,7 @@
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
 				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
 				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
-				898D14251BC69C4C000D3F2F /* SignUserForGolanProject.m in Sources */,
+				898D14251BC69C4C000D3F2F /* GolanProjectUtil.m in Sources */,
 				19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
 				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
@@ -1628,6 +1633,7 @@
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
+				C87A71EA1C3BCAFD00DB8F03 /* GolanProjectModel.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,

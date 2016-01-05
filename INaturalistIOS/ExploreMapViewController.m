@@ -27,7 +27,7 @@
 #import "MKMapView+ZoomLevel.h"
 #import "NSURL+INaturalist.h"
 #import "ExploreContainerViewController.h"
-#import "SignUserForGolanProject.h"
+#import "GolanProjectUtil.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;

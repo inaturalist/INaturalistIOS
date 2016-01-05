@@ -72,6 +72,9 @@
     
     [self configureApplicationInBackground];
     
+    self.golan = [[GolanProjectUtil alloc] init];
+    
+    
     return YES;
 }
 
@@ -356,8 +359,9 @@
             
             User *theUser = [self.loginController fetchMe];
             if(theUser){
-                self.golan = [[SignUserForGolanProject alloc] init];
+                // NOTE self.golan is initialize at didFinishLaunchingWithOptions.
                 self.golan.username = theUser.login;
+                [self.golan loadGolanProjectSettings];
                 [self.golan signUserForGolanProject];
             }
             

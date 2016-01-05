@@ -20,8 +20,8 @@
 
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
-#import "SignUserForGolanProject.h"
-
+#import "GolanProjectUtil.h"
+#import "GolanProjectModel.h"
 
 @implementation ProjectChooserViewController
 
@@ -199,10 +199,20 @@
 {
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     ProjectUser *pu = [self.projectUsers objectAtIndex:indexPath.row];
-    if([pu.projectID intValue] != kGolanWildlifeProjectID){
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        [self.chosenProjects removeObject:pu.project];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    GolanProjectUtil *golanProjectUtil = appDelegate.golan;
+    NSArray *smartProjects = [golanProjectUtil smartProjectsForObservation];
+    for(GolanProjectModel *pModel in smartProjects) {
+        // Search for project in smart projects.
+        if(![pu.projectID isEqualToNumber:pModel.projectID] || pModel.smartFlag < 2) {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            [self.chosenProjects removeObject:pu.project];
+        }
     }
+//    if([pu.projectID intValue] != kGolanWildlifeProjectID){
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//        [self.chosenProjects removeObject:pu.project];
+//    }
 }
 
 #pragma mark - RKObjectLoaderDelegate
