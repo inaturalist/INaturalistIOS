@@ -1352,7 +1352,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self needsIDTitle];
-    FAKIcon *bouy = [FAKINaturalist lifebuoyIconWithSize:44];
+    FAKIcon *bouy = [FAKINaturalist icnIdHelpIconWithSize:44];
     [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
     
