@@ -469,7 +469,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (NSArray *)sortedActivity {
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
     NSArray *allActivities = [self.comments.allObjects arrayByAddingObjectsFromArray:self.identifications.allObjects];
     return [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
 }
