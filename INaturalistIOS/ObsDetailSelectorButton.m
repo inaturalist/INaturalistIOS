@@ -73,14 +73,7 @@
     button.countLabel = ({
         UILabel *label = [UILabel new];
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        
-        if (button.count > 0) {
-            button.countLabel.text = [NSString stringWithFormat:@"%ld", (long)button.count];
-        } else {
-            button.countLabel.text = nil;
-        }
-        
+                
         label;
     });
     [button addSubview:button.countLabel];
@@ -159,7 +152,7 @@
     _count = count;
     
     if (count > 0) {
-        self.countLabel.text = [NSString stringWithFormat:@"%ld", (long)count];
+        self.countLabel.text = @"*";
     } else {
         self.countLabel.text = nil;
     }
