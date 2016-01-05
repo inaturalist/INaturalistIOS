@@ -89,6 +89,11 @@
     [super viewWillAppear:animated];
     
     [self.tableView reloadData];
+    
+    
+    if (self.observation.hasUnviewedActivity.boolValue) {
+        [self selectedSection:ObsDetailSectionActivity];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
