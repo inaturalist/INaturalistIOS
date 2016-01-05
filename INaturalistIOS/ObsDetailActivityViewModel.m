@@ -73,11 +73,6 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (!hasSeenNewActivity) {
-        [self markActivityAsSeen];
-        hasSeenNewActivity = YES;
-    }
-    
     // each comment/id is its own section
     return [super numberOfSectionsInTableView:tableView] + self.observation.sortedActivity.count;
 }
@@ -238,6 +233,15 @@
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
 
             return cell;
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == self.observation.sortedActivity.count - 1) {
+        if (!hasSeenNewActivity) {
+            [self markActivityAsSeen];
+            hasSeenNewActivity = YES;
         }
     }
 }
