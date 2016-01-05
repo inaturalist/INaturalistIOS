@@ -17,7 +17,10 @@
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
+            label.textAlignment = NSTextAlignmentCenter;
             label.numberOfLines = 0;
+            
+            label.textColor = [UIColor lightGrayColor];
             
             label;
         });
@@ -28,11 +31,11 @@
                                 @"noInteraction": self.noInteractionLabel,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[noInteraction]-15-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-30-[noInteraction]-30-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[noInteraction]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noInteraction]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
