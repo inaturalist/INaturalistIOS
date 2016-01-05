@@ -166,6 +166,7 @@
 		FA5564871BD9A9340049803B /* PhotoScrollViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */; };
 		FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55648C1BD9BC3C0049803B /* AddChicletCell.m */; };
 		FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
+		FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */; };
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
@@ -569,6 +570,8 @@
 		FA55648C1BD9BC3C0049803B /* AddChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddChicletCell.m; sourceTree = "<group>"; };
 		FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLocale+INaturalist.h"; sourceTree = "<group>"; };
 		FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLocale+INaturalist.m"; sourceTree = "<group>"; };
+		FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+INaturalist.h"; sourceTree = "<group>"; };
+		FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+INaturalist.m"; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
 		FA627BA71ACB6A050079534E /* INatTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatTooltipView.h; sourceTree = "<group>"; };
@@ -1101,6 +1104,8 @@
 				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
 				FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */,
 				FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */,
+				FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */,
+				FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */,
 				19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */,
 				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
 				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
@@ -1656,6 +1661,7 @@
 				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
+				FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */,
 				FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */,
 				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
