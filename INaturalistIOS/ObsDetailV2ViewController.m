@@ -292,7 +292,7 @@
             // show the new activity offscreen toast
             
             __weak typeof(self) weakSelf = self;
-            [self.view makeToast:@"Scroll down for newest activity"
+            [self.view makeToast:NSLocalizedString(@"Scroll down for newest activity", nil)
                         duration:5.0f
                         position:CSToastPositionBottom
                            title:nil
