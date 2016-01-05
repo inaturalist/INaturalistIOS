@@ -169,14 +169,13 @@
         // can't do this in storyboards
         
         NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
-            return [MHGalleryItem itemWithURL:op.mediumPhotoUrl.absoluteString
+            return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
                                   galleryType:MHGalleryTypeImage];
         }];
         
         MHUICustomization *customization = [[MHUICustomization alloc] init];
         customization.showOverView = NO;
-        customization.showMHShareViewInsteadOfActivityViewController = NO;
-        customization.hideShare = NO;
+        customization.hideShare = YES;
         customization.useCustomBackButtonImageOnImageViewer = NO;
         
         MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
