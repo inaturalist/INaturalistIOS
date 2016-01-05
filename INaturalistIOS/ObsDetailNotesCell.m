@@ -12,6 +12,10 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    self.notesTextView.contentMode = UIViewContentModeTop;
+    
+    self.notesTextView.textContainer.lineFragmentPadding = 0;
+    self.notesTextView.textContainerInset = UIEdgeInsetsZero;    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
