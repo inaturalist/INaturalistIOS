@@ -67,7 +67,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
 @property (readonly) CLLocationManager *locationManager;
-@property NSTimer *locationTimeout;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
 @end
@@ -680,28 +679,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
-    if (self.locationTimeout) {
-        [self.locationTimeout invalidate];
-        self.locationTimeout = nil;
-    }
-    
     [self.locationManager stopUpdatingLocation];
 }
 
 - (void)startUpdatingLocation {
-    
-    // start the count over
-    if (self.locationTimeout) {
-        [self.locationTimeout invalidate];
-        self.locationTimeout = nil;
-    }
-    
-    self.locationTimeout = [NSTimer scheduledTimerWithTimeInterval:60.0
-                                                            target:self
-                                                          selector:@selector(stopUpdatingLocation)
-                                                          userInfo:nil
-                                                           repeats:NO];
-    
     [self.locationManager startUpdatingLocation];
 }
 
