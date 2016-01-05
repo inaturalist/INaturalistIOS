@@ -8,6 +8,7 @@
 
 #import <BlocksKit/BlocksKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
+#import <Toast/UIView+Toast.h>
 
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"
@@ -33,6 +34,7 @@
 
 @property IBOutlet UITableView *tableView;
 @property ObsDetailViewModel *viewModel;
+@property BOOL shouldScrollToNewestActivity;
 
 @end
 
@@ -155,6 +157,22 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    if (self.shouldScrollToNewestActivity) {
+        // because we're scrolling to the very last row, and tableview content sizes aren't calculated until after all the
+        // subviews have laid out/etc, we need to continue scrolling to the very last row here
+        NSInteger lastSection = [self.tableView numberOfSections] - 1;
+        NSInteger numberOfRows = [self.tableView numberOfRowsInSection:lastSection];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:numberOfRows - 1 inSection:lastSection]
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:YES];
+        // clear the flag so we don't pin the user to the bottom of the view
+        self.shouldScrollToNewestActivity = NO;
+    }
+}
+
 #pragma mark - notifications
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
@@ -261,6 +279,40 @@
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
     [self.tableView reloadData];
+    
+    if (self.observation.hasUnviewedActivity.boolValue && self.activeSection == ObsDetailSectionActivity) {
+        
+        NSInteger lastSection = [self.tableView numberOfSections] - 1;
+        NSLog(@"last section is %ld", lastSection);
+        
+        BOOL allActivityIsVisible = [[self.tableView indexPathsForVisibleRows] bk_any:^BOOL(NSIndexPath *ip) {
+            return ip.section == lastSection;
+        }];
+        
+        if (!allActivityIsVisible) {
+            // show the new activity offscreen toast
+            
+            __weak typeof(self) weakSelf = self;
+            [self.view makeToast:@"Scroll down for newest activity"
+                        duration:5.0f
+                        position:CSToastPositionBottom
+                           title:nil
+                           image:nil
+                           style:nil
+                      completion:^(BOOL didTap) {
+                          if (didTap) {
+                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                              
+                              // set a flag so that we continue scrolling to the newest activity as the subviews get laid out
+                              strongSelf.shouldScrollToNewestActivity = YES;
+                              
+                              // start scrolling to very last row
+                              [strongSelf.tableView setContentOffset:(CGPoint){0, self.tableView.contentSize.height - self.tableView.bounds.size.height}
+                                                            animated:YES];
+                          }
+                      }];
+        }
+    }
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
