@@ -283,7 +283,6 @@
     if (self.observation.hasUnviewedActivity.boolValue && self.activeSection == ObsDetailSectionActivity) {
         
         NSInteger lastSection = [self.tableView numberOfSections] - 1;
-        NSLog(@"last section is %ld", lastSection);
         
         BOOL allActivityIsVisible = [[self.tableView indexPathsForVisibleRows] bk_any:^BOOL(NSIndexPath *ip) {
             return ip.section == lastSection;
