@@ -12,4 +12,6 @@
 
 @interface ObsDetailActivityViewModel : ObsDetailViewModel
 
+- (void)markActivityAsSeen;
+
 @end

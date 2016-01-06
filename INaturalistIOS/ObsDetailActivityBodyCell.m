@@ -13,6 +13,10 @@
 - (void)awakeFromNib {
     // Initialization code
     self.bodyTextView.dataDetectorTypes = UIDataDetectorTypeAll;
+    
+    // remove the text container interior padding
+    self.bodyTextView.textContainer.lineFragmentPadding = 0;
+    self.bodyTextView.textContainerInset = UIEdgeInsetsZero;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -71,10 +71,17 @@
             cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
             
             NSError *err;
-            cell.notesTextView.attributedText = [[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
+            NSMutableAttributedString *notes = [[[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
                                                                                  options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
                                                                       documentAttributes:nil
-                                                                                   error:&err];
+                                                                                   error:&err] mutableCopy];
+            
+            // reading this as HTML gives it a with-serif font
+            [notes addAttribute:NSFontAttributeName
+                          value:[UIFont systemFontOfSize:14]
+                          range:NSMakeRange(0, notes.length)];
+            
+            cell.notesTextView.attributedText = notes;
             
             return cell;
         } else if (indexPath.item == 1) {

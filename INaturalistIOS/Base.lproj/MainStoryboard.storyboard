@@ -608,8 +608,30 @@
                                             <outlet property="noLocationLabel" destination="uVH-g7-EIc" id="gC8-cD-8UK"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="activityBody" rowHeight="80" id="poQ-JF-oIc" customClass="ObsDetailActivityBodyCell">
+                                        <rect key="frame" x="0.0" y="170" width="320" height="80"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="poQ-JF-oIc" id="oyh-nw-wqw">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" id="H9A-Km-Rkh">
+                                                    <rect key="frame" x="15" y="8" width="290" height="63"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES"/>
+                                                </textView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="bodyTextView" destination="H9A-Km-Rkh" id="jwB-9Z-Gwx"/>
+                                        </connections>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="sectionSelector" rowHeight="53" id="qEL-bC-UXS" customClass="ObsDetailSectionSelectorCell">
-                                        <rect key="frame" x="0.0" y="170" width="320" height="53"/>
+                                        <rect key="frame" x="0.0" y="250" width="320" height="53"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qEL-bC-UXS" id="pyg-Te-MoW">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="52"/>
@@ -639,7 +661,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="notes" rowHeight="120" id="nSf-Ch-kfp" customClass="ObsDetailNotesCell">
-                                        <rect key="frame" x="0.0" y="223" width="320" height="120"/>
+                                        <rect key="frame" x="0.0" y="303" width="320" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nSf-Ch-kfp" id="NsB-2F-h7U">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="119"/>
@@ -675,8 +697,58 @@
                                             <outlet property="notesTextView" destination="kPv-St-ovQ" id="b6n-7L-XpL"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="photos" rowHeight="220" id="Sqx-fv-0Y1" customClass="PhotosPageControlCell">
+                                        <rect key="frame" x="0.0" y="423" width="320" height="220"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Sqx-fv-0Y1" id="AQb-ga-g75">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="219"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="4wO-6a-UDP">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="220"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="NVu-fT-hmA">
+                                                    <rect key="frame" x="276" y="16" width="29" height="29"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <state key="normal" title="^"/>
+                                                </button>
+                                                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="QCF-pe-ZaA">
+                                                    <rect key="frame" x="8" y="175" width="304" height="37"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                </pageControl>
+                                                <view hidden="YES" contentMode="scaleToFill" id="th2-JB-3xR">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Captive / Cultivated" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fMy-Kd-WzB">
+                                                            <rect key="frame" x="8" y="11" width="265" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
+                                                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="0Ws-WT-X6J">
+                                                            <rect key="frame" x="290" y="10" width="22" height="22"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                        </button>
+                                                    </subviews>
+                                                    <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                </view>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="captiveContainer" destination="th2-JB-3xR" id="sQb-SD-ZcS"/>
+                                            <outlet property="captiveInfoButton" destination="0Ws-WT-X6J" id="13U-SV-IGE"/>
+                                            <outlet property="iv" destination="4wO-6a-UDP" id="bMi-Tx-Cj2"/>
+                                            <outlet property="pageControl" destination="QCF-pe-ZaA" id="dJu-ac-aRq"/>
+                                            <outlet property="shareButton" destination="NVu-fT-hmA" id="Iva-OC-MqQ"/>
+                                        </connections>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="addActivity" rowHeight="44" id="dut-Ql-JDu" customClass="ObsDetailAddActivityCell">
-                                        <rect key="frame" x="0.0" y="343" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="643" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dut-Ql-JDu" id="uto-7a-ngn">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -706,7 +778,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="taxon" rowHeight="44" id="OL9-B7-J74" customClass="ObsDetailTaxonCell">
-                                        <rect key="frame" x="0.0" y="387" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="687" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="OL9-B7-J74" id="wvR-bn-rdN">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -731,7 +803,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="activityMore" rowHeight="44" id="XKk-WP-faU" customClass="ObsDetailActivityMoreCell">
-                                        <rect key="frame" x="0.0" y="431" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="731" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XKk-WP-faU" id="PFc-hM-snd">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -749,7 +821,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="dataQuality" rowHeight="80" id="5v1-9L-2Fo" customClass="ObsDetailDataQualityCell">
-                                        <rect key="frame" x="0.0" y="475" width="320" height="80"/>
+                                        <rect key="frame" x="0.0" y="775" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5v1-9L-2Fo" id="zQv-Ih-h8P">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
@@ -816,30 +888,8 @@
                                             <outlet property="researchLabel" destination="Ghi-b0-mds" id="7B4-ub-dbW"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="activityBody" rowHeight="80" id="poQ-JF-oIc" customClass="ObsDetailActivityBodyCell">
-                                        <rect key="frame" x="0.0" y="555" width="320" height="80"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="poQ-JF-oIc" id="oyh-nw-wqw">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" id="H9A-Km-Rkh">
-                                                    <rect key="frame" x="8" y="8" width="304" height="63"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES"/>
-                                                </textView>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="bodyTextView" destination="H9A-Km-Rkh" id="jwB-9Z-Gwx"/>
-                                        </connections>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="activityAuthor" id="AVV-ps-Fga" customClass="ObsDetailActivityAuthorCell">
-                                        <rect key="frame" x="0.0" y="635" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="855" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AVV-ps-Fga" id="n2v-Z7-IlQ">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -872,7 +922,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="rightDetail" textLabel="2oq-jA-OoV" detailTextLabel="duv-dw-uXw" style="IBUITableViewCellStyleValue1" id="mkT-7P-g22">
-                                        <rect key="frame" x="0.0" y="679" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="899" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mkT-7P-g22" id="w78-Lr-xce">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -896,7 +946,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="subtitle" textLabel="TSU-vf-AJw" detailTextLabel="xE8-Wh-GqW" style="IBUITableViewCellStyleSubtitle" id="I7A-tp-CgQ">
-                                        <rect key="frame" x="0.0" y="723" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="943" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="I7A-tp-CgQ" id="cah-hc-fMF">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -918,49 +968,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="photos" rowHeight="220" id="Sqx-fv-0Y1" customClass="PhotosPageControlCell">
-                                        <rect key="frame" x="0.0" y="767" width="320" height="220"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Sqx-fv-0Y1" id="AQb-ga-g75">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="219"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="4wO-6a-UDP">
-                                                    <rect key="frame" x="-7" y="0.0" width="327" height="220"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                </imageView>
-                                                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="QCF-pe-ZaA">
-                                                    <rect key="frame" x="8" y="175" width="304" height="37"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                </pageControl>
-                                                <view contentMode="scaleToFill" id="th2-JB-3xR">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Captive / Cultivated" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fMy-Kd-WzB">
-                                                            <rect key="frame" x="8" y="11" width="265" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
-                                                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="0Ws-WT-X6J">
-                                                            <rect key="frame" x="290" y="10" width="22" height="22"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                                                        </button>
-                                                    </subviews>
-                                                    <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                </view>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="captiveContainer" destination="th2-JB-3xR" id="sQb-SD-ZcS"/>
-                                            <outlet property="captiveInfoButton" destination="0Ws-WT-X6J" id="13U-SV-IGE"/>
-                                            <outlet property="iv" destination="4wO-6a-UDP" id="bMi-Tx-Cj2"/>
-                                            <outlet property="pageControl" destination="QCF-pe-ZaA" id="dJu-ac-aRq"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

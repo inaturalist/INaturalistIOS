@@ -14,5 +14,6 @@
 @property IBOutlet UIImageView *iv;
 @property IBOutlet UIView *captiveContainer;
 @property IBOutlet UIButton *captiveInfoButton;
+@property IBOutlet UIButton *shareButton;
 
 @end

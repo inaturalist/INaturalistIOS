@@ -35,6 +35,7 @@
 @property IBOutlet UITableView *tableView;
 @property ObsDetailViewModel *viewModel;
 @property BOOL shouldScrollToNewestActivity;
+@property UIPopoverController *sharePopover;
 
 @end
 
@@ -211,6 +212,20 @@
         };
         
         [self presentMHGalleryController:gallery animated:YES completion:nil];
+    } else if ([identifier isEqualToString:@"share"]) {
+        // this isn't a storyboard thing either
+        
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
+                                           INatWebBaseURL, (long)self.observation.recordID.longLongValue]];
+        UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
+                                                                               applicationActivities:nil];
+        activity.completionHandler = ^(NSString *activityType, BOOL completed) {
+            if (completed)
+                [[Analytics sharedClient] event:kAnalyticsEventExploreObservationShare
+                                 withProperties:@{ @"destination": activityType }];
+        };
+        
+        [self presentViewController:activity animated:YES completion:nil];
     } else {
         [self performSegueWithIdentifier:identifier sender:object];
     }
@@ -310,6 +325,9 @@
                                                             animated:YES];
                           }
                       }];
+        } else {
+            ObsDetailActivityViewModel *activityViewModel = (ObsDetailActivityViewModel *)self.viewModel;
+            [activityViewModel markActivityAsSeen];
         }
     }
 }

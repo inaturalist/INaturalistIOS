@@ -514,10 +514,12 @@
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
-	vc.observation = o;
-    [self.navigationController pushViewController:vc animated:YES];
+    // fake a selection
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    // transition to obs detail
+    [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
+    return;
 }
 
 - (void)showError:(NSString *)errorMessage{
@@ -783,6 +785,8 @@
         cell.interactiveActivityButton.hidden = YES;
     }
     
+    //cell.interactiveActivityButton.enabled = NO;
+    //cell.activityButton.enabled = NO;
     [cell.interactiveActivityButton addTarget:self
                                        action:@selector(clickedActivity:event:)
                              forControlEvents:UIControlEventTouchUpInside];

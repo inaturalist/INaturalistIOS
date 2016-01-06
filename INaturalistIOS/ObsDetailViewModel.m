@@ -164,6 +164,16 @@
         cell.pageControl.hidden = YES;
     }
     
+    [cell.shareButton addTarget:self
+                         action:@selector(share)
+               forControlEvents:UIControlEventTouchUpInside];
+    
+    if (self.observation.recordID) {
+        cell.shareButton.hidden = NO;
+    } else {
+        cell.shareButton.hidden = YES;
+    }
+    
     cell.captiveContainer.hidden = !self.observation.captive.boolValue;
     [cell.captiveInfoButton addTarget:self
                                action:@selector(captiveInfoPressed)
@@ -379,6 +389,11 @@
 
 
 #pragma mark - uicontrol events
+
+- (void)share {
+    [self.delegate inat_performSegueWithIdentifier:@"share" sender:nil];
+}
+
 
 - (void)pageControlChanged:(UIPageControl *)pageControl {
     self.viewingPhoto = pageControl.currentPage;

@@ -170,8 +170,8 @@
 }
 
 - (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 24 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 24;
+    // 22 for some padding on the left/right
+    CGFloat usableWidth = tableView.bounds.size.width - 22;
     CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
     UIFont *font = [UIFont systemFontOfSize:14.0f];
     
@@ -180,8 +180,8 @@
                                       attributes:@{ NSFontAttributeName: font }
                                          context:nil];
     
-    // 16 for some padding above/below
-    return MAX(44, textRect.size.height + 16);
+    // 20 for padding above/below
+    return MAX(44, textRect.size.height + 20);
 }
 
 
@@ -249,7 +249,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == self.observation.sortedActivity.count - 1) {
+    if (indexPath.section == [tableView numberOfSections] - 1) {
         if (!hasSeenNewActivity) {
             [self markActivityAsSeen];
             hasSeenNewActivity = YES;
@@ -275,13 +275,20 @@
     // body
     ObsDetailActivityBodyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityBody"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    
     NSError *err = nil;
-    cell.bodyTextView.attributedText = [[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
+    NSMutableAttributedString *body = [[[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
                                                                         options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
                                                              documentAttributes:nil
-                                                                          error:&err];
+                                                                          error:&err] mutableCopy];
     
+    // reading the text as HTML gives it a with-serif font
+    [body addAttribute:NSFontAttributeName
+                 value:[UIFont systemFontOfSize:14]
+                 range:NSMakeRange(0, body.length)];
+    
+    cell.bodyTextView.attributedText = body;
+
     cell.bodyTextView.dataDetectorTypes = UIDataDetectorTypeLink;
     cell.bodyTextView.editable = NO;
     cell.bodyTextView.scrollEnabled = NO;

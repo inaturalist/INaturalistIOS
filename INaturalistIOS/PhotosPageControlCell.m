@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <FontAwesomeKit/FAKIonicons.h>
 
 #import "PhotosPageControlCell.h"
 
@@ -14,6 +15,16 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    
+    self.shareButton.layer.cornerRadius = 29.0 / 2;
+    self.shareButton.clipsToBounds = YES;
+    self.shareButton.backgroundColor = [UIColor darkGrayColor];
+    
+    FAKIcon *share = [FAKIonIcons iosUploadOutlineIconWithSize:18];
+    [share addAttribute:NSForegroundColorAttributeName
+                  value:[UIColor whiteColor]];
+    [self.shareButton setAttributedTitle:share.attributedString
+                                forState:UIControlStateNormal];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -30,6 +41,9 @@
     [self.captiveInfoButton removeTarget:nil
                                   action:NULL
                         forControlEvents:UIControlEventAllEvents];
+    [self.shareButton removeTarget:nil
+                            action:NULL
+                  forControlEvents:UIControlEventAllEvents];
 }
 
 @end
