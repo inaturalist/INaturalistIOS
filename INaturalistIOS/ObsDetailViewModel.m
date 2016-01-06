@@ -420,12 +420,11 @@
     
     if (gesture.direction == UISwipeGestureRecognizerDirectionRight) {
         // swiping backward
-        // swiping forward
         if (self.viewingPhoto == 0) {
             // do nothing
         } else {
             self.viewingPhoto--;
-            [self.delegate reloadRowAtIndexPath:photoIp];
+            [self.delegate reloadRowAtIndexPath:photoIp withAnimation:UITableViewRowAnimationRight];
         }
 
     } else if (gesture.direction == UISwipeGestureRecognizerDirectionLeft) {
@@ -434,7 +433,7 @@
             // do nothing
         } else {
             self.viewingPhoto++;
-            [self.delegate reloadRowAtIndexPath:photoIp];
+            [self.delegate reloadRowAtIndexPath:photoIp withAnimation:UITableViewRowAnimationLeft];
         }
     }
 }
