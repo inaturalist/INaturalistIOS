@@ -29,6 +29,12 @@
     if (self.observation.latitude.floatValue) {
         CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
         CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
+        
+        // make sure we're not so zoomed in that we can't display tiles
+        if (distance < 100) {
+            distance = 100;
+        }
+        
         self.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
         
         MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
