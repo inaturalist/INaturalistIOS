@@ -1226,10 +1226,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionDelete:
             // show alertview
-            [[[UIActionSheet alloc] initWithTitle:@"Are you sure? This is permanent!"
+            [[[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
                                          delegate:self
-                                cancelButtonTitle:@"Never mind"
-                           destructiveButtonTitle:@"Bombs away"
+                                cancelButtonTitle:NSLocalizedString(@"Never mind", nil)
+                           destructiveButtonTitle:NSLocalizedString(@"Yes, delete this observation", nil)
                                 otherButtonTitles:nil] showInView:self.view];
             
             break;
