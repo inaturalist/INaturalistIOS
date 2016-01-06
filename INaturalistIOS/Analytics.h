@@ -146,6 +146,11 @@ extern NSString *kAnalyticsEventObservationViewHiresPhoto;
 extern NSString *kAnalyticsEventObservationDelete;
 extern NSString *kAnalyticsEventObservationAddIdentification;
 
+// view obs activities
+extern NSString *kAnalyticsEventObservationShareStarted;
+extern NSString *kAnalyticsEventObservationShareCancelled;
+extern NSString *kAnalyticsEventObservationShareFinished;
+
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;
 extern NSString *kAnalyticsEventSettingDisabled;

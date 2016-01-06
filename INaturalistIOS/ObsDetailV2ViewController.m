@@ -215,14 +215,20 @@
     } else if ([identifier isEqualToString:@"share"]) {
         // this isn't a storyboard thing either
         
+        [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
+        
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
                                            INatWebBaseURL, (long)self.observation.recordID.longLongValue]];
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                                applicationActivities:nil];
         activity.completionHandler = ^(NSString *activityType, BOOL completed) {
-            if (completed)
-                [[Analytics sharedClient] event:kAnalyticsEventExploreObservationShare
+            if (completed) {
+                [[Analytics sharedClient] event:kAnalyticsEventObservationShareFinished
                                  withProperties:@{ @"destination": activityType }];
+            } else {
+                [[Analytics sharedClient] event:kAnalyticsEventObservationShareCancelled];
+
+            }
         };
         
         [self presentViewController:activity animated:YES completion:nil];
