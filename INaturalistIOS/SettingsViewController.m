@@ -191,10 +191,19 @@ static const int UsernameTextLabelTag = 17;
     customization.hideShare = YES;
     customization.useCustomBackButtonImageOnImageViewer = NO;
     
+    MHTransitionCustomization *transition = [[MHTransitionCustomization alloc] init];
+    transition.dismissWithScrollGestureOnFirstAndLastImage = NO;
+    transition.interactiveDismiss = NO;
+    
+    MHTransitionPresentMHGallery *transitionPresent = [[MHTransitionPresentMHGallery alloc] init];
+    transitionPresent.interactive = NO;
+    
     MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
     gallery.galleryItems = galleryData;
     gallery.presentationIndex = 0;
     gallery.UICustomization = customization;
+    gallery.transitionCustomization = transition;
+    gallery.interactivePresentationTransition = transitionPresent;
     
     __weak MHGalleryController *blockGallery = gallery;
     
@@ -673,8 +682,10 @@ static const int UsernameTextLabelTag = 17;
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
         self.toolbar.items = @[flex,rightBarButton,flex,leftBarButton,flex,fixed];
         UIBarButtonItem *doneBarButton = self.navigationItem.rightBarButtonItem;
-        self.navigationItem.leftBarButtonItem = doneBarButton;
-        self.navigationItem.rightBarButtonItem = nil;
+        if(doneBarButton) {
+            self.navigationItem.leftBarButtonItem = doneBarButton;
+            self.navigationItem.rightBarButtonItem = nil;
+        }
     }
     else {
         self.toolbar.items = @[flex,leftBarButton,flex,rightBarButton,flex,fixed];
@@ -682,5 +693,3 @@ static const int UsernameTextLabelTag = 17;
 }
 
 @end
-
-

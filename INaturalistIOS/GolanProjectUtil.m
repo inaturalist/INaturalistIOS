@@ -19,11 +19,8 @@
 // ######################################################################
 - (void)signUserForGolanProject{
     
-    // Check if the user is already member of golan wildlife project.
-    Project *golanProject = [[self class] golanProject];
-    if(golanProject == nil){
-        [self downloadUserProjects];
-    }
+    // Downloads the user's projects
+    [self downloadUserProjects];
 }
 
 - (void)loadGolanProjectSettings {

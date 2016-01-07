@@ -172,7 +172,7 @@
 {
     static NSString *CellIdentifier = @"ProjectCell";
     ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
     cell.titleLabel.text = pu.project.title;
     [cell.projectImage sd_cancelCurrentImageLoad];
@@ -202,17 +202,22 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     GolanProjectUtil *golanProjectUtil = appDelegate.golan;
     NSArray *smartProjects = [golanProjectUtil smartProjectsForObservation];
+    BOOL found = NO;
     for(GolanProjectModel *pModel in smartProjects) {
         // Search for project in smart projects.
-        if(![pu.projectID isEqualToNumber:pModel.projectID] || pModel.smartFlag < 2) {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-            [self.chosenProjects removeObject:pu.project];
+        if([pu.projectID isEqualToNumber:pModel.projectID]) {
+            if(pModel.smartFlag < 2) {
+                cell.accessoryType = UITableViewCellAccessoryNone;
+                [self.chosenProjects removeObject:pu.project];
+            }
+            found = YES;
+            break;
         }
     }
-//    if([pu.projectID intValue] != kGolanWildlifeProjectID){
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//        [self.chosenProjects removeObject:pu.project];
-//    }
+    if(!found) {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        [self.chosenProjects removeObject:pu.project];
+    }
 }
 
 #pragma mark - RKObjectLoaderDelegate

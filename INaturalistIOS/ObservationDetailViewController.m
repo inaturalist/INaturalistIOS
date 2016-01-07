@@ -514,24 +514,27 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
             self.observation.localUpdatedAt = [NSDate date];
         }
     }
-    // Check if the user is signed up for the smart projects from server.
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    GolanProjectUtil *golanProjectUtil = appDelegate.golan;
-    NSArray *smartProjects = [golanProjectUtil smartProjectsForObservation];
-    for(GolanProjectModel *pModel in smartProjects) {
-        BOOL found = NO;
-        for(ProjectObservation *po in self.observation.projectObservations) {
-            if([po.projectID isEqualToNumber:pModel.projectID]) {
-                found = YES;
-                break;
+    // Check if the user is signed up for the smart projects from server, only while create a new observation.
+    // NOTE: shouldShowBigSaveButton indicates that the ObservationDetailViewController is in creation mode.
+    if(self.shouldShowBigSaveButton) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        GolanProjectUtil *golanProjectUtil = appDelegate.golan;
+        NSArray *smartProjects = [golanProjectUtil smartProjectsForObservation];
+        for(GolanProjectModel *pModel in smartProjects) {
+            BOOL found = NO;
+            for(ProjectObservation *po in self.observation.projectObservations) {
+                if([po.projectID isEqualToNumber:pModel.projectID]) {
+                    found = YES;
+                    break;
+                }
             }
-        }
-        // Add the project to the list if it isn't wildlife project and the flag indicates for appearance
-        if(!found && [pModel.projectID intValue] != kGolanWildlifeProjectID && pModel.menuFlag == 1) {
-            ProjectObservation *po = [ProjectObservation object];
-            po.observation = self.observation;
-            po.project = pModel.projectFromServer;
-            self.observation.localUpdatedAt = [NSDate date];
+            // Add the project to the list if it isn't wildlife project and the flag indicates for appearance
+            if(!found && [pModel.projectID intValue] != kGolanWildlifeProjectID && pModel.smartFlag > 0) {
+                ProjectObservation *po = [ProjectObservation object];
+                po.observation = self.observation;
+                po.project = pModel.projectFromServer;
+                self.observation.localUpdatedAt = [NSDate date];
+            }
         }
     }
 }

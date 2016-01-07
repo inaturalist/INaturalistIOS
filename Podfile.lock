@@ -206,7 +206,7 @@ SPEC CHECKSUMS:
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
-  RestKit: b83399c3f43ff4f1808ff85eced8d55bb7739584
+  RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
   SlackTextViewController: 139ffc5b09276ff5ac1609ac78eafab702fc974e
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
