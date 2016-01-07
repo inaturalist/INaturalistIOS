@@ -196,6 +196,77 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section < 2) {
+        return [super tableView:tableView heightForFooterInSection:section];
+    } else if (section == 3) {
+        // data quality
+        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+            return CGFLOAT_MIN;
+        } else if (!self.observation.recordID) {
+            return CGFLOAT_MIN;
+        } else {
+            return 66;
+        }
+    } else {
+        return CGFLOAT_MIN;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (section < 2) {
+        return [super tableView:tableView viewForFooterInSection:section];
+    } else if (section == 3) {
+        // data quality
+        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+            return nil;
+        } else if (!self.observation.recordID) {
+            return nil;
+        } else {
+            UIView *view = [UIView new];
+            view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 66);
+            
+            view.backgroundColor = [UIColor colorWithHexString:@"#dedee3"];
+            
+            UILabel *label = [UILabel new];
+            label.frame = CGRectMake(15, 5, view.bounds.size.width - 30, view.bounds.size.height - 10);
+            label.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+            label.font = [UIFont systemFontOfSize:15];
+            label.textColor = [UIColor colorWithHexString:@"#5C5C5C"];
+            label.numberOfLines = 0;
+            label.textAlignment = NSTextAlignmentCenter;
+            
+            [view addSubview:label];
+            
+            if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
+                if (self.observation.identificationsCount.integerValue < 2) {
+                    label.text = @"This observation needs more community IDs to be considered for Research Grade.";
+                } else {
+                    label.text = @"This observation needs a more specific community ID to be considered for Research Grade.";
+                }
+            } else {
+                // must be casual
+                if (self.observation.observationPhotos.count == 0) {
+                    label.text = @"This observation needs a photo to be considered for Research Grade.";
+                } else if (!self.observation.latitude) {
+                    label.text = @"This observation needs a location to be considered for Research Grade.";
+                } else if (!self.observation.observedOn) {
+                    label.text = @"This observation needs a date to be considered for Research Grade.";
+                } else if (self.observation.captive.boolValue) {
+                    label.text = @"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.";
+                } else {
+                    label.text = @"This observation was voted off the island by the iNaturalist community.";
+                }
+            }
+            
+            return view;
+        }
+
+    } else {
+        return nil;
+    }
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section < 2) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
