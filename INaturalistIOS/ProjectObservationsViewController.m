@@ -384,6 +384,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.isReadOnly) {
+        // only show project in readonly mode, for now
+        return 0;
+    }
     Project *project = [self projectForSection:section];
     if ([self projectIsSelected:project]) {
         return project.projectObservationFields.count;
