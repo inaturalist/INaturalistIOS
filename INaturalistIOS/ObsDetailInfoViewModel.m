@@ -342,18 +342,4 @@
     return ObsDetailSectionInfo;
 }
 
-#pragma mark - button targets
-
-- (void)showDataQualityInfo {
-    NSString *captiveTitle = NSLocalizedString(@"What does data quality mean?", @"title for alert explaining what data quality means");
-    NSString *captiveMsg = NSLocalizedString(@"The data quality assessment is a summary of an observation's accuracy.\nAll observations start as \"Needs ID\", and achieve \"Research\" grade when the observation has a date, geo data, and a photo, and when the iNat community agrees on an ID.\nObservations change to \"Casual\" grade if the conditions aren't met, if the organism looks captive or cultivated, or if date or geo data looks inaccurate to the community.", @"message explaining what data quality means for iNaturalist");
-    
-    [[[UIAlertView alloc] initWithTitle:captiveTitle
-                                message:captiveMsg
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
-    
-}
-
 @end
