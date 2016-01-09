@@ -29,6 +29,7 @@
 #import "LocationViewController.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "ObsDetailAddFaveHeader.h"
+#import "ObsDetailQualityDetailsFooter.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -64,7 +65,8 @@
     [self.tableView registerClass:[ObsDetailAddActivityFooter class] forHeaderFooterViewReuseIdentifier:@"addActivityFooter"];
     [self.tableView registerClass:[ObsDetailNoInteractionHeaderFooter class] forHeaderFooterViewReuseIdentifier:@"noInteraction"];
     [self.tableView registerClass:[ObsDetailAddFaveHeader class] forHeaderFooterViewReuseIdentifier:@"addFave"];
-    
+    [self.tableView registerClass:[ObsDetailQualityDetailsFooter class] forHeaderFooterViewReuseIdentifier:@"qualityDetails"];
+
     NSDictionary *views = @{
                             @"tv": self.tableView,
                             };
