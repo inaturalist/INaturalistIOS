@@ -317,7 +317,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     header.projectTitleLabel.text = project.title;
 
     if (self.isReadOnly) {
-        header.infoButton.hidden = NO;
+        // not showing this yet
+        header.infoButton.hidden = YES;
         header.infoButton.tag = section;
         
         header.selectedSwitch.hidden = YES;
