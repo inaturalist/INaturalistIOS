@@ -257,6 +257,18 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    // second row in an identification section is a taxon row, which is selectable
+    if (indexPath.item == 1) {
+        Activity *activity = [self activityForSection:indexPath.section];
+        if ([activity isKindOfClass:[Identification class]]) {
+            Identification *identification = (Identification *)activity;
+            [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:identification.taxon];
+        }
+    }
+}
 
 #pragma mark - section helpers
 
