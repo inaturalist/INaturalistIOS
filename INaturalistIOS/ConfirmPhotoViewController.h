@@ -10,6 +10,7 @@
 
 @class Taxon;
 @class Project;
+@class MultiImageView;
 
 @interface ConfirmPhotoViewController : UIViewController
 
@@ -23,5 +24,6 @@
 
 @property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
 
+@property MultiImageView *multiImageView;
 
 @end

@@ -37,6 +37,7 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "NSURL+INaturalist.h"
 #import "DeletedRecord.h"
+#import "Fave.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -277,7 +278,9 @@
     // DEBUG
 //        RKLogConfigureByName("RestKit", RKLogLevelWarning);
 //        RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
-//        RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    //RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    //RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
+
     // END DEBUG
     
     [RKObjectManager setSharedManager:manager];

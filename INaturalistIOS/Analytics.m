@@ -215,6 +215,13 @@ NSString *kAnalyticsEventObservationAddPhoto =                  @"Obs - Add Phot
 NSString *kAnalyticsEventObservationDeletePhoto =               @"Obs - Delete Photo";
 NSString *kAnalyticsEventObservationNewDefaultPhoto =           @"Obs - New Default Photo";
 NSString *kAnalyticsEventObservationViewHiresPhoto =            @"Obs - View Hires Photo";
+NSString *kAnalyticsEventObservationDelete =                    @"Obs - Delete";
+NSString *kAnalyticsEventObservationAddIdentification =         @"Obs - Add Identification";
+
+// view obs activities
+NSString *kAnalyticsEventObservationShareStarted =              @"Obs - Share Started";
+NSString *kAnalyticsEventObservationShareCancelled =            @"Obs - Share Cancelled";
+NSString *kAnalyticsEventObservationShareFinished =             @"Obs - Share Finished";
 
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";

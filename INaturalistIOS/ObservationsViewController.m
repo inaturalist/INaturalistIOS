@@ -45,6 +45,7 @@
 #import "ObservationDetailViewController.h"
 #import "DeletedRecord.h"
 #import "UploadManager.h"
+#import "ObsDetailV2ViewController.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
     
@@ -513,10 +514,12 @@
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
-	vc.observation = o;
-    [self.navigationController pushViewController:vc animated:YES];
+    // fake a selection
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    // transition to obs detail
+    [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
+    return;
 }
 
 - (void)showError:(NSString *)errorMessage{
@@ -660,13 +663,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
         return;
     } else {
-        [self performSegueWithIdentifier:@"observationDetail" sender:o];
+        [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
     }
 }
 
@@ -782,6 +785,8 @@
         cell.interactiveActivityButton.hidden = YES;
     }
     
+    //cell.interactiveActivityButton.enabled = NO;
+    //cell.activityButton.enabled = NO;
     [cell.interactiveActivityButton addTarget:self
                                        action:@selector(clickedActivity:event:)
                              forControlEvents:UIControlEventTouchUpInside];
@@ -1289,6 +1294,9 @@
                        direction:UIPageViewControllerNavigationDirectionForward
                         animated:YES
                       completion:nil];
+    } else if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
+        ObsDetailV2ViewController *ovc = [segue destinationViewController];
+        ovc.observation = (Observation *)sender;
     }
 }
 

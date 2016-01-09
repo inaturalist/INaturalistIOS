@@ -32,7 +32,6 @@
 @property (strong, nonatomic) UIBarButtonItem *mapTypeButton;
 @property (weak, nonatomic) IBOutlet CrossHairView *crossHairView;
 @property (weak, nonatomic) IBOutlet AccuracyCircleView *accuracyCircleView;
-@property BOOL saveOnExit;
 
 - (IBAction)clickedCancel:(id)sender;
 - (IBAction)clickedDone:(id)sender;

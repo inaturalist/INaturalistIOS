@@ -11,6 +11,13 @@
 #import "INatModel.h"
 #import "Uploadable.h"
 
+typedef NS_ENUM(NSInteger, ObsDataQuality) {
+    ObsDataQualityCasual,
+    ObsDataQualityNeedsID,
+    ObsDataQualityResearch,
+    ObsDataQualityNone
+};
+
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
 @class Taxon, Comment, Identification;
@@ -54,12 +61,16 @@
 @property (nonatomic, retain) NSString *uuid;
 @property (nonatomic, retain) NSString *validationErrorMsg;
 @property (nonatomic, retain) NSNumber *captive;
+@property (nonatomic, retain) NSSet *faves;
+@property (nonatomic, retain) NSNumber *favesCount;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;
 - (UIColor *)iconicTaxonColor;
 - (NSArray *)sortedObservationPhotos;
 - (NSArray *)sortedProjectObservations;
+- (NSArray *)sortedFaves;
+- (NSArray *)sortedActivity;
 - (NSNumber *)visibleLatitude;
 - (NSNumber *)visibleLongitude;
 - (NSInteger)activityCount;
@@ -69,6 +80,8 @@
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
 - (NSString *)presentableGeoprivacy;
+- (ObsDataQuality)dataQuality;
+
 @end
 
 @interface Observation (PrimitiveAccessors)

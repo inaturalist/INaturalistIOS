@@ -30,6 +30,7 @@
 @property RKReachabilityObserver *reachabilityObserver;
 
 @property NSDate *lastNetworkOutageNotificationDate;
+
 // workaround for restkit bug
 @property NSMutableArray *failedObjectLoaders;
 @end

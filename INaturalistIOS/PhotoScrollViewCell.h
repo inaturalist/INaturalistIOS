@@ -22,6 +22,8 @@
 
 @property (assign) id <PhotoScrollViewDelegate> delegate;
 @property NSArray *photos;
+@property UICollectionView *collectionView;
+
 - (UIImageView *)imageViewForIndex:(NSInteger)idx;
 
 @end

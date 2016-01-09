@@ -21,7 +21,7 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 
-#import "ConfirmObservationViewController.h"
+#import "ObsEditV2ViewController.h"
 #import "Observation.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
@@ -51,26 +51,27 @@
 #import "UploadManager.h"
 #import "Analytics.h"
 #import "PhotoScrollViewCell.h"
+#import "ObsCenteredLabelCell.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
     ConfirmObsSectionIdentify,
     ConfirmObsSectionNotes,
+    ConfirmObsSectionDelete,
 };
 
-@interface ConfirmObservationViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate, UIActionSheetDelegate> {
     
     CLLocationManager *_locationManager;
 }
-@property UITableView *tableView;
 @property UIButton *saveButton;
 @property (readonly) NSString *notesPlaceholder;
 @property (readonly) CLLocationManager *locationManager;
-@property NSTimer *locationTimeout;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
+@property CLGeocoder *geoCoder;
 @end
 
-@implementation ConfirmObservationViewController
+@implementation ObsEditV2ViewController
 
 #pragma mark - uiviewcontroller lifecycle
 
@@ -97,6 +98,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
         [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
+        [tv registerClass:[ObsCenteredLabelCell class] forCellReuseIdentifier:@"singleButton"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
         tv.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -128,7 +130,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
-    [self.view addSubview:self.saveButton];
+    // wait to add to self.view, since we don't always need it
     
     NSDictionary *views = @{
                             @"tv": self.tableView,
@@ -139,15 +141,34 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[save]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    
+    if (self.isMakingNewObservation) {
+        // new obs confirm has a save button
+        [self.view addSubview:self.saveButton];
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[save]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        
+        // new obs confirm has no Done nav bar button
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        // save existing obs has no save button
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+        // save existing obs has a Done nav bar button
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                               target:self
+                                                                                               action:@selector(saved:)];
+    }
 
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
@@ -174,7 +195,46 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)dealloc {
+    if (self.geoCoder) {
+        [self.geoCoder cancelGeocode];
+    }
+    
     [self stopUpdatingLocation];
+}
+
+#pragma mark - UIActionSheet delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // cancel, do nothing
+    } else if (buttonIndex == 0) {
+        // delete this observation
+        [[Analytics sharedClient] event:kAnalyticsEventObservationDelete];
+        
+        // delete locally
+        [self.observation deleteEntity];
+        self.observation = nil;
+        NSError *error;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            // TODO: log it at least, also notify the user
+        }
+        
+        // trigger the delete to happen on the server
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loginController.uploadManager.shouldAutoupload) {
+            [appDelegate.loginController.uploadManager autouploadPendingContent];
+        }
+        
+        // pop to the root view controller
+        UITabBarController *tab = (UITabBarController *)self.presentingViewController;
+        UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
+        
+        [tab dismissViewControllerAnimated:YES completion:^{
+            [nav popToRootViewControllerAnimated:YES];
+        }];
+        
+    }
 }
 
 #pragma mark - Autoupload Helper
@@ -208,10 +268,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
-        // text changed, save it
+        // text changed
         self.observation.inatDescription = textView.text;
-        
-        [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged];
+        [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
+                         withProperties:@{
+                                          @"Via": [self analyticsVia]
+                                          }];
     }
     
     if (textView.text.length == 0) {
@@ -245,7 +307,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationNewDefaultPhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -268,7 +330,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -306,7 +368,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     };
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto
-                     withProperties:@{ @"Via": @"Confirm" }];
+                     withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self presentMHGalleryController:gallery animated:YES completion:nil];
 
@@ -417,7 +479,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Source": @"Library",
                                       @"Count": @(assets.count)
                                       }];
@@ -453,7 +515,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Source": @"Camera",
                                       @"Count": @(1)
                                       }];
@@ -582,6 +644,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         self.observation.positionalAccuracy = @(newLocation.horizontalAccuracy);
         self.observation.positioningMethod = @"gps";
         
+        self.observation.localUpdatedAt = [NSDate date];
+        
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
         
@@ -615,28 +679,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
-    if (self.locationTimeout) {
-        [self.locationTimeout invalidate];
-        self.locationTimeout = nil;
-    }
-    
     [self.locationManager stopUpdatingLocation];
 }
 
 - (void)startUpdatingLocation {
-    
-    // start the count over
-    if (self.locationTimeout) {
-        [self.locationTimeout invalidate];
-        self.locationTimeout = nil;
-    }
-    
-    self.locationTimeout = [NSTimer scheduledTimerWithTimeInterval:60.0
-                                                            target:self
-                                                          selector:@selector(stopUpdatingLocation)
-                                                          userInfo:nil
-                                                           repeats:NO];
-    
     [self.locationManager startUpdatingLocation];
 }
 
@@ -651,36 +697,35 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.latitude.floatValue
                                                  longitude:obs.longitude.floatValue];
     
-    static CLGeocoder *geoCoder;
-    if (!geoCoder)
-        geoCoder = [[CLGeocoder alloc] init];
+    if (!self.geoCoder)
+        self.geoCoder = [[CLGeocoder alloc] init];
     
-    [geoCoder cancelGeocode];       // cancel anything in flight
+    [self.geoCoder cancelGeocode];       // cancel anything in flight
     
-    [geoCoder reverseGeocodeLocation:loc
-                   completionHandler:^(NSArray *placemarks, NSError *error) {
-                       CLPlacemark *placemark = [placemarks firstObject];
-                       if (placemark) {
-                           @try {
-                               NSString *name = placemark.name ?: @"";
-                               NSString *locality = placemark.locality ?: @"";
-                               NSString *administrativeArea = placemark.administrativeArea ?: @"";
-                               NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
-                               obs.placeGuess = [ @[ name,
-                                                     locality,
-                                                     administrativeArea,
-                                                     ISOcountryCode ] componentsJoinedByString:@", "];
-                               NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
-                               [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
-                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
-                           } @catch (NSException *exception) {
-                               if ([exception.name isEqualToString:NSObjectInaccessibleException])
-                                   return;
-                               else
-                                   @throw exception;
-                           }
-                       }
-                   }];
+    [self.geoCoder reverseGeocodeLocation:loc
+                        completionHandler:^(NSArray *placemarks, NSError *error) {
+                            CLPlacemark *placemark = [placemarks firstObject];
+                            if (placemark) {
+                                @try {
+                                    NSString *name = placemark.name ?: @"";
+                                    NSString *locality = placemark.locality ?: @"";
+                                    NSString *administrativeArea = placemark.administrativeArea ?: @"";
+                                    NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
+                                    obs.placeGuess = [ @[ name,
+                                                          locality,
+                                                          administrativeArea,
+                                                          ISOcountryCode ] componentsJoinedByString:@", "];
+                                    NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+                                    [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
+                                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                                } @catch (NSException *exception) {
+                                    if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                                        return;
+                                    else
+                                        @throw exception;
+                                }
+                            }
+                        }];
 }
 
 #pragma mark - UISwitch targets
@@ -688,7 +733,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)idPleaseChanged:(UISwitch *)switcher {
     [[Analytics sharedClient] event:kAnalyticsEventObservationIDPleaseChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": switcher.isOn ? @"Yes": @"No"
                                       }];
     
@@ -700,7 +745,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)taxonDeleted:(UIButton *)button {
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": @"No Taxon"
                                       }];
 
@@ -716,28 +761,35 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
-    
-    [self.observation deleteEntity];
-    self.observation = nil;
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
+    if (self.isMakingNewObservation) {
+        [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
+        
+        [self.observation deleteEntity];
+        self.observation = nil;
+        NSError *error;
+        [[[RKObjectManager sharedManager] objectStore] save:&error];
+        if (error) {
+            // TODO: log it at least, also notify the user
+        }
+    } else {
+        [self.observation.managedObjectContext rollback];
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)saved:(UIButton *)button {
+    [self.view endEditing:YES];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"Projects": @(self.observation.projectObservations.count),
                                       @"Photos": @(self.observation.observationPhotos.count),
                                       @"OFVs": @(self.observation.observationFieldValues.count)
                                       }];
+    
+    self.observation.localUpdatedAt = [NSDate date];
     
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -771,7 +823,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (newProjects.count > 0 || deletedProjects.count > 0) {
         [[Analytics sharedClient] event:kAnalyticsEventObservationProjectsChanged
                          withProperties:@{
-                                          @"Via": @"Confirm",
+                                          @"Via": [self analyticsVia],
                                           }];
     }
     
@@ -801,12 +853,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonID = taxon.iconicTaxonID;
     self.observation.speciesGuess = taxon.defaultName;
     
+    self.observation.localUpdatedAt = [NSDate date];
+
     NSString *newTaxonName = taxon.defaultName ?: taxon.name;
     if (!newTaxonName) { newTaxonName = @"Something"; }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": newTaxonName,
                                       @"Is Taxon": @"Yes",
                                       }];
@@ -821,11 +875,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonName = nil;
     self.observation.iconicTaxonID = nil;
 
+    self.observation.localUpdatedAt = [NSDate date];
+
     self.observation.speciesGuess = speciesGuess;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       @"New Value": speciesGuess,
                                       @"Is Taxon": @"No",
                                       }];
@@ -833,7 +889,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 }
 
-#pragma mark - EditLocation 
+#pragma mark - EditLocationDelegate
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
     
@@ -846,10 +902,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.longitude = location.longitude;
     self.observation.positionalAccuracy = location.accuracy;
     self.observation.positioningMethod = location.positioningMethod;
+    self.observation.placeGuess = nil;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
                      withProperties:@{
-                                      @"Via": @"Confirm",
+                                      @"Via": [self analyticsVia],
                                       }];
 
     [self.navigationController popToViewController:self animated:YES];
@@ -857,10 +914,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self reverseGeocodeCoordinatesForObservation:self.observation];
 }
 
+- (void)editLocationViewControllerDidCancel:(EditLocationViewController *)controller {
+    [self.navigationController popToViewController:self animated:YES];
+}
+
 #pragma mark - table view delegate / datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    // if making a new obs, no delete section
+    return self.isMakingNewObservation ? 3 : 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -873,6 +935,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionNotes:
             return 6;
+            break;
+        case ConfirmObsSectionDelete:
+            return 1;
             break;
         default:
             return 0;
@@ -924,6 +989,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 0;
             break;
         case ConfirmObsSectionIdentify:
+        case ConfirmObsSectionDelete:
             return 34;
             break;
         case ConfirmObsSectionNotes:
@@ -969,6 +1035,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return [self illegalCellForIndexPath:indexPath];
             }
             break;
+        case ConfirmObsSectionDelete:
+            if (indexPath.item == 0) {
+                return [self deleteCellInTableView:tableView];
+            }
         default:
             return [self illegalCellForIndexPath:indexPath];
             break;
@@ -1028,7 +1098,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                             return;
                                                         }
                                                         
-                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged];
+                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged\
+                                                                         withProperties:@{
+                                                                                          @"Via": [self analyticsVia]
+                                                                                          }];
 
                                                         
                                                         __strong typeof(weakSelf) strongSelf = self;
@@ -1045,7 +1118,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
                 EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
                 map.delegate = self;
-                map.saveOnExit = YES;
                 
                 if (self.observation.visibleLatitude) {
                     INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
@@ -1088,7 +1160,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           strongSelf.observation.geoprivacy = newValue;
 
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
-                                                                           withProperties:@{ @"Via": @"Confirm",
+                                                                           withProperties:@{ @"Via": [self analyticsVia],
                                                                                              @"New Value": newValue}];
                                                           
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
@@ -1110,7 +1182,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationCaptiveChanged
                                                                            withProperties:@{
-                                                                                            @"Via": @"Confirm",
+                                                                                            @"Via": [self analyticsVia],
                                                                                             @"New Value": selectedIndex == 0 ? @"No": @"Yes",
                                                                                             }];
                                                           
@@ -1152,6 +1224,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // do nothing
             }
             break;
+        case ConfirmObsSectionDelete:
+            // show alertview
+            [[[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
+                                         delegate:self
+                                cancelButtonTitle:NSLocalizedString(@"Never mind", nil)
+                           destructiveButtonTitle:NSLocalizedString(@"Yes, delete this observation", nil)
+                                otherButtonTitles:nil] showInView:self.view];
+            
+            break;
         default:
             // do nothing
             break;
@@ -1160,13 +1241,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case ConfirmObsSectionPhotos:
-            return nil;
-            break;
         case ConfirmObsSectionIdentify:
             return NSLocalizedString(@"What did you see?", @"title for identification section of new obs confirm screen.");
             break;
+        case ConfirmObsSectionPhotos:
         case ConfirmObsSectionNotes:
+        case ConfirmObsSectionDelete:
             return nil;
             break;
         default:
@@ -1253,7 +1333,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self needsIDTitle];
-    FAKIcon *bouy = [FAKINaturalist lifebuoyIconWithSize:44];
+    FAKIcon *bouy = [FAKINaturalist icnIdHelpIconWithSize:44];
     [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
     
@@ -1391,6 +1471,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     return cell;
 }
 
+- (UITableViewCell *)deleteCellInTableView:(UITableView *)tableView {
+    ObsCenteredLabelCell *cell = [tableView dequeueReusableCellWithIdentifier:@"singleButton"];
+    
+    cell.centeredLabel.textColor = [UIColor redColor];
+    cell.centeredLabel.text = NSLocalizedString(@"Delete Observation", @"text of delete obs button");
+    cell.centeredLabel.font = [UIFont systemFontOfSize:17.0f];
+    
+    return cell;
+}
+
 - (UITableViewCell *)illegalCellForIndexPath:(NSIndexPath *)ip {
     NSLog(@"indexpath is %@", ip);
     NSAssert(NO, @"illegal cell for confirm screen");
@@ -1412,6 +1502,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (NSString *)projectsTitle {
     return NSLocalizedString(@"Projects", @"choose projects button title.");
+}
+
+#pragma mark - analytics helper
+
+- (NSString *)analyticsVia {
+    return self.isMakingNewObservation ? @"New" : @"Edit";
 }
 
 @end

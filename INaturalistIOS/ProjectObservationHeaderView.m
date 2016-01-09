@@ -67,11 +67,22 @@
         });
         [self addSubview:edge];
         
+        self.infoButton = ({
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoDark];
+            button.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            button.hidden = YES;
+            
+            button;
+        });
+        [self addSubview:self.infoButton];
+        
         NSDictionary *views = @{
                                 @"title": self.projectTitleLabel,
                                 @"thumb": self.projectThumbnailImageView,
                                 @"switch": self.selectedSwitch,
                                 @"edge": edge,
+                                @"info": self.infoButton,
                                 };
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[thumb(==29)]-15-[title]-[switch]-15-|"
@@ -86,7 +97,22 @@
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-
+        
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.infoButton
+                                                         attribute:NSLayoutAttributeCenterY
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:self
+                                                         attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1.0f
+                                                          constant:0.0f]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.infoButton
+                                                         attribute:NSLayoutAttributeRight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:self
+                                                         attribute:NSLayoutAttributeRight
+                                                        multiplier:1.0f
+                                                          constant:-10]];
+        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.projectThumbnailImageView
                                                          attribute:NSLayoutAttributeHeight
                                                          relatedBy:NSLayoutRelationEqual

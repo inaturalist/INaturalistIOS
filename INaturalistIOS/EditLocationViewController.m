@@ -110,10 +110,6 @@
     [super viewWillDisappear:animated];
     
     [self.navigationController setToolbarHidden:YES];
-    
-    if (self.saveOnExit && self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
-        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -207,16 +203,14 @@
 
 - (IBAction)clickedCancel:(id)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidCancel:)]) {
-        [self.delegate performSelector:@selector(editLocationViewControllerDidCancel) withObject:self];
+        [self.delegate performSelector:@selector(editLocationViewControllerDidCancel:) withObject:self];
     }
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)clickedDone:(id)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
         [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
     }
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)clickedCurrentLocationButton

@@ -11,11 +11,14 @@
 #import "SignupSplashViewController.h"
 #import "SignupViewController.h"
 #import "LoginViewController.h"
+#import "ConfirmPhotoViewController.h"
+#import "ObsEditV2ViewController.h"
 
 #import "SplashToSignupTransitionAnimator.h"
 #import "SignupToSplashTransitionAnimator.h"
 #import "SplashToLoginTransitionAnimator.h"
 #import "LoginToSplashTransitionAnimator.h"
+#import "ConfirmPhotoToEditObsTransitionAnimator.h"
 
 @implementation INaturalistAppDelegate (TransitionAnimators)
 
@@ -36,6 +39,10 @@
         return [[SplashToLoginTransitionAnimator alloc] init];
     if ([fromVC isKindOfClass:[LoginViewController class]] && [toVC isKindOfClass:[SignupSplashViewController class]])
         return [[LoginToSplashTransitionAnimator alloc] init];
+    
+    if ([fromVC isKindOfClass:[ConfirmPhotoViewController class]] && [toVC isKindOfClass:[ObsEditV2ViewController class]])
+        return [[ConfirmPhotoToEditObsTransitionAnimator alloc] init];
+
     
     return nil;
 }

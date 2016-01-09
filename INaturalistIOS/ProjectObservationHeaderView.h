@@ -13,5 +13,6 @@
 @property UIImageView *projectThumbnailImageView;
 @property UILabel *projectTitleLabel;
 @property UISwitch *selectedSwitch;
+@property UIButton *infoButton;
 
 @end

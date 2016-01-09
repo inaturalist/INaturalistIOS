@@ -14,5 +14,6 @@
 
 @property Observation *observation;
 @property NSArray *joinedProjects;
+@property BOOL isReadOnly;
 
 @end

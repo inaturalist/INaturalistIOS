@@ -10,9 +10,11 @@
 
 @class Observation;
 
-@interface ConfirmObservationViewController : UIViewController
+@interface ObsEditV2ViewController : UIViewController
 
 @property Observation *observation;
 @property BOOL shouldContinueUpdatingLocation;
+@property BOOL isMakingNewObservation;
+@property UITableView *tableView;
 
 @end

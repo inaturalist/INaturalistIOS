@@ -8,21 +8,17 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "INatModel.h"
+#import "Activity.h"
 
 @class Observation, User;
 
-@interface Comment : INatModel
+@interface Comment : Activity
 
 @property (nonatomic, retain) NSNumber * recordID;
-@property (nonatomic, retain) NSString * body;
-@property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSNumber * parentID;
 @property (nonatomic, retain) NSString * parentType;
 @property (nonatomic, retain) NSNumber * userID;
-@property (nonatomic, retain) Observation *observation;
-@property (nonatomic, retain) User *user;
 
 - (NSString *)createdAtPrettyString;
 - (NSString *)createdAtShortString;

@@ -15,6 +15,7 @@
 #import "ObservationPhoto.h"
 #import "DeletedRecord.h"
 #import "ProjectObservation.h"
+#import "Fave.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -58,6 +59,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic uuid;
 @dynamic validationErrorMsg;
 @dynamic captive;
+@dynamic faves;
+@dynamic favesCount;
 
 + (NSArray *)all
 {
@@ -114,11 +117,13 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"iconic_taxon_name", @"iconicTaxonName",
 		 @"comments_count", @"commentsCount",
 		 @"identifications_count", @"identificationsCount",
+         @"cached_votes_total", @"favesCount",
 		 @"last_activity_at_utc", @"lastActivityAt",
          @"uuid", @"uuid",
          @"id_please", @"idPlease",
          @"geoprivacy", @"geoprivacy",
          @"user_id", @"userID",
+         @"quality_grade", @"qualityGrade",
          @"captive", @"captive",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
@@ -144,6 +149,10 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         [defaultMapping mapKeyPath:@"project_observations"
                     toRelationship:@"projectObservations"
                        withMapping:[ProjectObservation mapping]
+                         serialize:NO];
+        [defaultMapping mapKeyPath:@"faves"
+                    toRelationship:@"faves"
+                       withMapping:[Fave mapping]
                          serialize:NO];
         defaultMapping.primaryKeyAttribute = @"recordID";
     }
@@ -234,7 +243,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         fmt.dateStyle = NSDateFormatterNoStyle;
         fmt.timeStyle = NSDateFormatterShortStyle;
     } else {
-        fmt.dateStyle = NSDateFormatterShortStyle;
+        fmt.dateStyle = NSDateFormatterMediumStyle;
         fmt.timeStyle = NSDateFormatterNoStyle;
     }
     return [fmt stringFromDate:self.localObservedOn];
@@ -452,6 +461,33 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         return NSLocalizedString(@"Open", @"open geoprivacy");
     }
     
+}
+
+- (NSArray *)sortedFaves {
+    NSSortDescriptor *dateSort = [NSSortDescriptor sortDescriptorWithKey:@"faveDate" ascending:NO];
+    return [self.faves sortedArrayUsingDescriptors:@[ dateSort ]];
+}
+
+- (NSArray *)sortedActivity {
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    NSArray *allActivities = [self.comments.allObjects arrayByAddingObjectsFromArray:self.identifications.allObjects];
+    return [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
+}
+
+- (ObsDataQuality)dataQuality {
+    if (self.recordID) {
+        if ([self.qualityGrade isEqualToString:@"research"]) {
+            return ObsDataQualityResearch;
+        } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
+            return ObsDataQualityNeedsID;
+        } else {
+            // must be casual?
+            return ObsDataQualityCasual;
+        }
+    } else {
+        // not uploaded yet
+        return ObsDataQualityNone;
+    }
 }
 
 @end
