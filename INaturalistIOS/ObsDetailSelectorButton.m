@@ -121,7 +121,7 @@
                                                                   options:0
                                                                   metrics:0
                                                                      views:views]];
-    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[underline(==2)]-0-|"
+    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[underline(==3)]-0-|"
                                                                    options:0
                                                                    metrics:0
                                                                      views:views]];
