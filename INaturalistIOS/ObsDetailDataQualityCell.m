@@ -104,14 +104,14 @@
                                                     attribute:NSLayoutAttributeCenterY
                                                    multiplier:1.0f
                                                       constant:0.0f]];
-    // 10 px tall
+    // 7 pts tall
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.casualToNeedsIDBar
                                                      attribute:NSLayoutAttributeHeight
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:nil
                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                     multiplier:1.0f
-                                                      constant:10]];
+                                                      constant:7]];
     // left edge in center of casual checkmark
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.casualToNeedsIDBar
                                                      attribute:NSLayoutAttributeLeading
@@ -138,14 +138,14 @@
                                                      attribute:NSLayoutAttributeCenterY
                                                     multiplier:1.0f
                                                       constant:0.0f]];
-    // 10 px tall
+    // 7 pts tall
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.needsIDToResearchBar
                                                      attribute:NSLayoutAttributeHeight
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:nil
                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                     multiplier:1.0f
-                                                      constant:10]];
+                                                      constant:7]];
 
     // left edge in center of needs id checkmark
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.needsIDToResearchBar
