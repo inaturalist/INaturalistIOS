@@ -174,7 +174,10 @@
             return [super tableView:tableView heightForHeaderInSection:section];
             break;
         case 3:
+            // data quality
+            return 44;
         case 4:
+            // projects
             return 34;
             break;
         case 2:
