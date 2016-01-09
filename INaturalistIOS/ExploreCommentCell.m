@@ -15,9 +15,8 @@
 
 @interface ExploreCommentCell () {
     ExploreComment *_comment;
-    
-    UILabel *commentLabel;
-    
+
+    UITextView *commentTextView;
     UILabel *commenterAndDateLabel;
     UIImageView *commenterImageView;
 }
@@ -43,19 +42,25 @@ static UIImage *userIconPlaceholder;
         userIconPlaceholder = [person imageWithSize:CGSizeMake(20.0f, 20.0f)];
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        //self.contentView.backgroundColor = [UIColor whiteColor];
-        
-        commentLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.textColor = [UIColor blackColor];
-            label.font = [UIFont systemFontOfSize:12.0f];
-            label.numberOfLines = 0;
-            
-            label;
+
+        commentTextView = ({
+            UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
+            textView.translatesAutoresizingMaskIntoConstraints = NO;
+
+            // Only available on iOS 7+
+            // Can take less elegant approach if we need to support older version of iOS than that
+            textView.textContainerInset = UIEdgeInsetsZero;
+            textView.textContainer.lineFragmentPadding = 0;
+
+            textView.textColor = [UIColor blackColor];
+            textView.font = [UIFont systemFontOfSize:12.0f];
+            textView.editable = NO;
+            textView.dataDetectorTypes = UIDataDetectorTypeLink;
+
+            textView;
         });
-        [self.contentView addSubview:commentLabel];
+        [self.contentView addSubview:commentTextView];
+
 
         commenterAndDateLabel = ({
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -92,13 +97,13 @@ static UIImage *userIconPlaceholder;
         [self.contentView addSubview:separator];
         
         NSDictionary *views = @{
-                                @"commentLabel": commentLabel,
+                                @"commentTextView": commentTextView,
                                 @"commenterAndDateLabel": commenterAndDateLabel,
                                 @"commenterImageView": commenterImageView,
                                 @"separator": separator,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[commentLabel]-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[commentTextView]-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -120,7 +125,7 @@ static UIImage *userIconPlaceholder;
                                                         multiplier:1.0f
                                                           constant:0.0f]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[commentLabel]-3-[commenterAndDateLabel]-10-[separator(==1)]-0-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[commentTextView]-3-[commenterAndDateLabel]-10-[separator(==1)]-0-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
@@ -156,7 +161,7 @@ static UIImage *userIconPlaceholder;
         commenterImageView.image = nil;
     }
     
-    commentLabel.text = comment.commentText;
+    commentTextView.text = comment.commentText;
     
     NSString *dateString;
     @synchronized(shortDateFormatter) {
