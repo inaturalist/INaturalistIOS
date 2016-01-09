@@ -9,6 +9,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <YLMoment/YLMoment.h>
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
@@ -320,11 +321,8 @@
             cell.authorImageView.clipsToBounds = YES;
         }
         
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateStyle = NSDateFormatterShortStyle;
-        dateFormatter.timeStyle = NSDateFormatterNoStyle;
-        dateFormatter.doesRelativeDateFormatting = YES;
-        cell.dateLabel.text = [dateFormatter stringFromDate:activity.createdAt];
+        YLMoment *moment = [YLMoment momentWithDate:activity.createdAt];
+        cell.dateLabel.text = [moment fromNow];
         cell.dateLabel.textColor = [UIColor lightGrayColor];
         
         if ([activity isKindOfClass:[Identification class]]) {
