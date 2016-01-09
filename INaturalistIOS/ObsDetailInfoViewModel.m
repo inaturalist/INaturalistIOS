@@ -273,8 +273,8 @@
 }
 
 - (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 22 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 22;
+    // 30 for some padding on the left/right
+    CGFloat usableWidth = tableView.bounds.size.width - 30;
     CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
     UIFont *font = [UIFont systemFontOfSize:14.0f];
     
@@ -283,8 +283,8 @@
                                       attributes:@{ NSFontAttributeName: font }
                                          context:nil];
     
-    // 37 for notes label+padding above, and 8 for padding below
-    return MAX(44, textRect.size.height + 37 + 8);
+    // 22 for notes padding above and below
+    return MAX(44, textRect.size.height + 22);
 }
 
 
