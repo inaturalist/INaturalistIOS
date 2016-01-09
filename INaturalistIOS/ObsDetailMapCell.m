@@ -14,7 +14,7 @@
 - (void)awakeFromNib {
     // Initialization code
     
-    self.locationNameLabel.layer.cornerRadius = 5.0f;
+    self.locationNameLabel.layer.cornerRadius = 1.0f;
     self.locationNameLabel.clipsToBounds = YES;
     
     self.noLocationLabel.attributedText = ({
