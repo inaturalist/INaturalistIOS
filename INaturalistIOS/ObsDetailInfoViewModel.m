@@ -18,6 +18,7 @@
 #import "UIColor+ExploreColors.h"
 #import "ObsDetailNotesCell.h"
 #import "ObsDetailDataQualityCell.h"
+#import "ObsDetailQualityDetailsFooter.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -119,20 +120,7 @@
         // data quality
         ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        if (self.observation.recordID) {
-            if ([self.observation.qualityGrade isEqualToString:@"research"]) {
-                cell.dataQuality = ObsDataQualityResearch;
-            } else if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
-                cell.dataQuality = ObsDataQualityNeedsID;
-            } else {
-                // must be casual?
-                cell.dataQuality = ObsDataQualityCasual;
-            }
-        } else {
-            // not uploaded yet
-            cell.dataQuality = ObsDataQualityNone;
-        }
+        cell.dataQuality = self.observation.dataQuality;
         
         return cell;
     
@@ -223,43 +211,31 @@
         } else if (!self.observation.recordID) {
             return nil;
         } else {
-            UIView *view = [UIView new];
-            view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 66);
-            
-            view.backgroundColor = [UIColor colorWithHexString:@"#dedee3"];
-            
-            UILabel *label = [UILabel new];
-            label.frame = CGRectMake(15, 5, view.bounds.size.width - 30, view.bounds.size.height - 10);
-            label.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-            label.font = [UIFont systemFontOfSize:15];
-            label.textColor = [UIColor colorWithHexString:@"#5C5C5C"];
-            label.numberOfLines = 0;
-            label.textAlignment = NSTextAlignmentCenter;
-            
-            [view addSubview:label];
-            
-            if ([self.observation.qualityGrade isEqualToString:@"needs_id"]) {
+            ObsDetailQualityDetailsFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"qualityDetails"];
+
+            if (self.observation.dataQuality == ObsDataQualityNeedsID) {
                 if (self.observation.identificationsCount.integerValue < 2) {
-                    label.text = @"This observation needs more community IDs to be considered for Research Grade.";
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation needs more IDs from the iNat community to be considered for Research Grade.", nil);
                 } else {
-                    label.text = @"This observation needs a more specific community ID to be considered for Research Grade.";
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation needs a more specific consensus ID to be considered for Research Grade.", nil);
+                }
+            } else if (self.observation.dataQuality == ObsDataQualityCasual) {
+                if (self.observation.observationPhotos.count == 0) {
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation needs a photo to be considered for Research Grade.", nil);
+                } else if (!self.observation.latitude) {
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation needs a location to be considered for Research Grade.", nil);
+                } else if (!self.observation.observedOn) {
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation needs a date to be considered for Research Grade.", nil);
+                } else if (self.observation.captive.boolValue) {
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.", nil);
+                } else {
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation was voted off the island by the iNaturalist community.", nil);
                 }
             } else {
-                // must be casual
-                if (self.observation.observationPhotos.count == 0) {
-                    label.text = @"This observation needs a photo to be considered for Research Grade.";
-                } else if (!self.observation.latitude) {
-                    label.text = @"This observation needs a location to be considered for Research Grade.";
-                } else if (!self.observation.observedOn) {
-                    label.text = @"This observation needs a date to be considered for Research Grade.";
-                } else if (self.observation.captive.boolValue) {
-                    label.text = @"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.";
-                } else {
-                    label.text = @"This observation was voted off the island by the iNaturalist community.";
-                }
+                footer.dataQualityDetails = nil;
             }
             
-            return view;
+            return footer;
         }
 
     } else {
@@ -351,44 +327,12 @@
             }
         }
     } else if (indexPath.section == 3) {
-        // data quality
-        if (self.observation.recordID) {
-            // do nothing
-        } else {
-            // show about data quality
-            [self showDataQualityInfo];
-        }
+        // data quality, do nothing
     } else if (indexPath.section == 4) {
         // projects
         if (self.observation.projectObservations.count > 0) {
             [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];
         }
-    }
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-    if (section == 3) {
-        // data quality
-        UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-        infoButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [infoButton addTarget:self
-                       action:@selector(showDataQualityInfo)
-             forControlEvents:UIControlEventTouchUpInside];
-        
-        [view addSubview:infoButton];
-        
-        NSDictionary *views = @{ @"info": infoButton };
-        
-        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[info]-|"
-                                                                    options:0
-                                                                    metrics:0
-                                                                       views:views]];
-        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[info]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-
-        
     }
 }
 

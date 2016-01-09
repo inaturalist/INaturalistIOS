@@ -7,13 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-typedef NS_ENUM(NSInteger, ObsDataQuality) {
-    ObsDataQualityCasual,
-    ObsDataQualityNeedsID,
-    ObsDataQualityResearch,
-    ObsDataQualityNone
-};
+#import "Observation.h"
 
 @interface ObsDetailDataQualityCell : UITableViewCell
 

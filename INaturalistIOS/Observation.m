@@ -474,4 +474,20 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
 }
 
+- (ObsDataQuality)dataQuality {
+    if (self.recordID) {
+        if ([self.qualityGrade isEqualToString:@"research"]) {
+            return ObsDataQualityResearch;
+        } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
+            return ObsDataQualityNeedsID;
+        } else {
+            // must be casual?
+            return ObsDataQualityCasual;
+        }
+    } else {
+        // not uploaded yet
+        return ObsDataQualityNone;
+    }
+}
+
 @end

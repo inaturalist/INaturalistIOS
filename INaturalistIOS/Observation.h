@@ -11,6 +11,13 @@
 #import "INatModel.h"
 #import "Uploadable.h"
 
+typedef NS_ENUM(NSInteger, ObsDataQuality) {
+    ObsDataQualityCasual,
+    ObsDataQualityNeedsID,
+    ObsDataQualityResearch,
+    ObsDataQualityNone
+};
+
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
 @class Taxon, Comment, Identification;
@@ -73,6 +80,8 @@
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 
 - (NSString *)presentableGeoprivacy;
+- (ObsDataQuality)dataQuality;
+
 @end
 
 @interface Observation (PrimitiveAccessors)
