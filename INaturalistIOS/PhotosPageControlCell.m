@@ -18,7 +18,7 @@
     
     self.shareButton.layer.cornerRadius = 29.0 / 2;
     self.shareButton.clipsToBounds = YES;
-    self.shareButton.backgroundColor = [UIColor darkGrayColor];
+    self.shareButton.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8f];
     
     FAKIcon *share = [FAKIonIcons iosUploadOutlineIconWithSize:18];
     [share addAttribute:NSForegroundColorAttributeName
