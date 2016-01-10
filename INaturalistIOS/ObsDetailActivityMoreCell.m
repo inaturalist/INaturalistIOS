@@ -18,6 +18,27 @@
                            forState:UIControlStateNormal];
     [self.agreeButton setTitleColor:[UIColor lightGrayColor]
                            forState:UIControlStateDisabled];
+    
+    NSAttributedString *agreeButtonText = ({
+        FAKIcon *agreeIcon = [FAKIonIcons iosCheckmarkOutlineIconWithSize:20];
+        NSMutableAttributedString *attr = [agreeIcon.attributedString mutableCopy];
+        
+        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+        NSString *agreeText = NSLocalizedString(@"Agree", nil);
+        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:agreeText
+                                                                     attributes:@{
+                                                                                  NSBaselineOffsetAttributeName: @(3)
+                                                                                  }]];
+        
+        [attr addAttribute:NSForegroundColorAttributeName
+                     value:[UIColor inatTint]
+                     range:NSMakeRange(0, attr.length)];
+        
+        attr;
+    });
+    [self.agreeButton setAttributedTitle:agreeButtonText
+                                forState:UIControlStateNormal];
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
