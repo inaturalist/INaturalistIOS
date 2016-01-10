@@ -36,5 +36,7 @@
 + (instancetype)icnIdHelpIconWithSize:(CGFloat)size;
 + (instancetype)noLocationIconWithSize:(CGFloat)size;
 + (instancetype)arrowUpIconWithSize:(CGFloat)size;
++ (instancetype)icnLocationObscuredIconWithSize:(CGFloat)size;
++ (instancetype)icnLocationPrivateIconWithSize:(CGFloat)size;
 
 @end

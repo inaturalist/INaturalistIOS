@@ -53,6 +53,8 @@
 + (instancetype)icnIdHelpIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue01c" size:size]; }
 + (instancetype)noLocationIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue01d" size:size]; }
 + (instancetype)arrowUpIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue01e" size:size]; }
++ (instancetype)icnLocationObscuredIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue01f" size:size]; }
++ (instancetype)icnLocationPrivateIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue020" size:size]; }
 
 + (NSDictionary *)allIcons {
     return @{
@@ -87,6 +89,8 @@
              @"\ue01c" : @"icnIdHelp",
              @"\ue01d" : @"noLocation",
              @"\ue01e" : @"arrowUp",
+             @"\ue01f" : @"icnLocationObscured",
+             @"\ue020" : @"icnLocationPrivate",
              
              };
 }
