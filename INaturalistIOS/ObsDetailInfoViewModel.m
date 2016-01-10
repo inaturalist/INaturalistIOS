@@ -19,6 +19,7 @@
 #import "ObsDetailNotesCell.h"
 #import "ObsDetailDataQualityCell.h"
 #import "ObsDetailQualityDetailsFooter.h"
+#import "FAKINaturalist.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -109,6 +110,24 @@
                 cell.locationNameLabel.text = self.observation.placeGuess;
             } else {
                 cell.locationNameLabel.text = NSLocalizedString(@"No location.", nil);
+            }
+            
+            if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
+                cell.geoprivacyLabel.attributedText = ({
+                    FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
+                    [obscured addAttribute:NSForegroundColorAttributeName
+                                     value:[UIColor lightGrayColor]];
+                    obscured.attributedString;
+                });
+            } else if ([self.observation.geoprivacy isEqualToString:@"private"]) {
+                cell.geoprivacyLabel.attributedText = ({
+                    FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
+                    [private addAttribute:NSForegroundColorAttributeName
+                                     value:[UIColor lightGrayColor]];
+                    private.attributedString;
+                });
+            } else {
+                cell.geoprivacyLabel.text = nil;
             }
             
             return cell;

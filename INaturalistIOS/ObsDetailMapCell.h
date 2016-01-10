@@ -13,6 +13,8 @@
 @interface ObsDetailMapCell : UITableViewCell
 
 @property IBOutlet UILabel *locationNameLabel;
+@property IBOutlet UIView *locationNameContainer;
+@property IBOutlet UILabel *geoprivacyLabel;
 @property IBOutlet MKMapView *mapView;
 @property IBOutlet UILabel *noLocationLabel;
 

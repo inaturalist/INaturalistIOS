@@ -14,8 +14,8 @@
 - (void)awakeFromNib {
     // Initialization code
     
-    self.locationNameLabel.layer.cornerRadius = 1.0f;
-    self.locationNameLabel.clipsToBounds = YES;
+    self.locationNameContainer.layer.cornerRadius = 1.0f;
+    self.locationNameContainer.clipsToBounds = YES;
     
     self.noLocationLabel.attributedText = ({
         FAKIcon *noLocation = [FAKINaturalist noLocationIconWithSize:80];
@@ -37,6 +37,7 @@
     self.mapView.hidden = NO;
     self.noLocationLabel.hidden = YES;
     [self.mapView removeAnnotations:self.mapView.annotations];
+    self.geoprivacyLabel.text = nil;
 }
 
 @end
