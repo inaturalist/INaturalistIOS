@@ -93,9 +93,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
-                          withRowAnimation:UITableViewRowAnimationNone];
-
     if (self.observation.hasUnviewedActivity.boolValue) {
         [self selectedSection:ObsDetailSectionActivity];
     }
@@ -179,8 +176,7 @@
 #pragma mark - notifications
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
-                          withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadData];
 }
 
 #pragma mark - obs detail view model delegate
@@ -305,10 +301,8 @@
     if (objects.count == 0) return;
     
     NSError *error = nil;
+    // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
-                          withRowAnimation:UITableViewRowAnimationNone];
     
     if (self.observation.hasUnviewedActivity.boolValue && self.activeSection == ObsDetailSectionActivity) {
         
