@@ -130,13 +130,9 @@
         // show iconic taxon image
         FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:self.observation.iconicTaxonName
                                                        withSize:200];
-        UIColor *taxonColor = [UIColor blackColor];
-        if (self.observation.iconicTaxonName) {
-            taxonColor = [UIColor colorForIconicTaxon:self.observation.iconicTaxonName];
-        }
 
         [taxonIcon addAttribute:NSForegroundColorAttributeName
-                           value:taxonColor];
+                           value:[UIColor lightGrayColor]];
         
         cell.iv.image = [taxonIcon imageWithSize:CGSizeMake(200, 200)];
         cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
