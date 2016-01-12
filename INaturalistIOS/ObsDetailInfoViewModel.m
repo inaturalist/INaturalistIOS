@@ -249,7 +249,7 @@
                 } else if (self.observation.captive.boolValue) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.", nil);
                 } else {
-                    footer.dataQualityDetails = NSLocalizedString(@"This observation was voted off the island by the iNaturalist community.", nil);
+                    footer.dataQualityDetails = NSLocalizedString(@"This observation has been voted as Casual Grade by the iNaturalist community.", nil);
                 }
             } else {
                 footer.dataQualityDetails = nil;
