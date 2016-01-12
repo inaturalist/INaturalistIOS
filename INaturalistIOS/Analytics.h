@@ -56,6 +56,7 @@ extern NSString *kAnalyticsEventNavigateMap;
 
 extern NSString *kAnalyticsEventNavigateObservationActivity;
 extern NSString *kAnalyticsEventNavigateObservationDetail;
+extern NSString *kAnalyticsEventNavigateObservationEdit;
 extern NSString *kAnalyticsEventNavigateObservations;
 extern NSString *kAnalyticsEventNavigatePhoto;
 extern NSString *kAnalyticsEventNavigateAddComment;
@@ -150,6 +151,11 @@ extern NSString *kAnalyticsEventObservationAddIdentification;
 extern NSString *kAnalyticsEventObservationShareStarted;
 extern NSString *kAnalyticsEventObservationShareCancelled;
 extern NSString *kAnalyticsEventObservationShareFinished;
+extern NSString *kAnalyticsEventObservationFave;
+extern NSString *kAnalyticsEventObservationUnfave;
+extern NSString *kAnalyticsEventObservationChangeSection;
+extern NSString *kAnalyticsEventObservationViewMap;
+extern NSString *kAnalyticsEventObservationViewProjects;
 
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;

@@ -20,6 +20,7 @@
 #import "ObsDetailDataQualityCell.h"
 #import "ObsDetailQualityDetailsFooter.h"
 #import "FAKINaturalist.h"
+#import "Analytics.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -342,6 +343,7 @@
             
             if (self.observation.latitude) {
                 // show the map view
+                [[Analytics sharedClient] event:kAnalyticsEventObservationViewMap];
                 [self.delegate inat_performSegueWithIdentifier:@"map" sender:nil];
             }
         }
@@ -350,6 +352,8 @@
     } else if (indexPath.section == 4) {
         // projects
         if (self.observation.projectObservations.count > 0) {
+            // show the projects view
+            [[Analytics sharedClient] event:kAnalyticsEventObservationViewProjects];
             [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];
         }
     }

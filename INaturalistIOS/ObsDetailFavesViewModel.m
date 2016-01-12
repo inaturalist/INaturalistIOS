@@ -21,6 +21,7 @@
 #import "NSURL+INaturalist.h"
 #import "ObsDetailActivityAuthorCell.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
+#import "Analytics.h"
 
 @implementation ObsDetailFavesViewModel
 
@@ -159,12 +160,16 @@
     
     if ([self loggedInUserHasFavedThisObservation]) {
         // need to unfave it
+        [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
+
         // delete to /votes/unvote/observation/{obs.recordID}.json
         requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.recordID.integerValue];
         hudText = NSLocalizedString(@"Un-faving...", nil);
         method = @"DELETE";
     } else {
         // need to fave it
+        [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
+
         // post to /votes/vote/observation/{obs.recordID}.json
         requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.recordID.integerValue];
         hudText = NSLocalizedString(@"Faving...", nil);

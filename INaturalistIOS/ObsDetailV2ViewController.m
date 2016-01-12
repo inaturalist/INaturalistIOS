@@ -104,6 +104,14 @@
     if (!self.observation.needsUpload) {
         [self reloadObservation];
     }
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
 - (void)dealloc {
@@ -183,6 +191,8 @@
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
     if ([identifier isEqualToString:@"photos"]) {
+        [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto];
+        
         NSNumber *photoIndex = (NSNumber *)object;
         // can't do this in storyboards
         
@@ -237,6 +247,7 @@
 }
 
 - (void)selectedSection:(ObsDetailSection)section {
+    NSString *newSectionName;
     switch (section) {
         case ObsDetailSectionActivity:
             self.viewModel = [[ObsDetailActivityViewModel alloc] init];
@@ -245,7 +256,9 @@
 
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
-
+            
+            newSectionName = @"Activity";
+            
             break;
         case ObsDetailSectionFaves:
             self.viewModel = [[ObsDetailFavesViewModel alloc] init];
@@ -254,6 +267,8 @@
             
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
+            
+            newSectionName = @"Faves";
 
             break;
         case ObsDetailSectionInfo:
@@ -264,10 +279,16 @@
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
             
+            newSectionName = @"Info";
+
             break;
         default:
+            newSectionName = @"";
             break;
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventObservationChangeSection
+                     withProperties:@{ @"New Section": newSectionName }];
     
     [CATransaction begin];
     [CATransaction setDisableActions:YES];

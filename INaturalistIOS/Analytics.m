@@ -129,6 +129,7 @@ NSString *kAnalyticsEventNavigateMap =                          @"Navigate - Map
 
 NSString *kAnalyticsEventNavigateObservationActivity =          @"Navigate - Observations - Activity";
 NSString *kAnalyticsEventNavigateObservationDetail =            @"Navigate - Observations - Details";
+NSString *kAnalyticsEventNavigateObservationEdit =              @"Navigate - Observations - Details Edit";
 NSString *kAnalyticsEventNavigateObservations =                 @"Navigate - Observations - List";
 NSString *kAnalyticsEventNavigatePhoto =                        @"Navigate - Observations - Photo";
 NSString *kAnalyticsEventNavigateAddComment =                   @"Navigate - Observations - Add Comment";
@@ -222,6 +223,11 @@ NSString *kAnalyticsEventObservationAddIdentification =         @"Obs - Add Iden
 NSString *kAnalyticsEventObservationShareStarted =              @"Obs - Share Started";
 NSString *kAnalyticsEventObservationShareCancelled =            @"Obs - Share Cancelled";
 NSString *kAnalyticsEventObservationShareFinished =             @"Obs - Share Finished";
+NSString *kAnalyticsEventObservationFave =                      @"Obs - Fave";
+NSString *kAnalyticsEventObservationUnfave =                    @"Obs - Unfave";
+NSString *kAnalyticsEventObservationChangeSection =             @"Obs - Change Section";
+NSString *kAnalyticsEventObservationViewMap =                   @"Obs - View Map";
+NSString *kAnalyticsEventObservationViewProjects =              @"Obs - View Projects";
 
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
