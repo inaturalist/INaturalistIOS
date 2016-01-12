@@ -6,18 +6,28 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+@import CoreLocation;
+
 #import "EditLocationViewController.h"
 #import "CrossHairView.h"
 #import "AccuracyCircleView.h"
 #import "Analytics.h"
 
-@interface EditLocationViewController ()
+@interface EditLocationViewController () <CLLocationManagerDelegate> {
+    CLLocationManager *_locationManager;
+}
 @property UISegmentedControl *mapTypeSegmentedControl;
+@property (readonly) CLLocationManager *locationManager;
 @end
 
 @implementation EditLocationViewController
 
 #pragma mark - View Controller lifecycle
+
+- (void)dealloc {
+    _locationManager.delegate = nil;
+    _locationManager = nil;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -138,6 +148,41 @@
     }
 }
 
+#pragma mark - CLLocationManager & helpers
+
+- (CLLocationManager *)locationManager {
+    if (!_locationManager) {
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
+    }
+    
+    return _locationManager;
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    // this location manager requests authorization changes to set user tracking mode
+    switch ([CLLocationManager authorizationStatus]) {
+        case kCLAuthorizationStatusAuthorized:
+        case kCLAuthorizationStatusAuthorizedWhenInUse: {
+            [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
+            break;
+        }
+        case kCLAuthorizationStatusDenied:
+        case kCLAuthorizationStatusRestricted:
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Not Allowed", nil)
+                                        message:NSLocalizedString(@"Location Services Restricted", nil)
+                                       delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                              otherButtonTitles:nil] show];
+            break;
+        case kCLAuthorizationStatusNotDetermined:
+            [self.locationManager requestWhenInUseAuthorization];
+            break;
+        default:
+            break;
+    }
+}
+
 #pragma mark - helpers for accuracy & accuracy circle
 
 - (void)resetAccuracy
@@ -218,7 +263,25 @@
     if (self.mapView.userTrackingMode == MKUserTrackingModeFollow) {
         [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
     } else {
-        [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorized:
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
+                break;
+            case kCLAuthorizationStatusDenied:
+            case kCLAuthorizationStatusRestricted:
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Not Allowed", nil)
+                                            message:NSLocalizedString(@"Location Services Restricted", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
+                break;
+            case kCLAuthorizationStatusNotDetermined:
+                [self.locationManager requestWhenInUseAuthorization];
+                break;
+            default:
+                break;
+        }
     }
 }
 
