@@ -154,6 +154,15 @@
 
 - (void)tappedFave:(UIControl *)control {
     
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Fave", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+
     NSString *requestPath = nil;
     NSString *hudText;
     NSString *method;

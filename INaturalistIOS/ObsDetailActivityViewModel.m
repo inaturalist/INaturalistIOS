@@ -402,14 +402,41 @@
 #pragma mark - uibutton targets
 
 - (void)addComment {
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Comment", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+
     [self.delegate inat_performSegueWithIdentifier:@"addComment" sender:nil];
 }
 
 - (void)addIdentification {
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Add ID", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+
     [self.delegate inat_performSegueWithIdentifier:@"addIdentification" sender:nil];
 }
 
 - (void)agree:(UIButton *)button {
+    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
+                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+
     // add an identification
     
     [[Analytics sharedClient] debugLog:@"Network - Obs Detail Add Comment"];
