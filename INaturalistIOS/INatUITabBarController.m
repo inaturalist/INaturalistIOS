@@ -72,6 +72,8 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+
     [self setObservationsTabBadge];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleUserSavedObservationNotification:) 
@@ -94,8 +96,9 @@ static char PROJECT_ASSOCIATED_KEY;
         // Me tab
         self.selectedIndex = ME_TAB_INDEX;
     }
-        
-    [super viewDidLoad];
+    
+    // don't allow the user to re-order the items in the tab bar
+    self.customizableViewControllers = nil;
 }
 
 - (void)dealloc {
