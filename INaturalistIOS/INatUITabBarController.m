@@ -35,8 +35,11 @@
 #import "NSFileManager+INaturalist.h"
 
 #define EXPLORE_TAB_INDEX   0
-#define OBSERVE_TAB_INDEX   1
-#define ME_TAB_INDEX        2
+#define NEWS_TAB_INDEX      1
+#define OBSERVE_TAB_INDEX   2
+#define ME_TAB_INDEX        3
+#define PROJECTS_TAB_INDEX  4
+#define GUIDES_TAB_INDEX    5
 
 typedef NS_ENUM(NSInteger, INatPhotoSource) {
     INatPhotoSourceCamera,

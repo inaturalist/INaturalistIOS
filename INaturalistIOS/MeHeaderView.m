@@ -63,56 +63,10 @@
         });
         [self addSubview:self.uploadingSpinner];
         
-        self.projectsButton = ({
-            
-            SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
-            button.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            FAKIcon *projectsIcon = [FAKIonIcons iosBriefcaseOutlineIconWithSize:20];
-            [projectsIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            button.leadingTitleLabel.attributedText = projectsIcon.attributedString;
-            button.leadingTitleWidth = 34.0f;
-
-            button.trailingTitleLabel.text = NSLocalizedString(@"Projects", @"Title for projects button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
-            button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
-            button.separator.hidden = YES;
-            
-            button.backgroundColor = [UIColor inatLightGray];
-            button.tintColor = [UIColor whiteColor];
-            
-            button;
-        });
-        [self addSubview:self.projectsButton];
-        
-        self.guidesButton = ({
-            SplitTextButton *button = [[SplitTextButton alloc] initWithFrame:CGRectZero];
-            button.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            FAKIcon *guidesIcon = [FAKIonIcons iosBookOutlineIconWithSize:20];
-            [guidesIcon addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            button.leadingTitleLabel.attributedText = guidesIcon.attributedString;
-            button.leadingTitleWidth = 34.0f;
-
-            button.trailingTitleLabel.text = NSLocalizedString(@"Guides", @"Title for guides button on the Me tab");
-            button.trailingTitleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
-            button.trailingTitleLabel.textAlignment = NSTextAlignmentNatural;
-            button.separator.hidden = YES;
-            
-            button.backgroundColor = [UIColor inatLightGray];
-            button.tintColor = [UIColor whiteColor];
-
-            
-            button;
-        });
-        [self addSubview:self.guidesButton];
-        
         NSDictionary *views = @{
                                 @"icon": self.iconButton,
                                 @"obsCount": self.obsCountLabel,
                                 @"uploadingSpinner": self.uploadingSpinner,
-                                @"projects": self.projectsButton,
-                                @"guides": self.guidesButton,
                                 };
         
         self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-(10@900)-[uploadingSpinner]-[obsCount]-|"
@@ -125,32 +79,15 @@
                                                                                         views:views];
         [self addConstraints:self.titleConstraintsWithoutSpinner];        
         
-        // project and guide buttons are 150pts max width, prefer to expand to fill the available space
-        // within the space between the icon and the right edge of superview, projects and guides should be left aligned
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(10@100)-[icon(==80)]-(10@910)-[projects(<=150,==150@900)]-[guides(==projects)]-(10@900)-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]-10-[projects(==30)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]-10-[guides(==30)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]-10-[projects(==30)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]-10-[guides(==30)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-
-        
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self.iconButton
                                                          attribute:NSLayoutAttributeCenterY
                                                          relatedBy:NSLayoutRelationEqual

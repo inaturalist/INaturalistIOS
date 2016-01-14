@@ -617,12 +617,6 @@
             self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         }
         
-        [self.meHeader.projectsButton addTarget:self
-                                         action:@selector(tappedProjects)
-                               forControlEvents:UIControlEventTouchUpInside];
-        [self.meHeader.guidesButton addTarget:self
-                                       action:@selector(tappedGuides)
-                             forControlEvents:UIControlEventTouchUpInside];
         [self.meHeader.iconButton addTarget:self
                                      action:@selector(sync:)
                            forControlEvents:UIControlEventTouchUpInside];
@@ -797,14 +791,6 @@
 
 
 #pragma mark - Header helpers
-
-- (void)tappedProjects {
-    [self performSegueWithIdentifier:@"segueToProjects" sender:nil];
-}
-
-- (void)tappedGuides {
-    [self performSegueWithIdentifier:@"segueToGuides" sender:nil];
-}
 
 - (void)configureHeaderForLoggedInUser {
     NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
