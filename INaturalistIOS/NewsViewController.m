@@ -9,6 +9,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "NewsViewController.h"
+#import "UIColor+INaturalist.h"
 
 @interface NewsViewController ()
 
@@ -23,7 +24,8 @@
         
         self.tabBarItem.image = ({
             FAKIcon *news = [FAKIonIcons iosChatboxesOutlineIconWithSize:35];
-            [news imageWithSize:CGSizeMake(34, 45)];
+            [news addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
+            [[news imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.tabBarItem.selectedImage = ({
