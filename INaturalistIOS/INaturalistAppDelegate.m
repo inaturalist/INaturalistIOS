@@ -22,6 +22,7 @@
 #import "ProjectObservation.h"
 #import "ProjectObservationField.h"
 #import "ProjectUser.h"
+#import "ProjectPost.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "Comment.h"
@@ -194,6 +195,7 @@
     [ObservationPhoto deleteAll];
     [ProjectUser deleteAll];
     [ProjectObservation deleteAll];
+    [ProjectPost deleteAll];
     [ObservationFieldValue deleteAll];
     [User deleteAll];
     

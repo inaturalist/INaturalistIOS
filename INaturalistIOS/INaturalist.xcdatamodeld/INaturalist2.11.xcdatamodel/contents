@@ -252,6 +252,15 @@
         <relationship name="observationField" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ObservationField" inverseName="projectObservationFields" inverseEntity="ObservationField" syncable="YES"/>
         <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectObservationFields" inverseEntity="Project" syncable="YES"/>
     </entity>
+    <entity name="ProjectPost" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="publishedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="syncedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="projectPosts" inverseEntity="User" syncable="YES"/>
+    </entity>
     <entity name="ProjectUser" representedClassName="ProjectUser" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localCreatedAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -334,6 +343,7 @@
         <attribute name="userIconURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Comment" inverseName="user" inverseEntity="Comment" syncable="YES"/>
         <relationship name="identifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Identification" inverseName="user" inverseEntity="Identification" syncable="YES"/>
+        <relationship name="projectPosts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProjectPost" inverseName="author" inverseEntity="ProjectPost" syncable="YES"/>
     </entity>
     <elements>
         <element name="Comment" positionX="216" positionY="378" width="128" height="223"/>
@@ -350,9 +360,10 @@
         <element name="Project" positionX="160" positionY="192" width="128" height="390"/>
         <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
         <element name="ProjectObservationField" positionX="160" positionY="192" width="128" height="225"/>
+        <element name="ProjectPost" positionX="207" positionY="351" width="128" height="150"/>
         <element name="ProjectUser" positionX="160" positionY="192" width="128" height="240"/>
         <element name="Taxon" positionX="160" positionY="192" width="128" height="450"/>
         <element name="TaxonPhoto" positionX="160" positionY="192" width="128" height="345"/>
-        <element name="User" positionX="198" positionY="369" width="128" height="270"/>
+        <element name="User" positionX="198" positionY="369" width="128" height="285"/>
     </elements>
 </model>

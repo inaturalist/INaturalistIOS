@@ -353,7 +353,7 @@
                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationNormalCell" rowHeight="54" id="XTh-7E-mmV" customClass="ObservationViewNormalCell">
-                                <rect key="frame" x="0.0" y="113.5" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="49.5" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XTh-7E-mmV" id="C3n-W6-LHI">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53.5"/>
@@ -413,7 +413,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationUploadingCell" rowHeight="54" id="wQN-9N-x2Y" customClass="ObservationViewUploadingCell">
-                                <rect key="frame" x="0.0" y="167.5" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="103.5" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wQN-9N-x2Y" id="m9I-6r-lNe">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53.5"/>
@@ -452,7 +452,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationWaitingUploadCell" rowHeight="54" id="gAn-aH-TD8" customClass="ObservationViewWaitingUploadCell">
-                                <rect key="frame" x="0.0" y="221.5" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="157.5" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gAn-aH-TD8" id="aD9-FP-cmK">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53.5"/>
@@ -493,7 +493,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationErrorCell" rowHeight="54" id="zeS-FU-FRr" customClass="ObservationViewErrorCell">
-                                <rect key="frame" x="0.0" y="275.5" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="211.5" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zeS-FU-FRr" id="ePT-h4-s6E">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53.5"/>
@@ -1067,10 +1067,65 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="lMd-gV-Osl"/>
+                    <connections>
+                        <segue destination="2cK-fc-hT3" kind="push" identifier="detail" id="BCH-6r-ePS"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RPL-9s-i5O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-903" y="1910"/>
+        </scene>
+        <!--News Item View Controller-->
+        <scene sceneID="TU3-O6-cek">
+            <objects>
+                <viewController id="2cK-fc-hT3" customClass="NewsItemViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dxh-Do-r8m">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title is way too long brotha" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QoT-zt-mSV">
+                                <rect key="frame" x="20" y="82" width="280" height="21"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <webView contentMode="scaleToFill" id="Uuh-Z7-IzV">
+                                <rect key="frame" x="0.0" y="140" width="320" height="379"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="2cK-fc-hT3" id="slg-zQ-moN"/>
+                                </connections>
+                            </webView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Author" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GmA-O5-DVJ">
+                                <rect key="frame" x="20" y="111" width="144" height="21"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Published At" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qlj-W0-sCs">
+                                <rect key="frame" x="172" y="111" width="128" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="MKK-hI-frs"/>
+                    <connections>
+                        <outlet property="postAuthor" destination="GmA-O5-DVJ" id="uza-t9-CVJ"/>
+                        <outlet property="postBodyWebView" destination="Uuh-Z7-IzV" id="mhp-Rq-E90"/>
+                        <outlet property="postPublishedAt" destination="Qlj-W0-sCs" id="dg9-3O-LPb"/>
+                        <outlet property="postTitle" destination="QoT-zt-mSV" id="TLp-bl-c6M"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="i7q-tv-aj3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-372" y="1771"/>
         </scene>
         <!--News-->
         <scene sceneID="qBY-iC-Eui">

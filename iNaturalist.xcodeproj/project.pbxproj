@@ -179,6 +179,7 @@
 		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
 		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
+		FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */; };
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
@@ -219,6 +220,7 @@
 		FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */; };
 		FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */; };
 		FACC30251C47398100234BF3 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30241C47398100234BF3 /* NewsViewController.m */; };
+		FACC30291C48481F00234BF3 /* ProjectPost.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30281C48481F00234BF3 /* ProjectPost.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
@@ -597,6 +599,8 @@
 		FA6D695B1B06B026000983F8 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
 		FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextFieldCell.h; sourceTree = "<group>"; };
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
+		FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemViewController.h; sourceTree = "<group>"; };
+		FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemViewController.m; sourceTree = "<group>"; };
 		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
 		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
@@ -679,6 +683,9 @@
 		FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailFavesViewModel.m; sourceTree = "<group>"; };
 		FACC30231C47398100234BF3 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
 		FACC30241C47398100234BF3 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
+		FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.11.xcdatamodel; sourceTree = "<group>"; };
+		FACC30271C48481F00234BF3 /* ProjectPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectPost.h; sourceTree = "<group>"; };
+		FACC30281C48481F00234BF3 /* ProjectPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectPost.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
@@ -890,6 +897,8 @@
 				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
 				191FB4D11601501A00C1F5DE /* ProjectObservationField.h */,
 				191FB4D21601501A00C1F5DE /* ProjectObservationField.m */,
+				FACC30271C48481F00234BF3 /* ProjectPost.h */,
+				FACC30281C48481F00234BF3 /* ProjectPost.m */,
 				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
 				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
 				195F3246151A8AB60019CB85 /* Taxon.h */,
@@ -985,6 +994,8 @@
 				FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */,
 				FACC30231C47398100234BF3 /* NewsViewController.h */,
 				FACC30241C47398100234BF3 /* NewsViewController.m */,
+				FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */,
+				FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1684,6 +1695,7 @@
 				FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */,
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
+				FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */,
 				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */,
@@ -1750,6 +1762,7 @@
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
+				FACC30291C48481F00234BF3 /* ProjectPost.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 				FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */,
 				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
@@ -2156,6 +2169,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */,
 				FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */,
 				FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */,
 				FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */,
@@ -2168,7 +2182,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */;
+			currentVersion = FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
