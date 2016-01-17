@@ -259,6 +259,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section < 2) {
+        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+        return;
+    }
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     // second row in an identification section is a taxon row, which is selectable
@@ -274,7 +279,7 @@
 #pragma mark - section helpers
 
 - (Activity *)activityForSection:(NSInteger)section {
-    // first 2 sections are for is observation metadata
+    // first 2 sections are for observation metadata
     return self.observation.sortedActivity[section - 2];
 }
 
