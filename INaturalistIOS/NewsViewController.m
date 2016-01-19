@@ -32,13 +32,13 @@
         self.title = NSLocalizedString(@"News", nil);
         
         self.tabBarItem.image = ({
-            FAKIcon *news = [FAKIonIcons iosChatboxesOutlineIconWithSize:35];
+            FAKIcon *news = [FAKIonIcons iosListOutlineIconWithSize:35];
             [news addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
             [[news imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.tabBarItem.selectedImage = ({
-            FAKIcon *news = [FAKIonIcons iosChatboxesIconWithSize:35];
+            FAKIcon *news = [FAKIonIcons iosListIconWithSize:35];
             [news imageWithSize:CGSizeMake(34, 45)];
         });
         
