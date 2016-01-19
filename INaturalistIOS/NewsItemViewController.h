@@ -12,9 +12,6 @@
 
 @interface NewsItemViewController : UIViewController <UIWebViewDelegate>
 
-@property IBOutlet UILabel *postTitle;
-@property IBOutlet UILabel *postAuthor;
-@property IBOutlet UILabel *postPublishedAt;
 @property IBOutlet UIWebView *postBodyWebView;
 
 @property ProjectPost *post;
