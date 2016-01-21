@@ -63,7 +63,13 @@ static UIImage *briefcase;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // tableview configuration
+    self.refreshControl.tintColor = [UIColor inatTint];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"newsItem"];
+
+    // fetch content from the server
+    [self refresh];
+    
     
     NSError *err;
     [self.frc performFetch:&err];
@@ -73,9 +79,6 @@ static UIImage *briefcase;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // fetch stuff from the server
-    [self loadRemoteNews];
-    [self loadMyProjects];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -176,6 +179,15 @@ static UIImage *briefcase;
                       otherButtonTitles:nil] show];
 }
 
+- (IBAction)pullToRefresh:(id)sender {
+    [self refresh];
+}
+
+- (void)refresh {
+    [self loadRemoteNews];
+    [self loadRemoteProjects];
+}
+
 - (void)loadRemoteNews {
     
     // silently do nothing if we're offline
@@ -192,7 +204,7 @@ static UIImage *briefcase;
 }
 
 
-- (void)loadMyProjects {
+- (void)loadRemoteProjects {
     // silently do nothing if we're offline
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;
@@ -284,6 +296,11 @@ static UIImage *briefcase;
     // check for new activity
     NSError *err;
     [self.frc performFetch:&err];
+    
+    // if this is the project posts callback, end the refresh
+    if ([objectLoader.URL.absoluteString rangeOfString:@"posts/for_project_user.json"].location != NSNotFound) {
+        [self.refreshControl endRefreshing];
+    }
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
