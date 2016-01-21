@@ -60,6 +60,7 @@ PODS:
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
   - NSData+Base64 (1.0.0)
+  - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - QBImagePickerController (2.2.2)
@@ -142,6 +143,7 @@ DEPENDENCIES:
   - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
   - MBProgressHUD (= 0.9.1)
   - MHVideoPhotoGallery (= 1.6.6)
+  - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - QBImagePickerController (= 2.2.2)
@@ -204,6 +206,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
   NSData+Base64: 4e84902c4db907a15673474677e57763ef3903e4
+  NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
