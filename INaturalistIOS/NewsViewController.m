@@ -99,6 +99,10 @@ static UIImage *briefcase;
     }
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
