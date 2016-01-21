@@ -8,7 +8,7 @@
 
 #import <FacebookSDK/FacebookSDK.h>
 #import <NXOAuth2Client/NXOAuth2.h>
-#import "GPPSignIn.h"
+#import <GooglePlus/GPPSignIn.h>
 
 #import "LoginController.h"
 #import "Analytics.h"

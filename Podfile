@@ -16,7 +16,7 @@ target :iNaturalist do
 	pod 'AFNetworking', '1.3.4'
 	pod 'MHVideoPhotoGallery', '1.6.6'
 	pod 'UIColor-HTMLColors', '1.0.0'
-	pod 'SlackTextViewController', '1.7'
+	pod 'SlackTextViewController', '1.9'
 	pod 'SVPullToRefresh', '0.4.1'
 	pod 'PDKTStickySectionHeadersCollectionViewLayout', '0.1'
 	pod 'googleplus-ios-sdk', '1.7.1'
