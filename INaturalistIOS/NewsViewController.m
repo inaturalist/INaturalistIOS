@@ -70,15 +70,21 @@ static UIImage *briefcase;
     // fetch content from the server
     [self refresh];
     
-    
     NSError *err;
     [self.frc performFetch:&err];
-    
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateNewsList];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateNewsList];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -113,7 +119,7 @@ static UIImage *briefcase;
     
     // too much work to do in the main queue?
     NSFetchRequest *projectRequest = [Project fetchRequest];
-    projectRequest.predicate = [NSPredicate predicateWithFormat:@"recordID == %@", newsItem.projectID];
+    projectRequest.predicate = [NSPredicate predicateWithFormat:@"recordID = %@", newsItem.projectID];
 
     NSError *fetchError;
     Project *p = [[[Project managedObjectContext] executeFetchRequest:projectRequest
@@ -171,6 +177,8 @@ static UIImage *briefcase;
     [self performSegueWithIdentifier:@"detail" sender:newsItem];
 }
 
+#pragma mark - UIControl targets
+
 - (void)actionTapped:(UIControl *)control {
     [[[UIAlertView alloc] initWithTitle:@"Unimplemented"
                                 message:@"Not yet implmeneted"
@@ -183,8 +191,11 @@ static UIImage *briefcase;
     [self refresh];
 }
 
+#pragma mark - refresh helpers
+
 - (void)refresh {
     [self loadRemoteNews];
+    // would be best to only do this if necessary
     [self loadRemoteProjects];
 }
 
@@ -195,7 +206,7 @@ static UIImage *briefcase;
         return;
     }
     
-    [[Analytics sharedClient] debugLog:@"Network - My Project Posts fetch"];
+    [[Analytics sharedClient] debugLog:@"Network - My Project Posts fetch on News"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/posts/for_project_user.json"
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = [ProjectPost mapping];
@@ -210,12 +221,23 @@ static UIImage *briefcase;
         return;
     }
     
-    [[Analytics sharedClient] debugLog:@"Network - My Project Posts fetch"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/posts/for_project_user.json"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [ProjectPost mapping];
-                                                        loader.delegate = self;
-                                                    }];
+    [[Analytics sharedClient] debugLog:@"Network - My Projects fetch on News"];
+    
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
+    if (username && username.length > 0) {
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] firstObject];
+        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+                          username,
+                          language,
+                          countryCode];
+        
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                        usingBlock:^(RKObjectLoader *loader) {
+                                                            loader.objectMapping = [Project mapping];
+                                                            loader.delegate = self;
+                                                        }];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -290,6 +312,11 @@ static UIImage *briefcase;
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
 
+    NSDate *now = [NSDate date];
+    for (INatModel *o in objects) {
+        [o setSyncedAt:now];
+    }
+
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
@@ -300,6 +327,10 @@ static UIImage *briefcase;
     // if this is the project posts callback, end the refresh
     if ([objectLoader.URL.absoluteString rangeOfString:@"posts/for_project_user.json"].location != NSNotFound) {
         [self.refreshControl endRefreshing];
+    } else if ([objectLoader.URL.absoluteString rangeOfString:@"projects/user"].location != NSNotFound) {
+        // need to reload the visible cells since we now have project icons
+        [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 

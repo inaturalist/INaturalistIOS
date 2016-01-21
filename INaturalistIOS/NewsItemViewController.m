@@ -9,6 +9,7 @@
 #import "NewsItemViewController.h"
 #import "ProjectPost.h"
 #import "User.h"
+#import "Analytics.h"
 
 @interface NewsItemViewController ()
 
@@ -50,6 +51,18 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateNewsDetail];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateNewsDetail];
 }
 
 #pragma mark - UIWebViewDelegate

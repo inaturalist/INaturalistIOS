@@ -144,6 +144,8 @@ NSString *kAnalyticsEventNavigateProjects =                     @"Navigate - Pro
 NSString *kAnalyticsEventNavigateTaxaSearch =                   @"Navigate - Taxa Search";
 NSString *kAnalyticsEventNavigateTaxonDetails =                 @"Navigate - Taxon Details";
 
+NSString *kAnalyticsEventNavigateNewsList =                     @"Navigate - News List";
+NSString *kAnalyticsEventNavigateNewsDetail =                   @"Navigate - News Detail";
 
 // search in explore
 NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";

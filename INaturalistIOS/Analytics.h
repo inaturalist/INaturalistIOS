@@ -71,6 +71,9 @@ extern NSString *kAnalyticsEventNavigateProjects;           // list of projects
 extern NSString *kAnalyticsEventNavigateTaxaSearch;
 extern NSString *kAnalyticsEventNavigateTaxonDetails;
 
+extern NSString *kAnalyticsEventNavigateNewsList;
+extern NSString *kAnalyticsEventNavigateNewsDetail;
+
 // search in explore
 extern NSString *kAnalyticsEventExploreSearchPeople;
 extern NSString *kAnalyticsEventExploreSearchProjects;
