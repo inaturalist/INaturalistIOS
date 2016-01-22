@@ -31,11 +31,9 @@
     
     NSString *date = [dateFormatter stringFromDate:self.post.publishedAt] ?: NSLocalizedString(@"Uknown date", nil);
     
-    CGFloat width = self.view.bounds.size.width;
-    
     NSString *html = @"<head><meta name=\"viewport\" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" /></head>";
 
-    html = [html stringByAppendingString:@"<body style=\"font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 17; \" ><style>div {max-width: %fpx; font-family=-apple-system, Helvetica, Arial, sans-serif; } figure { padding: 0; margin: 0; } img.user {width: 25; height: 25; -webkit-border-radius: 50%%; margin-right: 10; } img { width: 100%%; max-width: 100%%; } p {font-family: -apple-system, Helvetica, Arial, sans-serif; }</style><div>"];
+    html = [html stringByAppendingString:@"<body style=\"font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 17; \" ><style>div {max-width: 100%%; font-family=-apple-system, Helvetica, Arial, sans-serif; } figure { padding: 0; margin: 0; } img.user {width: 25; height: 25; -webkit-border-radius: 50%%; margin-right: 10; } img { width: 100%%; max-width: 100%%; } p {font-family: -apple-system, Helvetica, Arial, sans-serif; }</style><div>"];
 
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 24; \">%@</p>", title]];
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<img align=\"left\" class=\"user\" src=%@ />", authorIconURL]];
