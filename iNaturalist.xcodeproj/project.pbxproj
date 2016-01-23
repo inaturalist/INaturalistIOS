@@ -643,6 +643,7 @@
 		FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
 		FAA20BB81C5079830075EF2C /* ProjectPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectPostCell.h; sourceTree = "<group>"; };
 		FAA20BB91C5079830075EF2C /* ProjectPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectPostCell.m; sourceTree = "<group>"; };
+		FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.12.xcdatamodel; sourceTree = "<group>"; };
 		FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCenteredLabelCell.h; sourceTree = "<group>"; };
 		FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCenteredLabelCell.m; sourceTree = "<group>"; };
 		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
@@ -2203,6 +2204,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */,
 				FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */,
 				FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */,
 				FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */,
@@ -2216,7 +2218,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */;
+			currentVersion = FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -19,6 +19,8 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic body;
 @dynamic title;
 @dynamic author;
+@dynamic projectIconUrl;
+@dynamic projectTitle;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -37,6 +39,10 @@ static RKManagedObjectMapping *defaultMapping = nil;
                        toAttribute:@"body"];
         [defaultMapping mapKeyPath:@"title"
                        toAttribute:@"title"];
+        [defaultMapping mapKeyPath:@"parent.icon_url"
+                       toAttribute:@"projectIconUrl"];
+        [defaultMapping mapKeyPath:@"parent.title"
+                       toAttribute:@"projectTitle"];
         
         [defaultMapping mapKeyPath:@"user"
                     toRelationship:@"author"

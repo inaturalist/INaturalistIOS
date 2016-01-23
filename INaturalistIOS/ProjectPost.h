@@ -13,11 +13,13 @@
 @interface ProjectPost : INatModel
 
 @property (nonatomic, retain) NSNumber *recordID;
-@property (nonatomic, retain) NSNumber *projectID;
 @property (nonatomic, retain) NSDate *publishedAt;
 @property (nonatomic, retain) NSString *body;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSDate * syncedAt;
+@property (nonatomic, retain) NSNumber *projectID;
+@property (nonatomic, retain) NSString *projectTitle;
+@property (nonatomic, retain) NSString *projectIconUrl;
 
 // relationships
 @property (nonatomic, retain) User *author;
