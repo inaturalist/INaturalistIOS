@@ -198,51 +198,33 @@ static UIImage *briefcase;
 #pragma mark - refresh helpers
 
 - (void)refresh {
-    [self loadRemoteNews];
-    // would be best to only do this if necessary
-    [self loadRemoteProjects];
+    [self loadNewNews];
 }
 
-- (void)loadRemoteNews {
+- (void)loadNewNews {
     
     // silently do nothing if we're offline
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         return;
     }
     
-    [[Analytics sharedClient] debugLog:@"Network - My Project Posts fetch on News"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/posts/for_project_user.json"
+    NSString *path = @"/posts/for_project_user.json";
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
+    if ([sectionInfo numberOfObjects] > 0) {
+        // most recent item will be first
+        ProjectPost *mostRecentPost = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", mostRecentPost.recordID.integerValue]];
+    }
+    
+    [[Analytics sharedClient] debugLog:@"Network - Fetch New News"];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = [ProjectPost mapping];
                                                         loader.delegate = self;
                                                     }];
 }
 
-
-- (void)loadRemoteProjects {
-    // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        return;
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - My Projects fetch on News"];
-    
-    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-    if (username && username.length > 0) {
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] firstObject];
-        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                          username,
-                          language,
-                          countryCode];
-        
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                        usingBlock:^(RKObjectLoader *loader) {
-                                                            loader.objectMapping = [Project mapping];
-                                                            loader.delegate = self;
-                                                        }];
-    }
-}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
