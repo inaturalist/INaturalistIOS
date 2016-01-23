@@ -10,6 +10,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 #import "NewsViewController.h"
 #import "ProjectPost.h"
@@ -67,6 +68,13 @@ static UIImage *briefcase;
     self.refreshControl.tintColor = [UIColor inatTint];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"newsItem"];
 
+    // infinite scroll for tableview
+    __weak typeof(self) weakSelf = self;
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        [weakSelf loadOldNews];
+    }];
+    self.tableView.showsInfiniteScrolling = YES;
+    
     // fetch content from the server
     [self refresh];
     
@@ -214,10 +222,36 @@ static UIImage *briefcase;
     if ([sectionInfo numberOfObjects] > 0) {
         // most recent item will be first
         ProjectPost *mostRecentPost = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", mostRecentPost.recordID.integerValue]];
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", (long)mostRecentPost.recordID.integerValue]];
     }
     
     [[Analytics sharedClient] debugLog:@"Network - Fetch New News"];
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                    usingBlock:^(RKObjectLoader *loader) {
+                                                        loader.objectMapping = [ProjectPost mapping];
+                                                        loader.delegate = self;
+                                                    }];
+}
+
+- (void)loadOldNews {
+    
+    // silently do nothing if we're offline
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
+    NSString *path = @"/posts/for_project_user.json";
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
+    if ([sectionInfo numberOfObjects] > 0) {
+        // most recent item will be last
+        
+        ProjectPost *oldestPost = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:[sectionInfo numberOfObjects] - 1
+                                                                                      inSection:0]];
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)oldestPost.recordID.integerValue]];
+    }
+    
+    [[Analytics sharedClient] debugLog:@"Network - Fetch Old News"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = [ProjectPost mapping];
@@ -312,11 +346,10 @@ static UIImage *briefcase;
     
     // if this is the project posts callback, end the refresh
     if ([objectLoader.URL.absoluteString rangeOfString:@"posts/for_project_user.json"].location != NSNotFound) {
+        // in case load was triggered by pull to refresh, stop the animation
         [self.refreshControl endRefreshing];
-    } else if ([objectLoader.URL.absoluteString rangeOfString:@"projects/user"].location != NSNotFound) {
-        // need to reload the visible cells since we now have project icons
-        [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        // in case load was triggered by infinite scrolling, stop the animation
+        [self.tableView.infiniteScrollingView stopAnimating];
     }
 }
 
@@ -324,7 +357,10 @@ static UIImage *briefcase;
     // workaround an objectloader dealloc bug in restkit
     self.objectLoader = objectLoader;
     
+    // in case load was triggered by pull to refresh, stop the animation
     [self.refreshControl endRefreshing];
+    // in case load was triggered by infinite scrolling, stop the animation
+    [self.tableView.infiniteScrollingView stopAnimating];
     
     [[[UIAlertView alloc] initWithTitle:@"Error"
                                 message:error.localizedDescription
