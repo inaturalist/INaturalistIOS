@@ -342,6 +342,8 @@ static UIImage *briefcase;
     // workaround an objectloader dealloc bug in restkit
     self.objectLoader = objectLoader;
     
+    [self.refreshControl endRefreshing];
+    
     [[[UIAlertView alloc] initWithTitle:@"Error"
                                 message:error.localizedDescription
                                delegate:nil
