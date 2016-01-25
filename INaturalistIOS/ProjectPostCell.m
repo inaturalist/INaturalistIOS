@@ -14,12 +14,6 @@
 
 @implementation ProjectPostCell
 
-- (void)awakeFromNib {
-    FAKIcon *icon = [FAKIonIcons iosArrowDownIconWithSize:24];
-    [icon addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-    [self.actionButton setAttributedTitle:icon.attributedString
-                                 forState:UIControlStateNormal];
-}
 
 - (void)prepareForReuse {
     [self.projectImageView sd_cancelCurrentImageLoad];
@@ -30,7 +24,6 @@
     self.projectName.text = nil;
     self.postedAt.text = nil;
     self.postBody.text = nil;
-    [self.actionButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
 }
 
 @end

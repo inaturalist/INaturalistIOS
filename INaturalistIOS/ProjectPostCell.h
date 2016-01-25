@@ -15,6 +15,5 @@
 @property IBOutlet UILabel *postedAt;
 @property IBOutlet UILabel *postBody;
 @property IBOutlet UIImageView *postImageView;
-@property IBOutlet UIButton *actionButton;
 
 @end

@@ -189,10 +189,6 @@ static UIImage *briefcase;
     cell.postBody.text = [cell.postBody.text stringByAppendingString:strippedBody];
     cell.postedAt.text = [[YLMoment momentWithDate:newsItem.publishedAt] fromNow];
     
-    [cell.actionButton addTarget:self
-                          action:@selector(actionTapped:)
-                forControlEvents:UIControlEventTouchUpInside];
-    
     return cell;
 }
 
@@ -204,14 +200,6 @@ static UIImage *briefcase;
 }
 
 #pragma mark - UIControl targets
-
-- (void)actionTapped:(UIControl *)control {
-    [[[UIAlertView alloc] initWithTitle:@"Unimplemented"
-                                message:@"Not yet implmeneted"
-                               delegate:nil
-                      cancelButtonTitle:@"OK"
-                      otherButtonTitles:nil] show];
-}
 
 - (IBAction)pullToRefresh:(id)sender {
     [self refresh];
