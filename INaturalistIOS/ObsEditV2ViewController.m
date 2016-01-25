@@ -52,6 +52,7 @@
 #import "Analytics.h"
 #import "PhotoScrollViewCell.h"
 #import "ObsCenteredLabelCell.h"
+#import "ObsDetailTaxonCell.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -99,6 +100,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
         [tv registerClass:[ObsCenteredLabelCell class] forCellReuseIdentifier:@"singleButton"];
+        
+        // we share this cell design with the obs detail screen (and eventually others)
+        // so we load it from a nib rather than from the storyboard, which locks the
+        // cell into a single view controller scene
+        [tv registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil] forCellReuseIdentifier:@"taxonFromNib"];
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
         tv.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
@@ -961,8 +967,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             break;
         case ConfirmObsSectionIdentify:
             if (indexPath.item == 0) {
+                return 60;
+                /*
                 return [DisclosureCell heightForRowWithTitle:self.observation.taxon.defaultName ?: NSLocalizedString(@"Something...", nil)
                                                  inTableView:tableView];
+                 */
             } else if (indexPath.item == 1) {
                 return [DisclosureCell heightForRowWithTitle:[self needsIDTitle]
                                                  inTableView:tableView];
@@ -1286,7 +1295,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (UITableViewCell *)speciesCellInTableView:(UITableView *)tableView {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
+    
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
+
     
     UIButton *deleteButton = ({
         FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
@@ -1304,19 +1315,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (self.observation.taxon) {
         
         Taxon *taxon = self.observation.taxon;
-        cell.titleLabel.text = taxon.defaultName;
         
-        cell.cellImageView.layer.borderWidth = 0.5f;
-        cell.cellImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
-        cell.cellImageView.layer.cornerRadius = 3.0f;
-
+        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
+            // no common name, so only show scientific name in the main label
+            cell.taxonNameLabel.text = taxon.name;
+            cell.taxonSecondaryNameLabel.text = nil;
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
+                cell.taxonNameLabel.text = taxon.name;
+            } else {
+                cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+                cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                            [taxon.rank capitalizedString], taxon.name];
+            }
+        } else {
+            // show both common & scientfic names
+            cell.taxonNameLabel.text = taxon.defaultName;
+            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = taxon.name;
+            } else {
+                cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                                     [taxon.rank capitalizedString], taxon.name];
+                
+            }
+        }
+        
         if ([taxon.isIconic boolValue]) {
-            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         } else if (taxon.taxonPhotos.count > 0) {
             TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-            [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
         } else {
-            cell.cellImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         }
         
         cell.accessoryView = deleteButton;
@@ -1324,13 +1359,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     } else {
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-        cell.cellImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
+        cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
+        cell.taxonImageView.layer.borderWidth = 0.0f;
         
         if (self.observation.speciesGuess) {
-            cell.titleLabel.text = self.observation.speciesGuess;
+            cell.taxonNameLabel.text = self.observation.speciesGuess;
             cell.accessoryView = deleteButton;
         } else {
-            cell.titleLabel.text = NSLocalizedString(@"Something...", nil);
+            cell.taxonNameLabel.text = NSLocalizedString(@"Something...", nil);
         }
     }
     

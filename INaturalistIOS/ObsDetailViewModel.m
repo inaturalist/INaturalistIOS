@@ -181,7 +181,7 @@
 }
 
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
-    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxon"];
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
 
     
     Taxon *taxon = self.observation.taxon;
@@ -192,7 +192,36 @@
     cell.taxonNameLabel.textColor = [UIColor blackColor];
 
     if (taxon) {
-        cell.taxonNameLabel.text = taxon.defaultName;
+        
+        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
+            // no common name, so only show scientific name in the main label
+            cell.taxonNameLabel.text = taxon.name;
+            cell.taxonSecondaryNameLabel.text = nil;
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
+                cell.taxonNameLabel.text = taxon.name;
+            } else {
+                cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+                cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                            [taxon.rank capitalizedString], taxon.name];
+            }
+        } else {
+            // show both common & scientfic names
+            cell.taxonNameLabel.text = taxon.defaultName;
+            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = taxon.name;
+            } else {
+                cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                                     [taxon.rank capitalizedString], taxon.name];
+
+            }
+        }
+
         
         if ([taxon.isIconic boolValue]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
@@ -227,7 +256,6 @@
             
             __weak typeof(self) weakSelf = self;
             RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
                 
                 Taxon *loadedTaxon = (Taxon *)object;
                 loadedTaxon.syncedAt = [NSDate date];
@@ -243,13 +271,13 @@
                 }
                 
                 // fetch the taxon and set it on the observation
-                NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID];
-                Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
-                strongSelf.observation.taxon = t;
+                //NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID];
+                //Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
+                //strongSelf.observation.taxon = t;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                     withRowAnimation:UITableViewRowAnimationNone];
+                                     withRowAnimation:UITableViewRowAnimationAutomatic];
                 });
                 
             };
@@ -259,16 +287,6 @@
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:resource
                                                             usingBlock:^(RKObjectLoader *loader) {
                                                                 loader.onDidLoadObject = taxonLoadedBlock;
-                                                                
-                                                                loader.onDidFailWithError = ^(NSError *error) {
-                                                                    
-                                                                };
-                                                                loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                                    
-                                                                };
-                                                                loader.onDidLoadResponse = ^(RKResponse *response) {
-                                                                    
-                                                                };
                                                             }];
             
         } else {
@@ -336,7 +354,8 @@
                 return 200;
             }
         } else if (indexPath.item == 2) {
-            return 44;
+            // taxon
+            return 60;
         }
     }
     

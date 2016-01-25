@@ -223,6 +223,7 @@
 		FACC30251C47398100234BF3 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30241C47398100234BF3 /* NewsViewController.m */; };
 		FACC30291C48481F00234BF3 /* ProjectPost.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30281C48481F00234BF3 /* ProjectPost.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
+		FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FACD11EE1C56E9720041E318 /* TaxonCell.xib */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
@@ -690,6 +691,7 @@
 		FACC30281C48481F00234BF3 /* ProjectPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectPost.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
+		FACD11EE1C56E9720041E318 /* TaxonCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonCell.xib; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
 		FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmPhotoToEditObsTransitionAnimator.h; sourceTree = "<group>"; };
@@ -1308,6 +1310,7 @@
 				FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */,
 				FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */,
 				FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */,
+				FACD11EE1C56E9720041E318 /* TaxonCell.xib */,
 				FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */,
 				FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */,
 				FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */,
@@ -1545,6 +1548,7 @@
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
+				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,

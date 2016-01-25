@@ -153,13 +153,17 @@
             }
         } else {
             // identification
+            if (indexPath.item == 1) {
+                // taxon
+                return 60;
+            }
             if ([self tableView:tableView numberOfRowsInSection:indexPath.section] == 4) {
                 // contains body
                 if (indexPath.item == 2) {
                     // body row
                     return [self heightForRowInTableView:tableView withBodyText:activity.body];
                 } else {
-                    // user/date, taxon, agree/action
+                    // user/date, agree/action
                     return 44;
                 }
             } else {
@@ -371,22 +375,57 @@
 
 - (ObsDetailTaxonCell *)taxonCellInTableView:(UITableView *)tableView withIdentification:(Identification *)identification {
 
-    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxon"];
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     Taxon *taxon = identification.taxon;
     if (taxon) {
         
-        if (identification.isCurrent) {
-            cell.taxonNameLabel.text = taxon.defaultName;
+        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
+            // no common name, so only show scientific name in the main label
+            cell.taxonNameLabel.text = taxon.name;
+            cell.taxonSecondaryNameLabel.text = nil;
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
+                cell.taxonNameLabel.text = taxon.name;
+            } else {
+                cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+                cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                            [taxon.rank capitalizedString], taxon.name];
+            }
         } else {
+            // show both common & scientfic names
+            cell.taxonNameLabel.text = taxon.defaultName;
+            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+            
+            if (taxon.isGenusOrLower) {
+                cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = taxon.name;
+            } else {
+                cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
+                cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                                     [taxon.rank capitalizedString], taxon.name];
+                
+            }
+        }
+        
+        
+        if (!identification.isCurrent) {
             NSDictionary *strikeThrough = @{
                                             NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle],
                                             NSForegroundColorAttributeName: [UIColor lightGrayColor],
                                             };
             
-            cell.taxonNameLabel.attributedText = [[NSAttributedString alloc] initWithString:taxon.defaultName
-                                                                                 attributes:strikeThrough];
+            if (cell.taxonNameLabel.text) {
+                cell.taxonNameLabel.attributedText = [[NSAttributedString alloc] initWithString:cell.taxonNameLabel.text
+                                                                                     attributes:strikeThrough];
+            }
+            if (cell.taxonSecondaryNameLabel.text) {
+                cell.taxonSecondaryNameLabel.attributedText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
+                                                                                              attributes:strikeThrough];
+            }
+
         }
         
         if ([taxon.isIconic boolValue]) {

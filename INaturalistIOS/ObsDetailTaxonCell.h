@@ -11,6 +11,7 @@
 @interface ObsDetailTaxonCell : UITableViewCell
 
 @property IBOutlet UILabel *taxonNameLabel;
+@property IBOutlet UILabel *taxonSecondaryNameLabel;
 @property IBOutlet UIImageView *taxonImageView;
 
 @end

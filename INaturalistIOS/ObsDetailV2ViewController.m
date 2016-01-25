@@ -66,6 +66,12 @@
     [self.tableView registerClass:[ObsDetailNoInteractionHeaderFooter class] forHeaderFooterViewReuseIdentifier:@"noInteraction"];
     [self.tableView registerClass:[ObsDetailAddFaveHeader class] forHeaderFooterViewReuseIdentifier:@"addFave"];
     [self.tableView registerClass:[ObsDetailQualityDetailsFooter class] forHeaderFooterViewReuseIdentifier:@"qualityDetails"];
+    
+    // we share this cell design with the obs edit screen (and eventually others)
+    // so we load it from a nib rather than from the storyboard, which locks the
+    // cell into a single view controller scene
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil] forCellReuseIdentifier:@"taxonFromNib"];
+
 
     NSDictionary *views = @{
                             @"tv": self.tableView,

@@ -7,6 +7,7 @@
 //
 
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ObsDetailTaxonCell.h"
 
@@ -25,6 +26,16 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)prepareForReuse {
+    self.taxonNameLabel.text = nil;
+    self.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+    self.taxonSecondaryNameLabel.text = nil;
+    self.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
+    
+    [self.taxonImageView sd_cancelCurrentImageLoad];
+    self.taxonImageView.image = nil;
 }
 
 @end
