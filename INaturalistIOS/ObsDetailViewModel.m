@@ -243,7 +243,7 @@
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
-            cell.taxonNameLabel.text = NSLocalizedString(@"Something...", nil);
+            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
         }
     }
     

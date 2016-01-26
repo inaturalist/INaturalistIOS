@@ -871,7 +871,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.localUpdatedAt = [NSDate date];
 
     NSString *newTaxonName = taxon.defaultName ?: taxon.name;
-    if (!newTaxonName) { newTaxonName = @"Something"; }
+    if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
@@ -1366,7 +1366,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
             cell.accessoryView = deleteButton;
         } else {
-            cell.taxonNameLabel.text = NSLocalizedString(@"Something...", nil);
+            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"Unknown taxon");
         }
     }
     
