@@ -61,7 +61,7 @@
             UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
             view.translatesAutoresizingMaskIntoConstraints = NO;
             
-            view.backgroundColor = [UIColor lightGrayColor];
+            view.backgroundColor = [UIColor colorWithHexString:@"#C8C7CC"];
             
             view;
         });
