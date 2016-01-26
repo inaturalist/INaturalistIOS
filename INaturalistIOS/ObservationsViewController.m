@@ -700,7 +700,7 @@
     } else if (o.inatDescription && o.inatDescription.length > 0) {
         [cell.titleLabel setText:o.inatDescription];
     } else {
-        [cell.titleLabel setText:NSLocalizedString(@"Something...",nil)];
+        [cell.titleLabel setText:NSLocalizedString(@"Unknown", @"unknown taxon")];
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -841,7 +841,7 @@
             self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
         } else {
             NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
-            NSString *speciesName = NSLocalizedString(@"Something...", nil);
+            NSString *speciesName = NSLocalizedString(@"Unknown", @"unknown taxon");
             if (uploadManager.currentlyUploadingObservation.speciesGuess) {
                 speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
             } else if (uploadManager.currentlyUploadingObservation.inatDescription) {
