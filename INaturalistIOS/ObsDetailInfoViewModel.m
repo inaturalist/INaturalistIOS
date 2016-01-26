@@ -90,11 +90,18 @@
             cell.mapView.delegate = self;
             cell.mapView.userInteractionEnabled = NO;
             
-            if (self.observation.latitude.floatValue) {
+            CLLocationCoordinate2D coords;
+            
+            if (self.observation.privateLatitude.floatValue) {
+                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+            } else if (self.observation.latitude.floatValue) {
+                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+            }
+            
+            if (CLLocationCoordinate2DIsValid(coords)) {
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
-                CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
                 CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
                 

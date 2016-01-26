@@ -985,7 +985,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return 44;
             } else if (indexPath.item == 2) {
                 // location
-                return (self.observation.latitude && self.observation.longitude) ? 66 : 44;
+                CLLocationCoordinate2D coords;
+                
+                if (self.observation.privateLatitude.floatValue) {
+                    coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+                } else if (self.observation.latitude.floatValue) {
+                    coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+                }
+                
+                return CLLocationCoordinate2DIsValid(coords) ? 66 : 44;
+
             } else if (indexPath.item == 3) {
                 return [DisclosureCell heightForRowWithTitle:[self geoPrivacyTitle]
                                                  inTableView:tableView];
@@ -1425,8 +1434,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)locationCellInTableView:(UITableView *)tableView {
     
     DisclosureCell *cell;
+    
+    CLLocationCoordinate2D coords;
+    
+    if (self.observation.privateLatitude.floatValue) {
+        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+    } else if (self.observation.latitude.floatValue) {
+        coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+    }
 
-    if (self.observation.latitude && self.observation.longitude) {
+    if (CLLocationCoordinate2DIsValid(coords)) {
         
         SubtitleDisclosureCell *subtitleCell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
         cell = subtitleCell;
@@ -1438,8 +1455,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
         }
         NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Lon: %.3f  Acc: %@",
-                                    self.observation.latitude.floatValue,
-                                    self.observation.longitude.floatValue,
+                                    coords.latitude,
+                                    coords.longitude,
                                     positionalAccuracy];
         subtitleCell.subtitleLabel.text = subtitleString;
         
