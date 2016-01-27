@@ -345,10 +345,17 @@
         // notes / map
         if (indexPath.item == 1) {
             // map
-            // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             
-            if (self.observation.latitude) {
+            CLLocationCoordinate2D coords;
+            
+            if (self.observation.privateLatitude.floatValue) {
+                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+            } else if (self.observation.latitude.floatValue) {
+                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+            }
+            
+            if (CLLocationCoordinate2DIsValid(coords)) {
                 // show the map view
                 [[Analytics sharedClient] event:kAnalyticsEventObservationViewMap];
                 [self.delegate inat_performSegueWithIdentifier:@"map" sender:nil];
@@ -356,7 +363,9 @@
         }
     } else if (indexPath.section == 3) {
         // data quality, do nothing
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (indexPath.section == 4) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         // projects
         if (self.observation.projectObservations.count > 0) {
             // show the projects view
