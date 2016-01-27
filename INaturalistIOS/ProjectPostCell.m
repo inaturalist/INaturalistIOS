@@ -16,6 +16,8 @@
 
 
 - (void)prepareForReuse {
+    self.projectImageView.layer.cornerRadius = 0.5f;
+    
     [self.projectImageView sd_cancelCurrentImageLoad];
     self.projectImageView.image = nil;
     [self.postImageView sd_cancelCurrentImageLoad];
@@ -24,6 +26,7 @@
     self.projectName.text = nil;
     self.postedAt.text = nil;
     self.postBody.text = nil;
+    self.postTitle.text = nil;
 }
 
 @end

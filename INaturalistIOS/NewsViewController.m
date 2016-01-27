@@ -183,10 +183,9 @@ static UIImage *briefcase;
         }
     });
     
-    cell.postBody.text = newsItem.title;
-    cell.postBody.text = [cell.postBody.text stringByAppendingString:@" - "];
-    NSString *strippedBody = [[newsItem.body stringByStrippingHTML] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-    cell.postBody.text = [cell.postBody.text stringByAppendingString:strippedBody];
+    cell.postTitle.text = newsItem.title;
+    NSString *strippedBody = [newsItem.body stringByStrippingHTML];
+    cell.postBody.text = [strippedBody stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     cell.postedAt.text = [[YLMoment momentWithDate:newsItem.publishedAt] fromNow];
     
     return cell;

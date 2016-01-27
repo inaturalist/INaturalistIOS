@@ -14,6 +14,7 @@
 @property IBOutlet UILabel *projectName;
 @property IBOutlet UILabel *postedAt;
 @property IBOutlet UILabel *postBody;
+@property IBOutlet UILabel *postTitle;
 @property IBOutlet UIImageView *postImageView;
 
 @end
