@@ -25,9 +25,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-        
-    if (self.observation.latitude.floatValue) {
-        CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+    CLLocationCoordinate2D coords;
+    
+    if (self.observation.privateLatitude.floatValue) {
+        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+    } else if (self.observation.latitude.floatValue) {
+        coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+    }
+    
+    if (CLLocationCoordinate2DIsValid(coords)) {
         CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
         
         // make sure we're not so zoomed in that we can't display tiles
