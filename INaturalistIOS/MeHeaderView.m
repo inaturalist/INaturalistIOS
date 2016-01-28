@@ -79,11 +79,11 @@
                                                                                         views:views];
         [self addConstraints:self.titleConstraintsWithoutSpinner];        
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[obsCount]-18-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-18-[uploadingSpinner]-18-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
