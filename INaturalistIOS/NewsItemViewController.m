@@ -33,7 +33,7 @@
     
     NSString *postedBy = NSLocalizedString(@"Posted by", @"label for a news post author");
     NSString *authorIconURL = self.newsItem.authorIconUrl;
-    html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 14; color: #cccccc;\">%@:<img class=\"user\" src=%@ />", postedBy, authorIconURL]];
+    html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 14; color: #686868;\">%@:<img class=\"user\" src=%@ />", postedBy, authorIconURL]];
     NSString *author = self.newsItem.authorLogin ?: NSLocalizedString(@"Unknown author", nil);
     NSString *publishedAt = [[YLMoment momentWithDate:self.newsItem.postPublishedAt] fromNow];
     html = [html stringByAppendingString:[NSString stringWithFormat:@"%@  •  %@</p>", author, publishedAt]];
