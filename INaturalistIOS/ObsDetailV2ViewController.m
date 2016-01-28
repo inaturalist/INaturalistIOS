@@ -30,6 +30,7 @@
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "ObsDetailAddFaveHeader.h"
 #import "ObsDetailQualityDetailsFooter.h"
+#import "ObservationValidationErrorView.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -94,6 +95,14 @@
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification
                                                object:[Observation managedObjectContext]];
+    
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
