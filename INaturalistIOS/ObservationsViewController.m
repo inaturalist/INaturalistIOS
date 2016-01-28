@@ -13,6 +13,7 @@
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
 #import <SDWebImage/UIButton+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
+#import <YLMoment/YLMoment.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -710,7 +711,7 @@
     [self configureObservationCell:cell forIndexPath:indexPath];
     
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.dateLabel.text = o.observedOnShortString;
+    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
     cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
 }
 
@@ -779,14 +780,12 @@
         cell.interactiveActivityButton.hidden = YES;
     }
     
-    //cell.interactiveActivityButton.enabled = NO;
-    //cell.activityButton.enabled = NO;
     [cell.interactiveActivityButton addTarget:self
                                        action:@selector(clickedActivity:event:)
                              forControlEvents:UIControlEventTouchUpInside];
     
-    cell.dateLabel.text = o.observedOnShortString;
-    
+    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
+
 }
 
 
