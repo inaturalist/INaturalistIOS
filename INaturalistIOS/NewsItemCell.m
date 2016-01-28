@@ -10,25 +10,25 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
-#import "ProjectPostCell.h"
+#import "NewsItemCell.h"
 #import "UIColor+INaturalist.h"
 
-@implementation ProjectPostCell
+@implementation NewsItemCell
 
 
 - (void)awakeFromNib {
-    self.projectImageView.layer.cornerRadius = 0.5f;
-    self.projectImageView.layer.borderWidth = 1.0f;
-    self.projectImageView.layer.borderColor = [UIColor colorWithHexString:@"#C8C7CC"].CGColor;
+    self.newsCategoryImageView.layer.cornerRadius = 0.5f;
+    self.newsCategoryImageView.layer.borderWidth = 1.0f;
+    self.newsCategoryImageView.layer.borderColor = [UIColor colorWithHexString:@"#C8C7CC"].CGColor;
 }
 
 - (void)prepareForReuse {
-    [self.projectImageView sd_cancelCurrentImageLoad];
-    self.projectImageView.image = nil;
+    [self.newsCategoryImageView sd_cancelCurrentImageLoad];
+    self.newsCategoryImageView.image = nil;
     [self.postImageView sd_cancelCurrentImageLoad];
     self.postImageView.image = nil;
     
-    self.projectName.text = nil;
+    self.newsCategoryTitle.text = nil;
     self.postedAt.text = nil;
     self.postBody.text = nil;
     self.postTitle.text = nil;

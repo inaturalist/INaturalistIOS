@@ -18,7 +18,7 @@
 #import "Analytics.h"
 #import "User.h"
 #import "NewsitemViewController.h"
-#import "ProjectPostCell.h"
+#import "NewsItemCell.h"
 #import "Project.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
@@ -68,7 +68,6 @@ static UIImage *briefcase;
     
     // tableview configuration
     self.refreshControl.tintColor = [UIColor inatTint];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"newsItem"];
 
     // infinite scroll for tableview
     __weak typeof(self) weakSelf = self;
@@ -126,16 +125,16 @@ static UIImage *briefcase;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    ProjectPostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"projectPost"
-                                                            forIndexPath:indexPath];
+    NewsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsItem"
+                                                         forIndexPath:indexPath];
     
     NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
-    cell.projectName.text = newsItem.parentTitleText;
+    cell.newsCategoryTitle.text = newsItem.parentTitleText;
     NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
     if (iconURL) {
-        [cell.projectImageView sd_setImageWithURL:iconURL];
+        [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
     } else {
-        cell.projectImageView.image = briefcase;
+        cell.newsCategoryImageView.image = briefcase;
     }
     
     // this is probably sloooooooow. too slow to do on

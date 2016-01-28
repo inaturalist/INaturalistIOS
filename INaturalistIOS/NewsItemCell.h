@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProjectPostCell : UITableViewCell
+@interface NewsItemCell : UITableViewCell
 
-@property IBOutlet UIImageView *projectImageView;
-@property IBOutlet UILabel *projectName;
+
+@property IBOutlet UIImageView *newsCategoryImageView;
+@property IBOutlet UILabel *newsCategoryTitle;
+
 @property IBOutlet UILabel *postedAt;
 @property IBOutlet UILabel *postBody;
 @property IBOutlet UILabel *postTitle;
