@@ -23,7 +23,6 @@
 #import "ProjectObservation.h"
 #import "ProjectObservationField.h"
 #import "ProjectUser.h"
-#import "ProjectPost.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "Comment.h"
@@ -39,6 +38,7 @@
 #import "NSURL+INaturalist.h"
 #import "DeletedRecord.h"
 #import "Fave.h"
+#import "NewsItem.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -195,7 +195,7 @@
     [ObservationPhoto deleteAll];
     [ProjectUser deleteAll];
     [ProjectObservation deleteAll];
-    [ProjectPost deleteAll];
+    [NewsItem deleteAll];
     [ObservationFieldValue deleteAll];
     [User deleteAll];
     

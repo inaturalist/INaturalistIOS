@@ -13,7 +13,7 @@
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 #import "NewsViewController.h"
-#import "ProjectPost.h"
+#import "NewsItem.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "User.h"
@@ -21,6 +21,8 @@
 #import "ProjectPostCell.h"
 #import "Project.h"
 #import "UIColor+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 static UIImage *briefcase;
 
@@ -103,7 +105,7 @@ static UIImage *briefcase;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"detail"]) {
         NewsItemViewController *vc = (NewsItemViewController *)[segue destinationViewController];
-        vc.post = (ProjectPost *)sender;
+        vc.newsItem = (NewsItem *)sender;
     }
 }
 
@@ -127,9 +129,9 @@ static UIImage *briefcase;
     ProjectPostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"projectPost"
                                                             forIndexPath:indexPath];
     
-    ProjectPost *newsItem = [self.frc objectAtIndexPath:indexPath];
-    cell.projectName.text = newsItem.projectTitle;
-    NSURL *iconURL = [NSURL URLWithString:newsItem.projectIconUrl];
+    NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
+    cell.projectName.text = newsItem.parentTitleText;
+    NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
     if (iconURL) {
         [cell.projectImageView sd_setImageWithURL:iconURL];
     } else {
@@ -139,7 +141,7 @@ static UIImage *briefcase;
     // this is probably sloooooooow. too slow to do on
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *url = nil;
-        NSString *htmlString = newsItem.body;
+        NSString *htmlString = newsItem.postBody;
         NSScanner *theScanner = [NSScanner scannerWithString:htmlString];
         // find start of IMG tag
         [theScanner scanUpToString:@"<img" intoString:nil];
@@ -156,10 +158,10 @@ static UIImage *briefcase;
         }
     });
     
-    cell.postTitle.text = newsItem.title;
-    NSString *strippedBody = [newsItem.body stringByStrippingHTML];
+    cell.postTitle.text = newsItem.postTitle;
+    NSString *strippedBody = [newsItem.postBody stringByStrippingHTML];
     cell.postBody.text = [strippedBody stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.publishedAt] fromNow];
+    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.postPublishedAt] fromNow];
     
     return cell;
 }
@@ -167,7 +169,7 @@ static UIImage *briefcase;
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ProjectPost *newsItem = [self.frc objectAtIndexPath:indexPath];
+    NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
     [self performSegueWithIdentifier:@"detail" sender:newsItem];
 }
 
@@ -190,19 +192,19 @@ static UIImage *briefcase;
         return;
     }
     
-    NSString *path = @"/posts/for_project_user.json";
+    NSString *path = [self newsItemEndpoint];
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
     if ([sectionInfo numberOfObjects] > 0) {
         // most recent item will be first
-        ProjectPost *mostRecentPost = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", (long)mostRecentPost.recordID.integerValue]];
+        NewsItem *mostRecentItem = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", (long)mostRecentItem.recordID.integerValue]];
     }
     
     [[Analytics sharedClient] debugLog:@"Network - Fetch New News"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [ProjectPost mapping];
+                                                        loader.objectMapping = [NewsItem mapping];
                                                         loader.delegate = self;
                                                     }];
 }
@@ -214,23 +216,31 @@ static UIImage *briefcase;
         return;
     }
     
-    NSString *path = @"/posts/for_project_user.json";
+    NSString *path = [self newsItemEndpoint];
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
     if ([sectionInfo numberOfObjects] > 0) {
         // most recent item will be last
-        
-        ProjectPost *oldestPost = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:[sectionInfo numberOfObjects] - 1
+        NewsItem *oldestItem = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:[sectionInfo numberOfObjects] - 1
                                                                                       inSection:0]];
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)oldestPost.recordID.integerValue]];
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)oldestItem.recordID.integerValue]];
     }
     
     [[Analytics sharedClient] debugLog:@"Network - Fetch Old News"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [ProjectPost mapping];
+                                                        loader.objectMapping = [NewsItem mapping];
                                                         loader.delegate = self;
                                                     }];
+}
+
+- (NSString *)newsItemEndpoint {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.isLoggedIn) {
+        return @"/posts/for_user.json";
+    } else {
+        return @"/posts.json";
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -281,11 +291,11 @@ static UIImage *briefcase;
     
     if (!_frc) {
         // NSFetchedResultsController request for my observations
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"ProjectPost"];
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewsItem"];
         
         // sort by common name, if available
         request.sortDescriptors = @[
-                                    [[NSSortDescriptor alloc] initWithKey:@"publishedAt" ascending:NO],
+                                    [[NSSortDescriptor alloc] initWithKey:@"postPublishedAt" ascending:NO],
                                     ];
         
         // setup our fetched results controller
@@ -317,13 +327,10 @@ static UIImage *briefcase;
     NSError *err;
     [self.frc performFetch:&err];
     
-    // if this is the project posts callback, end the refresh
-    if ([objectLoader.URL.absoluteString rangeOfString:@"posts/for_project_user.json"].location != NSNotFound) {
-        // in case load was triggered by pull to refresh, stop the animation
-        [self.refreshControl endRefreshing];
-        // in case load was triggered by infinite scrolling, stop the animation
-        [self.tableView.infiniteScrollingView stopAnimating];
-    }
+    // in case load was triggered by pull to refresh, stop the animation
+    [self.refreshControl endRefreshing];
+    // in case load was triggered by infinite scrolling, stop the animation
+    [self.tableView.infiniteScrollingView stopAnimating];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {

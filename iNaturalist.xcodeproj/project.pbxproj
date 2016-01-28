@@ -191,6 +191,7 @@
 		FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */; };
 		FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */; };
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
+		FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7BC8CA1C59D2460032E709 /* NewsItem.m */; };
 		FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */; };
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -221,7 +222,6 @@
 		FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */; };
 		FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */; };
 		FACC30251C47398100234BF3 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30241C47398100234BF3 /* NewsViewController.m */; };
-		FACC30291C48481F00234BF3 /* ProjectPost.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30281C48481F00234BF3 /* ProjectPost.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FACD11EE1C56E9720041E318 /* TaxonCell.xib */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
@@ -622,6 +622,9 @@
 		FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservationHeaderView.m; sourceTree = "<group>"; };
 		FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardHeader.h; sourceTree = "<group>"; };
 		FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardHeader.m; sourceTree = "<group>"; };
+		FA7BC8C81C59B2B90032E709 /* INaturalist2.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.13.xcdatamodel; sourceTree = "<group>"; };
+		FA7BC8C91C59D2460032E709 /* NewsItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItem.h; sourceTree = "<group>"; };
+		FA7BC8CA1C59D2460032E709 /* NewsItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItem.m; sourceTree = "<group>"; };
 		FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObsFieldViewController.h; sourceTree = "<group>"; };
 		FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObsFieldViewController.m; sourceTree = "<group>"; };
 		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
@@ -687,8 +690,6 @@
 		FACC30231C47398100234BF3 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
 		FACC30241C47398100234BF3 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
 		FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.11.xcdatamodel; sourceTree = "<group>"; };
-		FACC30271C48481F00234BF3 /* ProjectPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectPost.h; sourceTree = "<group>"; };
-		FACC30281C48481F00234BF3 /* ProjectPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectPost.m; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
 		FACD11EE1C56E9720041E318 /* TaxonCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonCell.xib; sourceTree = "<group>"; };
@@ -883,6 +884,8 @@
 				19F62192150ECBEE00C58F28 /* List.m */,
 				19F62194150ECC0200C58F28 /* ListedTaxon.h */,
 				19F62195150ECC0200C58F28 /* ListedTaxon.m */,
+				FA7BC8C91C59D2460032E709 /* NewsItem.h */,
+				FA7BC8CA1C59D2460032E709 /* NewsItem.m */,
 				1985521C14ECA3CD00DB55C5 /* Observation.h */,
 				1985521D14ECA3CD00DB55C5 /* Observation.m */,
 				FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */,
@@ -899,8 +902,6 @@
 				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
 				191FB4D11601501A00C1F5DE /* ProjectObservationField.h */,
 				191FB4D21601501A00C1F5DE /* ProjectObservationField.m */,
-				FACC30271C48481F00234BF3 /* ProjectPost.h */,
-				FACC30281C48481F00234BF3 /* ProjectPost.m */,
 				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
 				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
 				195F3246151A8AB60019CB85 /* Taxon.h */,
@@ -1792,6 +1793,7 @@
 				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
 				19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
 				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
+				FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */,
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */,
@@ -1801,7 +1803,6 @@
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
-				FACC30291C48481F00234BF3 /* ProjectPost.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 				FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */,
 				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
@@ -2208,6 +2209,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA7BC8C81C59B2B90032E709 /* INaturalist2.13.xcdatamodel */,
 				FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */,
 				FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */,
 				FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */,
@@ -2222,7 +2224,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */;
+			currentVersion = FA7BC8C81C59B2B90032E709 /* INaturalist2.13.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

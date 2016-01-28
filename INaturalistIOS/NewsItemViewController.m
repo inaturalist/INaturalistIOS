@@ -9,7 +9,7 @@
 #import <YLMoment/YLMoment.h>
 
 #import "NewsItemViewController.h"
-#import "ProjectPost.h"
+#import "NewsItem.h"
 #import "User.h"
 #import "Analytics.h"
 
@@ -22,24 +22,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.title = self.newsItem.parentTitleText;
+    
     NSString *html = @"<head><meta name=\"viewport\" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" /></head>";
 
     html = [html stringByAppendingString:@"<body style=\"font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 17; \" ><style>div {max-width: 100%%; font-family=-apple-system, Helvetica, Arial, sans-serif; } figure { padding: 0; margin: 0; } img.user {width: 20; height: 20; -webkit-border-radius: 50%%; margin-right: 7; margin-left: 7; vertical-align: middle; } img { max-width: 100%%; } p {font-family: -apple-system, Helvetica, Arial, sans-serif; }</style><div>"];
 
-    NSString *title = self.post.title ?: NSLocalizedString(@"Untitled Post", nil);
+    NSString *title = self.newsItem.postTitle ?: NSLocalizedString(@"Untitled Post", nil);
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 24; \">%@</p>", title]];
     
     NSString *postedBy = NSLocalizedString(@"Posted by", @"label for a news post author");
-    NSString *authorIconURL = self.post.author.userIconURL;
+    NSString *authorIconURL = self.newsItem.authorIconUrl;
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 14; color: #cccccc;\">%@:<img class=\"user\" src=%@ />", postedBy, authorIconURL]];
-    NSString *author = self.post.author.login ?: NSLocalizedString(@"Unknown author", nil);
-    NSString *publishedAt = [[YLMoment momentWithDate:self.post.publishedAt] fromNow];
+    NSString *author = self.newsItem.authorLogin ?: NSLocalizedString(@"Unknown author", nil);
+    NSString *publishedAt = [[YLMoment momentWithDate:self.newsItem.postPublishedAt] fromNow];
     html = [html stringByAppendingString:[NSString stringWithFormat:@"%@  •  %@</p>", author, publishedAt]];
 
-    html = [html stringByAppendingString:self.post.body];
+    html = [html stringByAppendingString:self.newsItem.postBody];
     html = [html stringByAppendingString:@"</div></body>"];
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inat-project-post/%lld", self.post.recordID.longLongValue]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inat-project-post/%lld", self.newsItem.recordID.longLongValue]];
     
     [self.postBodyWebView loadHTMLString:html
                                  baseURL:url];
