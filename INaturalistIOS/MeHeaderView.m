@@ -47,6 +47,7 @@
             label.font = [UIFont systemFontOfSize:18.0f];
             label.textColor = [UIColor whiteColor];
             label.textAlignment = NSTextAlignmentNatural;
+            label.numberOfLines = 0;
 
             label;
         });
