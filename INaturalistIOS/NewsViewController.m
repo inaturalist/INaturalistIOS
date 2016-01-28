@@ -128,39 +128,12 @@ static UIImage *briefcase;
                                                             forIndexPath:indexPath];
     
     ProjectPost *newsItem = [self.frc objectAtIndexPath:indexPath];
-    if (newsItem.projectTitle) {
-        cell.projectName.text = newsItem.projectTitle;
-        NSURL *iconURL = [NSURL URLWithString:newsItem.projectIconUrl];
-        if (iconURL) {
-            [cell.projectImageView sd_setImageWithURL:iconURL];
-        } else {
-            cell.projectImageView.image = briefcase;
-        }
+    cell.projectName.text = newsItem.projectTitle;
+    NSURL *iconURL = [NSURL URLWithString:newsItem.projectIconUrl];
+    if (iconURL) {
+        [cell.projectImageView sd_setImageWithURL:iconURL];
     } else {
-        // we have an outdated version of this object, refresh it
-        // TODO: this will only happen for a single development version
-        // TODO: remove this code in production
-        [self reloadNewsItem:newsItem];
-        
-        // too much work to do in the main queue?
-        NSFetchRequest *projectRequest = [Project fetchRequest];
-        projectRequest.predicate = [NSPredicate predicateWithFormat:@"recordID = %@", newsItem.projectID];
-        
-        NSError *fetchError;
-        Project *p = [[[Project managedObjectContext] executeFetchRequest:projectRequest
-                                                                    error:&fetchError] firstObject];
-        if (fetchError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                fetchError.localizedDescription]];
-        } else if (p) {
-            cell.projectName.text = p.title;
-            NSURL *iconURL = [NSURL URLWithString:p.iconURL];
-            if (iconURL) {
-                [cell.projectImageView sd_setImageWithURL:iconURL];
-            }
-        } else {
-            cell.projectImageView.image = briefcase;
-        }
+        cell.projectImageView.image = briefcase;
     }
     
     // this is probably sloooooooow. too slow to do on
@@ -253,24 +226,6 @@ static UIImage *briefcase;
     }
     
     [[Analytics sharedClient] debugLog:@"Network - Fetch Old News"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [ProjectPost mapping];
-                                                        loader.delegate = self;
-                                                    }];
-}
-
-- (void)reloadNewsItem:(ProjectPost *)post {
-    // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        return;
-    }
-    
-    NSString *path = @"/posts/for_project_user.json";
-    path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)post.recordID.integerValue + 1]];
-    path = [path stringByAppendingString:[NSString stringWithFormat:@"&newer_than=%ld", (long)post.recordID.integerValue - 1]];
-    
-    [[Analytics sharedClient] debugLog:@"Network - Re-fetch a News Item"];
     [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
                                                     usingBlock:^(RKObjectLoader *loader) {
                                                         loader.objectMapping = [ProjectPost mapping];
