@@ -15,7 +15,9 @@ Roadmap
 
 - ~~Autoupload~~
 - ~~Final screen of new observation flow~~
-- Observation Detail Screen (in-progress)
+- ~~Observation Detail Screen~~
+- News Feed for Projects & Site News (in-progress)
+- Redo Project pages
 - Reuse Observation Detail Screen in the Explore Tab
 - Background Uploading
 - New User Onboarding
@@ -33,7 +35,6 @@ Roadmap
 - Notifications from server (instead of polling server)
 - Background Fetch
 - Faving
-- Better Project Pages
 
 Icebox (stuff that we might like to do someday)
 -----
