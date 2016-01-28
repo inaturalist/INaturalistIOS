@@ -21,6 +21,8 @@
 @property (nonatomic, retain) NSString *postBody;
 @property (nonatomic, retain) NSDate *postPublishedAt;
 @property (nonatomic, retain) NSString *postTitle;
+@property (nonatomic, retain) NSString *postPlainTextExcerpt;
+@property (nonatomic, retain) NSString *postCoverImageUrl;
 
 @property (nonatomic, retain) NSString *authorLogin;
 @property (nonatomic, retain) NSString *authorIconUrl;

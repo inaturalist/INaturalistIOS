@@ -110,6 +110,8 @@
         <attribute name="parentSiteShortName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="parentTypeString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="postBody" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postCoverImageUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postPlainTextExcerpt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="postPublishedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="postTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recordID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -358,7 +360,7 @@
         <element name="Identification" positionX="234" positionY="387" width="128" height="268"/>
         <element name="List" positionX="160" positionY="192" width="128" height="270"/>
         <element name="ListedTaxon" positionX="160" positionY="192" width="128" height="360"/>
-        <element name="NewsItem" positionX="207" positionY="351" width="128" height="240"/>
+        <element name="NewsItem" positionX="207" positionY="351" width="128" height="270"/>
         <element name="Observation" positionX="160" positionY="192" width="128" height="720"/>
         <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
         <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>

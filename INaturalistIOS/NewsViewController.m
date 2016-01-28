@@ -137,30 +137,13 @@ static UIImage *briefcase;
         cell.newsCategoryImageView.image = briefcase;
     }
     
-    // this is probably sloooooooow. too slow to do on
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *url = nil;
-        NSString *htmlString = newsItem.postBody;
-        NSScanner *theScanner = [NSScanner scannerWithString:htmlString];
-        // find start of IMG tag
-        [theScanner scanUpToString:@"<img" intoString:nil];
-        if (![theScanner isAtEnd]) {
-            [theScanner scanUpToString:@"src" intoString:nil];
-            NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@"\"'"];
-            [theScanner scanUpToCharactersFromSet:charset intoString:nil];
-            [theScanner scanCharactersFromSet:charset intoString:nil];
-            [theScanner scanUpToCharactersFromSet:charset intoString:&url];
-            NSURL *imageURL = [NSURL URLWithString:url];
-            if (imageURL) {
-                [cell.postImageView sd_setImageWithURL:imageURL];
-            }
-        }
-    });
+    NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
+    if (coverImageURL) {
+        [cell.postImageView sd_setImageWithURL:coverImageURL];
+    }
     
     cell.postTitle.text = newsItem.postTitle;
-    NSString *strippedBody = [newsItem.postBody stringByStrippingHTML];
-    cell.postBody.text = [strippedBody stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.postPublishedAt] fromNow];
+    cell.postBody.text = newsItem.postPlainTextExcerpt;
     
     return cell;
 }
