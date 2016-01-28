@@ -24,6 +24,10 @@
     
     self.title = self.newsItem.parentTitleText;
     
+    [self loadPostBodyIntoWebView];
+}
+
+- (void)loadPostBodyIntoWebView {
     NSString *html = @"<head><meta name=\"viewport\" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;\" /></head>";
 
     html = [html stringByAppendingString:@"<body style=\"font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 17; \" ><style>div {max-width: 100%%; font-family=-apple-system, Helvetica, Arial, sans-serif; } figure { padding: 0; margin: 0; } img.user { border: 1px solid #C8C7CC; width: 20; height: 20; -webkit-border-radius: 50%%; margin-right: 4; margin-left: 7; vertical-align: middle; } img { max-width: 100%%; } p {font-family: -apple-system, Helvetica, Arial, sans-serif; } div.post { padding-left: 0; padding-right: 0; margin-left: 15; margin-right: 15; }</style><div class=\"post\">"];
@@ -62,6 +66,16 @@
     [super viewDidDisappear:animated];
     
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateNewsDetail];
+}
+
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        [self loadPostBodyIntoWebView];
+    } completion:nil];
 }
 
 #pragma mark - UIWebViewDelegate
