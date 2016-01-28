@@ -160,7 +160,7 @@ DEPENDENCIES:
   - UIColor-HTMLColors (= 1.0.0)
   - VICMAImageView (~> 1.0)
   - VTAcknowledgementsViewController (= 0.15)
-  - YLMoment (= 0.6.0)
+  - YLMoment (from `https://github.com/inaturalist/YLMoment.git`, commit `35521e9f80c23de6f885771f97a6c1febe245c00`)
 
 EXTERNAL SOURCES:
   FileMD5Hash:
@@ -169,6 +169,9 @@ EXTERNAL SOURCES:
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
+  YLMoment:
+    :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
+    :git: https://github.com/inaturalist/YLMoment.git
 
 CHECKOUT OPTIONS:
   FileMD5Hash:
@@ -177,6 +180,9 @@ CHECKOUT OPTIONS:
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
+  YLMoment:
+    :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
+    :git: https://github.com/inaturalist/YLMoment.git
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
@@ -227,6 +233,6 @@ SPEC CHECKSUMS:
   XMLReader: c7e54b707c368e2fa545d8313276b4de13a36ff5
   YLMoment: a342e85269150756105901c4b701070154f82c16
 
-PODFILE CHECKSUM: af592cbc5fa7f89e990d488cca98fd62053d1994
+PODFILE CHECKSUM: 65226ac2f47ded07d85472b7a19cb566665a9443
 
 COCOAPODS: 1.0.0.beta.2

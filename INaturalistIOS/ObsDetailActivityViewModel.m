@@ -331,7 +331,7 @@
         }
         
         YLMoment *moment = [YLMoment momentWithDate:activity.createdAt];
-        cell.dateLabel.text = [moment fromNow];
+        cell.dateLabel.text = [moment fromNowWithSuffix:NO];
         cell.dateLabel.textColor = [UIColor lightGrayColor];
         
         if ([activity isKindOfClass:[Identification class]]) {

@@ -38,10 +38,10 @@ target :iNaturalist do
 	pod 'MBProgressHUD', '0.9.1'
 	pod 'VICMAImageView', '~> 1.0'
 	pod 'Toast', '3.0'
-	pod 'YLMoment', '0.6.0'
 	pod 'NSString_stripHtml', '0.1.0'
 	pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
 	pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
+	pod 'YLMoment', :git => 'https://github.com/inaturalist/YLMoment.git', :commit => '35521e9f80c23de6f885771f97a6c1febe245c00'
 end
 
 target :iNaturalistTests do

@@ -144,7 +144,7 @@ static UIImage *briefcase;
     
     cell.postTitle.text = newsItem.postTitle;
     cell.postBody.text = newsItem.postPlainTextExcerpt;
-    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.postPublishedAt] fromNow];
+    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.postPublishedAt] fromNowWithSuffix:NO];
     
     return cell;
 }
