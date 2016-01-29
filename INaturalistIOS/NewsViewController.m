@@ -140,6 +140,9 @@ static UIImage *briefcase;
     NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
     if (coverImageURL) {
         [cell.postImageView sd_setImageWithURL:coverImageURL];
+        [cell showPostImageView:YES];
+    } else {
+        [cell showPostImageView:NO];
     }
     
     cell.postTitle.text = newsItem.postTitle;

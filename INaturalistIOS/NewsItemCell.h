@@ -19,4 +19,6 @@
 @property IBOutlet UILabel *postTitle;
 @property IBOutlet UIImageView *postImageView;
 
+- (void)showPostImageView:(BOOL)shouldShow;
+
 @end
