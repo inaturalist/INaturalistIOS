@@ -116,7 +116,7 @@
                                                                 multiplier:1.0f
                                                                   constant:0.0f]];
     
-    // bottom of the post image view is aligned with the bottom of the post body
+    // bottom of the post image view is aligned with the baseline of the post body
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.postImageView
                                                                  attribute:NSLayoutAttributeBottom
                                                                  relatedBy:NSLayoutRelationEqual
