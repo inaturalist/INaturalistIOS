@@ -21,8 +21,8 @@
 
 
 - (void)awakeFromNib {
-    self.newsCategoryImageView.layer.cornerRadius = 0.5f;
-    self.newsCategoryImageView.layer.borderWidth = 1.0f;
+    self.newsCategoryImageView.layer.cornerRadius = 1.0f;
+    self.newsCategoryImageView.layer.borderWidth = 0.5;
     self.newsCategoryImageView.layer.borderColor = [UIColor colorWithHexString:@"#C8C7CC"].CGColor;
     
     self.newsCategoryImageView.frame = CGRectZero;
