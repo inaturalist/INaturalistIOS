@@ -451,6 +451,8 @@ static char PROJECT_ASSOCIATED_KEY;
     ObsEditV2ViewController *confirmObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
     confirmObs.observation = o;
     confirmObs.shouldContinueUpdatingLocation = YES;
+    confirmObs.isMakingNewObservation = YES;
+
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO animated:YES];
     [nav pushViewController:confirmObs animated:YES];
