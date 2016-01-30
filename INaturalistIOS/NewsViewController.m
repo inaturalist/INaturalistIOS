@@ -221,12 +221,7 @@ static UIImage *briefcase;
 }
 
 - (NSString *)newsItemEndpoint {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.loginController.isLoggedIn) {
-        return @"/posts/for_user.json";
-    } else {
-        return @"/posts.json";
-    }
+    return @"/posts/for_user.json";
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
