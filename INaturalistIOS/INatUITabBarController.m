@@ -108,18 +108,9 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    BOOL mustRelocateTooltip = NO;
     if ([makeFirstObsTooltip superview]) {
-        mustRelocateTooltip = YES;
         [makeFirstObsTooltip hideAnimated:NO];
     }
-    
-    [coordinator animateAlongsideTransition:nil
-                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-                                     if (mustRelocateTooltip) {
-                                         [self makeAndShowFirstObsTooltip];
-                                     }
-                                 }];
 }
 
 
