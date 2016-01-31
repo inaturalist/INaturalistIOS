@@ -42,6 +42,9 @@
     //self.postTitle.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.2f];
     //self.postBody.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.2f];
     
+    // allow body to flow up into the space left by post title if it only needs a single line
+    // if the title fits on a single line, we'll use a three line body excerpt. if the title
+    // needs two lines, we'll only use a two line body excerpt. yay layout priority!
     [self.postTitle setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh
                                                     forAxis:UILayoutConstraintAxisVertical];
     [self.postTitle setContentHuggingPriority:UILayoutPriorityDefaultHigh
@@ -52,7 +55,7 @@
     [self.postBody setContentHuggingPriority:UILayoutPriorityDefaultLow
                                      forAxis:UILayoutConstraintAxisVertical];
     
-    // time posted at shouldn't truncate, should make as much space as possible for the category title
+    // posted at shouldn't truncate, should make as much space as possible for the category title
     [self.postedAt setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh
                                                    forAxis:UILayoutConstraintAxisHorizontal];
     [self.postedAt setContentHuggingPriority:UILayoutPriorityDefaultHigh
