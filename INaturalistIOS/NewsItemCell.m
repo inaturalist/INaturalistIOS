@@ -39,8 +39,6 @@
     self.postTitle.translatesAutoresizingMaskIntoConstraints = NO;
     self.postImageView.translatesAutoresizingMaskIntoConstraints = NO;
 
-    //self.postTitle.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.2f];
-    //self.postBody.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.2f];
     
     // allow body to flow up into the space left by post title if it only needs a single line
     // if the title fits on a single line, we'll use a three line body excerpt. if the title
@@ -108,10 +106,6 @@
                                                                              options:0
                                                                              metrics:0
                                                                                views:views]];
-    
-    /*
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[postImageView(==74)-16-|" options:<#(NSLayoutFormatOptions)#> metrics:<#(nullable NSDictionary<NSString *,id> *)#> views:<#(nonnull NSDictionary<NSString *,id> *)#>]]
-     */
     
     // the relative time is the same y coord center as the category imageview
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.postedAt
