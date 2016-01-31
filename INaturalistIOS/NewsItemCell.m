@@ -51,7 +51,18 @@
                                                    forAxis:UILayoutConstraintAxisVertical];
     [self.postBody setContentHuggingPriority:UILayoutPriorityDefaultLow
                                      forAxis:UILayoutConstraintAxisVertical];
-
+    
+    // time posted at shouldn't truncate, should make as much space as possible for the category title
+    [self.postedAt setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh
+                                                   forAxis:UILayoutConstraintAxisHorizontal];
+    [self.postedAt setContentHuggingPriority:UILayoutPriorityDefaultHigh
+                                     forAxis:UILayoutConstraintAxisHorizontal];
+    
+    // category title can truncate
+    [self.newsCategoryTitle setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
+                                                            forAxis:UILayoutConstraintAxisHorizontal];
+    [self.newsCategoryTitle setContentHuggingPriority:UILayoutPriorityDefaultLow
+                                              forAxis:UILayoutConstraintAxisHorizontal];
     
     NSDictionary *views = @{
                             @"categoryImageView": self.newsCategoryImageView,
@@ -62,7 +73,7 @@
                             @"postImageView": self.postImageView,
                             };
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[categoryImageView(==24)]-12-[categoryTitle]-[postedAt(==40)]-15-|"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-15-[categoryImageView(==24)]-12-[categoryTitle]-[postedAt]-15-|"
                                                                              options:0
                                                                              metrics:0
                                                                                views:views]];
