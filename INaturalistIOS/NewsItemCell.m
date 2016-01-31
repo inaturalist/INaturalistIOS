@@ -101,12 +101,7 @@
                                                                              options:0
                                                                              metrics:0
                                                                                views:views]];
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-16-[categoryImageView(==24)]-10-[postTitle]-7-[postBody]-15-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-    
+        
     // the relative time is the same y coord center as the category imageview
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.postedAt
                                                                  attribute:NSLayoutAttributeCenterY
