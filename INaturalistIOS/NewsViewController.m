@@ -156,6 +156,13 @@ static UIImage *briefcase;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
+                     withProperties:@{
+                                      @"ParentType": [newsItem parentTypeString],
+                                      @"Article": [newsItem parentTitleText],
+                                      }];
+    
     [self performSegueWithIdentifier:@"detail" sender:newsItem];
 }
 

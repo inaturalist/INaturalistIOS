@@ -166,6 +166,10 @@ extern NSString *kAnalyticsEventSettingDisabled;
 extern NSString *kAnalyticsEventSettingsNetworkChangeBegan;
 extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
 
+// news
+extern NSString *kAnalyticsEventNewsOpenArticle;
+extern NSString *kAnalyticsEventNewsTapLink;
+
 // guides
 extern NSString *kAnalyticsEventDownloadGuideStarted;
 extern NSString *kAnalyticsEventDownloadGuideCompleted;

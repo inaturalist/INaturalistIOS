@@ -237,6 +237,10 @@ NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabl
 NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings Network Change Began";
 NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Network Change Completed";
 
+// news
+NSString *kAnalyticsEventNewsOpenArticle =                      @"News - Open Article";
+NSString *kAnalyticsEventNewsTapLink =                          @"News - Tap Link";
+
 // guides
 NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";
 NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide Download - Complete";

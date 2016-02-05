@@ -83,6 +83,14 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+        [[Analytics sharedClient] event:kAnalyticsEventNewsTapLink
+                         withProperties:@{
+                                          @"ParentType": [self.newsItem parentTypeString],
+                                          @"Article": [self.newsItem parentTitleText],
+                                          @"Link": request.URL.absoluteString,
+                                          }];
+
         // open links taps in Safari
         [[UIApplication sharedApplication] openURL:request.URL];
         return NO;
