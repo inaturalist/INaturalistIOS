@@ -87,7 +87,8 @@
         [[Analytics sharedClient] event:kAnalyticsEventNewsTapLink
                          withProperties:@{
                                           @"ParentType": [self.newsItem parentTypeString],
-                                          @"Article": [self.newsItem parentTitleText],
+                                          @"ParentName": [self.newsItem parentTitleText],
+                                          @"ArticleTitle": [self.newsItem postTitle],
                                           @"Link": request.URL.absoluteString,
                                           }];
 

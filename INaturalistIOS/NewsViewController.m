@@ -160,7 +160,8 @@ static UIImage *briefcase;
     [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
                      withProperties:@{
                                       @"ParentType": [newsItem parentTypeString],
-                                      @"Article": [newsItem parentTitleText],
+                                      @"ParentName": [newsItem parentTitleText],
+                                      @"ArticleTitle": [newsItem postTitle],
                                       }];
     
     [self performSegueWithIdentifier:@"detail" sender:newsItem];
