@@ -149,8 +149,12 @@ static const int WebViewTag = 1;
     }
     
     NSArray *galleryData = [self.guideTaxon.guidePhotos bk_map:^id(GuideImageXML *image) {
-        return [MHGalleryItem itemWithURL:image.mediumPhotoUrl.absoluteString
-                              galleryType:MHGalleryTypeImage];
+        if (image.mediumPhotoUrl.host) {
+            return [MHGalleryItem itemWithURL:image.mediumPhotoUrl.absoluteString
+                                  galleryType:MHGalleryTypeImage];
+        } else {
+            return [MHGalleryItem itemWithImage:[UIImage imageWithContentsOfFile:image.mediumPhotoUrl.path]];
+        }
     }];
     
     MHUICustomization *customization = [[MHUICustomization alloc] init];

@@ -1462,8 +1462,8 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				FA63FA2919E4D40F007306F9 /* ShellScript */,
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
-				A580F783E035F86A8C59F4BD /* Embed Pods Frameworks */,
 				319E00E1942535DB0884129C /* Copy Pods Resources */,
+				0038B9DF23BF8B569E32DDB9 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1482,8 +1482,8 @@
 				FADE28AC1B02D9AA00CA55FF /* Sources */,
 				FADE28AD1B02D9AA00CA55FF /* Frameworks */,
 				FADE28AE1B02D9AA00CA55FF /* Resources */,
-				C515D0CFA5F271EB30382178 /* Embed Pods Frameworks */,
 				2AA61D907636457BB999BF30 /* Copy Pods Resources */,
+				D853F730E5B09E86FFFE8A47 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1576,6 +1576,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0038B9DF23BF8B569E32DDB9 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2AA61D907636457BB999BF30 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1621,22 +1636,7 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		A580F783E035F86A8C59F4BD /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C515D0CFA5F271EB30382178 /* Embed Pods Frameworks */ = {
+		D853F730E5B09E86FFFE8A47 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
