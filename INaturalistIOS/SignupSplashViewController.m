@@ -465,7 +465,7 @@ static char PARTNER_ASSOCIATED_KEY;
     [self.view addSubview:self.skipButton];
     
     self.signinEmailButton = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
