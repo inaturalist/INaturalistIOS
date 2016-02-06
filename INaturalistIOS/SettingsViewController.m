@@ -36,6 +36,7 @@
 #import "Partner.h"
 #import "LoginController.h"
 #import "UploadManager.h"
+#import "UIColor+INaturalist.h"
 
 static const int CreditsSection = 3;
 
@@ -48,9 +49,6 @@ static const int VersionCellTag = 5;
 
 static const int NetworkDetailLabelTag = 14;
 static const int NetworkTextLabelTag = 15;
-static const int UsernameDetailLabelTag = 16;
-static const int UsernameTextLabelTag = 17;
-static const int AutomaticallyUploadLabelTag = 18;
 
 // labels for settings switcher rows are 50 + row index
 static const int AutocompleteNamesLabelTag = 50;
@@ -75,7 +73,7 @@ static const int AutouploadSwitchTag = 101;
 - (void)initUI
 {
     self.navigationController.navigationBar.translucent = NO;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
     UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
@@ -87,15 +85,6 @@ static const int AutouploadSwitchTag = 101;
     contactActionCell.tag = ContactActionCellTag;
     rateUsActionCell.tag = RateUsCellTag;
     
-    UILabel *usernameDetailTextLabel = (UILabel *)[usernameCell viewWithTag:UsernameDetailLabelTag];
-    
-    if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
-        usernameDetailTextLabel.text = [defaults objectForKey:INatUsernamePrefKey];
-        accountActionCell.textLabel.text = NSLocalizedString(@"Sign out",nil);
-    } else {
-        usernameDetailTextLabel.text = NSLocalizedString(@"Unknown",nil);
-        accountActionCell.textLabel.text = NSLocalizedString(@"Sign in",nil);
-    }
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     self.versionText = [NSString stringWithFormat:NSLocalizedString(@"Version %@, build %@",nil),
@@ -362,10 +351,27 @@ static const int AutouploadSwitchTag = 101;
         cell.tag = VersionCellTag;
         
     }
-    else if (indexPath.section == 0 && indexPath.row == 0) {
-        // Set the alignment for username.
-//        cell.textLabel.textAlignment = NSTextAlignmentNatural;
-        [self setupConstraintsForUsernameCell:cell];
+    else if (indexPath.section == 0) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+        if (indexPath.row == 0) {
+            // username cell
+            cell.textLabel.text = NSLocalizedString(@"Username", nil);
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            if (appDelegate.loginController.isLoggedIn) {
+                cell.detailTextLabel.text = appDelegate.loginController.fetchMe.login;
+            } else {
+                cell.detailTextLabel.text = NSLocalizedString(@"Not Logged In", nil);
+            }
+        } else {
+            // account action (sign in / sign out) cell
+            cell.textLabel.textColor = [UIColor inatTint];
+            if (appDelegate.loginController.isLoggedIn) {
+                cell.textLabel.text = NSLocalizedString(@"Sign out",nil);
+            } else {
+                cell.textLabel.text = NSLocalizedString(@"Log In / Sign Up",nil);
+            }
+        }
     }
     else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
@@ -623,36 +629,6 @@ static const int AutouploadSwitchTag = 101;
         [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
     }
 }
-
-- (void)setupConstraintsForUsernameCell:(UITableViewCell *)cell{
-    if(!cell.constraints.count){
-        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:UsernameDetailLabelTag];
-        detailTextLabel.textAlignment = NSTextAlignmentCenter;
-        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        UILabel *textLabel = (UILabel *)[cell viewWithTag:UsernameTextLabelTag];
-        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        textLabel.textAlignment = NSTextAlignmentCenter;
-        
-        
-        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-        
-        [cell addConstraint:[NSLayoutConstraint constraintWithItem:detailTextLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-        
-        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:-8.0]];
-        
-        [cell addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:detailTextLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    }
-}
-
-
-
-
-
-
-
-
-
 
 
 @end
