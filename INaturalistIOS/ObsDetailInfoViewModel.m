@@ -109,16 +109,29 @@
                 pin.coordinate = coords;
                 pin.title = @"Title";
                 [cell.mapView addAnnotation:pin];
+                
+                if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
+                    cell.locationNameLabel.text = self.observation.placeGuess;
+                } else {
+                    NSString *positionalAccuracy = nil;
+                    if (self.observation.positionalAccuracy) {
+                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy.integerValue];
+                    } else {
+                        positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
+                    }
+
+                    NSString *baseStr = NSLocalizedString(@"Lat: %.5f Long: %.5f Acc: %@", @"visualization of latitude/longitude/accuracy");
+                    NSString *subtitleString = [NSString stringWithFormat:baseStr,
+                                                coords.latitude,
+                                                coords.longitude,
+                                                positionalAccuracy];
+                    cell.locationNameLabel.text = subtitleString;
+                }
             } else {
                 cell.mapView.hidden = YES;
                 cell.noLocationLabel.hidden = NO;
             }
             
-            if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
-                cell.locationNameLabel.text = self.observation.placeGuess;
-            } else {
-                cell.locationNameLabel.text = NSLocalizedString(@"No location.", nil);
-            }
             
             if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
                 cell.geoprivacyLabel.attributedText = ({
