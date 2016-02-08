@@ -377,6 +377,12 @@
     } else if (indexPath.section == 3) {
         // data quality, do nothing
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (self.observation.dataQuality == ObsDataQualityNone) {
+            NSURL *dataQualityURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/help#quality"];
+            if (dataQualityURL) {
+                [[UIApplication sharedApplication] openURL:dataQualityURL];
+            }
+        }
     } else if (indexPath.section == 4) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         // projects
