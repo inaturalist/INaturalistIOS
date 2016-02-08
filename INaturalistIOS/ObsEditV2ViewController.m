@@ -1454,7 +1454,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         } else {
             positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
         }
-        NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Lon: %.3f  Acc: %@",
+        NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Long: %.3f  Acc: %@",
                                     coords.latitude,
                                     coords.longitude,
                                     positionalAccuracy];
