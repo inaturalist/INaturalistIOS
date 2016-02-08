@@ -1464,9 +1464,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             subtitleCell.titleLabel.text = self.observation.placeGuess;
         } else {
             subtitleCell.titleLabel.text = NSLocalizedString(@"Location not geocoded", @"place guess when we have lat/lng but it's not geocoded");
-            
-            // try again
-            [self reverseGeocodeCoordinatesForObservation:self.observation];
+            // only try to persistently, passively geocode a placeguess if this is a new observation
+            if (self.isMakingNewObservation) {
+                [self reverseGeocodeCoordinatesForObservation:self.observation];
+            }
         }
         
         
