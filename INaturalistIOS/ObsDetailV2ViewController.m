@@ -262,7 +262,6 @@
 }
 
 - (void)selectedSection:(ObsDetailSection)section {
-    NSString *newSectionName;
     switch (section) {
         case ObsDetailSectionActivity:
             self.viewModel = [[ObsDetailActivityViewModel alloc] init];
