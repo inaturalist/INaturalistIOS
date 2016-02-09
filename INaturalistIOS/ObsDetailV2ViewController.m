@@ -46,7 +46,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.viewModel = [[ObsDetailInfoViewModel alloc] init];
+    if (self.observation.hasUnviewedActivity.boolValue) {
+        self.viewModel = [[ObsDetailActivityViewModel alloc] init];
+    } else {
+        self.viewModel = [[ObsDetailInfoViewModel alloc] init];
+    }
     self.viewModel.observation = self.observation;
     self.viewModel.delegate = self;
     
@@ -102,14 +106,6 @@
             view.validationError = self.observation.validationErrorMsg;
             view;
         });
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    if (self.observation.hasUnviewedActivity.boolValue) {
-        [self selectedSection:ObsDetailSectionActivity];
     }
 }
 
