@@ -87,7 +87,7 @@ static const int AutouploadSwitchTag = 101;
     
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"Version %@, build %@",nil),
+    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
                         [info objectForKey:@"CFBundleShortVersionString"],
                         [info objectForKey:@"CFBundleVersion"]];
     
