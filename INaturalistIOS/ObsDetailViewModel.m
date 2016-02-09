@@ -459,14 +459,20 @@
 
 
 - (void)selectedInfo:(UIButton *)button {
+    [[Analytics sharedClient] event:kAnalyticsEventObservationChangeSection
+                     withProperties:@{ @"New Section": @"Info" }];
     [self.delegate selectedSection:ObsDetailSectionInfo];
 }
 
 - (void)selectedActivity:(UIButton *)button {
+    [[Analytics sharedClient] event:kAnalyticsEventObservationChangeSection
+                     withProperties:@{ @"New Section": @"Activity" }];
     [self.delegate selectedSection:ObsDetailSectionActivity];
 }
 
 - (void)selectedFaves:(UIButton *)button {
+    [[Analytics sharedClient] event:kAnalyticsEventObservationChangeSection
+                     withProperties:@{ @"New Section": @"Faves" }];
     [self.delegate selectedSection:ObsDetailSectionFaves];
 }
 

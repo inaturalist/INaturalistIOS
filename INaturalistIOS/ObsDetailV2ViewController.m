@@ -271,9 +271,6 @@
 
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
-            
-            newSectionName = @"Activity";
-            
             break;
         case ObsDetailSectionFaves:
             self.viewModel = [[ObsDetailFavesViewModel alloc] init];
@@ -282,9 +279,6 @@
             
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
-            
-            newSectionName = @"Faves";
-
             break;
         case ObsDetailSectionInfo:
             self.viewModel = [[ObsDetailInfoViewModel alloc] init];
@@ -293,18 +287,11 @@
             
             self.tableView.dataSource = self.viewModel;
             self.tableView.delegate = self.viewModel;
-            
-            newSectionName = @"Info";
-
             break;
         default:
-            newSectionName = @"";
             break;
     }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventObservationChangeSection
-                     withProperties:@{ @"New Section": newSectionName }];
-    
+        
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     [self.tableView reloadData];
