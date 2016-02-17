@@ -323,6 +323,7 @@ static char SUMMARY_ASSOCIATED_KEY;
     NSString *wikipediaTitle = self.taxon.wikipediaTitle;
     NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
     NSString *urlString;
+    
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
@@ -333,7 +334,7 @@ static char SUMMARY_ASSOCIATED_KEY;
         if (!wikipediaTitle) {
             wikipediaTitle = escapedName;
         }
-        urlString = [NSString stringWithFormat:@"http://%@.wikipedia.org/wiki/%@", language, wikipediaTitle];
+        urlString = [NSString stringWithFormat:@"http://wikipedia.org/wiki/%@", wikipediaTitle];
     } else {
         return;
     }
