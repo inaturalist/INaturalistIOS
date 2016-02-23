@@ -10,8 +10,12 @@
 #ifndef iNaturalist_config_h
 #define iNaturalist_config_h
 
-#define INatClientID        @"INat Client ID here"
-#define INatClientSecret    @"INat Client Secret here"
+// iNat oauth client id & secret
+#define INatClientID        @"INat-client-ID"
+#define INatClientSecret    @"INat-client-secret"
+
+// Google oauth client id
+#define GoogleClientId      @"Google-client-ID"
 
 #endif
 
