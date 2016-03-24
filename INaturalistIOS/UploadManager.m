@@ -28,7 +28,8 @@
 @property NSMutableArray *recordsToDelete;
 @property UIBackgroundTaskIdentifier bgTask;
 @property RKReachabilityObserver *reachabilityObserver;
-
+@property NSMutableDictionary *startTimesForPhotoUploads;
+@property NSMutableDictionary *photoUploads;
 @property NSDate *lastNetworkOutageNotificationDate;
 
 // workaround for restkit bug
@@ -227,6 +228,16 @@
             [self.observationsToUpload removeObject:observation];
             [self uploadNextObservation];
             return;
+        }
+        
+        if ([recordToUpload isKindOfClass:[ObservationPhoto class]]) {
+            NSString *uuid = nil;
+            if ([recordToUpload respondsToSelector:@selector(uuid)]) {
+                uuid = (NSString *)[recordToUpload performSelector:@selector(uuid)];
+            }
+            if (uuid) {
+                self.startTimesForPhotoUploads[uuid] = [NSDate date];
+            }
         }
         
         loaderBlock = ^(RKObjectLoader *loader) {
@@ -513,6 +524,17 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {
+    NSString *uuid = nil;
+    if ([object respondsToSelector:@selector(uuid)]) {
+        uuid = (NSString *)[object performSelector:@selector(uuid)];
+    }
+    if (uuid && [self.startTimesForPhotoUploads objectForKey:uuid]) {
+        NSDate *startTime = self.startTimesForPhotoUploads[uuid];
+        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:startTime];
+
+        [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
+    }
+
     NSError *error = nil;
     object.syncedAt = [NSDate date];
 
@@ -575,6 +597,9 @@
                                                      name:RKReachabilityDidChangeNotification
                                                    object:nil];
         self.failedObjectLoaders = [NSMutableArray array];
+        
+        self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
+        self.photoUploads = [[NSMutableDictionary alloc] init];
     }
     
     return self;

@@ -24,6 +24,8 @@
 
 - (void)debugLog:(NSString *)logMessage;
 
+- (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue;
+
 @end
 
 #pragma mark Event Names For Analytics
