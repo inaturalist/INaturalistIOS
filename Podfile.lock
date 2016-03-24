@@ -19,9 +19,17 @@ PODS:
   - Bolts (1.1.3)
   - cocoa-oauth (0.0.1):
     - NSData+Base64 (~> 1.0)
+  - CocoaAsyncSocket (7.4.3):
+    - CocoaAsyncSocket/All (= 7.4.3)
+  - CocoaAsyncSocket/All (7.4.3):
+    - CocoaAsyncSocket/GCD
+    - CocoaAsyncSocket/RunLoop
+  - CocoaAsyncSocket/GCD (7.4.3)
+  - CocoaAsyncSocket/RunLoop (7.4.3)
   - Crashlytics (3.3.3)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
+  - DZNEmptyDataSet (1.7.3)
   - Expecta (1.0.2)
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
@@ -48,6 +56,7 @@ PODS:
   - GeoJSONSerialization (0.0.4)
   - googleplus-ios-sdk (1.7.1)
   - HexColors (2.3.0)
+  - ICViewPager (1.5.1)
   - IFTTTLaunchImage (0.4.4)
   - ISO8601DateFormatter (0.7)
   - JDFTooltips (1.0)
@@ -56,6 +65,12 @@ PODS:
   - LibComponentLogging-Core (1.3.3)
   - LibComponentLogging-NSLog (1.1.1):
     - LibComponentLogging-Core (>= 1.3.1)
+  - librato-iOS (1.0.3):
+    - AFNetworking (~> 1.0)
+    - Mantle (~> 1.3)
+  - Mantle (1.5.7):
+    - Mantle/extobjc (= 1.5.7)
+  - Mantle/extobjc (1.5.7)
   - MBProgressHUD (0.9.1)
   - MHVideoPhotoGallery (1.6.6):
     - SDWebImage
@@ -125,9 +140,11 @@ DEPENDENCIES:
   - AFNetworking (= 1.3.4)
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
+  - CocoaAsyncSocket
   - Crashlytics (= 3.3.3)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
+  - DZNEmptyDataSet (= 1.7.3)
   - Expecta
   - Fabric (= 1.5.4)
   - Facebook-iOS-SDK (= 3.20.0)
@@ -137,10 +154,12 @@ DEPENDENCIES:
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.3.0)
+  - ICViewPager (= 1.5.1)
   - IFTTTLaunchImage (= 0.4.4)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
   - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
+  - librato-iOS
   - MBProgressHUD (= 0.9.1)
   - MHVideoPhotoGallery (= 1.6.6)
   - NSString_stripHtml (= 0.1.0)
@@ -190,9 +209,11 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: e431c88fd02115d4a34016c2100bbfa4d2d5b146
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
+  CocoaAsyncSocket: a18c75dca4b08723628a0bacca6e94803d90be91
   Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
+  DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
   Expecta: 54e8a3530add08f4f0208c111355eda7cde74a53
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
   Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
@@ -202,6 +223,7 @@ SPEC CHECKSUMS:
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
+  ICViewPager: 032dc71a50fe898e185fae6112ded4bed0e0523c
   IFTTTLaunchImage: ab84d453e2c51b3c2aa83daad99cf45f27688c96
   ISO8601DateFormatter: ab926648eebe497f4d167c0fd083992f959f1274
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
@@ -209,6 +231,8 @@ SPEC CHECKSUMS:
   JSONKit: d64c81f94cf4fa7a11ee1e0e996237ab672e1e0d
   LibComponentLogging-Core: 769c6f596b96348911fe75f9825728213d334941
   LibComponentLogging-NSLog: ae0ad111653e6c955e3f93b95386285fcdf94ab3
+  librato-iOS: 5e9f2581f3f7fafb6adf9bcea7b22f587351d3f9
+  Mantle: 4af47cf9547a4d0ad145a48cd0be3b411a5ae2b8
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
   NSData+Base64: 4e84902c4db907a15673474677e57763ef3903e4

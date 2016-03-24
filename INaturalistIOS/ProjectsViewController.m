@@ -23,6 +23,7 @@
 #import "ProjectTableViewCell.h"
 #import "UIColor+INaturalist.h"
 #import "NSURL+INaturalist.h"
+#import "ProjectDetailV2ViewController.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -323,6 +324,9 @@ static const int ListControlIndexNearby = 2;
     if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
         ProjectListViewController *vc = [segue destinationViewController];
         vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
+    } else if ([segue.identifier isEqualToString:@"projectDetailSegue"]) {
+        ProjectDetailV2ViewController *vc = [segue destinationViewController];
+        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
     }
 }
 
@@ -484,7 +488,7 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (selectedProject && [selectedProject isKindOfClass:[Project class]])
-        [self performSegueWithIdentifier:@"ProjectListSegue" sender:selectedProject];
+        [self performSegueWithIdentifier:@"projectDetailSegue" sender:selectedProject];
 }
 
 #pragma mark - CLLocationManagerDelegate

@@ -1,8 +1,8 @@
 //
-//  NewsViewController.h
+//  ProjectAboutViewController.h
 //  iNaturalist
 //
-//  Created by Alex Shepard on 1/13/16.
+//  Created by Alex Shepard on 3/22/16.
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 @class Project;
 
-@interface NewsViewController : UITableViewController
+@interface ProjectAboutViewController : UITableViewController
 
 @property Project *project;
 

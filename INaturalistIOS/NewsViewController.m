@@ -40,7 +40,12 @@ static UIImage *briefcase;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         
-        self.title = NSLocalizedString(@"News", nil);
+        if (self.project) {
+            NSString *base = NSLocalizedString(@"%@ News", @"title for project news screen. %@ is the project name.");
+            self.title = [NSString stringWithFormat:base, self.project.title];
+        } else {
+            self.title = NSLocalizedString(@"News", nil);
+        }
         
         self.tabBarItem.image = ({
             FAKIcon *news = [FAKIonIcons iosListOutlineIconWithSize:35];
@@ -83,6 +88,16 @@ static UIImage *briefcase;
     [self.frc performFetch:&err];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.navigationController.navigationBar setBackgroundImage:nil
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = nil;
+        self.navigationController.navigationBar.translucent = NO;
+    }];
+}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -152,16 +167,14 @@ static UIImage *briefcase;
     return cell;
 }
 
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
                      withProperties:@{
-                                      @"ParentType": [newsItem parentTypeString],
-                                      @"ParentName": [newsItem parentTitleText],
-                                      @"ArticleTitle": [newsItem postTitle],
+                                      @"ParentType": [newsItem parentTypeString] ?: @"",
+                                      @"ParentName": [newsItem parentTitleText] ?: @"",
+                                      @"ArticleTitle": [newsItem postTitle] ?: @"",
                                       }];
     
     [self performSegueWithIdentifier:@"detail" sender:newsItem];
@@ -229,7 +242,12 @@ static UIImage *briefcase;
 }
 
 - (NSString *)newsItemEndpoint {
-    return @"/posts/for_user.json";
+    if (self.project) {
+        return [NSString stringWithFormat:@"/projects/%ld/journal.json",
+                (long)self.project.recordID.integerValue];
+    } else {
+        return @"/posts/for_user.json";
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -281,6 +299,11 @@ static UIImage *briefcase;
     if (!_frc) {
         // NSFetchedResultsController request for my observations
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewsItem"];
+        
+        if (self.project) {
+            request.predicate = [NSPredicate predicateWithFormat:@"parentTypeString == 'Project' AND parentRecordID == %@",
+                                 self.project.recordID];
+        }
         
         // sort by common name, if available
         request.sortDescriptors = @[

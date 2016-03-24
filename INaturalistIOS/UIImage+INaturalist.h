@@ -12,5 +12,6 @@
 
 + (instancetype) inat_defaultProjectImage;
 + (instancetype) inat_defaultGuideImage;
++ (instancetype) inat_defaultUserImage;
 
 @end
