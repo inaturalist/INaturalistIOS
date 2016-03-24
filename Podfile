@@ -39,7 +39,7 @@ target :iNaturalist do
   pod 'VICMAImageView', '~> 1.0'
   pod 'Toast', '3.0'
   pod 'NSString_stripHtml', '0.1.0'
-  pod 'ICViewPager', '1.5.1'
+  pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
   pod 'DZNEmptyDataSet', '1.7.3'
   pod 'CocoaAsyncSocket'
   pod 'librato-iOS'
