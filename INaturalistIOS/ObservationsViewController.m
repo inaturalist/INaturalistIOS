@@ -61,6 +61,7 @@
 @property UIView *noContentView;
 @property UILabel *noObservationsLabel;
 @property UIImageView *noObservationsImageView;
+@property NSMutableDictionary *uploadProgress;
 @end
 
 @implementation ObservationsViewController
@@ -719,7 +720,14 @@
     [self configureObservationCell:cell forIndexPath:indexPath];
     
     cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
-    [cell.uploadSpinner startAnimating];
+    
+    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (o.uuid) {
+        float progress = [self.uploadProgress[o.uuid] floatValue];
+        [cell.progressView setProgress:progress];
+    }
+    
+    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
@@ -1087,6 +1095,8 @@
         });
 
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
+        
+        self.uploadProgress = [[NSMutableDictionary alloc] init];
     }
     
     return self;
@@ -1503,6 +1513,8 @@
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
+    self.uploadProgress[observation.uuid] = @(0);
+
     [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
     
@@ -1529,11 +1541,13 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
-
+    
+    self.uploadProgress[observation.uuid] = @(progress);
+    
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
+                              withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 

@@ -400,6 +400,18 @@
 }
 
 #pragma mark - RKRequestDelegate
+
+- (void)request:(RKRequest *)request didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
+    
+    if ([request isKindOfClass:[RKObjectLoader class]]) {
+        RKObjectLoader *loader = (RKObjectLoader *)request;
+        if ([[loader sourceObject] isKindOfClass:[ObservationPhoto class]]) {
+            ObservationPhoto *op = (ObservationPhoto *)[loader sourceObject];
+            [self.delegate uploadManager:self uploadProgress:((float)totalBytesWritten) / totalBytesExpectedToWrite for:op.observation];
+        }
+    }
+}
+
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     // check for 401 unauthorized
     if (response.statusCode == 401) {
