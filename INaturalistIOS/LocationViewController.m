@@ -27,9 +27,9 @@
     
     CLLocationCoordinate2D coords;
     
-    if (self.observation.privateLatitude.floatValue) {
+    if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
         coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-    } else if (self.observation.latitude.floatValue) {
+    } else if (self.observation.latitude) {
         coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
     }
     
