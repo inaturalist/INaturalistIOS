@@ -27,6 +27,7 @@
 #import "MKMapView+ZoomLevel.h"
 #import "NSURL+INaturalist.h"
 #import "ExploreContainerViewController.h"
+#import "ObsDetailV2ViewController.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -123,75 +124,77 @@
 #pragma mark - KVO
 
 - (void)observationChangedCallback {
-    // in case this callback fires because of a change in search,
-    // invalidate the map changed timer. unlikely but be safe.
-    [mapChangedTimer invalidate];
-    
-    // try to be smart about updating the visible annotations
-    // sweep through and remove any annotations that aren't in the visible map rect anymore
-    [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
-        return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
-    }]];
-    
-    // sweep through and remove any annotations that aren't in the active observations list anymore
-    [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
-        return ![self.observationDataSource.observations containsObject:annotation];
-    }]];
-    
-    // compile candidates for adding to the map
-    NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
-        return CLLocationCoordinate2DIsValid(candidate.coordinate) &&
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // in case this callback fires because of a change in search,
+        // invalidate the map changed timer. unlikely but be safe.
+        [mapChangedTimer invalidate];
+        
+        // try to be smart about updating the visible annotations
+        // sweep through and remove any annotations that aren't in the visible map rect anymore
+        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
+        }]];
+        
+        // sweep through and remove any annotations that aren't in the active observations list anymore
+        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return ![self.observationDataSource.observations containsObject:annotation];
+        }]];
+        
+        // compile candidates for adding to the map
+        NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
+            return CLLocationCoordinate2DIsValid(candidate.coordinate) &&
             MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
-    }];
-    
-    // remove anything that's not in candidates, or that's not in the first 100
-    NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
-        return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
-    }];
-    [mapView removeAnnotations:annotationsToRemove];
-    
-    // add anything that's in candidates but not on the map already, and that's in the first 100
-    NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
-        return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
-    }];
-    
-    [mapView addAnnotations:annotationsToAdd];
-    
-    if ([self.observationDataSource activeSearchLimitedBySearchedLocation]) {
-        BOOL shouldZoomToNewCenter = NO;
+        }];
         
-        // if we didn't already have an overlay, this is probably a new one
-        // so we should zoom to it at the end of the cycle if we found a newCenter
-        if (mapView.overlays.count == 0)
-            shouldZoomToNewCenter = YES;
-
-        // remove any overlays that were already there
-        [mapView removeOverlays:mapView.overlays];
+        // remove anything that's not in candidates, or that's not in the first 100
+        NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
+            return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
+        }];
+        [mapView removeAnnotations:annotationsToRemove];
         
-        CLLocationCoordinate2D newCenter;
-        NSInteger overlayLocationId = 0;
-        for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
-            if (predicate.type == ExploreSearchPredicateTypeLocation) {
-                newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
-                                                       predicate.searchLocation.longitude);
-                overlayLocationId = predicate.searchLocation.locationId;
-                break;  // prefer places to projects
-            } if (predicate.type == ExploreSearchPredicateTypeProject) {
-                newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
-                                                       predicate.searchProject.longitude);
-                overlayLocationId = predicate.searchProject.locationId;
+        // add anything that's in candidates but not on the map already, and that's in the first 100
+        NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
+            return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
+        }];
+        
+        [mapView addAnnotations:annotationsToAdd];
+        
+        if ([self.observationDataSource activeSearchLimitedBySearchedLocation]) {
+            BOOL shouldZoomToNewCenter = NO;
+            
+            // if we didn't already have an overlay, this is probably a new one
+            // so we should zoom to it at the end of the cycle if we found a newCenter
+            if (mapView.overlays.count == 0)
+                shouldZoomToNewCenter = YES;
+            
+            // remove any overlays that were already there
+            [mapView removeOverlays:mapView.overlays];
+            
+            CLLocationCoordinate2D newCenter;
+            NSInteger overlayLocationId = 0;
+            for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
+                if (predicate.type == ExploreSearchPredicateTypeLocation) {
+                    newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
+                                                           predicate.searchLocation.longitude);
+                    overlayLocationId = predicate.searchLocation.locationId;
+                    break;  // prefer places to projects
+                } if (predicate.type == ExploreSearchPredicateTypeProject) {
+                    newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
+                                                           predicate.searchProject.longitude);
+                    overlayLocationId = predicate.searchProject.locationId;
+                }
             }
+            
+            if (overlayLocationId != 0)
+                [self addOverlaysForLocationId:overlayLocationId];
+            if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter))
+                [mapView setCenterCoordinate:newCenter animated:YES];
+            
+        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
+            // if necessary, remove the overlays
+            [mapView removeOverlays:mapView.overlays];
         }
-        
-        if (overlayLocationId != 0)
-            [self addOverlaysForLocationId:overlayLocationId];
-        if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter))
-            [mapView setCenterCoordinate:newCenter animated:YES];
-        
-    } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
-        // if necessary, remove the overlays
-        [mapView removeOverlays:mapView.overlays];
-    }
+    });
 }
 
 #pragma mark - MKMapViewDelegate
@@ -274,24 +277,11 @@
     // deselect the annotation so the user can select it again
     [mapView deselectAnnotation:view.annotation animated:NO];
     
-    ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
-    detail.observation = (ExploreObservation *)view.annotation;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
-    
-    // close icon
-    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
-    [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
-    UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
-    
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
-                                                                 style:UIBarButtonItemStylePlain
-                                                               handler:^(id sender) {
-                                                                   [self dismissViewControllerAnimated:YES completion:nil];
-                                                               }];
-    
-    detail.navigationItem.leftBarButtonItem = close;
-    
-    [self presentViewController:nav animated:YES completion:nil];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    ObsDetailV2ViewController *obsDetail = [mainStoryboard instantiateViewControllerWithIdentifier:@"obsDetailV2"];
+    ExploreObservation *selectedObservation = (ExploreObservation *)view.annotation;
+    obsDetail.observation = selectedObservation;
+    [self.navigationController pushViewController:obsDetail animated:YES];
 }
 
 #pragma mark - iNat API Calls

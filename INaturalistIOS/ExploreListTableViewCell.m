@@ -351,7 +351,10 @@ static NSDateFormatter *shortFormatter;
     if (observation.observationPhotos.count > 0) {
         ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
         
-        [observationImageView sd_setImageWithURL:[NSURL URLWithString:photo.smallURL]
+        NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
+                                                                         withString:@"medium"];
+        
+        [observationImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]
                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                            [observationImageView setNeedsDisplay];
                                        }];

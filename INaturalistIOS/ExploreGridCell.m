@@ -124,11 +124,17 @@
     if (observation.observationPhotos.count > 0) {
         ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
         
-        [observationImageView sd_setImageWithURL:[NSURL URLWithString:photo.smallURL]
-                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                           if ([_observation isEqual:observation])
-                                               [observationImageView setNeedsDisplay];
-                                       }];
+        if (photo) {
+            NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
+                                                                             withString:@"medium"];
+            
+            [observationImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]
+                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                               if ([_observation isEqual:observation])
+                                                   [observationImageView setNeedsDisplay];
+                                           }];
+        }
+
     }
     
     observationNameLabel.text = observation.commonName;

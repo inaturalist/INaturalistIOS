@@ -21,6 +21,7 @@
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 #import "RestrictedListHeader.h"
+#import "ObsDetailV2ViewController.h"
 
 static NSString *ExploreListCellId = @"ExploreListCell";
 static NSString *ExploreListHeaderId = @"ExploreListHeader";
@@ -117,37 +118,26 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 #pragma mark - KVO callback
 
 - (void)observationChangedCallback {
-    // in case refresh was triggered by infinite scrolling, stop the animation
-    [observationsTableView.infiniteScrollingView stopAnimating];
-
-    [observationsTableView reloadData];
-
-    // if necessary, adjust the content inset of the table view
-    // to make room for the active search predicate
-    observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // in case refresh was triggered by infinite scrolling, stop the animation
+        [observationsTableView.infiniteScrollingView stopAnimating];
+        
+        [observationsTableView reloadData];
+        
+        // if necessary, adjust the content inset of the table view
+        // to make room for the active search predicate
+        observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    });
 }
 
 #pragma mark - UITableView delegate/datasource
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ExploreObservationDetailViewController *detail = [[ExploreObservationDetailViewController alloc] initWithNibName:nil bundle:nil];
-    detail.observation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:detail];
-    
-    // close icon
-    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:34.0f];
-    [closeIcon addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
-    UIImage *closeImage = [closeIcon imageWithSize:CGSizeMake(25.0f, 34.0f)];
-    
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] bk_initWithImage:closeImage
-                                                                 style:UIBarButtonItemStylePlain
-                                                               handler:^(id sender) {
-                                                                   [self dismissViewControllerAnimated:YES completion:nil];
-                                                               }];
-    
-    detail.navigationItem.leftBarButtonItem = close;
-    
-    [self presentViewController:nav animated:YES completion:nil];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    ObsDetailV2ViewController *obsDetail = [mainStoryboard instantiateViewControllerWithIdentifier:@"obsDetailV2"];
+    ExploreObservation *selectedObservation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
+    obsDetail.observation = selectedObservation;
+    [self.navigationController pushViewController:obsDetail animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {

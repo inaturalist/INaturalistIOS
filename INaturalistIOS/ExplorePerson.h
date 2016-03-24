@@ -13,7 +13,6 @@
 @property (assign) NSInteger personId;
 @property (copy) NSString *login;
 @property (copy) NSString *name;
-
-
+@property (copy) NSString *userIcon;
 
 @end

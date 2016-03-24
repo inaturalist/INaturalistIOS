@@ -451,8 +451,8 @@ static UIImage *userIconPlaceholder;
         } else {
             observedLocationLabel.text = [NSString stringWithFormat:@"%f,%f", observation.latitude, observation.longitude];
             // attempt to geocode the lat/lng into a place name
-            CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude
-                                                              longitude:observation.longitude];
+            CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude.floatValue
+                                                              longitude:observation.longitude.floatValue];
             [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *err) {
                 // use the first placemark
                 CLPlacemark *placeMark = [placemarks firstObject];

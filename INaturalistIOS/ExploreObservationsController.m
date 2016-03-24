@@ -19,6 +19,8 @@
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"
+#import "INatAPI.h"
+#import "ObserverCount.h"
 
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
@@ -48,7 +50,9 @@
                                          userInfo:@{
                                                     NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                     }];
-        [self.notificationDelegate failedObservationFetch:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate failedObservationFetch:error];
+        });
     }
 }
 
@@ -73,7 +77,9 @@
                                          userInfo:@{
                                                     NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                     }];
-        [self.notificationDelegate failedObservationFetch:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate failedObservationFetch:error];
+        });
     }
 }
 
@@ -104,7 +110,9 @@
                                          userInfo:@{
                                                     NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                     }];
-        [self.notificationDelegate failedObservationFetch:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate failedObservationFetch:error];
+        });
     }
 }
 
@@ -128,7 +136,9 @@
                                          userInfo:@{
                                                     NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                     }];
-        [self.notificationDelegate failedObservationFetch:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate failedObservationFetch:error];
+        });
     }
 }
 
@@ -153,7 +163,9 @@
                                              userInfo:@{
                                                         NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                         }];
-            [self.notificationDelegate failedObservationFetch:error];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.notificationDelegate failedObservationFetch:error];
+            });
         }
     }
 }
@@ -167,7 +179,9 @@
                                          userInfo:@{
                                                     NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                                     }];
-        [self.notificationDelegate failedObservationFetch:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate failedObservationFetch:error];
+        });
     }
 }
 
@@ -188,7 +202,7 @@
 }
 
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    NSString *pathPattern = @"/observations.json";
+    NSString *pathPattern = @"observations";
     // for iOS, we treat "mappable" as "exploreable"
     NSString *query = @"?per_page=100&mappable=true";
     
@@ -204,14 +218,14 @@
         for (ExploreSearchPredicate *predicate in predicates) {
             if (predicate.type == ExploreSearchPredicateTypePerson) {
                 // people search requires a differnt baseurl and thus different path pattern
-                pathPattern = [NSString stringWithFormat:@"/observations/%@.json", predicate.searchPerson.login];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&user_id=%ld", (long)predicate.searchPerson.personId]];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
             } else if (predicate.type == ExploreSearchPredicateTypeLocation) {
                 hasActiveLocationPredicate = YES;
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
             } else if (predicate.type == ExploreSearchPredicateTypeProject) {
-                query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"&project_id=%ld", (long)predicate.searchProject.projectId]];
             }
         }
     }
@@ -246,54 +260,48 @@
                 statusMessage = NSLocalizedString(@"Fetching recent observations worldwide", nil);
         }
         
-        [self.notificationDelegate startedObservationFetch];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.notificationDelegate startedObservationFetch];
+        });
     }
     
     [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
-        
-        // can't infer search mappings via keypath
-        loader.objectMapping = [ExploreMappingProvider observationMapping];
-        
-        loader.onDidLoadObjects = ^(NSArray *array) {
-            NSSet *trimmedObservations;
-            NSSet *unorderedObservations;
-            if (self.limitingRegion) {
-                trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
-                    // trim out anything that isn't in the limiting region
-                    return [self.limitingRegion containsCoordinate:obs.coordinate];
-                }];
-                unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:array];
-            } else {
-                unorderedObservations = [self.observations.set setByAddingObjectsFromArray:array];
-            }
-            NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
+    
+    NSLog(@"path is %@", path);
+    
+    INatAPI *api = [[INatAPI alloc] init];
+    [api fetch:path mapping:[ExploreMappingProvider observationMapping] handler:^(NSArray *results, NSError *error) {
+        NSSet *trimmedObservations;
+        NSSet *unorderedObservations;
+        if (self.limitingRegion) {
+            trimmedObservations = [self.observations.set bk_select:^BOOL(ExploreObservation *obs) {
+                // trim out anything that isn't in the limiting region
+                return [self.limitingRegion containsCoordinate:obs.coordinate];
             }];
-            
-            self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
-            
-            if (shouldNotify) {
-                if (array.count > 0)
+            unorderedObservations = [trimmedObservations setByAddingObjectsFromArray:results];
+        } else {
+            unorderedObservations = [self.observations.set setByAddingObjectsFromArray:results];
+        }
+        NSArray *orderedObservations = [[unorderedObservations allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return ((ExploreObservation *)obj1).observationId < ((ExploreObservation *)obj2).observationId;
+        }];
+        
+        self.observations = [[NSOrderedSet alloc] initWithArray:orderedObservations];
+        
+        if (shouldNotify) {
+            if (results.count > 0)
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [self.notificationDelegate finishedObservationFetch];
-                else {
+                });
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                                 code:-1014
                                                             userInfo:@{ NSLocalizedDescriptionKey: @"No observations found." }];
                     [self.notificationDelegate failedObservationFetch:error];
-                }
+                });
             }
-        };
-        
-        loader.onDidFailWithError = ^(NSError *err) {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            [self.notificationDelegate failedObservationFetch:err];
-        };
-        
-        loader.onDidFailLoadWithError = ^(NSError *err) {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            [self.notificationDelegate failedObservationFetch:err];
-        };
+        }
     }];
 }
 
@@ -405,106 +413,51 @@
     }];
 }
 
-- (NSURL *)urlForLeaderboardSpan:(ExploreLeaderboardSpan)span searchPredicates:(NSArray *)predicates {
+- (NSString *)pathForLeaderboardSearchPredicates:(NSArray *)predicates {
     
-    NSString *d1, *d2;
+    NSString *path = @"observations/observers";
     
-    NSDate *date = [NSDate date];
-    NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
-    monthFormatter.dateFormat = @"MM";
-    NSString *month = [monthFormatter stringFromDate:date];
-    
-    NSDateFormatter *yearFormatter = [[NSDateFormatter alloc] init];
-    yearFormatter.dateFormat = @"yyyy";
-    NSString *year = [yearFormatter stringFromDate:date];
-    
-    NSDateFormatter *ymdFormatter = [[NSDateFormatter alloc] init];
-    ymdFormatter.dateFormat = @"yyyy-MM-dd";
-    NSString *today = [ymdFormatter stringFromDate:date];
-    
-    if (span == ExploreLeaderboardSpanYear) {
-        d1 = [NSString stringWithFormat:@"%@-01-01", year];
-    } else {
-        d1 = [NSString stringWithFormat:@"%@-%@-01", year, month];
-    }
-    d2 = today;
-
-    NSURLComponents *components = [NSURLComponents componentsWithURL:[NSURL inat_baseURL] resolvingAgainstBaseURL:nil];
-    components.path = @"/observations/user_stats.json";
-    NSString *query = [NSString stringWithFormat:@"d1=%@&d2=%@", d1, d2];
+    NSString *query = @"";
     
     // apply active search predicates to the query
     if (predicates.count > 0) {
         for (ExploreSearchPredicate *predicate in predicates) {
+            NSString *join = @"&";
+            if ([predicates indexOfObject:predicate] == 0) {
+                join = @"?";
+            }
             if (predicate.type == ExploreSearchPredicateTypePerson) {
-                query = [query stringByAppendingString:[NSString stringWithFormat:@"&user_id=%ld", (long)predicate.searchPerson.personId]];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"%@user_id=%ld",
+                                                        join, (long)predicate.searchPerson.personId]];
             } else if (predicate.type == ExploreSearchPredicateTypeCritter) {
-                query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"%@taxon_id=%ld",
+                                                        join, (long)predicate.searchTaxon.recordID.integerValue]];
             } else if (predicate.type == ExploreSearchPredicateTypeLocation) {
-                query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"%@place_id=%ld",
+                                                        join, (long)predicate.searchLocation.locationId]];
             } else if (predicate.type == ExploreSearchPredicateTypeProject) {
-                query = [query stringByAppendingString:[NSString stringWithFormat:@"&projects[]=%ld", (long)predicate.searchProject.projectId]];
+                query = [query stringByAppendingString:[NSString stringWithFormat:@"%@project_id=%ld",
+                                                        join, (long)predicate.searchProject.projectId]];
             }
         }
     }
     
-    components.query = query;
-    return [components URL];
+    return [NSString stringWithFormat:@"%@%@", path, query];
 }
 
 
-- (void)loadLeaderboardSpan:(ExploreLeaderboardSpan)span completion:(FetchCompletionHandler)handler {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[self urlForLeaderboardSpan:span searchPredicates:self.activeSearchPredicates]];
-
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               if (connectionError) {
-                                   handler(nil, connectionError);
-                                   return;
-                               }
-                               
-                               NSError *jsonError;
-                               NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
-                                                                                    options:nil
-                                                                                      error:&jsonError];
-                               if (jsonError) {
-                                   handler(nil, jsonError);
-                                   return;
-                               }
-                               
-                               NSArray *mostObservations = [json valueForKeyPath:@"most_observations"];
-                               NSArray *mostSpecies = [json valueForKeyPath:@"most_species"];
-                               
-                               NSMutableDictionary *list = [NSMutableDictionary dictionary];
-                               [mostObservations bk_each:^(NSDictionary *obsEntry) {
-                                   list[[[obsEntry valueForKeyPath:@"user.id"] stringValue]] = [@{
-                                                                                                  @"user_id": [obsEntry valueForKeyPath:@"user.id"],
-                                                                                                  @"user_login": [obsEntry valueForKeyPath:@"user.login"],
-                                                                                                  @"user_icon": [obsEntry valueForKeyPath:@"user.user_icon_url"],
-                                                                                                  @"observations_count": [obsEntry valueForKeyPath:@"count"],
-                                                                                                  @"species_count": @(0),
-                                                                                                  } mutableCopy];
-                               }];
-                               
-                               [mostSpecies bk_each:^(NSDictionary *speciesEntry) {
-                                   NSMutableDictionary *user = list[[[speciesEntry valueForKeyPath:@"user.id"] stringValue]];
-                                   if (user) {
-                                       user[@"species_count"] = [speciesEntry valueForKeyPath:@"count"];
-                                   } else {
-                                       list[[speciesEntry valueForKeyPath:@"user.id"]] = [@{
-                                                                                            @"user_id": [speciesEntry valueForKeyPath:@"user.id"],
-                                                                                            @"user_login": [speciesEntry valueForKeyPath:@"user.login"],
-                                                                                            @"user_icon": [speciesEntry valueForKeyPath:@"user.user_icon_url"],
-                                                                                            @"observations_count": @(0),
-                                                                                            @"species_count": [speciesEntry valueForKeyPath:@"count"],
-                                                                                            } mutableCopy];
-                                   }
-                               }];
-                               
-                               handler(list.allValues, nil);
-                           }];
-
+- (void)loadLeaderboardCompletion:(FetchCompletionHandler)handler {
+    NSString *path = [self pathForLeaderboardSearchPredicates:self.activeSearchPredicates];
+    
+    INatAPI *api = [[INatAPI alloc] init];
+    [api fetch:path mapping:[ExploreMappingProvider observerCountMapping] handler:^(NSArray *results, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        } else {
+            handler(results, nil);
+        }
+    }];
 }
 
 #pragma mark - Notification

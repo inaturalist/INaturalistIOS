@@ -69,6 +69,6 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 - (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
 - (void)loadCommentsAndIdentificationsForObservation:(ExploreObservation *)observation completionHandler:(FetchCompletionHandler)handler;
 
-- (void)loadLeaderboardSpan:(ExploreLeaderboardSpan)span completion:(FetchCompletionHandler)handler;
+- (void)loadLeaderboardCompletion:(FetchCompletionHandler)handler;
 
 @end

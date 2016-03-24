@@ -17,7 +17,12 @@
 + (RKObjectMapping *)projectMapping;
 + (RKObjectMapping *)identificationMapping;
 + (RKObjectMapping *)commentMapping;
++ (RKObjectMapping *)faveMapping;
 + (RKObjectMapping *)taxonMapping;
 + (RKObjectMapping *)personMapping;
+
++ (RKObjectMapping *)speciesCountMapping;
++ (RKObjectMapping *)observerCountMapping;
++ (RKObjectMapping *)identifierCountMapping;
 
 @end
