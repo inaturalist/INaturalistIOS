@@ -11,6 +11,7 @@
 
 @interface ObservationViewUploadingCell : ObservationViewCell
 
-@property IBOutlet UIActivityIndicatorView *uploadSpinner;
+@property IBOutlet UIProgressView *progressView;
+@property IBOutlet UILabel *dateLabel;
 
 @end

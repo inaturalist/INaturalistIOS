@@ -6,30 +6,25 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "ObservationViewUploadingCell.h"
+#import "UIColor+INaturalist.h"
 
 @implementation ObservationViewUploadingCell
 
 // would be great to do all of this autolayout stuff in the storyboard, but that means migrating the whole storyboard to AutoLayout
 - (void)awakeFromNib {
-    self.uploadSpinner.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSDictionary *views = @{
-                            @"imageView": self.observationImage,
-                            @"title": self.titleLabel,
-                            @"subtitle": self.subtitleLabel,
-                            @"uploadSpinner": self.uploadSpinner,
-                            };
+    self.progressView.progressTintColor = [UIColor inatTint];
+    self.progressView.trackTintColor = [UIColor colorWithHexString:@"#C6DFA4"];
+}
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[uploadSpinner(==30)]-8-|" options:0 metrics:0 views:views]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.uploadSpinner
-                                                     attribute:NSLayoutAttributeCenterY
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterY
-                                                    multiplier:1.0f
-                                                      constant:0.0f]];
+    CATransform3D transform = CATransform3DMakeScale(1.0f, 5.0f, 1.0f);
+    self.progressView.layer.transform = transform;
+    
 }
 
 @end
