@@ -11,5 +11,6 @@
 @interface NSFileManager (INaturalist)
 
 + (CGFloat)freeDiskSpacePercentage;
++ (CGFloat)freeDiskSpaceMB;
 
 @end

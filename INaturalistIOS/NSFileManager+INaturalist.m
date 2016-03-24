@@ -30,4 +30,20 @@
     }
 }
 
++ (CGFloat)freeDiskSpaceMB {
+    uint64_t totalFreeSpace = 0;
+    NSError *error = nil;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error: &error];
+    
+    if (dictionary) {
+        NSNumber *freeFileSystemSizeInBytes = [dictionary objectForKey:NSFileSystemFreeSize];
+        totalFreeSpace = [freeFileSystemSizeInBytes unsignedLongLongValue];
+        return totalFreeSpace / 1024.0f / 1024.0f;
+    } else {
+        // fake it, 10GB
+        return 1024.0f;
+    }
+}
+
 @end

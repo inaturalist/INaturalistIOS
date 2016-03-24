@@ -117,11 +117,10 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
     
     // check for free disk space
-    if ([NSFileManager freeDiskSpacePercentage] < .03) {
-        // less than 3% of available space
-        // fair? to say we shouldn't be making obs at this point
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Not enough space!", nil)
-                                    message:NSLocalizedString(@"You've run out of disk space. Free up space to make more observations!", nil)
+    if ([NSFileManager freeDiskSpaceMB] < 100) {
+        // less than 100MB of free space
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You're running low on iPhone disk space!", nil)
+                                    message:NSLocalizedString(@"We don't have enough room to make new observations!", nil)
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
