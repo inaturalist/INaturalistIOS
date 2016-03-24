@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class Observation;
+#import "ObservationVisualization.h"
 
 @interface AddCommentViewController : UIViewController
 
-@property (nonatomic, strong) Observation *observation;
+@property (nonatomic, strong) id <ObservationVisualization> observation;
 
 @end

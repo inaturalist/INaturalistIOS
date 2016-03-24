@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ObservationVisualization.h"
+
 typedef NS_ENUM(NSInteger, ObsDetailSection) {
     ObsDetailSectionInfo,
     ObsDetailSectionActivity,
@@ -28,7 +30,7 @@ typedef NS_ENUM(NSInteger, ObsDetailSection) {
 
 @interface ObsDetailViewModel : NSObject <UITableViewDataSource, UITableViewDelegate>
 
-@property Observation *observation;
+@property id <ObservationVisualization> observation;
 @property (assign) id <ObsDetailViewModelDelegate> delegate;
 @property (readonly) ObsDetailSection sectionType;
 

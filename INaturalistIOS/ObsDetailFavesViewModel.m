@@ -11,7 +11,7 @@
 
 #import "ObsDetailFavesViewModel.h"
 #import "Observation.h"
-#import "Fave.h"
+#import "FaveVisualization.h"
 #import "User.h"
 #import "DisclosureCell.h"
 #import "ObsDetailAddFaveHeader.h"
@@ -22,6 +22,7 @@
 #import "ObsDetailActivityAuthorCell.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "Analytics.h"
+#import "UIImage+INaturalist.h"
 
 @implementation ObsDetailFavesViewModel
 
@@ -47,7 +48,7 @@
     if (section < 2) {
         return [super tableView:tableView viewForFooterInSection:section];
     } else {
-        if (self.observation.recordID) {
+        if (self.observation.inatRecordId) {
             return nil;
         } else {
             // show must login footer
@@ -69,7 +70,7 @@
     if (section < 2) {
         return [super tableView:tableView heightForFooterInSection:section];
     } else {
-        if (self.observation.recordID) {
+        if (self.observation.inatRecordId) {
             return CGFLOAT_MIN;
         } else {
             return 80;
@@ -81,7 +82,7 @@
     if (section < 2) {
         return [super tableView:tableView viewForHeaderInSection:section];
     } else {
-        if (self.observation.recordID) {
+        if (self.observation.inatRecordId) {
             ObsDetailAddFaveHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"addFave"];
             
             header.faved = [self loggedInUserHasFavedThisObservation];
@@ -102,7 +103,7 @@
     if (section < 2) {
         return [super tableView:tableView heightForHeaderInSection:section];
     } else {
-        if (self.observation.recordID) {
+        if (self.observation.inatRecordId) {
             return 69;
         } else {
             return CGFLOAT_MIN;
@@ -125,12 +126,13 @@
         ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        Fave *fave = [self.observation.sortedFaves objectAtIndex:indexPath.item];
-        NSURL *userIconUrl = [NSURL URLWithString:fave.userIconUrl];
-        if (userIconUrl) {
-            [cell.authorImageView sd_setImageWithURL:userIconUrl];
+        id <FaveVisualization> fave = [self.observation.sortedFaves objectAtIndex:indexPath.item];
+        if ([fave userIconUrl]) {
+            [cell.authorImageView sd_setImageWithURL:[fave userIconUrl]];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
+        } else {
+            cell.authorImageView.image = [UIImage inat_defaultUserImage];
         }
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         
@@ -139,8 +141,8 @@
         
         dateFormatter.doesRelativeDateFormatting = YES;
         
-        cell.authorNameLabel.text = fave.userLogin;
-        cell.dateLabel.text = [dateFormatter stringFromDate:fave.faveDate];
+        cell.authorNameLabel.text = [fave userName];
+        cell.dateLabel.text = [dateFormatter stringFromDate:[fave createdAt]];
         
         return cell;
     }
@@ -172,7 +174,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
 
         // delete to /votes/unvote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.recordID.integerValue];
+        requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId.integerValue];
         hudText = NSLocalizedString(@"Un-faving...", nil);
         method = @"DELETE";
     } else {
@@ -180,7 +182,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
 
         // post to /votes/vote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.recordID.integerValue];
+        requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.inatRecordId.integerValue];
         hudText = NSLocalizedString(@"Faving...", nil);
         method = @"POST";
     }
@@ -228,8 +230,8 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        for (Fave *fave in self.observation.faves) {
-            if ([fave.userLogin isEqualToString:[[login fetchMe] login]]) {
+        for (id <FaveVisualization> fave in self.observation.faves) {
+            if ([[fave userName] isEqualToString:[[login fetchMe] login]]) {
                 return YES;
             }
         }

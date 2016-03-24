@@ -24,6 +24,8 @@
         
         noLocation.attributedString;
     });
+    
+    [self.mapView setLayoutMargins:UIEdgeInsetsMake(30, 30, 45, 50)];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

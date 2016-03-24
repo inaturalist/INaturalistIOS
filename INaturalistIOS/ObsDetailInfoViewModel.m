@@ -92,9 +92,9 @@
             
             CLLocationCoordinate2D coords;
             
-            if (self.observation.privateLatitude.floatValue) {
+            if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
                 coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-            } else if (self.observation.latitude.floatValue) {
+            } else if (self.observation.latitude) {
                 coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
             }
             
@@ -231,7 +231,7 @@
         // data quality
         if ([self.observation.qualityGrade isEqualToString:@"research"]) {
             return CGFLOAT_MIN;
-        } else if (!self.observation.recordID) {
+        } else if (!self.observation.inatRecordId) {
             return CGFLOAT_MIN;
         } else {
             return 66;
@@ -248,13 +248,13 @@
         // data quality
         if ([self.observation.qualityGrade isEqualToString:@"research"]) {
             return nil;
-        } else if (!self.observation.recordID) {
+        } else if (!self.observation.inatRecordId) {
             return nil;
         } else {
             ObsDetailQualityDetailsFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"qualityDetails"];
 
             if (self.observation.dataQuality == ObsDataQualityNeedsID) {
-                if (self.observation.identificationsCount.integerValue < 2) {
+                if (self.observation.identifications.count < 2) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs more IDs from the iNat community to be considered for Research Grade.", nil);
                 } else {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a more specific consensus ID to be considered for Research Grade.", nil);
@@ -362,9 +362,9 @@
             
             CLLocationCoordinate2D coords;
             
-            if (self.observation.privateLatitude.floatValue) {
+            if (self.observation.privateLatitude) {
                 coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-            } else if (self.observation.latitude.floatValue) {
+            } else if (self.observation.latitude) {
                 coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
             }
             

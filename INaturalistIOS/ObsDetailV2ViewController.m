@@ -31,6 +31,9 @@
 #import "ObsDetailAddFaveHeader.h"
 #import "ObsDetailQualityDetailsFooter.h"
 #import "ObservationValidationErrorView.h"
+#import "INatPhoto.h"
+#import "ExploreObservation.h"
+#import "ObservationAPI.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -91,9 +94,11 @@
                                                                       metrics:0
                                                                         views:views]];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                                           target:self
-                                                                                           action:@selector(editObs)];
+    if ([self.observation isEditable]) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                                                                                               target:self
+                                                                                               action:@selector(editObs)];
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
@@ -107,6 +112,17 @@
             view;
         });
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.navigationController.navigationBar setBackgroundImage:nil
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = nil;
+        self.navigationController.navigationBar.translucent = NO;
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -142,7 +158,9 @@
         vc.observation = self.observation;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        vc.taxon = (Taxon *)sender;
+        if ([sender isKindOfClass:[NSNumber class]]) {
+            vc.taxonId = [(NSNumber *)sender integerValue];
+        }
     } else if ([segue.identifier isEqualToString:@"map"]) {
         LocationViewController *location = [segue destinationViewController];
         location.observation = self.observation;
@@ -160,15 +178,36 @@
 }
 
 - (void)reloadObservation {
+    if ([self.observation isKindOfClass:[ExploreObservation class]]) {
+        ObservationAPI *api = [[ObservationAPI alloc] init];
+        __weak typeof(self) weakSelf = self;
+        [api observationWithId:[[self.observation inatRecordId] integerValue]
+                       handler:^(NSArray *results, NSError *error) {
+                           __strong typeof(weakSelf) strongSelf = weakSelf;
+                           if (strongSelf && results && results.count == 1) {
+                               strongSelf.observation = results.firstObject;
+                               strongSelf.viewModel.observation = strongSelf.observation;
+                               [strongSelf.tableView reloadData];
+                           }
+                       }];
+        
+    }
+    
     if (self.observation.needsUpload) {
         // don't clobber any local edits to this observation
         return;
     }
+    
     // load the full observation from the server, to fetch comments, ids & faves
     [[Analytics sharedClient] debugLog:@"Network - Load complete observation details"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
-                                                 objectMapping:[Observation mapping]
-                                                      delegate:self];
+    if ([self.observation isKindOfClass:[Observation class]]) {
+        Observation *obs = (Observation *)self.observation;
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", obs.recordID]
+                                                     objectMapping:[Observation mapping]
+                                                          delegate:self];
+    } else {
+        // TODO: fetch with iNat API
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -207,7 +246,7 @@
         NSNumber *photoIndex = (NSNumber *)object;
         // can't do this in storyboards
         
-        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
+        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(id <INatPhoto> op) {
             return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
                                   galleryType:MHGalleryTypeImage];
         }];
@@ -238,7 +277,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
         
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
-                                           INatWebBaseURL, (long)self.observation.recordID.longLongValue]];
+                                           INatWebBaseURL, (long)self.observation.inatRecordId.longLongValue]];
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                                applicationActivities:nil];
         activity.completionHandler = ^(NSString *activityType, BOOL completed) {
@@ -286,11 +325,8 @@
         default:
             break;
     }
-        
-    [CATransaction begin];
-    [CATransaction setDisableActions:YES];
+    
     [self.tableView reloadData];
-    [CATransaction commit];
 }
 
 - (ObsDetailSection)activeSection {
@@ -321,6 +357,10 @@
     NSError *error = nil;
     // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    
+    
+    
+    [self.tableView reloadData];
     
     if (self.observation.hasUnviewedActivity.boolValue && self.activeSection == ObsDetailSectionActivity) {
         

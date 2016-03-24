@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-
-@class Observation;
+#import "ObservationVisualization.h"
+#import "Uploadable.h"
 
 @interface ObsDetailV2ViewController : UIViewController
 
-@property Observation *observation;
+@property id <ObservationVisualization, Uploadable> observation;
 
 @end

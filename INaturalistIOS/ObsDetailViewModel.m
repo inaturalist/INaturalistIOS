@@ -32,6 +32,8 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "UIColor+ExploreColors.h"
+#import "INatPhoto.h"
+#import "UIImage+INaturalist.h"
 
 @interface ObsDetailViewModel ()
 
@@ -81,31 +83,31 @@
 - (UITableViewCell *)userDateCellForTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.observation.userID.integerValue]] firstObject];
-    // what if the user's not logged in?
-    if (user) {
-        NSURL *userIconUrl = [NSURL URLWithString:[user userIconURL]];
-        if (userIconUrl) {
-            [cell.cellImageView sd_setImageWithURL:userIconUrl];
-            cell.cellImageView.layer.cornerRadius = 27.0 / 2;
-            cell.cellImageView.clipsToBounds = YES;
+    cell.cellImageView.layer.cornerRadius = 27.0 / 2;
+    cell.cellImageView.clipsToBounds = YES;
+
+
+    if (self.observation.inatRecordId) {
+        if ([self.observation userThumbUrl]) {
+            [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:self.observation.userThumbUrl]];
+        } else {
+            cell.cellImageView.image = [UIImage inat_defaultUserImage];
         }
-        cell.titleLabel.text = user.login;
+        cell.titleLabel.text = self.observation.username;
     } else {
+        // me
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.isLoggedIn) {
-            // obs was created locally, but not yet uploaded
-            User *me = [appDelegate.loginController fetchMe];
-            
-            NSURL *userIconUrl = [NSURL URLWithString:[me userIconURL]];
-            if (userIconUrl) {
-                [cell.cellImageView sd_setImageWithURL:userIconUrl];
-                cell.cellImageView.layer.cornerRadius = 27.0 / 2;
-                cell.cellImageView.clipsToBounds = YES;
+            User *user = [appDelegate.loginController fetchMe];
+            if (user.userIconURL) {
+                [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
+            } else {
+                cell.cellImageView.image = [UIImage inat_defaultUserImage];
             }
-            cell.titleLabel.text = me.login;
+            cell.titleLabel.text = user.login;
         } else {
-            cell.titleLabel.text = NSLocalizedString(@"Me", nil);
+            cell.titleLabel.text = @"Me";            
+            cell.cellImageView.image = [UIImage inat_defaultUserImage];
         }
     }
 
@@ -120,7 +122,7 @@
     PhotosPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
     if (self.observation.observationPhotos.count > 0) {
-        ObservationPhoto *op = self.observation.sortedObservationPhotos[self.viewingPhoto];
+        id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
         if (op.photoKey) {
             cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
         } else {
@@ -164,7 +166,7 @@
                          action:@selector(share)
                forControlEvents:UIControlEventTouchUpInside];
     
-    if (self.observation.recordID) {
+    if (self.observation.inatRecordId) {
         cell.shareButton.hidden = NO;
     } else {
         cell.shareButton.hidden = YES;
@@ -183,11 +185,8 @@
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
 
-    
-    Taxon *taxon = self.observation.taxon;
-    if (!taxon && self.observation.taxonID && self.observation.taxonID.integerValue != 0) {
-        taxon = [[Taxon objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue]] firstObject];
-    }
+    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue];
+    Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
 
     cell.taxonNameLabel.textColor = [UIColor blackColor];
 
@@ -247,15 +246,15 @@
         }
     }
     
-    if (!taxon.fullyLoaded) {
+    if (!taxon || !taxon.fullyLoaded) {
         // fetch complete taxon
         if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             
-            
-            NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)taxon.recordID.integerValue];
+            NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonID.integerValue];
             
             __weak typeof(self) weakSelf = self;
             RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
+                //__strong typeof(weakSelf) strongSelf = weakSelf;
                 
                 Taxon *loadedTaxon = (Taxon *)object;
                 loadedTaxon.syncedAt = [NSDate date];
@@ -271,13 +270,13 @@
                 }
                 
                 // fetch the taxon and set it on the observation
-                //NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID];
-                //Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
-                //strongSelf.observation.taxon = t;
+                NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID];
+                Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
+                weakSelf.observation.taxon = t;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                     withRowAnimation:UITableViewRowAnimationNone];
                 });
                 
             };
@@ -380,6 +379,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     if (indexPath.section == 0) {
         if (indexPath.item == 0) {
             // do nothing
@@ -390,11 +391,10 @@
             }
         } else if (indexPath.item == 2) {
             // taxa segue
-            if (self.observation.taxon) {
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:self.observation.taxon];
-            } else if (self.observation.taxonID) {
-                Taxon *t = [[Taxon objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue]] firstObject];
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:t];
+            if (self.observation.taxonID && [[self.observation taxonID] integerValue] != 0) {
+                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[self.observation taxonID]];
+            } else {
+                // do nothing
             }
         }
     }

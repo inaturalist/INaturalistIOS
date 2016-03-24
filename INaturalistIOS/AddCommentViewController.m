@@ -53,7 +53,7 @@
 - (IBAction)clickedSave:(id)sender {
 	NSDictionary *params = @{
 							 @"comment[body]": self.textView.text,
-							 @"comment[parent_id]": self.observation.recordID,
+							 @"comment[parent_id]": [self.observation inatRecordId],
 							 @"comment[parent_type]": @"Observation"
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Post Comment"];

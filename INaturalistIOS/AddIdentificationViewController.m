@@ -77,7 +77,7 @@
     BOOL inputValidated = YES;
     NSString *alertMsg;
     
-    if (!self.observation || !self.observation.recordID) {
+    if (!self.observation || ![self.observation inatRecordId]) {
         inputValidated = NO;
         alertMsg = NSLocalizedString(@"Unable to add an identification to this observation. Please try again later.",
                                      @"Failure message when making an identification");
@@ -102,7 +102,7 @@
     
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
-							 @"identification[observation_id]": self.observation.recordID,
+							 @"identification[observation_id]": [self.observation inatRecordId],
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
