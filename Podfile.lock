@@ -154,7 +154,7 @@ DEPENDENCIES:
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
   - HexColors (= 2.3.0)
-  - ICViewPager (= 1.5.1)
+  - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
   - IFTTTLaunchImage (= 0.4.4)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
@@ -185,6 +185,9 @@ EXTERNAL SOURCES:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
     :git: https://github.com/JoeKun/FileMD5Hash.git
+  ICViewPager:
+    :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
+    :git: https://github.com/alexshepard/ICViewPager.git
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
@@ -196,6 +199,9 @@ CHECKOUT OPTIONS:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
     :git: https://github.com/JoeKun/FileMD5Hash.git
+  ICViewPager:
+    :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
+    :git: https://github.com/alexshepard/ICViewPager.git
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
@@ -223,7 +229,7 @@ SPEC CHECKSUMS:
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
-  ICViewPager: 032dc71a50fe898e185fae6112ded4bed0e0523c
+  ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
   IFTTTLaunchImage: ab84d453e2c51b3c2aa83daad99cf45f27688c96
   ISO8601DateFormatter: ab926648eebe497f4d167c0fd083992f959f1274
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
