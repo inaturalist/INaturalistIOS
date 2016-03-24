@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Activity.h"
+#import "IdentificationVisualization.h"
 
 @class Observation, Taxon, User;
 
-@interface Identification : Activity
+@interface Identification : Activity <IdentificationVisualization>
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSNumber * current;

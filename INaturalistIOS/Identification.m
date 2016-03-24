@@ -10,6 +10,7 @@
 #import "Observation.h"
 #import "Taxon.h"
 #import "User.h"
+#import "TaxonPhoto.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -28,6 +29,56 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic observation;
 @dynamic taxon;
 @dynamic user;
+
+- (NSInteger)userId {
+    return self.userID.integerValue;
+}
+
+- (NSDate *)date {
+    return self.createdAt;
+}
+
+- (NSString *)userName {
+    return self.user.login;
+}
+
+- (NSURL *)userIconUrl {
+    return [NSURL URLWithString:self.user.userIconURL];
+}
+
+- (NSString *)taxonCommonName {
+    return self.taxon.defaultName;
+}
+
+- (NSString *)taxonScientificName {
+    return self.taxon.name;
+}
+
+- (NSInteger)taxonId {
+    return self.taxon.recordID.integerValue;
+}
+
+- (NSInteger)taxonRankLevel {
+    return self.taxon.rankLevel.integerValue;
+}
+
+- (NSString *)taxonRank {
+    return self.taxon.rank;
+}
+
+- (NSURL *)taxonIconUrl {
+    if (self.taxon.taxonPhotos.count > 0 ) {
+        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+        return [NSURL URLWithString:tp.squareURL];
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)isCurrent {
+    return self.current.boolValue;
+}
+
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -82,11 +133,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 {
     if (!self.createdAt) return @"Unknown";
     return [Identification.shortDateFormatter stringFromDate:self.createdAt];
-}
-
-- (BOOL)isCurrent
-{
-    return self.current.boolValue;
 }
 
 @end

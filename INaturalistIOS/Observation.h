@@ -10,19 +10,13 @@
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
 #import "Uploadable.h"
-
-typedef NS_ENUM(NSInteger, ObsDataQuality) {
-    ObsDataQualityCasual,
-    ObsDataQualityNeedsID,
-    ObsDataQualityResearch,
-    ObsDataQualityNone
-};
+#import "ObservationVisualization.h"
 
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
 @class Taxon, Comment, Identification;
 
-@interface Observation : INatModel <Uploadable>
+@interface Observation : INatModel <Uploadable, ObservationVisualization>
 
 @property (nonatomic, retain) NSString * speciesGuess;
 @property (nonatomic, retain) NSNumber * taxonID;

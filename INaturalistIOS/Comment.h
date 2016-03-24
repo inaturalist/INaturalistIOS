@@ -10,9 +10,12 @@
 #import <CoreData/CoreData.h>
 #import "Activity.h"
 
+#import "CommentVisualization.h"
+
+
 @class Observation, User;
 
-@interface Comment : Activity
+@interface Comment : Activity <CommentVisualization, ActivityVisualization>
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSDate * updatedAt;

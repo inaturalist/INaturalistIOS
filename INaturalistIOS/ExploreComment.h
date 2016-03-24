@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ExploreComment : NSObject
+#import "CommentVisualization.h"
+#import "ActivityVisualization.h"
+
+@interface ExploreComment : NSObject <CommentVisualization>
 
 @property (nonatomic, assign) NSInteger commentId;
 @property (nonatomic, copy) NSString *commentText;
@@ -16,7 +19,5 @@
 @property (nonatomic, assign) NSInteger commenterId;
 @property (nonatomic, copy) NSString *commenterIconUrl;
 @property (nonatomic, copy) NSDate *commentedDate;
-
-- (NSDate *)date;
 
 @end

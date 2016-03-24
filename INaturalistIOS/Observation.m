@@ -16,6 +16,7 @@
 #import "DeletedRecord.h"
 #import "ProjectObservation.h"
 #import "Fave.h"
+#import "User.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -489,5 +490,26 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         return ObsDataQualityNone;
     }
 }
+
+#pragma mark - ObservationVisualization
+
+- (NSNumber *)inatRecordId {
+    return self.recordID;
+}
+
+- (NSString *)username {
+    User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
+    return user.login;
+}
+
+- (NSString *)userThumbUrl {
+    User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
+    return user.userIconURL;
+}
+
+- (BOOL)isEditable {
+    return YES;
+}
+
 
 @end

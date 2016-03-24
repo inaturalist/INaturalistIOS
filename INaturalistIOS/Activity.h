@@ -8,9 +8,12 @@
 
 #import "INatModel.h"
 
+#import "ActivityVisualization.h"
+
 @class User, Observation;
 
-@interface Activity : INatModel
+@interface Activity : INatModel <ActivityVisualization>
+
 @property (nonatomic, retain) NSString *body;
 @property (nonatomic, retain) User *user;
 @property (nonatomic, retain) Observation *observation;

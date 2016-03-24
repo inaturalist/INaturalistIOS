@@ -39,4 +39,18 @@ static RKManagedObjectMapping *defaultMapping = nil;
     [super awakeFromInsert];
 }
 
+#pragma mark - FaveVisualziation
+
+- (NSInteger)userId {
+    return self.userRecordID.integerValue;
+}
+
+- (NSString *)userName {
+    return self.userLogin;
+}
+
+- (NSDate *)createdAt {
+    return self.faveDate;
+}
+
 @end

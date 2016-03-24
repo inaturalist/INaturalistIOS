@@ -25,6 +25,18 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic observation;
 @dynamic user;
 
+- (NSDate *)date {
+    return self.createdAt;
+}
+
+- (NSString *)userName {
+    return self.user.login;
+}
+
+- (NSURL *)userIconUrl {
+    return [NSURL URLWithString:self.user.userIconURL];
+}
+
 + (RKManagedObjectMapping *)mapping
 {
     if (!defaultMapping) {

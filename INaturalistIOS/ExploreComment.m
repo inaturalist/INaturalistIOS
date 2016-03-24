@@ -10,8 +10,26 @@
 
 @implementation ExploreComment
 
-- (NSDate *)date {
+#pragma mark - CommentVisualization
+
+- (NSString *)body {
+    return self.commentText;
+}
+
+- (NSInteger)userId {
+    return self.commenterId;
+}
+
+- (NSString *)userName {
+    return self.commenterName;
+}
+
+- (NSDate *)createdAt {
     return self.commentedDate;
+}
+
+- (NSURL *)userIconUrl {
+    return [NSURL URLWithString:self.commenterIconUrl];
 }
 
 - (BOOL)validateCommentId:(id *)ioValue error:(NSError **)outError {
@@ -32,6 +50,9 @@
     return YES;
 }
 
-
+- (NSString *)description {
+    return [NSString stringWithFormat:@"Explore Comment by %@ at %@",
+            self.userName, self.createdAt.description];
+}
 
 @end
