@@ -29,7 +29,7 @@
 }
 
 - (void)layoutSubviews {
-    self.roundedButton.layer.cornerRadius = self.bounds.size.height / 2.0f;
+    self.roundedButton.layer.cornerRadius = self.roundedButton.bounds.size.height / 2.0f;
 }
 
 @end

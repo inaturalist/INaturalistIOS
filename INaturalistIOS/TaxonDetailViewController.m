@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImageManager.h>
 #import <objc/runtime.h>
 
 #import "TaxonDetailViewController.h"
@@ -19,84 +20,127 @@
 #import "Analytics.h"
 #import "INatUITabBarController.h"
 #import "NSURL+INaturalist.h"
-#import "INatWebController.h"
-
-static const int DefaultNameTag = 1;
-static const int TaxonNameTag = 2;
-static const int TaxonImageTag = 3;
-static const int TaxonImageAttributionTag = 4;
-static const int TaxonDescTag = 1;
+#import "TaxonPhotoCell.h"
+#import "TaxonSummaryCell.h"
+#import "RoundedButtonCell.h"
 
 static char SUMMARY_ASSOCIATED_KEY;
 
 @interface Taxon (Summary)
-@property (readonly) NSAttributedString *attributedSummary;
+- (NSAttributedString *)attributedBody;
 @end
 
 @implementation Taxon (Summary)
 // extracting attributed strings from HTML is expensive
 // stash the attributed summary in an associated object on the taxon itself
-- (NSAttributedString *)attributedSummary {
-    NSAttributedString *_attributedSummary = objc_getAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY);
-    if (!_attributedSummary) {
-        NSData *sumData = [self.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding];
-        NSDictionary *sumOpts = @{
-                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
-                                  };
-        _attributedSummary = [[NSAttributedString alloc] initWithData:sumData
-                                                              options:sumOpts
-                                                   documentAttributes:nil
-                                                                error:nil];
-        objc_setAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY, _attributedSummary, OBJC_ASSOCIATION_COPY);
+- (NSAttributedString *)attributedBody {
+    NSAttributedString *_attributedBody = objc_getAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY);
+    if (_attributedBody) {
+        return _attributedBody;
+    } else {
+        NSMutableAttributedString *attributedBody = [[NSMutableAttributedString alloc] init];
+ 
+        if ([self.name isEqualToString:self.defaultName] || self.defaultName == nil || [self.defaultName isEqualToString:@""]) {
+            // no common name, so only show scientific name in the main label
+            NSString *name;
+            NSDictionary *attributes;
+            if (self.isGenusOrLower) {
+                name = [NSString stringWithFormat:@"%@\n\n", self.name];
+                attributes = @{
+                               NSFontAttributeName: [UIFont italicSystemFontOfSize:24],
+                               };
+            } else {
+                name = [NSString stringWithFormat:@"%@ %@\n\n", [self.rank capitalizedString], self.name];
+                attributes = @{
+                               NSFontAttributeName: [UIFont systemFontOfSize:24],
+                               };
+            }
+            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:name
+                                                                                   attributes:attributes]];
+        } else {
+            // show both common & scientfic names
+            NSString *commonName = [NSString stringWithFormat:@"%@\n", self.defaultName];
 
+            NSDictionary *commonNameAttrs = @{
+                                              NSFontAttributeName:[UIFont systemFontOfSize:24],
+                                              };
+            
+            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:commonName
+                                                                                   attributes:commonNameAttrs]];
+            
+            NSString *sciName;
+            NSDictionary *sciNameAttrs;
+
+            
+            if (self.isGenusOrLower) {
+                sciName = [NSString stringWithFormat:@"%@\n\n", self.name];
+                sciNameAttrs = @{
+                                 NSFontAttributeName: [UIFont italicSystemFontOfSize:16],
+                                 };
+            } else {
+                sciName = [NSString stringWithFormat:@"%@ %@\n\n", [self.rank capitalizedString], self.name];
+                sciNameAttrs = @{
+                                 NSFontAttributeName: [UIFont systemFontOfSize:16],
+                                 };
+            }
+            
+            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:sciName
+                                                                                   attributes:sciNameAttrs]];
+
+        }
+        
+        if (self.wikipediaSummary && self.wikipediaSummary.length > 0 ) {
+            NSData *sumData = [self.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *sumOpts = @{
+                                      NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                      NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                                      };
+            NSMutableAttributedString *summary = [[NSMutableAttributedString alloc] initWithData:sumData
+                                                                                         options:sumOpts
+                                                                              documentAttributes:nil
+                                                                                           error:nil];
+            [summary setAttributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:16] }
+                             range:NSMakeRange(0, [summary length])];
+            
+            [attributedBody appendAttributedString:summary];
+        } else {
+            NSString *placeHolderText = NSLocalizedString(@"We have no information about this taxon.", nil);
+            NSDictionary *placeholderAttrs = @{
+                                               NSFontAttributeName: [UIFont systemFontOfSize:16],
+                                               };
+            NSAttributedString *placeHolder = [[NSAttributedString alloc] initWithString:placeHolderText
+                                                                              attributes:placeholderAttrs];
+            [attributedBody appendAttributedString:placeHolder];
+        }
+        
+        objc_setAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY, attributedBody, OBJC_ASSOCIATION_COPY);
+        return attributedBody;
     }
-    return _attributedSummary;
 }
+
 @end
 
 @implementation TaxonDetailViewController
-
-@synthesize taxon = _taxon;
-@synthesize sectionHeaderViews = _sectionHeaderViews;
-@synthesize delegate = _delegate;
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)scaleHeaderView:(BOOL)animated
-{
-    UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
-    float width = [UIScreen mainScreen].bounds.size.width;
-    float height = fminf(width * taxonImage.image.size.height / taxonImage.image.size.width, width);
-    [self.tableView beginUpdates];
-    if (animated) {
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:1.0f];
-    }
-    [self.tableView.tableHeaderView setFrame:CGRectMake(0, 0, width, height)];
-    [self.tableView setTableHeaderView:self.tableView.tableHeaderView];
-    [taxonImage setFrame:CGRectMake(0, 0, width, height)];
-    if (animated) {
-        [UIView commitAnimations];
-    }
-    [self.tableView endUpdates];
+#pragma mark - UIControl targets
+
+- (void)creditsTapped:(UIButton *)sender {
+    TaxonPhoto *tp = [self.taxon.taxonPhotos firstObject];
+    NSURL *url = [NSURL URLWithString:[tp nativePageURL]];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
-- (IBAction)clickedViewMore:(id)sender {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"View more about this species on...",nil)
-                                                             delegate:self 
-                                                    cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"iNaturalist",nil),
-                                  NSLocalizedString(@"EOL",nil), NSLocalizedString(@"Wikipedia",nil), nil];
-    if (self.tabBarController) {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    } else {
-        [actionSheet showInView:self.view];
-    }
+- (void)wikipediaTapped:(UIButton *)sender {
+    NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
+    NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
+    NSString *urlEncodedTaxon = [self.taxon.name URLEncode];
+    NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, self.taxon.wikipediaTitle ?: urlEncodedTaxon];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 
 - (IBAction)clickedActionButton:(id)sender {
@@ -126,46 +170,25 @@ static char SUMMARY_ASSOCIATED_KEY;
     }
 }
 
-- (void)initUI
-{
-    UILabel *defaultNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:DefaultNameTag];
-    UILabel *taxonNameLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonNameTag];
-    UILabel *attributionLabel = (UILabel *)[self.tableView.tableHeaderView viewWithTag:TaxonImageAttributionTag];
-    UIImageView *taxonImage = (UIImageView *)[self.tableView.tableHeaderView viewWithTag:TaxonImageTag];
-    
-    defaultNameLabel.text = self.taxon.defaultName;
-    defaultNameLabel.textAlignment = NSTextAlignmentNatural;
-    taxonNameLabel.textAlignment = NSTextAlignmentNatural;
-    attributionLabel.textAlignment = NSTextAlignmentNatural;
-    if (self.taxon.rankLevel.intValue >= 20) {
-        taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@", [self.taxon.rank capitalizedString], self.taxon.name];
-        taxonNameLabel.font = [UIFont systemFontOfSize:taxonNameLabel.font.pointSize];
-    } else {
-        taxonNameLabel.text = self.taxon.name;
-    }
-    taxonImage.image = nil;
-    if (self.taxon.taxonPhotos.count > 0) {
-        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
-        [taxonImage sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
-                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                 [self scaleHeaderView:YES];
-                             }];
-        attributionLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Photo %@",nil), tp.attribution];
-    } else {
-        taxonImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
-        attributionLabel.text = @"";
-    }
-}
-
 #pragma mark - lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    [self.tableView registerNib:[UINib nibWithNibName:@"RoundedButtonCell" bundle:[NSBundle mainBundle]]
+         forCellReuseIdentifier:@"roundedButton"];
     self.clearsSelectionOnViewWillAppear = YES;
-    [self initUI];
-    if (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%@.json", self.taxon.recordID]
+    
+    if (self.taxon) {
+        self.taxonId = self.taxon.recordID.integerValue;
+    }
+    
+    // try to load taxon from disk in case we have it
+    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.taxonId];
+    self.taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
+    
+    if (!self.taxon || (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable])) {
+        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", self.taxonId]
                                       relativeToURL:[NSURL inat_baseURL]] absoluteString];
 
         __weak typeof(self)weakSelf = self;
@@ -181,12 +204,11 @@ static char SUMMARY_ASSOCIATED_KEY;
                 return;
             }
             
-            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", self.taxon.recordID];
+            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", self.taxonId];
             Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
             if (taxon) {
                 __strong typeof(weakSelf)strongSelf = weakSelf;
                 strongSelf.taxon = taxon;
-                [strongSelf initUI];
                 [strongSelf.tableView reloadData];
             }
         };
@@ -211,6 +233,10 @@ static char SUMMARY_ASSOCIATED_KEY;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
+    
+    if (!self.delegate) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -226,90 +252,81 @@ static char SUMMARY_ASSOCIATED_KEY;
 #pragma mark - UITableView
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        return [self.taxon.attributedSummary boundingRectWithSize:CGSizeMake(320, 320)
-                                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                                          context:nil].size.height + 10;
+    if (indexPath.row == 1) {
+        return [self.taxon.attributedBody boundingRectWithSize:CGSizeMake(290, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                       context:nil].size.height + 20;
+    } else if (indexPath.row == 0) {
+        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+        NSString *cacheKey = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:tp.thumbURL]];
+        UIImage *image = [[[SDWebImageManager sharedManager] imageCache] imageFromDiskCacheForKey:cacheKey];
+        
+        if (image) {
+            CGFloat aspectRatio = image.size.height / image.size.width;
+            return tableView.bounds.size.width * aspectRatio;
+        } else {
+            return tableView.bounds.size.width;
+        }
+    } else {
+        return 59;
     }
-    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 30.0;
+    return 0.0f;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (!self.sectionHeaderViews) {
-        self.sectionHeaderViews = [[NSMutableDictionary alloc] init];
-    }
-    NSNumber *key = @(section);
-    if ([self.sectionHeaderViews objectForKey:key]) {
-        return [self.sectionHeaderViews objectForKey:key];
-    }
-    
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
-    header.backgroundColor = [UIColor whiteColor];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 20)];
-    label.font = [UIFont boldSystemFontOfSize:17];
-    label.textColor = [UIColor darkGrayColor];
-    label.textAlignment = NSTextAlignmentNatural;
-    switch (section) {
-        case 0:
-            label.text = NSLocalizedString(@"Description",nil);
-            break;
-        case 1:
-            label.text = NSLocalizedString(@"Conservation Status",nil);
-            break;
-        default:
-            break;
-    }
-    [header addSubview:label];
-    
-    [self.sectionHeaderViews setObject:header forKey:key];
-    return header;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        UILabel *label = (UILabel *)[cell viewWithTag:TaxonDescTag];
-        label.attributedText = self.taxon.attributedSummary;
-        label.textAlignment = NSTextAlignmentNatural;
-        label.numberOfLines = 0;
-        label.textColor = [UIColor blackColor];
-        label.backgroundColor = [UIColor whiteColor];
-        [label sizeToFit];
-    } else if (indexPath.section == 1 && indexPath.row == 0) {
-        UILabel *title = (UILabel *)[cell viewWithTag:1];
-        if (self.taxon.conservationStatusName) {
-            title.text = NSLocalizedString(self.taxon.conservationStatusName.humanize, nil);
-            title.textAlignment = NSTextAlignmentNatural;
-            if ([self.taxon.conservationStatusName isEqualToString:@"vulnerable"] ||
-                [self.taxon.conservationStatusName isEqualToString:@"endangered"] ||
-                [self.taxon.conservationStatusName isEqualToString:@"critically_endangered"]) {
-                title.textColor = [UIColor colorWithRed:209/255.0 green:47/255.0 blue:25/255.0 alpha:1];
-            } else if ([self.taxon.conservationStatusName isEqualToString:@"near_threatened"]) {
-                title.textColor = [UIColor orangeColor];
-            } else {
-                title.textColor = [UIColor blackColor];
-            }
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 3;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.item == 0) {
+        TaxonPhotoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonPhoto" forIndexPath:indexPath];
+        
+        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+        if (tp) {
+            cell.scrim.hidden = NO;
+            [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
+            [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
+            
+            __weak typeof(self) weakSelf = self;
+            [cell.taxonPhoto sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
+                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              [cell setNeedsDisplay];
+                                              [tableView beginUpdates];
+                                              [tableView endUpdates];
+                                          });
+                                      }];
+        } else {
+            cell.scrim.hidden = YES;
+            cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
         }
-    }
-    return cell;
-}
+        
+        return cell;
+    } else if (indexPath.item == 1) {
+        TaxonSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonSummary" forIndexPath:indexPath];
+        
+        cell.summaryLabel.attributedText = self.taxon.attributedBody;
 
-#pragma mark - ScrollViewDelegate
-// This is necessary to stop the section headers from sticking to the top of the screen
-// http://stackoverflow.com/questions/664781/change-default-scrolling-behavior-of-uitableview-section-header
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat sectionHeaderHeight = 30;
-    if (scrollView.contentOffset.y <= sectionHeaderHeight && scrollView.contentOffset.y >= 0) {
-        scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-    } else if (scrollView.contentOffset.y>=sectionHeaderHeight) {
-        scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
+        return cell;
+    } else {
+        RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"roundedButton" forIndexPath:indexPath];
+        
+        cell.roundedButton.backgroundColor = [UIColor colorWithHex:0xE4E4E4];
+        cell.roundedButton.tintColor = [UIColor blackColor];
+        [cell.roundedButton setTitle:NSLocalizedString(@"Wikipedia Article", @"title for button to open taxon page on wikipedia")
+                            forState:UIControlStateNormal];
+        [cell.roundedButton addTarget:self action:@selector(wikipediaTapped:) forControlEvents:UIControlEventTouchUpInside];
+        
+        return cell;
     }
 }
 
@@ -339,9 +356,7 @@ static char SUMMARY_ASSOCIATED_KEY;
         return;
     }
     
-    INatWebController *web = [[INatWebController alloc] initWithNibName:nil bundle:nil];
-    web.url = [NSURL URLWithString:urlString];
-    [self.navigationController pushViewController:web animated:YES];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 
 @end

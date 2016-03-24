@@ -10,6 +10,6 @@
 
 @interface RoundedButtonCell : UITableViewCell
 
-@property UIButton *roundedButton;
+@property IBOutlet UIButton *roundedButton;
 
 @end

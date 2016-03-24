@@ -16,11 +16,11 @@
 @end
 
 @interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate>
+
 @property (nonatomic, strong) Taxon *taxon;
-@property (nonatomic, strong) NSMutableDictionary *sectionHeaderViews;
-@property (nonatomic, strong) UIViewController *delegate;
-- (void)scaleHeaderView:(BOOL)animated;
-- (IBAction)clickedViewMore:(id)sender;
+@property (nonatomic, assign) NSInteger taxonId;
+
+@property (nonatomic, weak) id <TaxonDetailViewControllerDelegate> delegate;
+
 - (IBAction)clickedActionButton:(id)sender;
-- (void)initUI;
 @end
