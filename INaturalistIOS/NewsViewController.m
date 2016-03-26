@@ -63,6 +63,9 @@ static UIImage *briefcase;
             [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
             [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
         });
+        
+        // hide empty cell divider lines
+        self.tableView.tableFooterView = [UIView new];
     }
     
     return self;
