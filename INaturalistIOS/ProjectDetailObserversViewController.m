@@ -40,6 +40,7 @@
     ObserverCountCell *cell = [tableView dequeueReusableCellWithIdentifier:@"observerCount"
                                                               forIndexPath:indexPath];
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;    
     ObserverCount *count = self.observerCounts[indexPath.item];
     cell.observerNameLabel.text = count.observerName;
     [cell.observerNameLabel sizeToFit];

@@ -39,7 +39,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     IdentifierCountCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifierCount"
                                                                 forIndexPath:indexPath];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     IdentifierCount *count = self.identifierCounts[indexPath.item];
     cell.identifierNameLabel.text = count.identifierName;
     [cell.identifierNameLabel sizeToFit];
