@@ -303,8 +303,12 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     NSError *err = nil;
+    NSDictionary *opts = @{
+                           NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                           NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                           };
     NSMutableAttributedString *body = [[[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
-                                                                        options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
+                                                                        options:opts
                                                              documentAttributes:nil
                                                                           error:&err] mutableCopy];
     

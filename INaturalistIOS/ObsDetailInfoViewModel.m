@@ -71,8 +71,12 @@
             cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
             
             NSError *err;
+            NSDictionary *opts = @{
+                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                                  };
             NSMutableAttributedString *notes = [[[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
-                                                                                 options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType }
+                                                                                 options:opts
                                                                       documentAttributes:nil
                                                                                    error:&err] mutableCopy];
             
