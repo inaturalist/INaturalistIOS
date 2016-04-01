@@ -43,7 +43,7 @@
     IdentifierCount *count = self.identifierCounts[indexPath.item];
     cell.identifierNameLabel.text = count.identifierName;
     [cell.identifierNameLabel sizeToFit];
-    cell.identifierCountLabel.text = [NSString stringWithFormat:@"%ld", count.identificationCount];
+    cell.identifierCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.identificationCount];
     [cell.identifierCountLabel sizeToFit];
 
     if (count.identifierIconUrl) {
