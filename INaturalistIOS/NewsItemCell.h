@@ -11,13 +11,13 @@
 @interface NewsItemCell : UITableViewCell
 
 
-@property IBOutlet UIImageView *newsCategoryImageView;
-@property IBOutlet UILabel *newsCategoryTitle;
+@property UIImageView *newsCategoryImageView;
+@property UILabel *newsCategoryTitle;
 
-@property IBOutlet UILabel *postedAt;
-@property IBOutlet UILabel *postBody;
-@property IBOutlet UILabel *postTitle;
-@property IBOutlet UIImageView *postImageView;
+@property UILabel *postedAt;
+@property UILabel *postBody;
+@property UILabel *postTitle;
+@property UIImageView *postImageView;
 
 - (void)showPostImageView:(BOOL)shouldShow;
 

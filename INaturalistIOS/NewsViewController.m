@@ -26,13 +26,13 @@
 
 static UIImage *briefcase;
 
-@interface NewsViewController () <NSFetchedResultsControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface NewsViewController () <NSFetchedResultsControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITableViewDelegate, UITableViewDataSource> {
     NSFetchedResultsController *_frc;
 }
 
 @property (readonly) NSFetchedResultsController *frc;
 @property RKObjectLoader *objectLoader;
-
+@property IBOutlet UITableView *tableView;
 @end
 
 @implementation NewsViewController
@@ -63,9 +63,6 @@ static UIImage *briefcase;
             [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
             [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
         });
-        
-        // hide empty cell divider lines
-        self.tableView.tableFooterView = [UIView new];
     }
     
     return self;
@@ -74,8 +71,15 @@ static UIImage *briefcase;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    // hide empty cell divider lines
+    self.tableView.tableFooterView = [UIView new];
+
+    [self.tableView registerClass:[NewsItemCell class]
+           forCellReuseIdentifier:@"newsItem"];
+    
     // tableview configuration
-    self.refreshControl.tintColor = [UIColor inatTint];
+    //self.refreshControl.tintColor = [UIColor inatTint];
 
     // infinite scroll for tableview
     __weak typeof(self) weakSelf = self;
@@ -171,6 +175,8 @@ static UIImage *briefcase;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
@@ -343,7 +349,7 @@ static UIImage *briefcase;
     [self.frc performFetch:&err];
     
     // in case load was triggered by pull to refresh, stop the animation
-    [self.refreshControl endRefreshing];
+    //[self.refreshControl endRefreshing];
     // in case load was triggered by infinite scrolling, stop the animation
     [self.tableView.infiniteScrollingView stopAnimating];
 }
@@ -353,7 +359,7 @@ static UIImage *briefcase;
     self.objectLoader = objectLoader;
     
     // in case load was triggered by pull to refresh, stop the animation
-    [self.refreshControl endRefreshing];
+    //[self.refreshControl endRefreshing];
     // in case load was triggered by infinite scrolling, stop the animation
     [self.tableView.infiniteScrollingView stopAnimating];
     
