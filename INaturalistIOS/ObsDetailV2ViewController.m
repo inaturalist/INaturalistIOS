@@ -9,6 +9,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <Toast/UIView+Toast.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"
@@ -41,6 +42,8 @@
 @property ObsDetailViewModel *viewModel;
 @property BOOL shouldScrollToNewestActivity;
 @property UIPopoverController *sharePopover;
+
+@property MBProgressHUD *progressHud;
 
 @end
 
@@ -238,6 +241,20 @@
 }
 
 #pragma mark - obs detail view model delegate
+
+- (void)showProgressHud {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressHud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+        self.progressHud.removeFromSuperViewOnHide = YES;
+        self.progressHud.dimBackground = YES;
+    });
+}
+
+- (void)hideProgressHud {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressHud hide:YES];
+    });
+}
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
     if ([identifier isEqualToString:@"photos"]) {

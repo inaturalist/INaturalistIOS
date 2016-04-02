@@ -195,16 +195,12 @@
    forHTTPHeaderField:@"Authorization"];
     [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:control.superview.superview animated:YES];
-    hud.removeFromSuperViewOnHide = YES;
-    hud.dimBackground = YES;
+    [self.delegate showProgressHud];
     
     NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
                                                              completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                                  
-                                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     [hud hide:YES];
-                                                                 });
+                                                                 [self.delegate hideProgressHud];
                                                                  
                                                                  if (error) {
                                                                      NSLog(@"dataTaskWithRequest error: %@", error);

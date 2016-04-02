@@ -24,6 +24,8 @@ typedef NS_ENUM(NSInteger, ObsDetailSection) {
 - (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath withAnimation:(UITableViewRowAnimation)animation;
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)sender;
+- (void)showProgressHud;
+- (void)hideProgressHud;
 @end
 
 @class Observation;

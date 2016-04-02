@@ -10,7 +10,6 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <YLMoment/YLMoment.h>
-#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
@@ -542,6 +541,8 @@
                              @"identification[taxon_id]": @(button.tag),
                              };
     
+    [self.delegate showProgressHud];
+    
     [[RKClient sharedClient] post:@"/identifications"
                            params:params
                          delegate:self];
@@ -598,6 +599,8 @@
 #pragma mark - RKRequestDelegate
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
+    
+    [self.delegate hideProgressHud];
 
     // set "seen" call returns 204 on success, add ID returns 200
     if (response.statusCode == 200 || response.statusCode == 204) {
@@ -623,6 +626,8 @@
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
+    [self.delegate hideProgressHud];
+    
     if ([request.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
                                     message:error.localizedDescription
