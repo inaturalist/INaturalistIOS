@@ -151,12 +151,23 @@ static UIImage *briefcase;
                                                          forIndexPath:indexPath];
     
     NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
-    cell.newsCategoryTitle.text = newsItem.parentTitleText;
-    NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
-    if (iconURL) {
-        [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+    
+    if (self.project) {
+        cell.newsCategoryTitle.text = self.project.title;
+        NSURL *iconURL = [NSURL URLWithString:self.project.iconURL];
+        if (iconURL) {
+            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+        } else {
+            cell.newsCategoryImageView.image = briefcase;
+        }
     } else {
-        cell.newsCategoryImageView.image = briefcase;
+        cell.newsCategoryTitle.text = newsItem.parentTitleText;
+        NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
+        if (iconURL) {
+            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+        } else {
+            cell.newsCategoryImageView.image = briefcase;
+        }
     }
     
     NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
