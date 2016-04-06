@@ -17,5 +17,6 @@
 
 @property Project *project;
 @property (assign) id <ProjectDetailV2Delegate> projectDetailDelegate;
+@property (assign) id <ContainedScrollViewDelegate> containedScrollViewDelegate;
 
 @end

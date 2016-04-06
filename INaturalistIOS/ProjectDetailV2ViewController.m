@@ -56,6 +56,11 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+                                                                      NSFontAttributeName: [UIFont systemFontOfSize:17],
+                                                                      NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                                      }];
+    
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     effectView.frame = self.projectHeaderBackground.bounds;
@@ -119,6 +124,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     if ([segue.identifier isEqualToString:@"containerSegueToViewPager"]) {
         ProjectDetailPageViewController *vc = [segue destinationViewController];
         vc.projectDetailDelegate = self;
+        vc.containedScrollViewDelegate = self;
         vc.project = self.project;
     } else if ([segue.identifier isEqualToString:@"segueToObservationDetail"]) {
         ObsDetailV2ViewController *vc = [segue destinationViewController];
@@ -188,9 +194,9 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     } else {
         CGFloat tz = MAX(-OffsetHeaderStop, -offset);
         
-        // if offset is greater than 86, alpha is 0.0
-        // if offset is less than 0, alpha is 1.0
-        // if offset is between 0 and 86, alpha is (1.0 - offset / 86)
+        // if offset is greater than 86, button alpha is 0.0
+        // if offset is less than 0, button alpha is 1.0
+        // if offset is between 0 and 86, button alpha is (1.0 - offset / 86)
         
         CGFloat newAlpha = 0.0;
         if (offset > 86) {
@@ -203,6 +209,32 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         for (UIButton *btn in @[ self.joinButton, self.newsButton, self.aboutButton ]) {
             btn.alpha = newAlpha;
             btn.userInteractionEnabled = (newAlpha > 0.99f);
+        }
+        
+        // if offset is greater than 86, title center is equal to navbar center
+        if (offset > 86) {
+            if (self.projectNameLabel.alpha != 0) {
+                static BOOL viewIsAnimating = NO;
+                if (!viewIsAnimating) {
+                    [UIView animateWithDuration:0.25
+                                     animations:^{
+                                         viewIsAnimating = YES;
+                                         self.projectNameLabel.alpha = 0.0f;
+                                         self.title = self.projectNameLabel.text;
+                                     } completion:^(BOOL finished) {
+                                         if (finished) {
+                                             viewIsAnimating = NO;
+                                         }
+                                     }];
+                    
+                    
+                }
+            }
+        } else {
+            if (self.projectNameLabel.alpha != 1.0f) {
+                self.projectNameLabel.alpha = 1.0f;
+                self.title = nil;
+            }
         }
 
         headerTransform = CATransform3DTranslate(headerTransform, 0, tz, 0);
