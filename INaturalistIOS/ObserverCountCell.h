@@ -14,5 +14,6 @@
 @property IBOutlet UILabel *observerNameLabel;
 @property IBOutlet UILabel *observerObservationsCountLabel;
 @property IBOutlet UILabel *observerSpeciesCountLabel;
+@property IBOutlet UILabel *rankLabel;
 
 @end

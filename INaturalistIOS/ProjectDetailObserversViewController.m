@@ -43,9 +43,11 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;    
     ObserverCount *count = self.observerCounts[indexPath.item];
     cell.observerNameLabel.text = count.observerName;
-    [cell.observerNameLabel sizeToFit];
-    cell.observerObservationsCountLabel.text = [NSString stringWithFormat:@"%ld", count.observationCount];
-    [cell.observerObservationsCountLabel sizeToFit];
+    
+    cell.observerObservationsCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.observationCount];
+    cell.observerSpeciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
+    cell.rankLabel.text = [NSString stringWithFormat:@"%d", [self.observerCounts indexOfObject:count] + 1];
+    
     if (count.observerIconUrl) {
         [cell.observerImageView sd_setImageWithURL:[NSURL URLWithString:count.observerIconUrl]];
     } else {
@@ -54,6 +56,63 @@
 
     return cell;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [UIView new];
+    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 30);
+    
+    view.backgroundColor = [UIColor colorWithHexString:@"#ebebf1"];
+    
+    UILabel *rankTitle = [UILabel new];
+    rankTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    rankTitle.text = [NSLocalizedString(@"Rank", @"Rank in an ordered list") uppercaseString];
+    rankTitle.font = [UIFont systemFontOfSize:13];
+    [view addSubview:rankTitle];
+    
+    UILabel *observationsTitle = [UILabel new];
+    observationsTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    observationsTitle.text = [NSLocalizedString(@"Observations", nil) uppercaseString];
+    observationsTitle.font = [UIFont systemFontOfSize:13];
+    observationsTitle.textAlignment = NSTextAlignmentRight;
+    [view addSubview:observationsTitle];
+    
+    UILabel *speciesTitle = [UILabel new];
+    speciesTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    speciesTitle.text = [NSLocalizedString(@"Species", nil) uppercaseString];
+    speciesTitle.font = [UIFont systemFontOfSize:13];
+    speciesTitle.textAlignment = NSTextAlignmentRight;
+    [view addSubview:speciesTitle];
+    
+    NSDictionary *views = @{
+                            @"rank": rankTitle,
+                            @"observations": observationsTitle,
+                            @"species": speciesTitle,
+                            };
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[rank]-[observations]-[species]-16-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[rank]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[observations]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[species]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+
+    
+    return view;
+}
+
 
 #pragma mark - UIScrollViewDelegate
 
