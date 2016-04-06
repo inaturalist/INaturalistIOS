@@ -185,6 +185,8 @@
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
+		FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */; };
+		FA74A6251CB4C517002EBD0A /* RankedUserObsSpeciesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */; };
 		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
 		FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */; };
 		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
@@ -248,8 +250,6 @@
 		FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF233D1C7D092D00208F44 /* ProjectDetailObserversViewController.m */; };
 		FAEF23411C7D093900208F44 /* ProjectDetailIdentifiersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23401C7D093900208F44 /* ProjectDetailIdentifiersViewController.m */; };
 		FAEF23451C7D0E0100208F44 /* ProjectObsPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23441C7D0E0100208F44 /* ProjectObsPhotoCell.m */; };
-		FAEF23481C7D2B1A00208F44 /* IdentifierCountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23471C7D2B1A00208F44 /* IdentifierCountCell.m */; };
-		FAEF234B1C7D2B2700208F44 /* ObserverCountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF234A1C7D2B2700208F44 /* ObserverCountCell.m */; };
 		FAEF234E1C7D2B3400208F44 /* SpeciesCountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF234D1C7D2B3400208F44 /* SpeciesCountCell.m */; };
 		FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */; };
 		FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23531C7D2DC300208F44 /* ObserverCount.m */; };
@@ -634,6 +634,9 @@
 		FA724ADF1AB150BD00D01773 /* MeHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeHeaderView.m; sourceTree = "<group>"; };
 		FA724AE11AB150D300D01773 /* AnonHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonHeaderView.h; sourceTree = "<group>"; };
 		FA724AE21AB150D300D01773 /* AnonHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonHeaderView.m; sourceTree = "<group>"; };
+		FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RankedUserObsSpecies.xib; sourceTree = "<group>"; };
+		FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RankedUserObsSpeciesCell.h; sourceTree = "<group>"; };
+		FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankedUserObsSpeciesCell.m; sourceTree = "<group>"; };
 		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsEditV2ViewController.h; sourceTree = "<group>"; };
 		FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsEditV2ViewController.m; sourceTree = "<group>"; };
@@ -769,10 +772,6 @@
 		FAEF23401C7D093900208F44 /* ProjectDetailIdentifiersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectDetailIdentifiersViewController.m; sourceTree = "<group>"; };
 		FAEF23431C7D0E0100208F44 /* ProjectObsPhotoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObsPhotoCell.h; sourceTree = "<group>"; };
 		FAEF23441C7D0E0100208F44 /* ProjectObsPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObsPhotoCell.m; sourceTree = "<group>"; };
-		FAEF23461C7D2B1A00208F44 /* IdentifierCountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdentifierCountCell.h; sourceTree = "<group>"; };
-		FAEF23471C7D2B1A00208F44 /* IdentifierCountCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdentifierCountCell.m; sourceTree = "<group>"; };
-		FAEF23491C7D2B2700208F44 /* ObserverCountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObserverCountCell.h; sourceTree = "<group>"; };
-		FAEF234A1C7D2B2700208F44 /* ObserverCountCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObserverCountCell.m; sourceTree = "<group>"; };
 		FAEF234C1C7D2B3400208F44 /* SpeciesCountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeciesCountCell.h; sourceTree = "<group>"; };
 		FAEF234D1C7D2B3400208F44 /* SpeciesCountCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpeciesCountCell.m; sourceTree = "<group>"; };
 		FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdentifierCount.h; sourceTree = "<group>"; };
@@ -1605,14 +1604,13 @@
 			children = (
 				FAEF23431C7D0E0100208F44 /* ProjectObsPhotoCell.h */,
 				FAEF23441C7D0E0100208F44 /* ProjectObsPhotoCell.m */,
-				FAEF23461C7D2B1A00208F44 /* IdentifierCountCell.h */,
-				FAEF23471C7D2B1A00208F44 /* IdentifierCountCell.m */,
-				FAEF23491C7D2B2700208F44 /* ObserverCountCell.h */,
-				FAEF234A1C7D2B2700208F44 /* ObserverCountCell.m */,
 				FAEF234C1C7D2B3400208F44 /* SpeciesCountCell.h */,
 				FAEF234D1C7D2B3400208F44 /* SpeciesCountCell.m */,
 				FACADF891CA1A920004B9D4A /* ProjectAboutInfoCell.h */,
 				FACADF8A1CA1A920004B9D4A /* ProjectAboutInfoCell.m */,
+				FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */,
+				FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */,
+				FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */,
 			);
 			name = "Project Details";
 			sourceTree = "<group>";
@@ -1722,6 +1720,7 @@
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
+				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
 				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
@@ -1940,6 +1939,7 @@
 				FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */,
 				FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
+				FA74A6251CB4C517002EBD0A /* RankedUserObsSpeciesCell.m in Sources */,
 				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
 				FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */,
@@ -1962,7 +1962,6 @@
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
 				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
-				FAEF23481C7D2B1A00208F44 /* IdentifierCountCell.m in Sources */,
 				FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */,
 				FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */,
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
@@ -2069,7 +2068,6 @@
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
 				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
 				FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */,
-				FAEF234B1C7D2B2700208F44 /* ObserverCountCell.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */,
 				FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */,

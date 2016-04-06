@@ -11,9 +11,12 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailIdentifiersViewController.h"
-#import "IdentifierCountCell.h"
+#import "RankedUserObsSpeciesCell.h"
 #import "IdentifierCount.h"
 #import "UIImage+INaturalist.h"
+
+// both the nib name and the reuse identifier
+static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 
 @interface ProjectDetailIdentifiersViewController () <DZNEmptyDataSetSource>
 @end
@@ -26,6 +29,9 @@
     self.tableView.emptyDataSetSource = self;
     self.totalCount = 0;
     self.tableView.tableFooterView = [UIView new];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:rankedUserObsSpeciesName bundle:[NSBundle mainBundle]]
+         forCellReuseIdentifier:rankedUserObsSpeciesName];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -37,23 +43,69 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    IdentifierCountCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifierCount"
-                                                                forIndexPath:indexPath];
+    RankedUserObsSpeciesCell *cell = [tableView dequeueReusableCellWithIdentifier:rankedUserObsSpeciesName
+                                                                     forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     IdentifierCount *count = self.identifierCounts[indexPath.item];
-    cell.identifierNameLabel.text = count.identifierName;
-    [cell.identifierNameLabel sizeToFit];
-    cell.identifierCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.identificationCount];
-    [cell.identifierCountLabel sizeToFit];
+    cell.userNameLabel.text = count.identifierName;
+
+    cell.observationsCountLabel.text = @"";
+    cell.observationsCountLabel.hidden = TRUE;
+    cell.speciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.identificationCount];
+    cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.identifierCounts indexOfObject:count] + 1];
 
     if (count.identifierIconUrl) {
-        [cell.identifierImageView sd_setImageWithURL:[NSURL URLWithString:count.identifierIconUrl]];
+        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:count.identifierIconUrl]];
     } else {
-        cell.identifierImageView.image = [UIImage inat_defaultUserImage];
+        cell.userImageView.image = [UIImage inat_defaultUserImage];
     }
     
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [UIView new];
+    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 30);
+    
+    view.backgroundColor = [UIColor colorWithHexString:@"#ebebf1"];
+    
+    UILabel *rankTitle = [UILabel new];
+    rankTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    rankTitle.text = [NSLocalizedString(@"Rank", @"Rank in an ordered list") uppercaseString];
+    rankTitle.font = [UIFont systemFontOfSize:13];
+    [view addSubview:rankTitle];
+    
+    UILabel *identificationsTitle = [UILabel new];
+    identificationsTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    identificationsTitle.text = [NSLocalizedString(@"Identifications", nil) uppercaseString];
+    identificationsTitle.font = [UIFont systemFontOfSize:13];
+    identificationsTitle.textAlignment = NSTextAlignmentRight;
+    [view addSubview:identificationsTitle];
+    
+    NSDictionary *views = @{
+                            @"rank": rankTitle,
+                            @"identifications": identificationsTitle,
+                            };
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[rank]-[identifications]-16-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[rank]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[identifications]-0-|"
+                                                                 options:0
+                                                                 metrics:0
+                                                                   views:views]];
+    
+    
+    return view;
 }
 
 #pragma mark - UIScrollViewDelegate

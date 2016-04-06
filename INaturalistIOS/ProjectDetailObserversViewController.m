@@ -12,8 +12,11 @@
 
 #import "ProjectDetailObserversViewController.h"
 #import "ObserverCount.h"
-#import "ObserverCountCell.h"
+#import "RankedUserObsSpeciesCell.h"
 #import "UIImage+INaturalist.h"
+
+// both the nib name and the reuse identifier
+static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 
 @interface ProjectDetailObserversViewController () <DZNEmptyDataSetSource>
 @end
@@ -26,6 +29,9 @@
     self.tableView.emptyDataSetSource = self;
     self.totalCount = 0;
     self.tableView.tableFooterView = [UIView new];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:rankedUserObsSpeciesName bundle:[NSBundle mainBundle]]
+         forCellReuseIdentifier:rankedUserObsSpeciesName];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -37,21 +43,21 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ObserverCountCell *cell = [tableView dequeueReusableCellWithIdentifier:@"observerCount"
+    RankedUserObsSpeciesCell *cell = [tableView dequeueReusableCellWithIdentifier:rankedUserObsSpeciesName
                                                               forIndexPath:indexPath];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;    
     ObserverCount *count = self.observerCounts[indexPath.item];
-    cell.observerNameLabel.text = count.observerName;
+    cell.userNameLabel.text = count.observerName;
     
-    cell.observerObservationsCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.observationCount];
-    cell.observerSpeciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
-    cell.rankLabel.text = [NSString stringWithFormat:@"%d", [self.observerCounts indexOfObject:count] + 1];
+    cell.observationsCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.observationCount];
+    cell.speciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
+    cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.observerCounts indexOfObject:count] + 1];
     
     if (count.observerIconUrl) {
-        [cell.observerImageView sd_setImageWithURL:[NSURL URLWithString:count.observerIconUrl]];
+        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:count.observerIconUrl]];
     } else {
-        cell.observerImageView.image = [UIImage inat_defaultUserImage];
+        cell.userImageView.image = [UIImage inat_defaultUserImage];
     }
 
     return cell;
