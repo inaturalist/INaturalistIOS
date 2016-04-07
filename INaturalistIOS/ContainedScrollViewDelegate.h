@@ -11,4 +11,5 @@
 @protocol ContainedScrollViewDelegate <NSObject>
 - (void)containedScrollViewDidScroll:(UIScrollView *)scrollView;
 - (void)containedScrollViewDidReset:(UIScrollView *)scrollView;
+- (void)containedScrollViewDidStopScrolling:(UIScrollView *)scrollView;
 @end

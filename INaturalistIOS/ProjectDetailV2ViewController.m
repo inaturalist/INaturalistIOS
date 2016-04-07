@@ -172,6 +172,13 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 #pragma mark - Contained Scroll View Delegate
 
+- (void)containedScrollViewDidStopScrolling:(UIScrollView *)scrollView {
+    CGFloat offset = scrollView.contentOffset.y;
+    
+    if (offset > 0 && offset < OffsetHeaderStop) {
+        [scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+}
 
 - (void)containedScrollViewDidReset:(UIScrollView *)scrollView {
     [UIView animateWithDuration:0.3 animations:^{

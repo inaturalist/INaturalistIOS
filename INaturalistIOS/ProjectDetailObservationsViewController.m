@@ -100,6 +100,16 @@
     [self.containedScrollViewDelegate containedScrollViewDidScroll:scrollView];
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self.containedScrollViewDelegate containedScrollViewDidStopScrolling:scrollView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self.containedScrollViewDelegate containedScrollViewDidStopScrolling:scrollView];
+    }
+}
+
 #pragma mark - DZNEmptyDataSource
 
 - (UIView *)customViewForEmptyDataSet:(UIScrollView *)scrollView {
