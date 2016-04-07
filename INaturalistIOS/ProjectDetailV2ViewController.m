@@ -180,6 +180,10 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                           200,
                                           self.view.bounds.size.width,
                                           self.view.bounds.size.height - self.projectHeader.frame.size.height);
+        for (UIButton *btn in @[ self.joinButton, self.newsButton, self.aboutButton ]) {
+            btn.alpha = 1.0f;
+            btn.userInteractionEnabled = YES;
+        }
     }];
 }
 
