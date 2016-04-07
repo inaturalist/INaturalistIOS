@@ -214,21 +214,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         // if offset is greater than 86, title center is equal to navbar center
         if (offset > 86) {
             if (self.projectNameLabel.alpha != 0) {
-                static BOOL viewIsAnimating = NO;
-                if (!viewIsAnimating) {
-                    [UIView animateWithDuration:0.25
-                                     animations:^{
-                                         viewIsAnimating = YES;
-                                         self.projectNameLabel.alpha = 0.0f;
-                                         self.title = self.projectNameLabel.text;
-                                     } completion:^(BOOL finished) {
-                                         if (finished) {
-                                             viewIsAnimating = NO;
-                                         }
-                                     }];
-                    
-                    
-                }
+                self.projectNameLabel.alpha = 0.0f;
+                self.title = self.projectNameLabel.text;
             }
         } else {
             if (self.projectNameLabel.alpha != 1.0f) {
