@@ -75,8 +75,14 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     self.projectThumbnail.layer.borderColor = [UIColor whiteColor].CGColor;
     self.projectThumbnail.layer.borderWidth = 1.0f;
     
+    [self.joinButton setTitle:[NSLocalizedString(@"Join", @"Join project button") uppercaseString]
+                     forState:UIControlStateNormal];
     self.joinButton.layer.cornerRadius = 15.0f;
+    [self.aboutButton setTitle:[NSLocalizedString(@"About", @"About project button") uppercaseString]
+                     forState:UIControlStateNormal];
     self.aboutButton.layer.cornerRadius = 15.0f;
+    [self.newsButton setTitle:[NSLocalizedString(@"News", @"News project button") uppercaseString]
+                     forState:UIControlStateNormal];
     self.newsButton.layer.cornerRadius = 15.0f;
     
     NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
@@ -280,9 +286,11 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)configureJoinButton {
     if (self.projectUser) {
-        [self.joinButton setTitle:NSLocalizedString(@"Leave", @"Leave a project") forState:UIControlStateNormal];
+        [self.joinButton setTitle:[NSLocalizedString(@"Leave", @"Leave project button") uppercaseString]
+                         forState:UIControlStateNormal];
     } else {
-        [self.joinButton setTitle:NSLocalizedString(@"Join", @"Join a project") forState:UIControlStateNormal];
+        [self.joinButton setTitle:[NSLocalizedString(@"Join", @"Join project button") uppercaseString]
+                         forState:UIControlStateNormal];
     }
 }
 
