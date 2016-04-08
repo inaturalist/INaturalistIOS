@@ -164,19 +164,19 @@
     switch (index) {
         case 0:
             count = self.numObservations;
-            title = @"OBSERVATIONS";
+            title = [NSLocalizedString(@"Observations", nil) uppercaseString];
             break;
         case 1:
             count = self.numSpecies;
-            title = @"SPECIES";
+            title = [NSLocalizedString(@"Species", nil) uppercaseString];
             break;
         case 2:
             count = self.numObservers;
-            title = @"OBSERVERS";
+            title = [NSLocalizedString(@"Observers", nil) uppercaseString];
             break;
         case 3:
             count = self.numIdentifers;
-            title = @"IDENTIFIERS";
+            title = [NSLocalizedString(@"Identifiers", nil) uppercaseString];
             break;
         default:
             count = 0;
