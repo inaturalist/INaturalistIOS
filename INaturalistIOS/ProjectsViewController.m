@@ -383,6 +383,8 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewWillAppear:animated];
     
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController setToolbarHidden:NO];

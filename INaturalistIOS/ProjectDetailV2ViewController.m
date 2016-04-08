@@ -154,12 +154,15 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [UIView animateWithDuration:0.3f animations:^{
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                      forBarMetrics:UIBarMetricsDefault];
-        self.navigationController.navigationBar.shadowImage = [UIImage new];
-        self.navigationController.navigationBar.translucent = YES;
-    }];
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                                       forBarMetrics:UIBarMetricsDefault];
+                         self.navigationController.navigationBar.shadowImage = [UIImage new];
+                         self.navigationController.navigationBar.translucent = YES;
+                     } completion:^(BOOL finished) {
+                         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+                     }];
 
     [self.navigationController setToolbarHidden:YES animated:YES];
     
