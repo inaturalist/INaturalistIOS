@@ -109,8 +109,12 @@
 
 - (NSString *)aboutText {
     if (!_aboutText) {
-        // some projects embed HTML in their about text
-        _aboutText = [self.project.desc stringByStrippingHTML];
+        if (self.project.desc.length == 0) {
+            _aboutText = NSLocalizedString(@"This project has no description.", nil);
+        } else {
+            // some projects embed HTML in their about text
+            _aboutText = [self.project.desc stringByStrippingHTML];
+        }
     }
     
     return _aboutText;
@@ -119,8 +123,12 @@
 
 - (NSString *)termsText {
     if (!_termsText) {
+        if (self.project.terms.length == 0) {
+            _termsText = NSLocalizedString(@"This project has no terms.", nil);
+        } else {
         // some projects embed HTML in their terms text
         _termsText = [self.project.terms stringByStrippingHTML];
+        }
      }
     
     return _termsText;
@@ -128,29 +136,34 @@
 
 - (NSAttributedString *)rulesText {
     if (!_rulesText) {
-        NSArray *rules = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
-        
-        NSMutableString *string = [[NSMutableString alloc] init];
-        for (int i = 0; i < rules.count; i++) {
-            [string appendFormat:@"%ld. %@\n", (long)i+1, [rules[i] capitalizedString]];
+        if (self.project.projectObservationRuleTerms.length == 0) {
+            NSString *noRules = NSLocalizedString(@"This project has no rules.", nil);
+            _rulesText = [[NSAttributedString alloc] initWithString:noRules];
+        } else {
+            NSArray *rules = [self.project.projectObservationRuleTerms componentsSeparatedByString:@"|"];
+            
+            NSMutableString *string = [[NSMutableString alloc] init];
+            for (int i = 0; i < rules.count; i++) {
+                [string appendFormat:@"%ld. %@\n", (long)i+1, [rules[i] capitalizedString]];
+            }
+            
+            NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:string];
+            
+            NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
+            [paragrahStyle setParagraphSpacing:4];
+            [paragrahStyle setParagraphSpacingBefore:3];
+            [paragrahStyle setFirstLineHeadIndent:0.0f];  // First line is the one with bullet point
+            [paragrahStyle setHeadIndent:15];    // Set the indent for given bullet character and size font
+            
+            [attrString addAttributes:@{
+                                        NSParagraphStyleAttributeName: paragrahStyle,
+                                        NSFontAttributeName: [UIFont systemFontOfSize:14],
+                                        }
+                                range:NSMakeRange(0, [attrString length])];
+            
+            // non-mutable copy
+            _rulesText = [[NSAttributedString alloc] initWithAttributedString:attrString];
         }
-        
-        NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:string];
-        
-        NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragrahStyle setParagraphSpacing:4];
-        [paragrahStyle setParagraphSpacingBefore:3];
-        [paragrahStyle setFirstLineHeadIndent:0.0f];  // First line is the one with bullet point
-        [paragrahStyle setHeadIndent:15];    // Set the indent for given bullet character and size font
-        
-        [attrString addAttributes:@{
-                                    NSParagraphStyleAttributeName: paragrahStyle,
-                                    NSFontAttributeName: [UIFont systemFontOfSize:14],
-                                    }
-                            range:NSMakeRange(0, [attrString length])];
-        
-        // non-mutable copy
-        _rulesText = [[NSAttributedString alloc] initWithAttributedString:attrString];
     }
     
     return _rulesText;
