@@ -126,10 +126,10 @@
         if (self.project.terms.length == 0) {
             _termsText = NSLocalizedString(@"This project has no terms.", nil);
         } else {
-        // some projects embed HTML in their terms text
-        _termsText = [self.project.terms stringByStrippingHTML];
+            // some projects embed HTML in their terms text
+            _termsText = [self.project.terms stringByStrippingHTML];
         }
-     }
+    }
     
     return _termsText;
 }
