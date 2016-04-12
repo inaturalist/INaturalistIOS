@@ -290,24 +290,26 @@ static char SUMMARY_ASSOCIATED_KEY;
     if (indexPath.item == 0) {
         TaxonPhotoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonPhoto" forIndexPath:indexPath];
         
-        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
-        if (tp) {
-            cell.scrim.hidden = NO;
-            [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
-            [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
-            
-            __weak typeof(self) weakSelf = self;
-            [cell.taxonPhoto sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
-                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              [cell setNeedsDisplay];
-                                              [tableView beginUpdates];
-                                              [tableView endUpdates];
-                                          });
-                                      }];
-        } else {
-            cell.scrim.hidden = YES;
-            cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+        if (self.taxon) {
+            TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+            if (tp) {
+                cell.scrim.hidden = NO;
+                [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
+                [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
+                
+                __weak typeof(self) weakSelf = self;
+                [cell.taxonPhoto sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
+                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  [cell setNeedsDisplay];
+                                                  [tableView beginUpdates];
+                                                  [tableView endUpdates];
+                                              });
+                                          }];
+            } else {
+                cell.scrim.hidden = YES;
+                cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+            }
         }
         
         return cell;
