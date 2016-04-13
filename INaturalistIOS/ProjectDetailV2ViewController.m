@@ -166,7 +166,22 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
     [self.navigationController setToolbarHidden:YES animated:YES];
     
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+                                                                      NSFontAttributeName: [UIFont systemFontOfSize:17],
+                                                                      NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                                      }];
+
     [self configureJoinButton];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+                                                                      NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
+                                                                      NSForegroundColorAttributeName: [UIColor blackColor],
+                                                                      }];    
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
 }
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
@@ -194,6 +209,9 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
             btn.alpha = 1.0f;
             btn.userInteractionEnabled = YES;
         }
+        
+        self.title = nil;
+        self.projectNameLabel.alpha = 1.0f;
     }];
 }
 
