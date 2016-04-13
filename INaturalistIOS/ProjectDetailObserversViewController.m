@@ -98,7 +98,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
                             @"observations": observationsTitle,
                             @"species": speciesTitle,
                             };
-    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[rank]-[observations]-[species]-16-|"
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[rank]-[observations]-12-[species]-16-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
