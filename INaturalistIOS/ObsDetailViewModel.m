@@ -270,7 +270,7 @@
                 }
                 
                 // fetch the taxon and set it on the observation
-                NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID];
+                NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID.integerValue];
                 Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
                 weakSelf.observation.taxon = t;
                 
