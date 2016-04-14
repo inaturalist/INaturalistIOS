@@ -25,6 +25,7 @@
 #import "ProjectAboutViewController.h"
 #import "NewsViewController.h"
 #import "UIImage+INaturalist.h"
+#import "ProjectNewsButton.h"
 
 // At this offset the Header stops its transformations
 // 200 is the height of the header
@@ -40,7 +41,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 @property IBOutlet UIImageView *projectHeaderBackground;
 
 @property IBOutlet UIButton *joinButton;
-@property IBOutlet UIButton *newsButton;
+@property IBOutlet ProjectNewsButton *newsButton;
 @property IBOutlet UIButton *aboutButton;
 
 @property IBOutlet UIView *container;
@@ -81,9 +82,10 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     [self.aboutButton setTitle:[NSLocalizedString(@"About", @"About project button") uppercaseString]
                      forState:UIControlStateNormal];
     self.aboutButton.layer.cornerRadius = 15.0f;
-    [self.newsButton setTitle:[NSLocalizedString(@"News", @"News project button") uppercaseString]
-                     forState:UIControlStateNormal];
+    
+    self.newsButton.newsTextLabel.text = [NSLocalizedString(@"News",a @"News project button") uppercaseString];
     self.newsButton.layer.cornerRadius = 15.0f;
+    [self configureNewsButton];
     
     NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
     if (projectThumbUrl) {
@@ -154,6 +156,29 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // re-fetch the project to make sure we're getting an updated news item count
+    NSString *path = [NSString stringWithFormat:@"/projects/%ld.json", (long)self.project.recordID.integerValue];
+    __weak typeof(self) weakSelf = self;
+    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
+        
+        loader.objectMapping = [Project mapping];
+        loader.onDidLoadObject = ^(id object) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            NSDate *now = [NSDate date];
+            [object setSyncedAt:now];
+            
+            NSError *error = nil;
+            [[[RKObjectManager sharedManager] objectStore] save:&error];
+            if (error) {
+                NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
+                [[Analytics sharedClient] debugLog:logMsg];
+            }
+            
+            strongSelf.project = (Project *)object;
+            [strongSelf configureNewsButton];
+        };
+    }];
+    
     [UIView animateWithDuration:0.3f
                      animations:^{
                          [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
@@ -186,6 +211,10 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
     [self performSegueWithIdentifier:identifier sender:object];
+}
+
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Contained Scroll View Delegate
@@ -326,6 +355,11 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     }
 }
 
+- (void)configureNewsButton {
+    self.newsButton.countLabel.text = [NSString stringWithFormat:@"%ld", (long)self.project.newsItemCount.integerValue];
+    self.newsButton.enabled = (self.project.newsItemCount > 0);
+}
+
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -370,9 +404,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     }];
 }
 
-#pragma mark - RKObjectLoaderDelegate
-
-#pragma mark - RKObjectLoader && RKRequestDelegate
+#pragma mark - RKObjectLoaderDelegate && RKRequestDelegate
 
 - (void)request:(RKRequest *)request didReceiveResponse:(RKResponse *)response {
     if (request.method == RKRequestMethodDELETE) {
@@ -423,5 +455,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         [av show];
     }
 }
+
+
 
 @end

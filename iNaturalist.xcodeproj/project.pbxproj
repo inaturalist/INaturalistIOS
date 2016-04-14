@@ -111,6 +111,7 @@
 		FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */; };
 		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
+		FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11A7761CBFF8740039481B /* ProjectNewsButton.m */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
@@ -468,6 +469,9 @@
 		FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewErrorCell.m; sourceTree = "<group>"; };
 		FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
 		FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
+		FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.14.xcdatamodel; sourceTree = "<group>"; };
+		FA11A7751CBFF8740039481B /* ProjectNewsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectNewsButton.h; sourceTree = "<group>"; };
+		FA11A7761CBFF8740039481B /* ProjectNewsButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectNewsButton.m; sourceTree = "<group>"; };
 		FA1B37BA1AD88BBC002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BB1AD88BCF002A00A5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BC1AD88BE2002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1611,6 +1615,8 @@
 				FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */,
 				FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */,
 				FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */,
+				FA11A7751CBFF8740039481B /* ProjectNewsButton.h */,
+				FA11A7761CBFF8740039481B /* ProjectNewsButton.m */,
 			);
 			name = "Project Details";
 			sourceTree = "<group>";
@@ -2026,6 +2032,7 @@
 				FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */,
+				FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */,
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
@@ -2397,6 +2404,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */,
 				FA7BC8C81C59B2B90032E709 /* INaturalist2.13.xcdatamodel */,
 				FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */,
 				FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */,
@@ -2412,7 +2420,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FA7BC8C81C59B2B90032E709 /* INaturalist2.13.xcdatamodel */;
+			currentVersion = FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

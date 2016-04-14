@@ -40,6 +40,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic latitude;
 @dynamic longitude;
 @dynamic group;
+@dynamic newsItemCount;
 
 + (RKManagedObjectMapping *)mapping
 {
@@ -60,6 +61,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"featured_at_utc", @"featuredAt",
          @"rule_place.latitude", @"latitude",
          @"rule_place.longitude", @"longitude",
+         @"posts_count", @"newsItemCount",
          @"group", @"group",
          nil];
         [defaultMapping mapKeyPath:@"project_list" 

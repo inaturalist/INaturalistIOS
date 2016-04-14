@@ -37,6 +37,7 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSString *group;
+@property (nonatomic, retain) NSNumber *newsItemCount;
 
 - (BOOL)observationsRestrictedToList;
 - (NSArray *)sortedProjectObservationFields;
