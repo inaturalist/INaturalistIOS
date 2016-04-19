@@ -39,16 +39,16 @@
                                 done(nil, error);
                             });
                         } else {
-                            NSArray *resultsArray = [json valueForKey:@"results"];
-                            
-                            RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
-                            [mappingProvider setMapping:mapping forKeyPath:@""];
-                            
-                            RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
-                                                                      mappingProvider:mappingProvider];
-                            RKObjectMappingResult *result = [mapper performMapping];
-                            // TODO: check for .asError here?
                             dispatch_async(dispatch_get_main_queue(), ^{
+                                NSArray *resultsArray = [json valueForKey:@"results"];
+                                
+                                RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
+                                [mappingProvider setMapping:mapping forKeyPath:@""];
+                                
+                                RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
+                                                                          mappingProvider:mappingProvider];
+                                RKObjectMappingResult *result = [mapper performMapping];
+                                // TODO: check for .asError here?
                                 done(result.asCollection, nil);
                             });
                         }
@@ -83,16 +83,16 @@
                         if (error) {
                             done(nil, 0, error);
                         } else {
-                            NSArray *resultsArray = [json valueForKey:@"results"];
-                            NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
-                            RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
-                            [mappingProvider setMapping:mapping forKeyPath:@""];
-                            
-                            RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
-                                                                      mappingProvider:mappingProvider];
-                            RKObjectMappingResult *result = [mapper performMapping];
-                            // TODO: check for .asError here?
                             dispatch_async(dispatch_get_main_queue(), ^{
+                                NSArray *resultsArray = [json valueForKey:@"results"];
+                                NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
+                                RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
+                                [mappingProvider setMapping:mapping forKeyPath:@""];
+                                
+                                RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
+                                                                          mappingProvider:mappingProvider];
+                                RKObjectMappingResult *result = [mapper performMapping];
+                                // TODO: check for .asError here?
                                 done(result.asCollection, totalResults, nil);
                             });
                         }
