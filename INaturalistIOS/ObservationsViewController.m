@@ -1513,7 +1513,9 @@
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    self.uploadProgress[observation.uuid] = @(0);
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = @(0);
+    }
 
     [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
@@ -1542,7 +1544,9 @@
 - (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Progress"];
     
-    self.uploadProgress[observation.uuid] = @(progress);
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = @(progress);
+    }
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
