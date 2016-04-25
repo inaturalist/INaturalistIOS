@@ -210,7 +210,7 @@
             cell.taxonNameLabel.text = taxon.defaultName;
             cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
             
-            if (taxon.isGenusOrLower) {
+            if (!taxon.fullyLoaded || taxon.isGenusOrLower) {
                 cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = taxon.name;
             } else {
