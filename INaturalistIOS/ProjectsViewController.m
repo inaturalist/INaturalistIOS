@@ -173,7 +173,18 @@ static const int ListControlIndexNearby = 2;
 - (void)syncFeaturedProjects {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@", language, countryCode];
+    NSString *path;
+    if (self.lastLocation) {
+        path = [NSString stringWithFormat:@"/projects.json?featured=true&latitude=%f&longitude=%f&locale=%@-%@",
+                self.lastLocation.coordinate.latitude,
+                self.lastLocation.coordinate.longitude,
+                language,
+                countryCode];
+    } else {
+        path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
+                language,
+                countryCode];
+    }
     
     self.featuredProjectsSyncedAt = [NSDate date];
     [self syncProjectsWithPath:path];
