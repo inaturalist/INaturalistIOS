@@ -254,7 +254,7 @@
             
             __weak typeof(self) weakSelf = self;
             RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
-                //__strong typeof(weakSelf) strongSelf = weakSelf;
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 
                 Taxon *loadedTaxon = (Taxon *)object;
                 loadedTaxon.syncedAt = [NSDate date];
@@ -275,8 +275,7 @@
                 weakSelf.observation.taxon = t;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                     withRowAnimation:UITableViewRowAnimationNone];
+                    [strongSelf.delegate reloadTableView];
                 });
                 
             };
