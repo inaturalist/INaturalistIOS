@@ -73,7 +73,9 @@
                                     NSError *error) {
                     
                     if (error) {
-                        done(nil, 0, error);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, error);
+                        });
                     } else {
                         NSError *error = nil;
                         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
@@ -81,7 +83,9 @@
                                                                                error:&error];
                         
                         if (error) {
-                            done(nil, 0, error);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
                         } else {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 NSArray *resultsArray = [json valueForKey:@"results"];
