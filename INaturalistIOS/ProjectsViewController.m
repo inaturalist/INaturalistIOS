@@ -280,14 +280,6 @@ static const int ListControlIndexNearby = 2;
     self.navigationItem.rightBarButtonItem = self.syncButton;
 }
 
-- (UIBarButtonItem *)listControlItem
-{
-    if (!_listControlItem) {
-        _listControlItem = [[UIBarButtonItem alloc] initWithCustomView:self.listControl];
-    }
-    return _listControlItem;
-}
-
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
