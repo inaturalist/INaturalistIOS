@@ -15,4 +15,13 @@
     return (self.speciesRankLevel > 0 && self.speciesRankLevel <= 20);
 }
 
+- (BOOL)validateSpeciesRankLevel:(id *)ioValue error:(NSError **)outError {
+    // Reject a species rank level of zero. By returning NO, we refused the assignment and the value will not be set
+    if ([(NSNumber*)*ioValue intValue] == 0) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 @end
