@@ -523,7 +523,7 @@ static const int ListControlIndexNearby = 2;
         [o setSyncedAt:now];
     }
     
-    if ([objectLoader.URL.path rangeOfString:@"featured"].location != NSNotFound) {
+    if ([objectLoader.URL.absoluteString rangeOfString:@"featured"].location != NSNotFound) {
         NSArray *rejects = [Project objectsWithPredicate:
                             [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
         for (Project *p in rejects) {
