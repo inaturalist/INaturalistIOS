@@ -18,7 +18,6 @@
 @property (nonatomic, strong) UILabel *noContentLabel;
 @property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
 @property (nonatomic, strong) UISegmentedControl *listControl;
-@property (nonatomic, strong) UIBarButtonItem *listControlItem;
 @property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLLocation *lastLocation;

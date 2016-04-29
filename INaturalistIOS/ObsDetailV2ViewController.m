@@ -358,6 +358,10 @@
     }
 }
 
+- (void)reloadTableView {
+    [self.tableView reloadData];
+}
+
 - (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];

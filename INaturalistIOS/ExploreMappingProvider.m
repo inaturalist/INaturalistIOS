@@ -39,8 +39,6 @@
     
     [mapping mapKeyPath:@"id" toAttribute:@"recordID"];
     [mapping mapKeyPath:@"name" toAttribute:@"name"];
-    [mapping mapKeyPath:@"rank_level" toAttribute:@"rankLevel"];
-    [mapping mapKeyPath:@"rank" toAttribute:@"rank"];
     [mapping mapKeyPath:@"preferred_common_name" toAttribute:@"defaultName"];
     
     return mapping;

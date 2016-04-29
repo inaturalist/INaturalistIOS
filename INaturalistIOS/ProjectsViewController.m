@@ -291,14 +291,6 @@ static const int ListControlIndexNearby = 2;
     self.navigationItem.rightBarButtonItem = self.syncButton;
 }
 
-- (UIBarButtonItem *)listControlItem
-{
-    if (!_listControlItem) {
-        _listControlItem = [[UIBarButtonItem alloc] initWithCustomView:self.listControl];
-    }
-    return _listControlItem;
-}
-
 - (UISegmentedControl *)listControl
 {
     if (!_listControl) {
@@ -398,14 +390,6 @@ static const int ListControlIndexNearby = 2;
 
     [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
     self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController setToolbarHidden:NO];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:[NSArray arrayWithObjects:
-                           flex,
-                           self.listControlItem,
-                           flex, 
-                           nil]];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -502,6 +486,27 @@ static const int ListControlIndexNearby = 2;
     
     if (selectedProject && [selectedProject isKindOfClass:[Project class]])
         [self performSegueWithIdentifier:@"projectDetailSegue" sender:selectedProject];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [UIView new];
+    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 44);
+    
+    view.backgroundColor = [UIColor whiteColor];
+    
+    UIView *separator = [UIView new];
+    separator.frame = CGRectMake(0, 43.5f, tableView.bounds.size.width, 0.5f);
+    separator.backgroundColor = [UIColor lightGrayColor];
+    [view addSubview:separator];
+    
+    [view addSubview:self.listControl];
+    self.listControl.center = view.center;
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 44;
 }
 
 #pragma mark - CLLocationManagerDelegate
