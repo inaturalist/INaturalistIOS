@@ -53,7 +53,9 @@
                                     [operation performMapping:&err];
                                     [output addObject:target];
                                 }
-                                done(output, nil);
+                                
+                                // return this immutably
+                                done([NSArray arrayWithArray:output], nil);
                             });
                         }
                     }
@@ -108,7 +110,8 @@
                                         [output addObject:target];
                                     }
                                 }
-                                done(output, totalResults, nil);
+                                // return this immutably
+                                done([NSArray arrayWithArray:output], totalResults, nil);
                             });
                         }
                     }
