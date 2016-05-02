@@ -42,14 +42,18 @@
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 NSArray *resultsArray = [json valueForKey:@"results"];
                                 
-                                RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
-                                [mappingProvider setMapping:mapping forKeyPath:@""];
-                                
-                                RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
-                                                                          mappingProvider:mappingProvider];
-                                RKObjectMappingResult *result = [mapper performMapping];
-                                // TODO: check for .asError here?
-                                done(result.asCollection, nil);
+                                NSMutableArray *output = [NSMutableArray array];
+                                for (id result in resultsArray) {
+                                    Class mappingClass = [mapping objectClass];
+                                    id target = [[mappingClass alloc] init];
+                                    RKObjectMappingOperation *operation = [RKObjectMappingOperation mappingOperationFromObject:result
+                                                                                                                      toObject:target
+                                                                                                                   withMapping:mapping];
+                                    NSError *err;
+                                    [operation performMapping:&err];
+                                    [output addObject:target];
+                                }
+                                done(output, nil);
                             });
                         }
                     }
@@ -90,14 +94,21 @@
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 NSArray *resultsArray = [json valueForKey:@"results"];
                                 NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
-                                RKObjectMappingProvider *mappingProvider = [RKObjectMappingProvider new];
-                                [mappingProvider setMapping:mapping forKeyPath:@""];
                                 
-                                RKObjectMapper *mapper = [RKObjectMapper mapperWithObject:resultsArray
-                                                                          mappingProvider:mappingProvider];
-                                RKObjectMappingResult *result = [mapper performMapping];
-                                // TODO: check for .asError here?
-                                done(result.asCollection, totalResults, nil);
+                                NSMutableArray *output = [NSMutableArray array];
+                                for (id result in resultsArray) {
+                                    Class mappingClass = [mapping objectClass];
+                                    id target = [[mappingClass alloc] init];
+                                    RKObjectMappingOperation *operation = [RKObjectMappingOperation mappingOperationFromObject:result
+                                                                                                                      toObject:target
+                                                                                                                   withMapping:mapping];
+                                    NSError *err = nil;
+                                    [operation performMapping:&err];
+                                    if (!err) {
+                                        [output addObject:target];
+                                    }
+                                }
+                                done(output, totalResults, nil);
                             });
                         }
                     }
