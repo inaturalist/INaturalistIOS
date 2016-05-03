@@ -50,6 +50,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];
+}
+
 #pragma mark - UITableView datasource/delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
