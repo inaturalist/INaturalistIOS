@@ -273,11 +273,6 @@
                     return;
                 }
                 
-                // fetch the taxon and set it on the observation
-                NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %ld", (long)taxon.recordID.integerValue];
-                Taxon *t = [Taxon objectWithPredicate:taxonByIDPredicate];
-                weakSelf.observation.taxon = t;
-                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [strongSelf.delegate reloadTableView];
                 });
