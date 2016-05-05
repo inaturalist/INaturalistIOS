@@ -1102,7 +1102,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 __weak typeof(self) weakSelf = self;
                 [[[ActionSheetDatePicker alloc] initWithTitle:NSLocalizedString(@"Select Date", @"title for date selector")
                                                datePickerMode:UIDatePickerModeDateAndTime
-                                                 selectedDate:self.observation.localObservedOn
+                                                 selectedDate:self.observation.localObservedOn ?: [NSDate date]
                                                     doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
                                                         
                                                         NSDate *date = (NSDate *)selectedDate;

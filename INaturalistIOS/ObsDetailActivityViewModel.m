@@ -497,8 +497,18 @@
 
 - (void)addComment {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Comment", nil)
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Comment", nil)
                                     message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loginController.isLoggedIn) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Comment", nil)
+                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
@@ -510,8 +520,18 @@
 
 - (void)addIdentification {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Add ID", nil)
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Add ID", nil)
                                     message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loginController.isLoggedIn) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Add ID", nil)
+                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
@@ -525,6 +545,16 @@
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
                                     message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loginController.isLoggedIn) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Agree", nil)
+                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];

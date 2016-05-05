@@ -157,8 +157,18 @@
 - (void)tappedFave:(UIControl *)control {
     
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Fave", nil)
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Fave", nil)
                                     message:NSLocalizedString(@"Network is required.", @"Network is required error message")
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loginController.isLoggedIn) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Fave", nil)
+                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
                                    delegate:nil
                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                           otherButtonTitles:nil] show];
