@@ -510,9 +510,34 @@ static const int ListControlIndexNearby = 2;
 }
 
 #pragma mark - CLLocationManagerDelegate
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    
+    // flag if we should sync location-based projects
+    BOOL shouldSync = NO;
+    
+    if (!self.lastLocation) {
+        // sync if we just rebooted the app
+        shouldSync = YES;
+    }
     self.lastLocation = newLocation;
+    
+    NSTimeInterval timeDelta = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+    if (timeDelta > 300) {
+        // sync if last location update was more than 5 minutes ago
+        shouldSync = YES;
+    }
+    
+    CLLocationDistance distanceDelta = [newLocation distanceFromLocation:oldLocation];
+    if (distanceDelta > 1609) {
+        // sync if last location update was more than a mile ago
+        shouldSync = YES;
+    }
+    
+    
+    if (shouldSync) {
+        [self syncFeaturedProjects];
+        [self syncNearbyProjects];
+    }
 }
 
 #pragma mark - RKRequest and RKObjectLoader delegates
