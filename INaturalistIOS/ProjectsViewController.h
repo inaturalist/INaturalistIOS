@@ -21,7 +21,7 @@
 @property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLLocation *lastLocation;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *syncButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 
-- (IBAction)clickedSync:(id)sender;
+- (IBAction)tappedSearch:(id)sender;
 @end

@@ -141,19 +141,6 @@ static const int ListControlIndexNearby = 2;
 
 #pragma mark - sync* methods are fetching from inaturalist.org
 
-- (IBAction)clickedSync:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unreachable",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
-        return;
-    }
-    [self sync];
-}
-
 - (void)sync
 {
     self.navigationItem.rightBarButtonItem = self.syncActivityItem;
@@ -288,7 +275,7 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncFinished
 {
-    self.navigationItem.rightBarButtonItem = self.syncButton;
+    self.navigationItem.rightBarButtonItem = self.searchButton;
 }
 
 - (UISegmentedControl *)listControl
@@ -443,6 +430,13 @@ static const int ListControlIndexNearby = 2;
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - button targets
+
+- (IBAction)tappedSearch:(id)sender {
+    [self.searchDisplayController setActive:YES animated:YES];
+    [self.searchDisplayController.searchBar becomeFirstResponder];
 }
 
 #pragma mark - Table view data source
