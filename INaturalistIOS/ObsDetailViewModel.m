@@ -280,9 +280,9 @@
             };
             
             [[Analytics sharedClient] debugLog:@"Network - Load a partially loaded taxon"];
-            [[[RKObjectManager sharedManager] mappingProvider] setMapping:[Taxon mapping] forKeyPath:@""];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:resource
                                                             usingBlock:^(RKObjectLoader *loader) {
+                                                                loader.objectMapping = [Taxon mapping];
                                                                 loader.onDidLoadObject = taxonLoadedBlock;
                                                             }];
             
