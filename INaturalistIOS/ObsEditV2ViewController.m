@@ -242,13 +242,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         }
         
         // pop to the root view controller
-        UITabBarController *tab = (UITabBarController *)self.presentingViewController;
-        UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
-        
-        [tab dismissViewControllerAnimated:YES completion:^{
-            [nav popToRootViewControllerAnimated:YES];
-        }];
-        
+        // dispatch/enqueue this to allow the popover controller on ipad
+        // (which presents the action sheet) to dismiss first
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UITabBarController *tab = (UITabBarController *)self.presentingViewController;
+            UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
+            
+            [tab dismissViewControllerAnimated:YES completion:^{
+                [nav popToRootViewControllerAnimated:YES];
+            }];
+        });
     }
 }
 
