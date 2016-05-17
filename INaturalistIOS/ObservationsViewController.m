@@ -687,7 +687,9 @@
                 // ...try again a few times, it's probably a new image in the process of being cut-down
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) {
+                        [self.tableView beginUpdates];
                         [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                        [self.tableView endUpdates];
                     }
                 });
             }
@@ -1522,8 +1524,10 @@
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
     }
 }
 
@@ -1535,8 +1539,10 @@
 
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
     }
 }
 
@@ -1550,8 +1556,10 @@
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
     }
 }
 
@@ -1560,8 +1568,10 @@
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
     }
 }
 

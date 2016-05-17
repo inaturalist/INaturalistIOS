@@ -82,8 +82,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     ObservationFieldValue *ofv = [self.controller observationFieldValueForIndexPath:self.indexPath];
     [self.controller.ofvCells removeObjectForKey:ofv.observationField.name];
     ofv.value = [taxon.recordID stringValue];
+    [self.controller.tableView beginUpdates];
     [self.controller.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.indexPath]
                                      withRowAnimation:UITableViewRowAnimationNone];
+    [self.controller.tableView endUpdates];
 }
 @end
 
@@ -2213,8 +2215,10 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     if (ofv) {
         ofv.value = nil;
         [self.ofvCells removeObjectForKey:ofv.observationField.name];
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                               withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];

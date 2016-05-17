@@ -266,8 +266,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ofv.localUpdatedAt = [NSDate date];
     }
     
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ self.taxaSearchIndexPath ]
                           withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
     
     self.taxaSearchIndexPath = nil;
     [self saveVisibleObservationFieldValues];

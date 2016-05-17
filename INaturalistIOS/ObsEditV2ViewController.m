@@ -327,8 +327,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [[Analytics sharedClient] event:kAnalyticsEventObservationNewDefaultPhoto
                      withProperties:@{ @"Via": [self analyticsVia] }];
     
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv deletedIndex:(NSInteger)idx {
@@ -350,8 +352,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
                      withProperties:@{ @"Via": [self analyticsVia] }];
     
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionPhotos] ]
                           withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
@@ -665,7 +669,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         self.observation.localUpdatedAt = [NSDate date];
         
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
         
         if (newLocation.horizontalAccuracy < 10) {
             [self stopUpdatingLocation];
@@ -734,8 +740,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           administrativeArea,
                                                           ISOcountryCode ] componentsJoinedByString:@", "];
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+                                    [self.tableView beginUpdates];
                                     [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
                                                           withRowAnimation:UITableViewRowAnimationAutomatic];
+                                    [self.tableView endUpdates];
                                 } @catch (NSException *exception) {
                                     if ([exception.name isEqualToString:NSObjectInaccessibleException])
                                         return;
@@ -774,8 +782,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.iconicTaxonName = nil;
     
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ speciesIndexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
@@ -1138,8 +1148,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         strongSelf.observation.localObservedOn = date;
                                                         strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:date];
                                                         
+                                                        [strongSelf.tableView beginUpdates];
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                     withRowAnimation:UITableViewRowAnimationFade];
+                                                        [strongSelf.tableView endUpdates];
                                                         
                                                     } cancelBlock:nil
                                                        origin:cell] showActionSheetPicker];
@@ -1193,8 +1205,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                            withProperties:@{ @"Via": [self analyticsVia],
                                                                                              @"New Value": newValue}];
                                                           
+                                                          [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
+                                                          [strongSelf.tableView endUpdates];
 
                                                       } cancelBlock:nil
                                                          origin:cell] showActionSheetPicker];
@@ -1220,8 +1234,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           strongSelf.observation.captive = @(selectedIndex);
                                                           
+                                                          [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
+                                                          [strongSelf.tableView endUpdates];
                                                           
                                                       } cancelBlock:nil
                                                          origin:cell] showActionSheetPicker];

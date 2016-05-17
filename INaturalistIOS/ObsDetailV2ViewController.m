@@ -363,13 +363,17 @@
 }
 
 - (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
 }
 
 - (void)reloadRowAtIndexPath:(NSIndexPath *)indexPath withAnimation:(UITableViewRowAnimation)animation {
+    [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                           withRowAnimation:animation];
+    [self.tableView endUpdates];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
