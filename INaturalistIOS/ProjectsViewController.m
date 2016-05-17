@@ -367,6 +367,9 @@ static const int ListControlIndexNearby = 2;
         self.navigationItem.rightBarButtonItem = self.syncActivityItem;
         [self syncFeaturedProjects];
     }
+    
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 15 + 29 + 15, 0, 0);
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
