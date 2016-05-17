@@ -69,7 +69,7 @@
                                                         toItem:self.projectImage
                                                      attribute:NSLayoutAttributeRight
                                                     multiplier:1
-                                                      constant:15]];
+                                                      constant:14]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                      attribute:NSLayoutAttributeRight
