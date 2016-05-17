@@ -126,6 +126,12 @@
     PhotosPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
     
     if (self.observation.observationPhotos.count > 0) {
+        
+        if (self.viewingPhoto + 1 > self.observation.observationPhotos.count) {
+            // user was viewing, and deleted, the last photo in the observation
+            self.viewingPhoto = self.viewingPhoto - 1;
+        }
+
         id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
         if (op.photoKey) {
             cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
