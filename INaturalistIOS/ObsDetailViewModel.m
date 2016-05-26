@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDImageCache.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
@@ -134,8 +135,9 @@
 
         id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
         if (op.photoKey) {
-            cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
-        } else {
+            cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+        }
+        if (!cell.iv.image) {
             [cell.iv sd_setImageWithURL:op.largePhotoUrl];
         }
     } else {

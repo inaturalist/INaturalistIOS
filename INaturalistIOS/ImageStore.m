@@ -11,6 +11,7 @@
 
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <SDWebImage/SDImageCache.h>
 
 #import "ImageStore.h"
 #import "Analytics.h"
@@ -19,7 +20,9 @@
 
 @interface ImageStore () {
     NSOperationQueue *resizeQueue;
+    SDImageCache *_nonexpiringImageCache;
 }
+@property (readonly) SDImageCache *nonexpiringImageCache;
 @end
 
 @implementation ImageStore
@@ -34,6 +37,17 @@
     });
     return _sharedInstance;
 }
+
+- (SDImageCache *)nonexpiringImageCache {
+    if (!_nonexpiringImageCache) {
+        _nonexpiringImageCache = [[SDImageCache alloc] initWithNamespace:@"inat.nonexpiring"];
+        _nonexpiringImageCache.maxCacheAge = DBL_MAX;
+        _nonexpiringImageCache.maxCacheSize = 0;
+    }
+    
+    return _nonexpiringImageCache;
+}
+
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -52,193 +66,81 @@
 
 - (UIImage *)find:(NSString *)key
 {
-    return [self find:key forSize:ImageStoreOriginalSize];
+    return [self find:key forSize:ImageStoreLargeSize];
 }
 
-- (UIImage *)find:(NSString *)key forSize:(int)size
-{
+- (UIImage *)find:(NSString *)key forSize:(int)size {
     NSString *imgKey = [self keyForKey:key forSize:size];
-    UIImage *image = [self.dictionary objectForKey:imgKey];
-    if (!image) {
-        image = [UIImage imageWithContentsOfFile:[self pathForKey:imgKey]];
-        if (image) {
-            [dictionary setValue:image forKey:imgKey];
-        } else {
-            NSLog(@"Error: couldn't find image file for %@", imgKey);
+    UIImage *img = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imgKey];
+    
+    if (!img) {
+        // attempt to find it at the old path
+        NSString *oldPath = [self oldPathForKey:key forSize:size];
+        img = [UIImage imageWithContentsOfFile:oldPath];
+
+        if (img) {
+            // move to new path (ie save in sdimagecache]
+            [[SDImageCache sharedImageCache] storeImage:img forKey:imgKey];
+            
+            // reload it from the new location
+            img = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imgKey];
+            
+            // delete the old file
+            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:nil];
         }
     }
-    return image;
+    
+    return img;
 }
 
 - (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError *__autoreleasing *)storeError {
     [[Analytics sharedClient] debugLog:@"ASSET STORE: begin"];
     
-    NSString *filePath = [self pathForKey:key];
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:filePath])
-        [fileManager createFileAtPath:filePath contents:nil attributes:nil];
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
-    if (!fileHandle) {
-        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal no filehandle"];
-        return NO;
-    }
-    long long assetSize = asset.defaultRepresentation.size;
-
     @autoreleasepool {
-        uint8_t buffer[64<<10];
-        for (long long offset=0; offset<assetSize; offset+=sizeof(buffer)) {
-            NSUInteger length = MIN(sizeof(buffer), assetSize-offset);
-            NSError *error = nil;
-            [asset.defaultRepresentation getBytes:buffer
-                                       fromOffset:offset
-                                           length:length
-                                            error:&error];
-            if (error) {
-                NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: error %@", error.localizedDescription];
-                [[Analytics sharedClient] debugLog:debugMsg];
-                *storeError = [error copy];
-                fileHandle = nil;
-                break;
-            }
-            @try {
-                [fileHandle writeData:[NSData dataWithBytesNoCopy:buffer length:length freeWhenDone:NO]];
-            }
-            @catch (NSException *exception) {
-                fileHandle = nil;
-                break;
-            }
-        }
+        // large = fullsize image but truncated to 2048x2048 pixels max (aspect ratio scaled)
+        UIImage *image = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]];
+        UIImage *resized = [self imageResized:image longEdge:INATURALIST_ORG_MAX_PHOTO_EDGE];
+        NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
+        [[self nonexpiringImageCache] storeImage:resized forKey:largeKey];
     }
     
-    if (fileHandle == nil) {
-        [[Analytics sharedClient] debugLog:@"ASSET STORE: fatal no filehandle"];
-        return NO;
-    }
-    
-    [fileHandle truncateFileAtOffset:assetSize];
-    [fileHandle closeFile];
-
-    float screenMax = MAX([UIScreen mainScreen].bounds.size.width,
-                          [UIScreen mainScreen].bounds.size.height);
-    
-    // "small" == asset fullscreen
     @autoreleasepool {
-        UIImage *fullScreen = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-        NSData *data = UIImageJPEGRepresentation(fullScreen, 1.0f);
-        NSString *path = [self pathForKey:key forSize:ImageStoreSmallSize];
-        NSError *saveError = nil;
-        [data writeToFile:path options:NSDataWritingAtomic error:&saveError];
-        if (saveError) {
-            NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal save small %@", saveError.localizedDescription];
-            [[Analytics sharedClient] debugLog:debugMsg];
-            *storeError = [saveError copy];
-            return NO;
-        }
+        // small = full screen asset
+        UIImage *image = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
+        NSString *smallKey = [self keyForKey:key forSize:ImageStoreSmallSize];
+        [[SDImageCache sharedImageCache] storeImage:image forKey:smallKey];
     }
     
-    // "square" == asset square
-    UIImage *thumbnail = [UIImage imageWithCGImage:asset.thumbnail];
-    NSData *data = UIImageJPEGRepresentation(thumbnail, 1.0f);
-    NSString *path = [self pathForKey:key forSize:ImageStoreSquareSize];
-    NSError *saveError = nil;
-    [data writeToFile:path options:NSDataWritingAtomic error:&saveError];
-    if (saveError) {
-        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: fatal save thumbnail %@", saveError.localizedDescription];
-        [[Analytics sharedClient] debugLog:debugMsg];
-        *storeError = [saveError copy];
-        return NO;
+    @autoreleasepool {
+        // square = asset thumbnail
+        UIImage *image = [UIImage imageWithCGImage:asset.thumbnail];
+        NSString *squareKey = [self keyForKey:key forSize:ImageStoreSquareSize];
+        [[SDImageCache sharedImageCache] storeImage:image forKey:squareKey];
     }
-    
-    // generate "large" on a single-threaded background queue
-    [resizeQueue addOperationWithBlock:^{
-        @autoreleasepool {
-            [self generateImageWithParams:@{
-                                            @"key": key,
-                                            @"size": @(ImageStoreLargeSize),
-                                            @"longEdge": @(INATURALIST_ORG_MAX_PHOTO_EDGE),
-                                            @"compression": @(1.0),
-                                            }
-                                    error:nil];
-        }
-        
-        // once we're done making cutdowns from it, delete the original
-        NSError *error = nil;
-        [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
-        if (error) {
-            NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: error deleting original %@", error.localizedDescription];
-            [[Analytics sharedClient] debugLog:debugMsg];
-        }
-    }];
     
     [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
     return YES;
 }
 
-- (BOOL)generateImageWithParams:(NSDictionary *)params error:(NSError **)generatorError {
-    NSString *key = [params objectForKey:@"key"];
-    if (!key)
-        return NO;
-    
-    int size = [[params objectForKey:@"size"] intValue];
-    if (!size) size = ImageStoreOriginalSize;
-    
-    NSString *sizedKey = [self keyForKey:key forSize:size];
-    
-    CGFloat longEdge = [[params objectForKey:@"longEdge"] floatValue];
-    float compression = [[params objectForKey:@"compression"] floatValue];
-    if (!compression || compression == 0) compression = 1.0;
-    
-    UIImage *image = [self find:key];
-    if (!image) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"ASSET STORE: failed on size %d", size]];
-        return NO;
-    }
-    
+- (UIImage *)imageResized:(UIImage *)image longEdge:(CGFloat)longEdge {
     CGSize imgSize;
-    if (size == ImageStoreSquareSize) {
-        imgSize = CGSizeMake(75, 75);
+    float newWidth = image.size.width;
+    float newHeight = image.size.height;
+    float max = longEdge ? longEdge : MAX(newWidth, newHeight);
+    float scaleFactor = max / MAX(newWidth, newHeight);
+    if (newWidth > newHeight) {
+        newWidth = max;
+        newHeight = newHeight * scaleFactor;
     } else {
-        float newWidth = image.size.width;
-        float newHeight = image.size.height;
-        float max = longEdge ? longEdge : MAX(newWidth, newHeight);
-        float scaleFactor = max / MAX(newWidth, newHeight);
-        if (newWidth > newHeight) {
-            newWidth = max;
-            newHeight = newHeight * scaleFactor;
-        } else {
-            newHeight = max;
-            newWidth = newWidth * scaleFactor;
-        }
-        imgSize = CGSizeMake(newWidth, newHeight);
+        newHeight = max;
+        newWidth = newWidth * scaleFactor;
     }
-    
+    imgSize = CGSizeMake(newWidth, newHeight);
+
     UIImage *newImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:imgSize];
-    if (!newImage) {
-        [[Analytics sharedClient] debugLog:@"ASSET STORE: couldn't scale"];
-        return NO;
-    }
-    
-    [self.dictionary setValue:newImage forKey:sizedKey];
-    NSString *filePath = [self pathForKey:sizedKey];
-    NSData *data = UIImageJPEGRepresentation(newImage, compression);
-    
-    if (!data) {
-        [[Analytics sharedClient] debugLog:@"ASSET STORE: no jpeg representation"];
-        return NO;
-    }
-    
-    NSError *writeError;
-    [data writeToFile:filePath options:NSDataWritingAtomic error:&writeError];
-    if (writeError) {
-        NSString *debugMsg = [NSString stringWithFormat:@"ASSET STORE: write error %@", writeError.localizedDescription];
-        [[Analytics sharedClient] debugLog:debugMsg];
-        *generatorError = [writeError copy];
-        return NO;
-    }
-    
-    return YES;
+    return newImage;
 }
+
 
 - (void)destroy:(NSString *)key
 {
@@ -260,29 +162,66 @@
 
 - (NSString *)pathForKey:(NSString *)key
 {
-    return [self pathForKey:key forSize:ImageStoreOriginalSize];
+    return [self pathForKey:key forSize:ImageStoreLargeSize];
 }
 
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size
 {
+    NSString *imgKey = [self keyForKey:key forSize:size];
+    
+    if (size == ImageStoreLargeSize) {
+        // try the nonexpiring cache
+        if ([[self nonexpiringImageCache] diskImageExistsWithKey:imgKey]) {
+            return [[self nonexpiringImageCache] defaultCachePathForKey:imgKey];
+        }
+    }
+    
+    // trying the default cache
+    if ([[SDImageCache sharedImageCache] diskImageExistsWithKey:imgKey]) {
+        return [[SDImageCache sharedImageCache] defaultCachePathForKey:imgKey];
+    } else {
+        // try the old path
+        NSString *oldPath = [self oldPathForKey:key forSize:size];
+        UIImage *img = [UIImage imageWithContentsOfFile:oldPath];
+        if (img) {
+            [[SDImageCache sharedImageCache] storeImage:img forKey:imgKey];
+            // delete the old path
+            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:nil];
+            // return the new cache path
+            return [[SDImageCache sharedImageCache] defaultCachePathForKey:imgKey];
+        }
+    }
+    
+    return nil;
+}
+
+- (void)makeExpiring:(NSString *)imgKey {
+    if ([[self nonexpiringImageCache] diskImageExistsWithKey:imgKey]) {
+        // fetch the image from the non-expiring cache
+        UIImage *image = [[self nonexpiringImageCache] imageFromDiskCacheForKey:imgKey];
+        
+        // store in the default cache
+        [[SDImageCache sharedImageCache] storeImage:image forKey:imgKey];
+        
+        // delete from the non-expiring cache
+        [[self nonexpiringImageCache] removeImageForKey:imgKey fromDisk:TRUE];
+    }
+}
+
+- (NSString *)oldPathForKey:(NSString *)key forSize:(int)size {
     NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *docDir = [docDirs objectAtIndex:0];
     NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
-        NSError *error;
         [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
                                   withIntermediateDirectories:YES
                                                    attributes:nil
-                                                        error:&error];
+                                                        error:nil];
     }
+    
     return [NSString stringWithFormat:@"%@.jpg",
             [photoDirPath stringByAppendingPathComponent:
              [self keyForKey:key forSize:size]]];
-}
-
-- (BOOL)fileExistsForKey:(NSString *)key andSize:(int)size
-{
-    return [[NSFileManager defaultManager] fileExistsAtPath:[ self pathForKey:key forSize:size]];
 }
 
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size

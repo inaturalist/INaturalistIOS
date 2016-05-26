@@ -677,22 +677,9 @@
     // configure the photo
     if (o.sortedObservationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-        if (op.photoKey == nil) {
+        cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        if (cell.observationImage.image == nil) {
             [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
-        } else {
-            cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
-            
-            // if we can't find a square image...
-            if (!cell.observationImage.image) {
-                // ...try again a few times, it's probably a new image in the process of being cut-down
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) {
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
-                        [self.tableView endUpdates];
-                    }
-                });
-            }
         }
     } else {
         cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
