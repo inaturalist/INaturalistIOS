@@ -18,6 +18,7 @@
 #import "Project.h"
 #import "LoginController.h"
 #import "NSURL+INaturalist.h"
+#import "ImageStore.h"
 
 @interface UploadManager () <RKRequestDelegate, RKObjectLoaderDelegate> {
     Observation *_currentlyUploadingObservation;
@@ -546,7 +547,7 @@
 
         [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
     }
-
+    
     NSError *error = nil;
     object.syncedAt = [NSDate date];
 
@@ -566,6 +567,8 @@
             if ([object isKindOfClass:[Observation class]]) {
                 thisObservation = (Observation *)object;
             } else if ([object isKindOfClass:[ObservationPhoto class]]) {
+                ObservationPhoto *op = (ObservationPhoto *)object;
+                [[ImageStore sharedImageStore] makeExpiring:op.photoKey];
                 thisObservation = ((ObservationPhoto *)object).observation;
             } else if ([object isKindOfClass:[ProjectObservation class]]) {
                 thisObservation = ((ProjectObservation *)object).observation;
