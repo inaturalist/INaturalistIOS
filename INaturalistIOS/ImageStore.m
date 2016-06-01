@@ -196,6 +196,8 @@
 }
 
 - (void)makeExpiring:(NSString *)imgKey {
+    if (!imgKey) { return; }
+    
     if ([[self nonexpiringImageCache] diskImageExistsWithKey:imgKey]) {
         // fetch the image from the non-expiring cache
         UIImage *image = [[self nonexpiringImageCache] imageFromDiskCacheForKey:imgKey];
