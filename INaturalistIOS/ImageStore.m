@@ -98,8 +98,18 @@
     
     @autoreleasepool {
         // large = fullsize image but truncated to 2048x2048 pixels max (aspect ratio scaled)
-        UIImage *image = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]];
-        UIImage *resized = [self imageResized:image longEdge:INATURALIST_ORG_MAX_PHOTO_EDGE];
+        CGSize imageSize = [[asset defaultRepresentation] dimensions];
+        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
+        CGFloat scale = [[asset defaultRepresentation] scale];
+        
+        if (longestSide > INATURALIST_ORG_MAX_PHOTO_EDGE) {
+            scale = INATURALIST_ORG_MAX_PHOTO_EDGE / longestSide;
+        }
+        
+        // resize with CGImage is fast enough for us
+        UIImage *resized = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]
+                                               scale:scale
+                                         orientation:[[asset defaultRepresentation] orientation]];
         NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
         [[self nonexpiringImageCache] storeImage:resized forKey:largeKey];
     }
@@ -121,26 +131,6 @@
     [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
     return YES;
 }
-
-- (UIImage *)imageResized:(UIImage *)image longEdge:(CGFloat)longEdge {
-    CGSize imgSize;
-    float newWidth = image.size.width;
-    float newHeight = image.size.height;
-    float max = longEdge ? longEdge : MAX(newWidth, newHeight);
-    float scaleFactor = max / MAX(newWidth, newHeight);
-    if (newWidth > newHeight) {
-        newWidth = max;
-        newHeight = newHeight * scaleFactor;
-    } else {
-        newHeight = max;
-        newWidth = newWidth * scaleFactor;
-    }
-    imgSize = CGSizeMake(newWidth, newHeight);
-
-    UIImage *newImage = [ImageStore imageWithImage:image scaledToSizeWithSameAspectRatio:imgSize];
-    return newImage;
-}
-
 
 - (void)destroy:(NSString *)key
 {
@@ -257,110 +247,6 @@
 - (void)clearCache:(NSNotification *)note
 {
     [self clearCache];
-}
-
-// Adapted from http://stackoverflow.com/questions/1282830/uiimagepickercontroller-uiimage-memory-and-more
-// this code has numerous authors, please see stackoverflow for them all
-+ (UIImage*)imageWithImage:(UIImage*)sourceImage scaledToSizeWithSameAspectRatio:(CGSize)targetSize
-{  
-    CGSize imageSize = sourceImage.size;
-    CGFloat width = imageSize.width;
-    CGFloat height = imageSize.height;
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    
-    // don't scale up
-    if (targetSize.width > width || targetSize.height > height) {
-        targetWidth = width;
-        targetHeight = height;
-    }
-    
-    CGFloat scaleFactor = 0.0;
-    CGFloat scaledWidth = targetWidth;
-    CGFloat scaledHeight = targetHeight;
-    CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
-    
-    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
-        CGFloat widthFactor = targetWidth / width;
-        CGFloat heightFactor = targetHeight / height;
-        
-        if (widthFactor > heightFactor) {
-            scaleFactor = widthFactor; // scale to fit height
-        }
-        else {
-            scaleFactor = heightFactor; // scale to fit width
-        }
-        
-        scaledWidth  = width * scaleFactor;
-        scaledHeight = height * scaleFactor;
-        
-        // center the image
-        if (widthFactor > heightFactor) {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5; 
-        }
-        else if (widthFactor < heightFactor) {
-            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-        }
-    }     
-    
-    CGImageRef imageRef = [sourceImage CGImage];
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
-    
-    if (bitmapInfo == kCGImageAlphaNone) {
-        bitmapInfo = kCGImageAlphaNoneSkipLast;
-    }
-    
-    CGContextRef bitmap;
-    bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
-    
-    // In the right or left cases, we need to switch scaledWidth and scaledHeight,
-    // and also the thumbnail point
-    if (sourceImage.imageOrientation == UIImageOrientationLeft) {
-        thumbnailPoint = CGPointMake(thumbnailPoint.y, thumbnailPoint.x);
-        CGFloat oldScaledWidth = scaledWidth;
-        scaledWidth = scaledHeight;
-        scaledHeight = oldScaledWidth;
-        CGFloat translation;
-        if (targetWidth == targetHeight) {
-            translation = -targetHeight;
-        } else {
-            translation = -scaledHeight;
-        }
-        
-        CGContextRotateCTM (bitmap, radians(90));
-        CGContextTranslateCTM (bitmap, 0, translation);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationRight) {
-        thumbnailPoint = CGPointMake(thumbnailPoint.y, thumbnailPoint.x);
-        CGFloat oldScaledWidth = scaledWidth;
-        scaledWidth = scaledHeight;
-        scaledHeight = oldScaledWidth;
-        CGFloat translation;
-        if (targetWidth == targetHeight) {
-            translation = -targetWidth;
-        } else {
-            translation = -scaledWidth;
-        }
-        
-        CGContextRotateCTM (bitmap, radians(-90));
-        CGContextTranslateCTM (bitmap, translation, 0);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationUp) {
-        // NOTHING
-    } else if (sourceImage.imageOrientation == UIImageOrientationDown) {
-        CGContextTranslateCTM (bitmap, targetWidth, targetHeight);
-        CGContextRotateCTM (bitmap, radians(-180.));
-    }
-    
-    CGContextDrawImage(bitmap, CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledWidth, scaledHeight), imageRef);
-    CGImageRef ref = CGBitmapContextCreateImage(bitmap);
-    UIImage* newImage = [UIImage imageWithCGImage:ref];
-    
-    CGContextRelease(bitmap);
-    CGImageRelease(ref);
-        
-    return newImage; 
 }
 
 - (NSString *)urlStringForKey:(NSString *)key forSize:(int)size
