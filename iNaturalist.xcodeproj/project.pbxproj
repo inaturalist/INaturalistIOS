@@ -760,6 +760,9 @@
 		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
 		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
+		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FAE9D0981D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FAEF232C1C7CD80300208F44 /* ProjectDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailV2ViewController.h; sourceTree = "<group>"; };
 		FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectDetailV2ViewController.m; sourceTree = "<group>"; };
 		FAEF232F1C7CF20500208F44 /* ProjectDetailPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailPageViewController.h; sourceTree = "<group>"; };
@@ -1699,6 +1702,7 @@
 				it,
 				pt,
 				he,
+				ko,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2118,6 +2122,7 @@
 				FA1B37C11AD88C06002A00A5 /* it */,
 				FA1B37C41AD88EED002A00A5 /* pt */,
 				890DE36A1B41357000207219 /* he */,
+				FAE9D0961D13807900137660 /* ko */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
@@ -2133,6 +2138,7 @@
 				FA1B37BD1AD88BE3002A00A5 /* it */,
 				FA1B37C51AD88EF3002A00A5 /* pt */,
 				890DE36B1B41357000207219 /* he */,
+				FAE9D0971D13807900137660 /* ko */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2148,6 +2154,7 @@
 				FA1B37BB1AD88BCF002A00A5 /* it */,
 				FA1B37C21AD88EDC002A00A5 /* pt */,
 				890DE36C1B41357000207219 /* he */,
+				FAE9D0981D13807900137660 /* ko */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
