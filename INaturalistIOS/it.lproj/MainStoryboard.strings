@@ -5,10 +5,10 @@
 "0Q2-fy-dMQ.text" = "Tutorial";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
-"M0h-Eg-gr3.text" = "Autocomplete names";
+"M0h-Eg-gr3.text" = "Completa automaticamente i nomi";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
-"thU-yQ-HUV.text" = "Suddividere in categorie nuove osservazioni";
+"thU-yQ-HUV.text" = "Suddividi in categorie nuove osservazioni";
 
 /* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
 "g3B-dy-Lka.text" = "La rete di iNaturalist";
@@ -299,7 +299,7 @@
 "pL9-Nd-0JB.headerTitle" = "Aiuto";
 
 /* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
-"sxb-6N-VGO.headerTitle" = "Saperne di più";
+"sxb-6N-VGO.headerTitle" = "Informazioni su";
 
 /* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
 "zPB-Sx-9Uh.text" = "Ringraziamenti";
