@@ -360,20 +360,31 @@ static NSDateFormatter *shortFormatter;
                                        }];
     }
     
-    if (observation.commonName && ![observation.commonName isEqualToString:@""]) {
-        commonNameLabel.text = observation.commonName;
+    NSString *commonName = nil;
+    NSString *scientificName = nil;
+    NSString *speciesGuess = observation.speciesGuess;
+    NSString *taxonRank = nil;
+    
+    if (observation.taxon) {
+        commonName = observation.taxon.defaultName;
+        scientificName = observation.taxon.name;
+        taxonRank = observation.taxon.rank;
+    }
+    
+    if (commonName && ![commonName isEqualToString:@""]) {
+        commonNameLabel.text = commonName;
         commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
-    } else if (observation.speciesGuess && ![observation.speciesGuess isEqualToString:@""]) {
-        commonNameLabel.text = observation.speciesGuess;
-        if ([observation.speciesGuess isEqualToString:observation.taxonName]) {
-            commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+    } else if (speciesGuess && ![speciesGuess isEqualToString:@""]) {
+        commonNameLabel.text = speciesGuess;
+        if ([speciesGuess isEqualToString:scientificName]) {
+            commonNameLabel.font = [UIFont fontForTaxonRankName:taxonRank
                                                          ofSize:commonNameLabel.font.pointSize];
         } else {
             commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
         }
-    } else if (observation.taxonName && ![observation.taxonName isEqualToString:@""]) {
-        commonNameLabel.text = observation.taxonName;
-        commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+    } else if (scientificName && ![scientificName isEqualToString:@""]) {
+        commonNameLabel.text = scientificName;
+        commonNameLabel.font = [UIFont fontForTaxonRankName:taxonRank
                                                      ofSize:commonNameLabel.font.pointSize];
     } else {
         commonNameLabel.text = NSLocalizedString(@"Something...", nil);
@@ -382,9 +393,10 @@ static NSDateFormatter *shortFormatter;
     commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
     // don't show the same name twice
-    if (![observation.taxonName isEqualToString:commonNameLabel.text])
-        scientificNameLabel.text = observation.taxonName;
-    scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:14.0f];
+    if (![scientificName isEqualToString:commonNameLabel.text]) {
+        scientificNameLabel.text = scientificName;
+        scientificNameLabel.font = [UIFont fontForTaxonRankName:taxonRank ofSize:14.0f];
+    }
     
     observerNameLabel.text = observation.observerName;
     
