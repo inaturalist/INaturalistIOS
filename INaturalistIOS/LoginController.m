@@ -288,9 +288,9 @@ NSInteger INatMinPasswordLength = 6;
                                              insertIntoManagedObjectContext:context];
                                   user.login = [parsedData objectForKey:@"login"] ?: nil;
                                   user.recordID = [parsedData objectForKey:@"id"] ?: nil;
-                                  user.observationsCount = [parsedData objectForKey:@"observations_count"] ?: nil;
-                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: nil;
-                                  user.siteId = [parsedData objectForKey:@"site_id"] ?: nil;
+                                  user.observationsCount = [parsedData objectForKey:@"observations_count"] ?: @(0);
+                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: @(0);
+                                  user.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
                                   
                                   [[Analytics sharedClient] registerUserWithIdentifier:user.recordID.stringValue];
                                   
@@ -303,7 +303,7 @@ NSInteger INatMinPasswordLength = 6;
                                       return;
                                   }
                                   
-                                  NSString *userName = [parsedData objectForKey:@"login"];
+                                  NSString *userName = user.login;
                                   [[NSUserDefaults standardUserDefaults] setValue:userName
                                                                            forKey:INatUsernamePrefKey];
                                   
