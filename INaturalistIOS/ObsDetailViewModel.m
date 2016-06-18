@@ -34,6 +34,7 @@
 #import "UIColor+ExploreColors.h"
 #import "INatPhoto.h"
 #import "UIImage+INaturalist.h"
+#import "NSLocale+INaturalist.h"
 
 @interface ObsDetailViewModel ()
 
@@ -261,6 +262,11 @@
         if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             
             NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonID.integerValue];
+            NSString *localeString = [NSLocale inat_serverFormattedLocale];
+            if (localeString && ![localeString isEqualToString:@""]) {
+                resource = [resource stringByAppendingFormat:@"?locale=%@", localeString];
+            }
+
             
             __weak typeof(self) weakSelf = self;
             RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
