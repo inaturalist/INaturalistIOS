@@ -137,7 +137,7 @@
 
     }
     
-    observationNameLabel.text = observation.commonName;
+    observationNameLabel.text = observation.taxon.defaultName;
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
         observationNameLabel.text = observation.speciesGuess;
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
