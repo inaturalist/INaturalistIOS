@@ -7,6 +7,7 @@
 //
 
 #import "INatAPI.h"
+#import "NSLocale+INaturalist.h"
 
 @implementation INatAPI
 
@@ -16,6 +17,10 @@
 
 - (void)fetch:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionHandler)done {
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        urlString = [urlString stringByAppendingFormat:@"?locale=%@", localeString];
+    }
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
         NSURLSession *session = [NSURLSession sharedSession];
