@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
-@interface ExplorePerson : NSObject
+@interface ExplorePerson : MTLModel <MTLJSONSerializing>
 
 @property (assign) NSInteger personId;
 @property (copy) NSString *login;

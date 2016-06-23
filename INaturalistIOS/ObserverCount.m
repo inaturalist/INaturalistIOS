@@ -8,7 +8,21 @@
 //
 
 #import "ObserverCount.h"
+#import "ExploreUser.h"
 
 @implementation ObserverCount
+
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey{
+    return @{
+		@"observer": @"user",
+		@"observationCount": @"observation_count",
+		@"speciesCount": @"species_count",
+	};
+}
+
++ (NSValueTransformer *)observerJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
 
 @end

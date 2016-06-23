@@ -10,6 +10,6 @@
 
 @interface ObservationAPI : INatAPI
 
-- (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionHandler)done;
+- (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

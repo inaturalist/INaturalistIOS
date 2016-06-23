@@ -11,6 +11,7 @@
 
 #import "ExploreCommentCell.h"
 #import "ExploreComment.h"
+#import "ExploreUser.h"
 #import "UIColor+ExploreColors.h"
 
 @interface ExploreCommentCell () {
@@ -151,8 +152,8 @@ static UIImage *userIconPlaceholder;
 - (void)setComment:(ExploreComment *)comment {
     _comment = comment;
     
-    if (comment.commenterIconUrl) {
-        [commenterImageView sd_setImageWithURL:[NSURL URLWithString:comment.commenterIconUrl]
+    if (comment.commenter.userIcon) {
+        [commenterImageView sd_setImageWithURL:comment.commenter.userIcon
                               placeholderImage:userIconPlaceholder
                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                          [commenterImageView setNeedsDisplay];
@@ -168,7 +169,7 @@ static UIImage *userIconPlaceholder;
         dateString = [shortDateFormatter stringFromDate:comment.commentedDate];
     }
     commenterAndDateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Added by %1$@ on %2$@", @"$1 is username, $2 is datetime"),
-                                  comment.commenterName, dateString];
+                                  comment.commenter.login, dateString];
 
     
     // configure UI

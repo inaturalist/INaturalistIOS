@@ -567,7 +567,7 @@
                      withProperties:@{ @"Via": @"View Obs Agree" }];
     
     NSDictionary *params = @{
-                             @"identification[observation_id]": self.observation.inatRecordId,
+                             @"identification[observation_id]": @(self.observation.inatRecordId),
                              @"identification[taxon_id]": @(button.tag),
                              };
     
@@ -582,7 +582,7 @@
 
 - (void)markActivityAsSeen {
     // check for network
-    if (self.observation.inatRecordId && self.observation.hasUnviewedActivity.boolValue && [self.observation isKindOfClass:[Observation class]]) {
+    if (self.observation.inatRecordId && self.observation.hasUnviewedActivity && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
         
         [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];

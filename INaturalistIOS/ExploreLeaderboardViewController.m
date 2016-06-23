@@ -14,6 +14,7 @@
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
 #import "Taxon.h"
+#import "ExploreUser.h"
 #import "Analytics.h"
 #import "ObserverCount.h"
 #import "UIImage+INaturalist.h"
@@ -149,8 +150,8 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     ObserverCount *count = [leaderboard objectAtIndex:indexPath.item];
     NSInteger obsCount = count.observationCount;
     NSInteger speciesCount = count.speciesCount;
-    NSString *username = count.observerName;
-    NSString *userIconUrl = count.observerIconUrl;
+    NSString *username = count.observer.login;
+    NSURL *userIconUrl = count.observer.userIcon;
     
     cell.username.text = username;
     
@@ -169,8 +170,8 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
         cell.speciesCount.text = @"Species: *";
     }
     
-    if (![userIconUrl isEqual:[NSNull null]] && ![userIconUrl isEqualToString:@""]) {
-        [cell.userIcon sd_setImageWithURL:[NSURL URLWithString:userIconUrl]];
+    if (userIconUrl) {
+    	[cell.userIcon sd_setImageWithURL:userIconUrl];
     } else {
         cell.userIcon.image = [UIImage inat_defaultUserImage];
     }

@@ -6,6 +6,9 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+#import <Mantle/Mantle.h>
+
+#import "ExploreObservation.h"
 #import "INatAPI.h"
 #import "NSLocale+INaturalist.h"
 
@@ -16,6 +19,9 @@
 }
 
 - (void)fetch:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionHandler)done {
+	done(@[], nil);
+	return;
+	
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSString *localeString = [NSLocale inat_serverFormattedLocale];
     if (localeString && ![localeString isEqualToString:@""]) {
@@ -64,15 +70,18 @@
                             });
                         }
                     }
-                    
+                
                 }] resume];
-
+        
     }
-
+    
 }
 
 
 - (void)fetchWithCount:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionCountHandler)done {
+	done(@[], 0, nil);
+	return;
+	
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
@@ -127,5 +136,50 @@
     
 }
 
+- (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (url) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        [[session dataTaskWithURL:url
+                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                    if (error) {
+                        done(nil, 0, error);
+                    } else {
+                        [self extractObjectsFromData:data
+                                        classMapping:classMapping
+                                             handler:done];
+                    }
+                }] resume];
+    }
+}
+
+// extract objects from server response data
+- (void)extractObjectsFromData:(NSData *)data classMapping:(Class)ClassForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    NSError *error;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error) {
+        done(nil, 0, error);
+    } else {
+        NSMutableArray *results = [NSMutableArray array];
+        NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
+        
+        for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+            NSError *error;
+            MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                         fromJSONDictionary:resultJSON
+                                                      error:&error];
+            
+            if (result) {
+                [results addObject:result];
+            } else {
+                // skip this one
+                NSLog(@"ERROR: %@", error);
+            }
+        }
+        done([NSArray arrayWithArray:results], totalResults, nil);
+    }
+}
 
 @end

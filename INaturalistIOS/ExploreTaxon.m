@@ -10,13 +10,17 @@
 
 @implementation ExploreTaxon
 
-- (BOOL)validateTaxonId:(id *)ioValue error:(NSError **)outError {
-    // Reject a taxon ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
++ (NSDictionary *)JSONKeyPathsByPropertyKey{
+    return @{
+		@"taxonId": @"id",
+		@"webContent": @"body",
+		@"commonName": @"common_name.name",
+		@"scientificName": @"name",
+		@"photoUrl": @"default_photo.square_url",
+		@"rankName": @"rank",
+		@"rankLevel": @"rank_level",
+		@"iconicTaxonName": @"iconic_taxon_name",
+	};
 }
 
 @end

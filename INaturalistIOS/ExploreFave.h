@@ -7,14 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
 #import "FaveVisualization.h"
 
-@interface ExploreFave : NSObject <FaveVisualization>
+@class ExploreUser;
 
-@property (nonatomic, copy) NSString *faverName;
-@property (nonatomic, assign) NSInteger faverId;
-@property (nonatomic, copy) NSString *faverIconUrl;
+@interface ExploreFave : MTLModel <FaveVisualization, MTLJSONSerializing>
+
+@property (nonatomic, retain) ExploreUser *faver;
 @property (nonatomic, copy) NSDate *faveDate;
 
 @end

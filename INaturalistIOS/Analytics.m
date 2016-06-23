@@ -44,9 +44,9 @@
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue {
     if (self.librato) {
-        LibratoGaugeMetric *metric = [LibratoGaugeMetric metricNamed:metricName
-                                                              valued:metricValue];
-        [self.librato add:metric];
+        //LibratoGaugeMetric *metric = [LibratoGaugeMetric metricNamed:metricName
+        //                                                      valued:metricValue];
+        //[self.librato add:metric];
     }
     
 #ifdef INatCrashlyticsKey

@@ -96,17 +96,17 @@
             
             CLLocationCoordinate2D coords;
             
-            if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+            if (self.observation.privateLatitude && self.observation.privateLatitude != 0) {
+                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude, self.observation.privateLongitude);
             } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+                coords = CLLocationCoordinate2DMake(self.observation.latitude, self.observation.longitude);
             }
             
             if (CLLocationCoordinate2DIsValid(coords)) {
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
-                CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
+                CLLocationDistance distance = self.observation.positionalAccuracy ?: 500;
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
                 
                 MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
@@ -119,7 +119,7 @@
                 } else {
                     NSString *positionalAccuracy = nil;
                     if (self.observation.positionalAccuracy) {
-                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy.integerValue];
+                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy];
                     } else {
                         positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
                     }
@@ -270,7 +270,7 @@
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a location to be considered for Research Grade.", nil);
                 } else if (!self.observation.observedOn) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a date to be considered for Research Grade.", nil);
-                } else if (self.observation.captive.boolValue) {
+                } else if (self.observation.captive) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.", nil);
                 } else {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation has been voted as Casual Grade by the iNaturalist community.", nil);
@@ -367,9 +367,9 @@
             CLLocationCoordinate2D coords;
             
             if (self.observation.privateLatitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
+                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude, self.observation.privateLongitude);
             } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+                coords = CLLocationCoordinate2DMake(self.observation.latitude, self.observation.longitude);
             }
             
             if (CLLocationCoordinate2DIsValid(coords)) {

@@ -7,21 +7,24 @@
 //
 
 #import "SpeciesCount.h"
+#import "ExploreTaxon.h"
 
 @implementation SpeciesCount
 
-- (BOOL)isGenusOrLower
-{
-    return (self.speciesRankLevel > 0 && self.speciesRankLevel <= 20);
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+		@"taxon": @"taxon",
+		@"speciesCount": @"count",
+	};
 }
 
-- (BOOL)validateSpeciesRankLevel:(id *)ioValue error:(NSError **)outError {
-    // Reject a species rank level of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
++ (NSValueTransformer *)taxonJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
+}
+
+- (BOOL)isGenusOrLower
+{
+	return (self.taxon.rankLevel > 0 && self.taxon.rankLevel <= 20);
 }
 
 @end

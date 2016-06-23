@@ -7,8 +7,43 @@
 //
 
 #import "ExploreIdentification.h"
+#import "ExploreUser.h"
+#import "ExploreTaxon.h"
 
 @implementation ExploreIdentification
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+		@"identificationId": @"id",
+		@"identificationIsCurrent": @"current",
+		@"identificationBody": @"body",
+		@"taxon": @"taxon",
+		@"identifiedDate": @"created_at",
+		@"identifier": @"user",
+	};
+}
+
++ (NSValueTransformer *)identifierJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
++ (NSValueTransformer *)taxonJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
+}
+
++ (NSValueTransformer *)identifiedDateJSONTransformer {
+	static NSDateFormatter *_dateFormatter = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_dateFormatter = [[NSDateFormatter alloc] init];
+		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+		_dateFormatter.dateFormat = @"yyyy-MM-dd'%'HH:mm:ssZ";
+	});
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
 
 #pragma mark - ActivityVisualziation
 
@@ -19,7 +54,7 @@
 #pragma mark - IdentificationVisualization
 
 - (NSInteger)userId {
-    return self.identifierId;
+    return self.identifier.userId;
 }
 
 - (NSString *)body {
@@ -31,82 +66,39 @@
 }
 
 - (NSString *)userName {
-    return self.identifierName;
+    return self.identifier.login;
 }
 
 - (NSURL *)userIconUrl {
-    return [NSURL URLWithString:self.identifierIconUrl];
+	return self.identifier.userIcon;
 }
 
 - (NSString *)taxonCommonName {
-    return self.identificationCommonName;
+    return self.taxon.commonName;
 }
 
 - (NSString *)taxonScientificName {
-    return self.identificationScientificName;
+    return self.taxon.scientificName;
 }
 
 - (NSInteger)taxonId {
-    return self.identificationTaxonId;
+    return self.taxon.taxonId;
 }
 
 - (NSInteger)taxonRankLevel {
-    return self.identificationTaxonRankLevel;
+    return self.taxon.rankLevel;
 }
 
 - (NSString *)taxonRank {
-    return self.identificationTaxonRank;
+    return self.taxon.rankName;
 }
 
 - (NSURL *)taxonIconUrl {
-    return [NSURL URLWithString:self.identificationPhotoUrlString];
+	return self.taxon.photoUrl;
 }
 
 - (BOOL)isCurrent {
     return self.identificationIsCurrent;
 }
-
-
-- (BOOL)validateIdentificationId:(id *)ioValue error:(NSError **)outError {
-    // Reject a identifiation ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (BOOL)validateIdentificationTaxonId:(id *)ioValue error:(NSError **)outError {
-    // Reject a identification taxon ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (BOOL)validateIdentifierId:(id *)ioValue error:(NSError **)outError {
-    // Reject a identifier ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (BOOL)validateIdentificationTaxonRankLevel:(id *)ioValue error:(NSError **)outError {
-    // Reject a identification taxon rank level of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"Explore Identification by %@ at %@.",
-            self.userName, self.createdAt.description];
-}
-
 
 @end

@@ -21,28 +21,29 @@
     [[Analytics sharedClient] debugLog:@"Network - fetch observations for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations?project_id=%ld&per_page=200",
                       (long)project.recordID.integerValue];
-    [self fetchWithCount:path mapping:[ExploreMappingProvider observationMapping] handler:done];
+    [self fetch:path classMapping:[ExploreObservation class] handler:done];
 }
 
 - (void)speciesCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch species counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/species_counts?project_id=%ld",
                       (long)project.recordID.integerValue];
-    [self fetchWithCount:path mapping:[ExploreMappingProvider speciesCountMapping] handler:done];
+	
+    [self fetch:path classMapping:[SpeciesCount class] handler:done];
 }
 
 - (void)observerCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observer counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/observers?project_id=%ld",
                       (long)project.recordID.integerValue];
-    [self fetchWithCount:path mapping:[ExploreMappingProvider observerCountMapping] handler:done];
+	[self fetch:path classMapping:[ObserverCount class] handler:done];
 }
 
 - (void)identifierCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch identifier counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/identifiers?project_id=%ld",
                       (long)project.recordID.integerValue];
-    [self fetchWithCount:path mapping:[ExploreMappingProvider identifierCountMapping] handler:done];
+    [self fetch:path classMapping:[IdentifierCount class] handler:done];
 }
 
 @end

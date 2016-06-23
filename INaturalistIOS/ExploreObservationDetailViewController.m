@@ -19,6 +19,8 @@
 
 #import "ExploreObservationDetailViewController.h"
 #import "ExploreObservation.h"
+#import "ExploreTaxon.h"
+#import "ExploreUser.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreMappingProvider.h"
 #import "ExploreIdentification.h"
@@ -203,14 +205,14 @@
         switch (buttonIndex) {
             case 0:
                 // view taxa details
-                [self showTaxonDetailsForTaxonId:selectedIdentification.identificationTaxonId];
+                [self showTaxonDetailsForTaxonId:selectedIdentification.taxon.taxonId];
                 break;
             case 1:
                 // agree
                 if ([[NSUserDefaults standardUserDefaults] valueForKey:INatTokenPrefKey]) {
                     [[Analytics sharedClient] event:kAnalyticsEventExploreAddIdentification
                                      withProperties:@{ @"Via": @"Agree" }];
-                    [self addIdentificationWithTaxonId:selectedIdentification.identificationTaxonId];
+                    [self addIdentificationWithTaxonId:selectedIdentification.taxon.taxonId];
                 } else {
                     [self showSignupWithReason:NSLocalizedString(@"You must be logged in to identify observations.",
                                                                  @"Reason for signup prompt when trying to add an ID in explore.")];
@@ -343,8 +345,8 @@
     [@[view.commonNameLabel, view.scientificNameLabel] bk_each:^(UILabel *label) {
         label.userInteractionEnabled = YES;
         [label addGestureRecognizer:[UITapGestureRecognizer bk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-            if (self.observation.taxonId != 0) {
-                [self showTaxonDetailsForTaxonId:self.observation.taxonId];
+            if (self.observation.taxon && self.observation.taxon.taxonId != 0) {
+                [self showTaxonDetailsForTaxonId:self.observation.taxon.taxonId];
             }
         }]];
     }];

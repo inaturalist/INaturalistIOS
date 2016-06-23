@@ -95,7 +95,7 @@
 
     if (self.observation.inatRecordId) {
         if ([self.observation userThumbUrl]) {
-            [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:self.observation.userThumbUrl]];
+            [cell.cellImageView sd_setImageWithURL:self.observation.userThumbUrl];
         } else {
             cell.cellImageView.image = [UIImage inat_defaultUserImage];
         }
@@ -185,7 +185,7 @@
         cell.shareButton.hidden = YES;
     }
     
-    cell.captiveContainer.hidden = !self.observation.captive.boolValue;
+    cell.captiveContainer.hidden = !self.observation.captive;
     [cell.captiveInfoButton addTarget:self
                                action:@selector(captiveInfoPressed)
                      forControlEvents:UIControlEventTouchUpInside];
@@ -198,7 +198,7 @@
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
 
-    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID.integerValue];
+    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID];
     Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
 
     cell.taxonNameLabel.textColor = [UIColor blackColor];
@@ -263,7 +263,7 @@
         // fetch complete taxon
         if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
             
-            NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonID.integerValue];
+            NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonID];
             NSString *localeString = [NSLocale inat_serverFormattedLocale];
             if (localeString && ![localeString isEqualToString:@""]) {
                 resource = [resource stringByAppendingFormat:@"?locale=%@", localeString];
@@ -323,7 +323,7 @@
                           forControlEvents:UIControlEventTouchUpInside];
         
         // only show the activity count if there's unviewed activity on this obs
-        if (self.observation.hasUnviewedActivity.boolValue) {
+        if (self.observation.hasUnviewedActivity) {
             selector.activityButton.count = self.observation.sortedActivity.count;
         } else {
             selector.activityButton.count = 0;
@@ -403,8 +403,8 @@
             }
         } else if (indexPath.item == 2) {
             // taxa segue
-            if (self.observation.taxonID && [[self.observation taxonID] integerValue] != 0) {
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[self.observation taxonID]];
+            if (self.observation.taxonID && [self.observation taxonID] != 0) {
+                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@([self.observation taxonID])];
             } else {
                 // do nothing
             }

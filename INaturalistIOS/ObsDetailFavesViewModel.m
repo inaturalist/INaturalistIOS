@@ -184,7 +184,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
 
         // delete to /votes/unvote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId.integerValue];
+        requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId];
         hudText = NSLocalizedString(@"Un-faving...", nil);
         method = @"DELETE";
     } else {
@@ -192,7 +192,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
 
         // post to /votes/vote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.inatRecordId.integerValue];
+        requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.inatRecordId];
         hudText = NSLocalizedString(@"Faving...", nil);
         method = @"POST";
     }

@@ -7,15 +7,29 @@
 //
 
 #import "ExploreFave.h"
+#import "ExploreUser.h"
 
 @implementation ExploreFave
 
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+		@"faver": @"user",
+		@"faveDate": @"created_at",
+	};
+}
+
++ (NSValueTransformer *)faverJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
+#pragma mark - Fave Visualization
+
 - (NSURL *)userIconUrl {
-    return [NSURL URLWithString:self.faverIconUrl];
+	return self.faver.userIcon;
 }
 
 - (NSInteger)userId {
-    return self.faverId;
+	return self.faver.userId;
 }
 
 - (NSDate *)createdAt {
@@ -23,7 +37,7 @@
 }
 
 - (NSString *)userName {
-    return self.faverName;
+	return self.faver.login;
 }
 
 @end

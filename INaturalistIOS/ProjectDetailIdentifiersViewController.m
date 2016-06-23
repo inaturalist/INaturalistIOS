@@ -13,6 +13,7 @@
 #import "ProjectDetailIdentifiersViewController.h"
 #import "RankedUserObsSpeciesCell.h"
 #import "IdentifierCount.h"
+#import "ExploreUser.h"
 #import "UIImage+INaturalist.h"
 
 // both the nib name and the reuse identifier
@@ -47,15 +48,16 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
                                                                      forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     IdentifierCount *count = self.identifierCounts[indexPath.item];
-    cell.userNameLabel.text = count.identifierName;
+    cell.userNameLabel.text = count.identifier.login;
 
     cell.observationsCountLabel.text = @"";
     cell.observationsCountLabel.hidden = TRUE;
     cell.speciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.identificationCount];
     cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.identifierCounts indexOfObject:count] + 1];
 
-    if (count.identifierIconUrl) {
-        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:count.identifierIconUrl]];
+	NSLog(@"identifier usericon: %@", count.identifier.userIcon);
+    if (count.identifier.userIcon) {
+        [cell.userImageView sd_setImageWithURL:count.identifier.userIcon];
     } else {
         cell.userImageView.image = [UIImage inat_defaultUserImage];
     }

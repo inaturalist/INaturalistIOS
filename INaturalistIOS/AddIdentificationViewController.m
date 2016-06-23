@@ -102,7 +102,7 @@
     
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
-							 @"identification[observation_id]": [self.observation inatRecordId],
+							 @"identification[observation_id]": @([self.observation inatRecordId]),
 							 @"identification[taxon_id]": self.taxon.recordID
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];

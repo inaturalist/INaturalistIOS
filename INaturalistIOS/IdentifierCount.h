@@ -7,14 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
-@class ExplorePerson;
+@class ExploreUser;
 
-@interface IdentifierCount : NSObject
+@interface IdentifierCount : MTLModel <MTLJSONSerializing>
 
-@property NSString *identifierIconUrl;
-@property NSString *identifierName;
-@property NSInteger identifierId;
+@property ExploreUser *identifier;
 @property NSInteger identificationCount;
 
 @end

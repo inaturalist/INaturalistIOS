@@ -7,11 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
-@interface ExploreTaxon : NSObject
+@interface ExploreTaxon : MTLModel <MTLJSONSerializing>
 
 @property (nonatomic, assign) NSInteger taxonId;
-@property (nonatomic, copy) NSString *taxonPhotoUrl;
-@property (nonatomic, copy) NSString *taxonWebContent;
+@property (nonatomic, copy) NSString *webContent;
+@property (nonatomic, copy) NSString *commonName;
+@property (nonatomic, copy) NSString *scientificName;
+@property (nonatomic, copy) NSURL *photoUrl;
+@property (nonatomic, copy) NSString *rankName;
+@property (nonatomic, assign) NSInteger rankLevel;
+@property (nonatomic, copy) NSString *iconicTaxonName;
 
 @end

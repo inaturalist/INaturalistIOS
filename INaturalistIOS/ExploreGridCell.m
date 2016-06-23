@@ -12,6 +12,7 @@
 #import "ExploreGridCell.h"
 #import "ExploreObservation.h"
 #import "ExploreObservationPhoto.h"
+#import "ExploreTaxon.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 
@@ -137,7 +138,7 @@
 
     }
     
-    observationNameLabel.text = observation.taxon.defaultName;
+    observationNameLabel.text = observation.taxon.commonName;
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
         observationNameLabel.text = observation.speciesGuess;
     if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])

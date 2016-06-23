@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
 @class Project;
 
@@ -17,6 +18,8 @@ typedef void(^INatAPIFetchCompletionCountHandler)(NSArray *results, NSInteger co
 
 - (void)fetch:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionHandler)done;
 - (void)fetchWithCount:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionCountHandler)done;
+
+- (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (NSString *)apiBaseUrl;
 

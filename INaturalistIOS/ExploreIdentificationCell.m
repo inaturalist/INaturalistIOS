@@ -11,6 +11,8 @@
 
 #import "ExploreIdentificationCell.h"
 #import "ExploreIdentification.h"
+#import "ExploreTaxon.h"
+#import "ExploreUser.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 
@@ -251,29 +253,29 @@ static NSDateFormatter *shortDateFormatter = nil;
 - (void)setIdentification:(ExploreIdentification *)identification {
     _identification = identification;
 
-    identificationImageView.image = [UIImage imageForIconicTaxon:identification.identificationIconicTaxonName];
+    identificationImageView.image = [UIImage imageForIconicTaxon:identification.taxon.iconicTaxonName];
                                      
-    if (identification.identificationPhotoUrlString) {
-        [identificationImageView sd_setImageWithURL:[NSURL URLWithString:identification.identificationPhotoUrlString]
+    if (identification.taxon.photoUrl) {
+        [identificationImageView sd_setImageWithURL:identification.taxon.photoUrl
                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                               [identificationImageView setNeedsDisplay];
                                           }];
     }
     
-    identificationCommonNameLabel.text = identification.identificationCommonName;
-    identificationCommonNameLabel.textColor = [UIColor colorForIconicTaxon:identification.identificationIconicTaxonName];
+    identificationCommonNameLabel.text = identification.taxon.commonName;
+    identificationCommonNameLabel.textColor = [UIColor colorForIconicTaxon:identification.taxon.iconicTaxonName];
     
-    identificationScientificNameLabel.text = identification.identificationScientificName;
+    identificationScientificNameLabel.text = identification.taxon.scientificName;
     
     NSString *dateString;
     @synchronized(shortDateFormatter) {
         dateString = [shortDateFormatter stringFromDate:identification.identifiedDate];
     }
     identifierNameDateLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Added by %1$@ on %2$@", @"$1 is username, $2 is datetime"),
-                                    identification.identifierName, dateString];
+                                    identification.identifier.login, dateString];
     
-    if (identification.identifierIconUrl) {
-        [identifierIconImageView sd_setImageWithURL:[NSURL URLWithString:identification.identifierIconUrl]
+    if (identification.identifier.userIcon) {
+        [identifierIconImageView sd_setImageWithURL:identification.identifier.userIcon
                                    placeholderImage:userIconPlaceholder
                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                               [identifierIconImageView setNeedsDisplay];

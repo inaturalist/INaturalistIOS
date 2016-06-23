@@ -7,9 +7,20 @@
 //
 
 #import "IdentifierCount.h"
+#import "ExploreUser.h"
 
 @implementation IdentifierCount
 
++ (NSDictionary *)JSONKeyPathsByPropertyKey{
+    return @{
+             @"identifier": @"user",
+             @"identificationCount": @"count",
+             };
+}
 
+
++ (NSValueTransformer *)identifierJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
 
 @end

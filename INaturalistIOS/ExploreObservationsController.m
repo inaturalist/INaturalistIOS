@@ -26,11 +26,22 @@
     NSInteger lastPagedFetched;
     ExploreRegion *_limitingRegion;
 }
+@property (readonly) INatAPI *api;
 @end
 
 @implementation ExploreObservationsController
 
+// these come from a delegate so will not be auto synthesized
 @synthesize observations, activeSearchPredicates, notificationDelegate;
+
+- (INatAPI *)api {
+	static INatAPI *_api;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+    	_api = [[INatAPI alloc] init];
+    });
+    return _api;
+}
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -270,7 +281,9 @@
     NSLog(@"path is %@", path);
     
     INatAPI *api = [[INatAPI alloc] init];
-    [api fetch:path mapping:[ExploreMappingProvider observationMapping] handler:^(NSArray *results, NSError *error) {
+    
+    [api fetch:path classMapping:ExploreObservation.class handler:^(NSArray *results, NSInteger count, NSError *error) {
+    	NSLog(@"results is %@", results);
         NSSet *trimmedObservations;
         NSSet *unorderedObservations;
         if (self.limitingRegion) {
