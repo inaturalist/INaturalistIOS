@@ -18,7 +18,6 @@
 #import "ExploreMapViewController.h"
 #import "ExploreMappingProvider.h"
 #import "ExploreLocation.h"
-#import "ExploreObservationDetailViewController.h"
 #import "ExploreProject.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
