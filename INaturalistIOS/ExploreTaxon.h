@@ -20,4 +20,6 @@
 @property (nonatomic, assign) NSInteger rankLevel;
 @property (nonatomic, copy) NSString *iconicTaxonName;
 
+- (BOOL)isGenusOrLower;
+
 @end

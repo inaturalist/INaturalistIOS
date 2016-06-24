@@ -8,7 +8,6 @@
 
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
-#import "ExploreMappingProvider.h"
 #import "Analytics.h"
 
 @implementation ObservationAPI

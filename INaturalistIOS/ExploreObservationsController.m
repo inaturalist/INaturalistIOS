@@ -10,12 +10,11 @@
 #import <BlocksKit/BlocksKit.h>
 
 #import "ExploreObservationsController.h"
-#import "ExploreMappingProvider.h"
 #import "ExploreObservation.h"
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
-#import "ExplorePerson.h"
-#import "Taxon.h"
+#import "ExploreUser.h"
+#import "ExploreTaxon.h"
 #import "NSURL+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"
@@ -229,9 +228,9 @@
 		for (ExploreSearchPredicate *predicate in predicates) {
 			if (predicate.type == ExploreSearchPredicateTypePerson) {
 				// people search requires a differnt baseurl and thus different path pattern
-				query = [query stringByAppendingString:[NSString stringWithFormat:@"&user_id=%ld", (long)predicate.searchPerson.personId]];
+				query = [query stringByAppendingString:[NSString stringWithFormat:@"&user_id=%ld", (long)predicate.searchPerson.userId]];
 			} else if (predicate.type == ExploreSearchPredicateTypeCritter) {
-				query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.recordID.integerValue]];
+				query = [query stringByAppendingString:[NSString stringWithFormat:@"&taxon_id=%ld", (long)predicate.searchTaxon.taxonId]];
 			} else if (predicate.type == ExploreSearchPredicateTypeLocation) {
 				hasActiveLocationPredicate = YES;
 				query = [query stringByAppendingString:[NSString stringWithFormat:@"&place_id=%ld", (long)predicate.searchLocation.locationId]];
@@ -409,10 +408,10 @@
 			}
 			if (predicate.type == ExploreSearchPredicateTypePerson) {
 				query = [query stringByAppendingString:[NSString stringWithFormat:@"%@user_id=%ld",
-														join, (long)predicate.searchPerson.personId]];
+														join, (long)predicate.searchPerson.userId]];
 			} else if (predicate.type == ExploreSearchPredicateTypeCritter) {
 				query = [query stringByAppendingString:[NSString stringWithFormat:@"%@taxon_id=%ld",
-														join, (long)predicate.searchTaxon.recordID.integerValue]];
+														join, (long)predicate.searchTaxon.taxonId]];
 			} else if (predicate.type == ExploreSearchPredicateTypeLocation) {
 				query = [query stringByAppendingString:[NSString stringWithFormat:@"%@place_id=%ld",
 														join, (long)predicate.searchLocation.locationId]];

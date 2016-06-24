@@ -21,9 +21,8 @@
 #import "ExploreObservationsController.h"
 #import "ExploreActiveSearchView.h"
 #import "ExploreLocation.h"
-#import "ExploreMappingProvider.h"
 #import "ExploreProject.h"
-#import "ExplorePerson.h"
+#import "ExploreUser.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 #import "Taxon.h"
@@ -498,7 +497,7 @@
                     __strong typeof(weakSelf)strongSelf = weakSelf;
 
                     // observations controller will fetch observations using this predicate
-                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExplorePerson *)choice]];
+                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExploreUser *)choice]];
                     
                     [strongSelf->searchMenu showActiveSearch];
                 };

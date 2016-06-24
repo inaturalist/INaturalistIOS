@@ -6,31 +6,31 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import "Taxon+SearchResultsHelper.h"
+#import "ExploreTaxon+SearchResultsHelper.h"
 #import "UIFont+ExploreFonts.h"
 #import "TaxonPhoto.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 
-@implementation Taxon (SearchResultsHelper)
+@implementation ExploreTaxon (SearchResultsHelper)
 
 - (NSString *)searchResult_Title {
-    return self.defaultName;
+    return self.commonName;
 }
 
 - (NSAttributedString *)searchResult_AttributedSubTitle {
 
-    if (self.isSpeciesOrLower) {
+    if ([self isGenusOrLower]) {
         // no attributed necessary
-        return [[NSAttributedString alloc] initWithString:self.name];
+        return [[NSAttributedString alloc] initWithString:self.scientificName];
     } else {
         // italiicize the taxon name portion of the subtitle
         NSMutableAttributedString *subtitle = [[NSMutableAttributedString alloc] init];
-        NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:self.rank.capitalizedString
+        NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:self.rankName.capitalizedString
                                                                                  attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11.0f] }];
         [subtitle appendAttributedString:rank];
         [subtitle appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];;
-        NSMutableAttributedString *taxonName = [[NSMutableAttributedString alloc] initWithString:self.name
-                                                                                      attributes:@{ NSFontAttributeName: [UIFont fontForTaxonRankName:self.rank ofSize:11.0f] }];
+        NSMutableAttributedString *taxonName = [[NSMutableAttributedString alloc] initWithString:self.scientificName
+                                                                                      attributes:@{ NSFontAttributeName: [UIFont fontForTaxonRankName:self.rankName ofSize:11.0f] }];
         [subtitle appendAttributedString:taxonName];
         return subtitle;
     }
@@ -39,7 +39,7 @@
 }
 
 - (NSURL *)searchResult_ThumbnailUrl {
-    return [NSURL URLWithString:((TaxonPhoto *)self.taxonPhotos.firstObject).squareURL];
+	return self.photoUrl;
 }
 
 - (UIImage *)searchResult_PlaceholderImage {

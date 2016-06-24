@@ -9,85 +9,74 @@
 #import <RestKit/RestKit.h>
 
 #import "ExploreSearchController.h"
-#import "Taxon.h"
-#import "ExploreMappingProvider.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"
+#import "ExploreTaxon.h"
+#import "ExploreProject.h"
+#import "ExploreUser.h"
+#import "ExploreLocation.h"
+#import "INatAPI.h"
+#import "NSLocale+INaturalist.h"
+
+@interface ExploreSearchController ()
+@property (readonly) INatAPI *api;
+@end
 
 @implementation ExploreSearchController
 
-- (void)searchForTaxon:(NSString *)taxon completionHandler:(SearchCompletionHandler)handler {
-    NSString *pathPattern = @"/taxa/search.json";
+- (INatAPI *)api {
+	static INatAPI *_api;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_api = [[INatAPI alloc] init];
+	});
+	return _api;
+}
+
+- (NSString *)searchPathForQuery:(NSString *)userQuery inCategory:(NSString *)category {
+	NSString *pathPattern = [NSString stringWithFormat:@"%@/autocomplete", category];
     NSString *queryBase = @"?per_page=25&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, taxon];
+    NSString *query = [NSString stringWithFormat:queryBase, userQuery];
+    
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+	if (localeString && ![localeString isEqualToString:@""]) {
+		query = [query stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+	}
     
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    
-    [self searchForPath:path mapping:[Taxon mapping] completionHandler:handler];
+	return path;
+}
+
+- (void)performSearchForPath:(NSString *)path classMapping:(Class)klass handler:(SearchCompletionHandler)handler {
+	[self.api fetch:path classMapping:klass handler:^(NSArray *results, NSInteger count, NSError *error) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			handler(results, error);
+		});
+	}];
+}
+
+- (void)searchForTaxon:(NSString *)taxon completionHandler:(SearchCompletionHandler)handler {
+    NSString *path = [self searchPathForQuery:taxon inCategory:@"taxa"];
+    [self performSearchForPath:path classMapping:ExploreTaxon.class handler:handler];
 }
 
 - (void)searchForPerson:(NSString *)name completionHandler:(SearchCompletionHandler)handler {
-    NSString *pathPattern = @"/people/search.json";
-    NSString *queryBase = @"?per_page=25&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, name];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    
-    [self searchForPath:path mapping:[ExploreMappingProvider personMapping] completionHandler:handler];
+	NSString *path = [self searchPathForQuery:name inCategory:@"users"];
+	[self performSearchForPath:path classMapping:ExploreUser.class handler:handler];
 }
 
 - (void)searchForLocation:(NSString *)location completionHandler:(SearchCompletionHandler)handler {
-    NSString *pathPattern = @"/places/search.json";
-    NSString *queryBase = @"?per_page=25&with_geom=true&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, location];
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-
-    [self searchForPath:path mapping:[ExploreMappingProvider locationMapping] completionHandler:handler];
+	NSString *path = [self searchPathForQuery:location inCategory:@"places"];
+	[self performSearchForPath:path classMapping:ExploreLocation.class handler:handler];
 }
 
 - (void)searchForProject:(NSString *)project completionHandler:(SearchCompletionHandler)handler {
-    NSString *pathPattern = @"/projects/search.json";
-    NSString *queryBase = @"?per_page=25&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, project];
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    
-    [self searchForPath:path mapping:[ExploreMappingProvider projectMapping] completionHandler:handler];
+	NSString *path = [self searchPathForQuery:project inCategory:@"projects"];
+	[self performSearchForPath:path classMapping:ExploreProject.class handler:handler];
 }
 
 - (void)searchForLogin:(NSString *)loginName completionHandler:(SearchCompletionHandler)handler {
-    NSString *pathPattern = [NSString stringWithFormat:@"/people/%@.json", loginName];
-    NSString *query = @"?per_page=1";
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    
-    [self searchForPath:path mapping:[ExploreMappingProvider personMapping] completionHandler:handler];
-}
-
-- (void)searchForPath:(NSString *)path mapping:(RKObjectMapping *)mapping completionHandler:(SearchCompletionHandler)handler {
-    
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-    if (localeString && ![localeString isEqualToString:@""]) {
-        NSString *localeQueryComponent = [NSString stringWithFormat:@"&locale=%@", localeString];
-        path = [path stringByAppendingString:localeQueryComponent];
-    }
-
-    [[Analytics sharedClient] debugLog:@"Network - Explore search"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
-        
-        // can't infer search mappings via keypath
-        loader.objectMapping = mapping;
-        
-        loader.onDidLoadObjects = ^(NSArray *array) {
-            handler(array, nil);
-        };
-        
-        loader.onDidFailWithError = ^(NSError *err) {
-            handler(nil, err);
-        };
-        
-        loader.onDidFailLoadWithError = ^(NSError *err) {
-            handler(nil, err);
-        };
-    }];
+	[self searchForPerson:loginName completionHandler:handler];
 }
 
 @end

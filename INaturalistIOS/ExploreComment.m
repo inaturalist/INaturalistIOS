@@ -20,7 +20,6 @@
     };
 }
 
-
 + (NSValueTransformer *)commenterJSONTransformer {
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
 }

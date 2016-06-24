@@ -1,5 +1,5 @@
 //
-//  ExplorePerson+SearchResultsHelper.m
+//  ExploreUser+SearchResultsHelper.m
 //  iNaturalist
 //
 //  Created by Alex Shepard on 11/11/14.
@@ -8,12 +8,12 @@
 
 #import <FontAwesomeKit/FAKIonIcons.h>
 
-#import "ExplorePerson+SearchResultsHelper.h"
+#import "ExploreUser+SearchResultsHelper.h"
 #import "UIColor+ExploreColors.h"
 
 static UIImage *userIconPlaceholder;
 
-@implementation ExplorePerson (SearchResultsHelper)
+@implementation ExploreUser (SearchResultsHelper)
 
 - (NSString *)searchResult_Title {
     if (self.name)
@@ -32,7 +32,7 @@ static UIImage *userIconPlaceholder;
 - (NSURL *)searchResult_ThumbnailUrl {
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
     return [NSURL URLWithString:[NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
-                                 INatMediaBaseURL, (long)self.personId]];
+                                 INatMediaBaseURL, (long)self.userId]];
 }
 
 - (UIImage *)searchResult_PlaceholderImage {

@@ -16,7 +16,6 @@
 #import <GeoJSONSerialization/GeoJSONSerialization.h>
 
 #import "ExploreMapViewController.h"
-#import "ExploreMappingProvider.h"
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
 #import "UIColor+ExploreColors.h"
@@ -173,8 +172,7 @@
             NSInteger overlayLocationId = 0;
             for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
                 if (predicate.type == ExploreSearchPredicateTypeLocation) {
-                    newCenter = CLLocationCoordinate2DMake(predicate.searchLocation.latitude,
-                                                           predicate.searchLocation.longitude);
+                    newCenter = predicate.searchLocation.location;
                     overlayLocationId = predicate.searchLocation.locationId;
                     break;  // prefer places to projects
                 } if (predicate.type == ExploreSearchPredicateTypeProject) {

@@ -14,13 +14,17 @@
     return @{
 		@"taxonId": @"id",
 		@"webContent": @"body",
-		@"commonName": @"common_name.name",
+		@"commonName": @"preferred_common_name",
 		@"scientificName": @"name",
 		@"photoUrl": @"default_photo.square_url",
 		@"rankName": @"rank",
 		@"rankLevel": @"rank_level",
 		@"iconicTaxonName": @"iconic_taxon_name",
 	};
+}
+
+- (BOOL)isGenusOrLower {
+	return (self.rankLevel > 0 && self.rankLevel <= 20);
 }
 
 @end

@@ -118,8 +118,8 @@
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
 		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
-		FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */; };
-		FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */; };
+		FA3F1F911A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */; };
+		FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F931A12CABA00928102 /* ExploreUser+SearchResultsHelper.m */; };
 		FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */; };
 		FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F991A12DFD200928102 /* ExploreSearchController.m */; };
 		FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F20171A13F67200928102 /* ExploreSearchView.m */; };
@@ -138,10 +138,8 @@
 		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
 		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
 		FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */; };
-		FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */; };
 		FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */; };
 		FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
-		FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */; };
 		FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
 		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
 		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
@@ -503,10 +501,10 @@
 		FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreProject+SearchResultsHelper.h"; sourceTree = "<group>"; };
 		FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreProject+SearchResultsHelper.m"; sourceTree = "<group>"; };
 		FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsHelper.h; sourceTree = "<group>"; };
-		FA3F1F8F1A12B42E00928102 /* Taxon+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Taxon+SearchResultsHelper.h"; sourceTree = "<group>"; };
-		FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Taxon+SearchResultsHelper.m"; sourceTree = "<group>"; };
-		FA3F1F921A12CABA00928102 /* ExplorePerson+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExplorePerson+SearchResultsHelper.h"; sourceTree = "<group>"; };
-		FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExplorePerson+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F8F1A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreTaxon+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreTaxon+SearchResultsHelper.m"; sourceTree = "<group>"; };
+		FA3F1F921A12CABA00928102 /* ExploreUser+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreUser+SearchResultsHelper.h"; sourceTree = "<group>"; };
+		FA3F1F931A12CABA00928102 /* ExploreUser+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreUser+SearchResultsHelper.m"; sourceTree = "<group>"; };
 		FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreLocation+SearchResultsHelper.h"; sourceTree = "<group>"; };
 		FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreLocation+SearchResultsHelper.m"; sourceTree = "<group>"; };
 		FA3F1F981A12DFD200928102 /* ExploreSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreSearchController.h; sourceTree = "<group>"; };
@@ -542,14 +540,10 @@
 		FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLocation.m; sourceTree = "<group>"; };
 		FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservation.h; sourceTree = "<group>"; };
 		FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservation.m; sourceTree = "<group>"; };
-		FA4E72B819FAC93400A9AB5D /* ExplorePerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplorePerson.h; sourceTree = "<group>"; };
-		FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplorePerson.m; sourceTree = "<group>"; };
 		FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreProject.h; sourceTree = "<group>"; };
 		FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreProject.m; sourceTree = "<group>"; };
 		FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxon.h; sourceTree = "<group>"; };
 		FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxon.m; sourceTree = "<group>"; };
-		FA4E72C719FAC95600A9AB5D /* ExploreMappingProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreMappingProvider.h; sourceTree = "<group>"; };
-		FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreMappingProvider.m; sourceTree = "<group>"; };
 		FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhoto.h; sourceTree = "<group>"; };
 		FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhoto.m; sourceTree = "<group>"; };
 		FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ExploreColors.h"; sourceTree = "<group>"; };
@@ -1237,12 +1231,12 @@
 				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
 				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
 				FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */,
-				FA3F1F8F1A12B42E00928102 /* Taxon+SearchResultsHelper.h */,
-				FA3F1F901A12B42E00928102 /* Taxon+SearchResultsHelper.m */,
+				FA3F1F8F1A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.h */,
+				FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */,
 				FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */,
 				FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */,
-				FA3F1F921A12CABA00928102 /* ExplorePerson+SearchResultsHelper.h */,
-				FA3F1F931A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m */,
+				FA3F1F921A12CABA00928102 /* ExploreUser+SearchResultsHelper.h */,
+				FA3F1F931A12CABA00928102 /* ExploreUser+SearchResultsHelper.m */,
 				FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */,
 				FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */,
 			);
@@ -1312,10 +1306,8 @@
 				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
 				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
 				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
-				FA4E72B819FAC93400A9AB5D /* ExplorePerson.h */,
 				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
 				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
-				FA4E72B919FAC93400A9AB5D /* ExplorePerson.m */,
 				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
 				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
 				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
@@ -1333,8 +1325,6 @@
 		FA4E72C619FAC94A00A9AB5D /* Mappings */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72C719FAC95600A9AB5D /* ExploreMappingProvider.h */,
-				FA4E72C819FAC95600A9AB5D /* ExploreMappingProvider.m */,
 			);
 			name = Mappings;
 			sourceTree = "<group>";
@@ -1967,7 +1957,7 @@
 				FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */,
 				FAEF234E1C7D2B3400208F44 /* SpeciesCountCell.m in Sources */,
 				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
-				FA3F1F911A12B42E00928102 /* Taxon+SearchResultsHelper.m in Sources */,
+				FA3F1F911A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m in Sources */,
 				FACACA211BFD278F002223D7 /* ObsDetailInfoViewModel.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
@@ -2015,7 +2005,7 @@
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
 				FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
-				FA3F1F941A12CABA00928102 /* ExplorePerson+SearchResultsHelper.m in Sources */,
+				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
@@ -2040,7 +2030,6 @@
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,
-				FA4E72C219FAC93400A9AB5D /* ExplorePerson.m in Sources */,
 				FA51BA681C0107EC00101807 /* ObsDetailAddFaveHeader.m in Sources */,
 				FA4D56B91C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m in Sources */,
 				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
@@ -2051,7 +2040,6 @@
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */,
 				FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */,
-				FA4E72C919FAC95600A9AB5D /* ExploreMappingProvider.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
 				FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */,

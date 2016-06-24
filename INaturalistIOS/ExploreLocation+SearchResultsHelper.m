@@ -14,8 +14,4 @@
     return self.name;
 }
 
-- (NSString *)searchResult_SubTitle {
-    return self.placeTypeName;
-}
-
 @end

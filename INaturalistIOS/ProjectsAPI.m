@@ -8,7 +8,6 @@
 
 #import "ProjectsAPI.h"
 #import "Project.h"
-#import "ExploreMappingProvider.h"
 #import "ExploreObservation.h"
 #import "ObserverCount.h"
 #import "IdentifierCount.h"
