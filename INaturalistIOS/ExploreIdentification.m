@@ -37,7 +37,7 @@
 	dispatch_once(&onceToken, ^{
 		_dateFormatter = [[NSDateFormatter alloc] init];
 		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-		_dateFormatter.dateFormat = @"yyyy-MM-dd'%'HH:mm:ssZ";
+		_dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
 	});
 
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
