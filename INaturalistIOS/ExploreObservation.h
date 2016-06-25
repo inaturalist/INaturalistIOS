@@ -37,8 +37,7 @@
 @property (nonatomic, assign) NSInteger publicPositionalAccuracy;
 @property (nonatomic, assign) BOOL coordinatesObscured;
 @property (nonatomic, copy) NSString *placeGuess;
-@property (nonatomic, copy) NSString *locationCoordinateString;
-@property (nonatomic, readonly) CLLocationCoordinate2D coords;
+@property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;
 

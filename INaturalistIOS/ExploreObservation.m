@@ -14,17 +14,12 @@
 #import "ExploreUser.h"
 #import "ExploreTaxon.h"
 
-@interface ExploreObservation () {
-	CLLocationDegrees _latitude, _longitude;
-}
-@end
-
 @implementation ExploreObservation
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey{
     return @{
              @"observationId": @"id",
-             @"locationCoordinateString": @"location",
+             @"location": @"location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObservedAt": @"time_observed_at_utc",
@@ -68,6 +63,28 @@
 
 + (NSValueTransformer *)userJSONTransformer {
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
++ (NSValueTransformer *)observedOnJSONTransformer {
+	static NSDateFormatter *_dateFormatter = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_dateFormatter = [[NSDateFormatter alloc] init];
+		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+		_dateFormatter.dateFormat = @"yyyy-MM-dd";
+	});
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
++ (NSValueTransformer *)locationJSONTransformer {
+    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
+    	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+    	CLLocationCoordinate2D coords = CLLocationCoordinate2DMake([((NSString *)c[0]) floatValue], [((NSString *)c[1]) floatValue]);
+    	return [NSValue valueWithMKCoordinate:coords];
+    }];
 }
 
 #pragma mark - Uploadable
@@ -153,7 +170,6 @@
 - (NSString *)observedOnShortString {
     static NSDateFormatter *formatter = nil;
     if (!formatter) {
-        NSLog(@"Formatting");
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterNoStyle];
@@ -214,39 +230,16 @@
     return self.publicPositionalAccuracy;
 }
 
+- (CLLocationCoordinate2D)coordinate {
+	return self.location;
+}
+
 - (CLLocationDegrees)latitude {
-	if (!_latitude) {
-		if (self.locationCoordinateString && ![self.locationCoordinateString isEqualToString:@""]) {
-			[self extractDegrees:self.locationCoordinateString];
-		}
-	}
-	
-	return _latitude;
+	return self.location.latitude;
 }
 
 - (CLLocationDegrees)longitude {
-	if (!_longitude) {
-		if (self.locationCoordinateString && ![self.locationCoordinateString isEqualToString:@""]) {
-			[self extractDegrees:self.locationCoordinateString];
-		}
-	}
-	return _longitude;	
-}
-
-- (void)extractDegrees:(NSString *)string {
-	// could perhaps do this in a NSValueTransformer?
-	// is that bad form, for a value transformer to have side effects like
-	// changing other variables?
-	// does a value transformer have the proper access to the outside scope?
-	NSArray *degrees = [self.locationCoordinateString componentsSeparatedByString:@","];
-	if (degrees.count == 2) {
-		_latitude = [degrees[0] floatValue];
-		_longitude = [degrees[1] floatValue];
-	}
-}
-
-- (CLLocationCoordinate2D)coordinate {
-	return CLLocationCoordinate2DMake(self.latitude, self.longitude);
+	return self.location.longitude;
 }
 
 - (NSString *)title {
