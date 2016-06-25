@@ -1295,8 +1295,8 @@
 			isa = PBXGroup;
 			children = (
 				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
-				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
 				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
+				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
 				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
 				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
 				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
