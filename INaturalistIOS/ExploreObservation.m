@@ -82,7 +82,7 @@
 + (NSValueTransformer *)locationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
     	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
-    	if (c.length == 2) {
+    	if (c.count == 2) {
     		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
     		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
     		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
@@ -97,15 +97,15 @@
     if ([key isEqualToString:@"idPlease"]) {
         self.idPlease = NO;
     } else if ([key isEqualToString:@"identificationsCount"]) {
-    	self.identificationsCount = 0
+        self.identificationsCount = 0;
     } else if ([key isEqualToString:@"commentsCount"]) {
-    	self.longitude = 0
+        self.commentsCount = 0;
    	} else if ([key isEqualToString:@"mappable"]) {
         self.mappable = NO;
     } else if ([key isEqualToString:@"coordinatesObscured"]) {
         self.coordinatesObscured = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
-    	self.publicPositionalAccuracy = 0
+        self.publicPositionalAccuracy = 0;
     } else {
         [super setNilValueForKey:key];
     }
@@ -259,18 +259,18 @@
 }
 
 - (CLLocationDegrees)latitude {
-	if CLLocationCoordinate2DIsValid(self.location) {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
 		return self.location.latitude;
 	} else {
-		return 0.0
+        return 0.0;
 	}
 }
 
 - (CLLocationDegrees)longitude {
-	if CLLocationCoordinate2DIsValid(self.location) {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
 		return self.location.longitude;
 	} else {
-		return 0.0
+        return 0.0;
 	}
 }
 
