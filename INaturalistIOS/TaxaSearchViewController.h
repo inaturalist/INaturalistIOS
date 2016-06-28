@@ -13,7 +13,7 @@
 
 @protocol TaxaSearchViewControllerDelegate <NSObject>
 @optional
-- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon;
+- (void)taxaSearchViewControllerChoseTaxonId:(NSInteger)taxonId;
 - (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess;
 @end
 

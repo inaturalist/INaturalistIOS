@@ -12,7 +12,7 @@
 
 @protocol TaxonDetailViewControllerDelegate <NSObject>
 @optional
-- (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
+- (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId;
 @end
 
 @interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate>

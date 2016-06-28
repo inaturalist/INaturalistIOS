@@ -26,4 +26,16 @@
 }
 
 
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"locationId"]) {
+        self.locationId = 0
+    } else if ([key isEqualToString:@"latitude"]) {
+    	self.latitude = 0.0
+    } else if ([key isEqualToString:@"longitude"]) {
+    	self.longitude = 0.0
+    } else {
+        [super setNilValueForKey:key];
+    }
+}
+
 @end

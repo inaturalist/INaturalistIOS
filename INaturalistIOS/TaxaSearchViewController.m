@@ -15,6 +15,8 @@
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "FAKINaturalist.h"
+#import "EXploreTaxon.h"
+#import "ExploreTaxonRealm.h"
 
 @interface TaxaSearchViewController () <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController *fetchedResultsController;
@@ -462,11 +464,62 @@ static const int TaxonCellSubtitleTag = 3;
 }
 
 - (UITableViewCell *)recordSearchControllerCellForRecord:(NSObject *)record inTableView:(UITableView *)tableView {
-    if (record) {
-        return [self cellForTaxon:(Taxon *)record inTableView:tableView];
-    } else {
-        return [self cellForUnknownTaxonInTableView:tableView];
-    }
+	if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
+		ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
+	    NSString *cellIdentifier = [etr.scientificName isEqualToString:etr.commonName] ? @"TaxonOneNameCell" : @"TaxonTwoNameCell";
+	    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+	    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
+    	[addButton setBackgroundImage:[UIImage imageNamed:@"add_button"] 
+        	                 forState:UIControlStateNormal];
+    	[addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
+        	                 forState:UIControlStateHighlighted];
+    	[addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
+    	[addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
+    	addButton.titleLabel.textColor = [UIColor whiteColor];
+    	addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    	[addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
+    	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    	cell.accessoryView = addButton;
+        
+    	UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
+    	[imageView sd_cancelCurrentImageLoad];
+    	imageView.image = nil;
+    
+    	UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
+    	titleLabel.text = etr.commonName;
+    	UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+    	imageView.image = iconicTaxonImage;
+    	
+    	if (etr.photoUrl) {
+    		[imageView sd_setImageWithURL:etr.photoUrl placeholderImage:iconicTaxonImage];
+    	}
+	    if ([etr.scientificName isEqualToString:etr.commonName]) {
+    	    if (etr.rankLevel >= 30) {
+    	        titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
+    	    } else {
+    	        titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
+    	    }
+    	} else {
+        	UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:TaxonCellSubtitleTag];
+        	if (etr.isGenusOrLower) {
+        	    subtitleLabel.text = etr.scientificName;
+        	    subtitleLabel.font = [UIFont italicSystemFontOfSize:subtitleLabel.font.pointSize];
+        	} else {
+        	    subtitleLabel.text = [NSString stringWithFormat:@"%@ %@", [etr.rankName capitalizedString], etr.scientificName];
+        	    subtitleLabel.font = [UIFont systemFontOfSize:subtitleLabel.font.pointSize];
+        	}
+    	}
+    
+   		return cell;
+	
+	} else {		
+	    if (record) {
+	        return [self cellForTaxon:(Taxon *)record inTableView:tableView];
+	    } else {
+	        return [self cellForUnknownTaxonInTableView:tableView];
+	    }
+	}
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate

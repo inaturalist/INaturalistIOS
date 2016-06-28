@@ -23,8 +23,20 @@
 	};
 }
 
++ (NSValueTransformer *)photoUrlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
 - (BOOL)isGenusOrLower {
 	return (self.rankLevel > 0 && self.rankLevel <= 20);
+}
+
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"rankLevel"]) {
+        self.rankLevel = 0;
+    } else {
+        [super setNilValueForKey:key];
+    }
 }
 
 @end

@@ -82,9 +82,33 @@
 + (NSValueTransformer *)locationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
     	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
-    	CLLocationCoordinate2D coords = CLLocationCoordinate2DMake([((NSString *)c[0]) floatValue], [((NSString *)c[1]) floatValue]);
-    	return [NSValue valueWithMKCoordinate:coords];
+    	if (c.length == 2) {
+    		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
+    		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
+    		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+    		return [NSValue valueWithMKCoordinate:coords];
+    	} else {
+    		return nil;
+    	}
     }];
+}
+
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"idPlease"]) {
+        self.idPlease = NO;
+    } else if ([key isEqualToString:@"identificationsCount"]) {
+    	self.identificationsCount = 0
+    } else if ([key isEqualToString:@"commentsCount"]) {
+    	self.longitude = 0
+   	} else if ([key isEqualToString:@"mappable"]) {
+        self.mappable = NO;
+    } else if ([key isEqualToString:@"coordinatesObscured"]) {
+        self.coordinatesObscured = NO;
+    } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
+    	self.publicPositionalAccuracy = 0
+    } else {
+        [super setNilValueForKey:key];
+    }
 }
 
 #pragma mark - Uploadable
@@ -235,11 +259,19 @@
 }
 
 - (CLLocationDegrees)latitude {
-	return self.location.latitude;
+	if CLLocationCoordinate2DIsValid(self.location) {
+		return self.location.latitude;
+	} else {
+		return 0.0
+	}
 }
 
 - (CLLocationDegrees)longitude {
-	return self.location.longitude;
+	if CLLocationCoordinate2DIsValid(self.location) {
+		return self.location.longitude;
+	} else {
+		return 0.0
+	}
 }
 
 - (NSString *)title {
