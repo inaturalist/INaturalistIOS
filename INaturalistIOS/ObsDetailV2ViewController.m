@@ -161,9 +161,7 @@
         vc.observation = self.observation;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        if ([sender isKindOfClass:[NSNumber class]]) {
-            vc.taxonId = [(NSNumber *)sender integerValue];
-        }
+        vc.taxon = sender;
     } else if ([segue.identifier isEqualToString:@"map"]) {
         LocationViewController *location = [segue destinationViewController];
         location.observation = self.observation;

@@ -25,5 +25,18 @@
     [self fetch:path classMapping:[ExploreTaxon class] handler:done];
 }
 
+- (void)taxonWithId:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
+	[[Analytics sharedClient] debugLog:@"Network - fetch taxon by id"];
+    NSString *path = [NSString stringWithFormat:@"taxa/%ld", (long)taxonId];
+    
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+	if (localeString && ![localeString isEqualToString:@""]) {
+		path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
+	}
+	
+    [self fetch:path classMapping:[ExploreTaxon class] handler:done];
+
+}
+
 
 @end

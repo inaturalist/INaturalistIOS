@@ -278,7 +278,7 @@
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
             id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
             
-            [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@([identification taxonId])];
+            //[self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@([identification taxon])];
         }
     }
 }

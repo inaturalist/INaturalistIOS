@@ -15,6 +15,8 @@
 #import "Observation.h"
 #import "User.h"
 #import "Taxon.h"
+#import "TaxaAPI.h"
+#import "ExploreTaxonRealm.h"
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "ObservationPhoto.h"
@@ -123,6 +125,15 @@
     return cell;
 }
 
+- (TaxaAPI *)taxonApi {
+	static TaxaAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+    	_api = [[TaxaAPI alloc] init];
+    });
+    return _api;
+}
+
 - (UITableViewCell *)photoCellForTableView:(UITableView *)tableView {
     // photos
     PhotosPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
@@ -197,51 +208,65 @@
 
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
-
-    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.observation.taxonID];
-    Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
+    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
 
     cell.taxonNameLabel.textColor = [UIColor blackColor];
 
-    if (taxon) {
-        
-        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
+	if ([self.observation taxonRecordID] != 0 && results.count == 0) {
+		__weak typeof(self) weakSelf = self;
+		[self.taxonApi taxonWithId:[self.observation taxonRecordID] handler:^(NSArray *results, NSInteger count, NSError *error) {
+			__strong typeof(weakSelf) strongSelf = weakSelf;
+			// put the results into realm
+			RLMRealm *realm = [RLMRealm defaultRealm];
+			[realm beginWriteTransaction];
+			for (ExploreTaxon *taxon in results) {
+				ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:taxon];
+				[realm addOrUpdateObject:etr];
+			}
+			[realm commitWriteTransaction];
+			
+			// update the UI
+			dispatch_async(dispatch_get_main_queue(), ^{
+                [strongSelf.delegate reloadTableView];
+			});
+		}];
+	} else if (results.count == 1) {
+        ExploreTaxonRealm *etr = [results firstObject];
+        if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
             // no common name, so only show scientific name in the main label
-            cell.taxonNameLabel.text = taxon.name;
+            cell.taxonNameLabel.text = etr.scientificName;
             cell.taxonSecondaryNameLabel.text = nil;
             
-            if (taxon.isGenusOrLower) {
+            if (etr.isGenusOrLower) {
                 cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-                cell.taxonNameLabel.text = taxon.name;
+                cell.taxonNameLabel.text = etr.scientificName;
             } else {
                 cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
                 cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                            [taxon.rank capitalizedString], taxon.name];
+                                            [etr.rankName capitalizedString], etr.scientificName];
             }
         } else {
-            // show both common & scientfic names
-            cell.taxonNameLabel.text = taxon.defaultName;
+            // show both common & scientific names
+            cell.taxonNameLabel.text = etr.commonName;
             cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
             
-            if (!taxon.fullyLoaded || taxon.isGenusOrLower) {
+            if (etr.isGenusOrLower) {
                 cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = taxon.name;
+                cell.taxonSecondaryNameLabel.text = etr.scientificName;
             } else {
                 cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                     [taxon.rank capitalizedString], taxon.name];
+                                                     [etr.rankName capitalizedString], etr.scientificName];
 
             }
         }
 
-        
-        if ([taxon.isIconic boolValue]) {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-        } else if (taxon.taxonPhotos.count > 0) {
-            TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+        if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+        } else if (etr.photoUrl) {
+            [cell.taxonImageView sd_setImageWithURL:etr.photoUrl];
         } else {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         }
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -256,52 +281,6 @@
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
             cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
-        }
-    }
-    
-    if (!taxon || !taxon.fullyLoaded) {
-        // fetch complete taxon
-        if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-            
-            NSString *resource = [NSString stringWithFormat:@"/taxa/%ld.json", (long)self.observation.taxonID];
-            NSString *localeString = [NSLocale inat_serverFormattedLocale];
-            if (localeString && ![localeString isEqualToString:@""]) {
-                resource = [resource stringByAppendingFormat:@"?locale=%@", localeString];
-            }
-
-            
-            __weak typeof(self) weakSelf = self;
-            RKObjectLoaderDidLoadObjectBlock taxonLoadedBlock = ^(id object) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                
-                Taxon *loadedTaxon = (Taxon *)object;
-                loadedTaxon.syncedAt = [NSDate date];
-                
-                // save into core data
-                NSError *saveError = nil;
-                [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                if (saveError) {
-                    NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
-                                        saveError.localizedDescription];
-                    [[Analytics sharedClient] debugLog:errMsg];
-                    return;
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [strongSelf.delegate reloadTableView];
-                });
-                
-            };
-            
-            [[Analytics sharedClient] debugLog:@"Network - Load a partially loaded taxon"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:resource
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [Taxon mapping];
-                                                                loader.onDidLoadObject = taxonLoadedBlock;
-                                                            }];
-            
-        } else {
-            NSLog(@"no network, ignore");
         }
     }
     
@@ -403,8 +382,8 @@
             }
         } else if (indexPath.item == 2) {
             // taxa segue
-            if (self.observation.taxonID && [self.observation taxonID] != 0) {
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@([self.observation taxonID])];
+            if ([self.observation taxonRecordID] && [self.observation taxonRecordID] != 0) {
+                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[self.observation taxon]];
             } else {
                 // do nothing
             }

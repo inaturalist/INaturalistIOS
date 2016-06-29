@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @import CoreLocation;
 
+@class ExploreTaxonRealm;
 @class Taxon;
 
 typedef NS_ENUM(NSInteger, ObsDataQuality) {
@@ -23,7 +24,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (BOOL)isEditable;
 - (NSString *)speciesGuess;
-- (NSInteger)taxonID;
+- (NSInteger)taxonRecordID;
 - (NSString *)inatDescription;
 
 - (CLLocationDegrees)latitude;
@@ -65,6 +66,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (Taxon *)taxon;
 - (void)setTaxon:(Taxon *)newValue;
+
+- (ExploreTaxonRealm *)exploreTaxonRealm;
 
 - (NSString *)sortable;
 - (NSString *)uuid;

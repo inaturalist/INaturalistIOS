@@ -120,6 +120,10 @@ static char SUMMARY_ASSOCIATED_KEY;
 
 @end
 
+@interface TaxonDetailViewController ()
+@property Taxon *fullTaxon;
+@end
+
 @implementation TaxonDetailViewController
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -130,7 +134,7 @@ static char SUMMARY_ASSOCIATED_KEY;
 #pragma mark - UIControl targets
 
 - (void)creditsTapped:(UIButton *)sender {
-    TaxonPhoto *tp = [self.taxon.taxonPhotos firstObject];
+    TaxonPhoto *tp = [self.fullTaxon.taxonPhotos firstObject];
     NSURL *url = [NSURL URLWithString:[tp nativePageURL]];
     [[UIApplication sharedApplication] openURL:url];
 }
@@ -138,8 +142,8 @@ static char SUMMARY_ASSOCIATED_KEY;
 - (void)wikipediaTapped:(UIButton *)sender {
     NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
     NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
-    NSString *urlEncodedTaxon = [self.taxon.name URLEncode];
-    NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, self.taxon.wikipediaTitle ?: urlEncodedTaxon];
+    NSString *urlEncodedTaxon = [self.fullTaxon.name URLEncode];
+    NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, self.fullTaxon.wikipediaTitle ?: urlEncodedTaxon];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 
@@ -179,48 +183,53 @@ static char SUMMARY_ASSOCIATED_KEY;
          forCellReuseIdentifier:@"roundedButton"];
     self.clearsSelectionOnViewWillAppear = YES;
     
-    if (self.taxon) {
-        self.taxonId = self.taxon.recordID.integerValue;
-    }
-    
-    // try to load taxon from disk in case we have it
-    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.taxonId];
-    self.taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-    
-    if (!self.taxon || (self.taxon.wikipediaSummary.length == 0 && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable])) {
-        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", self.taxonId]
-                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
+    if ([self.taxon isKindOfClass:[Taxon class]]) {
+    	self.fullTaxon = self.taxon;
+    	[self.tableView reloadData];
+    } else {
+	    NSInteger taxonId = self.taxon.taxonId;
+	    // try to load taxon from disk in case we have it
+	    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.taxon.taxonId];
+	    self.taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
+        self.fullTaxon = self.taxon;
+        [self.tableView reloadData];
 
-        __weak typeof(self)weakSelf = self;
-        RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
-            
-            // save into core data
-            NSError *saveError = nil;
-            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-            if (saveError) {
-                NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
-                                    saveError.localizedDescription];
-                [[Analytics sharedClient] debugLog:errMsg];
-                return;
-            }
-            
-            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", self.taxonId];
-            Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
-            if (taxon) {
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                strongSelf.taxon = taxon;
-                [strongSelf.tableView reloadData];
-            }
-        };
+	    if (!self.taxon && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+	        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId]
+	                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
+	
+	        __weak typeof(self)weakSelf = self;
+	        RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
+	            
+	            // save into core data
+	            NSError *saveError = nil;
+	            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+	            if (saveError) {
+	                NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
+	                                    saveError.localizedDescription];
+	                [[Analytics sharedClient] debugLog:errMsg];
+	                return;
+	            }
+		            
+	            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonId];
+	            Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
+	            if (taxon) {
+	                __strong typeof(weakSelf)strongSelf = weakSelf;
+	                strongSelf.taxon = taxon;
+	                strongSelf.fullTaxon = taxon;
+	                [strongSelf.tableView reloadData];
+	            }
+	        };
         
-        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
-                                                        usingBlock:^(RKObjectLoader *loader) {
-                                                            loader.objectMapping = [Taxon mapping];
-                                                            loader.onDidLoadObject = loadedTaxonBlock;
-                                                            // If something went wrong, just ignore it.
-                                                            // Because, you know, that's always a good idea.
-                                                        }];
+	        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
+	        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
+	                                                        usingBlock:^(RKObjectLoader *loader) {
+	                                                            loader.objectMapping = [Taxon mapping];
+	                                                            loader.onDidLoadObject = loadedTaxonBlock;
+	                                                            // If something went wrong, just ignore it.
+	                                                            // Because, you know, that's always a good idea.
+	                                                        }];
+	    }
     }
 }
 
@@ -253,11 +262,11 @@ static char SUMMARY_ASSOCIATED_KEY;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 1) {
-        return [self.taxon.attributedBody boundingRectWithSize:CGSizeMake(290, CGFLOAT_MAX)
+        return [self.fullTaxon.attributedBody boundingRectWithSize:CGSizeMake(290, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                        context:nil].size.height + 20;
     } else if (indexPath.row == 0) {
-        TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+        TaxonPhoto *tp = self.fullTaxon.taxonPhotos.firstObject;
         NSString *cacheKey = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:tp.thumbURL]];
         UIImage *image = [[[SDWebImageManager sharedManager] imageCache] imageFromDiskCacheForKey:cacheKey];
         
@@ -290,14 +299,13 @@ static char SUMMARY_ASSOCIATED_KEY;
     if (indexPath.item == 0) {
         TaxonPhotoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonPhoto" forIndexPath:indexPath];
         
-        if (self.taxon) {
-            TaxonPhoto *tp = self.taxon.taxonPhotos.firstObject;
+        if (self.fullTaxon) {
+            TaxonPhoto *tp = self.fullTaxon.taxonPhotos.firstObject;
             if (tp) {
                 cell.scrim.hidden = NO;
                 [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
                 [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
                 
-                __weak typeof(self) weakSelf = self;
                 [cell.taxonPhoto sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                               dispatch_async(dispatch_get_main_queue(), ^{
@@ -308,7 +316,7 @@ static char SUMMARY_ASSOCIATED_KEY;
                                           }];
             } else {
                 cell.scrim.hidden = YES;
-                cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+                cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.fullTaxon.iconicTaxonName];
             }
         }
         
@@ -316,7 +324,7 @@ static char SUMMARY_ASSOCIATED_KEY;
     } else if (indexPath.item == 1) {
         TaxonSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonSummary" forIndexPath:indexPath];
         
-        cell.summaryLabel.attributedText = self.taxon.attributedBody;
+        cell.summaryLabel.attributedText = self.fullTaxon.attributedBody;
 
         return cell;
     } else {
@@ -339,14 +347,14 @@ static char SUMMARY_ASSOCIATED_KEY;
         return;
     }
     
-    NSString *wikipediaTitle = self.taxon.wikipediaTitle;
-    NSString *escapedName = [self.taxon.name stringByAddingURLEncoding];
+    NSString *wikipediaTitle = self.fullTaxon.wikipediaTitle;
+    NSString *escapedName = [self.fullTaxon.name stringByAddingURLEncoding];
     NSString *urlString;
     
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     if (buttonIndex == 0) {
-        urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.taxon.recordID.intValue, language, countryCode];
+        urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.fullTaxon.recordID.intValue, language, countryCode];
     } else if (buttonIndex == 1) {
         urlString = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
     } else if (buttonIndex == 2) {

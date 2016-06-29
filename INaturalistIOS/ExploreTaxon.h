@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Mantle/Mantle.h>
+#import "TaxonVisualization.h"
 
-@interface ExploreTaxon : MTLModel <MTLJSONSerializing>
+@interface ExploreTaxon : MTLModel <MTLJSONSerializing, TaxonVisualization>
 
 @property (nonatomic, assign) NSInteger taxonId;
 @property (nonatomic, copy) NSString *webContent;

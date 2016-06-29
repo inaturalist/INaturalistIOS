@@ -24,6 +24,7 @@
 #import "ObsEditV2ViewController.h"
 #import "Observation.h"
 #import "Taxon.h"
+#import "ExploreTaxonRealm.h"
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "UIColor+INaturalist.h"
@@ -874,16 +875,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - Taxa Search
 
-- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
-    self.observation.taxon = taxon;
-    self.observation.taxonID = taxon.recordID;
-    self.observation.iconicTaxonName = taxon.iconicTaxonName;
-    self.observation.iconicTaxonID = taxon.iconicTaxonID;
-    self.observation.speciesGuess = taxon.defaultName;
-    
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
+    self.observation.taxonID = @(taxon.taxonId);
     self.observation.localUpdatedAt = [NSDate date];
 
-    NSString *newTaxonName = taxon.defaultName ?: taxon.name;
+    NSString *newTaxonName = taxon.commonName ?: taxon.scientificName;
     if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
@@ -1338,63 +1334,60 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
+	
+    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.observation.taxonID.integerValue];
 
-
-    if (self.observation.taxon) {
-        
-        Taxon *taxon = self.observation.taxon;
-        
-        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
+    if (results.count == 1) {
+        ExploreTaxonRealm *etr = [results firstObject];
+        if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
             // no common name, so only show scientific name in the main label
-            cell.taxonNameLabel.text = taxon.name;
+            cell.taxonNameLabel.text = etr.scientificName;
             cell.taxonSecondaryNameLabel.text = nil;
             
-            if (taxon.isGenusOrLower) {
+            if (etr.isGenusOrLower) {
                 cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-                cell.taxonNameLabel.text = taxon.name;
+                cell.taxonNameLabel.text = etr.scientificName;
             } else {
                 cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
                 cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                            [taxon.rank capitalizedString], taxon.name];
+                                            [etr.rankName capitalizedString], etr.scientificName];
             }
         } else {
             // show both common & scientfic names
-            cell.taxonNameLabel.text = taxon.defaultName;
+            cell.taxonNameLabel.text = etr.commonName;
             cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
             
-            if (taxon.isGenusOrLower) {
+            if (etr.isGenusOrLower) {
                 cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = taxon.name;
+                cell.taxonSecondaryNameLabel.text = etr.scientificName;
             } else {
                 cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                     [taxon.rank capitalizedString], taxon.name];
-                
+                                                     [etr.rankName capitalizedString], etr.scientificName];
+
             }
         }
-        
-        if ([taxon.isIconic boolValue]) {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-        } else if (taxon.taxonPhotos.count > 0) {
-            TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
+
+        if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+        } else if (etr.photoUrl) {
+            [cell.taxonImageView sd_setImageWithURL:etr.photoUrl];
         } else {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         }
         
         cell.accessoryView = deleteButton;
-        
     } else {
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
+        // the question icon has a rendered border
         cell.taxonImageView.layer.borderWidth = 0.0f;
-        
+
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
-            cell.accessoryView = deleteButton;
         } else {
-            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"Unknown taxon");
+            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
         }
     }
     

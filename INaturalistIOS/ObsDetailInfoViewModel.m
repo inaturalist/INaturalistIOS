@@ -84,7 +84,7 @@
             [notes addAttribute:NSFontAttributeName
                           value:[UIFont systemFontOfSize:14]
                           range:NSMakeRange(0, notes.length)];
-            
+             
             cell.notesTextView.attributedText = notes;
             
             return cell;

@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <Realm/Realm.h>
 #import "ExploreTaxon.h"
+#import "TaxonVisualization.h"
 
-@interface ExploreTaxonRealm : RLMObject
+@interface ExploreTaxonRealm : RLMObject <TaxonVisualization>
 
 @property (nonatomic, assign) NSInteger taxonId;
 @property (nonatomic, copy) NSString *webContent;

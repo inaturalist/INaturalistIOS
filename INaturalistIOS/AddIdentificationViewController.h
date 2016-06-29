@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "TaxaSearchViewController.h"
 #import "ObservationVisualization.h"
+#import "TaxonVisualization.h"
 
 @interface AddIdentificationViewController : UITableViewController <TaxaSearchViewControllerDelegate>
 
 @property (nonatomic, strong) id <ObservationVisualization> observation;
-@property (nonatomic, strong) Taxon *taxon;
+@property (nonatomic, strong) id <TaxonVisualization> taxon;
 
 @end

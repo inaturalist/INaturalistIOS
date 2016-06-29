@@ -11,5 +11,6 @@
 @interface TaxaAPI : INatAPI
 
 - (void)taxaMatching:(NSString *)name handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)taxonWithId:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

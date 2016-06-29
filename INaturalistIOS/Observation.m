@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <Realm/Realm.h>
+
 #import "Observation.h"
 #import "ObservationFieldValue.h"
 #import "ObservationField.h"
@@ -17,6 +19,7 @@
 #import "ProjectObservation.h"
 #import "Fave.h"
 #import "User.h"
+#import "ExploreTaxonRealm.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -66,6 +69,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 + (NSArray *)all
 {
     return [self objectsWithFetchRequest:self.defaultDescendingSortedFetchRequest];
+}
+
+- (ExploreTaxonRealm *)exploreTaxonRealm {
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxonID.integerValue];
+	return [results firstObject];
 }
 
 + (Observation *)stub
@@ -493,8 +501,12 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 #pragma mark - ObservationVisualization
 
-- (NSNumber *)inatRecordId {
-    return self.recordID;
+- (NSInteger)inatRecordId {
+    return self.recordID.integerValue;
+}
+
+-(NSInteger)taxonRecordID {
+    return self.taxonID.integerValue;
 }
 
 - (NSString *)username {

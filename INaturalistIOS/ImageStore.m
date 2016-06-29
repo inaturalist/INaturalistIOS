@@ -174,11 +174,7 @@
         NSString *oldPath = [self oldPathForKey:key forSize:size];
         UIImage *img = [UIImage imageWithContentsOfFile:oldPath];
         if (img) {
-            [[SDImageCache sharedImageCache] storeImage:img forKey:imgKey];
-            // delete the old path
-            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:nil];
-            // return the new cache path
-            return [[SDImageCache sharedImageCache] defaultCachePathForKey:imgKey];
+        	return img;
         }
     }
     

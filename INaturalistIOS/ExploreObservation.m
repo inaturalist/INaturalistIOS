@@ -13,6 +13,7 @@
 #import "ExploreObservationPhoto.h"
 #import "ExploreUser.h"
 #import "ExploreTaxon.h"
+#import "ExploreTaxonRealm.h"
 
 @implementation ExploreObservation
 
@@ -106,9 +107,16 @@
         self.coordinatesObscured = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
+    } else if ([key isEqualToString:@"location"]) {
+    	// do nothing?
     } else {
         [super setNilValueForKey:key];
     }
+}
+
+- (ExploreTaxonRealm *)exploreTaxonRealm {
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxon.taxonId];
+	return [results firstObject];
 }
 
 #pragma mark - Uploadable
@@ -222,7 +230,7 @@
     return  [[[NSUUID alloc] init] UUIDString];
 }
 
-- (NSInteger)taxonID {
+- (NSInteger)taxonRecordID {
 	return self.taxon.taxonId;
 }
 

@@ -585,6 +585,7 @@
 		FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreMapViewController.m; sourceTree = "<group>"; };
 		FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationVisualizerViewController.h; sourceTree = "<group>"; };
 		FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationVisualizerViewController.m; sourceTree = "<group>"; };
+		FA4F28171D2356F400449A1C /* TaxonVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonVisualization.h; sourceTree = "<group>"; };
 		FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailTaxonCell.h; sourceTree = "<group>"; };
 		FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailTaxonCell.m; sourceTree = "<group>"; };
 		FA51BA631C000A1900101807 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
@@ -1063,8 +1064,8 @@
 				19F874941526763D00A65F9A /* TaxaSearchController.h */,
 				19F874951526763E00A65F9A /* TaxaSearchController.m */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
-				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
+				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
@@ -1522,6 +1523,7 @@
 			isa = PBXGroup;
 			children = (
 				FA9437881C869F5900CB10F3 /* ObservationVisualization.h */,
+				FA4F28171D2356F400449A1C /* TaxonVisualization.h */,
 				FAA6EB061C8E5A0B00F43552 /* IdentificationVisualization.h */,
 				FAA6EB071C8E5A1300F43552 /* CommentVisualization.h */,
 				FAA6EB081C8E61A300F43552 /* ActivityVisualization.h */,

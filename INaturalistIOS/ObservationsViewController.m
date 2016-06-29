@@ -47,6 +47,7 @@
 #import "DeletedRecord.h"
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
+#import "ExploreTaxonRealm.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
     
@@ -686,7 +687,9 @@
     }
     
     // configure the title
-    if (o.speciesGuess && o.speciesGuess.length > 0) {
+    if ([o exploreTaxonRealm]) {
+    	[cell.titleLabel setText:o.exploreTaxonRealm.commonName ?: o.exploreTaxonRealm.scientificName];
+    } else if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else if (o.inatDescription && o.inatDescription.length > 0) {
         [cell.titleLabel setText:o.inatDescription];
@@ -837,10 +840,13 @@
         } else {
             NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
             NSString *speciesName = NSLocalizedString(@"Unknown", @"unknown taxon");
-            if (uploadManager.currentlyUploadingObservation.speciesGuess) {
-                speciesName = uploadManager.currentlyUploadingObservation.speciesGuess;
-            } else if (uploadManager.currentlyUploadingObservation.inatDescription) {
-                speciesName = uploadManager.currentlyUploadingObservation.inatDescription;
+            Observation *cuo = uploadManager.currentlyUploadingObservation;
+            if (cuo.exploreTaxonRealm) {
+            	speciesName = cuo.exploreTaxonRealm.commonName ?: cuo.exploreTaxonRealm.scientificName;
+            } else if (cuo.speciesGuess) {
+                speciesName = cuo.speciesGuess;
+            } else if (cuo.inatDescription) {
+                speciesName = cuo.inatDescription;
             }
             self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
         }
