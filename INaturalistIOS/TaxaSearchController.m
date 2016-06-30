@@ -68,6 +68,18 @@
 	[self.delegate recordSearchControllerClickedAccessoryForRecord:[self.searchResults objectAtIndex:indexPath.item]];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (self.allowsFreeTextSelection && indexPath.section == 0) {
+    	// species guess row
+    	[self.delegate recordSearchControllerSelectedRecord:nil];
+    } else {
+    	[self.delegate recordSearchControllerSelectedRecord:[self.searchResults objectAtIndex:indexPath.row]];
+    }
+}
+
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
 	if (![self.savedSearchTerm isEqualToString:searchString]) {

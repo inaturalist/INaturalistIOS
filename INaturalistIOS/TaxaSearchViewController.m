@@ -183,6 +183,8 @@
     if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
         ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
         [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+    } else if (!record && [self.searchDisplayController.searchBar.text length] > 2) {
+    	[self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchDisplayController.searchBar.text];
     }
 }
 
