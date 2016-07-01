@@ -523,5 +523,25 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return YES;
 }
 
+- (CLLocationCoordinate2D)visibleLocation {
+	if (self.privateLatitude && self.privateLatitude.floatValue != 0) {
+		return CLLocationCoordinate2DMake(self.privateLatitude.floatValue, self.privateLongitude.floatValue);
+	} else if (self.latitude && self.latitude.floatValue != 0) {
+		return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
+	} else {
+		// invalid location
+		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+	}
+}
+
+- (CLLocationDistance)visiblePositionalAccuracy {
+	if (self.privatePositionalAccuracy && self.privatePositionalAccuracy.integerValue != 0) {
+		return self.privatePositionalAccuracy.integerValue;
+	} else if (self.positionalAccuracy && self.positionalAccuracy.integerValue != 0) {
+		return self.positionalAccuracy.integerValue;
+	} else {
+		return 0;
+	}
+}
 
 @end

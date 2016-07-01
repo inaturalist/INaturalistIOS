@@ -27,13 +27,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSInteger)taxonRecordID;
 - (NSString *)inatDescription;
 
-- (CLLocationDegrees)latitude;
-- (CLLocationDegrees)longitude;
-- (CLLocationAccuracy)positionalAccuracy;
-
-- (CLLocationDegrees)privateLatitude;
-- (CLLocationDegrees)privateLongitude;
-- (CLLocationAccuracy)privatePositionalAccuracy;
+- (CLLocationCoordinate2D)visibleLocation;
+- (CLLocationAccuracy)visiblePositionalAccuracy;
 
 - (NSDate *)observedOn;
 - (NSString *)observedOnShortString;

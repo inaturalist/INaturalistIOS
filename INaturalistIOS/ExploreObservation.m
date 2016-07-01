@@ -108,6 +108,7 @@
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {
+    	self.location = CLLocationCoordinate2DMake(-19999.0,-19999.0);
     	// do nothing?
     } else {
         [super setNilValueForKey:key];
@@ -308,5 +309,19 @@
     
     return YES;
 }
+
+- (CLLocationCoordinate2D)visibleLocation {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
+		return self.location;
+	} else {
+		// invalid location
+		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+	}
+}
+
+- (CLLocationDistance)visiblePositionalAccuracy {
+	return self.publicPositionalAccuracy;
+}
+
 
 @end

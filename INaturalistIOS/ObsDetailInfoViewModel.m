@@ -95,19 +95,19 @@
             cell.mapView.delegate = self;
             cell.mapView.userInteractionEnabled = NO;
             
-            CLLocationCoordinate2D coords;
-            
-            if (self.observation.privateLatitude && self.observation.privateLatitude != 0) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude, self.observation.privateLongitude);
-            } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude, self.observation.longitude);
-            }
+            CLLocationCoordinate2D coords = [self.observation visibleLocation];
             
             if (CLLocationCoordinate2DIsValid(coords)) {
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
-                CLLocationDistance distance = self.observation.positionalAccuracy ?: 500;
+            	CLLocationDistance distance;
+            	if ([self.observation visiblePositionalAccuracy] == 0) {
+            		distance = 500;
+            	} else {
+            		distance = MAX([self.observation visiblePositionalAccuracy], 200);
+            	}
+            	
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
                 
                 MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
@@ -119,8 +119,8 @@
                     cell.locationNameLabel.text = self.observation.placeGuess;
                 } else {
                     NSString *positionalAccuracy = nil;
-                    if (self.observation.positionalAccuracy) {
-                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy];
+                    if ([self.observation visiblePositionalAccuracy] != 0) {
+                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)[self.observation visiblePositionalAccuracy]];
                     } else {
                         positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
                     }
@@ -267,7 +267,7 @@
             } else if (self.observation.dataQuality == ObsDataQualityCasual) {
                 if (self.observation.observationPhotos.count == 0) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a photo to be considered for Research Grade.", nil);
-                } else if (!self.observation.latitude) {
+                } else if (!CLLocationCoordinate2DIsValid([self.observation visibleLocation])) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a location to be considered for Research Grade.", nil);
                 } else if (!self.observation.observedOn) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a date to be considered for Research Grade.", nil);
@@ -365,13 +365,7 @@
             // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             
-            CLLocationCoordinate2D coords;
-            
-            if (self.observation.privateLatitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude, self.observation.privateLongitude);
-            } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude, self.observation.longitude);
-            }
+            CLLocationCoordinate2D coords = [self.observation visibleLocation];
             
             if (CLLocationCoordinate2DIsValid(coords)) {
                 // show the map view
