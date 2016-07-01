@@ -27,19 +27,17 @@
     
     CLLocationCoordinate2D coords;
     
-    if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
-        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-    } else if (self.observation.latitude) {
-        coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+    if (self.observation.privateLatitude != 0) {
+        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude, self.observation.privateLongitude);
+    } else if (self.observation.latitude != 0) {
+        coords = CLLocationCoordinate2DMake(self.observation.latitude, self.observation.longitude);
     }
     
     if (CLLocationCoordinate2DIsValid(coords)) {
-        CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
+        CLLocationDistance distance = self.observation.positionalAccuracy ?: 500;
         
         // make sure we're not so zoomed in that we can't display tiles
-        if (distance < 100) {
-            distance = 100;
-        }
+        distance = MAX(distance, 200);
         
         self.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
         

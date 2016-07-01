@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class Observation;
+#import "ObservationVisualization.h"
 
 @interface LocationViewController : UIViewController
 
-@property Observation *observation;
+@property id <ObservationVisualization> observation;
 
 @end
