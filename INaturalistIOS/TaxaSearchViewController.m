@@ -150,6 +150,7 @@
 	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
 	[cell.taxonImageView sd_cancelCurrentImageLoad];
 	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
+	cell.taxonImageView.layer.borderWidth = 0.0f;
 	
 	cell.taxonNameLabel.text = self.searchDisplayController.searchBar.text;
 	cell.taxonNameLabel.textColor = [UIColor blackColor];
@@ -203,6 +204,7 @@
 	} else {
 		[cell.taxonImageView setImage:iconicTaxonImage];
 	}
+	cell.taxonImageView.layer.borderWidth = 1.0f;
 	
 	
 	if (etr.commonName) {
