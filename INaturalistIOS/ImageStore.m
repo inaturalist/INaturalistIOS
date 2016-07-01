@@ -77,17 +77,6 @@
         // attempt to find it at the old path
         NSString *oldPath = [self oldPathForKey:key forSize:size];
         img = [UIImage imageWithContentsOfFile:oldPath];
-
-        if (img) {
-            // move to new path (ie save in sdimagecache]
-            [[SDImageCache sharedImageCache] storeImage:img forKey:imgKey];
-            
-            // reload it from the new location
-            img = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imgKey];
-            
-            // delete the old file
-            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:nil];
-        }
     }
     
     return img;
@@ -172,7 +161,10 @@
     } else {
         // try the old path
         NSString *oldPath = [self oldPathForKey:key forSize:size];
-        return oldPath;
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if ([fm fileExistsAtPath:oldPath]) {
+	        return oldPath;
+	    }
     }
     
     return nil;
