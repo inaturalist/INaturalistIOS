@@ -81,7 +81,7 @@
         inputValidated = NO;
         alertMsg = NSLocalizedString(@"Unable to add an identification to this observation. Please try again later.",
                                      @"Failure message when making an identification");
-    } else if (!self.taxon || !self.taxon.recordID) {
+    } else if (!self.taxon) {
         inputValidated = NO;
         alertMsg = NSLocalizedString(@"Unable to identify this observation to that species. Please try again later.",
                                      @"Failure message when making an identification");
@@ -102,8 +102,8 @@
     
 	NSDictionary *params = @{
 							 @"identification[body]": self.descriptionTextView.text,
-							 @"identification[observation_id]": [self.observation inatRecordId],
-							 @"identification[taxon_id]": self.taxon.recordID
+							 @"identification[observation_id]": @([self.observation inatRecordId]),
+							 @"identification[taxon_id]": @([self.taxon taxonId])
 							 };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
     
@@ -149,7 +149,7 @@
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
-- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
@@ -158,7 +158,7 @@
 
 - (void)taxonToUI
 {
-	[self.speciesGuessTextField setText:self.taxon.defaultName];
+    [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
     
 	UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 	UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
@@ -167,16 +167,14 @@
     img.clipsToBounds = YES;
     [img sd_cancelCurrentImageLoad];
     
-    img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
     if (self.taxon) {
-        if (self.taxon.taxonPhotos.count > 0) {
-            TaxonPhoto *tp = (TaxonPhoto *)self.taxon.taxonPhotos.firstObject;
-            [img sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
+        img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
+        if ([self.taxon photoUrl]) {
+            [img sd_setImageWithURL:[self.taxon photoUrl]
                    placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
         }
         self.speciesGuessTextField.enabled = NO;
         rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
-        self.speciesGuessTextField.textColor = [Taxon iconicTaxonColor:self.taxon.iconicTaxonName];
     } else {
         rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
         self.speciesGuessTextField.enabled = YES;

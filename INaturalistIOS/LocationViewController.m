@@ -11,7 +11,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "LocationViewController.h"
-#import "Observation.h"
+#import "ObservationVisualization.h"
 #import "UIColor+INaturalist.h"
 #import "UIColor+ExploreColors.h"
 
@@ -23,24 +23,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    CLLocationCoordinate2D coords;
-    
-    if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
-        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-    } else if (self.observation.latitude) {
-        coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
-    }
+    CLLocationCoordinate2D coords = [self.observation visibleLocation];
     
     if (CLLocationCoordinate2DIsValid(coords)) {
-        CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
-        
-        // make sure we're not so zoomed in that we can't display tiles
-        if (distance < 100) {
-            distance = 100;
-        }
-        
+        CLLocationDistance distance;
+    	if ([self.observation visiblePositionalAccuracy] == 0) {
+    		distance = 500;
+    	} else {
+    		distance = MAX([self.observation visiblePositionalAccuracy], 200);
+    	}
+    	
         self.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
         
         MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];

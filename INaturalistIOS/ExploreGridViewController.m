@@ -17,7 +17,6 @@
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreObservation.h"
-#import "ExploreObservationDetailViewController.h"
 #import "ExploreGridCell.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"

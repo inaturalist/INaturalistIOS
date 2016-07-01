@@ -15,465 +15,235 @@
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "FAKINaturalist.h"
-
-@interface TaxaSearchViewController () <NSFetchedResultsControllerDelegate> {
-    NSFetchedResultsController *fetchedResultsController;
-}
-@end
-
-static const int TaxonCellImageTag = 1;
-static const int TaxonCellTitleTag = 2;
-static const int TaxonCellSubtitleTag = 3;
+#import "ExploreTaxon.h"
+#import "ExploreTaxonRealm.h"
+#import "ExploreTaxonRealm.h"
+#import "ObsDetailTaxonCell.h"
 
 @implementation TaxaSearchViewController
-@synthesize taxaSearchController = _taxaSearchController;
-@synthesize taxon = _taxon;
-@synthesize lastRequestAt = _lastRequestAt;
-@synthesize delegate = _delegate;
-@synthesize query = _query;
 
 #pragma mark - iNat API
-
-- (void)loadRemoteTaxaWithURL:(NSString *)url {
-    
-    // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        return;
-    }
-    
-    // only notify modally if we're fetching these taza from scratch
-    BOOL modal = ((id <NSFetchedResultsSectionInfo>)[fetchedResultsController sections][0]).numberOfObjects == 0;
-    if (modal) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = NSLocalizedString(@"Loading...",nil);
-        hud.removeFromSuperViewOnHide = YES;
-        hud.dimBackground = YES;
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Taxa search"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                                                            });
-                                                            
-                                                            // update timestamps on us and taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            self.lastRequestAt = now;
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            // /taxa/{id}/children API endpoint is comprehensive.
-                                                            // delete any child taxa that core data already had,
-                                                            // that weren't returned from the API.
-                                                            for (Taxon *t in fetchedResultsController.fetchedObjects) {
-                                                                if (![objects containsObject:t]) {
-                                                                    [t deleteEntity];
-                                                                }
-                                                            }
-                                                            
-                                                            // save into core data
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
-                                                                                            message:saveError.localizedDescription
-                                                                                           delegate:nil
-                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                                  otherButtonTitles:nil] show];
-                                                                return;
-                                                            }
-                                                            
-                                                            // update the UI with the merged results
-                                                            NSError *fetchError;
-                                                            [fetchedResultsController performFetch:&fetchError];
-                                                            if (fetchError) {
-                                                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
-                                                                                            message:fetchError.localizedDescription
-                                                                                           delegate:nil
-                                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                                  otherButtonTitles:nil] show];
-                                                                return;
-                                                            }
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                                                            });
-
-                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
-                                                                                        message:error.localizedDescription
-                                                                                       delegate:nil
-                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                              otherButtonTitles:nil] show];
-                                                        };
-                                                        
-                                                        loader.onDidFailLoadWithError = ^(NSError *error) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                                                            });
-
-                                                            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network Error", nil)
-                                                                                        message:error.localizedDescription
-                                                                                       delegate:nil
-                                                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                              otherButtonTitles:nil] show];
-                                                        };
-                                            
-                                                    }];
-}
 
 #pragma mark - UIControl interactions
 
 - (void)clickedAccessory:(id)sender event:(UIEvent *)event {
-    UITableView *targetTableView;
-    NSArray *targetTaxa;
-    if (self.searchDisplayController.active) {
-        targetTableView = self.searchDisplayController.searchResultsTableView;
-        targetTaxa = self.taxaSearchController.searchResults;
-    } else {
-        targetTableView = self.tableView;
-    }
-    CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:targetTableView];
-    NSIndexPath *indexPath = [targetTableView indexPathForRowAtPoint:currentTouchPosition];
-    
-    // be defensive
-    if (indexPath) {
-        
-        NSString *activeSearchText = self.searchDisplayController.searchBar.text;
-        if (self.taxaSearchController.allowsFreeTextSelection && activeSearchText.length > 0 && indexPath.section == 0) {
-            [self.delegate taxaSearchViewControllerChoseSpeciesGuess:activeSearchText];
-            return;
-        }
+	NSArray *targetTaxa = self.taxaSearchController.searchResults;
+	UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+	CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:tableView];
+	NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:currentTouchPosition];
+	
+	// be defensive
+	if (indexPath) {		
+		NSString *activeSearchText = self.searchDisplayController.searchBar.text;
+		if (self.taxaSearchController.allowsFreeTextSelection && activeSearchText.length > 0 && indexPath.section == 0) {
+			[self.delegate taxaSearchViewControllerChoseSpeciesGuess:activeSearchText];
+			return;
+		}
 
-        Taxon *t;
-        
-        @try {
-            // either of these paths could throw an exception
-            // if something isn't found at this index path
-            // in that case, silently do nothing
-            if (self.searchDisplayController.active) {
-                t = [targetTaxa objectAtIndex:indexPath.row];
-            } else {
-                t = [fetchedResultsController objectAtIndexPath:indexPath];
-            }
-        } @catch (NSException *e) { }   // silently do nothing
-        
-        if (t) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
-                [self.delegate taxaSearchViewControllerChoseTaxon:t];
-            } else {
-                [self showTaxon:t];
-            }
-        }
-    }
+		ExploreTaxonRealm *etr;
+		@try {
+			// either of these paths could throw an exception
+			// if something isn't found at this index path
+			// in that case, silently do nothing
+			etr = [targetTaxa objectAtIndex:indexPath.row];
+		} @catch (NSException *e) { }   // silently do nothing
+		
+		if (etr) {
+			[self showTaxon:etr];
+		}
+	}
 }
 
 - (IBAction)clickedCancel:(id)sender {
-    [[self parentViewController] dismissViewControllerAnimated:YES
-                                                    completion:nil];
+	[[self parentViewController] dismissViewControllerAnimated:YES
+													completion:nil];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+	[self.navigationController popViewControllerAnimated:YES];
+	//[[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIViewController lifecycle
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    // NSFetchedResultsController request for these taxa
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Taxon"];
-    
-    // sort by common name, if available
-    request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
-    
-    // setup the request predicate
-    if (self.taxon) {
-        // children of self.taxon, using ancestry
-        NSString *queryAncestry;
-        if (self.taxon.ancestry && self.taxon.ancestry.length > 0) {
-            queryAncestry = [NSString stringWithFormat:@"%@/%d", self.taxon.ancestry, self.taxon.recordID.intValue];
-        } else {
-            queryAncestry = [NSString stringWithFormat:@"%d", self.taxon.recordID.intValue];
-        }
-        request.predicate = [NSPredicate predicateWithFormat:@"ancestry == %@", queryAncestry];
-    } else {
-        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-    }
-    
-    // setup our fetched results controller
-    fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                   managedObjectContext:[NSManagedObjectContext defaultContext]
-                                                                     sectionNameKeyPath:nil
-                                                                              cacheName:nil];
-    // update our tableview based on changes in the fetched results
-    fetchedResultsController.delegate = self;
-    
-    // perform the iniital local fetch
-    NSError *fetchError;
-    [fetchedResultsController performFetch:&fetchError];
-    if (fetchError) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
-                                    message:fetchError.localizedDescription
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
-    }
-    
-    // setup our search controller
-    if (!self.taxaSearchController) {
-        self.taxaSearchController = [[TaxaSearchController alloc] 
-                                     initWithSearchDisplayController:self.searchDisplayController];
-        self.taxaSearchController.delegate = self;
-        self.taxaSearchController.allowsFreeTextSelection = self.allowsFreeTextSelection;
-    }
-    
-    // perform the remote fetch for these taxa
-    if (self.taxon) {
-        // fetch children
-        self.navigationItem.title = self.taxon.defaultName;
-        [self loadRemoteTaxaWithURL:[NSString stringWithFormat:@"/taxa/%d/children", self.taxon.recordID.intValue]];
-    } else {
-        // iconic taxa fetch
-        if ([((id <NSFetchedResultsSectionInfo>)[fetchedResultsController sections].firstObject) numberOfObjects] < 10 && !self.lastRequestAt) {
-            [self loadRemoteTaxaWithURL:@"/taxa"];
-        }
-    }
-    
-    // configure this tableview
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonOneNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonTwoNameTableViewCell" bundle:nil] forCellReuseIdentifier:@"TaxonTwoNameCell"];
-    
-    // This is a weird way to trick the underlying table view NOT to show any
-    // rows when there's no data. Without this you will sometimes see overlapping
-    // cell borders on top of the search results
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
-    self.tableView.tableFooterView = view;
-    
-    if (self.query && self.query.length > 0) {
-        [self.searchDisplayController setActive:YES];
-        self.searchDisplayController.searchBar.text = self.query;
-    }
-    
-    if (self.hidesDoneButton)
-        self.navigationItem.rightBarButtonItem = nil;
+	[super viewDidLoad];
+		
+	// setup our search controller
+	if (!self.taxaSearchController) {
+		self.taxaSearchController = [[TaxaSearchController alloc] 
+									 initWithSearchDisplayController:self.searchDisplayController];
+		self.taxaSearchController.delegate = self;
+		self.taxaSearchController.allowsFreeTextSelection = self.allowsFreeTextSelection;
+	}
+	
+	[self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
+	
+	// show blank screen when empty
+	self.tableView.tableFooterView = [UIView new];
+
+	[self.searchDisplayController setActive:YES];	
+	if (self.query && self.query.length > 0) {
+		self.searchDisplayController.searchBar.text = self.query;
+	}
+	self.searchDisplayController.searchBar.delegate = self;
+	[self.searchDisplayController.searchBar becomeFirstResponder];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTaxaSearch];
+	[super viewDidAppear:animated];
+	[[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTaxaSearch];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTaxaSearch];
+	[super viewDidDisappear:animated];
+	[[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTaxaSearch];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView beginUpdates];
+	[self.tableView beginUpdates];
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView endUpdates];
+	[self.tableView endUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
    didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                  withRowAnimation:UITableViewRowAnimationNone];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [self.tableView moveRowAtIndexPath:indexPath
-                                   toIndexPath:newIndexPath];
-            break;
-            
-        default:
-            break;
-    }
+	   atIndexPath:(NSIndexPath *)indexPath
+	 forChangeType:(NSFetchedResultsChangeType)type
+	  newIndexPath:(NSIndexPath *)newIndexPath {
+	
+	switch (type) {
+		case NSFetchedResultsChangeInsert:
+			[self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
+								  withRowAnimation:UITableViewRowAnimationAutomatic];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
+								  withRowAnimation:UITableViewRowAnimationAutomatic];
+			break;
+			
+		case NSFetchedResultsChangeUpdate:
+			[self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+								  withRowAnimation:UITableViewRowAnimationNone];
+			break;
+			
+		case NSFetchedResultsChangeMove:
+			[self.tableView moveRowAtIndexPath:indexPath
+								   toIndexPath:newIndexPath];
+			break;
+			
+		default:
+			break;
+	}
 }
 
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaxonOneNameCell"];
-    
-    FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
-    [unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-    
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    [imageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
-    
-    UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
-    titleLabel.text = self.searchDisplayController.searchBar.text;
-    titleLabel.font = [UIFont systemFontOfSize:titleLabel.font.pointSize];
-    
-    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"]
-                         forState:UIControlStateNormal];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"]
-                         forState:UIControlStateHighlighted];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
-    addButton.titleLabel.textColor = [UIColor whiteColor];
-    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.accessoryView = addButton;
-    
-    return cell;
-}
-
-- (UITableViewCell *)cellForTaxon:(Taxon *)t inTableView:(UITableView *)tableView {
-    NSString *cellIdentifier = [t.name isEqualToString:t.defaultName] ? @"TaxonOneNameCell" : @"TaxonTwoNameCell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
-    
-    UIButton *addButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 35)];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button"] 
-                         forState:UIControlStateNormal];
-    [addButton setBackgroundImage:[UIImage imageNamed:@"add_button_highlight"] 
-                         forState:UIControlStateHighlighted];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateNormal];
-    [addButton setTitle:NSLocalizedString(@"Add",nil) forState:UIControlStateHighlighted];
-    addButton.titleLabel.textColor = [UIColor whiteColor];
-    addButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    [addButton addTarget:self action:@selector(clickedAccessory:event:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.accessoryView = addButton;
-        
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:TaxonCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
-    imageView.image = nil;
-    
-    UILabel *titleLabel = (UILabel *)[cell viewWithTag:TaxonCellTitleTag];
-    titleLabel.text = t.defaultName;
-    UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:t.iconicTaxonName];
-    imageView.image = iconicTaxonImage;
-    
-    TaxonPhoto *tp = [t.taxonPhotos firstObject];
-    if (tp) {
-        [imageView sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
-                     placeholderImage:iconicTaxonImage];
-    }
-    if ([t.name isEqualToString:t.defaultName]) {
-        if (t.rankLevel.intValue >= 30) {
-            titleLabel.font = [UIFont boldSystemFontOfSize:titleLabel.font.pointSize];
-        } else {
-            titleLabel.font = [UIFont fontWithName:@"Helvetica-BoldOblique" size:titleLabel.font.pointSize];
-        }
-    } else {
-        UILabel *subtitleLabel = (UILabel *)[cell viewWithTag:TaxonCellSubtitleTag];
-        if (t.isGenusOrLower) {
-            subtitleLabel.text = t.name;
-            subtitleLabel.font = [UIFont italicSystemFontOfSize:subtitleLabel.font.pointSize];
-        } else {
-            subtitleLabel.text = [NSString stringWithFormat:@"%@ %@", [t.rank capitalizedString], t.name];
-            subtitleLabel.font = [UIFont systemFontOfSize:subtitleLabel.font.pointSize];
-        }
-    }
-    
-    return cell;
+	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
+	
+	FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
+	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+	[cell.taxonImageView sd_cancelCurrentImageLoad];
+	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
+	cell.taxonImageView.layer.borderWidth = 0.0f;
+	
+	cell.taxonNameLabel.text = self.searchDisplayController.searchBar.text;
+	cell.taxonNameLabel.textColor = [UIColor blackColor];
+	cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
+	cell.taxonSecondaryNameLabel.text = @"";
+	
+	return cell;
 }
 
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 54;
+	return 60;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+	return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [fetchedResultsController sections][0];
-    return [sectionInfo numberOfObjects];
+
+- (void)showTaxon:(ExploreTaxonRealm *)taxon {
+	TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+	tdvc.taxon = taxon;
+	tdvc.delegate = self;
+	[self.navigationController pushViewController:tdvc animated:YES];
 }
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Taxon *t = (Taxon *)[fetchedResultsController objectAtIndexPath:indexPath];
-    return [self cellForTaxon:t inTableView:tableView];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Taxon *t = (Taxon *)[fetchedResultsController objectAtIndexPath:indexPath];
-    [self showTaxon:t];
-}
-
-#pragma mark - Show Taxon
-
-- (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController {
-    UIViewController *vc;
-    if (taxon.isSpeciesOrLower) {
-        TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL] 
-                                           instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-        tdvc.taxon = taxon;
-        tdvc.delegate = self;
-        vc = tdvc;
-    } else {
-        TaxaSearchViewController *tsvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL] 
-                                          instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
-        tsvc.taxon = taxon;
-        tsvc.delegate = self.delegate;
-        // propogate the "hides done button" state through the stack
-        tsvc.hidesDoneButton = self.hidesDoneButton;
-        vc = tsvc;
-    }
-    [navigationController pushViewController:vc animated:YES];
-}
-
-- (void)showTaxon:(Taxon *)taxon {
-    [self showTaxon:taxon inNavigationController:self.navigationController];
-}
-
 
 #pragma mark - RecordSearchControllerDelegate
 - (void)recordSearchControllerSelectedRecord:(id)record {
-    UINavigationController *navigationController = self.navigationController;
-    [self showTaxon:record inNavigationController:navigationController];
+	// add the ID
+    //[self.delegate taxaSearchViewControllerChoseTaxonId:record.taxonId];
+    if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
+        ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
+        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+    } else if (!record && [self.searchDisplayController.searchBar.text length] > 2) {
+    	[self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchDisplayController.searchBar.text];
+    }
 }
 
 - (UITableViewCell *)recordSearchControllerCellForRecord:(NSObject *)record inTableView:(UITableView *)tableView {
-    if (record) {
-        return [self cellForTaxon:(Taxon *)record inTableView:tableView];
-    } else {
-        return [self cellForUnknownTaxonInTableView:tableView];
-    }
+	if (!record) {
+		return [self cellForUnknownTaxonInTableView:tableView];
+	}
+	
+	ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
+	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
+		
+  	[cell.taxonImageView sd_cancelCurrentImageLoad];	
+	UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+	if (etr.photoUrl) {
+		[cell.taxonImageView sd_setImageWithURL:etr.photoUrl placeholderImage:iconicTaxonImage];
+	} else {
+		[cell.taxonImageView setImage:iconicTaxonImage];
+	}
+	cell.taxonImageView.layer.borderWidth = 1.0f;
+	
+	
+	if (etr.commonName) {
+		cell.taxonNameLabel.text = etr.commonName;
+		cell.taxonSecondaryNameLabel.text = etr.scientificName;
+		CGFloat pointSize = cell.taxonSecondaryNameLabel.font.pointSize;
+		if (etr.isGenusOrLower) {
+			cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
+		} else {
+			cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:pointSize];
+		}
+	} else {
+		cell.taxonNameLabel.text = etr.scientificName;
+		cell.taxonSecondaryNameLabel.text = @"";
+		CGFloat pointSize = cell.taxonNameLabel.font.pointSize;
+		if (etr.isGenusOrLower) {
+			cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
+		} else {
+			cell.taxonNameLabel.font = [UIFont systemFontOfSize:pointSize];
+		}
+	}
+	
+	cell.accessoryType = UITableViewCellAccessoryDetailButton;
+	
+	return cell;
+}
+
+
+- (void)recordSearchControllerClickedAccessoryForRecord:(id)record {
+	if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
+		[self showTaxon:(ExploreTaxonRealm *)record];
+	}
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate
-- (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxon:)]) {
-        [self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:taxon];
-    }
+- (void)taxonDetailViewControllerClickedActionForTaxon:(NSInteger)taxonId {
+	if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxonId:)]) {
+		[self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:@(taxonId)];
+	}
 }
 
 @end

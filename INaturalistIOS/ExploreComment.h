@@ -7,17 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
 #import "CommentVisualization.h"
 #import "ActivityVisualization.h"
 
-@interface ExploreComment : NSObject <CommentVisualization>
+@class ExploreUser;
+
+@interface ExploreComment : MTLModel <CommentVisualization, MTLJSONSerializing>
 
 @property (nonatomic, assign) NSInteger commentId;
 @property (nonatomic, copy) NSString *commentText;
-@property (nonatomic, copy) NSString *commenterName;
-@property (nonatomic, assign) NSInteger commenterId;
-@property (nonatomic, copy) NSString *commenterIconUrl;
+@property (nonatomic, retain) ExploreUser *commenter;
 @property (nonatomic, copy) NSDate *commentedDate;
 
 @end

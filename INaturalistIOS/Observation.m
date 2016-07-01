@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <Realm/Realm.h>
+
 #import "Observation.h"
 #import "ObservationFieldValue.h"
 #import "ObservationField.h"
@@ -17,6 +19,7 @@
 #import "ProjectObservation.h"
 #import "Fave.h"
 #import "User.h"
+#import "ExploreTaxonRealm.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -66,6 +69,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 + (NSArray *)all
 {
     return [self objectsWithFetchRequest:self.defaultDescendingSortedFetchRequest];
+}
+
+- (ExploreTaxonRealm *)exploreTaxonRealm {
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxonID.integerValue];
+	return [results firstObject];
 }
 
 + (Observation *)stub
@@ -493,8 +501,12 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 #pragma mark - ObservationVisualization
 
-- (NSNumber *)inatRecordId {
-    return self.recordID;
+- (NSInteger)inatRecordId {
+    return self.recordID.integerValue;
+}
+
+-(NSInteger)taxonRecordID {
+    return self.taxonID.integerValue;
 }
 
 - (NSString *)username {
@@ -511,5 +523,25 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return YES;
 }
 
+- (CLLocationCoordinate2D)visibleLocation {
+	if (self.privateLatitude && self.privateLatitude.floatValue != 0) {
+		return CLLocationCoordinate2DMake(self.privateLatitude.floatValue, self.privateLongitude.floatValue);
+	} else if (self.latitude && self.latitude.floatValue != 0) {
+		return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
+	} else {
+		// invalid location
+		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+	}
+}
+
+- (CLLocationDistance)visiblePositionalAccuracy {
+	if (self.privatePositionalAccuracy && self.privatePositionalAccuracy.integerValue != 0) {
+		return self.privatePositionalAccuracy.integerValue;
+	} else if (self.positionalAccuracy && self.positionalAccuracy.integerValue != 0) {
+		return self.positionalAccuracy.integerValue;
+	} else {
+		return 0;
+	}
+}
 
 @end

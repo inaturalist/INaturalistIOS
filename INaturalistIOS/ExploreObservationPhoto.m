@@ -10,6 +10,12 @@
 
 @implementation ExploreObservationPhoto
 
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+		@"url": @"url",
+	};
+}
+
 - (NSString *)photoKey {
     return nil;
 }

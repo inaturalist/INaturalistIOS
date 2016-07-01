@@ -8,15 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import <Mantle/Mantle.h>
 
-@interface ExploreProject : NSObject
+@interface ExploreProject : MTLModel <MTLJSONSerializing>
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) NSInteger projectId;
 @property (nonatomic, assign) NSInteger locationId;
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
-@property (nonatomic, copy) NSNumber *observedTaxaCount;
 @property (nonatomic, copy) NSString *iconUrl;
 
 @end

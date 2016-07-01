@@ -52,7 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if (self.observation.hasUnviewedActivity.boolValue) {
+    if (self.observation.hasUnviewedActivity) {
         self.viewModel = [[ObsDetailActivityViewModel alloc] init];
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
@@ -161,9 +161,7 @@
         vc.observation = self.observation;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        if ([sender isKindOfClass:[NSNumber class]]) {
-            vc.taxonId = [(NSNumber *)sender integerValue];
-        }
+        vc.taxon = sender;
     } else if ([segue.identifier isEqualToString:@"map"]) {
         LocationViewController *location = [segue destinationViewController];
         location.observation = self.observation;
@@ -184,8 +182,8 @@
     if ([self.observation isKindOfClass:[ExploreObservation class]]) {
         ObservationAPI *api = [[ObservationAPI alloc] init];
         __weak typeof(self) weakSelf = self;
-        [api observationWithId:[[self.observation inatRecordId] integerValue]
-                       handler:^(NSArray *results, NSError *error) {
+        [api observationWithId:self.observation.inatRecordId
+                       handler:^(NSArray *results, NSInteger count, NSError *error) {
                            __strong typeof(weakSelf) strongSelf = weakSelf;
                            if (strongSelf && results && results.count == 1) {
                                strongSelf.observation = results.firstObject;
@@ -294,7 +292,7 @@
         [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
         
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
-                                           INatWebBaseURL, (long)self.observation.inatRecordId.longLongValue]];
+                                           INatWebBaseURL, (long)self.observation.inatRecordId]];
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                                applicationActivities:nil];
         activity.completionHandler = ^(NSString *activityType, BOOL completed) {
@@ -387,7 +385,7 @@
     
     [self.tableView reloadData];
     
-    if (self.observation.hasUnviewedActivity.boolValue && self.activeSection == ObsDetailSectionActivity) {
+    if (self.observation.hasUnviewedActivity && self.activeSection == ObsDetailSectionActivity) {
         
         NSInteger lastSection = [self.tableView numberOfSections] - 1;
         

@@ -10,14 +10,115 @@
 #import "ExploreComment.h"
 #import "ExploreIdentification.h"
 #import "ExploreFave.h"
-
-@interface ExploreObservation () {
-    CLLocationDegrees _latitude;
-    CLLocationDegrees _longitude;
-}
-@end
+#import "ExploreObservationPhoto.h"
+#import "ExploreUser.h"
+#import "ExploreTaxon.h"
+#import "ExploreTaxonRealm.h"
 
 @implementation ExploreObservation
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey{
+    return @{
+             @"observationId": @"id",
+             @"location": @"location",
+             @"inatDescription": @"description",
+             @"speciesGuess": @"species_guess",
+             @"timeObservedAt": @"time_observed_at_utc",
+             @"observedOn": @"observed_on",
+             @"qualityGrade": @"quality_grade",
+             @"idPlease": @"id_please",
+             @"identificationsCount": @"identifications_count",
+             @"commentsCount": @"comments_count",
+             @"mappable": @"mappable",
+             @"publicPositionalAccuracy": @"public_positional_accuracy",
+             @"coordinatesObscured": @"coordinates_obscured",
+             @"placeGuess": @"place_guess",
+             @"user": @"user",
+             @"observationPhotos": @"photos",
+             @"comments": @"comments",
+             @"identifications": @"identifications",
+             @"faves": @"faves",
+             @"taxon": @"taxon",
+             };
+}
+
++ (NSValueTransformer *)observationPhotosJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObservationPhoto.class];
+}
+
++ (NSValueTransformer *)commentsJSONTransformer {
+	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreComment.class];
+}
+
++ (NSValueTransformer *)identificationsJSONTransformer {
+	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreIdentification.class];
+}
+
++ (NSValueTransformer *)favesJSONTransformer {
+	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreFave.class];
+}
+
++ (NSValueTransformer *)taxonJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
+}
+
++ (NSValueTransformer *)userJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
++ (NSValueTransformer *)observedOnJSONTransformer {
+	static NSDateFormatter *_dateFormatter = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_dateFormatter = [[NSDateFormatter alloc] init];
+		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+		_dateFormatter.dateFormat = @"yyyy-MM-dd";
+	});
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
++ (NSValueTransformer *)locationJSONTransformer {
+    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
+    	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+    	if (c.count == 2) {
+    		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
+    		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
+    		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+    		return [NSValue valueWithMKCoordinate:coords];
+    	} else {
+    		return nil;
+    	}
+    }];
+}
+
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"idPlease"]) {
+        self.idPlease = NO;
+    } else if ([key isEqualToString:@"identificationsCount"]) {
+        self.identificationsCount = 0;
+    } else if ([key isEqualToString:@"commentsCount"]) {
+        self.commentsCount = 0;
+   	} else if ([key isEqualToString:@"mappable"]) {
+        self.mappable = NO;
+    } else if ([key isEqualToString:@"coordinatesObscured"]) {
+        self.coordinatesObscured = NO;
+    } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
+        self.publicPositionalAccuracy = 0;
+    } else if ([key isEqualToString:@"location"]) {
+    	self.location = CLLocationCoordinate2DMake(-19999.0,-19999.0);
+    	// do nothing?
+    } else {
+        [super setNilValueForKey:key];
+    }
+}
+
+- (ExploreTaxonRealm *)exploreTaxonRealm {
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxon.taxonId];
+	return [results firstObject];
+}
 
 #pragma mark - Uploadable
 
@@ -35,44 +136,32 @@
 
 #pragma mark - ObservationVisualization
 
+- (NSString *)iconicTaxonName {
+    return self.taxon.iconicTaxonName;
+}
+
 - (BOOL)isEditable {
     return NO;
 }
 
-- (NSNumber *)latitude {
-    if (!self.locationCoordinateString) {
-        return nil;
-    }
-    NSString *latString = [[self.locationCoordinateString componentsSeparatedByString:@","] firstObject];
-    return @([latString floatValue]);
-}
-
-- (NSNumber *)longitude {
-    if (!self.locationCoordinateString) {
-        return nil;
-    }
-    NSString *lonString = [[self.locationCoordinateString componentsSeparatedByString:@","] lastObject];
-    return @([lonString floatValue]);
-}
-
 - (NSString *)username {
-    return self.observerName;
+	return self.user.login;
 }
 
-- (NSString *)userThumbUrl {
-    return self.observerIconUrl;
+- (NSURL *)userThumbUrl {
+	return self.user.userIcon;
 }
 
-- (NSNumber *)privateLatitude {
-    return @(0);
+- (CLLocationDegrees)privateLatitude {
+    return 0;
 }
 
-- (NSNumber *)privateLongitude {
-    return @(0);
+- (CLLocationDegrees)privateLongitude {
+    return 0;
 }
 
-- (NSNumber *)privatePositionalAccuracy {
-    return @(0);
+- (CLLocationAccuracy)privatePositionalAccuracy {
+    return 0;
 }
 
 - (NSArray *)sortedFaves {
@@ -114,7 +203,6 @@
 - (NSString *)observedOnShortString {
     static NSDateFormatter *formatter = nil;
     if (!formatter) {
-        NSLog(@"Formatting");
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterNoStyle];
@@ -122,16 +210,16 @@
     return [formatter stringFromDate:self.observedOn];
 }
 
-- (NSNumber *)inatRecordId {
-    return @(self.observationId);
+- (NSInteger)inatRecordId {
+    return self.observationId;
 }
 
-- (NSNumber *)hasUnviewedActivity {
-    return @(NO);
+- (BOOL)hasUnviewedActivity {
+    return NO;
 }
 
-- (NSNumber *)userID {
-    return @(self.observerId);
+- (NSInteger)userID {
+	return self.user.userId;
 }
 
 - (NSString *)sortable {
@@ -143,16 +231,16 @@
     return  [[[NSUUID alloc] init] UUIDString];
 }
 
-- (NSNumber *)taxonID {
-    return @(self.taxonId);
+- (NSInteger)taxonRecordID {
+	return self.taxon.taxonId;
 }
 
 - (NSSet *)observationFieldValues {
     return [NSSet set];
 }
 
-- (NSNumber *)captive {
-    return @(NO);
+- (BOOL)captive {
+    return NO;
 }
 
 - (NSString *)validationErrorMsg {
@@ -171,20 +259,32 @@
     return self.observationPhotos;
 }
 
-- (NSNumber *)positionalAccuracy {
-    return @(self.publicPositionalAccuracy);
+- (CLLocationAccuracy)positionalAccuracy {
+    return self.publicPositionalAccuracy;
 }
 
 - (CLLocationCoordinate2D)coordinate {
-    return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
+	return self.location;
+}
+
+- (CLLocationDegrees)latitude {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
+		return self.location.latitude;
+	} else {
+        return 0.0;
+	}
+}
+
+- (CLLocationDegrees)longitude {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
+		return self.location.longitude;
+	} else {
+        return 0.0;
+	}
 }
 
 - (NSString *)title {
     return nil;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"ExploreObservation: %@(%ld photos) at %f,%f", self.title, (unsigned long)self.observationPhotos.count, self.coordinate.latitude, self.coordinate.longitude];
 }
 
 // we're putting observations in a set, and want to make sure they don't get added more than once.
@@ -210,84 +310,17 @@
     return YES;
 }
 
-
-- (BOOL)validateObservationId:(id *)ioValue error:(NSError **)outError {
-    // Reject a observation id of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
+- (CLLocationCoordinate2D)visibleLocation {
+	if (CLLocationCoordinate2DIsValid(self.location)) {
+		return self.location;
+	} else {
+		// invalid location
+		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+	}
 }
 
-- (BOOL)validateLatitude:(id *)ioValue error:(NSError **)outError {
-    // Reject a latitude of zero. By returning NO, we refused the assignment and the value will not be set
-    /*
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-     */
-    
-    return YES;
-}
-
-- (BOOL)validateLongitude:(id *)ioValue error:(NSError **)outError {
-    // Reject a longitude of zero. By returning NO, we refused the assignment and the value will not be set
-    /*
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-     */
-    
-    return YES;
-}
-
-- (BOOL)validateObserverId:(id *)ioValue error:(NSError **)outError {
-    // Reject a observer id of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-
-- (BOOL)validateIdentificationsCount:(id *)ioValue error:(NSError **)outError {
-    // Reject a identifications count of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-
-- (BOOL)validateCommentsCount:(id *)ioValue error:(NSError **)outError {
-    // Reject a comments count of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-
-- (BOOL)validatePublicPositionalAccuracy:(id *)ioValue error:(NSError **)outError {
-    // Reject a accuracy of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (BOOL)validateTaxonId:(id *)ioValue error:(NSError **)outError {
-    // Reject a taxon id of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
+- (CLLocationDistance)visiblePositionalAccuracy {
+	return self.publicPositionalAccuracy;
 }
 
 

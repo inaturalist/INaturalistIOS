@@ -9,21 +9,20 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
+#import <Mantle/Mantle.h>
 
 #import "ObservationVisualization.h"
 #import "Uploadable.h"
 #import "Taxon.h"
 
-@interface ExploreObservation : NSObject <MKAnnotation, ObservationVisualization, Uploadable>
+@class ExploreTaxon;
+@class ExploreUser;
+
+@interface ExploreObservation : MTLModel <MKAnnotation, ObservationVisualization, Uploadable, MTLJSONSerializing>
 
 @property (nonatomic, assign) NSInteger observationId;
 @property (nonatomic, copy) NSString *speciesGuess;
-@property (nonatomic, copy) NSString *iconicTaxonName;
-@property (nonatomic, copy) NSString *taxonName;
 @property (nonatomic, copy) NSString *inatDescription;
-@property (nonatomic, assign) NSInteger taxonId;
-@property (nonatomic, copy) NSString *taxonRank;
-@property (nonatomic, copy) NSString *commonName;
 @property (nonatomic, copy) NSArray *observationPhotos;
 @property (nonatomic, copy) NSDate *timeObservedAt;
 @property (nonatomic, copy) NSDate *observedOn;
@@ -38,19 +37,15 @@
 @property (nonatomic, assign) NSInteger publicPositionalAccuracy;
 @property (nonatomic, assign) BOOL coordinatesObscured;
 @property (nonatomic, copy) NSString *placeGuess;
-
-@property (nonatomic, copy) NSString *locationCoordinateString;
-
-@property (nonatomic, assign) NSInteger observerId;
-@property (nonatomic, copy) NSString *observerName;
-@property (nonatomic, copy) NSString *observerIconUrl;
-
-@property (nonatomic, readonly) CLLocationCoordinate2D coords;
+@property (nonatomic, assign) CLLocationCoordinate2D location;
+@property (readonly) CLLocationDegrees latitude;
+@property (readonly) CLLocationDegrees longitude;
 
 @property (nonatomic, readonly) BOOL hasTime;
 
 @property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;
 
-@property (nonatomic) Taxon *taxon;
+@property (nonatomic) ExploreTaxon *taxon;
+@property (nonatomic) ExploreUser *user;
 
 @end

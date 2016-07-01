@@ -9,18 +9,18 @@
 #import "ExploreSearchPredicate.h"
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
-#import "ExplorePerson.h"
-#import "Taxon.h"
+#import "ExploreUser.h"
+#import "ExploreTaxon.h"
 
 @implementation ExploreSearchPredicate
 
 - (NSString *)colloquialSearchPhrase {
     switch (self.type) {
         case ExploreSearchPredicateTypeCritter:
-            if (self.searchTaxon.defaultName && ![self.searchTaxon.defaultName isEqualToString:@""]) {
-                return [NSString stringWithFormat:NSLocalizedString(@"named '%@ (%@)'", nil), self.searchTaxon.name, self.searchTaxon.defaultName];
+            if (self.searchTaxon.commonName && ![self.searchTaxon.commonName isEqualToString:@""]) {
+                return [NSString stringWithFormat:NSLocalizedString(@"named '%@ (%@)'", nil), self.searchTaxon.commonName, self.searchTaxon.scientificName];
             } else {
-                return [NSString stringWithFormat:NSLocalizedString(@"named '%@'", nil), self.searchTaxon.name];
+                return [NSString stringWithFormat:NSLocalizedString(@"named '%@'", nil), self.searchTaxon.scientificName];
             }
             break;
         case ExploreSearchPredicateTypePerson:
@@ -43,10 +43,10 @@
 - (NSString *)searchTerm {
     switch (self.type) {
         case ExploreSearchPredicateTypeCritter:
-            if (self.searchTaxon.defaultName && ![self.searchTaxon.defaultName isEqualToString:@""]) {
-                return self.searchTaxon.defaultName;
+            if (self.searchTaxon.commonName && ![self.searchTaxon.commonName isEqualToString:@""]) {
+                return self.searchTaxon.commonName;
             } else {
-                return self.searchTaxon.name;
+                return self.searchTaxon.scientificName;
             }
             break;
         case ExploreSearchPredicateTypePerson:
@@ -66,7 +66,7 @@
     }
 }
 
-+ (instancetype)predicateForTaxon:(Taxon *)taxon {
++ (instancetype)predicateForTaxon:(ExploreTaxon *)taxon {
     ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
     predicate.type = ExploreSearchPredicateTypeCritter;
     predicate.searchTaxon = taxon;
@@ -87,7 +87,7 @@
     return predicate;
 }
 
-+ (instancetype)predicateForPerson:(ExplorePerson *)person {
++ (instancetype)predicateForPerson:(ExploreUser *)person {
     ExploreSearchPredicate *predicate = [[ExploreSearchPredicate alloc] init];
     predicate.type = ExploreSearchPredicateTypePerson;
     predicate.searchPerson = person;

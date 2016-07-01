@@ -7,20 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class Taxon;
+#import "TaxonVisualization.h"
 
 @protocol TaxonDetailViewControllerDelegate <NSObject>
 @optional
-- (void)taxonDetailViewControllerClickedActionForTaxon:(Taxon *)taxon;
+- (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId;
 @end
 
 @interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate>
-
-@property (nonatomic, strong) Taxon *taxon;
-@property (nonatomic, assign) NSInteger taxonId;
-
+@property (nonatomic) id <TaxonVisualization> taxon;
 @property (nonatomic, weak) id <TaxonDetailViewControllerDelegate> delegate;
-
 - (IBAction)clickedActionButton:(id)sender;
 @end

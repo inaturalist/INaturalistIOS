@@ -7,14 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
-@class ExplorePerson;
+@class ExploreUser;
 
-@interface ObserverCount : NSObject
+@interface ObserverCount : MTLModel <MTLJSONSerializing>
 
-@property NSString *observerIconUrl;
-@property NSString *observerName;
-@property NSInteger observerId;
+@property ExploreUser *observer;
 @property NSInteger observationCount;
 @property NSInteger speciesCount;
 

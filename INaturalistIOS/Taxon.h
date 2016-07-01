@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
+#import "TaxonVisualization.h"
 
-@interface Taxon : INatModel
+@interface Taxon : INatModel <TaxonVisualization>
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSDate * createdAt;

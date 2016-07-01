@@ -10,41 +10,32 @@
 
 @implementation ExploreProject
 
-- (BOOL)validateProjectId:(id *)ioValue error:(NSError **)outError {
-    // Reject a project ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
++ (NSDictionary *)JSONKeyPathsByPropertyKey{
+    return @{
+             @"title": @"title",
+             @"projectId": @"id",
+             @"locationId": @"place_id",
+             @"latitude": @"latitude",
+             @"longitude": @"longitude",
+             @"iconUrl": @"icon_url",
+             };
 }
 
-- (BOOL)validateLocationId:(id *)ioValue error:(NSError **)outError {
-    // Reject a location ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
++ (NSValueTransformer *)iconUrlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
-- (BOOL)validateLatitude:(id *)ioValue error:(NSError **)outError {
-    // Reject a latitude ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
 
-- (BOOL)validateLongitude:(id *)ioValue error:(NSError **)outError {
-    // Reject a longitude ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"locationId"]) {
+        self.locationId = 0;
+    } else if ([key isEqualToString:@"latitude"]) {
+        self.latitude = 0.0;
+    } else if ([key isEqualToString:@"longitude"]) {
+        self.longitude = 0.0;
+    } else {
+        [super setNilValueForKey:key];
     }
-    
-    return YES;
 }
-
 
 @end

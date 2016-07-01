@@ -7,16 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MapKit/MapKit.h>
+#import <Mantle/Mantle.h>
 
-@interface ExploreLocation : NSObject
+@import CoreLocation;
+
+@interface ExploreLocation : MTLModel <MTLJSONSerializing>
 
 @property (nonatomic, assign) NSInteger locationId;
 @property (nonatomic, assign) NSInteger type;
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) CLLocationDegrees latitude;
-@property (nonatomic, assign) CLLocationDegrees longitude;
+@property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (nonatomic, copy) NSNumber *adminLevel;
-@property (nonatomic, copy) NSString *placeTypeName;
 
 @end

@@ -25,6 +25,7 @@
 #import "ObsFieldLongTextValueCell.h"
 #import "ProjectObsFieldViewController.h"
 #import "TaxaSearchViewController.h"
+#import "Taxon.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";

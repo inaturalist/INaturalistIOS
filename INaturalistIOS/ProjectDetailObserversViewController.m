@@ -12,6 +12,7 @@
 
 #import "ProjectDetailObserversViewController.h"
 #import "ObserverCount.h"
+#import "ExploreUser.h"
 #import "RankedUserObsSpeciesCell.h"
 #import "UIImage+INaturalist.h"
 
@@ -48,14 +49,14 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;    
     ObserverCount *count = self.observerCounts[indexPath.item];
-    cell.userNameLabel.text = count.observerName;
+    cell.userNameLabel.text = count.observer.login;
     
     cell.observationsCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.observationCount];
     cell.speciesCountLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
     cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.observerCounts indexOfObject:count] + 1];
     
-    if (count.observerIconUrl) {
-        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:count.observerIconUrl]];
+    if (count.observer.userIcon) {
+        [cell.userImageView sd_setImageWithURL:count.observer.userIcon];
     } else {
         cell.userImageView.image = [UIImage inat_defaultUserImage];
     }
@@ -135,7 +136,6 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
         [self.containedScrollViewDelegate containedScrollViewDidStopScrolling:scrollView];
     }
 }
-
 
 #pragma mark - DZNEmptyDataSource
 

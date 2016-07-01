@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+@import CoreLocation;
 
+@class ExploreTaxonRealm;
 @class Taxon;
 
 typedef NS_ENUM(NSInteger, ObsDataQuality) {
@@ -22,26 +24,21 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (BOOL)isEditable;
 - (NSString *)speciesGuess;
-- (NSNumber *)taxonID;
+- (NSInteger)taxonRecordID;
 - (NSString *)inatDescription;
 
-- (NSNumber *)latitude;
-- (NSNumber *)longitude;
-- (NSNumber *)positionalAccuracy;
-
-- (NSNumber *)privateLatitude;
-- (NSNumber *)privateLongitude;
-- (NSNumber *)privatePositionalAccuracy;
+- (CLLocationCoordinate2D)visibleLocation;
+- (CLLocationAccuracy)visiblePositionalAccuracy;
 
 - (NSDate *)observedOn;
 - (NSString *)observedOnShortString;
 
-- (NSNumber *)userID;
+- (NSInteger)userID;
 - (NSString *)username;
-- (NSString *)userThumbUrl;
+- (NSURL *)userThumbUrl;
 
 - (NSString *)placeGuess;
-- (NSNumber *)idPlease;
+- (BOOL)idPlease;
 - (NSString *)geoprivacy;
 - (NSString *)qualityGrade;
 - (ObsDataQuality)dataQuality;
@@ -58,16 +55,18 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSArray *)sortedActivity;
 - (NSArray *)sortedFaves;
 
-- (NSNumber *)inatRecordId;
+- (NSInteger)inatRecordId;
 
-- (NSNumber *)hasUnviewedActivity;
+- (BOOL)hasUnviewedActivity;
 
 - (Taxon *)taxon;
 - (void)setTaxon:(Taxon *)newValue;
 
+- (ExploreTaxonRealm *)exploreTaxonRealm;
+
 - (NSString *)sortable;
 - (NSString *)uuid;
 - (NSString *)validationErrorMsg;
-- (NSString *)captive;
+- (BOOL)captive;
 
 @end

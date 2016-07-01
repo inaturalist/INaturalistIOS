@@ -13,6 +13,8 @@
 
 #import "ExploreObservationDetailHeader.h"
 #import "ExploreObservation.h"
+#import "ExploreTaxon.h"
+#import "ExploreUser.h"
 #import "ExploreObservationPhoto.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
@@ -404,17 +406,17 @@ static UIImage *userIconPlaceholder;
         self.photoImageView.contentMode = UIViewContentModeScaleAspectFill;
     }
     
-    if (observation.commonName && ![observation.commonName isEqualToString:@""]) {
-        self.commonNameLabel.text = observation.commonName;
+    if (observation.taxon.commonName && ![observation.taxon.commonName isEqualToString:@""]) {
+        self.commonNameLabel.text = observation.taxon.commonName;
     } else if (observation.speciesGuess && ![observation.speciesGuess isEqualToString:@""]) {
         self.commonNameLabel.text = observation.speciesGuess;
-        if ([observation.speciesGuess isEqualToString:observation.taxonName]) {
-            self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+        if ([observation.speciesGuess isEqualToString:observation.taxon.commonName]) {
+            self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxon.rankName
                                                               ofSize:self.commonNameLabel.font.pointSize];
         }
-    } else if (observation.taxonName && ![observation.taxonName isEqualToString:@""]) {
-        self.commonNameLabel.text = observation.taxonName;
-        self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank
+    } else if (observation.taxon.scientificName && ![observation.taxon.scientificName isEqualToString:@""]) {
+        self.commonNameLabel.text = observation.taxon.scientificName;
+        self.commonNameLabel.font = [UIFont fontForTaxonRankName:observation.taxon.rankName
                                                           ofSize:self.commonNameLabel.font.pointSize];
     } else {
         self.commonNameLabel.text = NSLocalizedString(@"Something...", nil);
@@ -422,19 +424,20 @@ static UIImage *userIconPlaceholder;
     self.commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
     
     // don't show the same name twice
-    if (![observation.taxonName isEqualToString:self.commonNameLabel.text])
-        self.scientificNameLabel.text = observation.taxonName;
-    self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxonRank ofSize:12.0f];
+    if (![observation.taxon.scientificName isEqualToString:self.commonNameLabel.text])
+        self.scientificNameLabel.text = observation.taxon.scientificName;
+    self.scientificNameLabel.font = [UIFont fontForTaxonRankName:observation.taxon.rankName
+                                                          ofSize:12.0f];
     
     // eg http://www.inaturalist.org/attachments/users/icons/44845-thumb.jpg
     NSString *observerAvatarUrlString = [NSString stringWithFormat:@"%@/attachments/users/icons/%ld-thumb.jpg",
-                                         INatMediaBaseURL, (long)observation.observerId];
+                                         INatMediaBaseURL, (long)observation.user.userId];
     [observerAvatarImageView sd_setImageWithURL:[NSURL URLWithString:observerAvatarUrlString]
                                placeholderImage:userIconPlaceholder
                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                           [observerAvatarImageView setNeedsDisplay];
                                       }];
-    observerNameLabel.text = observation.observerName;
+    observerNameLabel.text = observation.user.name;
     
     if (observation.coordinatesObscured) {
         observedLocationLabel.text = NSLocalizedString(@"Location obscured", nil);
@@ -451,8 +454,8 @@ static UIImage *userIconPlaceholder;
         } else {
             observedLocationLabel.text = [NSString stringWithFormat:@"%f,%f", observation.latitude, observation.longitude];
             // attempt to geocode the lat/lng into a place name
-            CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude.floatValue
-                                                              longitude:observation.longitude.floatValue];
+            CLLocation *location = [[CLLocation alloc] initWithLatitude:observation.latitude
+                                                              longitude:observation.longitude];
             [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *err) {
                 // use the first placemark
                 CLPlacemark *placeMark = [placemarks firstObject];

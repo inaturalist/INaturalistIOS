@@ -139,7 +139,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         vc.observation = sender;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        vc.taxonId = [sender integerValue];
+        vc.taxon = sender;
     } else if ([segue.identifier isEqualToString:@"projectAboutSegue"]) {
         ProjectAboutViewController *vc = [segue destinationViewController];
         vc.project = self.project;

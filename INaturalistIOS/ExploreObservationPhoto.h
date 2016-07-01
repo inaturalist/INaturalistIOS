@@ -7,16 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
 #import "INatPhoto.h"
 
-@interface ExploreObservationPhoto : NSObject <INatPhoto>
+@interface ExploreObservationPhoto : MTLModel <INatPhoto, MTLJSONSerializing>
 
-@property (nonatomic, copy) NSString *mediumURL;
-@property (nonatomic, copy) NSString *squareURL;
-@property (nonatomic, copy) NSString *thumbURL;
-@property (nonatomic, copy) NSString *smallURL;
-@property (nonatomic, copy) NSString *largeURL;
+@property (nonatomic, readonly) NSString *mediumURL;
+@property (nonatomic, readonly) NSString *squareURL;
+@property (nonatomic, readonly) NSString *thumbURL;
+@property (nonatomic, readonly) NSString *smallURL;
+@property (nonatomic, readonly) NSString *largeURL;
 @property (nonatomic, copy) NSString *url;
 
 @end

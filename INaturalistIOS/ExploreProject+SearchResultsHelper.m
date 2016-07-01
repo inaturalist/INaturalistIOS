@@ -15,8 +15,7 @@
 }
 
 - (NSString *)searchResult_SubTitle {
-    return [NSString stringWithFormat:NSLocalizedString(@"%ld observed taxa", nil),
-            (long)self.observedTaxaCount.integerValue];
+    return @"";
 }
 
 - (NSURL *)searchResult_ThumbnailUrl {

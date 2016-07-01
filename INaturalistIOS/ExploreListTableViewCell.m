@@ -11,6 +11,8 @@
 
 #import "ExploreListTableViewCell.h"
 #import "ExploreObservation.h"
+#import "ExploreTaxon.h"
+#import "ExploreUser.h"
 #import "ExploreObservationPhoto.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
@@ -366,9 +368,9 @@ static NSDateFormatter *shortFormatter;
     NSString *taxonRank = nil;
     
     if (observation.taxon) {
-        commonName = observation.taxon.defaultName;
-        scientificName = observation.taxon.name;
-        taxonRank = observation.taxon.rank;
+        commonName = observation.taxon.commonName;
+        scientificName = observation.taxon.scientificName;
+        taxonRank = observation.taxon.rankName;
     }
     
     if (commonName && ![commonName isEqualToString:@""]) {
@@ -398,7 +400,7 @@ static NSDateFormatter *shortFormatter;
         scientificNameLabel.font = [UIFont fontForTaxonRankName:taxonRank ofSize:14.0f];
     }
     
-    observerNameLabel.text = observation.observerName;
+    observerNameLabel.text = observation.user.name;
     
     NSDate *date = [observation timeObservedAt];
     // looks like time_observed_at_utc can be null?

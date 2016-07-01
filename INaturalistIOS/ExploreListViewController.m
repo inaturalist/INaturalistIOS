@@ -17,7 +17,6 @@
 #import "ExploreObservation.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreListTableViewCell.h"
-#import "ExploreObservationDetailViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
 #import "RestrictedListHeader.h"

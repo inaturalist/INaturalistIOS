@@ -174,6 +174,7 @@
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
+
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
     self.savedSearchTerm = searchString;

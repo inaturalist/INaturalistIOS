@@ -12,7 +12,7 @@
 
 #import "ProjectDetailSpeciesViewController.h"
 #import "SpeciesCount.h"
-#import "Taxon.h"
+#import "ExploreTaxon.h"
 #import "SpeciesCountCell.h"
 
 @interface ProjectDetailSpeciesViewController () <DZNEmptyDataSetSource>
@@ -44,9 +44,9 @@
     
     cell.countLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
 
-    if ([count.scientificName isEqualToString:count.commonName] || count.commonName == nil || [count.commonName isEqualToString:@""]) {
+    if ([count.taxon.scientificName isEqualToString:count.taxon.commonName] || count.taxon.commonName == nil || [count.taxon.commonName isEqualToString:@""]) {
         // no common name, so only show the scientific name in the main label
-        cell.taxonNameLabel.text = count.scientificName;
+        cell.taxonNameLabel.text = count.taxon.scientificName;
         cell.taxonSecondaryNameLabel.text = nil;
         
         if ([count isGenusOrLower]) {
@@ -54,32 +54,32 @@
         } else {
             cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
             cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                        [[count speciesRank] capitalizedString], count.scientificName];
+                                        [[count.taxon rankName] capitalizedString], count.taxon.scientificName];
         }
     } else {
         // show both common & scientfic names
-        cell.taxonNameLabel.text = count.commonName;
+        cell.taxonNameLabel.text = count.taxon.commonName;
         cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
         
         if ([count isGenusOrLower]) {
             cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:15];
-            cell.taxonSecondaryNameLabel.text = count.scientificName;
+            cell.taxonSecondaryNameLabel.text = count.taxon.scientificName;
         } else {
             cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:15];
             cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [[count speciesRank] capitalizedString], count.scientificName];
+                                                 [count.taxon.rankName capitalizedString], count.taxon.scientificName];
             
         }
     }
     
-    [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:count.squarePhotoUrl]];
+    [cell.taxonImageView sd_setImageWithURL:count.taxon.photoUrl];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     SpeciesCount *count = self.speciesCounts[indexPath.item];    
-    [self.projectDetailDelegate inat_performSegueWithIdentifier:@"taxon" object:@([count taxonId])];
+    [self.projectDetailDelegate inat_performSegueWithIdentifier:@"taxon" object:count.taxon];
 }
 
 #pragma mark - UIScrollViewDelegate

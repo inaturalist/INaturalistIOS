@@ -10,9 +10,9 @@
 
 @class ExploreLocation;
 @class ExploreProject;
-@class ExplorePerson;
+@class ExploreUser;
 @class ExploreRegion;
-@class Taxon;
+@class ExploreTaxon;
 
 typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
     ExploreSearchPredicateTypeCritter,
@@ -24,18 +24,18 @@ typedef NS_ENUM(NSInteger, ExploreSearchPredicateType) {
 @interface ExploreSearchPredicate : UIViewController
 
 @property ExploreSearchPredicateType type;
-@property (retain) Taxon *searchTaxon;
+@property (retain) ExploreTaxon *searchTaxon;
 @property (retain) ExploreLocation *searchLocation;
 @property (retain) ExploreProject *searchProject;
-@property (retain) ExplorePerson *searchPerson;
+@property (retain) ExploreUser *searchPerson;
 
 // for example: "Critters named 'Butterfly'", or "Persone chiamato 'alex shepard'"
 @property (readonly) NSString *colloquialSearchPhrase;
 @property (readonly) NSString *searchTerm;      // for example: Butterfly
 
-+ (instancetype)predicateForTaxon:(Taxon *)taxon;
++ (instancetype)predicateForTaxon:(ExploreTaxon *)taxon;
 + (instancetype)predicateForLocation:(ExploreLocation *)location;
 + (instancetype)predicateForProject:(ExploreProject *)project;
-+ (instancetype)predicateForPerson:(ExplorePerson *)person;
++ (instancetype)predicateForPerson:(ExploreUser *)person;
 
 @end

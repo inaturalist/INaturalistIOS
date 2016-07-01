@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, :deployment_target => '7.0'
+platform :ios, :deployment_target => '8.0'
 
 inhibit_all_warnings!
 
@@ -39,10 +39,13 @@ target :iNaturalist do
   pod 'VICMAImageView', '~> 1.0'
   pod 'Toast', '3.0'
   pod 'NSString_stripHtml', '0.1.0'
+  pod 'Mantle', '1.5.8'
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
   pod 'DZNEmptyDataSet', '1.7.3'
   pod 'CocoaAsyncSocket'
   pod 'librato-iOS'
+  pod 'Realm', '1.0.1'
+  pod 'ABFRealmSearchViewController'
   pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
   pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
   pod 'YLMoment', :git => 'https://github.com/inaturalist/YLMoment.git', :commit => '35521e9f80c23de6f885771f97a6c1febe245c00'

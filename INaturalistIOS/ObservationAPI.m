@@ -8,16 +8,14 @@
 
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
-#import "ExploreMappingProvider.h"
 #import "Analytics.h"
 
 @implementation ObservationAPI
 
-
-- (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionHandler)done {
+- (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation from node"];
     NSString *path = [NSString stringWithFormat:@"observations/%ld", (long)identifier];
-    [self fetch:path mapping:[ExploreMappingProvider observationMapping] handler:done];
+    [self fetch:path classMapping:ExploreObservation.class handler:done];
 }
 
 @end

@@ -7,19 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
-@class Taxon;
+@class ExploreTaxon;
 
-@interface SpeciesCount : NSObject
+@interface SpeciesCount : MTLModel <MTLJSONSerializing>
 
-@property NSString *scientificName;
-@property NSString *commonName;
-@property NSInteger taxonId;
 @property NSInteger speciesCount;
-@property NSString *squarePhotoUrl;
-
-@property NSInteger speciesRankLevel;
-@property NSString *speciesRank;
+@property ExploreTaxon *taxon;
 
 - (BOOL)isGenusOrLower;
 

@@ -7,8 +7,36 @@
 //
 
 #import "ExploreComment.h"
+#import "ExploreUser.h"
 
 @implementation ExploreComment
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+    	@"commentId": @"id",
+    	@"commentText": @"body",
+    	@"commenter": @"user",
+    	@"commentedDate": @"created_at",
+    };
+}
+
++ (NSValueTransformer *)commenterJSONTransformer {
+	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
++ (NSValueTransformer *)commentedDateJSONTransformer {
+	static NSDateFormatter *_dateFormatter = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_dateFormatter = [[NSDateFormatter alloc] init];
+		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+		_dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+	});
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
 
 #pragma mark - CommentVisualization
 
@@ -17,11 +45,11 @@
 }
 
 - (NSInteger)userId {
-    return self.commenterId;
+    return self.commenter.userId;
 }
 
 - (NSString *)userName {
-    return self.commenterName;
+    return self.commenter.login;
 }
 
 - (NSDate *)createdAt {
@@ -29,30 +57,7 @@
 }
 
 - (NSURL *)userIconUrl {
-    return [NSURL URLWithString:self.commenterIconUrl];
-}
-
-- (BOOL)validateCommentId:(id *)ioValue error:(NSError **)outError {
-    // Reject a comment ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (BOOL)validateCommenterId:(id *)ioValue error:(NSError **)outError {
-    // Reject a commenter ID of zero. By returning NO, we refused the assignment and the value will not be set
-    if ([(NSNumber*)*ioValue intValue] == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"Explore Comment by %@ at %@",
-            self.userName, self.createdAt.description];
+    return self.commenter.userIcon;
 }
 
 @end

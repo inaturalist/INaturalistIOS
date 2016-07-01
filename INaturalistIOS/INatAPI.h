@@ -7,17 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
 
 @class Project;
 
-typedef void(^INatAPIFetchCompletionHandler)(NSArray *results, NSError *error);
 typedef void(^INatAPIFetchCompletionCountHandler)(NSArray *results, NSInteger count, NSError *error);
 
 @interface INatAPI : NSObject
 
-- (void)fetch:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionHandler)done;
-- (void)fetchWithCount:(NSString *)path mapping:(RKObjectMapping *)mapping handler:(INatAPIFetchCompletionCountHandler)done;
-
+- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
 - (NSString *)apiBaseUrl;
 
 @end

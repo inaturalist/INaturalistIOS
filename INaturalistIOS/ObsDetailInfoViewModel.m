@@ -84,8 +84,9 @@
             [notes addAttribute:NSFontAttributeName
                           value:[UIFont systemFontOfSize:14]
                           range:NSMakeRange(0, notes.length)];
-            
-            cell.notesTextView.attributedText = notes;
+            if (notes) {
+                cell.notesTextView.attributedText = notes;
+            }
             
             return cell;
         } else if (indexPath.item == 1) {
@@ -94,19 +95,19 @@
             cell.mapView.delegate = self;
             cell.mapView.userInteractionEnabled = NO;
             
-            CLLocationCoordinate2D coords;
-            
-            if (self.observation.privateLatitude && self.observation.privateLatitude.floatValue != 0) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-            } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
-            }
+            CLLocationCoordinate2D coords = [self.observation visibleLocation];
             
             if (CLLocationCoordinate2DIsValid(coords)) {
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
-                CLLocationDistance distance = self.observation.positionalAccuracy.integerValue ?: 500;
+            	CLLocationDistance distance;
+            	if ([self.observation visiblePositionalAccuracy] == 0) {
+            		distance = 500;
+            	} else {
+            		distance = MAX([self.observation visiblePositionalAccuracy], 200);
+            	}
+            	
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
                 
                 MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
@@ -118,8 +119,8 @@
                     cell.locationNameLabel.text = self.observation.placeGuess;
                 } else {
                     NSString *positionalAccuracy = nil;
-                    if (self.observation.positionalAccuracy) {
-                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy.integerValue];
+                    if ([self.observation visiblePositionalAccuracy] != 0) {
+                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)[self.observation visiblePositionalAccuracy]];
                     } else {
                         positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
                     }
@@ -266,11 +267,11 @@
             } else if (self.observation.dataQuality == ObsDataQualityCasual) {
                 if (self.observation.observationPhotos.count == 0) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a photo to be considered for Research Grade.", nil);
-                } else if (!self.observation.latitude) {
+                } else if (!CLLocationCoordinate2DIsValid([self.observation visibleLocation])) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a location to be considered for Research Grade.", nil);
                 } else if (!self.observation.observedOn) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a date to be considered for Research Grade.", nil);
-                } else if (self.observation.captive.boolValue) {
+                } else if (self.observation.captive) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation is Casual Grade because it has been voted captive or cultivated by the iNaturalist community.", nil);
                 } else {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation has been voted as Casual Grade by the iNaturalist community.", nil);
@@ -364,13 +365,7 @@
             // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             
-            CLLocationCoordinate2D coords;
-            
-            if (self.observation.privateLatitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-            } else if (self.observation.latitude) {
-                coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
-            }
+            CLLocationCoordinate2D coords = [self.observation visibleLocation];
             
             if (CLLocationCoordinate2DIsValid(coords)) {
                 // show the map view

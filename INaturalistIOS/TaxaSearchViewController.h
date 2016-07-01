@@ -9,27 +9,22 @@
 #import <UIKit/UIKit.h>
 #import "TaxaSearchController.h"
 #import "TaxonDetailViewController.h"
-#import "Taxon.h"
+#import "TaxonVisualization.h"
 
 @protocol TaxaSearchViewControllerDelegate <NSObject>
 @optional
-- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon;
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxonId;
 - (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess;
 @end
 
 @interface TaxaSearchViewController : UITableViewController <RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
 @property (nonatomic, strong) TaxaSearchController *taxaSearchController;
-@property (nonatomic, strong) Taxon *taxon;
-@property (nonatomic, strong) NSDate *lastRequestAt;
 @property (nonatomic, strong) id <TaxaSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) BOOL hidesDoneButton;
 @property (nonatomic, assign) BOOL allowsFreeTextSelection;
 
 - (IBAction)clickedCancel:(id)sender;
-- (void)showTaxon:(Taxon *)taxon;
-- (void)showTaxon:(Taxon *)taxon inNavigationController:(UINavigationController *)navigationController;
+- (void)showTaxon:(id <TaxonVisualization>)taxon;
 - (void)clickedAccessory:(id)sender event:(UIEvent *)event;
-- (UITableViewCell *)cellForTaxon:(Taxon *)taxon inTableView:(UITableView *)tableView;
-- (void)loadRemoteTaxaWithURL:(NSString *)url;
 @end

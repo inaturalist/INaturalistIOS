@@ -1,26 +1,29 @@
 //
-//  ExploreTaxon.h
-//  Explore Prototype
+//  ExploreTaxonRealm.h
+//  iNaturalist
 //
-//  Created by Alex Shepard on 10/13/14.
-//  Copyright (c) 2014 iNaturalist. All rights reserved.
+//  Created by Alex Shepard on 6/25/16.
+//  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <Mantle/Mantle.h>
+#import <Realm/Realm.h>
+#import "ExploreTaxon.h"
 #import "TaxonVisualization.h"
 
-@interface ExploreTaxon : MTLModel <MTLJSONSerializing, TaxonVisualization>
+@interface ExploreTaxonRealm : RLMObject <TaxonVisualization>
 
 @property (nonatomic, assign) NSInteger taxonId;
 @property (nonatomic, copy) NSString *webContent;
 @property (nonatomic, copy) NSString *commonName;
 @property (nonatomic, copy) NSString *scientificName;
-@property (nonatomic, copy) NSURL *photoUrl;
+@property (nonatomic, copy) NSString *photoUrlString;
+@property (nonatomic, readonly) NSURL *photoUrl;
 @property (nonatomic, copy) NSString *rankName;
 @property (nonatomic, assign) NSInteger rankLevel;
 @property (nonatomic, copy) NSString *iconicTaxonName;
 
 - (BOOL)isGenusOrLower;
+- (instancetype)initWithMantleModel:(ExploreTaxon *)model;
 
 @end

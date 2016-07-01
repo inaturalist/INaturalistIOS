@@ -16,6 +16,8 @@
 #import "DisclosureCell.h"
 #import "User.h"
 #import "Taxon.h"
+#import "ExploreTaxon.h"
+#import "ExploreTaxonRealm.h"
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "ObsDetailActivityMoreCell.h"
@@ -34,6 +36,7 @@
 #import "ActivityVisualization.h"
 #import "ExploreComment.h"
 #import "UIImage+INaturalist.h"
+#import "TAxaAPI.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -41,6 +44,15 @@
 @end
 
 @implementation ObsDetailActivityViewModel
+
+- (TaxaAPI *)taxaApi {
+	static TaxaAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+    	_api = [[TaxaAPI alloc] init];
+    });
+    return _api;
+}
 
 #pragma mark - uiviewcontroller lifecycle
 
@@ -277,8 +289,17 @@
         id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
             id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
-            
-            [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@([identification taxonId])];
+        	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", identification.taxonId];
+        	if (results.count == 1) {
+        		[self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[results firstObject]];
+        	} else {
+
+        		[self.taxaApi taxonWithId:identification.taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        			if (results.count == 1) {
+        				[self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[results firstObject]];
+        			}
+        		}];
+        	}
         }
     }
 }
@@ -567,7 +588,7 @@
                      withProperties:@{ @"Via": @"View Obs Agree" }];
     
     NSDictionary *params = @{
-                             @"identification[observation_id]": self.observation.inatRecordId,
+                             @"identification[observation_id]": @(self.observation.inatRecordId),
                              @"identification[taxon_id]": @(button.tag),
                              };
     
@@ -582,11 +603,12 @@
 
 - (void)markActivityAsSeen {
     // check for network
-    if (self.observation.inatRecordId && self.observation.hasUnviewedActivity.boolValue && [self.observation isKindOfClass:[Observation class]]) {
+    if (self.observation.inatRecordId && self.observation.hasUnviewedActivity && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
         
         [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
-        [[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.inatRecordId]
+        
+        [[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)self.observation.inatRecordId]
                               params:nil
                             delegate:self];
         obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
