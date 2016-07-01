@@ -172,10 +172,7 @@
     } else {
         // try the old path
         NSString *oldPath = [self oldPathForKey:key forSize:size];
-        UIImage *img = [UIImage imageWithContentsOfFile:oldPath];
-        if (img) {
-        	return img;
-        }
+        return oldPath;
     }
     
     return nil;
