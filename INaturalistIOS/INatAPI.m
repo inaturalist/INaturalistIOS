@@ -19,6 +19,7 @@
 }
 
 - (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {
+	path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
