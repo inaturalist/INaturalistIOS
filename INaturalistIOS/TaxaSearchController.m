@@ -36,21 +36,8 @@
     self = [super initWithSearchDisplayController:searchDisplayController];
     if (self) {
         self.model = Taxon.class;
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        self.searchURL = [NSString stringWithFormat:@"/taxa/search?locale=%@-%@&q=%%@", language, countryCode];
     }
     return self;
-}
-
-- (NSPredicate *)predicateForQuery:(NSString *)query
-{
-    query = [query stringByReplacingOccurrencesOfString:@" " withString:@"*"];
-    query = [query stringByReplacingOccurrencesOfString:@"-" withString:@"*"];
-    query = [NSString stringWithFormat:@"*%@*", query];
-    // realm doesn't support diacritic insensitive search (yet)
-    // see https://github.com/realm/realm-cocoa/issues/1490
-    return [NSPredicate predicateWithFormat:@"commonName CONTAINS[c] %@ OR scientificName CONTAINS[c] %@", query, query];
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
@@ -91,7 +78,6 @@
 
 - (void)searchRemote {
 	// query node, put into realm, update UI
-	// query node API
 	[self.api taxaMatching:self.savedSearchTerm handler:^(NSArray *results, NSInteger count, NSError *error) {
 		// put the results into realm
 		RLMRealm *realm = [RLMRealm defaultRealm];
