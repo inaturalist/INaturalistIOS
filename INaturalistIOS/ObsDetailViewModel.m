@@ -227,7 +227,8 @@
 			
 			// update the UI
 			dispatch_async(dispatch_get_main_queue(), ^{
-                [strongSelf.delegate reloadTableView];
+				__strong typeof(weakSelf) strongSelf = weakSelf;
+				[[strongSelf delegate] reloadTableView]
 			});
 		}];
 	} else if (results.count == 1) {
