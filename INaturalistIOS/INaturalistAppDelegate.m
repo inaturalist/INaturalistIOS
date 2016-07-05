@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <Realm/Realm.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
@@ -39,6 +40,7 @@
 #import "DeletedRecord.h"
 #import "Fave.h"
 #import "NewsItem.h"
+#import "ExploreTaxonRealm.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -113,6 +115,20 @@
 }
 
 - (void)configureApplicationInBackground {
+    
+	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
+	config.schemaVersion = 1;
+	config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
+  	if (oldSchemaVersion < 1) {
+  		// add searchable (ie diacritic-less) taxon names
+  		[migration enumerateObjects:ExploreTaxonRealm.className
+        	                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+        	newObject[@"searchableScientificName"] = [oldObject[@"scientificName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
+        	newObject[@"searchableCommonName"] = [oldObject[@"commonName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
+	    	}];
+  		}
+	};
+	[RLMRealmConfiguration setDefaultConfiguration:config];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         

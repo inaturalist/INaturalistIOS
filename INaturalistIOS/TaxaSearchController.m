@@ -97,8 +97,11 @@
 }
 
 - (void)searchLocal:(NSString *)term {
+	
+	term = [term stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                     locale:[NSLocale currentLocale]];
 	// query realm
-	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"commonName contains[c] %@ OR scientificName contains[c] %@", term, term];
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@", term, term];
 	self.searchResults = results;
 	[self.searchDisplayController.searchResultsTableView reloadData];
 }

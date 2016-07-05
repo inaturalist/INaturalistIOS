@@ -17,6 +17,8 @@
 @property (nonatomic, copy) NSString *webContent;
 @property (nonatomic, copy) NSString *commonName;
 @property (nonatomic, copy) NSString *scientificName;
+@property (nonatomic, copy) NSString *searchableCommonName;
+@property (nonatomic, copy) NSString *searchableScientificName;
 @property (nonatomic, copy) NSString *photoUrlString;
 @property (nonatomic, readonly) NSURL *photoUrl;
 @property (nonatomic, copy) NSString *rankName;

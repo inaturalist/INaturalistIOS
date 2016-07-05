@@ -16,6 +16,10 @@
 		self.webContent = taxon.webContent;
 		self.commonName = taxon.commonName;
 		self.scientificName = taxon.scientificName;
+        self.searchableCommonName = [taxon.commonName stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                           locale:[NSLocale currentLocale]];
+        self.searchableScientificName = [taxon.scientificName stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                  locale:[NSLocale currentLocale]];
 		self.photoUrlString = [taxon.photoUrl absoluteString];
 		self.rankName = taxon.rankName;
 		self.rankLevel = taxon.rankLevel;
