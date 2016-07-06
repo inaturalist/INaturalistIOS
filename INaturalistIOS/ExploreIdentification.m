@@ -81,6 +81,10 @@
     return self.taxon.scientificName;
 }
 
+- (NSString *)taxonIconicName {
+	return self.taxon.iconicTaxonName;
+}
+
 - (NSInteger)taxonId {
     return self.taxon.taxonId;
 }

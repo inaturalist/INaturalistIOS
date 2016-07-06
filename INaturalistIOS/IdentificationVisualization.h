@@ -21,6 +21,7 @@
 - (NSString *)taxonRank;
 - (NSString *)taxonCommonName;
 - (NSString *)taxonScientificName;
+- (NSString *)taxonIconicName;
 - (NSURL *)taxonIconUrl;
 
 - (NSString *)userName;

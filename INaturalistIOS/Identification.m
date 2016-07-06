@@ -54,6 +54,10 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return self.taxon.name;
 }
 
+- (NSString *)taxonIconicName {
+	return self.taxon.iconicTaxonName;
+}
+
 - (NSInteger)taxonId {
     return self.taxon.recordID.integerValue;
 }

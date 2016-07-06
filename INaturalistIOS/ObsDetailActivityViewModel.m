@@ -444,72 +444,13 @@
         }
     }
     
-    [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
-    
-    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", [identification taxonId]];
-    Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-
-    
-    if (taxon) {
-        
-        if ([taxon.name isEqualToString:taxon.defaultName] || taxon.defaultName == nil) {
-            // no common name, so only show scientific name in the main label
-            cell.taxonNameLabel.text = taxon.name;
-            cell.taxonSecondaryNameLabel.text = nil;
-            
-            if (taxon.isGenusOrLower) {
-                cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-                cell.taxonNameLabel.text = taxon.name;
-            } else {
-                cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-                cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                            [taxon.rank capitalizedString], taxon.name];
-            }
-        } else {
-            // show both common & scientfic names
-            cell.taxonNameLabel.text = taxon.defaultName;
-            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-            
-            if (taxon.isGenusOrLower) {
-                cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = taxon.name;
-            } else {
-                cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                     [taxon.rank capitalizedString], taxon.name];
-                
-            }
-        }
-        
-        
-        if (!identification.isCurrent) {
-            NSDictionary *strikeThrough = @{
-                                            NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle],
-                                            NSForegroundColorAttributeName: [UIColor lightGrayColor],
-                                            };
-            
-            if (cell.taxonNameLabel.text) {
-                cell.taxonNameLabel.attributedText = [[NSAttributedString alloc] initWithString:cell.taxonNameLabel.text
-                                                                                     attributes:strikeThrough];
-            }
-            if (cell.taxonSecondaryNameLabel.text) {
-                cell.taxonSecondaryNameLabel.attributedText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
-                                                                                              attributes:strikeThrough];
-            }
-
-        }
-        
-        if ([taxon.isIconic boolValue]) {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-        } else if (taxon.taxonPhotos.count > 0) {
-            TaxonPhoto *tp = taxon.taxonPhotos.firstObject;
-            [cell.taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.thumbURL]];
-        } else {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-        }
-        
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if ([identification taxonIconUrl]) {
+	    [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
+    } else {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:[identification taxonIconicName]];
     }
+        
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
 }
