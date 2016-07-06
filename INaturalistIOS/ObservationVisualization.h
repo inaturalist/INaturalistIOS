@@ -67,6 +67,6 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSString *)sortable;
 - (NSString *)uuid;
 - (NSString *)validationErrorMsg;
-- (BOOL)captive;
+- (BOOL)isCaptive;
 
 @end

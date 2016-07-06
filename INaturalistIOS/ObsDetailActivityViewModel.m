@@ -412,7 +412,7 @@
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    
+
     if (![identification taxonCommonName]) {
         // no common name, so only show scientific name in the main label
         cell.taxonNameLabel.text = [identification taxonScientificName];

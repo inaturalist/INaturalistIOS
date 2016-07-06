@@ -196,7 +196,7 @@
         cell.shareButton.hidden = YES;
     }
     
-    cell.captiveContainer.hidden = !self.observation.captive;
+    cell.captiveContainer.hidden = !self.observation.isCaptive;
     [cell.captiveInfoButton addTarget:self
                                action:@selector(captiveInfoPressed)
                      forControlEvents:UIControlEventTouchUpInside];

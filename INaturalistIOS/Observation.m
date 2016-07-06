@@ -501,6 +501,10 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 #pragma mark - ObservationVisualization
 
+- (BOOL)isCaptive {
+	return [self.captive boolValue];
+}
+
 - (NSInteger)inatRecordId {
     return self.recordID.integerValue;
 }

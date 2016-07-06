@@ -136,6 +136,10 @@
 
 #pragma mark - ObservationVisualization
 
+- (BOOL)isCaptive {
+	return self.captive;
+}
+
 - (NSString *)iconicTaxonName {
     return self.taxon.iconicTaxonName;
 }
