@@ -1292,7 +1292,6 @@
 				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
 				FA4E72CD19FACDF100A9AB5D /* Extensions */,
-				FA4E72C619FAC94A00A9AB5D /* Mappings */,
 				FA4E72C519FAC93600A9AB5D /* Model */,
 			);
 			name = Explore;
@@ -1329,13 +1328,6 @@
 				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
 			);
 			name = Model;
-			sourceTree = "<group>";
-		};
-		FA4E72C619FAC94A00A9AB5D /* Mappings */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Mappings;
 			sourceTree = "<group>";
 		};
 		FA4E72CD19FACDF100A9AB5D /* Extensions */ = {
