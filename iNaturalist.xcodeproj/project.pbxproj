@@ -1300,32 +1300,8 @@
 		FA4E72C519FAC93600A9AB5D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
-				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
-				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
-				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
-				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
-				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
-				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
-				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
-				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
-				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
-				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
-				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
-				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
-				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
-				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
-				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
-				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
-				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
-				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
-				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
-				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
-				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
-				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
-				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
-				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
-				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
+				FADBED5F1D2C81F100753692 /* Mantle */,
+				FADBED5E1D2C81D400753692 /* Realm */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1551,6 +1527,46 @@
 				FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */,
 			);
 			name = "New Obs Animators";
+			sourceTree = "<group>";
+		};
+		FADBED5E1D2C81D400753692 /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
+				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
+			);
+			name = Realm;
+			sourceTree = "<group>";
+		};
+		FADBED5F1D2C81F100753692 /* Mantle */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
+				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
+				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
+				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
+				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
+				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
+				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
+				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
+				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
+				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
+				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
+				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
+				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
+				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
+				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
+				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
+				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
+				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
+				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
+				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
+				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
+				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
+				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
+			);
+			name = Mantle;
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
