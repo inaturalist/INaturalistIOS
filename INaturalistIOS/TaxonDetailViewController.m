@@ -148,9 +148,8 @@ static char SUMMARY_ASSOCIATED_KEY;
 }
 
 - (IBAction)clickedActionButton:(id)sender {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:)]) {
-        [self.delegate performSelector:@selector(taxonDetailViewControllerClickedActionForTaxon:) 
-                            withObject:self.taxon];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(taxonDetailViewControllerClickedActionForTaxonId:)]) {
+        [self.delegate taxonDetailViewControllerClickedActionForTaxonId:[self.taxon taxonId]];
     } else {
         // be defensive
         if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {

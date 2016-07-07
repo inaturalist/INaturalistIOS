@@ -239,10 +239,12 @@
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate
-- (void)taxonDetailViewControllerClickedActionForTaxon:(NSInteger)taxonId {
-	if (self.delegate && [self.delegate respondsToSelector:@selector(taxaSearchViewControllerChoseTaxonId:)]) {
-		[self.delegate performSelector:@selector(taxaSearchViewControllerChoseTaxon:) withObject:@(taxonId)];
-	}
+- (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
+    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", taxonId];
+    if (results.count == 1) {
+        ExploreTaxonRealm *etr = [results firstObject];
+        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+    }
 }
 
 @end

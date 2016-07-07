@@ -161,4 +161,12 @@ static RKManagedObjectMapping *defaultMapping = nil;
     return self.defaultName.length > 0 && self.rank.length > 0;
 }
 
+- (NSString *)rankName {
+    return self.rank;
+}
+
+- (NSInteger)taxonId {
+    return [self.recordID integerValue];
+}
+
 @end
