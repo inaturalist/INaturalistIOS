@@ -180,7 +180,6 @@
 #pragma mark - RecordSearchControllerDelegate
 - (void)recordSearchControllerSelectedRecord:(id)record {
 	// add the ID
-    //[self.delegate taxaSearchViewControllerChoseTaxonId:record.taxonId];
     if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
         ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
         [self.delegate taxaSearchViewControllerChoseTaxon:etr];
