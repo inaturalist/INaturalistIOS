@@ -14,6 +14,7 @@
 #import <SDWebImage/UIButton+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <YLMoment/YLMoment.h>
+#import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -49,7 +50,7 @@
 #import "ObsDetailV2ViewController.h"
 #import "ExploreTaxonRealm.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource> {
     
     
 
@@ -59,9 +60,6 @@
 @property MeHeaderView *meHeader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 @property (readonly) NSFetchedResultsController *fetchedResultsController;
-@property UIView *noContentView;
-@property UILabel *noObservationsLabel;
-@property UIImageView *noObservationsImageView;
 @property NSMutableDictionary *uploadProgress;
 @end
 
@@ -355,99 +353,12 @@
     }
 }
 
-- (void)reload
-{
-	[self checkEmpty];
-}
-
 - (void)updateSyncBadge {
     [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
 }
 
-- (void)checkEmpty
-{
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][0];      // only one section of observations in our tableview
-
-    if ([sectionInfo numberOfObjects] == 0) {
-
-        if (!self.noContentView) {
-            self.noContentView = ({
-                
-                
-                // leave room for the header
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 100.0f,
-                                                                        self.tableView.frame.size.width,
-                                                                        self.tableView.frame.size.height - 100.0f)];
-                view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-                
-                view.backgroundColor = [UIColor whiteColor];
-                
-                self.noObservationsLabel = ({
-                    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-                    label.translatesAutoresizingMaskIntoConstraints = NO;
-                    
-                    label.textColor = [UIColor grayColor];
-                    label.text = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
-                    label.font = [UIFont systemFontOfSize:14.0f];
-                    label.numberOfLines = 2;
-                    label.textAlignment = NSTextAlignmentCenter;
-                    
-                    label;
-                });
-                [view addSubview:self.noObservationsLabel];
-                
-                self.noObservationsImageView = ({
-                    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
-                    iv.translatesAutoresizingMaskIntoConstraints = NO;
-                    
-                    iv.contentMode = UIViewContentModeScaleAspectFit;
-                    iv.image = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    iv.tintColor = [UIColor lightGrayColor];
-                    
-                    iv;
-                });
-                [view addSubview:self.noObservationsImageView];
-                
-                NSDictionary *views = @{
-                                        @"bottomLayout": self.bottomLayoutGuide,
-                                        @"noObservations": self.noObservationsLabel,
-                                        @"binocs": self.noObservationsImageView,
-                                        };
-                
-                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noObservations]-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[binocs]-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-
-                [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[noObservations(==40)]-0-[binocs]-100-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:views]];
-
-                
-                view;
-            });
-            
-        }
-        [self.view insertSubview:self.noContentView aboveSubview:self.tableView];
-        [self.noContentView setNeedsLayout];
-
-    } else if (self.noContentView) {
-            [self.noContentView removeFromSuperview];
-    }
-}
-
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification
-{
-    if (self.view && [self.navigationController.topViewController isEqual:self] &&
-        ![[UIApplication sharedApplication] isIdleTimerDisabled] &&
-        ![self.tabBarController presentedViewController]) {
-        [self reload];
-    }
+- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
+    // do nothing
 }
 
 - (BOOL)autoLaunchNewFeatures
@@ -1034,8 +945,6 @@
 
 - (void)coreDataRebuilt {
     self.lastRefreshAt = [NSDate distantPast];
-    [self.noContentView removeFromSuperview];
-    self.noContentView = nil;
     
     // rebuild the fetched results controller
     _fetchedResultsController = nil;
@@ -1158,6 +1067,8 @@
                                                  name:kInatCoreDataRebuiltNotification
                                                object:nil];
     
+    self.tableView.emptyDataSetDelegate = self;
+    self.tableView.emptyDataSetSource = self;
     
     // perform the iniital local fetch
     NSError *fetchError;
@@ -1223,8 +1134,6 @@
 	} else {
 		self.refreshControl = nil;
 	}
-    
-    [self reload];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -1235,7 +1144,6 @@
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
-    [self checkEmpty];
 
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
@@ -1320,10 +1228,6 @@
     }
     
 	[self.refreshControl endRefreshing];
-    if (objects.count == 0) {
-        [self checkEmpty];
-        return;
-    }
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
@@ -1642,5 +1546,29 @@
                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
                       otherButtonTitles:nil] show];
 }
+
+#pragma mark - DZNEmptyDataSource
+
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
+	UIImage *binocs = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	UIGraphicsBeginImageContextWithOptions(binocs.size, NO, binocs.scale);
+	[[UIColor lightGrayColor] set];
+	[binocs drawInRect:CGRectMake(0, 0, binocs.size.width, binocs.size.height)];
+	binocs = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return binocs;
+}
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
+    NSString *emptyTitle = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
+    NSDictionary *attrs = @{
+                            NSForegroundColorAttributeName: [UIColor grayColor],
+                            NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                            };
+    return [[NSAttributedString alloc] initWithString:emptyTitle
+                                           attributes:attrs];
+}
+
+
 
 @end
