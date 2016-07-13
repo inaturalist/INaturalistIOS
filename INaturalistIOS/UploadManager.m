@@ -199,7 +199,7 @@
         return;
     }
 
-    if (!observation.needsUpload) {
+    if (!observation.needsUpload || !observation.uuid) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate uploadManager:self uploadSuccessFor:observation];
         });
