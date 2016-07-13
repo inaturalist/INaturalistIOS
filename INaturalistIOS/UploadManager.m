@@ -299,9 +299,9 @@
                 }
                 
                 RKParams* params = [RKParams paramsWithDictionary:dictionary];
-                
-                [params setFile:path
-                       forParam:@"file"];
+                RKParamsAttachment *attachment = [params setFile:path forParam:@"file"];
+                [attachment setMIMEType:@"image/jpeg"];
+                [attachment setFileName:@"original.jpg"];
                 loader.params = params;
             }
         };
