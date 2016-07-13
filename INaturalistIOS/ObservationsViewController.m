@@ -1445,7 +1445,6 @@
 
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
-    [[Analytics sharedClient] debugLog:@"Upload - Progress"];
     
     if (observation.uuid) {
         self.uploadProgress[observation.uuid] = @(progress);
