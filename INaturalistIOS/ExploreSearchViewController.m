@@ -14,7 +14,6 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "ExploreSearchViewController.h"
-
 #import "ExploreMapViewController.h"
 #import "ExploreGridViewController.h"
 #import "ExploreListViewController.h"
@@ -38,6 +37,8 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "SignupSplashViewController.h"
 #import "UIColor+INaturalist.h"
+#import "LoginController.h"
+#import "User.h"
 
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
@@ -287,49 +288,26 @@
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = NSLocalizedString(@"Fetching...", nil);
-    hud.removeFromSuperViewOnHide = YES;
-    hud.dimBackground = YES;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = [appDelegate loginController];
+    User *me = [login fetchMe];
+    if (me) {
+    	ExploreUser *exploreMe = [[ExploreUser alloc] init];
+    	exploreMe.userId = me.recordID.integerValue;
+    	exploreMe.login = me.login;
+    	exploreMe.name = me.name;
+    	exploreMe.userIcon = [NSURL URLWithString:me.userIconURL];
+    	
+       	[observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
+        [searchMenu showActiveSearch];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
+                            message:NSLocalizedString(@"Can't find search for your observations right now. Please try later.", nil)
+                           delegate:nil
+                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                  otherButtonTitles:nil] show];
 
-    [searchController searchForLogin:[[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey] completionHandler:^(NSArray *results, NSError *error) {
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-        });
-
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
-        } else {
-            
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchMine];
-            
-            if (results.count == 0) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                            message:NSLocalizedString(@"Can't find your user details.", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
-            } else if (results.count == 1) {
-                // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
-                
-                [searchMenu showActiveSearch];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                            message:NSLocalizedString(@"Found conflicting user details. :(", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
-            }
-        }
-        
-    }];
-    
+    }
 }
 
 - (void)searchForNearbyObservations {
