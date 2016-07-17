@@ -148,8 +148,7 @@
         id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
         if (op.photoKey) {
             cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-        }
-        if (!cell.iv.image) {
+        } else {
             [cell.iv sd_setImageWithURL:op.largePhotoUrl];
         }
     } else {
