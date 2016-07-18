@@ -28,6 +28,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
 @interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     UICollectionView *observationsCollectionView;
+    UICollectionViewFlowLayout *flowLayout;
 }
 @end
 
@@ -39,14 +40,13 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     self.view.backgroundColor = [UIColor whiteColor];
     
     observationsCollectionView = ({
-        UICollectionViewFlowLayout *flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
+        flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
         
         float numberOfCellsPerRow = 3;
-        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-            numberOfCellsPerRow = 5;
+        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        	numberOfCellsPerRow = 5;
         }
-        float shortestSide = MIN(self.view.frame.size.width, self.view.frame.size.height);
-        float itemWidth = (shortestSide / numberOfCellsPerRow) - 2.0f;
+        float itemWidth = (self.view.bounds.size.width / numberOfCellsPerRow) - 2.0f;
         flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
         flowLayout.minimumInteritemSpacing = 2.0f;
         flowLayout.minimumLineSpacing = 2.0f;
@@ -63,7 +63,6 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
         
         [cv registerClass:[ExploreGridCell class] forCellWithReuseIdentifier:ExploreGridCellId];
         [cv registerClass:[RestrictedCollectionHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:ExploreGridHeaderId];
-        
         __weak __typeof__(self) weakSelf = self;
         [cv addInfiniteScrollingWithActionHandler:^{
             [weakSelf.observationDataSource expandActiveSearchToNextPageOfResults];
@@ -118,6 +117,21 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreGrid];
     
     [super viewDidDisappear:animated];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+
+    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        float numberOfCellsPerRow = 3;        
+           if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+               numberOfCellsPerRow = 5;
+           }
+        float itemWidth = (self.view.bounds.size.width / numberOfCellsPerRow) - 2.0f;
+           flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
+        [observationsCollectionView reloadData];
+    }];
 }
 
 #pragma mark - UI Helper
