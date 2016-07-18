@@ -312,19 +312,22 @@
     if (!readyToChangeLocation) {
         return;
     }
-    BOOL locationDoneChanging = self.currentLocation && [self.currentLocation.updatedAt timeIntervalSinceNow] < -1;
-    BOOL isManuallyEditing = self.mapView.userTrackingMode == MKUserTrackingModeNone;
-    if (locationDoneChanging) {
-        self.currentLocation.latitude = [NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude];
-        self.currentLocation.longitude = [NSNumber numberWithDouble:self.mapView.centerCoordinate.longitude];
-        if (!self.accuracyCircleView.hidden && isManuallyEditing) {
-            [self resetAccuracy];
-        }
-        [self updateAccuracyCircle];
-        [self updateCrossHair];
-        
-        self.currentLocation.positioningMethod = mapView.userTrackingMode == MKUserTrackingModeFollow ? @"gps" : @"manual";
+    
+    if (!self.currentLocation) {
+        self.currentLocation = [[INatLocation alloc] init];
     }
+    
+    BOOL isManuallyEditing = self.mapView.userTrackingMode == MKUserTrackingModeNone;
+    
+    self.currentLocation.latitude = @(self.mapView.centerCoordinate.latitude);
+    self.currentLocation.longitude = @(self.mapView.centerCoordinate.longitude);
+    if (!self.accuracyCircleView.hidden && isManuallyEditing) {
+        [self resetAccuracy];
+    }
+    [self updateAccuracyCircle];
+    [self updateCrossHair];
+    
+    self.currentLocation.positioningMethod = mapView.userTrackingMode == MKUserTrackingModeFollow ? @"gps" : @"manual";
 }
 
 - (void)mapView:(MKMapView *)mapView didChangeUserTrackingMode:(MKUserTrackingMode)mode animated:(BOOL)animated
