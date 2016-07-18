@@ -146,11 +146,8 @@
 		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
 		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
 		FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */; };
-		FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */; };
 		FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */; };
-		FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */; };
 		FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */; };
-		FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E219FACE6900A9AB5D /* ExploreObservationDetailHeader.m */; };
 		FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72E419FACE6900A9AB5D /* AutocompleteCell.m */; };
 		FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */; };
 		FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72F319FACF1800A9AB5D /* ExploreObservationsController.m */; };
@@ -558,16 +555,10 @@
 		FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ExploreIconicTaxaImages.m"; sourceTree = "<group>"; };
 		FA4E72D519FACE6900A9AB5D /* ExploreActiveSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreActiveSearchView.h; sourceTree = "<group>"; };
 		FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreActiveSearchView.m; sourceTree = "<group>"; };
-		FA4E72D919FACE6900A9AB5D /* ExploreCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreCommentCell.h; sourceTree = "<group>"; };
-		FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreCommentCell.m; sourceTree = "<group>"; };
 		FA4E72DB19FACE6900A9AB5D /* ExploreGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreGridCell.h; sourceTree = "<group>"; };
 		FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreGridCell.m; sourceTree = "<group>"; };
-		FA4E72DD19FACE6900A9AB5D /* ExploreIdentificationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentificationCell.h; sourceTree = "<group>"; };
-		FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreIdentificationCell.m; sourceTree = "<group>"; };
 		FA4E72DF19FACE6900A9AB5D /* ExploreListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreListTableViewCell.h; sourceTree = "<group>"; };
 		FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreListTableViewCell.m; sourceTree = "<group>"; };
-		FA4E72E119FACE6900A9AB5D /* ExploreObservationDetailHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationDetailHeader.h; sourceTree = "<group>"; };
-		FA4E72E219FACE6900A9AB5D /* ExploreObservationDetailHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationDetailHeader.m; sourceTree = "<group>"; };
 		FA4E72E319FACE6900A9AB5D /* AutocompleteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutocompleteCell.h; sourceTree = "<group>"; };
 		FA4E72E419FACE6900A9AB5D /* AutocompleteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutocompleteCell.m; sourceTree = "<group>"; };
 		FA4E72EE19FACEE000A9AB5D /* ExploreObservationsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationsDataSource.h; sourceTree = "<group>"; };
@@ -1327,7 +1318,6 @@
 			isa = PBXGroup;
 			children = (
 				FA3D90F41A95146D00BAA0EC /* Leaderboard */,
-				FA88726E1A2CFC1D00D2168E /* Detail View */,
 				FA88726D1A2CFC0400D2168E /* Search View */,
 				FA88726C1A2CFBEA00D2168E /* List View */,
 				FA88726B1A2CFBD900D2168E /* Grid View */,
@@ -1472,19 +1462,6 @@
 				FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */,
 			);
 			name = "Search View";
-			sourceTree = "<group>";
-		};
-		FA88726E1A2CFC1D00D2168E /* Detail View */ = {
-			isa = PBXGroup;
-			children = (
-				FA4E72E119FACE6900A9AB5D /* ExploreObservationDetailHeader.h */,
-				FA4E72E219FACE6900A9AB5D /* ExploreObservationDetailHeader.m */,
-				FA4E72D919FACE6900A9AB5D /* ExploreCommentCell.h */,
-				FA4E72DA19FACE6900A9AB5D /* ExploreCommentCell.m */,
-				FA4E72DD19FACE6900A9AB5D /* ExploreIdentificationCell.h */,
-				FA4E72DE19FACE6900A9AB5D /* ExploreIdentificationCell.m */,
-			);
-			name = "Detail View";
 			sourceTree = "<group>";
 		};
 		FA9437871C869F2C00CB10F3 /* ViewProtocols */ = {
@@ -1933,7 +1910,6 @@
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
 				FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */,
 				FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */,
-				FA4E72EB19FACE6900A9AB5D /* ExploreObservationDetailHeader.m in Sources */,
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 				FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */,
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
@@ -1944,7 +1920,6 @@
 				FACADF8B1CA1A920004B9D4A /* ProjectAboutInfoCell.m in Sources */,
 				19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
-				FA4E72E919FACE6900A9AB5D /* ExploreIdentificationCell.m in Sources */,
 				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
@@ -2030,7 +2005,6 @@
 				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
-				FA4E72E719FACE6900A9AB5D /* ExploreCommentCell.m in Sources */,
 				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
 				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
 				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
