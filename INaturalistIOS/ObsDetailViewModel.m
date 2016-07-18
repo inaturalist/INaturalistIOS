@@ -339,7 +339,7 @@
         } else if (indexPath.item == 1) {
             // wider tableview shows more photo,
             if (tableView.bounds.size.width > 369) {
-                return 253;
+            	return MAX(tableView.bounds.size.height * 0.6, 253);
             } else {
                 return 200;
             }
