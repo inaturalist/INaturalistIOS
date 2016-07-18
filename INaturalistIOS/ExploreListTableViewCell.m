@@ -389,7 +389,7 @@ static NSDateFormatter *shortFormatter;
         commonNameLabel.font = [UIFont fontForTaxonRankName:taxonRank
                                                      ofSize:commonNameLabel.font.pointSize];
     } else {
-        commonNameLabel.text = NSLocalizedString(@"Something...", nil);
+        commonNameLabel.text = NSLocalizedString(@"Unknown", nil);
         commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
     }
     commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
