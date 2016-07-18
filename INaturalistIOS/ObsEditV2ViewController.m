@@ -919,6 +919,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
+    	self.observation.latitude = nil;
+    	self.observation.longitude = nil;
+    	self.observation.positionalAccuracy = nil;
+    	self.observation.positioningMethod = nil;
+    	self.observation.placeGuess = nil;
         return;
     }
     
@@ -1447,16 +1452,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     DisclosureCell *cell;
     
-    CLLocationCoordinate2D coords;
+    CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(-19999.0, -19999.0);
     
-    if (self.observation.privateLatitude.floatValue) {
-        coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
-    } else if (self.observation.latitude.floatValue) {
-        coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
+    if (self.observation.visibleLatitude) {
+    	coords = CLLocationCoordinate2DMake(self.observation.visibleLatitude.doubleValue, self.observation.visibleLongitude.doubleValue);
     }
 
     if (CLLocationCoordinate2DIsValid(coords)) {
-        
         SubtitleDisclosureCell *subtitleCell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
         cell = subtitleCell;
         

@@ -34,8 +34,8 @@
     
     if (!self.currentLocationButton) {
         self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location"]
-                                                                      style:UIBarButtonItemStyleBordered 
-                                                                     target:self 
+                                                                      style:UIBarButtonItemStyleBordered
+                                                                     target:self
                                                                      action:@selector(clickedCurrentLocationButton)];
         [self.currentLocationButton setWidth:30];
     }
@@ -57,7 +57,7 @@
                                                                           target:nil
                                                                           action:nil];
     self.toolbarItems = @[ self.currentLocationButton, flex, self.mapTypeButton, flex ];
-
+    
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
         double lon = [self.currentLocation.longitude doubleValue];
@@ -96,9 +96,6 @@
         // null island
         MKCoordinateRegion region = MKCoordinateRegionMake(CLLocationCoordinate2DMake(0,0), MKCoordinateSpanMake(180, 360));
         [self.mapView setRegion:region animated:YES];
-        self.currentLocation = [[INatLocation alloc] initWithLatitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.latitude]
-                                                            longitude:[NSNumber numberWithDouble:self.mapView.centerCoordinate.longitude]
-                                                             accuracy:nil];
     }
     [self updateCrossHair];
     [self updateAccuracyCircle];
@@ -253,8 +250,21 @@
 }
 
 - (IBAction)clickedDone:(id)sender {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
-        [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
+    
+    if (!self.currentLocation || (self.currentLocation.latitude.integerValue == 0 && self.currentLocation.longitude.integerValue == 0)) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Location", nil)
+                                                                       message:NSLocalizedString(@"Please pick a valid location.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:nil];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(editLocationViewControllerDidSave:location:)]) {
+            [self.delegate performSelector:@selector(editLocationViewControllerDidSave:location:) withObject:self withObject:self.currentLocation];
+        }
     }
 }
 
