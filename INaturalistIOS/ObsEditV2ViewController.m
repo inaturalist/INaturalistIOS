@@ -365,8 +365,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (!op) return;
     
     NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
-        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreLargeSize];
-        return [MHGalleryItem itemWithImage:img];
+        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+        if (img) {
+	        return [MHGalleryItem itemWithImage:img];
+	    } else {
+            return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
+                                  galleryType:MHGalleryTypeImage];
+	    }
     }];
     
     MHUICustomization *customization = [[MHUICustomization alloc] init];
