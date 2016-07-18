@@ -1325,11 +1325,21 @@
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
 		NSArray *records = [Observation matchingRecordIDs:recordIDs];
 		for (INatModel *record in records) {
+			// since this deletion is coming from the server, no need to make
+			// a deletedrecord and sync the deletion back up. unsetting syncedAt
+			// handles this.
+			record.syncedAt = nil;
 			[record destroy];
 		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
 		[[NSUserDefaults standardUserDefaults] synchronize];
+		
+		NSError *error = nil;
+    	[self.fetchedResultsController performFetch:&error];
+    	if (error) {
+        	[[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Fetch Error: %@", error.localizedDescription]];
+    	}
 	}
 	
 	if ([request.resourcePath rangeOfString:@"new_updates.json"].location != NSNotFound && (response.statusCode == 200 || response.statusCode == 304)) {
