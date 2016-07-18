@@ -41,16 +41,11 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     
     observationsCollectionView = ({
         flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
-        
-        float numberOfCellsPerRow = 3;
-        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-        	numberOfCellsPerRow = 5;
-        }
-        float itemWidth = (self.view.bounds.size.width / numberOfCellsPerRow) - 2.0f;
-        flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
         flowLayout.minimumInteritemSpacing = 2.0f;
         flowLayout.minimumLineSpacing = 2.0f;
-        
+        // this will get reset once layout is done
+      	float itemWidth = (self.view.bounds.size.width / 3) - 2.0f;
+		flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
         
         // use autolayout
         UICollectionView *cv = [[UICollectionView alloc] initWithFrame:CGRectZero
@@ -99,18 +94,15 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
     // presenting from this collection view is screwing up the content inset
     // reset it here
     observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     
     [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreGrid];
     
-    // ensure the collection view is up to date
-    // this isn't always happening automatically from -observationChangedCallback
-    // on the iPhone 4s for some reason
-    [observationsCollectionView reloadData];
-    
-    [super viewDidAppear:animated];
+  	[self configureFlowLayout:flowLayout inCollectionView:observationsCollectionView forTraits:self.traitCollection];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -124,18 +116,23 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        float numberOfCellsPerRow = 3;        
-           if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-               numberOfCellsPerRow = 5;
-           }
-        float itemWidth = (self.view.bounds.size.width / numberOfCellsPerRow) - 2.0f;
-           flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
-        [observationsCollectionView reloadData];
+    	[self configureFlowLayout:flowLayout inCollectionView:observationsCollectionView forTraits:self.traitCollection];
     }];
 }
 
 #pragma mark - UI Helper
 
+- (void)configureFlowLayout:(UICollectionViewFlowLayout *)layout inCollectionView:(UICollectionView *)cv forTraits:(UITraitCollection *)traits {
+	float numberOfCellsPerRow = 3;        
+   	if (traits.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+   		numberOfCellsPerRow = 5;
+   	}
+	float itemWidth = (cv.bounds.size.width / numberOfCellsPerRow) - 2.0f;
+	layout.itemSize = CGSizeMake(itemWidth, itemWidth);
+	[cv reloadData];
+}
+
+ 
 - (UIEdgeInsets)insetsForPredicateCount:(NSInteger)count {
     CGFloat topInset = 0.0f;
     if (count > 0)
