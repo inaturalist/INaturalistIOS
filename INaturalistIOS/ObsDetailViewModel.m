@@ -207,6 +207,8 @@
 
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
+	cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+	
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
 
     cell.taxonNameLabel.textColor = [UIColor blackColor];
@@ -271,6 +273,7 @@
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
+    	cell.selectionStyle = UITableViewCellSelectionStyleNone;
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
