@@ -813,6 +813,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)saved:(UIButton *)button {
+	UIAlertController *alert = nil;
+ 
+	if (!self.observation.taxonID && !self.observation.speciesGuess && self.observation.observationPhotos.count == 0) {
+		// alert about the combo of no photos and no taxon/species guess being bad
+		NSString *title = NSLocalizedString(@"No Photos and Missing Identification", nil);
+		NSString *msg = NSLocalizedString(@"Without at least one photo, this observation will be impossible for others to help identify.", nil);
+		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+	} else if (!self.observation.localObservedOn) {		
+		// alert about no date
+		NSString *title = NSLocalizedString(@"Missing Date", nil);
+		NSString *msg = NSLocalizedString(@"Without a date, this observation may be very hard for others to identify accurately, and will never attain research grade.", nil);
+		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+	} else if (!self.observation.latitude) {
+		// alert about no location
+				NSString *title = NSLocalizedString(@"Missing Location", nil);
+		NSString *msg = NSLocalizedString(@"Without a location, this observation will be very hard for others to identify and will never attain research grade.", nil);
+		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+	}
+	if (alert) {
+		// finish configuring the alert
+		UIAlertAction* saveAnyway = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save Anyway", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+			[self validatedSave];
+		}];
+		[alert addAction:saveAnyway];
+
+		UIAlertAction* goBack = [UIAlertAction actionWithTitle:NSLocalizedString(@"Go Back", nil) style:UIAlertActionStyleCancel handler:nil];
+		[alert addAction:goBack];
+	
+		// show the alert
+		[self presentViewController:alert animated:YES completion:nil];
+	} else {
+		// good to go
+		[self validatedSave];
+	}
+}
+
+- (void)validatedSave {	
     [self.view endEditing:YES];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
