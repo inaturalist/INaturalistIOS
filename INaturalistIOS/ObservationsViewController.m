@@ -1324,15 +1324,27 @@
 		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
 		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
 		NSArray *records = [Observation matchingRecordIDs:recordIDs];
-		for (INatModel *record in records) {
+		for (Observation *record in records) {
 			// since this deletion is coming from the server, no need to make
-			// a deletedrecord and sync the deletion back up. unsetting syncedAt
-			// handles this.
-			record.syncedAt = nil;
-			[record destroy];
-		}
-		
-		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
+            // a deletedrecord and sync the deletion back up. unsetting syncedAt
+            // handles this.
+            for (ProjectObservation *po in record.projectObservations) {
+                po.syncedAt = nil;
+                [po destroy];
+            }
+            for (ObservationPhoto *op in record.observationPhotos) {
+                op.syncedAt = nil;
+                [op destroy];
+            }
+            for (ObservationFieldValue *ofv in record.observationFieldValues) {
+                ofv.syncedAt = nil;
+                [ofv destroy];
+            }
+            record.syncedAt = nil;
+            [record destroy];
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
 		NSError *error = nil;
