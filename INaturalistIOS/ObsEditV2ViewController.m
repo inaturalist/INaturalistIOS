@@ -852,6 +852,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)validatedSave {	
     [self.view endEditing:YES];
     
+    [self.locationManager stopUpdatingLocation];
+    
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
                      withProperties:@{
                                       @"Via": [self analyticsVia],
