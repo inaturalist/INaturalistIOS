@@ -207,6 +207,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
+    [self stopUpdatingLocation];
+    
     [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationEdit];
 }
 
@@ -795,9 +797,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
+	[self stopUpdatingLocation];
+    
     if (self.isMakingNewObservation) {
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
         
+        [self stopUpdatingLocation];
         [self.observation deleteEntity];
         self.observation = nil;
         NSError *error;
@@ -852,7 +857,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)validatedSave {	
     [self.view endEditing:YES];
     
-    [self.locationManager stopUpdatingLocation];
+    [self stopUpdatingLocation];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation
                      withProperties:@{
