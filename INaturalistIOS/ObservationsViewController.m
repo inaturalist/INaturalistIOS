@@ -1320,12 +1320,12 @@
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
-	if (response.allHeaderFields[@"X-Deleted-Observations"]) {
-		NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
-		NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
-		NSArray *records = [Observation matchingRecordIDs:recordIDs];
-		for (Observation *record in records) {
-			// since this deletion is coming from the server, no need to make
+    if (response.allHeaderFields[@"X-Deleted-Observations"]) {
+        NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
+        NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
+        NSArray *records = [Observation matchingRecordIDs:recordIDs];
+        for (Observation *record in records) {
+            // since this deletion is coming from the server, no need to make
             // a deletedrecord and sync the deletion back up. unsetting syncedAt
             // handles this.
             for (ProjectObservation *po in record.projectObservations) {
