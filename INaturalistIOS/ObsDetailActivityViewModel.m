@@ -46,10 +46,10 @@
 @implementation ObsDetailActivityViewModel
 
 - (TaxaAPI *)taxaApi {
-	static TaxaAPI *_api = nil;
+    static TaxaAPI *_api = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-    	_api = [[TaxaAPI alloc] init];
+        _api = [[TaxaAPI alloc] init];
     });
     return _api;
 }
@@ -75,7 +75,7 @@
             return 2;
         } else if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
             id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
-
+            
             NSInteger baseRows = 3;
             
             Taxon *myIdTaxon = [self taxonForIdentificationByLoggedInUser];
@@ -85,7 +85,7 @@
                 // so don't show row with agree button
                 baseRows--;
             }
-
+            
             if (identification.body && identification.body.length > 0) {
                 baseRows++;
             }
@@ -135,7 +135,7 @@
             return footer;
         } else {
             NSString *noInteraction;
-
+            
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             if (appDelegate.loginController.isLoggedIn) {
                 noInteraction = NSLocalizedString(@"Upload this observation to enable comments & identifications.", nil);
@@ -261,7 +261,7 @@
         } else {
             // impossibru!
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
-
+            
             return cell;
         }
     }
@@ -283,7 +283,7 @@
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
     // second row in an identification section is a taxon row, which is selectable
     if (indexPath.item == 1) {
         id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
@@ -341,18 +341,18 @@
                  range:NSMakeRange(0, body.length)];
     
     cell.bodyTextView.attributedText = body;
-
+    
     cell.bodyTextView.dataDetectorTypes = UIDataDetectorTypeLink;
     cell.bodyTextView.editable = NO;
     cell.bodyTextView.scrollEnabled = NO;
-        
+    
     return cell;
 }
 
 - (ObsDetailActivityAuthorCell *)authorCellInTableView:(UITableView *)tableView withActivity:(id <ActivityVisualization>)activity {
     ObsDetailActivityAuthorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityAuthor"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    
     if (activity) {
         NSURL *userIconUrl = [activity userIconUrl];
         if (userIconUrl) {
@@ -366,7 +366,7 @@
         YLMoment *moment = [YLMoment momentWithDate:activity.createdAt];
         cell.dateLabel.text = [moment fromNowWithSuffix:NO];
         cell.dateLabel.textColor = [UIColor lightGrayColor];
-
+        
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
             // TODO: push this down into protocol implementation
             id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
@@ -376,7 +376,7 @@
             cell.authorNameLabel.text = [activity userName];
         }
     }
-
+    
     return cell;
 }
 
@@ -411,11 +411,11 @@
 }
 
 - (ObsDetailTaxonCell *)taxonCellInTableView:(UITableView *)tableView withIdentification:(id <IdentificationVisualization>)identification {
-
+    
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-
+    
     if (![identification taxonCommonName]) {
         // no common name, so only show scientific name in the main label
         cell.taxonNameLabel.text = [identification taxonScientificName];
@@ -448,11 +448,11 @@
     }
     
     if ([identification taxonIconUrl]) {
-	    [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
+        [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
     } else {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:[identification taxonIconicName]];
+        cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:[identification taxonIconicName]];
     }
-        
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
@@ -479,7 +479,7 @@
                           otherButtonTitles:nil] show];
         return;
     }
-
+    
     [self.delegate inat_performSegueWithIdentifier:@"addComment" sender:nil];
 }
 
@@ -502,7 +502,7 @@
                           otherButtonTitles:nil] show];
         return;
     }
-
+    
     [self.delegate inat_performSegueWithIdentifier:@"addIdentification" sender:nil];
 }
 
@@ -525,7 +525,7 @@
                           otherButtonTitles:nil] show];
         return;
     }
-
+    
     // add an identification
     [[Analytics sharedClient] debugLog:@"Network - Obs Detail Add Comment"];
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddIdentification
@@ -597,7 +597,7 @@
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     
     [self.delegate hideProgressHud];
-
+    
     // set "seen" call returns 204 on success, add ID returns 200
     if (response.statusCode == 200 || response.statusCode == 204) {
         // either id or refresh activity, reload the UI for the obs if the request succeeded
