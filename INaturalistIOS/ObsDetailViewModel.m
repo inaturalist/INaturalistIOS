@@ -186,7 +186,7 @@
     }
     
     [cell.shareButton addTarget:self
-                         action:@selector(share)
+                         action:@selector(share:)
                forControlEvents:UIControlEventTouchUpInside];
     
     if (self.observation.inatRecordId) {
@@ -399,8 +399,8 @@
 
 #pragma mark - uicontrol events
 
-- (void)share {
-    [self.delegate inat_performSegueWithIdentifier:@"share" sender:nil];
+- (void)share:(UIButton *)button {
+    [self.delegate inat_performSegueWithIdentifier:@"share" sender:button];
 }
 
 

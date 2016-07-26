@@ -292,6 +292,7 @@
         
         [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
         
+        
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
                                            INatWebBaseURL, (long)self.observation.inatRecordId]];
         
@@ -308,7 +309,18 @@
             }
         };
         
-        [self presentViewController:activity animated:YES completion:nil];
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            UIButton *shareButton = (UIButton *)object;
+            CGRect frame = [self.view convertRect:shareButton.frame
+                                         fromView:shareButton.superview];
+            UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:activity];
+            [popover presentPopoverFromRect:frame
+                                     inView:self.view
+                   permittedArrowDirections:UIPopoverArrowDirectionAny
+                                   animated:YES];
+        } else {
+            [self presentViewController:activity animated:YES completion:nil];
+        }
     } else {
         [self performSegueWithIdentifier:identifier sender:object];
     }
