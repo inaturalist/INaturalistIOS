@@ -1330,15 +1330,15 @@
             // since this deletion is coming from the server, no need to make
             // a deletedrecord and sync the deletion back up. unsetting syncedAt
             // handles this.
-            for (ProjectObservation *po in record.projectObservations) {
+            for (ProjectObservation *po in [record.projectObservations allObjects]) {
                 po.syncedAt = nil;
                 [po destroy];
             }
-            for (ObservationPhoto *op in record.observationPhotos) {
+            for (ObservationPhoto *op in [record.observationPhotos allObjects]) {
                 op.syncedAt = nil;
                 [op destroy];
             }
-            for (ObservationFieldValue *ofv in record.observationFieldValues) {
+            for (ObservationFieldValue *ofv in [record.observationFieldValues allObjects]) {
                 ofv.syncedAt = nil;
                 [ofv destroy];
             }
