@@ -81,7 +81,16 @@
 	// show blank screen when empty
 	self.tableView.tableFooterView = [UIView new];
 
-	[self.searchDisplayController setActive:YES];	
+    // user prefs determine autocorrection/spellcheck behavior of the species guess field
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
+        [self.searchDisplayController.searchBar setAutocorrectionType:UITextAutocorrectionTypeYes];
+        [self.searchDisplayController.searchBar setSpellCheckingType:UITextSpellCheckingTypeDefault];
+    } else {
+        [self.searchDisplayController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [self.searchDisplayController.searchBar setSpellCheckingType:UITextSpellCheckingTypeNo];
+    }
+	
+	[self.searchDisplayController setActive:YES];
 	if (self.query && self.query.length > 0) {
 		self.searchDisplayController.searchBar.text = self.query;
 	}
