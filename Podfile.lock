@@ -138,6 +138,7 @@ PODS:
   - VTAcknowledgementsViewController (0.15)
   - XMLReader (0.0.2)
   - YLMoment (0.6.0)
+  - YLProgressBar (3.9.0)
 
 DEPENDENCIES:
   - ABFRealmSearchViewController
@@ -187,6 +188,7 @@ DEPENDENCIES:
   - VICMAImageView (~> 1.0)
   - VTAcknowledgementsViewController (= 0.15)
   - YLMoment (from `https://github.com/inaturalist/YLMoment.git`, commit `35521e9f80c23de6f885771f97a6c1febe245c00`)
+  - YLProgressBar (= 3.9.0)
 
 EXTERNAL SOURCES:
   FileMD5Hash:
@@ -271,5 +273,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   XMLReader: c7e54b707c368e2fa545d8313276b4de13a36ff5
   YLMoment: a342e85269150756105901c4b701070154f82c16
+  YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
 COCOAPODS: 0.39.0

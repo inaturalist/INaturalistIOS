@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <YLProgressBar/YLProgressBar.h>
 #import "ObservationViewCell.h"
 
 @interface ObservationViewUploadingCell : ObservationViewCell
 
-@property IBOutlet UIProgressView *progressView;
+@property IBOutlet YLProgressBar *progressBar;
 @property IBOutlet UILabel *dateLabel;
 
 @end

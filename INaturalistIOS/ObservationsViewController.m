@@ -627,7 +627,7 @@
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (o.uuid) {
         float progress = [self.uploadProgress[o.uuid] floatValue];
-        [cell.progressView setProgress:progress];
+        [cell.progressBar setProgress:progress];
     }
     
     cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];

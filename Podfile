@@ -29,6 +29,7 @@ target :iNaturalist do
   pod 'VTAcknowledgementsViewController', '0.15'
   pod 'JDFTooltips', '1.0'
   pod 'CustomIOSAlertView', '0.9.3'
+  pod 'YLProgressBar', '3.9.0'
   pod 'TapkuLibrary', '0.3.8'
   pod 'SWRevealViewController', '2.3.0'
   pod 'RestKit', '0.10.3'

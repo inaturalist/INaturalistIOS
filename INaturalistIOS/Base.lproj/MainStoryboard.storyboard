@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="ln2-Xm-kuL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -437,18 +437,18 @@
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" id="j8A-Ij-m4z">
-                                            <rect key="frame" x="56" y="34" width="207" height="2"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                            <color key="progressTintColor" red="0.38039215686274508" green="0.63529411764705879" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
-                                        </progressView>
+                                        <view contentMode="scaleToFill" id="eGG-sL-Td8" customClass="YLProgressBar">
+                                            <rect key="frame" x="56" y="36" width="256" height="8"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="dateLabel" destination="zY1-k8-meb" id="2C6-3d-TcH"/>
                                     <outlet property="observationImage" destination="ncn-cR-qaa" id="2Tu-uS-DK0"/>
-                                    <outlet property="progressView" destination="j8A-Ij-m4z" id="UYf-KI-mgF"/>
+                                    <outlet property="progressBar" destination="eGG-sL-Td8" id="7nj-Fj-yKr"/>
                                     <outlet property="titleLabel" destination="XGD-Gw-yZr" id="fig-lw-dHe"/>
                                 </connections>
                             </tableViewCell>
@@ -1414,7 +1414,7 @@
                         </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" rowHeight="44" id="EzP-MT-5na" customClass="ProjectTableViewCell">
-                                <rect key="frame" x="0.0" y="130" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="66" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EzP-MT-5na" id="OQe-bd-Skb">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
@@ -1577,7 +1577,7 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="infoText" id="YmC-2x-Bcb" customClass="ProjectAboutInfoCell">
-                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YmC-2x-Bcb" id="LAx-Oz-3Nv">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -1840,7 +1840,7 @@
                         </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GuideCell" rowHeight="54" id="pv5-AF-Y02">
-                                <rect key="frame" x="0.0" y="130" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="66" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pv5-AF-Y02" id="DVb-U9-YWU">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="53.5"/>
@@ -2208,7 +2208,7 @@
                         </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddObservationCell" rowHeight="54" id="tO6-P3-aIO">
-                                <rect key="frame" x="0.0" y="166" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="102" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tO6-P3-aIO" id="JNM-0P-oFh">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="53.5"/>
@@ -2230,7 +2230,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonOneNameCell" rowHeight="54" id="2mR-jt-faC">
-                                <rect key="frame" x="0.0" y="220" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="156" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2mR-jt-faC" id="bHp-zY-BEH">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="53.5"/>
@@ -2255,7 +2255,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListedTaxonTwoNamesCell" rowHeight="54" id="CgW-Ad-4uh">
-                                <rect key="frame" x="0.0" y="274" width="320" height="54"/>
+                                <rect key="frame" x="0.0" y="210" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CgW-Ad-4uh" id="lNX-5h-z8U">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="53.5"/>
@@ -3199,12 +3199,12 @@
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="91K-l3-swh"/>
-        <segue reference="jP3-Xh-m7A"/>
-        <segue reference="W10-Pm-t7J"/>
+        <segue reference="rAj-kb-ce2"/>
         <segue reference="dRA-LI-BR4"/>
         <segue reference="aDK-kM-had"/>
         <segue reference="3K4-WT-L9k"/>
         <segue reference="Q4H-Ck-yCo"/>
+        <segue reference="jP3-Xh-m7A"/>
+        <segue reference="91K-l3-swh"/>
     </inferredMetricsTieBreakers>
 </document>
