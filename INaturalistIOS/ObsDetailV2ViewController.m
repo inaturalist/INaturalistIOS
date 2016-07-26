@@ -10,6 +10,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <Toast/UIView+Toast.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <ARSafariActivity/ARSafariActivity.h>
 
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"
@@ -293,15 +294,17 @@
         
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
                                            INatWebBaseURL, (long)self.observation.inatRecordId]];
+        
+        ARSafariActivity *safariActivity = [[ARSafariActivity alloc] init];
+        
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
-                                                                               applicationActivities:nil];
-        activity.completionHandler = ^(NSString *activityType, BOOL completed) {
+                                                                               applicationActivities:@[safariActivity]];
+        activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
             if (completed) {
                 [[Analytics sharedClient] event:kAnalyticsEventObservationShareFinished
                                  withProperties:@{ @"destination": activityType }];
             } else {
                 [[Analytics sharedClient] event:kAnalyticsEventObservationShareCancelled];
-
             }
         };
         

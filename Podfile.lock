@@ -3,6 +3,7 @@ PODS:
     - Realm (>= 0.100.0)
   - ActionSheetPicker-3.0 (1.3.12)
   - AFNetworking (1.3.4)
+  - ARSafariActivity (1.0.4)
   - BlocksKit (2.2.5):
     - BlocksKit/All (= 2.2.5)
   - BlocksKit/All (2.2.5):
@@ -144,6 +145,7 @@ DEPENDENCIES:
   - ABFRealmSearchViewController
   - ActionSheetPicker-3.0 (= 1.3.12)
   - AFNetworking (= 1.3.4)
+  - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.1.3)
   - CocoaAsyncSocket
@@ -222,6 +224,7 @@ SPEC CHECKSUMS:
   ABFRealmSearchViewController: 3281ba31dfeffc7ca065474902409781f1e76ea6
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
   AFNetworking: cf8e418e16f0c9c7e5c3150d019a3c679d015018
+  ARSafariActivity: eccf8d928f242a6a290437afd27ed7178b7eadcc
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: e431c88fd02115d4a34016c2100bbfa4d2d5b146
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
