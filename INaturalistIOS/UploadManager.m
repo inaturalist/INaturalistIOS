@@ -467,8 +467,7 @@
         
         return;
     }
-    
-    
+       	    
     if ([objectLoader.sourceObject isKindOfClass:ProjectObservation.class] && objectLoader.response.statusCode == 422) {
         // server returns this code when the project validation fails
         // this is a non-fatal error - start working on the next observation.
@@ -515,12 +514,22 @@
         
     }
     
+   	[self stopUploadActivity];
+   	
+   	NSError *reportingError = nil;
+   	NSError *parseError = nil;
+   	NSDictionary *body = [objectLoader.response parsedBody:&parseError];
+   	if (!parseError && body && [body valueForKey:@"error"]) {
+   	   	NSDictionary *info = @{NSLocalizedDescriptionKey: [body valueForKey:@"error"] };
+   		reportingError = [NSError errorWithDomain:@"org.inaturalist.ios" code:objectLoader.response.statusCode userInfo:info];
+   	} else {
+   		reportingError = error;
+   	}
+   	
     Observation *failedObservation = [self.observationsToUpload firstObject];
-    
-    [self stopUploadActivity];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate uploadManager:self uploadFailedFor:failedObservation error:error];
-    });
+   	    [self.delegate uploadManager:self uploadFailedFor:failedObservation error:reportingError];
+   	});
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {
