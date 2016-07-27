@@ -54,7 +54,7 @@
         }
     }
     
-    return nil;
+    return self.partners[0];
 }
 
 @end
