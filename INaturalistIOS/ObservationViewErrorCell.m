@@ -28,12 +28,12 @@
                             @"validationError": self.validationErrorLabel,
                             };
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-6-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[imageView(==44)]-[title]-[dateLabel(==46)]-16-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[subtitle]-[validationError(==24)]-8-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[imageView(==44)]-[subtitle]-[validationError(==24)]-16-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];

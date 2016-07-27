@@ -30,12 +30,12 @@
                             @"interactiveActivityButton": self.interactiveActivityButton,
                             };
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[title]-[dateLabel(==46)]-6-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[imageView(==44)]-[title]-[dateLabel(==46)]-16-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[imageView(==44)]-[subtitle]-[activityButton(==24)]-8-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[imageView(==44)]-[subtitle]-[activityButton(==24)]-18-|"
                                                                  options:0
                                                                  metrics:0
                                                                    views:views]];
@@ -46,7 +46,7 @@
                                                                  metrics:0
                                                                    views:views]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[interactiveActivityButton(==44)]-5-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[interactiveActivityButton(==44)]-16-|"
                                                                  options:NSLayoutFormatAlignAllTrailing
                                                                  metrics:0
                                                                    views:views]];

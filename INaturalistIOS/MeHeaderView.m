@@ -69,11 +69,11 @@
                                 @"uploadingSpinner": self.uploadingSpinner,
                                 };
         
-        self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-(10@900)-[uploadingSpinner]-[obsCount]-|"
+        self.titleConstraintsWithSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[icon(==80)]-(10@900)-[uploadingSpinner]-[obsCount]-16-|"
                                                                                    options:0
                                                                                    metrics:0
                                                                                      views:views];
-        self.titleConstraintsWithoutSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-10-[icon(==80)]-10-[obsCount]-|"
+        self.titleConstraintsWithoutSpinner = [NSLayoutConstraint constraintsWithVisualFormat:@"|-16-[icon(==80)]-10-[obsCount]-16-|"
                                                                                       options:0
                                                                                       metrics:0
                                                                                         views:views];
