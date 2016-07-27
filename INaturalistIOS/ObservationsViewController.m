@@ -15,6 +15,7 @@
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <YLMoment/YLMoment.h>
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -596,6 +597,10 @@
     } else {
         cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
     }
+    cell.observationImage.layer.cornerRadius = 1.0f;
+    cell.observationImage.layer.borderWidth = 1.0f;
+   	cell.observationImage.layer.borderColor = [UIColor colorWithHexString:@"#C8C7CC"].CGColor;
+   	cell.observationImage.clipsToBounds = YES;
     
     // configure the title
     if ([o exploreTaxonRealm]) {

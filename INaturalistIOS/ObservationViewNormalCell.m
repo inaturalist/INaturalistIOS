@@ -16,7 +16,7 @@
 
 // would be great to do all of this autolayout stuff in the storyboard, but that means migrating the whole storyboard to AutoLayout
 
-- (void)awakeFromNib{
+- (void)awakeFromNib {
     self.activityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -52,7 +52,7 @@
                                                                    views:views]];
     
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[dateLabel(==15)]->=0-[activityButton(==22)]-3-|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[dateLabel(==15)]->=0-[activityButton(==22)]-7-|"
                                                                  options:NSLayoutFormatAlignAllTrailing
                                                                  metrics:0
                                                                    views:views]];
