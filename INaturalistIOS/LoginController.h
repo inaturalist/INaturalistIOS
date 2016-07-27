@@ -20,8 +20,9 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 @interface LoginController : NSObject
 
-- (void)loginWithFacebookSuccess:(LoginSuccessBlock)success
-                         failure:(LoginErrorBlock)error;
+- (void)loginWithFacebookViewController:(UIViewController *)vc
+	success:(LoginSuccessBlock)success
+	failure:(LoginErrorBlock)error;
 - (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
                                   success:(LoginSuccessBlock)success
                                   failure:(LoginErrorBlock)error;

@@ -19,7 +19,12 @@ PODS:
   - BlocksKit/UIKit (2.2.5):
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
-  - Bolts (1.1.3)
+  - Bolts (1.8.4):
+    - Bolts/AppLinks (= 1.8.4)
+    - Bolts/Tasks (= 1.8.4)
+  - Bolts/AppLinks (1.8.4):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.8.4)
   - cocoa-oauth (0.0.1):
     - NSData+Base64 (~> 1.0)
   - CocoaAsyncSocket (7.4.3):
@@ -37,8 +42,10 @@ PODS:
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
   - Fabric/Base (1.5.4)
-  - Facebook-iOS-SDK (3.20.0):
-    - Bolts (~> 1.0)
+  - FBSDKCoreKit (4.10.1):
+    - Bolts (~> 1.5)
+  - FBSDKLoginKit (4.10.1):
+    - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
   - Flurry-iOS-SDK/FlurrySDK (7.1.0)
   - FontAwesomeKit (2.2.0):
@@ -147,7 +154,7 @@ DEPENDENCIES:
   - AFNetworking (= 1.3.4)
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
-  - Bolts (= 1.1.3)
+  - Bolts (= 1.8.4)
   - CocoaAsyncSocket
   - Crashlytics (= 3.3.3)
   - CustomIOSAlertView (= 0.9.3)
@@ -155,7 +162,8 @@ DEPENDENCIES:
   - DZNEmptyDataSet (= 1.7.3)
   - Expecta
   - Fabric (= 1.5.4)
-  - Facebook-iOS-SDK (= 3.20.0)
+  - FBSDKCoreKit (= 4.10.1)
+  - FBSDKLoginKit (= 4.10.1)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - Flurry-iOS-SDK/FlurrySDK (= 7.1.0)
   - FontAwesomeKit (= 2.2.0)
@@ -226,7 +234,7 @@ SPEC CHECKSUMS:
   AFNetworking: cf8e418e16f0c9c7e5c3150d019a3c679d015018
   ARSafariActivity: eccf8d928f242a6a290437afd27ed7178b7eadcc
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
-  Bolts: e431c88fd02115d4a34016c2100bbfa4d2d5b146
+  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
   CocoaAsyncSocket: a18c75dca4b08723628a0bacca6e94803d90be91
   Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
@@ -235,8 +243,9 @@ SPEC CHECKSUMS:
   DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
   Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
-  Facebook-iOS-SDK: 7f22c5d87e0f5da398f7d2a231bf55149f004585
-  FileMD5Hash: d96615de89074573f05b8106441e15ac6241cfae
+  FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
+  FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
+  FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
   Flurry-iOS-SDK: 7b3fe6c3344c82b73c4c84163652eada84fbfcf4
   FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
@@ -247,7 +256,7 @@ SPEC CHECKSUMS:
   ISO8601DateFormatter: 4551b6ce4f83185425f583b0b3feb3c7b59b942c
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
   JDStatusBarNotification: a36d09ccbb047217572b074a61e7ca10dddc5f0a
-  JSONKit: f4f4870c9e91926a56352680e3a3f5f78bccf187
+  JSONKit: d64c81f94cf4fa7a11ee1e0e996237ab672e1e0d
   LibComponentLogging-Core: 769c6f596b96348911fe75f9825728213d334941
   LibComponentLogging-NSLog: ae0ad111653e6c955e3f93b95386285fcdf94ab3
   librato-iOS: 8016eef995a8efc9526851c562e07e87f4880cee
@@ -278,4 +287,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: c4cfdcc0ed07664a61001533c3c183ceaa4f83d0
+
+COCOAPODS: 1.0.1

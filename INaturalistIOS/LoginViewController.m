@@ -7,7 +7,6 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <FacebookSDK/FacebookSDK.h>
 #import <FontAwesomeKit/FAKIonicons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <NXOAuth2Client/NXOAuth2.h>
@@ -216,32 +215,33 @@
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             __weak typeof(self)weakSelf = self;
-            [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
-                    [appDelegate showMainUI];
-                } else {
-                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                }
-                if (strongSelf.selectedPartner) {
-                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                  completion:nil];
-                }
-            } failure:^(NSError *error) {
-                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
-                NSString *alertMsg;
-                if (error) {
-                    alertMsg = error.localizedDescription;
-                } else {
-                    alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                            @"Unknown facebook login error");
-                }
-                [[[UIAlertView alloc] initWithTitle:alertTitle
-                                           message:alertMsg
-                                          delegate:nil
-                                 cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil] show];
-            }];
+            [appDelegate.loginController loginWithFacebookViewController:self
+            	success:^(NSDictionary *info) {
+	                __strong typeof(weakSelf)strongSelf = weakSelf;
+	                if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
+	                    [appDelegate showMainUI];
+	                } else {
+	                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
+	                }
+	                if (strongSelf.selectedPartner) {
+	                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+	                                                                  completion:nil];
+	                }
+            	} failure:^(NSError *error) {
+	                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+	                NSString *alertMsg;
+	                if (error) {
+	                    alertMsg = error.localizedDescription;
+	                } else {
+	                    alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+	                                            @"Unknown facebook login error");
+	                }
+	                [[[UIAlertView alloc] initWithTitle:alertTitle
+	                                           message:alertMsg
+	                                          delegate:nil
+	                                 cancelButtonTitle:@"OK"
+	                                  otherButtonTitles:nil] show];
+            	}];
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;

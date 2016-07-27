@@ -7,7 +7,7 @@
 //
 
 #import <Realm/Realm.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
@@ -53,21 +53,33 @@
 
 @implementation INaturalistAppDelegate
 
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	[FBSDKAppEvents activateApp];
+}
+
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation
-{
-    return ([FBSession.activeSession handleOpenURL:url] || [GPPURLHandler handleURL:url
-                                                                 sourceApplication:sourceApplication
-                                                                        annotation:annotation]);
+         annotation:(id)annotation {
+         
+         return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                         openURL:url
+                                               sourceApplication:sourceApplication
+                                                      annotation:annotation] 
+          || 
+	      
+	      [GPPURLHandler handleURL:url
+	                 sourceApplication:sourceApplication
+	                        annotation:annotation];
 }
-
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self setupAnalytics];
+    
+    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+
     
     // we need a login controller to handle google auth, can't do this in the background
     self.loginController = [[LoginController alloc] init];

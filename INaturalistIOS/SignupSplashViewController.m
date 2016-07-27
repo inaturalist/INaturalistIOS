@@ -292,8 +292,9 @@ static char PARTNER_ASSOCIATED_KEY;
             }
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.loginController loginWithFacebookSuccess:^(NSDictionary *info) {
-                __strong typeof(weakSelf)strongSelf = weakSelf;
+                        [appDelegate.loginController loginWithFacebookViewController:self
+                        success:^(NSDictionary *info) {
+                          __strong typeof(weakSelf)strongSelf = weakSelf;
                 if ([appDelegate.window.rootViewController isEqual:strongSelf.navigationController]) {
                     [appDelegate showMainUI];
                 } else {
