@@ -44,14 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>344</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-api</string>
-		<string>fbshareextension</string>
-		<string>fbauth2</string>
-	</array>
+	<string>345</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -70,6 +63,13 @@
 	<string>26558815027</string>
 	<key>FacebookDisplayName</key>
 	<string>iNaturalist</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbshareextension</string>
+		<string>fbauth2</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
