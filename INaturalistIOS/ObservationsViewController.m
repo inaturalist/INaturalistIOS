@@ -16,6 +16,8 @@
 #import <YLMoment/YLMoment.h>
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <AFNetworking/AFNetworking.h>
+#import <MBProgressHUD/MBProgressHUD.h> 
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -50,8 +52,9 @@
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
 #import "ExploreTaxonRealm.h"
+#import "NSURL+INaturalist.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -163,6 +166,124 @@
 
     [self uploadDeletes:@[]
                 uploads:@[ observation ]];
+}
+
+- (IBAction)meTapped:(id)sender {
+    if (self.isSyncing) {
+        [self stopSyncPressed];
+    } else {
+        NSMutableArray *recordsToDelete = [NSMutableArray array];
+        for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+            [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
+                                                                                      NSStringFromClass(class)]]];
+        }
+        NSArray *recordsToUpload = [Observation needingUpload];
+        if (recordsToDelete.count > 0 || recordsToUpload.count > 0) {
+            [self sync:nil];
+        } else {
+            NSString *title = NSLocalizedString(@"Change your profile photo?", nil);
+            // update profile photo
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                           message:@" "
+                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Choose from library", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self newProfilePhoto:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+                                                    }]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Take a photo", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self newProfilePhoto:UIImagePickerControllerSourceTypeCamera];
+                                                    }]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            UIButton *btn = (UIButton *)sender;
+            
+            CGRect rect = [self.view convertRect:btn.frame fromView:btn.superview];
+            alert.popoverPresentationController.sourceView = btn;
+            alert.popoverPresentationController.sourceRect = rect;
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }
+}
+
+- (void)newProfilePhoto:(UIImagePickerControllerSourceType)sourceType {
+    if (![UIImagePickerController isSourceTypeAvailable:sourceType]) {
+        return;
+    }
+    
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = sourceType;
+    picker.allowsEditing = YES;
+    picker.delegate = self;
+    [self.tabBarController presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+        UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *me = [[appDelegate loginController] fetchMe];
+    if (imageData && me) {
+        
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+        hud.labelText = NSLocalizedString(@"Uploading...", nil);
+
+        // use afnetworking to deal with icky multi-part forms
+        AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL inat_baseURL]];
+        
+        NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue];
+        
+        NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"PUT"
+                                                                             path:path
+                                                                       parameters:nil
+                                                        constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+                                                            [formData appendPartWithFileData:imageData
+                                                                                        name:@"user[icon]"
+                                                                                    fileName:@"icon.jpg"
+                                                                                    mimeType:@"image/jpeg"];
+                               
+                           }];
+        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+       forHTTPHeaderField:@"Authorization"];
+
+        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        
+        __weak typeof(self)weakSelf = self;
+        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
+                [weakSelf loadUserForHeader];
+            });
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
+                                                                               message:error.localizedDescription
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+            });
+        }];
+        [httpClient enqueueHTTPRequestOperation:operation];
+    }
 }
 
 - (IBAction)sync:(id)sender {
@@ -533,7 +654,7 @@
         }
         
         [self.meHeader.iconButton addTarget:self
-                                     action:@selector(sync:)
+                                     action:@selector(meTapped:)
                            forControlEvents:UIControlEventTouchUpInside];
 
         [self configureHeaderForLoggedInUser];
@@ -867,7 +988,7 @@
     } else {
         [view.iconButton setAttributedTitle:nil forState:UIControlStateNormal];
         view.iconButton.backgroundColor = [UIColor clearColor];
-        view.iconButton.enabled = NO;
+        view.iconButton.enabled = YES;
         
         // icon
         if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
