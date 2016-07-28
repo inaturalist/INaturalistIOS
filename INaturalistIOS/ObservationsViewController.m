@@ -1387,38 +1387,21 @@
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
 
-    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
-        // was running into a bug in release build config where the object loader was
-        // getting deallocated after handling an error.  This is a kludge.
-        self.meObjectLoader = objectLoader;
+	NSString *errorMsg = error.localizedDescription;
+   	NSError *parseError = nil;
+   	NSDictionary *body = [objectLoader.response parsedBody:&parseError];
+   	if (!parseError && body && [body valueForKey:@"error"]) {
+   		errorMsg = [body valueForKey:@"error"];
+   	}
 
-        // silently do nothing
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"load Me error: %@",
-                                            error.localizedDescription]];
-
-        return;
-    }
-	
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-        // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-            
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-    
-    if (self.isSyncing || self.refreshControl.isRefreshing) {
+    if (self.refreshControl.isRefreshing) {
         NSString *msg, *title;
         if (error.code == -1004 || ([error.domain isEqualToString:@"org.restkit.RestKit.ErrorDomain"] && error.code == 2)) {
             title = NSLocalizedString(@"Internet connection required", nil);
             msg = NSLocalizedString(@"You must be connected to the Internet to do this.", nil);
+        } else if ([objectLoader.URL.absoluteString rangeOfString:@"/observations/"].location != NSNotFound && [errorMsg isEqualToString:@"Not found"]) {
+        	title = NSLocalizedString(@"Please try again in a minute.", nil);
+        	msg = NSLocalizedString(@"Updating your iNaturalist account information.", nil);
         } else {
             title = NSLocalizedString(@"Whoops!",nil);
             msg = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg];
