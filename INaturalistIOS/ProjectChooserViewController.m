@@ -20,6 +20,8 @@
 
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "LoginController.h"
+#import "User.h"
 
 @implementation ProjectChooserViewController
 
@@ -111,15 +113,13 @@
     }
     
     if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                        username,
-                        language,
-                        countryCode];
-        if (username && username.length > 0) {
+    	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    	if ([appDelegate.loginController isLoggedIn]) {
+    		User *me = [appDelegate.loginController fetchMe];
+	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+	        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+	        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+	                        me.login, language, countryCode];
             [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
             
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];

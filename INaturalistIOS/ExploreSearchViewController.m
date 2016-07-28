@@ -158,7 +158,8 @@
         
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find my observations", nil)
                                                               action:^{
-                                                                  if ([[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey]) {
+                                                                  INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                                  if ([appDelegate.loginController isLoggedIn]) {
                                                                       [self searchForMyObservations];
                                                                       [searchMenu hideOptionSearch];
                                                                       if (observationsController.activeSearchPredicates.count > 0)

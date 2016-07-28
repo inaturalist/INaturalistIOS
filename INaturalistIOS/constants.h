@@ -18,6 +18,7 @@
 #define kINatAutocompleteNamesPrefKey @"INatAutocompleteNamesPrefKey"
 #define kInatCustomBaseURLStringKey @"InatCustomBaseURLStringKey"
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
+#define kINatUserIdPrefKey @"INatUserIdPrefKey"
 
 
 #ifdef DEBUG1

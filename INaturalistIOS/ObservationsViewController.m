@@ -424,16 +424,17 @@
 
 - (void)refreshData
 {
-	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-	if (username.length) {
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+		User *me = [appDelegate.loginController fetchMe];
         [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields&per_page=10", username]
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields&per_page=10", me.login]
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", username]
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", me.login]
                                                          objectMapping:[Observation mapping]
                                                               delegate:self];
         });
@@ -444,9 +445,10 @@
 }
 
 - (void)checkForDeleted {
-	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-	if (username.length) {
-		
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+		User *me = [appDelegate.loginController fetchMe];
+
 		NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
 		if (!lastSyncDate) {
 			// have never synced; use unix timestamp date of 0
@@ -461,7 +463,7 @@
 		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
 		
         [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
-		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", username, iso8601String] delegate:self];
+		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
 	}
 }
 
@@ -647,8 +649,8 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
-    if (username && ![username isEqualToString:@""]) {
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
         if (!self.meHeader) {
             self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
         }
@@ -830,24 +832,10 @@
 #pragma mark - Header helpers
 
 - (void)configureHeaderForLoggedInUser {
-    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
-    if (username && username.length > 0) {
-        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
-        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
-        NSError *fetchError;
-        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
-        if (fetchError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                fetchError.localizedDescription]];
-            
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
-                                        message:fetchError.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
-        }
-        
-        if (me) {
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+		User *me = [appDelegate.loginController fetchMe];
+		if (me) {
             [self configureHeaderView:self.meHeader forUser:me];
         }
     }
@@ -1032,14 +1020,14 @@
 }
 
 - (void)loadUserForHeader {
-    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey];
-    if (username) {
-        
-        self.navigationItem.title = username;
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+		User *me = [appDelegate.loginController fetchMe];        
+        self.navigationItem.title = me.login;
         
         if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] && [[RKClient sharedClient]  isNetworkReachable]) {
             
-            NSString *path = [NSString stringWithFormat:@"/people/%@.json", username];
+            NSString *path = [NSString stringWithFormat:@"/people/%ld.json", (long)me.recordID.integerValue];
             
             [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
             [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
@@ -1250,9 +1238,9 @@
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     
-	NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-    if (username.length) {
-        RefreshControl *refresh = [[RefreshControl alloc] init];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+	    RefreshControl *refresh = [[RefreshControl alloc] init];
         refresh.backgroundColor = [UIColor inatDarkGray];
         refresh.tintColor = [UIColor whiteColor];
         refresh.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh", nil)
@@ -1276,8 +1264,9 @@
     // automatically sync if there's network and we haven't synced in the last hour
     CGFloat minutes = 60,
     seconds = minutes * 60;
-    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-    if (username.length &&
+
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn] &&
         [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
         [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {

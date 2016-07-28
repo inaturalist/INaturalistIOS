@@ -26,6 +26,9 @@
 #import "ProjectObsFieldViewController.h"
 #import "TaxaSearchViewController.h"
 #import "Taxon.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "User.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -72,17 +75,15 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self.tableView registerClass:[ObsFieldLongTextValueCell class] forCellReuseIdentifier:LongTextFieldIdentifier];
     
     if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                        username,
-                        language,
-                        countryCode];
-        
-        if (username && username.length > 0) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if ([appDelegate.loginController isLoggedIn]) {
+        	User *me = [appDelegate.loginController fetchMe];
+	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    	    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        	NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
+            	            me.login,
+                        	language,
+                        	countryCode];
             [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
             RKObjectManager *objectManager = [RKObjectManager sharedManager];
             [objectManager loadObjectsAtResourcePath:url

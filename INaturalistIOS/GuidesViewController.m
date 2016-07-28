@@ -23,6 +23,7 @@
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "UIColor+INaturalist.h"
+#import "User.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -75,12 +76,14 @@ static const int ListControlIndexNearby = 2;
 
 - (void)loadUserGuides
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", username]]];
-    self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
-        return [g1.title.lowercaseString compare:g2.title.lowercaseString];
-    }];
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	User *me = [appDelegate.loginController fetchMe];
+	if (me) {
+		NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", me.login]]];
+		self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
+			return [g1.title.lowercaseString compare:g2.title.lowercaseString];
+		}];
+	}
 }
 
 - (void)loadFeaturedGuides
@@ -227,16 +230,14 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncUserGuides
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/guides/user/%@.json?locale=%@-%@",
-                    username,
-                    language,
-                    countryCode];
-    if (username && username.length > 0) {
-        [self syncGuidesWithUrlString:url];
+	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	User *me = [delegate.loginController fetchMe];
+	if (me) {
+    	NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+    	NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    	NSString *url =[NSString stringWithFormat:@"/guides/user/%@.json?locale=%@-%@",
+                    	me.login, language, countryCode];
+    	[self syncGuidesWithUrlString:url];
         self.guideUsersSyncedAt = [NSDate date];
     } else {
         [self syncFinished];

@@ -279,10 +279,9 @@ NSInteger INatMinPasswordLength = 6;
                                       return;
                                   }
                                   
-                                  NSString *userName = user.login;
-                                  [[NSUserDefaults standardUserDefaults] setValue:userName
-                                                                           forKey:INatUsernamePrefKey];
-                                  
+                                  NSNumber *userId = user.recordID;
+                                  [[NSUserDefaults standardUserDefaults] setValue:userId
+                                  										   forKey:kINatUserIdPrefKey];
                                   [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
                                                                            forKey:INatTokenPrefKey];
                                   [[NSUserDefaults standardUserDefaults] synchronize];
@@ -509,8 +508,27 @@ NSInteger INatMinPasswordLength = 6;
 #pragma mark - Convenience method for fetching the logged in User
 
 - (User *)fetchMe {
-    NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
-    if (username) {
+	
+	NSNumber *userId = nil;
+	NSString *username = nil;
+	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
+		userId = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];	
+	} else {
+	    username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+	}
+	
+	if (userId) {
+        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+        meFetch.predicate = [NSPredicate predicateWithFormat:@"recordID == %ld", (long)userId.integerValue];
+        NSError *fetchError;
+        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
+        if (fetchError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
+                                                fetchError.localizedDescription]];
+            return nil;
+        }
+        return me;
+	} else if (username) {
         NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
         meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
         NSError *fetchError;
@@ -520,6 +538,8 @@ NSInteger INatMinPasswordLength = 6;
                                                 fetchError.localizedDescription]];
             return nil;
         }
+        [[NSUserDefaults standardUserDefaults] setValue:me.recordID forKey:kINatUserIdPrefKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         return me;
     } else {
         return nil;
@@ -527,10 +547,8 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (BOOL)isLoggedIn {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    NSString *inatToken = [defaults objectForKey:INatTokenPrefKey];
-    return ((username && username.length > 0) || (inatToken && inatToken.length > 0));
+    NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
+    return (inatToken && inatToken.length > 0);
 }
 
 @end

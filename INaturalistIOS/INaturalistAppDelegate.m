@@ -149,7 +149,7 @@
         [self configureRestKit];
         [self configureOAuth2Client];
         
-        if (![[NSUserDefaults standardUserDefaults] stringForKey:INatUsernamePrefKey]) {
+        if (![self.loginController isLoggedIn]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
             });
@@ -245,8 +245,6 @@
     
     // Auth
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //[manager.client setUsername:[defaults objectForKey:INatUsernamePrefKey]];
-    //[manager.client setPassword:[defaults objectForKey:INatPasswordPrefKey]];
     [manager.client setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
     [manager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
     

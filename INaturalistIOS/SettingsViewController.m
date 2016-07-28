@@ -124,6 +124,7 @@ static const int AutouploadSwitchTag = 101;
     // clear preference cached signin info & preferences
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:INatUsernamePrefKey];
+    [defaults removeObjectForKey:kINatUserIdPrefKey];
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
     [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
@@ -488,10 +489,10 @@ static const int AutouploadSwitchTag = 101;
         if (indexPath.item == 2) {
             // so the user can select again
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            
-            NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
-            if (!username) {
-                [self presentSignup];
+
+			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+			if (![appDelegate.loginController isLoggedIn]) {
+				[self presentSignup];
             } else {
                 [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeBegan];
                 // show SERIOUS alert
@@ -548,10 +549,11 @@ static const int AutouploadSwitchTag = 101;
     }
     
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	
     switch (cell.tag) {
         case UsernameCellTag:
-            if ([defaults objectForKey:INatUsernamePrefKey] || [defaults objectForKey:INatTokenPrefKey]) {
+			if ([appDelegate.loginController isLoggedIn]) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -562,8 +564,8 @@ static const int AutouploadSwitchTag = 101;
             }
             break;
         case AccountActionCellTag:
-            if ([defaults objectForKey:INatUsernamePrefKey]|| [defaults objectForKey:INatTokenPrefKey]) {
-                [self clickedSignOut];
+			if ([appDelegate.loginController isLoggedIn]) {
+	            [self clickedSignOut];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                     [self presentSignup];

@@ -427,64 +427,9 @@ static UIImage *defaultPersonImage;
 		UIButton *agreeButton = (UIButton *)[cell viewWithTag:IdentificationCellAgreeTag];
 		UILabel *body = (UILabel *)[cell viewWithTag:IdentificationCellBodyTag];
 		
-		Identification *identification = (Identification *)activity;
+		id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
 		
-        [imageView sd_cancelCurrentImageLoad];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:identification.user.userIconURL]
-                     placeholderImage:defaultPersonImage];
 		
-        taxonImageView.image = nil;
-        [taxonImageView sd_cancelCurrentImageLoad];
-		taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName];
-		if (identification.taxon) {
-			if (identification.taxon.taxonPhotos.count > 0) {
-                TaxonPhoto *tp = [identification.taxon.sortedTaxonPhotos objectAtIndex:0];
-                [taxonImageView sd_setImageWithURL:[NSURL URLWithString:tp.squareURL]
-                                  placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.observation.iconicTaxonName]];
-			}
-		}
-        cell.contentView.alpha = identification.current.boolValue ? 1 : 0.5;
-		
-		title.text = [NSString stringWithFormat:@"%@'s ID", identification.user.login];
-		taxonName.text = identification.taxon.defaultName;
-        if (taxonName.text.length == 0) {
-            taxonName.text = identification.taxon.name;
-        }
-		taxonScientificName.text = identification.taxon.name;
-        body.text = [identification.body stringByStrippingHTML];
-		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", identification.user.login, identification.createdAtShortString];
-		
-		NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:INatUsernamePrefKey];
-		if ([username isEqualToString:identification.user.login] && identification.isCurrent) {
-			agreeButton.hidden = YES;
-		} else {
-			agreeButton.hidden = NO;
-		}
-        
-        // get "my" current identification
-        Identification *myCurrentIdentification = nil;
-        for (Identification *eachId in self.identifications) {
-            if ([eachId.user.login isEqualToString:username] && eachId.isCurrent) {
-                // this is my current
-                myCurrentIdentification = eachId;
-            }
-        }
-        
-        if (myCurrentIdentification) {
-            if ([identification isEqual:myCurrentIdentification]) {
-                // can't agree with "my" current identification
-                agreeButton.hidden = YES;
-            } else if ([identification.taxon isEqual:myCurrentIdentification.taxon]) {
-                // can't agree with IDs whose taxon matches "my" current identification
-                agreeButton.hidden = YES;
-            } else {
-                // not mine, not same taxon as mine, can agree
-                agreeButton.hidden = NO;
-            }
-        } else {
-            // no current id, can agree
-            agreeButton.hidden = NO;
-        }
         
         // Adding auto layout.
         if(!cell.constraints.count){

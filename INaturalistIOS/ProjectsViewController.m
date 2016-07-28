@@ -24,6 +24,7 @@
 #import "UIColor+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "ProjectDetailV2ViewController.h"
+#import "User.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -201,13 +202,13 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)syncUserProjects {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:INatUsernamePrefKey];
-    if (username && username.length > 0) {
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if ([appDelegate.loginController isLoggedIn]) {
+		User *me = [appDelegate.loginController fetchMe];
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
         NSString *language = [[NSLocale preferredLanguages] firstObject];
         NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                          username,
+                          me.login,
                           language,
                           countryCode];
         
