@@ -642,7 +642,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     switch (status) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
-            [self startUpdatingLocation];
+            if (self.shouldContinueUpdatingLocation) {
+                [self startUpdatingLocation];
+            }
             break;
         case kCLAuthorizationStatusRestricted:
         case kCLAuthorizationStatusDenied:
