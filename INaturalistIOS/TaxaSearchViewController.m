@@ -214,26 +214,32 @@
 	}
 	cell.taxonImageView.layer.borderWidth = 1.0f;
 	
-	
-	if (etr.commonName) {
-		cell.taxonNameLabel.text = etr.commonName;
-		cell.taxonSecondaryNameLabel.text = etr.scientificName;
-		CGFloat pointSize = cell.taxonSecondaryNameLabel.font.pointSize;
-		if (etr.isGenusOrLower) {
-			cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
-		} else {
-			cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:pointSize];
-		}
-	} else {
-		cell.taxonNameLabel.text = etr.scientificName;
-		cell.taxonSecondaryNameLabel.text = @"";
-		CGFloat pointSize = cell.taxonNameLabel.font.pointSize;
-		if (etr.isGenusOrLower) {
-			cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
-		} else {
-			cell.taxonNameLabel.font = [UIFont systemFontOfSize:pointSize];
-		}
-	}
+    
+    if (etr.commonName) {
+        cell.taxonNameLabel.text = etr.commonName;
+        cell.taxonSecondaryNameLabel.text = etr.scientificName;
+        CGFloat pointSize = cell.taxonSecondaryNameLabel.font.pointSize;
+        if (etr.rankLevel > 0 && etr.rankLevel <= 20) {
+            cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
+        } else {
+            cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                                 [etr.rankName capitalizedString],
+                                                 [etr scientificName]];
+            cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:pointSize];
+        }
+    } else {
+        cell.taxonNameLabel.text = etr.scientificName;
+        cell.taxonSecondaryNameLabel.text = @"";
+        CGFloat pointSize = cell.taxonNameLabel.font.pointSize;
+        if (etr.rankLevel > 0 && etr.rankLevel <= 20) {
+            cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
+        } else {
+            cell.taxonNameLabel.font = [UIFont systemFontOfSize:pointSize];
+            cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                        [etr.rankName capitalizedString],
+                                        [etr scientificName]];
+        }
+    }
 	
 	cell.accessoryType = UITableViewCellAccessoryDetailButton;
 	
