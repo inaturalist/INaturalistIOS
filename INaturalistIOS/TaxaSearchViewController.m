@@ -22,8 +22,6 @@
 
 @implementation TaxaSearchViewController
 
-#pragma mark - iNat API
-
 #pragma mark - UIControl interactions
 
 - (void)clickedAccessory:(id)sender event:(UIEvent *)event {
