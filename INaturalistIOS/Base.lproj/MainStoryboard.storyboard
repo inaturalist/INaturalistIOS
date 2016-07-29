@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="ObservationDetailViewController" id="x2g-xK-zHb" customClass="ObservationDetailViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" indicatorStyle="black" dataMode="static" style="grouped" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PWE-Fs-4zs">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="431"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <view key="tableHeaderView" opaque="NO" contentMode="scaleToFill" id="ad1-gT-Ghi">
@@ -2123,7 +2123,7 @@
                         <subviews>
                             <webView tag="1" contentMode="scaleToFill" id="OnP-3c-EVT">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
                         </subviews>
@@ -3201,12 +3201,12 @@
         <image name="settings-tab.png" width="20" height="20"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="rAj-kb-ce2"/>
         <segue reference="dRA-LI-BR4"/>
-        <segue reference="aDK-kM-had"/>
-        <segue reference="3K4-WT-L9k"/>
-        <segue reference="Q4H-Ck-yCo"/>
+        <segue reference="rAj-kb-ce2"/>
         <segue reference="jP3-Xh-m7A"/>
         <segue reference="91K-l3-swh"/>
+        <segue reference="aDK-kM-had"/>
+        <segue reference="cuG-ho-aNz"/>
+        <segue reference="Q4H-Ck-yCo"/>
     </inferredMetricsTieBreakers>
 </document>
