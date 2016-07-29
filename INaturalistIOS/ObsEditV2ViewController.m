@@ -764,18 +764,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                         }];
 }
 
-#pragma mark - UISwitch targets
-
-- (void)idPleaseChanged:(UISwitch *)switcher {
-    [[Analytics sharedClient] event:kAnalyticsEventObservationIDPleaseChanged
-                     withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"New Value": switcher.isOn ? @"Yes": @"No"
-                                      }];
-    
-    self.observation.idPlease = [NSNumber numberWithBool:switcher.isOn];
-}
-
 #pragma mark - UIButton targets
 
 - (void)taxonDeleted:(UIButton *)button {
@@ -1011,7 +999,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 1;
             break;
         case ConfirmObsSectionIdentify:
-            return 2;
+            return 1;
             break;
         case ConfirmObsSectionNotes:
             return 6;
@@ -1031,16 +1019,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 108;
             break;
         case ConfirmObsSectionIdentify:
-            if (indexPath.item == 0) {
-                return 60;
-                /*
-                return [DisclosureCell heightForRowWithTitle:self.observation.taxon.defaultName ?: NSLocalizedString(@"Something...", nil)
-                                                 inTableView:tableView];
-                 */
-            } else if (indexPath.item == 1) {
-                return [DisclosureCell heightForRowWithTitle:[self needsIDTitle]
-                                                 inTableView:tableView];
-            }
+        	return 60;
         case ConfirmObsSectionNotes:
             if (indexPath.item == 0) {
                 // notes
@@ -1078,9 +1057,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     switch (section) {
         case ConfirmObsSectionPhotos:
+        case ConfirmObsSectionIdentify:
             return 0;
             break;
-        case ConfirmObsSectionIdentify:
         case ConfirmObsSectionDelete:
             return 34;
             break;
@@ -1104,11 +1083,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return [self photoCellInTableView:tableView];
             break;
         case ConfirmObsSectionIdentify:
-            if (indexPath.item == 0) {
-                return [self speciesCellInTableView:tableView];
-            } else {
-                return [self helpIdCellInTableView:tableView];
-            }
+            return [self speciesCellInTableView:tableView];
             break;
         case ConfirmObsSectionNotes:
             if (indexPath.item == 0) {
@@ -1337,22 +1312,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case ConfirmObsSectionIdentify:
-            return NSLocalizedString(@"What did you see?", @"title for identification section of new obs confirm screen.");
-            break;
-        case ConfirmObsSectionPhotos:
-        case ConfirmObsSectionNotes:
-        case ConfirmObsSectionDelete:
-            return nil;
-            break;
-        default:
-            return nil;
-            break;
-    }
-}
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1377,7 +1336,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)speciesCellInTableView:(UITableView *)tableView {
     
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
-
     
     UIButton *deleteButton = ({
         FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
@@ -1390,7 +1348,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
-	
+
+	cell.taxonNameLabel.textColor = [UIColor blackColor];
+	cell.taxonSecondaryNameLabel.textColor = [UIColor blackColor];
+	cell.accessoryType = UITableViewCellAccessoryNone;
+		
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.observation.taxonID.integerValue];
 
     if (results.count == 1) {
@@ -1443,29 +1405,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
-            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
+            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
+            cell.taxonNameLabel.textColor = [UIColor colorWithHexString:@"#777777"];
+            cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
+            cell.taxonSecondaryNameLabel.textColor = [UIColor colorWithHexString:@"#777777"];
+            cell.taxonNameLabel.text = NSLocalizedString(@"What did you see?", @"unknown taxon title");
+            cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"Look up species name", @"unknown taxon subtitle");
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-    return cell;
-}
-
-- (UITableViewCell *)helpIdCellInTableView:(UITableView *)tableView {
-    DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
-    
-    cell.titleLabel.text = [self needsIDTitle];
-    FAKIcon *bouy = [FAKINaturalist icnIdHelpIconWithSize:44];
-    [bouy addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-    cell.cellImageView.image = [bouy imageWithSize:CGSizeMake(44, 44)];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = UITableViewCellAccessoryNone;
-    
-    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
-    [switcher addTarget:self action:@selector(idPleaseChanged:) forControlEvents:UIControlEventValueChanged];
-    cell.accessoryView = switcher;
-    
     return cell;
 }
 
@@ -1615,10 +1565,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 #pragma mark - UITableViewCell title helpers
-
-- (NSString *)needsIDTitle {
-    return NSLocalizedString(@"Help Me ID This Species", nil);
-}
 
 - (NSString *)geoPrivacyTitle {
     return NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
