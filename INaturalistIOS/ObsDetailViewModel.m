@@ -386,7 +386,14 @@
         } else if (indexPath.item == 2) {
             // taxa segue
             if ([self.observation taxonRecordID] && [self.observation taxonRecordID] != 0) {
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[self.observation taxon]];
+                if ([self.observation taxon]) {
+                    [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[self.observation taxon]];
+                } else {
+                    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
+                    if (results.count == 1) {
+                        [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[results firstObject]];
+                    }
+                }
             } else {
                 // do nothing
             }
