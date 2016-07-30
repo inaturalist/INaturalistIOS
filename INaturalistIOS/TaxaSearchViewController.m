@@ -164,6 +164,8 @@
 	cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
 	cell.taxonSecondaryNameLabel.text = @"";
 	
+	cell.accessoryType = UITableViewCellAccessoryNone;
+	
 	return cell;
 }
 
