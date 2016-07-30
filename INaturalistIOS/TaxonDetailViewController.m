@@ -193,7 +193,7 @@ static char SUMMARY_ASSOCIATED_KEY;
         self.fullTaxon = self.taxon;
         [self.tableView reloadData];
 
-	    if (!self.taxon && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+	    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
 	        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId]
 	                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
 	
