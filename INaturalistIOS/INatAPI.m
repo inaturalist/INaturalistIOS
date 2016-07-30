@@ -19,7 +19,7 @@
 }
 
 - (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {
-	path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
@@ -28,7 +28,9 @@
         [[session dataTaskWithURL:url
                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (error) {
-                        done(nil, 0, error);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, error);
+                        });
                     } else {
                         [self extractObjectsFromData:data
                                         classMapping:classMapping
@@ -43,7 +45,9 @@
     NSError *error;
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     if (error) {
-        done(nil, 0, error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            done(nil, 0, error);
+        });
     } else {
         NSMutableArray *results = [NSMutableArray array];
         NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
@@ -61,7 +65,9 @@
                 NSLog(@"MANTLE ERROR: %@", error);
             }
         }
-        done([NSArray arrayWithArray:results], totalResults, nil);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            done([NSArray arrayWithArray:results], totalResults, nil);
+        });
     }
 }
 
