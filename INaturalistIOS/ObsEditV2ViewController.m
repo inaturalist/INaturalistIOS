@@ -239,10 +239,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         }
         
         // trigger the delete to happen on the server
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (appDelegate.loginController.uploadManager.shouldAutoupload) {
-            [appDelegate.loginController.uploadManager autouploadPendingContent];
-        }
+        [self triggerAutoUpload];
         
         // pop to the root view controller
         // dispatch/enqueue this to allow the popover controller on ipad
