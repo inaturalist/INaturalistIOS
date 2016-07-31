@@ -74,7 +74,7 @@
 
 - (void)cancelSyncsAndUploads {
     // can't cancel if we're not actually doing anything
-    if (!self.syncingDeletes && !self.uploading) { return; }
+    if (!self.syncingDeletes && !self.isUploading) { return; }
     
     self.cancelled = YES;
     self.syncingDeletes = NO;
@@ -452,7 +452,7 @@
     });
     
     // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
-    if (!self.uploading) {
+    if (!self.isUploading) {
         return;
     }
     
