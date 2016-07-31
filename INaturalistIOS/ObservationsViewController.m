@@ -232,7 +232,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     [self dismissViewControllerAnimated:YES completion:nil];
     
-        UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
+    UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
