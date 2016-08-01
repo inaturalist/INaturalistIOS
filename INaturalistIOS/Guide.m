@@ -7,7 +7,6 @@
 //
 
 #import "Guide.h"
-#import "List.h"
 #import "NSURL+INaturalist.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;

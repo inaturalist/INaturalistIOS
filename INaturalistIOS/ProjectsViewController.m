@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
-#import "ProjectListViewController.h"
 #import "Project.h"
 #import "ProjectUser.h"
 #import "Analytics.h"
@@ -312,10 +311,7 @@ static const int ListControlIndexNearby = 2;
 #pragma mark - View lifecycle
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"ProjectListSegue"]) {
-        ProjectListViewController *vc = [segue destinationViewController];
-        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
-    } else if ([segue.identifier isEqualToString:@"projectDetailSegue"]) {
+    if ([segue.identifier isEqualToString:@"projectDetailSegue"]) {
         ProjectDetailV2ViewController *vc = [segue destinationViewController];
         vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
     }

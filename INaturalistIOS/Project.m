@@ -7,7 +7,6 @@
 //
 
 #import "Project.h"
-#import "List.h"
 #import "ProjectObservation.h"
 #import "ProjectObservationField.h"
 #import "ProjectUser.h"
@@ -30,10 +29,8 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic localUpdatedAt;
 @dynamic syncedAt;
 @dynamic recordID;
-@dynamic projectList;
 @dynamic projectObservations;
 @dynamic projectUsers;
-@dynamic listID;
 @dynamic projectObservationRuleTerms;
 @dynamic projectObservationFields;
 @dynamic featuredAt;
@@ -56,7 +53,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"icon_url", @"iconURL",
          @"project_type", @"projectType",
          @"terms", @"terms",
-         @"project_list.id", @"listID",
          @"project_observation_rule_terms", @"projectObservationRuleTerms",
          @"featured_at_utc", @"featuredAt",
          @"rule_place.latitude", @"latitude",
@@ -64,10 +60,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"posts_count", @"newsItemCount",
          @"group", @"group",
          nil];
-        [defaultMapping mapKeyPath:@"project_list" 
-                    toRelationship:@"projectList" 
-                       withMapping:[List mapping]
-                         serialize:NO];
         [defaultMapping mapKeyPath:@"project_observation_fields" 
                     toRelationship:@"projectObservationFields" 
                        withMapping:[ProjectObservationField mapping]

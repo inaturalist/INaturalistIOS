@@ -10,8 +10,6 @@
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
 
-@class List;
-
 @interface Project : INatModel
 
 @property (nonatomic, retain) NSString * title;
@@ -27,11 +25,9 @@
 @property (nonatomic, retain) NSDate * localUpdatedAt;
 @property (nonatomic, retain) NSDate * syncedAt;
 @property (nonatomic, retain) NSNumber * recordID;
-@property (nonatomic, retain) List *projectList;
 @property (nonatomic, retain) NSSet *projectObservations;
 @property (nonatomic, retain) NSSet *projectObservationFields;
 @property (nonatomic, retain) NSSet *projectUsers;
-@property (nonatomic, retain) NSNumber * listID;
 @property (nonatomic, retain) NSString *projectObservationRuleTerms;
 @property (nonatomic, retain) NSDate * featuredAt;
 @property (nonatomic, retain) NSNumber * latitude;

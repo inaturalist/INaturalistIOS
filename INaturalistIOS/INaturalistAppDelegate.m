@@ -14,8 +14,6 @@
 #import <GooglePlus/GPPURLHandler.h>
 
 #import "INaturalistAppDelegate.h"
-#import "List.h"
-#import "ListedTaxon.h"
 #import "Observation.h"
 #import "ObservationField.h"
 #import "ObservationFieldValue.h"
@@ -261,8 +259,6 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:userAgentDict];
     
     NSArray *models = [NSArray arrayWithObjects:
-                       List.class,
-                       ListedTaxon.class,
                        Observation.class, 
                        ObservationField.class,
                        ObservationFieldValue.class,
