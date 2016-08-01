@@ -167,6 +167,7 @@ extern NSString *kAnalyticsEventSettingEnabled;
 extern NSString *kAnalyticsEventSettingDisabled;
 extern NSString *kAnalyticsEventSettingsNetworkChangeBegan;
 extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
+extern NSString *kAnalyticsEventProfilePhotoChanged;
 
 // news
 extern NSString *kAnalyticsEventNewsOpenArticle;

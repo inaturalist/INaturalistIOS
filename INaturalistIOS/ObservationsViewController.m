@@ -239,6 +239,10 @@
     User *me = [[appDelegate loginController] fetchMe];
     if (imageData && me) {
         
+        BOOL alreadyHadPhoto = [me userIconURL] && ![[me userIconURL] isEqualToString:@""];
+        [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoChanged
+                         withProperties:@{ @"AlreadyHadPhoto": alreadyHadPhoto ? @"Yes" : @"No" }];
+        
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;

@@ -254,6 +254,7 @@ NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enable
 NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabled";
 NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings Network Change Began";
 NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Network Change Completed";
+NSString *kAnalyticsEventProfilePhotoChanged = 					@"Profile Photo Changed";
 
 // news
 NSString *kAnalyticsEventNewsOpenArticle =                      @"News - Open Article";
