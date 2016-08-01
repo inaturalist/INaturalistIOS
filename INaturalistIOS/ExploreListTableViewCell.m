@@ -25,7 +25,7 @@ static NSDateFormatter *shortFormatter;
     
     UILabel *commonNameLabel;
     UILabel *scientificNameLabel;
-    UILabel *observationAttrLabel;  // ID Needed, or Research Grade
+    UILabel *observationAttrLabel;  // Research Grade
     UILabel *observerNameLabel;
     UILabel *observedOnLabel;
     
@@ -414,11 +414,6 @@ static NSDateFormatter *shortFormatter;
         observationAttrLabel.text = NSLocalizedString(@"RESEARCH", nil);
         observationAttrLabel.textColor = [UIColor colorForResearchGradeNotice];
         observationAttrLabel.backgroundColor = [UIColor secondaryColorForResearchGradeNotice];
-        observationAttrLabel.hidden = NO;
-    } else if (observation.idPlease) {
-        observationAttrLabel.text = NSLocalizedString(@"ID PLEASE", nil);
-        observationAttrLabel.textColor = [UIColor colorForIdPleaseNotice];
-        observationAttrLabel.backgroundColor = [UIColor secondaryColorForIdPleaseNotice];
         observationAttrLabel.hidden = NO;
     }
 }
