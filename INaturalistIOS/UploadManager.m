@@ -202,6 +202,12 @@
     RKObjectLoaderBlock loaderBlock = nil;
     INatModel <Uploadable> *recordToUpload = nil;
     
+    // create a background task, so that the upload can finish when the app goes to the background
+    self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTask];
+        self.backgroundTask = UIBackgroundTaskInvalid;
+    }];
+    
     if (observation.needsSync) {
         // upload the observation itself
         loaderBlock = ^(RKObjectLoader *loader) {
@@ -451,6 +457,9 @@
         [self.failedObjectLoaders removeObject:objectLoader];
     });
     
+    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTask];
+    self.backgroundTask = UIBackgroundTaskInvalid;
+    
     // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
     if (!self.isUploading) {
         return;
@@ -576,6 +585,9 @@
             }
         }
     }
+    
+    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTask];
+    self.backgroundTask = UIBackgroundTaskInvalid;
 }
 
 #pragma mark - NSObject lifecycle

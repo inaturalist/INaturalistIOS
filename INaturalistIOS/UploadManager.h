@@ -33,6 +33,8 @@
 
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
+@property UIBackgroundTaskIdentifier backgroundTask;
+
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;
 - (void)uploadObservations:(NSArray *)observations;
 - (void)cancelSyncsAndUploads;
