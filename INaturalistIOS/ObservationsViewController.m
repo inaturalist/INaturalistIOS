@@ -53,6 +53,7 @@
 #import "ObsDetailV2ViewController.h"
 #import "ExploreTaxonRealm.h"
 #import "NSURL+INaturalist.h"
+#import "PeopleAPI.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -68,6 +69,16 @@
 @end
 
 @implementation ObservationsViewController
+
+- (PeopleAPI *)peopleApi {
+    static PeopleAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PeopleAPI alloc] init];
+    });
+    return _api;
+}
+
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
     [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
@@ -220,45 +231,36 @@
 }
 
 - (void)deleteProfilePhoto {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	User *me = [appDelegate.loginController fetchMe];
-	if (me) {
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue]
-			relativeToURL:[NSURL inat_baseURL]];
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-		request.HTTPMethod = @"PUT";
-		
-		NSDictionary *dictionary = @{ @"user[icon_delete]" : @"true" };
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        return;
+    }
     
-	    // Convert the dictionary into JSON data.
-	    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dictionary
-	                                                       options:0
-	                                                         error:nil];
-	    request.HTTPBody = JSONData;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *me = [appDelegate.loginController fetchMe];
+    if (me) {
+        [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoRemoved];
 
-	    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-	       forHTTPHeaderField:@"Authorization"];
- 
-		NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-		__weak typeof(self) weakSelf = self;
-		[[session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-		     dispatch_async(dispatch_get_main_queue(), ^{
-		     	NSLog(@"response is %@", response);
-		     	NSLog(@"response body is %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-		     	if (error) {
-	                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+        hud.labelText = NSLocalizedString(@"Removing...", nil);
+
+        __weak typeof(self) weakSelf = self;
+        [self.peopleApi removeProfilePhotoForUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        	[hud hide:YES];
+            if (error) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Delete Error", nil)
                                                                                message:error.localizedDescription
                                                                         preferredStyle:UIAlertControllerStyleAlert];
-                	[alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                    	                                      style:UIAlertActionStyleDefault
-                    	                                    handler:nil]];
-                	[weakSelf presentViewController:alert animated:YES completion:nil];
-		     	} else {
-		     		[weakSelf loadUserForHeader];
-		     	}
-             });
-		}] resume];
-	}
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+            } else {
+                [weakSelf loadUserForHeader];
+            }
+        }];
+    }
 }
 
 - (void)newProfilePhoto:(UIImagePickerControllerSourceType)sourceType {
@@ -285,61 +287,36 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [[appDelegate loginController] fetchMe];
-    if (imageData && me) {
-        
+    User *me = [appDelegate.loginController fetchMe];
+	if (me) {
         BOOL alreadyHadPhoto = [me userIconURL] && ![[me userIconURL] isEqualToString:@""];
         [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoChanged
                          withProperties:@{ @"AlreadyHadPhoto": alreadyHadPhoto ? @"Yes" : @"No" }];
-        
+
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
         hud.labelText = NSLocalizedString(@"Uploading...", nil);
 
-        // use afnetworking to deal with icky multi-part forms
-        AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL inat_baseURL]];
-        
-        NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue];
-        
-        NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"PUT"
-                                                                             path:path
-                                                                       parameters:nil
-                                                        constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-                                                            [formData appendPartWithFileData:imageData
-                                                                                        name:@"user[icon]"
-                                                                                    fileName:@"icon.jpg"
-                                                                                    mimeType:@"image/jpeg"];
-                               
-                           }];
-        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-       forHTTPHeaderField:@"Authorization"];
-
-        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-        
-        __weak typeof(self)weakSelf = self;
-        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [hud hide:YES];
-                [weakSelf loadUserForHeader];
-            });
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [hud hide:YES];
+		__weak typeof(self) weakSelf = self;
+		[self.peopleApi uploadProfilePhoto:image forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+			[hud hide:YES];
+			if (error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
                                                                                message:error.localizedDescription
                                                                         preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil]];
-                [weakSelf presentViewController:alert animated:YES completion:nil];
-            });
+            	[alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                	                                      style:UIAlertActionStyleDefault
+                	                                    handler:nil]];
+            	[weakSelf presentViewController:alert animated:YES completion:nil];
+			} else {
+	     		[weakSelf loadUserForHeader];	
+			}
         }];
-        [httpClient enqueueHTTPRequestOperation:operation];
-    }
+	
+	}
 }
 
 - (IBAction)sync:(id)sender {

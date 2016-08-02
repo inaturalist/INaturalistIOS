@@ -177,6 +177,7 @@
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
+		FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AA31D515F3000C4FFDB /* PeopleAPI.m */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
 		FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */; };
@@ -614,6 +615,8 @@
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
 		FA6F87681B0E99A20019B157 /* FAKINaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAKINaturalist.h; sourceTree = "<group>"; };
 		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
+		FA711AA21D515F3000C4FFDB /* PeopleAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleAPI.h; sourceTree = "<group>"; };
+		FA711AA31D515F3000C4FFDB /* PeopleAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleAPI.m; sourceTree = "<group>"; };
 		FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.5.xcdatamodel; sourceTree = "<group>"; };
 		FA724ADE1AB150BD00D01773 /* MeHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeHeaderView.h; sourceTree = "<group>"; };
 		FA724ADF1AB150BD00D01773 /* MeHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeHeaderView.m; sourceTree = "<group>"; };
@@ -1575,6 +1578,8 @@
 				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA9437841C869B7300CB10F3 /* ObservationAPI.h */,
 				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
+				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
+				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
 			);
 			name = "iNat Node API";
 			sourceTree = "<group>";
@@ -1851,6 +1856,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */,
 				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
 				FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */,
 				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
