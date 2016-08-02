@@ -186,6 +186,16 @@
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
                                                                            message:@" "
                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
+            
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            User *me = [appDelegate.loginController fetchMe];
+            if (me.userIconURL && ![me.userIconURL isEqualToString:@""]) {
+	            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove my profile photo", nil)
+	                                                      style:UIAlertActionStyleDefault
+	                                                    handler:^(UIAlertAction * _Nonnull action) {
+	                                                    	[self deleteProfilePhoto];
+	                                                    }]];            	
+            }
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Choose from library", nil)
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction * _Nonnull action) {
@@ -207,6 +217,48 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
     }
+}
+
+- (void)deleteProfilePhoto {
+	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	User *me = [appDelegate.loginController fetchMe];
+	if (me) {
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue]
+			relativeToURL:[NSURL inat_baseURL]];
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+		request.HTTPMethod = @"PUT";
+		
+		NSDictionary *dictionary = @{ @"user[icon_delete]" : @"true" };
+    
+	    // Convert the dictionary into JSON data.
+	    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dictionary
+	                                                       options:0
+	                                                         error:nil];
+	    request.HTTPBody = JSONData;
+
+	    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+	       forHTTPHeaderField:@"Authorization"];
+ 
+		NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+		__weak typeof(self) weakSelf = self;
+		[[session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+		     dispatch_async(dispatch_get_main_queue(), ^{
+		     	NSLog(@"response is %@", response);
+		     	NSLog(@"response body is %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+		     	if (error) {
+	                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
+                                                                               message:error.localizedDescription
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                	[alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                    	                                      style:UIAlertActionStyleDefault
+                    	                                    handler:nil]];
+                	[weakSelf presentViewController:alert animated:YES completion:nil];
+		     	} else {
+		     		[weakSelf loadUserForHeader];
+		     	}
+             });
+		}] resume];
+	}
 }
 
 - (void)newProfilePhoto:(UIImagePickerControllerSourceType)sourceType {
