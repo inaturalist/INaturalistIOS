@@ -18,9 +18,9 @@ Roadmap
 - ~~Autoupload~~
 - ~~Final screen of new observation flow~~
 - ~~Observation Detail Screen~~
-- News Feed for Projects & Site News (in-progress)
-- Redo Project pages
-- Reuse Observation Detail Screen in the Explore Tab
+- ~~News Feed for Projects & Site News~~
+- ~~Redo Project pages~~
+- ~~Reuse Observation Detail Screen in the Explore Tab~~
 - Background Uploading
 - New User Onboarding
 - Add photo for profile pic
