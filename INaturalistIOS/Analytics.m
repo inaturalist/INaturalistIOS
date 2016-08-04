@@ -9,7 +9,7 @@
 #import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 #import "Analytics.h"
 
@@ -38,6 +38,7 @@
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:metricName customAttributes:@{ @"Amount": metricValue }];
 #endif
+    
 }
 
 - (void)event:(NSString *)name {
@@ -48,6 +49,8 @@
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:name customAttributes:nil];
 #endif
+    
+    [FBSDKAppEvents logEvent:name];
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
@@ -58,6 +61,8 @@
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:name customAttributes:properties];
 #endif
+    
+    [FBSDKAppEvents logEvent:name parameters:properties];
 }
 
 - (void)logAllPageViewForTarget:(UIViewController *)target {
