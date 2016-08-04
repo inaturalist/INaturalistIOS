@@ -178,6 +178,7 @@
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AA31D515F3000C4FFDB /* PeopleAPI.m */; };
+		FA711AA71D52876100C4FFDB /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA711AA61D52876100C4FFDB /* Onboarding.storyboard */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
 		FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */; };
@@ -617,6 +618,7 @@
 		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
 		FA711AA21D515F3000C4FFDB /* PeopleAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleAPI.h; sourceTree = "<group>"; };
 		FA711AA31D515F3000C4FFDB /* PeopleAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleAPI.m; sourceTree = "<group>"; };
+		FA711AA61D52876100C4FFDB /* Onboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
 		FA724ACB1AB12B2900D01773 /* INaturalist2.5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.5.xcdatamodel; sourceTree = "<group>"; };
 		FA724ADE1AB150BD00D01773 /* MeHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeHeaderView.h; sourceTree = "<group>"; };
 		FA724ADF1AB150BD00D01773 /* MeHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeHeaderView.m; sourceTree = "<group>"; };
@@ -625,7 +627,7 @@
 		FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RankedUserObsSpecies.xib; sourceTree = "<group>"; };
 		FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RankedUserObsSpeciesCell.h; sourceTree = "<group>"; };
 		FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankedUserObsSpeciesCell.m; sourceTree = "<group>"; };
-		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "INaturalistIOS/Launch Screen.xib"; sourceTree = "<group>"; };
 		FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsEditV2ViewController.h; sourceTree = "<group>"; };
 		FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsEditV2ViewController.m; sourceTree = "<group>"; };
 		FA75584A1B9A599800762D7B /* DisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureCell.h; sourceTree = "<group>"; };
@@ -734,7 +736,7 @@
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
 		FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmPhotoToEditObsTransitionAnimator.h; sourceTree = "<group>"; };
 		FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmPhotoToEditObsTransitionAnimator.m; sourceTree = "<group>"; };
-		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../iNaturalist/Images.xcassets; sourceTree = "<group>"; };
+		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -905,7 +907,7 @@
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
 				FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */,
 				FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */,
-				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				FA711AA51D52873600C4FFDB /* User Interface */,
 				19F621A1150ECD0100C58F28 /* Models */,
 				FAA872D21B15124D00366521 /* Sizzle */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
@@ -919,13 +921,10 @@
 			isa = PBXGroup;
 			children = (
 				893FE7171B525BFD00BC7CC4 /* config.h.example */,
-				FA6F87661B0E996B0019B157 /* fonts */,
 				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
-				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
-				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
 				198552E914EF369E00DB55C5 /* constants.h */,
@@ -1410,6 +1409,20 @@
 				FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */,
 			);
 			name = fonts;
+			path = INaturalistIOS;
+			sourceTree = "<group>";
+		};
+		FA711AA51D52873600C4FFDB /* User Interface */ = {
+			isa = PBXGroup;
+			children = (
+				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				FA711AA61D52876100C4FFDB /* Onboarding.storyboard */,
+				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
+				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
+				FA6F87661B0E996B0019B157 /* fonts */,
+			);
+			name = "User Interface";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
@@ -1709,6 +1722,7 @@
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
+				FA711AA71D52876100C4FFDB /* Onboarding.storyboard in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
 				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
@@ -2098,6 +2112,7 @@
 				FAE9D0961D13807900137660 /* ko */,
 			);
 			name = MainStoryboard.storyboard;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */ = {

@@ -426,16 +426,11 @@
     [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
                      withProperties:@{ @"From": @"App Launch" }];
     
-    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-    splash.skippable = YES;
-    splash.cancellable = NO;
-    splash.animateIn = YES;
-    splash.skipAction = ^{
-        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-    };
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-    nav.delegate = self;
-    [self.window setRootViewController:nav];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
+    
+    self.window.rootViewController = onboardingVC;    
 }
 
 
