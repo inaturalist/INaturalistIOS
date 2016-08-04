@@ -9,13 +9,11 @@
 #import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-#import <librato-iOS/Librato.h>
 
 
 #import "Analytics.h"
 
 @interface Analytics () <CrashlyticsDelegate>
-@property Librato *librato;
 @end
 
 @implementation Analytics
@@ -32,23 +30,11 @@
 #ifdef INatCrashlyticsKey
         [Fabric with:@[CrashlyticsKit]];
 #endif
-
-#if defined(INatLibratoEmail) && defined(INatLibratoToken)
-        _sharedClient.librato = [[Librato alloc] initWithEmail:INatLibratoEmail
-                                                         token:INatLibratoToken
-                                                        prefix:@""];
-#endif
     });
     return _sharedClient;
 }
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue {
-    if (self.librato) {
-        //LibratoGaugeMetric *metric = [LibratoGaugeMetric metricNamed:metricName
-        //                                                      valued:metricValue];
-        //[self.librato add:metric];
-    }
-    
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:metricName customAttributes:@{ @"Amount": metricValue }];
 #endif
