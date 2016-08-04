@@ -423,14 +423,31 @@
 }
 
 - (void)showInitialSignupUI {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"App Launch" }];
-    
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-    UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
-    
-    self.window.rootViewController = onboardingVC;    
+    // the VCs in the Onboarding storyboard require UIStackView, which is ios9 only
+    if(NSClassFromString(@"UIStackView")) {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"App Launch",
+                                           @"Version": @"Onboarding" }];
+
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
+        self.window.rootViewController = onboardingVC;
+    } else {
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"App Launch",
+                                           @"Version": @"SplashScreen" }];
+
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.skippable = YES;
+        splash.cancellable = NO;
+        splash.animateIn = YES;
+        splash.skipAction = ^{
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+        };
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        nav.delegate = self;
+        [self.window setRootViewController:nav];
+    }
 }
 
 
