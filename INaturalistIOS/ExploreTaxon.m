@@ -20,6 +20,7 @@
 		@"rankName": @"rank",
 		@"rankLevel": @"rank_level",
 		@"iconicTaxonName": @"iconic_taxon_name",
+		@"matchedTerm": @"matched_term",
 	};
 }
 

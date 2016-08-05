@@ -24,6 +24,9 @@
 		self.rankName = taxon.rankName;
 		self.rankLevel = taxon.rankLevel;
 		self.iconicTaxonName = taxon.iconicTaxonName;
+		self.lastMatchedTerm = taxon.matchedTerm;
+        self.searchableLastMatchedTerm = [taxon.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                          		locale:[NSLocale currentLocale]];
 	}
 	return self;
 }

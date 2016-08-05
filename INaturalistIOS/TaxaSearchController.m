@@ -101,7 +101,7 @@
 	term = [term stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                      locale:[NSLocale currentLocale]];
 	// query realm
-	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@", term, term];
+	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@ OR searchableLastMatchedTerm contains[c] %@", term, term, term];
 	self.searchResults = results;
 	[self.searchDisplayController.searchResultsTableView reloadData];
 }
