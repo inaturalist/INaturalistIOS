@@ -13,6 +13,7 @@
 #import "IdentifierCount.h"
 #import "SpeciesCount.h"
 #import "Analytics.h"
+#import "NSLocale+INaturalist.h"
 
 @implementation ProjectsAPI
 
@@ -27,7 +28,6 @@
     [[Analytics sharedClient] debugLog:@"Network - fetch species counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/species_counts?project_id=%ld",
                       (long)project.recordID.integerValue];
-	
     [self fetch:path classMapping:[SpeciesCount class] handler:done];
 }
 
@@ -35,7 +35,7 @@
     [[Analytics sharedClient] debugLog:@"Network - fetch observer counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/observers?project_id=%ld",
                       (long)project.recordID.integerValue];
-	[self fetch:path classMapping:[ObserverCount class] handler:done];
+    [self fetch:path classMapping:[ObserverCount class] handler:done];
 }
 
 - (void)identifierCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
@@ -44,5 +44,15 @@
                       (long)project.recordID.integerValue];
     [self fetch:path classMapping:[IdentifierCount class] handler:done];
 }
+
+- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+    }
+    
+    [super fetch:path classMapping:classForMapping handler:done];
+}
+
 
 @end
