@@ -162,8 +162,9 @@
             
             // if we didn't already have an overlay, this is probably a new one
             // so we should zoom to it at the end of the cycle if we found a newCenter
-            if (mapView.overlays.count == 0)
+            if (mapView.overlays.count == 0) {
                 shouldZoomToNewCenter = YES;
+            }
             
             // remove any overlays that were already there
             [mapView removeOverlays:mapView.overlays];
@@ -176,16 +177,21 @@
                     overlayLocationId = predicate.searchLocation.locationId;
                     break;  // prefer places to projects
                 } if (predicate.type == ExploreSearchPredicateTypeProject) {
-                    newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
-                                                           predicate.searchProject.longitude);
-                    overlayLocationId = predicate.searchProject.locationId;
+                    if (predicate.searchProject.latitude != 0) {
+                        newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
+                                                               predicate.searchProject.longitude);
+                        overlayLocationId = predicate.searchProject.locationId;
+                        break;
+                    }
                 }
             }
             
-            if (overlayLocationId != 0)
+            if (overlayLocationId != 0) {
                 [self addOverlaysForLocationId:overlayLocationId];
-            if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter))
-                [mapView setCenterCoordinate:newCenter animated:YES];
+                if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter)) {
+                    [mapView setCenterCoordinate:newCenter animated:YES];
+                }
+            }
             
         } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
             // if necessary, remove the overlays
