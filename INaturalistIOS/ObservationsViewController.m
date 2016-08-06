@@ -808,7 +808,6 @@
     if (appDelegate.loginController.uploadManager.isUploading) {
         // waiting upload, with uploads happening
         cell.uploadButton.enabled = NO;
-        cell.uploadButton.hidden = YES;
         cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
         cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
         cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
@@ -816,7 +815,6 @@
     } else {
         // waiting upload, with uploads not happening
         cell.uploadButton.enabled = YES;
-        cell.uploadButton.hidden = NO;
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
         cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
         cell.titleLabel.textColor = [UIColor blackColor];

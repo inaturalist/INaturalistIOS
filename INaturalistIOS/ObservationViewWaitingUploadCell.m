@@ -24,6 +24,11 @@
     [self.uploadButton setAttributedTitle:upload.attributedString
                                  forState:UIControlStateNormal];
     
+    [upload addAttribute:NSForegroundColorAttributeName
+                   value:[UIColor colorWithHexString:@"#969696"]];
+    [self.uploadButton setAttributedTitle:upload.attributedString
+                                 forState:UIControlStateDisabled];
+    
     NSDictionary *views = @{
                             @
                             "uploadButton": self.uploadButton,
