@@ -21,6 +21,7 @@
 		@"rankLevel": @"rank_level",
 		@"iconicTaxonName": @"iconic_taxon_name",
 		@"matchedTerm": @"matched_term",
+		@"observationCount": @"observations_count",
 	};
 }
 
@@ -35,6 +36,8 @@
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:@"rankLevel"]) {
         self.rankLevel = 0;
+    } else if ([key isEqualToString:@"observationCount"]) {
+    	self.observationCount = 0;
     } else {
         [super setNilValueForKey:key];
     }

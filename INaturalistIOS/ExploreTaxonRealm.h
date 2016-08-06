@@ -26,6 +26,7 @@
 @property (nonatomic, copy) NSString *iconicTaxonName;
 @property (nonatomic, copy) NSString *lastMatchedTerm;
 @property (nonatomic, copy) NSString *searchableLastMatchedTerm;
+@property (nonatomic, assign) NSInteger observationCount;
 
 - (BOOL)isGenusOrLower;
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;
