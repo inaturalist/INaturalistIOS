@@ -17,7 +17,7 @@
 	self.progressBar.trackTintColor = [UIColor colorWithHexString:@"#C6DFA4"];
     self.progressBar.type = YLProgressBarTypeFlat;
     self.progressBar.behavior = YLProgressBarBehaviorWaiting;
-    self.progressBar.progressTintColor = [UIColor inatTint];
+    self.progressBar.progressTintColors = @[ [UIColor inatTint] ];
 }
 
 @end
