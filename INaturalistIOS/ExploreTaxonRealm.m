@@ -27,6 +27,7 @@
 		self.lastMatchedTerm = taxon.matchedTerm;
         self.searchableLastMatchedTerm = [taxon.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                           		locale:[NSLocale currentLocale]];
+        self.observationCount = taxon.observationCount;
 	}
 	return self;
 }

@@ -21,6 +21,7 @@
 @property (nonatomic, assign) NSInteger rankLevel;
 @property (nonatomic, copy) NSString *iconicTaxonName;
 @property (nonatomic, copy) NSString *matchedTerm;
+@property (nonatomic, assign) NSInteger observationCount;
 
 - (BOOL)isGenusOrLower;
 
