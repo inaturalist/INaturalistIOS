@@ -515,7 +515,8 @@
 }
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    // do nothing
+    // reload me
+    [self configureHeaderForLoggedInUser];
 }
 
 - (BOOL)autoLaunchNewFeatures
@@ -867,6 +868,7 @@
 	if ([appDelegate.loginController isLoggedIn]) {
 		User *me = [appDelegate.loginController fetchMe];
 		if (me) {
+            self.navigationItem.title = me.login;
             [self configureHeaderView:self.meHeader forUser:me];
         }
     }

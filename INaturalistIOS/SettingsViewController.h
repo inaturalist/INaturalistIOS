@@ -8,14 +8,5 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate>
-
-@property (nonatomic, strong) NSString *versionText;
-- (void)initUI;
-- (void)clickedSignOut;
-- (void)signOut;
-- (void)localSignOut;
-- (void)networkUnreachableAlert;
-- (void)launchTutorial;
-- (void)sendSupportEmail;
+@interface SettingsViewController : UITableViewController
 @end
