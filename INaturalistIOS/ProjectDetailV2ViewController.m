@@ -199,6 +199,13 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     [self configureJoinButton];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectDetail
+                          withProperties:@{ @"project": self.project.recordID }];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -207,6 +214,12 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                                                       NSForegroundColorAttributeName: [UIColor blackColor],
                                                                       }];    
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
