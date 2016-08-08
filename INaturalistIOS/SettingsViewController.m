@@ -16,6 +16,7 @@
 #import <GoogleOpenSource/GTMOAuth2Authentication.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -37,6 +38,7 @@
 #import "LoginController.h"
 #import "UploadManager.h"
 #import "UIColor+INaturalist.h"
+#import "PeopleAPI.h"
 
 static const int CreditsSection = 3;
 
@@ -63,12 +65,20 @@ static const int AutouploadSwitchTag = 101;
     JDFTooltipView *tooltip;
     UIActionSheet *changeNetworkActionSheet;
 }
+@property (nonatomic, strong) NSString *versionText;
 @property PartnerController *partnerController;
 @end
 
 @implementation SettingsViewController
 
-@synthesize versionText = _versionText;
+- (PeopleAPI *)peopleApi {
+    static PeopleAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PeopleAPI alloc] init];
+    });
+    return _api;
+}
 
 - (void)initUI
 {
@@ -94,14 +104,104 @@ static const int AutouploadSwitchTag = 101;
     [self.tableView reloadData];
 }
 
-- (void)clickedSignOut
-{
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
-                                                 message:NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",nil)
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                       otherButtonTitles:NSLocalizedString(@"Sign out",nil), nil];
-    [av show];
+- (void)tappedUsername {
+    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        NSString *title = NSLocalizedString(@"Change username?",nil);
+        NSString *msg = NSLocalizedString(@"Are you really sure?",
+                                          nil);
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            User *me = [appDelegate.loginController fetchMe];
+            textField.text = me.login;
+        }];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Change Username", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    UITextField *field = [alert.textFields firstObject];
+                                                    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                    User *me = [appDelegate.loginController fetchMe];
+                                                    if (![me.login isEqualToString:field.text]) {
+                                                        [self changeUsernameTo:(NSString *)field.text];
+                                                    }
+                                                }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self networkUnreachableAlert];
+    }
+}
+
+- (void)clickedSignOut {
+    NSString *title = NSLocalizedString(@"Are you sure?",nil);
+    NSString *msg = NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",
+                                      nil);
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Sign out", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * _Nonnull action) {
+                                                [self signOut];
+                                            }]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)changeUsernameTo:(NSString *)newUsername {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *me = [appDelegate.loginController fetchMe];
+    
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Updating...", nil);
+
+    // the server validates the new username (since it might be a duplicate or something)
+    // so don't change it locally
+
+    __weak typeof(self) weakSelf = self;
+    [[self peopleApi] setUsername:newUsername forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hide:YES];
+        });
+
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventProfileLoginChanged];
+            
+            RKObjectManager *manager = [RKObjectManager sharedManager];
+            
+            [manager loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue ]
+                                                               usingBlock:^(RKObjectLoader *loader) {
+                                                                   loader.objectMapping = [User mapping];
+                                                                   loader.onDidLoadObject = ^(id object) {
+                                                                       NSError *error = nil;
+                                                                       [[User managedObjectContext] save:&error];
+                                                                       [[weakSelf tableView] reloadData];
+                                                                   };
+                                                               }];
+        }
+    }];
 }
 
 - (void)signOut
@@ -214,12 +314,13 @@ static const int AutouploadSwitchTag = 101;
         [self networkUnreachableAlert];
     }
 #else
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot rate", nil)
-                                                    message:NSLocalizedString(@"No App Store URL configured", nil)
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil];
-    [alert show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", nil)
+                                                                   message:NSLocalizedString(@"No App Store URL configured", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 #endif
 }
 
@@ -244,12 +345,13 @@ static const int AutouploadSwitchTag = 101;
 
 - (void)networkUnreachableAlert
 {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                 message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
-                                                delegate:self 
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                   message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                             style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - lifecycle
@@ -491,13 +593,11 @@ static const int AutouploadSwitchTag = 101;
 }
 
 #pragma mark - UITableViewDataSource
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     if (indexPath.section == 1) {
         if (indexPath.item == 2) {
-            // so the user can select again
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
-
 			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 			if (![appDelegate.loginController isLoggedIn]) {
 				[self presentSignup];
@@ -551,7 +651,6 @@ static const int AutouploadSwitchTag = 101;
         
         return;
     } else if (indexPath.section == CreditsSection) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self launchCredits];
         return;
     }
@@ -562,7 +661,7 @@ static const int AutouploadSwitchTag = 101;
     switch (cell.tag) {
         case UsernameCellTag:
 			if ([appDelegate.loginController isLoggedIn]) {
-                [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+                [self tappedUsername];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                     [self presentSignup];
@@ -589,7 +688,6 @@ static const int AutouploadSwitchTag = 101;
             [self sendSupportEmail];
             break;
         case RateUsCellTag:
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             [self launchRateUs];
             break;
         default:
@@ -608,17 +706,6 @@ static const int AutouploadSwitchTag = 101;
     nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [self presentViewController:nav animated:YES completion:nil];
 }
-
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        [self signOut];
-    } else {
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    }
-}
-
 
 - (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{
     if(!cell.constraints.count){

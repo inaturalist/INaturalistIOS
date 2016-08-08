@@ -14,6 +14,6 @@
 
 - (void)removeProfilePhotoForUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)uploadProfilePhoto:(UIImage *)image forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
-
+- (void)setUsername:(NSString *)username forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

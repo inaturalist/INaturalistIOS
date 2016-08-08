@@ -43,7 +43,7 @@ target :iNaturalist do
   pod 'NSString_stripHtml', '0.1.0'
   pod 'Mantle', '1.5.8'
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
-  pod 'DZNEmptyDataSet', '1.7.3'
+  pod 'DZNEmptyDataSet', '1.8.1'
   pod 'Realm', '1.0.1'
   pod 'ARSafariActivity'
   pod 'ABFRealmSearchViewController'

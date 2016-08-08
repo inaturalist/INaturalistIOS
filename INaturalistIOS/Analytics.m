@@ -247,6 +247,7 @@ NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings Netwo
 NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Network Change Completed";
 NSString *kAnalyticsEventProfilePhotoChanged = 					@"Profile Photo Changed";
 NSString *kAnalyticsEventProfilePhotoRemoved = 					@"Profile Photo Removed";
+NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile Username Changed";
 
 
 // news

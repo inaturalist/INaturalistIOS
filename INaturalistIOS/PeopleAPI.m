@@ -79,4 +79,58 @@
         [httpClient enqueueHTTPRequestOperation:operation];
     }
 }
+
+- (void)setUsername:(NSString *)username forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue]
+                        relativeToURL:[NSURL inat_baseURL]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"PUT";
+    
+    NSDictionary *dictionary = @{ @"login" : username };
+    NSError *error = nil;
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
+    if (error) {
+        done(nil, 0, error);
+    } else {
+        request.HTTPBody = JSONData;
+        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+       forHTTPHeaderField:@"Authorization"];
+        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            if ([httpResponse statusCode] != 200) {
+                NSError *jsonError;
+                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data
+                                                                           options:NSJSONReadingAllowFragments
+                                                                             error:&jsonError];
+                if (!jsonError && [dictionary valueForKey:@"errors"]) {
+                    // this error comes back as { errors: { key: ( valueError ) } }
+                    NSDictionary *errors = [dictionary valueForKey:@"errors"];
+                    NSString *errorKey = [[errors allKeys] firstObject];
+                    NSArray *errorValues = (NSArray *)errors[errorKey];
+                    NSString *errorString = [NSString stringWithFormat:@"%@ %@", errorKey, [errorValues firstObject]];
+                    NSDictionary *info = @{NSLocalizedDescriptionKey: errorString };
+                    NSError *error = [NSError errorWithDomain:@"org.inaturalist.ios"
+                                                         code:[httpResponse statusCode]
+                                                     userInfo:info];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        done(nil, 0, error);
+                    });
+                }
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        done(nil, 0, error);
+                    } else {
+                        done(@[], 0, nil);
+                    }
+                });
+            }
+        }] resume];
+    }
+
+}
+
 @end
