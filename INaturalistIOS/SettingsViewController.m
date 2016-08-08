@@ -42,23 +42,13 @@
 
 static const int CreditsSection = 3;
 
-static const int UsernameCellTag = 0;
-static const int AccountActionCellTag = 1;
-static const int TutorialActionCellTag = 2;
-static const int ContactActionCellTag = 3;
-static const int RateUsCellTag = 4;
-static const int VersionCellTag = 5;
-
 static const int NetworkDetailLabelTag = 14;
 static const int NetworkTextLabelTag = 15;
 
-// labels for settings switcher rows are 50 + row index
-static const int AutocompleteNamesLabelTag = 50;
-static const int AutouploadLabelTag = 51;
-
-// setting switchers are 100 + row index
-static const int AutocompleteNamesSwitchTag = 100;
-static const int AutouploadSwitchTag = 101;
+static const int AutocompleteNamesLabelTag = 51;
+static const int AutouploadLabelTag = 52;
+static const int AutocompleteNamesSwitchTag = 101;
+static const int AutouploadSwitchTag = 102;
 
 @interface SettingsViewController () <UIActionSheetDelegate> {
     UITapGestureRecognizer *tapAway;
@@ -83,18 +73,6 @@ static const int AutouploadSwitchTag = 101;
 - (void)initUI
 {
     self.navigationController.navigationBar.translucent = NO;
-
-    UITableViewCell *usernameCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    UITableViewCell *accountActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    UITableViewCell *tutorialActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
-    UITableViewCell *contactActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
-    UITableViewCell *rateUsActionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
-    usernameCell.tag = UsernameCellTag;
-    accountActionCell.tag = AccountActionCellTag;
-    tutorialActionCell.tag = TutorialActionCellTag;
-    contactActionCell.tag = ContactActionCellTag;
-    rateUsActionCell.tag = RateUsCellTag;
-    
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
@@ -459,10 +437,7 @@ static const int AutouploadSwitchTag = 101;
         cell.textLabel.text = self.versionText;
         cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.backgroundView = nil;
-        cell.tag = VersionCellTag;
-        
-    }
-    else if (indexPath.section == 0) {
+    } else if (indexPath.section == 0) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 
         if (indexPath.row == 0) {
@@ -486,8 +461,10 @@ static const int AutouploadSwitchTag = 101;
     }
     else if (indexPath.section == 1) {
         cell.userInteractionEnabled = YES;
-
-        if (indexPath.item < 2) {
+        
+        if (indexPath.item == 0) {
+            // do nothing
+        } else if (indexPath.item < 3) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
@@ -597,7 +574,9 @@ static const int AutouploadSwitchTag = 101;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.section == 1) {
-        if (indexPath.item == 2) {
+        if (indexPath.item == 0) {
+            [self tappedUsername];
+        } else if (indexPath.item == 3) {
 			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 			if (![appDelegate.loginController isLoggedIn]) {
 				[self presentSignup];
@@ -618,49 +597,54 @@ static const int AutouploadSwitchTag = 101;
             }
             
             return;
+        } else {
+            // show popover
+            NSString *tooltipText;
+            if (indexPath.item == 1) {
+                // autocorrect
+                tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
+            } else if (indexPath.item == 2) {
+                // automatically upload
+                tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
+                                                @"tooltip text for automatically upload option.");
+            }
+            
+            tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
+                                                        hostView:tableView
+                                                     tooltipText:tooltipText
+                                                  arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                           width:200.0f
+                                             showCompletionBlock:^{
+                                                 if (!tapAway) {
+                                                     tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+                                                         [tooltip hideAnimated:YES];
+                                                     }];
+                                                     [self.view addGestureRecognizer:tapAway];
+                                                 }
+                                                 tapAway.enabled = YES;
+                                             } hideCompletionBlock:^{
+                                                 tapAway.enabled = NO;
+                                             }];
+            [tooltip show];
+            
+            
+            return;
         }
-        // show popover
-        NSString *tooltipText;
-        if (indexPath.item == 0) {
-            // autocorrect
-            tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
-        } else if (indexPath.item == 1) {
-            // automatically upload
-            tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
-                                            @"tooltip text for automatically upload option.");
-        }
-        
-        tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
-                                                    hostView:tableView
-                                                 tooltipText:tooltipText
-                                              arrowDirection:JDFTooltipViewArrowDirectionDown
-                                                       width:200.0f
-                                         showCompletionBlock:^{
-                                             if (!tapAway) {
-                                                 tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-                                                     [tooltip hideAnimated:YES];
-                                                 }];
-                                                 [self.view addGestureRecognizer:tapAway];
-                                             }
-                                             tapAway.enabled = YES;
-                                         } hideCompletionBlock:^{
-                                             tapAway.enabled = NO;
-                                         }];
-        [tooltip show];
-        
-        
-        return;
     } else if (indexPath.section == CreditsSection) {
         [self launchCredits];
         return;
-    }
-    
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	
-    switch (cell.tag) {
-        case UsernameCellTag:
-			if ([appDelegate.loginController isLoggedIn]) {
+    } else if (indexPath.section == 2) {
+        if (indexPath.item == 0) {
+            [self launchTutorial];
+        } else if (indexPath.item == 1) {
+            [self sendSupportEmail];
+        } else if (indexPath.item == 2) {
+            [self launchRateUs];
+        }
+    } else if (indexPath.section == 0) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (indexPath.item == 0) {
+            if ([appDelegate.loginController isLoggedIn]) {
                 [self tappedUsername];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
@@ -669,10 +653,9 @@ static const int AutouploadSwitchTag = 101;
                     [self networkUnreachableAlert];
                 }
             }
-            break;
-        case AccountActionCellTag:
-			if ([appDelegate.loginController isLoggedIn]) {
-	            [self clickedSignOut];
+        } else if (indexPath.item == 1) {
+            if ([appDelegate.loginController isLoggedIn]) {
+                [self clickedSignOut];
             } else {
                 if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
                     [self presentSignup];
@@ -680,18 +663,7 @@ static const int AutouploadSwitchTag = 101;
                     [self networkUnreachableAlert];
                 }
             }
-            break;
-        case TutorialActionCellTag:
-            [self launchTutorial];
-            break;
-        case ContactActionCellTag:
-            [self sendSupportEmail];
-            break;
-        case RateUsCellTag:
-            [self launchRateUs];
-            break;
-        default:
-            break;
+        }
     }
 }
 
