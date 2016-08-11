@@ -165,6 +165,12 @@
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
+		FA67E0C21D5A506C00DE918B /* ExploreObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0C11D5A506C00DE918B /* ExploreObservationRealm.m */; };
+		FA67E0C51D5A510800DE918B /* ExploreUserRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0C41D5A510800DE918B /* ExploreUserRealm.m */; };
+		FA67E0C81D5A7F8800DE918B /* ExploreCommentRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0C71D5A7F8800DE918B /* ExploreCommentRealm.m */; };
+		FA67E0CB1D5A7FA300DE918B /* ExploreIdentificationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0CA1D5A7FA300DE918B /* ExploreIdentificationRealm.m */; };
+		FA67E0CE1D5A7FB400DE918B /* ExploreFaveRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0CD1D5A7FB400DE918B /* ExploreFaveRealm.m */; };
+		FA67E0D11D5A7FC700DE918B /* ExploreObservationPhotoRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA67E0D01D5A7FC700DE918B /* ExploreObservationPhotoRealm.m */; };
 		FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
 		FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */; };
 		FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */; };
@@ -594,6 +600,18 @@
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.10.xcdatamodel; sourceTree = "<group>"; };
+		FA67E0C01D5A506C00DE918B /* ExploreObservationRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationRealm.h; sourceTree = "<group>"; };
+		FA67E0C11D5A506C00DE918B /* ExploreObservationRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationRealm.m; sourceTree = "<group>"; };
+		FA67E0C31D5A510800DE918B /* ExploreUserRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreUserRealm.h; sourceTree = "<group>"; };
+		FA67E0C41D5A510800DE918B /* ExploreUserRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUserRealm.m; sourceTree = "<group>"; };
+		FA67E0C61D5A7F8800DE918B /* ExploreCommentRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreCommentRealm.h; sourceTree = "<group>"; };
+		FA67E0C71D5A7F8800DE918B /* ExploreCommentRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreCommentRealm.m; sourceTree = "<group>"; };
+		FA67E0C91D5A7FA300DE918B /* ExploreIdentificationRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentificationRealm.h; sourceTree = "<group>"; };
+		FA67E0CA1D5A7FA300DE918B /* ExploreIdentificationRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreIdentificationRealm.m; sourceTree = "<group>"; };
+		FA67E0CC1D5A7FB400DE918B /* ExploreFaveRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreFaveRealm.h; sourceTree = "<group>"; };
+		FA67E0CD1D5A7FB400DE918B /* ExploreFaveRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreFaveRealm.m; sourceTree = "<group>"; };
+		FA67E0CF1D5A7FC700DE918B /* ExploreObservationPhotoRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhotoRealm.h; sourceTree = "<group>"; };
+		FA67E0D01D5A7FC700DE918B /* ExploreObservationPhotoRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhotoRealm.m; sourceTree = "<group>"; };
 		FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+INaturalist.h"; sourceTree = "<group>"; };
 		FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+INaturalist.m"; sourceTree = "<group>"; };
 		FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldSimpleValueCell.h; sourceTree = "<group>"; };
@@ -1500,6 +1518,18 @@
 			children = (
 				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
 				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
+				FA67E0C01D5A506C00DE918B /* ExploreObservationRealm.h */,
+				FA67E0C11D5A506C00DE918B /* ExploreObservationRealm.m */,
+				FA67E0C31D5A510800DE918B /* ExploreUserRealm.h */,
+				FA67E0C41D5A510800DE918B /* ExploreUserRealm.m */,
+				FA67E0C61D5A7F8800DE918B /* ExploreCommentRealm.h */,
+				FA67E0C71D5A7F8800DE918B /* ExploreCommentRealm.m */,
+				FA67E0C91D5A7FA300DE918B /* ExploreIdentificationRealm.h */,
+				FA67E0CA1D5A7FA300DE918B /* ExploreIdentificationRealm.m */,
+				FA67E0CC1D5A7FB400DE918B /* ExploreFaveRealm.h */,
+				FA67E0CD1D5A7FB400DE918B /* ExploreFaveRealm.m */,
+				FA67E0CF1D5A7FC700DE918B /* ExploreObservationPhotoRealm.h */,
+				FA67E0D01D5A7FC700DE918B /* ExploreObservationPhotoRealm.m */,
 			);
 			name = Realm;
 			sourceTree = "<group>";
@@ -1967,6 +1997,7 @@
 				FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */,
 				FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */,
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
+				FA67E0CE1D5A7FB400DE918B /* ExploreFaveRealm.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
@@ -1987,6 +2018,7 @@
 				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
 				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
+				FA67E0C81D5A7F8800DE918B /* ExploreCommentRealm.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
 				FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */,
@@ -2038,7 +2070,9 @@
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,
+				FA67E0CB1D5A7FA300DE918B /* ExploreIdentificationRealm.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
+				FA67E0C51D5A510800DE918B /* ExploreUserRealm.m in Sources */,
 				FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */,
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
@@ -2054,12 +2088,14 @@
 				FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */,
+				FA67E0C21D5A506C00DE918B /* ExploreObservationRealm.m in Sources */,
 				FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
 				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
+				FA67E0D11D5A7FC700DE918B /* ExploreObservationPhotoRealm.m in Sources */,
 				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

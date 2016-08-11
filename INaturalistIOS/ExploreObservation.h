@@ -20,16 +20,20 @@
 
 @interface ExploreObservation : MTLModel <MKAnnotation, ObservationVisualization, Uploadable, MTLJSONSerializing>
 
+@property (nonatomic, assign) ObsDataQuality qualityGrade;
+@property (nonatomic, assign) Geoprivacy geoprivacy;
+@property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, assign) NSInteger observationId;
 @property (nonatomic, copy) NSString *speciesGuess;
 @property (nonatomic, copy) NSString *inatDescription;
 @property (nonatomic, copy) NSArray *observationPhotos;
 @property (nonatomic, copy) NSDate *timeObservedAt;
 @property (nonatomic, copy) NSDate *observedOn;
-@property (nonatomic, copy) NSString *qualityGrade;
+@property (nonatomic, copy) NSDate *createdAt;
 @property (nonatomic, assign) BOOL idPlease;
 @property (nonatomic, assign) NSInteger identificationsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
+@property (nonatomic, assign) NSInteger favesCount;
 @property (nonatomic, copy) NSArray *identifications;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSArray *faves;

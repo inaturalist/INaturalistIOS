@@ -127,7 +127,7 @@
 - (void)configureApplicationInBackground {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 3;
+	config.schemaVersion = 9;
 	config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
   	if (oldSchemaVersion < 1) {
   		// add searchable (ie diacritic-less) taxon names

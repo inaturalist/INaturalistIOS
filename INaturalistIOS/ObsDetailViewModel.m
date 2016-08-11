@@ -205,35 +205,8 @@
     return cell;
 }
 
-- (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
-    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
-	cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-	
-    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
-
-    cell.taxonNameLabel.textColor = [UIColor blackColor];
-
-	if ([self.observation taxonRecordID] != 0 && results.count == 0) {
-		__weak typeof(self) weakSelf = self;
-		[self.taxonApi taxonWithId:[self.observation taxonRecordID] handler:^(NSArray *results, NSInteger count, NSError *error) {
-			__strong typeof(weakSelf) strongSelf = weakSelf;
-			// put the results into realm
-			RLMRealm *realm = [RLMRealm defaultRealm];
-			[realm beginWriteTransaction];
-			for (ExploreTaxon *taxon in results) {
-				ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:taxon];
-				[realm addOrUpdateObject:etr];
-			}
-			[realm commitWriteTransaction];
-			
-			// update the UI
-			dispatch_async(dispatch_get_main_queue(), ^{
-				__strong typeof(weakSelf) strongSelf = weakSelf;
-				[[strongSelf delegate] reloadTableView];
-			});
-		}];
-	} else if (results.count == 1) {
-        ExploreTaxonRealm *etr = [results firstObject];
+- (void)configureCell:(ObsDetailTaxonCell *)cell forTaxon:(ExploreTaxonRealm *)etr {
+    if (etr) {
         if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
             // no common name, so only show scientific name in the main label
             cell.taxonNameLabel.text = etr.scientificName;
@@ -259,10 +232,10 @@
                 cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
                                                      [etr.rankName capitalizedString], etr.scientificName];
-
+                
             }
         }
-
+        
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {
@@ -273,19 +246,65 @@
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
-    	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
         // the question icon has a rendered border
         cell.taxonImageView.layer.borderWidth = 0.0f;
-
+        
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
             cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
         }
     }
+}
+
+- (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
+    ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
+	cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+	
+    if ([self.observation taxon]) {
+        id taxon = [self.observation taxon];
+        if ([taxon isKindOfClass:[ExploreTaxonRealm class]]) {
+            [self configureCell:cell forTaxon:taxon];
+        } else if ([taxon isKindOfClass:[ExploreTaxon class]]) {
+            ExploreTaxon *et = (ExploreTaxon *)taxon;
+            ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(et.taxonId)];
+            if (etr) {
+                [self configureCell:cell forTaxon:etr];
+            } else {
+                __weak typeof(self)weakSelf = self;
+                [self.taxonApi taxonWithId:et.taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // put the results into realm
+                        RLMRealm *realm = [RLMRealm defaultRealm];
+                        [realm beginWriteTransaction];
+                        for (ExploreTaxon *taxon in results) {
+                            ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:taxon];
+                            [realm addOrUpdateObject:etr];
+                        }
+                        [realm commitWriteTransaction];
+                        
+                        ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(et.taxonId)];
+                        if (etr) {
+                            [weakSelf configureCell:cell forTaxon:etr];
+                        } else {
+                            // well we're just screwed
+                            NSLog(@"Simply could not find a taxon for this");
+                        }
+                    });
+                }];
+            }
+        }
+    } else {
+        [self configureCell:cell forTaxon:nil];
+    }
+    
+    
+    // TODO: why is this here?
+    cell.taxonNameLabel.textColor = [UIColor blackColor];
     
     return cell;
 }

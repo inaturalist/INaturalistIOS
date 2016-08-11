@@ -138,14 +138,14 @@
             }
             
             
-            if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
+            if (self.observation.geoprivacy == GeoprivacyObscured) {
                 cell.geoprivacyLabel.attributedText = ({
                     FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
                     [obscured addAttribute:NSForegroundColorAttributeName
                                      value:[UIColor lightGrayColor]];
                     obscured.attributedString;
                 });
-            } else if ([self.observation.geoprivacy isEqualToString:@"private"]) {
+            } else if (self.observation.geoprivacy == GeoprivacyPrivate) {
                 cell.geoprivacyLabel.attributedText = ({
                     FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
                     [private addAttribute:NSForegroundColorAttributeName
@@ -162,7 +162,7 @@
         // data quality
         ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.dataQuality = self.observation.dataQuality;
+        cell.dataQuality = [self.observation qualityGrade];
         
         return cell;
     
@@ -234,7 +234,7 @@
         return [super tableView:tableView heightForFooterInSection:section];
     } else if (section == 3) {
         // data quality
-        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+        if (self.observation.qualityGrade == ObsDataQualityResearch) {
             return CGFLOAT_MIN;
         } else if (!self.observation.inatRecordId) {
             return CGFLOAT_MIN;
@@ -251,20 +251,20 @@
         return [super tableView:tableView viewForFooterInSection:section];
     } else if (section == 3) {
         // data quality
-        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+        if (self.observation.qualityGrade == ObsDataQualityResearch) {
             return nil;
         } else if (!self.observation.inatRecordId) {
             return nil;
         } else {
             ObsDetailQualityDetailsFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"qualityDetails"];
 
-            if (self.observation.dataQuality == ObsDataQualityNeedsID) {
+            if (self.observation.qualityGrade == ObsDataQualityNeedsID) {
                 if (self.observation.identifications.count < 2) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs more IDs from the iNat community to be considered for Research Grade.", nil);
                 } else {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a more specific consensus ID to be considered for Research Grade.", nil);
                 }
-            } else if (self.observation.dataQuality == ObsDataQualityCasual) {
+            } else if (self.observation.qualityGrade == ObsDataQualityCasual) {
                 if (self.observation.observationPhotos.count == 0) {
                     footer.dataQualityDetails = NSLocalizedString(@"This observation needs a photo to be considered for Research Grade.", nil);
                 } else if (!CLLocationCoordinate2DIsValid([self.observation visibleLocation])) {
@@ -376,7 +376,7 @@
     } else if (indexPath.section == 3) {
         // data quality, do nothing
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        if (self.observation.dataQuality == ObsDataQualityNone) {
+        if (self.observation.qualityGrade == ObsDataQualityNone) {
             NSURL *dataQualityURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/help#quality"];
             if (dataQualityURL) {
                 [[UIApplication sharedApplication] openURL:dataQualityURL];

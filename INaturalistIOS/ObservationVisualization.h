@@ -19,6 +19,12 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
     ObsDataQualityNone
 };
 
+typedef NS_ENUM(NSInteger, Geoprivacy) {
+   	GeoprivacyOpen,
+	GeoprivacyObscured,
+	GeoprivacyPrivate
+};
+
 @protocol ObservationVisualization <NSObject>
 
 
@@ -39,9 +45,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (NSString *)placeGuess;
 - (BOOL)idPlease;
-- (NSString *)geoprivacy;
-- (NSString *)qualityGrade;
-- (ObsDataQuality)dataQuality;
+- (Geoprivacy)geoprivacy;
+- (ObsDataQuality)qualityGrade;
 
 - (NSString *)iconicTaxonName;
 
@@ -53,6 +58,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSSet *)identifications;
 - (NSSet *)faves;
 - (NSArray *)sortedActivity;
+- (NSInteger)activityCount;
 - (NSArray *)sortedFaves;
 
 - (NSInteger)inatRecordId;

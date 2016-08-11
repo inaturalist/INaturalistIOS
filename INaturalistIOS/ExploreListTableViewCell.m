@@ -17,6 +17,7 @@
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "UIFont+ExploreFonts.h"
+#import "ObservationVisualization.h"
 
 static NSDateFormatter *shortFormatter;
 
@@ -410,7 +411,7 @@ static NSDateFormatter *shortFormatter;
         observedOnLabel.text = [shortFormatter stringFromDate:date];
     }
     
-    if ([observation.qualityGrade isEqualToString:@"research"]) {
+    if (observation.qualityGrade == ObsDataQualityResearch) {
         observationAttrLabel.text = NSLocalizedString(@"RESEARCH", nil);
         observationAttrLabel.textColor = [UIColor colorForResearchGradeNotice];
         observationAttrLabel.backgroundColor = [UIColor secondaryColorForResearchGradeNotice];

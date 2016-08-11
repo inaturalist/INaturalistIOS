@@ -18,4 +18,10 @@
     [self fetch:path classMapping:ExploreObservation.class handler:done];
 }
 
+- (void)observationsForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch userid observations from node"];
+    NSString *path = [NSString stringWithFormat:@"observations?user_id=%ld", (long)userId];
+    [self fetch:path classMapping:ExploreObservation.class handler:done];	
+}
+
 @end

@@ -18,12 +18,22 @@
     return @"http://api.inaturalist.org/v1";
 }
 
+
+
+
 - (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {
     path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
-    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:urlString];
+    NSURLQueryItem *ttl = [NSURLQueryItem queryItemWithName:@"ttl" value:@"-1"];
+    [components setQueryItems:[[components queryItems] arrayByAddingObject:ttl]];
+    
+    NSURL *url = [components URL];
     if (url) {
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.URLCache = nil;
+        config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
         [[session dataTaskWithURL:url
                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {

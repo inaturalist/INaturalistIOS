@@ -11,5 +11,6 @@
 @interface ObservationAPI : INatAPI
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)observationsForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

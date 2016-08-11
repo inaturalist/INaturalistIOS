@@ -241,7 +241,7 @@
 
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
 {
-    NSString *iconicTaxonName = name ? [name lowercaseString] : @"unknown";
+    NSString *iconicTaxonName = name && ![name isEqualToString:@""] ? [name lowercaseString] : @"unknown";
     NSString *key = [NSString stringWithFormat:@"ic_%@", iconicTaxonName];
     return [UIImage imageNamed:key];
 }

@@ -23,12 +23,14 @@
              @"location": @"location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
-             @"timeObservedAt": @"time_observed_at_utc",
+             @"timeObservedAt": @"time_observed_at",
              @"observedOn": @"observed_on",
+             @"createdAt": @"created_at",
              @"qualityGrade": @"quality_grade",
              @"idPlease": @"id_please",
              @"identificationsCount": @"identifications_count",
              @"commentsCount": @"comments_count",
+             @"favesCount": @"faves_count",
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
              @"coordinatesObscured": @"coordinates_obscured",
@@ -39,7 +41,25 @@
              @"identifications": @"identifications",
              @"faves": @"faves",
              @"taxon": @"taxon",
+             @"uuid": @"uuid",
              };
+}
+
++ (NSValueTransformer *)geoprivacyJSONTransformer {
+    return [NSValueTransformer mtl_valueMappingTransformerWithDictionary:@{
+                                                                           @"": @(GeoprivacyOpen),
+                                                                           @"obscured": @(GeoprivacyObscured),
+                                                                           @"private": @(GeoprivacyPrivate)
+                                                                           }];
+}
+
++ (NSValueTransformer *)qualityGradeJSONTransformer {
+    return [NSValueTransformer mtl_valueMappingTransformerWithDictionary:@{
+                                                                           @"casual": @(ObsDataQualityCasual),
+                                                                           @"needs_id": @(ObsDataQualityNeedsID),
+                                                                           @"research": @(ObsDataQualityResearch),
+                                                                           @"": @(ObsDataQualityNone)
+                                                                           }];
 }
 
 + (NSValueTransformer *)observationPhotosJSONTransformer {
@@ -64,6 +84,42 @@
 
 + (NSValueTransformer *)userJSONTransformer {
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+}
+
++ (NSDateFormatter *)dateFormatter {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    return dateFormatter;
+}
+
++ (NSValueTransformer *)createdAtJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
+
++ (NSValueTransformer *)timeObservedAtJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
 }
 
 + (NSValueTransformer *)observedOnJSONTransformer {
@@ -97,10 +153,16 @@
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:@"idPlease"]) {
         self.idPlease = NO;
+    } else if ([key isEqualToString:@"geoprivacy"]) {
+    	self.geoprivacy = GeoprivacyOpen;
+    } else if ([key isEqualToString:@"qualityGrade"]) {
+    	self.qualityGrade = ObsDataQualityCasual;
     } else if ([key isEqualToString:@"identificationsCount"]) {
         self.identificationsCount = 0;
     } else if ([key isEqualToString:@"commentsCount"]) {
         self.commentsCount = 0;
+    } else if ([key isEqualToString:@"favesCount"]) {
+        self.favesCount = 0;
    	} else if ([key isEqualToString:@"mappable"]) {
         self.mappable = NO;
     } else if ([key isEqualToString:@"coordinatesObscured"]) {
@@ -181,27 +243,12 @@
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
     NSArray *sortedActivity = [activity sortedArrayUsingDescriptors:@[ sortDescriptor ]];
-    /*
-    NSArray *sortedActivity = [activity sortedArrayUsingComparator:^NSComparisonResult(id <ActivityVisualization> obj1, id  <ActivityVisualization> obj2) {
-        NSDate *obj1Date = [obj1 createdAt];
-        NSDate *obj2Date = [obj2 createdAt];
-        NSLog(@"comparing %@ with %@", obj1Date, obj2Date);
-        return [obj1Date compare:obj2Date];
-    }];
-     */
     
     return sortedActivity;
 }
 
-- (ObsDataQuality)dataQuality {
-    if ([self.qualityGrade isEqualToString:@"research"]) {
-        return ObsDataQualityResearch;
-    } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
-        return ObsDataQualityNeedsID;
-    } else {
-        // must be casual?
-        return ObsDataQualityCasual;
-    }
+- (NSInteger)activityCount {
+    return self.identificationsCount + self.commentsCount;
 }
 
 - (NSString *)observedOnShortString {
@@ -228,11 +275,6 @@
 
 - (NSString *)sortable {
     return [NSString stringWithFormat:@"%f", self.timeObservedAt.timeIntervalSinceNow];
-}
-
-- (NSString *)uuid {
-    // TODO: fetch uuid
-    return  [[[NSUUID alloc] init] UUIDString];
 }
 
 - (NSInteger)taxonRecordID {
