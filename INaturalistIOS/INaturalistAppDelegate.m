@@ -54,6 +54,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	[FBSDKAppEvents activateApp];
+    
+    [self.loginController getJWTTokenSuccess:nil failure:nil];
 }
 
 - (BOOL)application:(UIApplication *)application

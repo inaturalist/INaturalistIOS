@@ -31,7 +31,7 @@
 }
 @property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
 @property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
-
+@property NSDate *jwtTokenExpiration;
 @end
 
 #pragma mark - NSNotification names
@@ -54,6 +54,51 @@ NSInteger INatMinPasswordLength = 6;
 
 - (void)logout {
     
+}
+
+- (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
+    // jwt tokens expire after 30 minutes
+    if ([self.jwtTokenExpiration timeIntervalSinceNow] < 28 * 60 && self.jwtToken) {
+        success(nil);
+    }
+    
+    NSURL *url = [NSURL URLWithString:@"http://inat:squirrel!@staging.inaturalist.org/users/api_token.json"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"GET";
+    
+    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+   forHTTPHeaderField:@"Authorization"];
+    //[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+
+        if (error) {
+            failure(nil);
+            self.jwtToken = nil;
+        } else if ([httpResponse statusCode] != 200) {
+            self.jwtToken = nil;
+            failure(nil);
+        } else {
+            NSError *jsonError = nil;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+            if (error) {
+                self.jwtToken = nil;
+                failure(error);
+            } else {
+                if ([json valueForKey:@"api_token"]) {
+                    self.jwtToken = [json valueForKey:@"api_token"];
+                    self.jwtTokenExpiration = [NSDate date];
+                    success(nil);
+                } else {
+                    self.jwtToken = nil;
+                    failure(nil);
+                }
+            }
+        }
+    }] resume];
 }
 
 #pragma mark - Facebook
@@ -257,6 +302,7 @@ NSInteger INatMinPasswordLength = 6;
                                                                                     error:&error];
                                   if (error) {
                                       NSLog(@"error parsing json: %@", error.localizedDescription);
+                                      return;
                                   }
                                   
                                   NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];

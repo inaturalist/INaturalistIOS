@@ -11,6 +11,8 @@
 #import "ExploreObservation.h"
 #import "INatAPI.h"
 #import "NSLocale+INaturalist.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 @implementation INatAPI
 
@@ -30,12 +32,20 @@
     [components setQueryItems:[[components queryItems] arrayByAddingObject:ttl]];
     
     NSURL *url = [components URL];
-    if (url) {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    if ([login jwtToken]) {
+        [request addValue:[login jwtToken]
+       forHTTPHeaderField:@"Authorization"];
+    }
+    
+    if (request) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
         config.URLCache = nil;
         config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-        [[session dataTaskWithURL:url
+        [[session dataTaskWithRequest:request
                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (error) {
                         dispatch_async(dispatch_get_main_queue(), ^{

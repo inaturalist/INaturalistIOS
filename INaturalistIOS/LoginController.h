@@ -46,7 +46,10 @@ typedef void (^LoginErrorBlock)(NSError *error);
                          completion:(void (^)(void))completion;
 - (User *)fetchMe;
 
+- (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure;
+
 @property (readonly) BOOL isLoggedIn;
 @property UploadManager *uploadManager;
+@property NSString *jwtToken;
 
 @end
