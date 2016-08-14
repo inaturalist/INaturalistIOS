@@ -391,10 +391,6 @@
     // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
-    
-    
-    [self.tableView reloadData];
-    
     if (self.observation.hasUnviewedActivity && self.activeSection == ObsDetailSectionActivity) {
         
         NSInteger lastSection = [self.tableView numberOfSections] - 1;
