@@ -17,6 +17,7 @@
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <Realm/Realm.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -216,6 +217,11 @@ static const int AutouploadSwitchTag = 102;
     // since we've removed any custom base URL, reconfigure RestKit again
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate reconfigureForNewBaseUrl];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
     
     // remove OAuth account stuff
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
