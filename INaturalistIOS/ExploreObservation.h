@@ -42,8 +42,11 @@
 @property (nonatomic, assign) BOOL coordinatesObscured;
 @property (nonatomic, copy) NSString *placeGuess;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
+@property (nonatomic, assign) CLLocationCoordinate2D privateLocation;
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;
+@property (readonly) CLLocationDegrees privateLatitude;
+@property (readonly) CLLocationDegrees privateLongitude;
 
 @property (nonatomic, readonly) BOOL hasTime;
 

@@ -32,6 +32,8 @@
         self.placeGuess = model.placeGuess;
         self.latitude = model.latitude;
         self.longitude = model.longitude;
+        self.privateLatitude = model.privateLatitude;
+        self.privateLongitude = model.privateLongitude;
         self.hasUnviewedActivity = NO;
         self.validationErrorMsg = nil;
         
@@ -128,8 +130,15 @@
     return CLLocationCoordinate2DMake(self.latitude, self.longitude);
 }
 
+- (CLLocationCoordinate2D)privateLocation {
+    return CLLocationCoordinate2DMake(self.privateLatitude, self.privateLongitude);
+}
+
+
 - (CLLocationCoordinate2D)visibleLocation {
-    if (CLLocationCoordinate2DIsValid(self.location)) {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation) && !(self.privateLocation.latitude == 0)) {
+        return self.privateLocation;
+    } else if (CLLocationCoordinate2DIsValid(self.location) && !(self.location.latitude == 0)) {
         return self.location;
     } else {
         // invalid location

@@ -21,6 +21,7 @@
     return @{
              @"observationId": @"id",
              @"location": @"location",
+             @"privateLocation": @"private_location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObservedAt": @"time_observed_at",
@@ -142,13 +143,36 @@
     	if (c.count == 2) {
     		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
     		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
-    		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
-    		return [NSValue valueWithMKCoordinate:coords];
+            if (latitude != 0 && longitude != 0) {
+                CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+                return [NSValue valueWithMKCoordinate:coords];
+            } else {
+                return nil;
+            }
     	} else {
     		return nil;
     	}
     }];
 }
+
++ (NSValueTransformer *)privateLocationJSONTransformer {
+    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
+        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+        if (c.count == 2) {
+            CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
+            CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
+            if (latitude != 0 && longitude != 0) {
+                CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+                return [NSValue valueWithMKCoordinate:coords];
+            } else {
+                return nil;
+            }
+        } else {
+            return nil;
+        }
+    }];
+}
+
 
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:@"idPlease"]) {
@@ -171,7 +195,8 @@
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {
     	self.location = CLLocationCoordinate2DMake(-19999.0,-19999.0);
-    	// do nothing?
+    } else if ([key isEqualToString:@"privateLocation"]) {
+        self.privateLocation = CLLocationCoordinate2DMake(-19999.0,-19999.0);
     } else {
         [super setNilValueForKey:key];
     }
@@ -216,14 +241,6 @@
 
 - (NSURL *)userThumbUrl {
 	return self.user.userIcon;
-}
-
-- (CLLocationDegrees)privateLatitude {
-    return 0;
-}
-
-- (CLLocationDegrees)privateLongitude {
-    return 0;
 }
 
 - (CLLocationAccuracy)privatePositionalAccuracy {
@@ -329,6 +346,23 @@
 	}
 }
 
+- (CLLocationDegrees)privateLatitude {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation.latitude;
+    } else {
+        return 0.0;
+    }
+}
+
+- (CLLocationDegrees)privateLongitude {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation.longitude;
+    } else {
+        return 0.0;
+    }
+}
+
+
 - (NSString *)title {
     return nil;
 }
@@ -357,10 +391,12 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location;
-	} else {
-		// invalid location
+    if (CLLocationCoordinate2DIsValid(self.privateLocation) && !(self.privateLocation.latitude == 0)) {
+        return self.privateLocation;
+    } else if (CLLocationCoordinate2DIsValid(self.location) && !(self.location.latitude == 0)) {
+        return self.location;
+    } else {
+        // invalid location
 		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
 	}
 }

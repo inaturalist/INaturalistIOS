@@ -40,6 +40,9 @@
 @property (readonly) CLLocationCoordinate2D location;
 @property CLLocationDegrees latitude;
 @property CLLocationDegrees longitude;
+@property (readonly) CLLocationCoordinate2D privateLocation;
+@property CLLocationDegrees privateLatitude;
+@property CLLocationDegrees privateLongitude;
 @property NSString *validationErrorMsg;
 
 @property (readonly) BOOL hasTime;
