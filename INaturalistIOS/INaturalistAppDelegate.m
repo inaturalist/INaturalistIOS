@@ -428,7 +428,7 @@
 	[grouper assignDeviceToTestGroups];
 
     // the VCs in the Onboarding storyboard require UIStackView, which is ios9 only
-    if(NSClassFromString(@"UIStackView")) {
+    if(NSClassFromString(@"UIStackView") && [grouper deviceInTestGroup:kOnboardingGroupA]) {
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
                          withProperties:@{ @"From": @"App Launch",
                                            @"Version": @"Onboarding" }];
