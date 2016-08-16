@@ -426,9 +426,15 @@
 - (void)showInitialSignupUI {
 	GroupingController *grouper = [[GroupingController alloc] init];
 	[grouper assignDeviceToTestGroups];
+    BOOL inGroupA = [grouper deviceInTestGroup:kOnboardingGroupA];
+    
+    // the new onboarding screens have design constraints
+    // even if the device/user was sorted into groupA,
+    // we can't show new onboarding on iphone4s or ios8 devices
+    BOOL isIphone4s = [UIScreen mainScreen].bounds.size.height == 480;
+    BOOL hasStackView = NSClassFromString(@"UIStackView") != nil;    
 
-    // the VCs in the Onboarding storyboard require UIStackView, which is ios9 only
-    if(NSClassFromString(@"UIStackView") && [grouper deviceInTestGroup:kOnboardingGroupA]) {
+    if(hasStackView && !isIphone4s && inGroupA) {
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
                          withProperties:@{ @"From": @"App Launch",
                                            @"Version": @"Onboarding" }];

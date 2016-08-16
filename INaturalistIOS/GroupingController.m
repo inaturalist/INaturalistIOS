@@ -20,19 +20,17 @@ NSString *kInatTestGroupsKey = @"kInatTestGroupsKey";
 @implementation GroupingController
 
 - (void)assignDeviceToTestGroups {
-    NSArray *testGroups = [self assignedTestGroups];
+	NSArray *testGroups = [self assignedTestGroups];
     if (![testGroups containsObject:kOnboardingGroupA] && ![testGroups containsObject:kOnboardingGroupB]) {
-        if (arc4random_uniform(10) == 0) {
-            testGroups = [testGroups arrayByAddingObject:kOnboardingGroupA];
-            [[Analytics sharedClient] event:kAnalyticsEventAssignedToOnboardingGroupA];
+        // onboarding GroupA requires stackView and larger screens than iphone4s
+	    BOOL isIphone4s = [UIScreen mainScreen].bounds.size.height == 480;
+    	BOOL hasStackView = NSClassFromString(@"UIStackView") != nil;    
+        if (arc4random_uniform(10) == 0 && !isIphone4s && hasStackView) {
+    		[self assignDeviceToTestGroup:kOnboardingGroupA];
         } else {
-            testGroups = [testGroups arrayByAddingObject:kOnboardingGroupB];
-            [[Analytics sharedClient] event:kAnalyticsEventAssignedToOnboardingGroupB];
+        	[self assignDeviceToTestGroup:kOnboardingGroupB];
         }
     }
-    
-    [[NSUserDefaults standardUserDefaults] setObject:testGroups forKey:kInatTestGroupsKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)deviceInTestGroup:(NSString *)groupName {
