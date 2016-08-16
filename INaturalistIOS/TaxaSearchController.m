@@ -59,7 +59,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (self.allowsFreeTextSelection && indexPath.section == 0) {
+    if (self.allowsFreeTextSelection && indexPath.section == 1) {
     	// species guess row
     	[self.delegate recordSearchControllerSelectedRecord:nil];
     } else {

@@ -72,7 +72,7 @@
                                                                      metrics:0
                                                                        views:views]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[photo(==71)]-0-[default]-0-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[photo(==71)]-11-[default]-11-|"
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];

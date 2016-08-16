@@ -39,6 +39,7 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
+#import "GroupingController.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -423,6 +424,9 @@
 }
 
 - (void)showInitialSignupUI {
+	GroupingController *grouper = [[GroupingController alloc] init];
+	[grouper assignDeviceToTestGroups];
+
     // the VCs in the Onboarding storyboard require UIStackView, which is ios9 only
     if(NSClassFromString(@"UIStackView")) {
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash

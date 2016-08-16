@@ -55,8 +55,8 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"terms", @"terms",
          @"project_observation_rule_terms", @"projectObservationRuleTerms",
          @"featured_at_utc", @"featuredAt",
-         @"rule_place.latitude", @"latitude",
-         @"rule_place.longitude", @"longitude",
+         @"latitude", @"latitude",
+         @"longitude", @"longitude",
          @"posts_count", @"newsItemCount",
          @"group", @"group",
          nil];

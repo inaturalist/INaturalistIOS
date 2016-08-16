@@ -107,7 +107,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSObject *o;
-    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 0) {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 1) {
         o = nil;
     } else {
         o = [self.searchResults objectAtIndex:indexPath.row];
@@ -137,7 +137,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 0) {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 1) {
         return 1;
     } else {
         return self.searchResults.count;
@@ -145,8 +145,14 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 1) {
-        return @"iNaturalist";
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 0) {
+        if (self.searchResults.count > 0) {
+            return @"iNaturalist";
+        } else {
+            return NSLocalizedString(@"No iNaturalist Results", nil);
+        }
+    } else if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && section == 1) {
+        return NSLocalizedString(@"Placeholder", nil);
     } else {
         return nil;
     }
@@ -155,7 +161,7 @@
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 0) {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         return;
     }
@@ -167,7 +173,9 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(recordSearchControllerClickedAccessoryForRecord:)]) {
+    if (self.allowsFreeTextSelection && self.savedSearchTerm.length > 0 && indexPath.section == 1) {
+        // do nothing
+    } else if (self.delegate && [self.delegate respondsToSelector:@selector(recordSearchControllerClickedAccessoryForRecord:)]) {
         [self.delegate performSelector:@selector(recordSearchControllerClickedAccessoryForRecord:) 
                             withObject:[self.searchResults objectAtIndex:indexPath.row]];
     }

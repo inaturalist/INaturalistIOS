@@ -180,21 +180,6 @@
 }
 
 - (void)reloadObservation {
-    if ([self.observation isKindOfClass:[ExploreObservation class]]) {
-        ObservationAPI *api = [[ObservationAPI alloc] init];
-        __weak typeof(self) weakSelf = self;
-        [api observationWithId:self.observation.inatRecordId
-                       handler:^(NSArray *results, NSInteger count, NSError *error) {
-                           __strong typeof(weakSelf) strongSelf = weakSelf;
-                           if (strongSelf && results && results.count == 1) {
-                               strongSelf.observation = results.firstObject;
-                               strongSelf.viewModel.observation = strongSelf.observation;
-                               [strongSelf.tableView reloadData];
-                           }
-                       }];
-        
-    }
-    
     if (self.observation.needsUpload) {
         // don't clobber any local edits to this observation
         return;
@@ -207,8 +192,18 @@
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", obs.recordID]
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
-    } else {
-        // TODO: fetch with iNat API
+    } else if ([self.observation isKindOfClass:[ExploreObservation class]]) {
+        ObservationAPI *api = [[ObservationAPI alloc] init];
+        __weak typeof(self) weakSelf = self;
+        [api observationWithId:self.observation.inatRecordId
+                       handler:^(NSArray *results, NSInteger count, NSError *error) {
+                           __strong typeof(weakSelf) strongSelf = weakSelf;
+                           if (strongSelf && results && results.count == 1) {
+                               strongSelf.observation = results.firstObject;
+                               strongSelf.viewModel.observation = strongSelf.observation;
+                               [strongSelf.tableView reloadData];
+                           }
+                       }];
     }
 }
 
@@ -395,10 +390,6 @@
     NSError *error = nil;
     // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    
-    
-    [self.tableView reloadData];
     
     if (self.observation.hasUnviewedActivity && self.activeSection == ObsDetailSectionActivity) {
         
