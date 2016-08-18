@@ -137,7 +137,6 @@
                              self.licenseStackView.hidden = YES;
                              [self.switchContextButton setTitle:NSLocalizedString(@"New to iNaturalist? Sign up now!", nil)
                                                        forState:UIControlStateNormal];
-
                          }];
     } else {
         // switch to signup mode
@@ -152,10 +151,7 @@
                              self.licenseStackView.hidden = NO;
                              [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
                                                        forState:UIControlStateNormal];
-
-
                          }];
-
     }
 }
 
