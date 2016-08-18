@@ -109,7 +109,7 @@
 		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
 		FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11A7761CBFF8740039481B /* ProjectNewsButton.m */; };
-		FA1B58CC1D626DFD00663150 /* GroupingController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B58CB1D626DFD00663150 /* GroupingController.m */; };
+		FA1B58CC1D626DFD00663150 /* ABSorter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B58CB1D626DFD00663150 /* ABSorter.m */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
@@ -471,8 +471,8 @@
 		FA1B37C21AD88EDC002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37C41AD88EED002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA1B37C51AD88EF3002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FA1B58CA1D626DFD00663150 /* GroupingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupingController.h; sourceTree = "<group>"; };
-		FA1B58CB1D626DFD00663150 /* GroupingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupingController.m; sourceTree = "<group>"; };
+		FA1B58CA1D626DFD00663150 /* ABSorter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABSorter.h; sourceTree = "<group>"; };
+		FA1B58CB1D626DFD00663150 /* ABSorter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABSorter.m; sourceTree = "<group>"; };
 		FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailDataQualityCell.h; sourceTree = "<group>"; };
 		FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailDataQualityCell.m; sourceTree = "<group>"; };
 		FA2285601C8A49D700AC6FEA /* ContainedScrollViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainedScrollViewDelegate.h; sourceTree = "<group>"; };
@@ -1157,8 +1157,8 @@
 				FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */,
 				FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */,
 				FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */,
-				FA1B58CA1D626DFD00663150 /* GroupingController.h */,
-				FA1B58CB1D626DFD00663150 /* GroupingController.m */,
+				FA1B58CA1D626DFD00663150 /* ABSorter.h */,
+				FA1B58CB1D626DFD00663150 /* ABSorter.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
@@ -1929,7 +1929,7 @@
 				FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */,
 				FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */,
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
-				FA1B58CC1D626DFD00663150 /* GroupingController.m in Sources */,
+				FA1B58CC1D626DFD00663150 /* ABSorter.m in Sources */,
 				FA74A6251CB4C517002EBD0A /* RankedUserObsSpeciesCell.m in Sources */,
 				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,

@@ -39,7 +39,7 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
-#import "GroupingController.h"
+#import "ABSorter.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -424,9 +424,6 @@
 }
 
 - (void)showInitialSignupUI {
-	GroupingController *grouper = [[GroupingController alloc] init];
-	[grouper assignDeviceToTestGroups];
-
     [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
                      withProperties:@{ @"From": @"App Launch" }];
     
