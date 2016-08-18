@@ -130,8 +130,6 @@
         [UIView animateWithDuration:0.2f
                          animations:^{
                              [self.textfieldStackView removeArrangedSubview:self.emailField];
-                             [self.textfieldStackView insertArrangedSubview:self.usernameField
-                                                                    atIndex:0];
                              self.emailField.hidden = YES;
                              self.titleLabel.text = NSLocalizedString(@"Log In", nil);
                              [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
@@ -147,8 +145,6 @@
                          animations:^{
                              [self.textfieldStackView insertArrangedSubview:self.emailField
                                                                     atIndex:0];
-                             [self.textfieldStackView insertArrangedSubview:self.passwordField
-                                                                    atIndex:1];
                              self.emailField.hidden = NO;
                              self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
                              [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
