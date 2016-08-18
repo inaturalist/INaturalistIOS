@@ -39,7 +39,7 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
-#import "GroupingController.h"
+#import "ABSorter.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -424,28 +424,22 @@
 }
 
 - (void)showInitialSignupUI {
-	GroupingController *grouper = [[GroupingController alloc] init];
-	[grouper assignDeviceToTestGroups];
-    BOOL inGroupA = [grouper deviceInTestGroup:kOnboardingGroupA];
-    
-    // the new onboarding screens have design constraints
-    // even if the device/user was sorted into groupA,
-    // we can't show new onboarding on iphone4s or ios8 devices
-    BOOL isIphone4s = [UIScreen mainScreen].bounds.size.height == 480;
-    BOOL hasStackView = NSClassFromString(@"UIStackView") != nil;    
-
-    if(hasStackView && !isIphone4s && inGroupA) {
+	__weak typeof(self) weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+    	__strong typeof(weakSelf) strongSelf = weakSelf;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"App Launch",
-                                           @"Version": @"Onboarding" }];
+                 withProperties:@{ @"From": @"App Launch",
+                                   @"Version": @"Onboarding" }];
 
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
         UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
-        self.window.rootViewController = onboardingVC;
-    } else {
+        strongSelf.window.rootViewController = onboardingVC;
+    } B:^{
+    	__strong typeof(weakSelf) strongSelf = weakSelf;
+    	
         [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"App Launch",
-                                           @"Version": @"SplashScreen" }];
+                 withProperties:@{ @"From": @"App Launch",
+                                   @"Version": @"SplashScreen" }];
 
         SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
         splash.skippable = YES;
@@ -455,12 +449,10 @@
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-        nav.delegate = self;
-        [self.window setRootViewController:nav];
-    }
+        nav.delegate = strongSelf;
+        [strongSelf.window setRootViewController:nav];
+    }];
 }
-
-
 
 @end
 
