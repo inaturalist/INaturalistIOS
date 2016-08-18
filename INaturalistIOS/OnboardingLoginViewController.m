@@ -101,10 +101,10 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.emailField) {
-        [self.passwordField becomeFirstResponder];
-    } else if (textField == self.passwordField) {
         [self.usernameField becomeFirstResponder];
     } else if (textField == self.usernameField) {
+        [self.passwordField becomeFirstResponder];
+    } else if (textField == self.passwordField) {
         [self actionPressed:textField];
     }
     return YES;
