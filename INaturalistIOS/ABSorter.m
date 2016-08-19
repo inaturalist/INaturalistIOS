@@ -39,9 +39,11 @@ NSString *kInatTestGroupsKey = @"kInatTestGroupsKey";
         if (arc4random_uniform(10) == 0 && !isIphone4s && hasStackView) {
             [testGroupsMutableSet addObject:groupAKey];
             [testGroupsMutableSet removeObject:groupBKey];
+            [[Analytics sharedClient] event:groupAKey];
         } else {
             [testGroupsMutableSet addObject:groupBKey];
             [testGroupsMutableSet removeObject:groupAKey];
+            [[Analytics sharedClient] event:groupBKey];
         }
     }
     
