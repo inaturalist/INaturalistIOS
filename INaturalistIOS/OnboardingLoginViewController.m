@@ -226,14 +226,8 @@
                                            success:^(NSDictionary *info) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                                   [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
                                                });
-                                               /*
-                                               if (strongSelf.selectedPartner) {
-                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                 completion:nil];
-                                               }
-                                                */
                                                if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
                                                    [appDelegate showMainUI];
                                                } else {
@@ -242,7 +236,7 @@
                                            } failure:^(NSError *error) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
+                                                   [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
                                                });
                                                
                                                NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
