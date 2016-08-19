@@ -114,11 +114,7 @@
     if (self.textfieldStackView.arrangedSubviews.count == 2) {
         [self login];
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"not implemented"
-                                                                       message:@"sorry :("
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+    	[self signup];
     }
 }
 
@@ -177,6 +173,99 @@
                                             forState:UIControlStateNormal];
     }
 }
+
+- (void)signup {
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:self
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    // validators
+    BOOL isValid = YES;
+    NSString *alertMsg;
+    if (!self.emailField.text || [self.emailField.text rangeOfString:@"@"].location == NSNotFound) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Email Address", "Error for bad email when making account.");
+    }  else if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+                                     @"Error for bad password when making account");
+    } else if (!self.usernameField.text) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username hwne making account.");
+    }
+    
+    if (!isValid) {
+        NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+        if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
+        
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    NSString *license = self.licenseMyData ? @"CC-BY_NC" : @"on";
+    // TODO: partners
+	NSInteger selectedPartnerId = 1;    
+    
+    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:hudView animated:YES];
+    hud.labelText = NSLocalizedString(@"Creating iNaturalist account...",
+                                      @"Notice while we're creating an iNat account for them");
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    __weak typeof(self)weakSelf = self;
+    [appDelegate.loginController createAccountWithEmail:self.emailField.text
+                                               password:self.passwordField.text
+                                               username:self.usernameField.text
+                                                   site:selectedPartnerId
+                                                license:license
+                                                success:^(NSDictionary *info) {
+                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                    
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+                                                    });
+
+                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                        [appDelegate showMainUI];
+                                                    } else {
+                                                        [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                    }
+                                                }
+                                                failure:^(NSError *error) {
+                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
+
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+                                                    });
+
+                                                    NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+                                                    NSString *alertMsg;
+                                                    if (error) {
+                                                        alertMsg = error.localizedDescription;
+                                                    } else {
+                                                        alertMsg = NSLocalizedString(@"Failed to create an iNaturalist account. Please try again.",
+                                                                                   @"Unknown iNaturalist create account error");
+                                                    }
+                                                    
+                                                    [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                message:alertMsg
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                      otherButtonTitles:nil] show];
+                                                }];
+}
+
 
 - (void)login {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
