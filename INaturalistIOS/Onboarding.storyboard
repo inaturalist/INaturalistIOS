@@ -242,6 +242,7 @@
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2e2-wM-KPk">
                                                         <rect key="frame" x="0.0" y="0.0" width="520" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="tintColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="40" id="ASy-lL-Mdh"/>
                                                         </constraints>
@@ -254,6 +255,7 @@
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dSw-gs-zGG">
                                                         <rect key="frame" x="0.0" y="41" width="520" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="tintColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="40" id="afQ-vZ-bWc"/>
                                                         </constraints>
@@ -266,11 +268,12 @@
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FZ5-km-oDo">
                                                         <rect key="frame" x="0.0" y="82" width="520" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="tintColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="40" id="rHQ-7Y-WLW"/>
                                                         </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                                         <connections>
                                                             <outlet property="delegate" destination="j80-yK-ZbF" id="oLc-JT-mjg"/>
                                                         </connections>
@@ -422,10 +425,12 @@ UHJpdmFjeSBQb2xpY3k
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="emailField" destination="2e2-wM-KPk" id="EQc-0R-nZi"/>
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
+                        <outlet property="licenseMyDataLabel" destination="xUc-8o-XIN" id="C1f-DM-TqK"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>
                         <outlet property="passwordField" destination="FZ5-km-oDo" id="ef2-u2-1UH"/>
                         <outlet property="skipButton" destination="J6N-uD-ctb" id="WWs-Vr-PeJ"/>
                         <outlet property="switchContextButton" destination="uop-S8-3lF" id="e3O-o3-FUP"/>
+                        <outlet property="termsLabel" destination="YtY-We-SSc" id="7f9-t0-P84"/>
                         <outlet property="textfieldStackView" destination="Cjw-qm-xKX" id="v4v-ZG-rZf"/>
                         <outlet property="titleLabel" destination="pbQ-o3-5Xy" id="MFi-XU-TPC"/>
                         <outlet property="usernameField" destination="dSw-gs-zGG" id="ZZj-lx-q3q"/>

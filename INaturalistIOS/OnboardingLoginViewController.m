@@ -10,12 +10,14 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <NXOAuth2Client/NXOAuth2.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
 #import "INaturalistAppDelegate.h"
 #import "OnboardingPageViewController.h"
+#import "UITapGestureRecognizer+InatHelpers.h"
 
 @interface OnboardingLoginViewController () <UITextFieldDelegate>
 @property IBOutlet UILabel *titleLabel;
@@ -34,7 +36,12 @@
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
 
+@property IBOutlet UILabel *termsLabel;
+@property IBOutlet UILabel *licenseMyDataLabel;
+
 @property BOOL licenseMyData;
+
+@property NSArray <FAKIcon *> *leftViewIcons;
 
 @end
 
@@ -43,35 +50,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSArray *leftViewIcons = @[
-                               ({
-                                   FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
-                                   [email addAttribute:NSForegroundColorAttributeName
-                                                 value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                   email.attributedString;
-                               }),
-                               ({
-                                   FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
-                                   [lock addAttribute:NSForegroundColorAttributeName
-                                                value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                   lock.attributedString;
-                               }),
-                               ({
-                                   FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
-                                   [person addAttribute:NSForegroundColorAttributeName
+    self.leftViewIcons = @[
+                                 ({
+                                     FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
+                                     [email addAttribute:NSForegroundColorAttributeName
+                                                   value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                                      email;
+                                 }),
+                                 ({
+                                     FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
+                                     [lock addAttribute:NSForegroundColorAttributeName
                                                   value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                   person.attributedString;
-                               }),
-                               ];
+                                     lock;
+                                 }),
+                                 ({
+                                     FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
+                                     [person addAttribute:NSForegroundColorAttributeName
+                                                    value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                                     person;
+                                 }),
+                                 ];
     NSArray *fields = @[ self.emailField, self.passwordField, self.usernameField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
+        field.tag = idx;
         field.leftView = ({
             UILabel *label = [UILabel new];
             
             label.textAlignment = NSTextAlignmentCenter;
             label.frame = CGRectMake(0, 0, 60, 44);
             
-            label.attributedText = leftViewIcons[idx];
+            label.attributedText = [self.leftViewIcons[idx] attributedString];
             
             label;
         });
@@ -102,6 +110,81 @@
                                 forState:UIControlStateNormal];
     
     self.closeButton.hidden = self.skippable;
+    
+    
+    // terms label
+    NSString *base = NSLocalizedString(@"By using iNaturalist you agree to the Terms of Service and Privacy Policy.", @"Base text for terms of service and privacy policy notice when creating an iNat account.");
+    NSString *terms = NSLocalizedString(@"Terms of Service", @"Emphasized part of the terms of service base text.");
+    NSString *privacy = NSLocalizedString(@"Privacy Policy", @"Emphasized part of the privacy base text.");
+    
+    NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:base
+                                                                             attributes:@{
+                                                                                          NSFontAttributeName: [UIFont systemFontOfSize:13]
+                                                                                          }];
+    NSRange termsRange = [base rangeOfString:terms];
+    if (termsRange.location != NSNotFound) {
+        [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:termsRange];
+    }
+    
+    NSRange privacyRange = [base rangeOfString:privacy];
+    if (privacyRange.location != NSNotFound) {
+        [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:privacyRange];
+    }
+    
+    self.termsLabel.attributedText = attr;
+    
+    UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
+                                                                                    UIGestureRecognizerState state,
+                                                                                    CGPoint location) {
+        
+        UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
+        if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:termsRange]) {
+            NSURL *termsURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/terms"];
+            [[UIApplication sharedApplication] openURL:termsURL];
+        } else if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:privacyRange]) {
+            NSURL *privacyURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/privacy"];
+            [[UIApplication sharedApplication] openURL:privacyURL];
+        }
+    }];
+    self.termsLabel.userInteractionEnabled = YES;
+    [self.termsLabel addGestureRecognizer:tap];
+
+    
+    // license my content label
+    
+    base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
+    NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
+    
+    attr = [[NSMutableAttributedString alloc] initWithString:base
+                                                  attributes:@{
+                                                               NSFontAttributeName: [UIFont systemFontOfSize:13]
+                                                               }];
+    NSRange emphasisRange = [base rangeOfString:emphasis];
+    if (emphasisRange.location != NSNotFound) {
+        [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:emphasisRange];
+        
+        UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
+                                                                                        UIGestureRecognizerState state,
+                                                                                        CGPoint location) {
+            
+            NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
+            NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                            message:creativeCommons
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
+        
+        self.licenseMyDataLabel.userInteractionEnabled = YES;
+        [self.licenseMyDataLabel addGestureRecognizer:tap];
+    }
+    self.licenseMyDataLabel.attributedText = attr;
+
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -109,15 +192,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+#pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.emailField) {
@@ -129,6 +205,22 @@
     }
     return YES;
 }
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    UILabel *leftViewLabel = (UILabel *)[textField leftView];
+    FAKIcon *icon = self.leftViewIcons[textField.tag];
+    [icon addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+    [leftViewLabel setAttributedText:icon.attributedString];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    UILabel *leftViewLabel = (UILabel *)[textField leftView];
+    FAKIcon *icon = self.leftViewIcons[textField.tag];
+    [icon addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#4a4a4a"]];
+    [leftViewLabel setAttributedText:icon.attributedString];
+}
+
+#pragma mark - UIControl targets
 
 - (IBAction)actionPressed:(id)sender {
     if (self.textfieldStackView.arrangedSubviews.count == 2) {
@@ -208,6 +300,8 @@
                                  completion:nil];
     }
 }
+
+#pragma mark - Actions
 
 - (void)signup {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
