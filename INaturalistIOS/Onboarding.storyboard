@@ -3,6 +3,7 @@
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
@@ -223,10 +224,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MC0-kW-bph">
-                                <rect key="frame" x="542" y="20" width="30" height="30"/>
-                                <state key="normal" title="X"/>
-                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="kGO-zQ-Ixw">
                                 <rect key="frame" x="30" y="124" width="520" height="481"/>
                                 <subviews>
@@ -401,16 +398,28 @@ UHJpdmFjeSBQb2xpY3k
                                     <constraint firstItem="31y-8d-eUf" firstAttribute="width" secondItem="kGO-zQ-Ixw" secondAttribute="width" id="HXb-o0-MhJ"/>
                                 </constraints>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MC0-kW-bph">
+                                <rect key="frame" x="550" y="28" width="30" height="30"/>
+                                <state key="normal" title="X">
+                                    <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="closePressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="nam-GV-Rl5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="kGO-zQ-Ixw" firstAttribute="centerY" secondItem="sOT-vv-oc9" secondAttribute="centerY" id="LHE-gk-e6z"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="MC0-kW-bph" secondAttribute="trailing" id="Q8t-4Y-DFP"/>
+                            <constraint firstItem="MC0-kW-bph" firstAttribute="top" secondItem="Hgf-d3-Me4" secondAttribute="bottom" constant="8" id="XN4-JN-Eta"/>
                             <constraint firstAttribute="trailing" secondItem="kGO-zQ-Ixw" secondAttribute="trailing" constant="40" id="YMZ-9C-OsJ"/>
                             <constraint firstItem="kGO-zQ-Ixw" firstAttribute="leading" secondItem="sOT-vv-oc9" secondAttribute="leading" constant="40" id="bbd-9f-gH0"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="actionButton" destination="LVz-7N-QYA" id="emB-d1-z8l"/>
+                        <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="emailField" destination="2e2-wM-KPk" id="EQc-0R-nZi"/>
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>

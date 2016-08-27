@@ -32,6 +32,7 @@
 @property IBOutlet UIButton *switchContextButton;
 
 @property IBOutlet UIButton *skipButton;
+@property IBOutlet UIButton *closeButton;
 
 @property BOOL licenseMyData;
 
@@ -93,6 +94,14 @@
         self.skipButton.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
     }
     self.skipButton.hidden = !self.skippable;
+    
+    FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:30];
+    [closeIcon addAttribute:NSForegroundColorAttributeName
+                      value:[UIColor colorWithHexString:@"#4a4a4a"]];
+    [self.closeButton setAttributedTitle:closeIcon.attributedString
+                                forState:UIControlStateNormal];
+    
+    self.closeButton.hidden = self.skippable;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -189,6 +198,11 @@
     if (self.skipAction) {
         self.skipAction();
     }
+}
+
+- (IBAction)closePressed:(id)sender {
+    [self dismissViewControllerAnimated:YES
+                             completion:nil];
 }
 
 - (void)signup {
