@@ -42,26 +42,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSArray *leftViews = @[
-                           ({
-                               FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
-                               [email addAttribute:NSForegroundColorAttributeName
-                                             value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                               email.attributedString;
-                           }),
-                           ({
-                               FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
-                               [lock addAttribute:NSForegroundColorAttributeName
-                                            value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                               lock.attributedString;
-                           }),
-                           ({
-                               FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
-                               [person addAttribute:NSForegroundColorAttributeName
-                                              value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                               person.attributedString;
-                           }),
-                           ];
+    NSArray *leftViewIcons = @[
+                               ({
+                                   FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
+                                   [email addAttribute:NSForegroundColorAttributeName
+                                                 value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                                   email.attributedString;
+                               }),
+                               ({
+                                   FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
+                                   [lock addAttribute:NSForegroundColorAttributeName
+                                                value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                                   lock.attributedString;
+                               }),
+                               ({
+                                   FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
+                                   [person addAttribute:NSForegroundColorAttributeName
+                                                  value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                                   person.attributedString;
+                               }),
+                               ];
     NSArray *fields = @[ self.emailField, self.passwordField, self.usernameField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
         field.leftView = ({
@@ -70,7 +70,7 @@
             label.textAlignment = NSTextAlignmentCenter;
             label.frame = CGRectMake(0, 0, 60, 44);
             
-            label.attributedText = leftViews[idx];
+            label.attributedText = leftViewIcons[idx];
             
             label;
         });
