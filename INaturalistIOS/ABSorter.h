@@ -11,7 +11,7 @@
 @interface ABSorter : NSObject
 
 + (void)abTestWithName:(NSString *)name A:(void (^)())aBlock B:(void (^)())bBlock;
-
++ (void)forceABSwapForName:(NSString *)name;
 @end
 
 extern NSString *kOnboardingTestName;

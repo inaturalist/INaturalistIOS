@@ -347,6 +347,19 @@ static const int AutouploadSwitchTag = 102;
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(forceABSwap)];
+    tap.numberOfTapsRequired = 4;
+    tap.numberOfTouchesRequired = 1;
+    [self.view addGestureRecognizer:tap];
+}
+
+- (void)forceABSwap {
+    [JDStatusBarNotification showWithStatus:@"Swapping Onboarding A/B Group"
+                               dismissAfter:3.0f
+                                  styleName:nil];
+    [ABSorter forceABSwapForName:kOnboardingTestName];
 }
 
 - (void)dealloc {

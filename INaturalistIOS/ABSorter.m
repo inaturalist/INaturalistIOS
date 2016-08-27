@@ -39,11 +39,18 @@ NSString *kInatTestGroupsKey = @"kInatTestGroupsKey";
         if (arc4random_uniform(10) == 0 && !isIphone4s && hasStackView) {
             [testGroupsMutableSet addObject:groupAKey];
             [testGroupsMutableSet removeObject:groupBKey];
-            [[Analytics sharedClient] event:groupAKey];
+            [[Analytics sharedClient] event:groupAKey
+                             withProperties:@{
+                                              @"Forced": @"NO",
+                                              }];
         } else {
             [testGroupsMutableSet addObject:groupBKey];
             [testGroupsMutableSet removeObject:groupAKey];
-            [[Analytics sharedClient] event:groupBKey];
+            [[Analytics sharedClient] event:groupBKey
+                             withProperties:@{
+                                              @"Forced": @"NO",
+                                              }];
+
         }
     }
     
@@ -69,6 +76,32 @@ NSString *kInatTestGroupsKey = @"kInatTestGroupsKey";
     } else {
         bBlock();
     }
+}
+
++ (void)forceABSwapForName:(NSString *)name {
+    NSString *groupAKey = [self keyForName:name group:@"A"];
+    NSString *groupBKey = [self keyForName:name group:@"B"];
+
+    NSMutableSet *testGroupsMutableSet = [NSMutableSet setWithArray:[self assignedTestGroups]];
+    if ([[self assignedTestGroups] containsObject:groupAKey]) {
+        [testGroupsMutableSet addObject:groupBKey];
+        [testGroupsMutableSet removeObject:groupAKey];
+        [[Analytics sharedClient] event:groupBKey
+                         withProperties:@{
+                                          @"Forced": @"YES",
+                                          }];
+    } else {
+        [testGroupsMutableSet addObject:groupAKey];
+        [testGroupsMutableSet removeObject:groupBKey];
+        [[Analytics sharedClient] event:groupAKey
+                         withProperties:@{
+                                          @"Forced": @"YES",
+                                          }];
+    }
+    
+    NSArray *testGroups = [testGroupsMutableSet allObjects];
+    [[NSUserDefaults standardUserDefaults] setObject:testGroups forKey:kInatTestGroupsKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
