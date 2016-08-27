@@ -10,6 +10,8 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "OnboardingPageViewController.h"
+#import "OnboardingLoginViewController.h"
+#import "INaturalistAppDelegate.h"
 
 @interface OnboardingPageViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 @property NSArray *orderedViewControllers;
@@ -41,7 +43,16 @@
     UIStoryboard *onboarding = [UIStoryboard storyboardWithName:@"Onboarding"
                                                          bundle:[NSBundle mainBundle]];
     self.orderedViewControllers = [identifiers bk_map:^id(NSString *identifier) {
-        return [onboarding instantiateViewControllerWithIdentifier:identifier];
+        if ([identifier isEqualToString:@"onboarding-login"]) {
+            OnboardingLoginViewController *vc = [onboarding instantiateViewControllerWithIdentifier:identifier];
+            vc.skippable = YES;
+            vc.skipAction = ^{
+                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+            };
+            return vc;
+        } else {
+            return [onboarding instantiateViewControllerWithIdentifier:identifier];
+        }
     }];
     
     [self setViewControllers:@[ [self.orderedViewControllers firstObject] ]

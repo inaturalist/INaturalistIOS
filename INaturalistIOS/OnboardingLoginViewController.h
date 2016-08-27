@@ -10,4 +10,7 @@
 
 @interface OnboardingLoginViewController : UIViewController
 
+@property BOOL skippable;
+@property (nonatomic, copy) void(^skipAction)();
+
 @end

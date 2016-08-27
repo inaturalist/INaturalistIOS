@@ -228,9 +228,9 @@
                                 <state key="normal" title="X"/>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="kGO-zQ-Ixw">
-                                <rect key="frame" x="30" y="124" width="520" height="471"/>
+                                <rect key="frame" x="30" y="124" width="520" height="481"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="bottom" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
                                         <rect key="frame" x="0.0" y="0.0" width="520" height="329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pbQ-o3-5Xy">
@@ -239,7 +239,7 @@
                                                 <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Cjw-qm-xKX">
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Cjw-qm-xKX">
                                                 <rect key="frame" x="0.0" y="44" width="520" height="122"/>
                                                 <subviews>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2e2-wM-KPk">
@@ -280,7 +280,7 @@
                                                     </textField>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gUI-g3-aai">
+                                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gUI-g3-aai">
                                                 <rect key="frame" x="0.0" y="181" width="520" height="44"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yxB-jO-b09">
@@ -303,7 +303,7 @@
                                                     </label>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LVz-7N-QYA">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LVz-7N-QYA">
                                                 <rect key="frame" x="0.0" y="240" width="520" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="adp-lg-tJN"/>
@@ -320,7 +320,7 @@
                                                     <action selector="actionPressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="PRF-jE-Bjh"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uop-S8-3lF">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uop-S8-3lF">
                                                 <rect key="frame" x="0.0" y="299" width="520" height="30"/>
                                                 <state key="normal" title="Already have an account?">
                                                     <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
@@ -338,12 +338,8 @@
                                             <constraint firstItem="uop-S8-3lF" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="zAb-kp-1XL"/>
                                         </constraints>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J6N-uD-ctb">
-                                        <rect key="frame" x="245" y="354" width="30" height="30"/>
-                                        <state key="normal" title="Skip"/>
-                                    </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-dJ-pka">
-                                        <rect key="frame" x="41" y="409" width="439" height="62"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-dJ-pka">
+                                        <rect key="frame" x="41" y="354" width="439" height="62"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or Log in with:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bfj-77-C1k">
                                                 <rect key="frame" x="0.0" y="0.0" width="439" height="16"/>
@@ -388,6 +384,18 @@ UHJpdmFjeSBQb2xpY3k
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="hby-aP-vLo"/>
                                         </constraints>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J6N-uD-ctb">
+                                        <rect key="frame" x="238" y="441" width="44" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="dad-GB-mXz"/>
+                                        </constraints>
+                                        <state key="normal" title="Skip &gt;">
+                                            <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="skipPressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="Umv-oh-Yo7"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="31y-8d-eUf" firstAttribute="width" secondItem="kGO-zQ-Ixw" secondAttribute="width" id="HXb-o0-MhJ"/>
@@ -407,6 +415,7 @@ UHJpdmFjeSBQb2xpY3k
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>
                         <outlet property="passwordField" destination="FZ5-km-oDo" id="ef2-u2-1UH"/>
+                        <outlet property="skipButton" destination="J6N-uD-ctb" id="WWs-Vr-PeJ"/>
                         <outlet property="switchContextButton" destination="uop-S8-3lF" id="e3O-o3-FUP"/>
                         <outlet property="textfieldStackView" destination="Cjw-qm-xKX" id="v4v-ZG-rZf"/>
                         <outlet property="titleLabel" destination="pbQ-o3-5Xy" id="MFi-XU-TPC"/>

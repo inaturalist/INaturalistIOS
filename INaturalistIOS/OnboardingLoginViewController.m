@@ -31,6 +31,8 @@
 @property IBOutlet UIButton *actionButton;
 @property IBOutlet UIButton *switchContextButton;
 
+@property IBOutlet UIButton *skipButton;
+
 @property BOOL licenseMyData;
 
 @end
@@ -82,6 +84,15 @@
     
     self.actionButton.backgroundColor = [UIColor inatTint];
     
+    self.skipButton.layer.borderColor = [UIColor colorWithHexString:@"#4a4a4a"].CGColor;
+    self.skipButton.layer.cornerRadius = 20.0f;
+    self.skipButton.layer.borderWidth = 1.0f;
+    
+    self.skipButton.contentEdgeInsets = UIEdgeInsetsMake(-5, 15, -5, 15);
+    if ([self.skipButton respondsToSelector:@selector(setLayoutMargins:)]) {
+        self.skipButton.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
+    }
+    self.skipButton.hidden = !self.skippable;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -171,6 +182,12 @@
         FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:30];
         [self.licenseMyDataButton setAttributedTitle:circle.attributedString
                                             forState:UIControlStateNormal];
+    }
+}
+
+- (IBAction)skipPressed:(id)sender {
+    if (self.skipAction) {
+        self.skipAction();
     }
 }
 
