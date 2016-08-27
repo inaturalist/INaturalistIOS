@@ -36,6 +36,8 @@
 #import "ExploreLeaderboardViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "SignupSplashViewController.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
 #import "User.h"
@@ -156,28 +158,19 @@
                                                                         [searchMenu showActiveSearch];
                                                                 }];
         
+        __weak typeof(self)weakSelf = self;
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find my observations", nil)
                                                               action:^{
+                                                                  [searchMenu hideOptionSearch];
+                                                                  __strong typeof(weakSelf)strongSelf = weakSelf;
                                                                   INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                                                                   if ([appDelegate.loginController isLoggedIn]) {
-                                                                      [self searchForMyObservations];
-                                                                      [searchMenu hideOptionSearch];
+                                                                      [strongSelf searchForMyObservations];
                                                                       if (observationsController.activeSearchPredicates.count > 0)
                                                                           [searchMenu showActiveSearch];
                                                                   } else {
-                                                                      [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                                                                                       withProperties:@{ @"From": @"Explore Search My Obs" }];
-
-                                                                      SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil
-                                                                                                                                                        bundle:nil];
-                                                                      UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-                                                                      nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-                                                                      splash.animateIn = NO;
-                                                                      splash.skippable = NO;
-                                                                      splash.cancellable = YES;
-                                                                      splash.reason = NSLocalizedString(@"You must be logged in to do that.",
-                                                                                                        @"Unspecific signup prompt reason.");
-                                                                      [self presentViewController:nav animated:YES completion:nil];
+                                                                      [strongSelf presentSignupPrompt:NSLocalizedString(@"You must be logged in to do that.",
+                                                                                                                        @"Unspecific signup prompt reason.")];
                                                                   }
                                                               }];
         view.shortcutItems = @[nearMe, mine];
@@ -244,6 +237,31 @@
     [self startLookingForCurrentLocationNotify:NO];
 }
 
+- (void)presentSignupPrompt:(NSString *)reason {
+    __weak typeof(self) weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Explore Search My Obs",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Explore Search My Obs",
+                                           @"Version": @"SplashScreen" }];
+        
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.cancellable = YES;
+        signup.reason = reason;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    }];
+}
 
 #pragma mark - UIControl targets
 

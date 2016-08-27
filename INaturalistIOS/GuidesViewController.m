@@ -24,6 +24,8 @@
 #import "NSURL+INaturalist.h"
 #import "UIColor+INaturalist.h"
 #import "User.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -258,30 +260,37 @@ static const int ListControlIndexNearby = 2;
 {
     self.navigationItem.rightBarButtonItem = self.syncButton;
 }
-    
-- (void)showSignupPrompt {
-    __weak typeof(self) weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
-                                                      object:self
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *note) {
-                                                      __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                      strongSelf.guideUsersSyncedAt = nil;
-                                                      [strongSelf sync];
-                                                  }];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Guides" }];
 
-    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-    svc.skippable = NO;
-    svc.cancellable = YES;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
-    // for sizzle
-    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [self.tabBarController presentViewController:nav
-                                        animated:YES
-                                      completion:nil];
+- (void)presentSignupPrompt:(NSString *)reason {
+    __weak typeof(self) weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Guides",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        login.closeAction = ^{
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            // switch back to all
+            [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexAll];
+            [strongSelf dismissViewControllerAnimated:YES completion:nil];
+        };
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Guides",
+                                           @"Version": @"SplashScreen" }];
+        
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.cancellable = YES;
+        signup.reason = reason;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    }];
 }
 
 - (UIBarButtonItem *)listControlItem
@@ -528,7 +537,7 @@ static const int ListControlIndexNearby = 2;
     NSString *errorMsg = error.localizedDescription;
     
     if (jsonParsingError || authFailure) {
-        [self showSignupPrompt];
+        [self presentSignupPrompt:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
@@ -587,7 +596,7 @@ static const int ListControlIndexNearby = 2;
     
     if (authFailure) {
         [self syncFinished];
-        [self showSignupPrompt];
+        [self presentSignupPrompt:nil];
     } else if (errorMsg) {
         [self syncFinished];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)

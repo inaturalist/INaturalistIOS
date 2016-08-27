@@ -24,6 +24,8 @@
 #import "NSURL+INaturalist.h"
 #import "ProjectDetailV2ViewController.h"
 #import "User.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -217,15 +219,7 @@ static const int ListControlIndexNearby = 2;
         [self syncFinished];
         self.projectUsersSyncedAt = nil;
 
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Projects" }];
-
-        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        splash.reason = NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.");
-        splash.skippable = NO;
-        splash.cancellable = YES;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self showSignupPrompt:NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.")];
     }
 }
 
@@ -247,29 +241,41 @@ static const int ListControlIndexNearby = 2;
     
 }
 
-- (void)showSignupPrompt {
+- (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:kUserLoggedInNotificationName
-                                                      object:self
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *note) {
-                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                      strongSelf.projectUsersSyncedAt = nil;
-                                                      [weakSelf sync];
-                                                  }];
     
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Projects" }];
-
-    SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-    svc.cancellable = YES;
-    svc.skippable = NO;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
-    // for sizzle
-    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [self.tabBarController presentViewController:nav
-                                        animated:YES
-                                      completion:nil];
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        login.closeAction = ^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            // switch back to featured
+            [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexFeatured];
+            [strongSelf dismissViewControllerAnimated:YES completion:nil];
+        };
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects",
+                                           @"Version": @"SplashScreen" }];
+    
+        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        svc.cancellable = YES;
+        svc.skippable = NO;
+        svc.reason = reason;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        // for sizzle
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf.tabBarController presentViewController:nav
+                                                animated:YES
+                                              completion:nil];
+    }];
 }
 
 
@@ -580,7 +586,7 @@ static const int ListControlIndexNearby = 2;
     NSString *errorMsg = error.localizedDescription;
     
     if (jsonParsingError || authFailure) {
-        [self showSignupPrompt];
+        [self showSignupPrompt:nil];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
@@ -611,7 +617,7 @@ static const int ListControlIndexNearby = 2;
     
     if (authFailure) {
         [self syncFinished];
-        [self showSignupPrompt];
+        [self showSignupPrompt:nil];
     } else if (errorMsg) {
         [self syncFinished];
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
