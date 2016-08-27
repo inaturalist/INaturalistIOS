@@ -201,8 +201,12 @@
 }
 
 - (IBAction)closePressed:(id)sender {
-    [self dismissViewControllerAnimated:YES
-                             completion:nil];
+    if (self.closeAction) {
+        self.closeAction();
+    } else {
+        [self dismissViewControllerAnimated:YES
+                                 completion:nil];
+    }
 }
 
 - (void)signup {

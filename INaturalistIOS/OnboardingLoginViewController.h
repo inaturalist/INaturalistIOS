@@ -12,5 +12,6 @@
 
 @property BOOL skippable;
 @property (nonatomic, copy) void(^skipAction)();
+@property (nonatomic, copy) void(^closeAction)();
 
 @end
