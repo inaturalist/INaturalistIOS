@@ -225,7 +225,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="kGO-zQ-Ixw">
-                                <rect key="frame" x="30" y="124" width="520" height="481"/>
+                                <rect key="frame" x="30" y="124" width="520" height="6067"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
                                         <rect key="frame" x="0.0" y="0.0" width="520" height="329"/>
@@ -339,35 +339,43 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-dJ-pka">
-                                        <rect key="frame" x="41" y="354" width="439" height="62"/>
+                                        <rect key="frame" x="109" y="354" width="303" height="5648"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or Log in with:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bfj-77-C1k">
-                                                <rect key="frame" x="0.0" y="0.0" width="439" height="16"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="303" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="dfE-eN-x9k">
-                                                <rect key="frame" x="0.0" y="16" width="439" height="30"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="dfE-eN-x9k">
+                                                <rect key="frame" x="0.0" y="16" width="303" height="36"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tO1-gv-tvA">
-                                                        <rect key="frame" x="0.0" y="0.0" width="220" height="30"/>
-                                                        <state key="normal" title="Facebook"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="IconAndTextControl">
+                                                        <rect key="frame" x="0.0" y="0.0" width="140" height="36"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="36" id="cdl-8D-La0"/>
+                                                            <constraint firstAttribute="width" constant="140" id="eXN-im-CZK"/>
+                                                        </constraints>
                                                         <connections>
-                                                            <action selector="facebookPressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="06E-Ml-JZA"/>
+                                                            <action selector="facebookPressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="1j7-eL-N8o"/>
                                                         </connections>
-                                                    </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sI6-Ux-Wxb">
-                                                        <rect key="frame" x="220" y="0.0" width="220" height="30"/>
-                                                        <state key="normal" title="Google+"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JNh-8M-Acy" customClass="IconAndTextControl">
+                                                        <rect key="frame" x="163" y="0.0" width="140" height="36"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="140" id="9Tf-kg-5QB"/>
+                                                            <constraint firstAttribute="height" constant="36" id="V3H-1X-THa"/>
+                                                        </constraints>
                                                         <connections>
-                                                            <action selector="googlePressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="V09-MB-e2E"/>
+                                                            <action selector="googlePressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="gDJ-ON-Yxe"/>
                                                         </connections>
-                                                    </button>
+                                                    </view>
                                                 </subviews>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YtY-We-SSc">
-                                                <rect key="frame" x="0.0" y="46" width="439" height="16"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YtY-We-SSc">
+                                                <rect key="frame" x="0.0" y="52" width="303" height="5596"/>
                                                 <string key="text" base64-UTF8="YES">
 QnkgdXNpbmcgaU5hdHVyYWxpc3QgeW91IGFncmVlIHRvIHRoZSBUZXJtcyBvZiADU2VydmljZSBhbmQg
 UHJpdmFjeSBQb2xpY3k
@@ -385,7 +393,7 @@ UHJpdmFjeSBQb2xpY3k
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J6N-uD-ctb">
-                                        <rect key="frame" x="238" y="441" width="44" height="40"/>
+                                        <rect key="frame" x="238" y="6027" width="44" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="dad-GB-mXz"/>
                                         </constraints>
@@ -424,6 +432,8 @@ UHJpdmFjeSBQb2xpY3k
                         <outlet property="actionButton" destination="LVz-7N-QYA" id="emB-d1-z8l"/>
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="emailField" destination="2e2-wM-KPk" id="EQc-0R-nZi"/>
+                        <outlet property="facebookButton" destination="u2t-rU-mF6" id="Ze9-Lz-HUy"/>
+                        <outlet property="googleButton" destination="JNh-8M-Acy" id="Zq5-Ly-3Gw"/>
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
                         <outlet property="licenseMyDataLabel" destination="xUc-8o-XIN" id="C1f-DM-TqK"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>

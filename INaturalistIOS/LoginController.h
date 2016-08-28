@@ -26,6 +26,9 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
                                   success:(LoginSuccessBlock)success
                                   failure:(LoginErrorBlock)error;
+- (void)loginWithGoogleUsingViewController:(UIViewController *)parent
+                                   success:(LoginSuccessBlock)success
+                                   failure:(LoginErrorBlock)error;
 
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password

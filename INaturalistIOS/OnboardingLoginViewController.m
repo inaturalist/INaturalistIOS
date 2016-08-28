@@ -18,6 +18,8 @@
 #import "INaturalistAppDelegate.h"
 #import "OnboardingPageViewController.h"
 #import "UITapGestureRecognizer+InatHelpers.h"
+#import "IconAndTextControl.h"
+#import "Analytics.h"
 
 @interface OnboardingLoginViewController () <UITextFieldDelegate>
 @property IBOutlet UILabel *titleLabel;
@@ -35,6 +37,9 @@
 
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
+
+@property IBOutlet IconAndTextControl *facebookButton;
+@property IBOutlet IconAndTextControl *googleButton;
 
 @property IBOutlet UILabel *termsLabel;
 @property IBOutlet UILabel *licenseMyDataLabel;
@@ -184,6 +189,27 @@
     }
     self.licenseMyDataLabel.attributedText = attr;
 
+    [@[self.facebookButton, self.googleButton] enumerateObjectsUsingBlock:^(IconAndTextControl *btn, NSUInteger idx, BOOL * _Nonnull stop) {
+        btn.layer.cornerRadius = 2.0f;
+        btn.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
+        btn.separatorColor = [UIColor colorWithHexString:@"#cccccc"];
+        btn.textColor = [UIColor colorWithHexString:@"#4a4a4a"];
+    }];
+    self.facebookButton.attributedIconTitle = ({
+        FAKIcon *facebook = [FAKIonIcons socialFacebookIconWithSize:22];
+        [facebook addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"]];
+        [facebook attributedString];
+    });
+    self.facebookButton.textTitle = @"Facebook";
+    [self.facebookButton addTarget:self action:@selector(facebookPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.googleButton.attributedIconTitle = ({
+        FAKIcon *google = [FAKIonIcons socialGoogleplusIconWithSize:22];
+        [google addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"]];
+        [google attributedString];
+    });
+    self.googleButton.textTitle = @"Google";
+    [self.googleButton addTarget:self action:@selector(googlePressed:) forControlEvents:UIControlEventTouchUpInside];
 
 }
 
@@ -265,11 +291,102 @@
 
 
 - (IBAction)facebookPressed:(id)sender {
+    [[Analytics sharedClient] event:kAnalyticsEventSplashFacebook
+                     withProperties:@{ @"Version": @"Onboarding" }];
     
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController loginWithFacebookViewController:self
+                                                         success:^(NSDictionary *info) {
+                                                             __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                             
+                                                             if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                                 [appDelegate showMainUI];
+                                                             } else {
+                                                                 [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                             }
+                                                             /*
+                                                             if (strongSelf.selectedPartner) {
+                                                                 [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                               completion:nil];
+                                                             }
+                                                              */
+
+                                                         } failure:^(NSError *error) {
+                                                             NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
+                                                             NSString *alertMsg;
+                                                             if (error) {
+                                                                 alertMsg = error.localizedDescription;
+                                                             } else {
+                                                                 alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
+                                                                                              @"Unknown facebook login error");
+                                                             }
+                                                             
+                                                             [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                         message:alertMsg
+                                                                                        delegate:nil
+                                                                               cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                               otherButtonTitles:nil] show];
+                                                         }];
 }
 
 - (IBAction)googlePressed:(id)sender {
+    [[Analytics sharedClient] event:kAnalyticsEventSplashGoogle
+                     withProperties:@{ @"Version": @"Onboarding" }];
     
+    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    [appDelegate.loginController loginWithGoogleUsingViewController:self
+                                                            success:^(NSDictionary *info) {
+                                                               __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                               
+                                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                                   [appDelegate showMainUI];
+                                                               } else {
+                                                                   [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                               }
+
+                                                               /*
+                                                               if (strongSelf.selectedPartner) {
+                                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                                 completion:nil];
+                                                               }
+                                                                */
+                                                           } failure:^(NSError *error) {
+                                                               NSString *alertTitle = NSLocalizedString(@"Log In Problem",
+                                                                                                        @"Title for login problem alert");
+                                                               NSString *alertMsg;
+                                                               if (error) {
+                                                                   alertMsg = error.localizedDescription;
+                                                               } else {
+                                                                   alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                @"Unknown google login error");
+                                                               }
+                                                               [[[UIAlertView alloc] initWithTitle:alertTitle
+                                                                                           message:alertMsg
+                                                                                          delegate:nil
+                                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                                 otherButtonTitles:nil] show];
+                                                           }];
 }
 
 

@@ -214,6 +214,7 @@
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
 		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
+		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
@@ -700,6 +701,8 @@
 		FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashToSignupTransitionAnimator.m; sourceTree = "<group>"; };
 		FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupToSplashTransitionAnimator.h; sourceTree = "<group>"; };
 		FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupToSplashTransitionAnimator.m; sourceTree = "<group>"; };
+		FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconAndTextControl.h; sourceTree = "<group>"; };
+		FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconAndTextControl.m; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
@@ -1148,6 +1151,8 @@
 				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
 				FAEF23421C7D0DD300208F44 /* Project Details */,
 				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
+				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
+				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2024,6 +2029,7 @@
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
 				FA711AAB1D53D71500C4FFDB /* OnboardingPageViewController.m in Sources */,
 				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
+				FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
 				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
