@@ -221,7 +221,11 @@ static char PARTNER_ASSOCIATED_KEY;
     });
     self.googleButton.textTitle = @"Google";
     [self.googleButton addTarget:self action:@selector(googlePressed:) forControlEvents:UIControlEventTouchUpInside];
-
+    
+    
+    self.switchContextButton.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
+    self.switchContextButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {

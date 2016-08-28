@@ -116,6 +116,7 @@
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
+		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
 		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
 		FA3F1F911A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */; };
@@ -498,6 +499,8 @@
 		FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardViewController.m; sourceTree = "<group>"; };
 		FA3D90F51A95148500BAA0EC /* ExploreLeaderboardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardCell.h; sourceTree = "<group>"; };
 		FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardCell.m; sourceTree = "<group>"; };
+		FA3E75E61D73A57D00C459E5 /* OnboardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingViewController.h; sourceTree = "<group>"; };
+		FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingViewController.m; sourceTree = "<group>"; };
 		FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreDisambiguator.h; sourceTree = "<group>"; };
 		FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreDisambiguator.m; sourceTree = "<group>"; };
 		FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreProject+SearchResultsHelper.h"; sourceTree = "<group>"; };
@@ -1454,6 +1457,8 @@
 		FA711AA81D53D6E600C4FFDB /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				FA3E75E61D73A57D00C459E5 /* OnboardingViewController.h */,
+				FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */,
 				FA711AA91D53D71500C4FFDB /* OnboardingPageViewController.h */,
 				FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */,
 				FA711AAC1D53E52600C4FFDB /* OnboardingLoginViewController.h */,
@@ -1970,6 +1975,7 @@
 				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
 				FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */,
 				FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */,
+				FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */,
 				FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */,
 				FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */,
 				FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */,

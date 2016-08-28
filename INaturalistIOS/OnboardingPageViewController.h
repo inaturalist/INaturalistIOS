@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OnboardingPageViewController : UIPageViewController
+@class OnboardingPageViewController;
 
+@protocol OnboardingPageViewControllerDelegate
+- (void)onboardingPageViewController:(OnboardingPageViewController *)vc didUpdatePageCount:(NSInteger)count;
+- (void)onboardingPageViewController:(OnboardingPageViewController *)bc didUpdatePageIndex:(NSInteger)index;
+- (void)onboardingPageViewController:(OnboardingPageViewController *)bc willUpdateToPageIndex:(NSInteger)newIndex fromPageIndex:(NSInteger)oldIndex;
 @end
+
+@interface OnboardingPageViewController : UIPageViewController
+@property (assign) id <OnboardingPageViewControllerDelegate> onboardingDelegate;
+- (void)scrollToViewControllerAtIndex:(NSInteger)index;
+@end
+

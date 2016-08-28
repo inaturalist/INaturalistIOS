@@ -28,10 +28,6 @@
     
     self.view.backgroundColor = [UIColor colorWithHexString:@"#efefef"];
 
-    UIPageControl *pageControl = [UIPageControl appearanceWhenContainedIn:[OnboardingPageViewController class], nil];
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
-    pageControl.tintColor = [UIColor blackColor];
     
     NSArray *identifiers = @[@"onboarding-logo",
                              @"onboarding-observe",
@@ -59,6 +55,9 @@
                    direction:UIPageViewControllerNavigationDirectionForward
                     animated:YES
                   completion:nil];
+    
+    [self.onboardingDelegate onboardingPageViewController:self
+                                       didUpdatePageCount:self.orderedViewControllers.count];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -122,59 +121,49 @@
     return self.orderedViewControllers[nextIndex];
 }
 
-- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
-    return self.orderedViewControllers.count;
-}
-
-- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
-    UIViewController *first = [self.orderedViewControllers firstObject];
-    NSInteger firstViewControllerIndex = [self.orderedViewControllers indexOfObject:first];
-    if (firstViewControllerIndex == NSNotFound) {
-        return 0;
-    }
-    return firstViewControllerIndex;
-}
-
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
+    UIViewController *first = [self.viewControllers firstObject];
+    NSInteger oldIndex = [self.orderedViewControllers indexOfObject:first];
     
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSArray *subviews = self.view.subviews;
-        for (int i=0; i<[subviews count]; i++) {
-            if ([[subviews objectAtIndex:i] isKindOfClass:[UIPageControl class]]) {
-                self.pageControl = (UIPageControl *)[subviews objectAtIndex:i];
-                self.pageControl.hidden = YES;
-            }
-        }
-    });
-    
-    UIViewController *login = [self.orderedViewControllers lastObject];
-    
-    // hide the page control on the login (last) screen
-    if ([pendingViewControllers containsObject:login]) {
-        self.pageControl.hidden = YES;
-    } else {
-        self.pageControl.hidden = NO;
-    }
+    UIViewController *pending = [pendingViewControllers firstObject];
+    NSInteger newIndex = [self.orderedViewControllers indexOfObject:pending];
+    [self.onboardingDelegate onboardingPageViewController:self willUpdateToPageIndex:newIndex fromPageIndex:oldIndex];
 }
+
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
     
-    UIViewController *login = [self.orderedViewControllers lastObject];
-    
-    if ([previousViewControllers containsObject:login] && !completed) {
-        // started to transition away from login, but backed out
-        // page control should be hidden on login
-        self.pageControl.hidden = YES;
-    }
-    
-    if (![previousViewControllers containsObject:login] && !completed) {
-        // started to transition away from anything other than login, but backed out
-        // page control should be visible
-        self.pageControl.hidden = NO;
-    }
+    UIViewController *first = [self.viewControllers firstObject];
+    NSInteger index = [self.orderedViewControllers indexOfObject:first];
+    [self.onboardingDelegate onboardingPageViewController:self didUpdatePageIndex:index];
 }
 
+- (void)scrollToViewControllerAtIndex:(NSInteger)newIndex {
+    UIViewController *first = [self.viewControllers firstObject];
+    NSInteger currentIndex = [self.orderedViewControllers indexOfObject:first];
+    UIPageViewControllerNavigationDirection direction = newIndex >= currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
+    UIViewController *nextViewController = [self.orderedViewControllers objectAtIndex:newIndex];
+    [self scrollToViewController:nextViewController direction:direction];
+}
+
+- (void)scrollToViewController:(UIViewController *)vc direction:(UIPageViewControllerNavigationDirection)direction {
+    __weak typeof(self)weakSelf = self;
+    [self setViewControllers:@[vc]
+                   direction:direction
+                    animated:YES
+                  completion:^(BOOL finished) {
+                      // Setting the view controller programmatically does not fire
+                      // any delegate methods, so we have to manually notify the
+                      // 'onboardingDelegate' of the new index.
+                      [weakSelf notifyOnboardingDelegateOfNewIndex];
+                  }];
+}
+
+- (void)notifyOnboardingDelegateOfNewIndex {
+    UIViewController *first = [self.viewControllers firstObject];
+    NSInteger index = [self.orderedViewControllers indexOfObject:first];
+    [self.onboardingDelegate onboardingPageViewController:self didUpdatePageIndex:index];
+}
 
 
 @end
