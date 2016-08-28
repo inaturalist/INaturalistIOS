@@ -11,6 +11,7 @@
 @interface OnboardingLoginViewController : UIViewController
 
 @property BOOL skippable;
+@property BOOL startsInLoginMode;
 @property (nonatomic, copy) void(^skipAction)();
 @property (nonatomic, copy) void(^closeAction)();
 

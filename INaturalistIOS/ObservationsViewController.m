@@ -54,6 +54,8 @@
 #import "ExploreTaxonRealm.h"
 #import "NSURL+INaturalist.h"
 #import "PeopleAPI.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -79,19 +81,62 @@
     return _api;
 }
 
+- (void)presentLoginSplashWithReason:(NSString *)reason {
+    
+    __weak typeof(self)weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        login.startsInLoginMode = YES;
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Observations",
+                                           @"Version": @"SplashScreen" }];
+        
+        LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
+        login.cancellable = YES;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    }];
+
+    
+
+}
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Observations" }];
-
-    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-    splash.cancellable = YES;
-    splash.reason = reason;
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-    // for sizzle
-    nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [self.tabBarController presentViewController:nav animated:YES completion:nil];
+    __weak typeof(self)weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Projects",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"Observations",
+                                           @"Version": @"SplashScreen" }];
+    
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.cancellable = YES;
+        splash.reason = reason;
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        // for sizzle
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    }];
+    
 }
 
 - (void)presentAutouploadAlert {
@@ -703,23 +748,13 @@
         
         [header.signupButton bk_addEventHandler:^(id sender) {
             
-            [[Analytics sharedClient] event:kAnalyticsEventNavigateSignup
-                             withProperties:@{ @"from": @"AnonMeHeader" }];
-            
             [self presentSignupSplashWithReason:nil];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
         [header.loginButton bk_addEventHandler:^(id sender) {
             
-            [[Analytics sharedClient] event:kAnalyticsEventNavigateLogin
-                             withProperties:@{ @"from": @"AnonMeHeader" }];
-            
-            LoginViewController *login = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
-            login.cancellable = YES;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
-            nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            [self presentViewController:nav animated:YES completion:nil];
+            [self presentLoginSplashWithReason:nil];
 
         } forControlEvents:UIControlEventTouchUpInside];
         

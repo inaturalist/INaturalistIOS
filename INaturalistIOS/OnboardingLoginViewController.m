@@ -238,7 +238,10 @@ static char PARTNER_ASSOCIATED_KEY;
             }
         }
     }
-
+    
+    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self switchAuthContext:nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -285,8 +288,6 @@ static char PARTNER_ASSOCIATED_KEY;
 }
 
 - (IBAction)switchAuthContext:(id)sender {
-    NSLog(@"switch auth context");
-    
     if (self.textfieldStackView.arrangedSubviews.count == 3) {
         // switch to login mode
         [UIView animateWithDuration:0.2f
