@@ -179,7 +179,6 @@
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AA31D515F3000C4FFDB /* PeopleAPI.m */; };
-		FA711AA71D52876100C4FFDB /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA711AA61D52876100C4FFDB /* Onboarding.storyboard */; };
 		FA711AAB1D53D71500C4FFDB /* OnboardingPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */; };
 		FA711AAE1D53E52600C4FFDB /* OnboardingLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AAD1D53E52600C4FFDB /* OnboardingLoginViewController.m */; };
 		FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724ADF1AB150BD00D01773 /* MeHeaderView.m */; };
@@ -215,6 +214,7 @@
 		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
 		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
+		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
@@ -624,7 +624,6 @@
 		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
 		FA711AA21D515F3000C4FFDB /* PeopleAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleAPI.h; sourceTree = "<group>"; };
 		FA711AA31D515F3000C4FFDB /* PeopleAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleAPI.m; sourceTree = "<group>"; };
-		FA711AA61D52876100C4FFDB /* Onboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Onboarding.storyboard; path = INaturalistIOS/Onboarding.storyboard; sourceTree = "<group>"; };
 		FA711AA91D53D71500C4FFDB /* OnboardingPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingPageViewController.h; sourceTree = "<group>"; };
 		FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingPageViewController.m; sourceTree = "<group>"; };
 		FA711AAC1D53E52600C4FFDB /* OnboardingLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingLoginViewController.h; sourceTree = "<group>"; };
@@ -703,6 +702,16 @@
 		FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupToSplashTransitionAnimator.m; sourceTree = "<group>"; };
 		FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconAndTextControl.h; sourceTree = "<group>"; };
 		FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconAndTextControl.m; sourceTree = "<group>"; };
+		FAB6214E1D7397A70026FDC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
+		FAB621511D7397B10026FDC6 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB621531D7397BA0026FDC6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB621551D7397BB0026FDC6 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB621571D7397BC0026FDC6 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB621591D7397BD0026FDC6 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB6215B1D7397BE0026FDC6 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB6215D1D7397BF0026FDC6 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB6215F1D7397C00026FDC6 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB621611D7397C10026FDC6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
 		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
@@ -1433,7 +1442,7 @@
 			isa = PBXGroup;
 			children = (
 				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
-				FA711AA61D52876100C4FFDB /* Onboarding.storyboard */,
+				FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */,
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
 				FA6F87661B0E996B0019B157 /* fonts */,
@@ -1750,7 +1759,7 @@
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
-				FA711AA71D52876100C4FFDB /* Onboarding.storyboard in Resources */,
+				FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
 				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
@@ -2177,6 +2186,24 @@
 				FAE9D0981D13807900137660 /* ko */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAB6214E1D7397A70026FDC6 /* Base */,
+				FAB621511D7397B10026FDC6 /* es */,
+				FAB621531D7397BA0026FDC6 /* en */,
+				FAB621551D7397BB0026FDC6 /* ja */,
+				FAB621571D7397BC0026FDC6 /* fr */,
+				FAB621591D7397BD0026FDC6 /* sv */,
+				FAB6215B1D7397BE0026FDC6 /* it */,
+				FAB6215D1D7397BF0026FDC6 /* pt */,
+				FAB6215F1D7397C00026FDC6 /* he */,
+				FAB621611D7397C10026FDC6 /* ko */,
+			);
+			name = Onboarding.storyboard;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
