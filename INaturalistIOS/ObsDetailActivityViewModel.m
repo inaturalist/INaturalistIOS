@@ -356,7 +356,9 @@
     if (activity) {
         NSURL *userIconUrl = [activity userIconUrl];
         if (userIconUrl) {
-            [cell.authorImageView sd_setImageWithURL:userIconUrl];
+            [cell.authorImageView sd_setImageWithURL:userIconUrl
+                                    placeholderImage:[UIImage inat_defaultUserImage]
+                                             options:SDWebImageRefreshCached];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
         } else {
