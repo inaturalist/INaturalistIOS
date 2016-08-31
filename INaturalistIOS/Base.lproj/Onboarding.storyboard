@@ -43,7 +43,7 @@
                             <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="sOh-eX-28k" secondAttribute="bottom" id="QLh-d2-NQu"/>
                             <constraint firstAttribute="leadingMargin" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
                             <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="V3h-ZB-opg" secondAttribute="bottom" constant="-20" id="cp9-aT-2MK"/>
-                            <constraint firstItem="sOh-eX-28k" firstAttribute="centerY" secondItem="jK3-VW-cec" secondAttribute="bottom" multiplier="0.7" id="dEB-Lu-1EE">
+                            <constraint firstItem="sOh-eX-28k" firstAttribute="centerY" secondItem="jK3-VW-cec" secondAttribute="bottom" multiplier="0.75" id="dEB-Lu-1EE">
                                 <variation key="heightClass=regular-widthClass=regular" constant="1"/>
                             </constraint>
                             <constraint firstAttribute="trailingMargin" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
