@@ -108,7 +108,9 @@
         if (appDelegate.loginController.isLoggedIn) {
             User *user = [appDelegate.loginController fetchMe];
             if (user.userIconURL) {
-                [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]];
+                [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]
+                                        placeholderImage:[UIImage inat_defaultUserImage]
+                                                 options:SDWebImageRefreshCached];
             } else {
                 cell.cellImageView.image = [UIImage inat_defaultUserImage];
             }
