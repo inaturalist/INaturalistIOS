@@ -253,7 +253,15 @@ static char PARTNER_ASSOCIATED_KEY;
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
             [webController setUrl:url];
             webController.delegate = strongSelf;
-            [strongSelf presentViewController:webController animated:YES completion:nil];
+            UIBarButtonItem *cancel = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                      handler:^(id sender) {
+                                                                                          __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                                          [strongSelf dismissViewControllerAnimated:YES
+                                                                                                                         completion:nil];
+                                                                                      }];
+            webController.navigationItem.leftBarButtonItem = cancel;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webController];
+            [strongSelf presentViewController:nav animated:YES completion:nil];
             
         } forControlEvents:UIControlEventTouchUpInside];
         
