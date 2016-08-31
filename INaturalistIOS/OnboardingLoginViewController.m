@@ -19,7 +19,7 @@
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
 #import "INaturalistAppDelegate.h"
-#import "OnboardingPageViewController.h"
+#import "OnboardingViewController.h"
 #import "UITapGestureRecognizer+InatHelpers.h"
 #import "IconAndTextControl.h"
 #import "Analytics.h"
@@ -342,7 +342,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                          success:^(NSDictionary *info) {
                                                              __strong typeof(weakSelf)strongSelf = weakSelf;
                                                              
-                                                             if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                             if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
                                                                  [appDelegate showMainUI];
                                                              } else {
                                                                  [strongSelf dismissViewControllerAnimated:YES completion:nil];
@@ -390,7 +390,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                             success:^(NSDictionary *info) {
                                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                                
-                                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
                                                                    [appDelegate showMainUI];
                                                                } else {
                                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
@@ -516,7 +516,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                                       completion:nil];
                                                     }
                                                     
-                                                    if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                                    if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
                                                         [appDelegate showMainUI];
                                                     } else {
                                                         [strongSelf dismissViewControllerAnimated:YES completion:nil];
@@ -602,7 +602,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                  completion:nil];
                                                }
-                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingPageViewController class]]) {
+                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
                                                    [appDelegate showMainUI];
                                                } else {
                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
