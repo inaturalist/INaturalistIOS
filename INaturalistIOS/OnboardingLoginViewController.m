@@ -25,10 +25,11 @@
 #import "Analytics.h"
 #import "PartnerController.h"
 #import "Partner.h"
+#import "INatWebController.h"
 
 static char PARTNER_ASSOCIATED_KEY;
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate> {
+@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate> {
     UIAlertView *partnerAlert;
 }
 @property IBOutlet UILabel *titleLabel;
@@ -226,12 +227,45 @@ static char PARTNER_ASSOCIATED_KEY;
     self.switchContextButton.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
     self.switchContextButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
     
+    self.passwordField.rightView = ({
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectMake(0, 0, 65, 44);
+        
+        button.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+        button.tintColor = [UIColor colorWithHexString:@"#c0c0c0"];
+        
+        [button setTitle:NSLocalizedString(@"Forgot?", @"Title for forgot password button.")
+                forState:UIControlStateNormal];
+        
+        __weak typeof(self)weakSelf = self;
+        [button bk_addEventHandler:^(id sender) {
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                            message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
+                                  otherButtonTitles:nil] show];
+                return;
+            }
+            
+            INatWebController *webController = [[INatWebController alloc] init];
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
+            [webController setUrl:url];
+            webController.delegate = strongSelf;
+            [strongSelf presentViewController:webController animated:YES completion:nil];
+            
+        } forControlEvents:UIControlEventTouchUpInside];
+        
+        button;
+    });
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    PartnerController *partners = [[PartnerController alloc] init];    
+    PartnerController *partners = [[PartnerController alloc] init];
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
         CTCarrier *carrier = info.subscriberCellularProvider;
@@ -304,6 +338,7 @@ static char PARTNER_ASSOCIATED_KEY;
                              self.licenseStackView.hidden = YES;
                              [self.switchContextButton setTitle:NSLocalizedString(@"New to iNaturalist? Sign up now!", nil)
                                                        forState:UIControlStateNormal];
+                             self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
                          }];
     } else {
         // switch to signup mode
@@ -318,6 +353,7 @@ static char PARTNER_ASSOCIATED_KEY;
                              self.licenseStackView.hidden = NO;
                              [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
                                                        forState:UIControlStateNormal];
+                             self.passwordField.rightViewMode = UITextFieldViewModeNever;
                          }];
     }
 }
@@ -700,6 +736,37 @@ static char PARTNER_ASSOCIATED_KEY;
         }
     }
 }
+
+#pragma mark WebViewDelegate
+- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
+    if ([request.URL.path hasPrefix:@"/forgot_password"]) {
+        return YES;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    // webviews may trigger their delegate methods more than once
+    static UIAlertView *av;
+    if (av) {
+        [av dismissWithClickedButtonIndex:0 animated:YES];
+        av = nil;
+    }
+    
+    NSString *alertTitle = NSLocalizedString(@"Check your email",
+                                             @"title of alert after you reset your password");
+    NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
+                                           @"body of alert after you reset your password");
+    
+    av = [[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMsg
+                                   delegate:nil
+                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                          otherButtonTitles:nil];
+    [av show];
+    
+    return YES;
+}
+
 
 
 @end
