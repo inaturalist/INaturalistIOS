@@ -109,7 +109,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.actionButton.backgroundColor = [UIColor inatTint];
     
-    self.skipButton.layer.borderColor = [UIColor colorWithHexString:@"#4a4a4a"].CGColor;
+    self.skipButton.layer.borderColor = [UIColor colorWithHexString:@"#c0c0c0"].CGColor;
     self.skipButton.layer.cornerRadius = 20.0f;
     self.skipButton.layer.borderWidth = 1.0f;
     
