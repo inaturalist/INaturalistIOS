@@ -488,8 +488,7 @@ static char PARTNER_ASSOCIATED_KEY;
     }
     
     NSString *license = self.licenseMyData ? @"CC-BY_NC" : @"on";
-    // TODO: partners
-	NSInteger selectedPartnerId = 1;    
+    NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
     
     UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:hudView animated:YES];
