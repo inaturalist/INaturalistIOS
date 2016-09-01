@@ -10,6 +10,7 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <NXOAuth2Client/NXOAuth2.h>
 #import <GooglePlus/GPPSignIn.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
@@ -386,6 +387,33 @@ NSInteger INatMinPasswordLength = 6;
     [nav.navigationBar setTranslucent:YES];
     [nav setNavigationBarHidden:NO];
 }
+
+- (void)loginWithGoogleUsingViewController:(UIViewController *)parent
+                                   success:(LoginSuccessBlock)success
+                                   failure:(LoginErrorBlock)error {
+    
+    self.currentSuccessBlock = success;
+    self.currentErrorBlock = error;
+    
+    accountType = nil;
+    accountType = kINatAuthServiceExtToken;
+    isLoginCompleted = NO;
+    
+    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
+                                                                                clientID:self.clientIdForGoogleSignin
+                                                                            clientSecret:nil
+                                                                        keychainItemName:nil
+                                                                                delegate:self
+                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
+    
+    vc.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel handler:^(id sender) {
+        [parent dismissViewControllerAnimated:YES completion:nil];
+    }];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [parent presentViewController:nav animated:YES completion:nil];
+}
+
 
 - (NSString *)scopesForGoogleSignin {
     GPPSignIn *signin = [GPPSignIn sharedInstance];

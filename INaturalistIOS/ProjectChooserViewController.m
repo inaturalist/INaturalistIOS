@@ -15,13 +15,13 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
-
 #import "ProjectTableViewCell.h"
-
 #import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "LoginController.h"
 #import "User.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 
 @implementation ProjectChooserViewController
 
@@ -79,6 +79,32 @@
     } else if (self.noContentLabel) {
         [self.noContentLabel removeFromSuperview];
     }
+}
+
+- (void)presentSignupPrompt:(NSString *)reason {
+    __weak typeof(self) weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"ProjectChooser",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"ProjectChooser",
+                                           @"Version": @"SplashScreen" }];
+        
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.cancellable = YES;
+        signup.reason = reason;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    }];
 }
 
 
@@ -242,17 +268,7 @@
     }
     
     if (jsonParsingError || authFailure) {
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Project Chooser" }];
-        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        svc.skippable = NO;
-        svc.cancellable = YES;
-        svc.reason = NSLocalizedString(@"You must be logged in to do that.", @"Login reason prompt from project chooser.");
-        
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
-        // for sizzle
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [self presentViewController:nav animated:YES completion:nil];
+        [self presentSignupPrompt:NSLocalizedString(@"You must be logged in to do that.", @"Login reason prompt from project chooser.")];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]

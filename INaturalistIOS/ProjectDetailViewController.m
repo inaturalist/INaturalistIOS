@@ -18,6 +18,8 @@
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "UIImage+INaturalist.h"
 #import "INatWebController.h"
+#import "ABSorter.h"
+#import "OnboardingLoginViewController.h"
 
 static const int LeaveProjectAlertViewTag = 1;
 
@@ -90,16 +92,7 @@ static const int LeaveProjectAlertViewTag = 1;
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                             withProperties:@{ @"From": @"Project Detail" }];
-
-            SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-            signup.reason = NSLocalizedString(@"You must be signed in to join a project.", @"Reason text for signup prompt while trying to join a project.");
-            signup.cancellable = YES;
-            signup.skippable = NO;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-            nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            [self presentViewController:nav animated:YES completion:nil];
+            [self showSignupPrompt:NSLocalizedString(@"You must be signed in to join a project.", @"Reason text for signup prompt while trying to join a project.")];
         }
     }
 }
@@ -159,6 +152,34 @@ static const int LeaveProjectAlertViewTag = 1;
         return NSLocalizedString(@"No terms.", nil);
     }
 }
+
+- (void)showSignupPrompt:(NSString *)reason {
+    __weak typeof(self) weakSelf = self;
+        
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"ProjectDetail",
+                                           @"Version": @"Onboarding" }];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+        login.skippable = NO;
+        [weakSelf presentViewController:login animated:YES completion:nil];
+    } B:^{
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                         withProperties:@{ @"From": @"ProjectDetail",
+                                           @"Version": @"SplashScreen" }];
+        
+        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        signup.reason = reason;
+        signup.cancellable = YES;
+        signup.skippable = NO;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
+        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        [self presentViewController:nav animated:YES completion:nil];
+    }];
+}
+
 
 #pragma mark - View lifecycle
 - (void)viewDidLoad {
@@ -395,16 +416,7 @@ static const int LeaveProjectAlertViewTag = 1;
     });
     
     if (objectLoader.response.statusCode == 401) {
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Project Detail" }];
-
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.reason = NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.");
-        signup.cancellable = YES;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [self presentViewController:nav animated:YES completion:nil];
+        [self showSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
     } else {
         UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                      message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]

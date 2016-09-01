@@ -180,3 +180,6 @@ extern NSString *kAnalyticsEventDownloadGuideStarted;
 extern NSString *kAnalyticsEventDownloadGuideCompleted;
 extern NSString *kAnalyticsEventDeleteDownloadedGuide;
 
+// A/B testing
+extern NSString *kAnalyticsEventAssignedToOnboardingGroupA;
+extern NSString *kAnalyticsEventAssignedToOnboardingGroupB;

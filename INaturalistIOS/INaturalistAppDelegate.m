@@ -39,6 +39,7 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
+#import "ABSorter.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -425,22 +426,35 @@
 }
 
 - (void)showInitialSignupUI {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"App Launch" }];
-    
-    SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-    splash.skippable = YES;
-    splash.cancellable = NO;
-    splash.animateIn = YES;
-    splash.skipAction = ^{
-        [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-    };
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-    nav.delegate = self;
-    [self.window setRootViewController:nav];
+	__weak typeof(self) weakSelf = self;
+    [ABSorter abTestWithName:kOnboardingTestName A:^{
+    	__strong typeof(weakSelf) strongSelf = weakSelf;
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                 withProperties:@{ @"From": @"App Launch",
+                                   @"Version": @"Onboarding" }];
+
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
+        strongSelf.window.rootViewController = onboardingVC;
+    } B:^{
+    	__strong typeof(weakSelf) strongSelf = weakSelf;
+    	
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                 withProperties:@{ @"From": @"App Launch",
+                                   @"Version": @"SplashScreen" }];
+
+        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
+        splash.skippable = YES;
+        splash.cancellable = NO;
+        splash.animateIn = YES;
+        splash.skipAction = ^{
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+        };
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
+        nav.delegate = strongSelf;
+        [strongSelf.window setRootViewController:nav];
+    }];
 }
-
-
 
 @end
 

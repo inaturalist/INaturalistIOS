@@ -259,3 +259,7 @@ NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download
 NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide Download - Complete";
 NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download - Delete";
 
+
+// A/B testing
+NSString *kAnalyticsEventAssignedToOnboardingGroupA =			@"AB Testing - Assigned To Onboarding A";
+NSString *kAnalyticsEventAssignedToOnboardingGroupB =			@"AB Testing - Assigned To Onboarding B";
