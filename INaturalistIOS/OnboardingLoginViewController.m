@@ -119,6 +119,8 @@ static char PARTNER_ASSOCIATED_KEY;
         self.skipButton.layoutMargins = UIEdgeInsetsMake(50, 0, 50, 0);
     }
     self.skipButton.hidden = !self.skippable;
+    [self.skipButton setTitle:NSLocalizedString(@"Skip ›", @"skip button title")
+                     forState:UIControlStateNormal];
     
     FAKIcon *closeIcon = [FAKIonIcons iosCloseEmptyIconWithSize:30];
     [closeIcon addAttribute:NSForegroundColorAttributeName
