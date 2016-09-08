@@ -11,6 +11,7 @@
 @class Partner;
 @class User;
 @class UploadManager;
+@class ExploreUserRealm;
 
 extern NSString *kUserLoggedInNotificationName;
 extern NSInteger INatMinPasswordLength;
@@ -48,6 +49,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 - (void)loggedInUserSelectedPartner:(Partner *)partner
                          completion:(void (^)(void))completion;
 - (User *)fetchMe;
+- (ExploreUserRealm *)fetchMeRealm;
 
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure;
 

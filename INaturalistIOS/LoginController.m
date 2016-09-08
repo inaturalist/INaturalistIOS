@@ -21,6 +21,7 @@
 #import "User.h"
 #import "UploadManager.h"
 #import "Taxon.h"
+#import "ExploreUserRealm.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -60,10 +61,12 @@ NSInteger INatMinPasswordLength = 6;
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
     // jwt tokens expire after 30 minutes
     if ([self.jwtTokenExpiration timeIntervalSinceNow] < 28 * 60 && self.jwtToken) {
-        success(nil);
+        if (success) {
+            success(nil);
+        }
     }
     
-    NSURL *url = [NSURL URLWithString:@"http://inat:squirrel!@staging.inaturalist.org/users/api_token.json"];
+    NSURL *url = [NSURL URLWithString:@"http://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"GET";
     
@@ -77,25 +80,35 @@ NSInteger INatMinPasswordLength = 6;
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
         if (error) {
-            failure(nil);
+            if (failure) {
+                failure(nil);
+            }
             self.jwtToken = nil;
         } else if ([httpResponse statusCode] != 200) {
             self.jwtToken = nil;
-            failure(nil);
+            if (failure) {
+                failure(nil);
+            }
         } else {
             NSError *jsonError = nil;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
             if (error) {
                 self.jwtToken = nil;
-                failure(error);
+                if (failure) {
+                    failure(error);
+                }
             } else {
                 if ([json valueForKey:@"api_token"]) {
                     self.jwtToken = [json valueForKey:@"api_token"];
                     self.jwtTokenExpiration = [NSDate date];
-                    success(nil);
+                    if (success) {
+                        success(nil);
+                    }
                 } else {
                     self.jwtToken = nil;
-                    failure(nil);
+                    if (failure) {
+                        failure(nil);
+                    }
                 }
             }
         }
@@ -581,8 +594,20 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Convenience method for fetching the logged in User
 
+- (ExploreUserRealm *)fetchMeRealm {
+    NSNumber *userId = nil;
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
+        userId = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];
+    }
+    
+    if (userId) {
+        return [ExploreUserRealm objectForPrimaryKey:userId];
+    } else {
+        return nil;
+    }
+}
+
 - (User *)fetchMe {
-	
 	NSNumber *userId = nil;
 	NSString *username = nil;
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
