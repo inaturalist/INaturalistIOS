@@ -39,7 +39,9 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
+#import "ObservationAPI.h"
 #import "ABSorter.h"
+#import "ExploreUserRealm.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -53,10 +55,58 @@
 @implementation INaturalistAppDelegate
 
 
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    NSDate *fetchStart = [NSDate date];
+
+    if (!self.loginController) {
+        self.loginController = [[LoginController alloc] init];
+    }
+    
+    if (!self.loginController.isLoggedIn) {
+        completionHandler(UIBackgroundFetchResultNoData);
+    } else {
+        ExploreUserRealm *me = [self.loginController fetchMeRealm];
+        NSInteger userId = me.userId;
+        if (!me) {
+            completionHandler(UIBackgroundFetchResultFailed);
+        } else {
+            [self.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+                ObservationAPI *api = [[ObservationAPI alloc] init];
+                [api observationUpdatesForUserId:userId
+                                         handler:^(NSArray *results, NSInteger count, NSError *error) {
+                                             
+                                             NSDate *fetchEnd = [NSDate date];
+                                             NSTimeInterval timeElapsed = [fetchEnd timeIntervalSinceDate:fetchStart];
+                                             NSLog(@"Background Fetch Duration: %f seconds", timeElapsed);
+
+                                             UILocalNotification *note = [[UILocalNotification alloc] init];
+                                             note.fireDate = [NSDate date];
+                                             note.alertTitle = NSLocalizedString(@"New Activity!", nil);
+                                             note.alertBody = NSLocalizedString(@"There is new activity on your observations.", nil);
+                                             [[UIApplication sharedApplication] presentLocalNotificationNow:note];
+                                             
+                                             completionHandler(UIBackgroundFetchResultNewData);
+                                         }];
+
+            } failure:^(NSError *error) {
+                completionHandler(UIBackgroundFetchResultFailed);
+            }];
+        }
+    }
+    
+    
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	[FBSDKAppEvents activateApp];
     
-    [self.loginController getJWTTokenSuccess:nil failure:nil];
+    if (self.loginController.isLoggedIn) {
+        User *me = [self.loginController fetchMe];
+        if (me) {
+            [self.loginController getJWTTokenSuccess:nil failure:nil];
+        }
+    }
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -77,6 +127,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+
     [self setupAnalytics];
     
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

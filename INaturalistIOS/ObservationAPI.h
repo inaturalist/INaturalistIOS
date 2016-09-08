@@ -12,5 +12,6 @@
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)observationsForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)observationUpdatesForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end
