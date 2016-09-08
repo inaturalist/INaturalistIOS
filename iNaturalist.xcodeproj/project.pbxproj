@@ -114,6 +114,7 @@
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
+		FA2B97FD1D811C2E0025EB54 /* ExploreNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2B97FC1D811C2E0025EB54 /* ExploreNotification.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
@@ -493,6 +494,8 @@
 		FA2552121D1F4D62005D2128 /* TaxaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaAPI.m; sourceTree = "<group>"; };
 		FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailNoInteractionHeaderFooter.h; sourceTree = "<group>"; };
 		FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNoInteractionHeaderFooter.m; sourceTree = "<group>"; };
+		FA2B97FB1D811C2E0025EB54 /* ExploreNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreNotification.h; sourceTree = "<group>"; };
+		FA2B97FC1D811C2E0025EB54 /* ExploreNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreNotification.m; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
 		FA3D905C1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -1592,6 +1595,8 @@
 		FADBED5F1D2C81F100753692 /* Mantle */ = {
 			isa = PBXGroup;
 			children = (
+				FA2B97FB1D811C2E0025EB54 /* ExploreNotification.h */,
+				FA2B97FC1D811C2E0025EB54 /* ExploreNotification.m */,
 				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
 				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
 				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
@@ -1744,6 +1749,11 @@
 				TargetAttributes = {
 					1927513214E9CCC9000ABAC4 = {
 						DevelopmentTeam = N5J7L4P93Z;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					FADE28AF1B02D9AA00CA55FF = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -2157,6 +2167,7 @@
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
 				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
 				FA67E0D11D5A7FC700DE918B /* ExploreObservationPhotoRealm.m in Sources */,
+				FA2B97FD1D811C2E0025EB54 /* ExploreNotification.m in Sources */,
 				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
