@@ -16,6 +16,8 @@
              @"login": @"login",
              @"name": @"name",
              @"userIcon": @"icon_url",
+             @"observationsCount": @"observations_count",
+             @"identificationsCount": @"identifications_count",
              };
 }
 

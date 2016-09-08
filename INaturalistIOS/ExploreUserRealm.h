@@ -15,6 +15,8 @@
 @property NSString *login;
 @property NSString *name;
 @property NSString *userIconUrlString;
+@property NSInteger observationsCount;
+@property NSInteger identificationsCount;
 
 @property (readonly) NSURL *userIcon;
 

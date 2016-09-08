@@ -15,5 +15,8 @@
 @property (copy) NSString *login;
 @property (copy) NSString *name;
 @property (copy) NSURL *userIcon;
+@property (assign) NSInteger observationsCount;
+@property (assign) NSInteger identificationsCount;
+
 
 @end

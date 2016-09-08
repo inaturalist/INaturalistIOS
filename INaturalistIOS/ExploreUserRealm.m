@@ -16,6 +16,8 @@
         self.login = model.login;
         self.name = model.name;
         self.userIconUrlString = [model.userIcon absoluteString];
+        self.observationsCount = model.observationsCount;
+        self.identificationsCount = model.identificationsCount;
     }
     
     return self;
@@ -24,5 +26,10 @@
 - (NSURL *)userIcon {
     return [NSURL URLWithString:self.userIconUrlString];
 }
+
++ (NSString *)primaryKey {
+    return @"userId";
+}
+
 
 @end
