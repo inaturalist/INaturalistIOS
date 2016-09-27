@@ -12,10 +12,11 @@
 #import "NSString+Helpers.h"
 
 @interface ProjectAboutViewController () {
-    NSString *_aboutText, *_termsText;
+    NSString *_titleText, *_aboutText, *_termsText;
     NSAttributedString *_rulesText;
 }
 
+@property (readonly) NSString *titleText;
 @property (readonly) NSString *aboutText;
 @property (readonly) NSString *termsText;
 @property (readonly) NSAttributedString *rulesText;
@@ -51,7 +52,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -63,12 +64,13 @@
     ProjectAboutInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"infoText" forIndexPath:indexPath];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     if (indexPath.section == 0) {
-        cell.infoTextLabel.text = [self aboutText];
+        cell.infoTextLabel.text = [self titleText];
     } else if (indexPath.section == 1) {
-        cell.infoTextLabel.text = [self termsText];
+        cell.infoTextLabel.text = [self aboutText];
     } else if (indexPath.section == 2) {
+        cell.infoTextLabel.text = [self termsText];
+    } else if (indexPath.section == 3) {
         cell.infoTextLabel.attributedText = [self rulesText];
     }
     
@@ -78,12 +80,15 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *text = @"";
     if (indexPath.section == 0) {
-        return [ProjectAboutInfoCell heightForRowWithInfoText:[self aboutText]
+        return [ProjectAboutInfoCell heightForRowWithInfoText:[self titleText]
                                                   inTableView:tableView];
     } else if (indexPath.section == 1) {
-        return [ProjectAboutInfoCell heightForRowWithInfoText:[self termsText]
+        return [ProjectAboutInfoCell heightForRowWithInfoText:[self aboutText]
                                                   inTableView:tableView];
     } else if (indexPath.section == 2) {
+        return [ProjectAboutInfoCell heightForRowWithInfoText:[self termsText]
+                                                  inTableView:tableView];
+    } else if (indexPath.section == 3) {
         return [ProjectAboutInfoCell heightForRowWithInfoAttributedText:[self rulesText]
                                                             inTableView:tableView];
     }
@@ -95,16 +100,30 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0) {
-        return NSLocalizedString(@"About", @"about the project header");
+        return NSLocalizedString(@"Title", @"project title header");
     } else if (section == 1) {
-        return NSLocalizedString(@"Terms", @"project terms header");
+        return NSLocalizedString(@"About", @"about the project header");
     } else if (section == 2) {
-        return NSLocalizedString(@"Observation Rules", @"project observation rules header");
+        return NSLocalizedString(@"Terms", @"project terms header");
     } else if (section == 3) {
+        return NSLocalizedString(@"Observation Rules", @"project observation rules header");
+    } else if (section == 4) {
         return NSLocalizedString(@"Administrators", @"project admins header");
     } else {
         return nil;
     }
+}
+
+- (NSString *)titleText {
+    if (!_titleText) {
+        if (self.project.desc.length == 0) {
+            _titleText = NSLocalizedString(@"This project has no title.", nil);
+        } else {
+            _titleText = self.project.title;
+        }
+    }
+    
+    return _titleText;
 }
 
 - (NSString *)aboutText {
