@@ -7,7 +7,6 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailObservationsViewController.h"
@@ -17,7 +16,7 @@
 #import "ImageStore.h"
 #import "FAKInaturalist.h"
 
-@interface ProjectDetailObservationsViewController () <UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource>
+@interface ProjectDetailObservationsViewController () <UICollectionViewDelegateFlowLayout>
 @end
 
 @implementation ProjectDetailObservationsViewController
@@ -25,7 +24,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.collectionView.emptyDataSetSource = self;
+    self.collectionView.backgroundView = ({
+        UILabel *label = [UILabel new];
+        label.numberOfLines = 0;
+        label.textAlignment = NSTextAlignmentCenter;
+
+        label.attributedText = ({
+            NSString *emptyTitle;
+            if ([[RKClient sharedClient] isNetworkReachable]) {
+                emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
+            } else {
+                emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
+            }
+            NSDictionary *attrs = @{
+                                    NSForegroundColorAttributeName: [UIColor colorWithHexString:@"#505050"],
+                                    NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
+                                    };
+            [[NSAttributedString alloc] initWithString:emptyTitle
+                                                   attributes:attrs];
+        });
+        
+        label;
+    });
+    
     self.totalCount = 0;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 }
@@ -33,6 +54,7 @@
 #pragma mark - CollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    collectionView.backgroundView.hidden = (self.observations.count > 0);
     return 1;
 }
 
@@ -108,36 +130,6 @@
     if (!decelerate) {
         [self.containedScrollViewDelegate containedScrollViewDidStopScrolling:scrollView];
     }
-}
-
-#pragma mark - DZNEmptyDataSource
-
-- (UIView *)customViewForEmptyDataSet:(UIScrollView *)scrollView {
-    if (self.observations == nil && [[RKClient sharedClient] isNetworkReachable]) {
-        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        activityView.color = [UIColor colorWithHexString:@"#8f8e94"];
-        activityView.backgroundColor = [UIColor colorWithHexString:@"#ebebf1"];
-        [activityView startAnimating];
-        
-        return activityView;
-    } else {
-        return nil;
-    }
-}
-
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *emptyTitle;
-    if ([[RKClient sharedClient] isNetworkReachable]) {
-        emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
-    } else {
-        emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
-    }
-    NSDictionary *attrs = @{
-                            NSForegroundColorAttributeName: [UIColor colorWithHexString:@"#505050"],
-                            NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
-                            };
-    return [[NSAttributedString alloc] initWithString:emptyTitle
-                                           attributes:attrs];
 }
 
 @end

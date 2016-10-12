@@ -14,7 +14,6 @@
 #import <SDWebImage/UIButton+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <YLMoment/YLMoment.h>
-#import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h> 
@@ -57,7 +56,7 @@
 #import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, DZNEmptyDataSetDelegate, DZNEmptyDataSetSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -681,6 +680,12 @@
     // skip reload animation
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][0];
+    tableView.backgroundView.hidden = ([sectionInfo numberOfObjects] != 0);
+    
+    return 1;
+}
 
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -1193,17 +1198,82 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
+    self.tableView.backgroundView = ({
+        UIView *view = [UIView new];
+        
+        UIView *container = [UIView new];
+        container.translatesAutoresizingMaskIntoConstraints = NO;
+        UIImageView *iv = [UIImageView new];
+        iv.translatesAutoresizingMaskIntoConstraints = NO;
+        iv.contentMode = UIViewContentModeCenter;
+        iv.image = ({
+            UIImage *binocs = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            UIGraphicsBeginImageContextWithOptions(binocs.size, NO, binocs.scale);
+            [[UIColor lightGrayColor] set];
+            [binocs drawInRect:CGRectMake(0, 0, binocs.size.width, binocs.size.height)];
+            binocs = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            binocs;
+        });
+        [container addSubview:iv];
+        
+        UILabel *label = [UILabel new];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.numberOfLines = 0;
+        label.textAlignment = NSTextAlignmentCenter;
+        
+        label.attributedText = ({
+            NSString *emptyTitle = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
+            NSDictionary *attrs = @{
+                                    NSForegroundColorAttributeName: [UIColor grayColor],
+                                    NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                    };
+            [[NSAttributedString alloc] initWithString:emptyTitle
+                                            attributes:attrs];
+        });
+        [container addSubview:label];
 
-// if you need to test syncing lots of obs with the fetched results controller, do:
-//    [Observation deleteAll];
-//    for (int i = 0; i < 50; i++) {
-//        [Observation object];
-//    }
-//    NSError *error;
-//    [[[RKObjectManager sharedManager] objectStore] save:&error];
-//    if (error) {
-//        NSLog(@"ALERT: %@", error.localizedDescription);
-//    }
+        NSDictionary *views = @{
+                                @"iv": iv,
+                                @"label": label,
+                                @"container": container,
+                                };
+        
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[iv]-20-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[label]-20-|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[iv]-[label]|"
+                                                                          options:0
+                                                                          metrics:0
+                                                                            views:views]];
+        [view addConstraint:[NSLayoutConstraint constraintWithItem:container
+                                                        attribute:NSLayoutAttributeCenterX
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:view
+                                                        attribute:NSLayoutAttributeCenterX
+                                                       multiplier:1.0
+                                                          constant:0.0]];
+        [view addConstraint:[NSLayoutConstraint constraintWithItem:container
+                                                         attribute:NSLayoutAttributeCenterY
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:view
+                                                         attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1.0
+                                                          constant:0.0]];
+
+        
+        [view addSubview:container];
+        
+        view;
+    });
+    
     
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
@@ -1250,9 +1320,6 @@
                                              selector:@selector(coreDataRebuilt)
                                                  name:kInatCoreDataRebuiltNotification
                                                object:nil];
-    
-    self.tableView.emptyDataSetDelegate = self;
-    self.tableView.emptyDataSetSource = self;
     
     // perform the iniital local fetch
     NSError *fetchError;
@@ -1735,29 +1802,5 @@
                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
                       otherButtonTitles:nil] show];
 }
-
-#pragma mark - DZNEmptyDataSource
-
-- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
-	UIImage *binocs = [[UIImage imageNamed:@"binocs"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-	UIGraphicsBeginImageContextWithOptions(binocs.size, NO, binocs.scale);
-	[[UIColor lightGrayColor] set];
-	[binocs drawInRect:CGRectMake(0, 0, binocs.size.width, binocs.size.height)];
-	binocs = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-	return binocs;
-}
-
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *emptyTitle = NSLocalizedString(@"Looks like you have no observations.", @"Notice to display to the user on the Me tab when they have no observations");
-    NSDictionary *attrs = @{
-                            NSForegroundColorAttributeName: [UIColor grayColor],
-                            NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
-                            };
-    return [[NSAttributedString alloc] initWithString:emptyTitle
-                                           attributes:attrs];
-}
-
-
 
 @end

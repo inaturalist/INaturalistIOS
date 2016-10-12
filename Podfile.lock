@@ -30,7 +30,6 @@ PODS:
   - Crashlytics (3.3.3)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
-  - DZNEmptyDataSet (1.8.1)
   - Expecta (1.0.5)
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
@@ -149,7 +148,6 @@ DEPENDENCIES:
   - Crashlytics (= 3.3.3)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
-  - DZNEmptyDataSet (= 1.8.1)
   - Expecta
   - Fabric (= 1.5.4)
   - FBSDKCoreKit (= 4.10.1)
@@ -228,7 +226,6 @@ SPEC CHECKSUMS:
   Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
-  DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
   FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
@@ -274,6 +271,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: aeb78fd7da5dd3a974e6e18871f1458c82734a8d
+PODFILE CHECKSUM: 385b2df2f735372608e5ee15e1bfba82ff5be9ff
 
 COCOAPODS: 1.0.1
