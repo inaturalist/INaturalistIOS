@@ -239,6 +239,7 @@ NSString *kAnalyticsEventObservationUnfave =                    @"Obs - Unfave";
 NSString *kAnalyticsEventObservationChangeSection =             @"Obs - Change Section";
 NSString *kAnalyticsEventObservationViewMap =                   @"Obs - View Map";
 NSString *kAnalyticsEventObservationViewProjects =              @"Obs - View Projects";
+NSString *kAnalyticsEventObservationPhotoFailedToLoad =         @"Obs - Photo Failed to Load";
 
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";

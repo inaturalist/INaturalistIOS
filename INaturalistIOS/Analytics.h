@@ -161,6 +161,7 @@ extern NSString *kAnalyticsEventObservationUnfave;
 extern NSString *kAnalyticsEventObservationChangeSection;
 extern NSString *kAnalyticsEventObservationViewMap;
 extern NSString *kAnalyticsEventObservationViewProjects;
+extern NSString *kAnalyticsEventObservationPhotoFailedToLoad;
 
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;

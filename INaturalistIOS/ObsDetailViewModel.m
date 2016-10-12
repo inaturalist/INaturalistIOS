@@ -148,10 +148,35 @@
         }
 
         id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
-        if (op.photoKey) {
-            cell.iv.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+        UIImage *localImage = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+        if (localImage) {
+            cell.iv.image = localImage;
         } else {
-            [cell.iv sd_setImageWithURL:op.largePhotoUrl];
+            cell.spinner.hidden = NO;
+            [cell.spinner startAnimating];
+            [cell.iv sd_setImageWithURL:[op thumbPhotoUrl] placeholderImage:nil completed:^(UIImage *thumb, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (error && [[RKClient sharedClient] isNetworkReachable]) {
+                    [cell.spinner stopAnimating];
+                    [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
+                                     withProperties:@{
+                                                      @"Error": error.localizedDescription,
+                                                      @"Size": @"Thumb",
+                                                      }];
+                }
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [cell.iv sd_setImageWithURL:[op mediumPhotoUrl] placeholderImage:thumb completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [cell.spinner stopAnimating];
+                        if (error && [[RKClient sharedClient] isNetworkReachable]) {
+                            [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
+                                             withProperties:@{
+                                                              @"Error": error.localizedDescription,
+                                                              @"Size": @"Medium",
+                                                              }];
+                        }
+                    }];
+                });
+            }];
         }
     } else {
         // show iconic taxon image
@@ -218,7 +243,6 @@
 	if ([self.observation taxonRecordID] != 0 && results.count == 0) {
 		__weak typeof(self) weakSelf = self;
 		[self.taxonApi taxonWithId:[self.observation taxonRecordID] handler:^(NSArray *results, NSInteger count, NSError *error) {
-			__strong typeof(weakSelf) strongSelf = weakSelf;
 			// put the results into realm
 			RLMRealm *realm = [RLMRealm defaultRealm];
 			[realm beginWriteTransaction];

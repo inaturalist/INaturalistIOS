@@ -44,6 +44,7 @@
     [self.shareButton removeTarget:nil
                             action:NULL
                   forControlEvents:UIControlEventAllEvents];
+    [self.spinner stopAnimating];
 }
 
 @end

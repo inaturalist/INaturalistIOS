@@ -12,6 +12,7 @@
 
 @property IBOutlet UIPageControl *pageControl;
 @property IBOutlet UIImageView *iv;
+@property IBOutlet UIActivityIndicatorView *spinner;
 @property IBOutlet UIView *captiveContainer;
 @property IBOutlet UIButton *captiveInfoButton;
 @property IBOutlet UIButton *shareButton;
