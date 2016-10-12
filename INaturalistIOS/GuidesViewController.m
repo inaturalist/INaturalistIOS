@@ -15,16 +15,13 @@
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
-#import "SignupSplashViewController.h"
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "UIColor+INaturalist.h"
 #import "User.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
 static const int GuideCellImageTag = 1;
@@ -263,34 +260,20 @@ static const int ListControlIndexNearby = 2;
 
 - (void)presentSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Guides",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        login.closeAction = ^{
-            __strong typeof(weakSelf)strongSelf = weakSelf;
-            // switch back to all
-            [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexAll];
-            [strongSelf dismissViewControllerAnimated:YES completion:nil];
-        };
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Guides",
-                                           @"Version": @"SplashScreen" }];
-        
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.cancellable = YES;
-        signup.reason = reason;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [weakSelf presentViewController:nav animated:YES completion:nil];
-    }];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Guides",
+                                       @"Version": @"Onboarding" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    login.closeAction = ^{
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        // switch back to all
+        [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexAll];
+        [strongSelf dismissViewControllerAnimated:YES completion:nil];
+    };
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 - (UIBarButtonItem *)listControlItem

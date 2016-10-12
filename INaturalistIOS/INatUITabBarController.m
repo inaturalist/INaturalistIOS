@@ -26,7 +26,6 @@
 #import "Analytics.h"
 #import "ProjectObservation.h"
 #import "Project.h"
-#import "SignupSplashViewController.h"
 #import "LoginController.h"
 #import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"

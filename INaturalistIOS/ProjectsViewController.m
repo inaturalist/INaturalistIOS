@@ -14,7 +14,6 @@
 #import "ProjectUser.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
-#import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "LoginController.h"
@@ -24,7 +23,6 @@
 #import "NSURL+INaturalist.h"
 #import "ProjectDetailV2ViewController.h"
 #import "User.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
 static const int ListControlIndexFeatured = 1;
@@ -244,38 +242,20 @@ static const int ListControlIndexNearby = 2;
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
     
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Projects",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        login.closeAction = ^{
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            // switch back to featured
-            [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexFeatured];
-            [strongSelf dismissViewControllerAnimated:YES completion:nil];
-        };
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Projects",
-                                           @"Version": @"SplashScreen" }];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Projects",
+                                       @"Version": @"Onboarding" }];
     
-        SignupSplashViewController *svc = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        svc.cancellable = YES;
-        svc.skippable = NO;
-        svc.reason = reason;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
-        // for sizzle
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [weakSelf.tabBarController presentViewController:nav
-                                                animated:YES
-                                              completion:nil];
-    }];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    login.closeAction = ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        // switch back to featured
+        [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexFeatured];
+        [strongSelf dismissViewControllerAnimated:YES completion:nil];
+    };
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 

@@ -56,7 +56,6 @@
 		198551FE14EC93B900DB55C5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551FD14EC93B900DB55C5 /* libxml2.dylib */; };
 		1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */; };
 		1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1985521D14ECA3CD00DB55C5 /* Observation.m */; };
-		198552E814EF208700DB55C5 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 198552E714EF208600DB55C5 /* LoginViewController.m */; };
 		1997411115194E89006FBEA0 /* UploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1997411015194E89006FBEA0 /* UploadManager.m */; };
 		19A5F60914FB289B00757636 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A5F60814FB289B00757636 /* CoreLocation.framework */; };
 		19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */; };
@@ -171,9 +170,7 @@
 		FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */; };
 		FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */; };
 		FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */; };
-		FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */; };
 		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
-		FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695B1B06B026000983F8 /* SignupViewController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
 		FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */; };
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
@@ -212,8 +209,6 @@
 		FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
-		FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */; };
-		FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
 		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
@@ -241,8 +236,6 @@
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
-		FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */; };
-		FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */; };
 		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
 		FAEF23311C7CF20500208F44 /* ProjectDetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */; };
@@ -365,8 +358,6 @@
 		1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist.xcdatamodel; sourceTree = "<group>"; };
 		1985521C14ECA3CD00DB55C5 /* Observation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observation.h; sourceTree = "<group>"; };
 		1985521D14ECA3CD00DB55C5 /* Observation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Observation.m; sourceTree = "<group>"; };
-		198552E614EF208600DB55C5 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		198552E714EF208600DB55C5 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		198552E914EF369E00DB55C5 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = constants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1997410F15194E89006FBEA0 /* UploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManager.h; sourceTree = "<group>"; };
 		1997411015194E89006FBEA0 /* UploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadManager.m; sourceTree = "<group>"; };
@@ -614,8 +605,6 @@
 		FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+InatHelpers.m"; sourceTree = "<group>"; };
 		FA6D69571B06A6CD000983F8 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
 		FA6D69581B06A6CD000983F8 /* LoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginController.m; sourceTree = "<group>"; };
-		FA6D695A1B06B026000983F8 /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
-		FA6D695B1B06B026000983F8 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
 		FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextFieldCell.h; sourceTree = "<group>"; };
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
 		FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemViewController.h; sourceTree = "<group>"; };
@@ -699,10 +688,6 @@
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
 		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
-		FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashToSignupTransitionAnimator.h; sourceTree = "<group>"; };
-		FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashToSignupTransitionAnimator.m; sourceTree = "<group>"; };
-		FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupToSplashTransitionAnimator.h; sourceTree = "<group>"; };
-		FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupToSplashTransitionAnimator.m; sourceTree = "<group>"; };
 		FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconAndTextControl.h; sourceTree = "<group>"; };
 		FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconAndTextControl.m; sourceTree = "<group>"; };
 		FAB6214E1D7397A70026FDC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
@@ -730,8 +715,6 @@
 		FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmPhotoViewController.m; sourceTree = "<group>"; };
 		FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiImageView.h; sourceTree = "<group>"; };
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
-		FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupSplashViewController.h; sourceTree = "<group>"; };
-		FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupSplashViewController.m; sourceTree = "<group>"; };
 		FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailV2ViewController.h; sourceTree = "<group>"; };
 		FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailV2ViewController.m; sourceTree = "<group>"; };
 		FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailViewModel.h; sourceTree = "<group>"; };
@@ -766,10 +749,6 @@
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
-		FAE924C61B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashToLoginTransitionAnimator.h; sourceTree = "<group>"; };
-		FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashToLoginTransitionAnimator.m; sourceTree = "<group>"; };
-		FAE924C91B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginToSplashTransitionAnimator.h; sourceTree = "<group>"; };
-		FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginToSplashTransitionAnimator.m; sourceTree = "<group>"; };
 		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
 		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
@@ -1043,8 +1022,6 @@
 				19D9B54514F62B850017B70A /* INatUITabBarController.m */,
 				19F874821522E58E00A65F9A /* INatWebController.h */,
 				19F874831522E58F00A65F9A /* INatWebController.m */,
-				198552E614EF208600DB55C5 /* LoginViewController.h */,
-				198552E714EF208600DB55C5 /* LoginViewController.m */,
 				19640DE41508100A003BF888 /* MapTypeViewController.h */,
 				19640DE51508100A003BF888 /* MapTypeViewController.m */,
 				19AE898018DD0AEB00505918 /* ObservationActivityViewController.h */,
@@ -1071,10 +1048,6 @@
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
 				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
-				FAC4FEAA1B057F7E00C61E97 /* SignupSplashViewController.h */,
-				FAC4FEAB1B057F7E00C61E97 /* SignupSplashViewController.m */,
-				FA6D695A1B06B026000983F8 /* SignupViewController.h */,
-				FA6D695B1B06B026000983F8 /* SignupViewController.m */,
 				19F874941526763D00A65F9A /* TaxaSearchController.h */,
 				19F874951526763E00A65F9A /* TaxaSearchController.m */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
@@ -1536,7 +1509,6 @@
 			isa = PBXGroup;
 			children = (
 				FAD6F0AD1C17C32B0097899F /* New Obs Animators */,
-				FAE924CC1B1E5B1000B43B46 /* Signup / Login Animators */,
 			);
 			name = Sizzle;
 			sourceTree = "<group>";
@@ -1605,21 +1577,6 @@
 				FADE28B31B02D9AA00CA55FF /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		FAE924CC1B1E5B1000B43B46 /* Signup / Login Animators */ = {
-			isa = PBXGroup;
-			children = (
-				FAA872D31B15127F00366521 /* SplashToSignupTransitionAnimator.h */,
-				FAA872D41B15127F00366521 /* SplashToSignupTransitionAnimator.m */,
-				FAA872D61B15176600366521 /* SignupToSplashTransitionAnimator.h */,
-				FAA872D71B15176600366521 /* SignupToSplashTransitionAnimator.m */,
-				FAE924C61B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.h */,
-				FAE924C71B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m */,
-				FAE924C91B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.h */,
-				FAE924CA1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m */,
-			);
-			name = "Signup / Login Animators";
 			sourceTree = "<group>";
 		};
 		FAEF23321C7D007C00208F44 /* iNat Node API */ = {
@@ -1933,7 +1890,6 @@
 				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */,
-				198552E814EF208700DB55C5 /* LoginViewController.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
@@ -1988,9 +1944,7 @@
 				FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */,
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
-				FA6D69561B069A0F000983F8 /* SignupSplashViewController.m in Sources */,
 				FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */,
-				FAA872D51B15127F00366521 /* SplashToSignupTransitionAnimator.m in Sources */,
 				19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */,
 				FA51BA6B1C0159C000101807 /* ObsDetailActivityMoreCell.m in Sources */,
 				FA3F20181A13F67200928102 /* ExploreSearchView.m in Sources */,
@@ -2055,9 +2009,6 @@
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
-				FA6D695C1B06B026000983F8 /* SignupViewController.m in Sources */,
-				FAE924C81B1E5AF700B43B46 /* SplashToLoginTransitionAnimator.m in Sources */,
-				FAA872D81B15176600366521 /* SignupToSplashTransitionAnimator.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				191059DE18EC9A6300A86377 /* TKCoverflowCoverView+INaturalist.m in Sources */,
 				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,
@@ -2086,7 +2037,6 @@
 				FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */,
 				FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
-				FAE924CB1B1E5B0400B43B46 /* LoginToSplashTransitionAnimator.m in Sources */,
 				FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */,
 				FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
 				FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */,

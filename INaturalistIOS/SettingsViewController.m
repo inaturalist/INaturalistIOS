@@ -30,7 +30,6 @@
 #import "INatUITabBarController.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
-#import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "PartnerController.h"
@@ -39,7 +38,6 @@
 #import "UploadManager.h"
 #import "UIColor+INaturalist.h"
 #import "PeopleAPI.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
 static const int CreditsSection = 3;
@@ -347,19 +345,6 @@ static const int AutouploadSwitchTag = 102;
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(forceABSwap)];
-    tap.numberOfTapsRequired = 4;
-    tap.numberOfTouchesRequired = 1;
-    [self.view addGestureRecognizer:tap];
-}
-
-- (void)forceABSwap {
-    [JDStatusBarNotification showWithStatus:@"Swapping Onboarding A/B Group"
-                               dismissAfter:3.0f
-                                  styleName:nil];
-    [ABSorter forceABSwapForName:kOnboardingTestName];
 }
 
 - (void)dealloc {
@@ -684,27 +669,14 @@ static const int AutouploadSwitchTag = 102;
 
 - (void)presentSignup {
     __weak typeof(self) weakSelf = self;
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Settings",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Settings",
-                                           @"Version": @"SplashScreen" }];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Settings",
+                                       @"Version": @"Onboarding" }];
     
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.cancellable = YES;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [weakSelf presentViewController:nav animated:YES completion:nil];
-    }];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 - (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{

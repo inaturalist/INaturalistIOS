@@ -35,8 +35,6 @@
 #import "ShortcutSearchItem.h"
 #import "ExploreLeaderboardViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
-#import "SignupSplashViewController.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
@@ -239,28 +237,14 @@
 
 - (void)presentSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Explore Search My Obs",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"Explore Search My Obs",
-                                           @"Version": @"SplashScreen" }];
-        
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.cancellable = YES;
-        signup.reason = reason;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [weakSelf presentViewController:nav animated:YES completion:nil];
-    }];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"Explore Search My Obs",
+                                       @"Version": @"Onboarding" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 #pragma mark - UIControl targets

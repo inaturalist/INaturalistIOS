@@ -14,11 +14,9 @@
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
-#import "SignupSplashViewController.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "INaturalistAppDelegate.h"
 #import "UIImage+INaturalist.h"
 #import "INatWebController.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
 static const int LeaveProjectAlertViewTag = 1;
@@ -155,29 +153,15 @@ static const int LeaveProjectAlertViewTag = 1;
 
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
-        
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"ProjectDetail",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"ProjectDetail",
-                                           @"Version": @"SplashScreen" }];
-        
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.reason = reason;
-        signup.cancellable = YES;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [self presentViewController:nav animated:YES completion:nil];
-    }];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"ProjectDetail",
+                                       @"Version": @"Onboarding" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 
@@ -481,9 +465,6 @@ static const int LeaveProjectAlertViewTag = 1;
     
     return @"left";
 }
-
-
-
 
 @end
 

@@ -19,14 +19,12 @@
 #import "ContainedScrollViewDelegate.h"
 #import "TaxonDetailViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "INaturalistAppDelegate.h"
 #import "Analytics.h"
-#import "SignupSplashViewController.h"
 #import "ProjectAboutViewController.h"
 #import "NewsViewController.h"
 #import "UIImage+INaturalist.h"
 #import "ProjectNewsButton.h"
-#import "ABSorter.h"
 #import "OnboardingLoginViewController.h"
 
 // At this offset the Header stops its transformations
@@ -368,28 +366,14 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)presentSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"ProjectDetailV2",
-                                           @"Version": @"Onboarding" }];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-        login.skippable = NO;
-        [weakSelf presentViewController:login animated:YES completion:nil];
-    } B:^{
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                         withProperties:@{ @"From": @"ProjectDetailV2",
-                                           @"Version": @"SplashScreen" }];
-        
-        SignupSplashViewController *signup = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        signup.cancellable = YES;
-        signup.reason = reason;
-        signup.skippable = NO;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:signup];
-        nav.delegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        [weakSelf presentViewController:nav animated:YES completion:nil];
-    }];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"ProjectDetailV2",
+                                       @"Version": @"Onboarding" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
 

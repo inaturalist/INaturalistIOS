@@ -32,7 +32,6 @@
 #import "Analytics.h"
 #import "LoginController.h"
 #import "INatUITabBarController.h"
-#import "SignupSplashViewController.h"
 #import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "NSURL+INaturalist.h"
 #import "DeletedRecord.h"
@@ -424,34 +423,15 @@
 }
 
 - (void)showInitialSignupUI {
-	__weak typeof(self) weakSelf = self;
-    [ABSorter abTestWithName:kOnboardingTestName A:^{
-    	__strong typeof(weakSelf) strongSelf = weakSelf;
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                 withProperties:@{ @"From": @"App Launch",
-                                   @"Version": @"Onboarding" }];
-
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-        UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
-        strongSelf.window.rootViewController = onboardingVC;
-    } B:^{
-    	__strong typeof(weakSelf) strongSelf = weakSelf;
-    	
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                 withProperties:@{ @"From": @"App Launch",
-                                   @"Version": @"SplashScreen" }];
-
-        SignupSplashViewController *splash = [[SignupSplashViewController alloc] initWithNibName:nil bundle:nil];
-        splash.skippable = YES;
-        splash.cancellable = NO;
-        splash.animateIn = YES;
-        splash.skipAction = ^{
-            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-        };
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:splash];
-        nav.delegate = strongSelf;
-        [strongSelf.window setRootViewController:nav];
-    }];
+    __weak typeof(self) weakSelf = self;
+    __strong typeof(weakSelf) strongSelf = weakSelf;
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
+                     withProperties:@{ @"From": @"App Launch",
+                                       @"Version": @"Onboarding" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
+    strongSelf.window.rootViewController = onboardingVC;
 }
 
 @end
