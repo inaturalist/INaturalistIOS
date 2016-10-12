@@ -83,9 +83,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Nvg-kJ-bxo">
-                                <rect key="frame" x="175" y="101" width="304" height="341"/>
+                                <rect key="frame" x="148" y="-61" width="304" height="341"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="img-logo" translatesAutoresizingMaskIntoConstraints="NO" id="287-Kd-BHQ">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-logo" translatesAutoresizingMaskIntoConstraints="NO" id="287-Kd-BHQ">
                                         <rect key="frame" x="0.0" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Explore and Connect with Nature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RqF-E7-mYe">
@@ -120,8 +120,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3yr-K1-cKR">
-                                <rect key="frame" x="35" y="112" width="540" height="407"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3yr-K1-cKR">
+                                <rect key="frame" x="30" y="92" width="540" height="407"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-observe" translatesAutoresizingMaskIntoConstraints="NO" id="c12-6I-0ri">
                                         <rect key="frame" x="118" y="0.0" width="304" height="290"/>
@@ -195,7 +195,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6Iv-Oy-yzX">
-                                <rect key="frame" x="35" y="112" width="540" height="387"/>
+                                <rect key="frame" x="30" y="92" width="540" height="387"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-share" translatesAutoresizingMaskIntoConstraints="NO" id="3Jv-x6-KHK">
                                         <rect key="frame" x="118" y="0.0" width="304" height="290"/>
@@ -266,8 +266,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YMy-Rp-boP">
-                                <rect key="frame" x="35" y="112" width="540" height="407"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YMy-Rp-boP">
+                                <rect key="frame" x="30" y="92" width="540" height="407"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-learn" translatesAutoresizingMaskIntoConstraints="NO" id="WVA-09-tvX">
                                         <rect key="frame" x="118" y="0.0" width="304" height="290"/>
@@ -596,8 +596,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="xel-z6-qIE">
-                                <rect key="frame" x="35" y="112" width="540" height="407"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="xel-z6-qIE">
+                                <rect key="frame" x="30" y="92" width="540" height="407"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-contribute" translatesAutoresizingMaskIntoConstraints="NO" id="jWP-nj-KdU">
                                         <rect key="frame" x="118" y="0.0" width="304" height="290"/>
