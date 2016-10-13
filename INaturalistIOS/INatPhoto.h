@@ -14,6 +14,7 @@
 - (NSURL *)mediumPhotoUrl;
 - (NSURL *)smallPhotoUrl;
 - (NSURL *)thumbPhotoUrl;
+- (NSURL *)squarePhotoUrl;
 
 - (NSString *)photoKey;
 

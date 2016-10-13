@@ -36,6 +36,10 @@
     return [NSURL URLWithString:[self urlStringForSize:@"thumb"]];
 }
 
+- (NSURL *)squarePhotoUrl {
+    return [NSURL URLWithString:self.url];
+}
+
 - (NSString *)urlStringForSize:(NSString *)size {
     return [self.url stringByReplacingOccurrencesOfString:@"square" withString:size];
 }

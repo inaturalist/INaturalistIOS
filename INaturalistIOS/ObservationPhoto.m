@@ -147,6 +147,19 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
     if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
         return [NSURL fileURLWithPath:localPath];
+    } else if (self.thumbURL) {
+        return [NSURL URLWithString:self.thumbURL];
+    } else {
+        return nil;
+    }
+}
+
+- (NSURL *)squarePhotoUrl {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *localPath = [[ImageStore sharedImageStore] pathForKey:self.photoKey forSize:ImageStoreSquareSize];
+    
+    if (self.photoKey && localPath && [fm fileExistsAtPath:localPath]) {
+        return [NSURL fileURLWithPath:localPath];
     } else if (self.squareURL) {
         return [NSURL URLWithString:self.squareURL];
     } else {
