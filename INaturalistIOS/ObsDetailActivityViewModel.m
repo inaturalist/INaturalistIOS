@@ -549,7 +549,7 @@
 
 - (void)markActivityAsSeen {
     // check for network
-    if (self.observation.inatRecordId && self.observation.hasUnviewedActivity && [self.observation isKindOfClass:[Observation class]]) {
+    if (self.observation.inatRecordId && self.observation.hasUnviewedActivityBool && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
         
         [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
@@ -599,6 +599,11 @@
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     
     [self.delegate hideProgressHud];
+    
+
+    if (request.method ==RKRequestMethodGET) {
+        return;
+    }
     
     // set "seen" call returns 204 on success, add ID returns 200
     if (response.statusCode == 200 || response.statusCode == 204) {

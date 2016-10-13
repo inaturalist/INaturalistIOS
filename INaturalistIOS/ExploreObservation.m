@@ -218,7 +218,7 @@
     return self.observationId;
 }
 
-- (BOOL)hasUnviewedActivity {
+- (BOOL)hasUnviewedActivityBool {
     return NO;
 }
 

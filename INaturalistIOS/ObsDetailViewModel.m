@@ -331,7 +331,7 @@
                           forControlEvents:UIControlEventTouchUpInside];
         
         // only show the activity count if there's unviewed activity on this obs
-        if (self.observation.hasUnviewedActivity) {
+        if (self.observation.hasUnviewedActivityBool) {
             selector.activityButton.count = self.observation.sortedActivity.count;
         } else {
             selector.activityButton.count = 0;

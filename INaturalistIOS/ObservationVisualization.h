@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (NSInteger)inatRecordId;
 
-- (BOOL)hasUnviewedActivity;
+- (BOOL)hasUnviewedActivityBool;
 
 - (Taxon *)taxon;
 - (void)setTaxon:(Taxon *)newValue;

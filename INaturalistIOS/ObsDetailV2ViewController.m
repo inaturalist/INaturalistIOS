@@ -53,7 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if (self.observation.hasUnviewedActivity) {
+    if ([self.observation hasUnviewedActivityBool]) {
         self.viewModel = [[ObsDetailActivityViewModel alloc] init];
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
@@ -391,7 +391,7 @@
     // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
-    if (self.observation.hasUnviewedActivity && self.activeSection == ObsDetailSectionActivity) {
+    if (self.observation.hasUnviewedActivityBool && self.activeSection == ObsDetailSectionActivity) {
         
         NSInteger lastSection = [self.tableView numberOfSections] - 1;
         
@@ -421,9 +421,6 @@
                                                             animated:YES];
                           }
                       }];
-        } else {
-            ObsDetailActivityViewModel *activityViewModel = (ObsDetailActivityViewModel *)self.viewModel;
-            [activityViewModel markActivityAsSeen];
         }
     }
 }

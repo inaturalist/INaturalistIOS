@@ -548,4 +548,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 	}
 }
 
+- (BOOL)hasUnviewedActivityBool {
+    return [self.hasUnviewedActivity boolValue];
+}
+
 @end

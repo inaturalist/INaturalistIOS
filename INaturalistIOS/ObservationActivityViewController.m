@@ -240,7 +240,7 @@ static UIImage *defaultPersonImage;
 
 - (void)markAsRead
 {
-	if (self.observation.recordID && self.observation.hasUnviewedActivity.boolValue) {
+	if (self.observation.recordID && self.observation.hasUnviewedActivityBool) {
         [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
 		[[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%@/viewed_updates", self.observation.recordID] params:nil delegate:self];
 		self.observation.hasUnviewedActivity = [NSNumber numberWithBool:NO];

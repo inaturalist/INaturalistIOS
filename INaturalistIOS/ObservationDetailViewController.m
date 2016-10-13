@@ -304,7 +304,7 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
 	}
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.activityButton.frame];
     imageView.contentMode = UIViewContentModeCenter;
-	if (self.observation.hasUnviewedActivity.boolValue) {
+	if (self.observation.hasUnviewedActivityBool) {
         imageView.image = [UIImage imageNamed:@"08-chat-red"];
 	} else {
         imageView.image = [UIImage imageNamed:@"08-chat"];

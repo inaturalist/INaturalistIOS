@@ -843,7 +843,7 @@
         cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
     }
     
-    if (o.hasUnviewedActivity.boolValue) {
+    if (o.hasUnviewedActivityBool) {
         [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat-red"] forState:UIControlStateNormal];
     } else {
         [cell.activityButton setBackgroundImage:[UIImage imageNamed:@"08-chat"] forState:UIControlStateNormal];
