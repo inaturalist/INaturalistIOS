@@ -48,6 +48,7 @@ static char PARTNER_ASSOCIATED_KEY;
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
 
+@property IBOutlet UILabel *orLabel;
 @property IBOutlet IconAndTextControl *facebookButton;
 @property IBOutlet IconAndTextControl *googleButton;
 
@@ -66,6 +67,12 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // design can't be made to accomodate iPhone 4s
+    if ([UIScreen mainScreen].bounds.size.height < 568) {
+        self.orLabel.hidden = YES;
+        self.actionButton.hidden = YES;
+    }
     
     self.leftViewIcons = @[
                                  ({

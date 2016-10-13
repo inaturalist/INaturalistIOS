@@ -571,6 +571,7 @@
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
                         <outlet property="licenseMyDataLabel" destination="xUc-8o-XIN" id="C1f-DM-TqK"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>
+                        <outlet property="orLabel" destination="Bfj-77-C1k" id="lrY-mX-q9G"/>
                         <outlet property="passwordField" destination="FZ5-km-oDo" id="ef2-u2-1UH"/>
                         <outlet property="skipButton" destination="J6N-uD-ctb" id="WWs-Vr-PeJ"/>
                         <outlet property="switchContextButton" destination="082-Nj-s4i" id="GUq-FA-S8G"/>
