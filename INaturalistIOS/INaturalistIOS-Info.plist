@@ -79,6 +79,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>${PRODUCT_NAME} uses this information to automatically add locations to your observations.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the photo library to add photos to your observations.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
