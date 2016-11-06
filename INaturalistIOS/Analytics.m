@@ -275,14 +275,6 @@ NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download
 NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide Download - Complete";
 NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download - Delete";
 
-
-// A/B testing
-NSString *kAnalyticsEventAssignedToOnboardingGroupA =			@"AB Testing - Assigned To Onboarding A";
-NSString *kAnalyticsEventAssignedToOnboardingGroupB =			@"AB Testing - Assigned To Onboarding B";
-
 // background fetch
-NSString *kAnalyticsEventBackgroundFetchTriggered =             @"Background Fetch Triggered";
 NSString *kAnalyticsEventBackgroundFetchFailed =                @"Background Fetch Failed";
-NSString *kAnalyticsEventBackgroundFetchDone =                  @"Background Fetch Done";
-NSString *kAnalyticsEventBackgroundFetchNotificationOpened =    @"Background Fetch Notification Opened";
 
