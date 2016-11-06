@@ -406,8 +406,6 @@
     // reload tableview
     [[self tableView] reloadData];
     
-    // update tab bar UI
-    [self updateSyncBadge];
 }
 
 - (BOOL)isSyncing {
@@ -520,10 +518,6 @@
     }
 }
 
-- (void)updateSyncBadge {
-    [((INatUITabBarController *)self.tabBarController) setObservationsTabBadge];
-}
-
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
     // reload me
     [self configureHeaderForLoggedInUser];
@@ -630,9 +624,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // skip reload animation
     [self.tableView reloadData];
-    
-    // now is a good time to check that we're displaying up to date sync info
-    [self updateSyncBadge];
     
     // now is also a good time to reload the header
     [self configureHeaderForLoggedInUser];
@@ -1357,7 +1348,6 @@
 {
     [super viewDidAppear:animated];
     
-    [self updateSyncBadge];
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
@@ -1655,7 +1645,6 @@
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
 
     [self configureHeaderForLoggedInUser];
-    [self updateSyncBadge];
 
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
@@ -1739,8 +1728,6 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
-
-    [self updateSyncBadge];
 }
 
 - (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager {
