@@ -135,14 +135,6 @@
     if (!self.observation.needsUpload) {
         [self reloadObservation];
     }
-    
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
 - (void)dealloc {
