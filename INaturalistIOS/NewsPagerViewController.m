@@ -168,11 +168,8 @@
         case 1:
             return self.updates;
             break;
-        case 0:
-            return self.siteNews;
-            break;
         default:
-            return [[UIViewController alloc] initWithNibName:nil bundle:nil];
+            return self.siteNews;
             break;
     }
 }
