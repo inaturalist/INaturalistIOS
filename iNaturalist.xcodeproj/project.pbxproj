@@ -445,6 +445,7 @@
 		E9DFF9097662B40EF98B3675 /* libPods-iNaturalist.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
+		FA0600691DCEE1700025473C /* iNaturalist.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = iNaturalist.entitlements; path = iNaturalist/iNaturalist.entitlements; sourceTree = "<group>"; };
 		FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationValidationErrorView.h; sourceTree = "<group>"; };
 		FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationValidationErrorView.m; sourceTree = "<group>"; };
 		FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewUploadingCell.h; sourceTree = "<group>"; };
@@ -852,6 +853,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
+				FA0600691DCEE1700025473C /* iNaturalist.entitlements */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				FADE28B11B02D9AA00CA55FF /* iNaturalistTests */,
 				1927513614E9CCC9000ABAC4 /* Frameworks */,
@@ -1671,6 +1673,11 @@
 				TargetAttributes = {
 					1927513214E9CCC9000ABAC4 = {
 						DevelopmentTeam = N5J7L4P93Z;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					FADE28AF1B02D9AA00CA55FF = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -2216,6 +2223,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = iNaturalist/iNaturalist.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -2260,6 +2268,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = iNaturalist/iNaturalist.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
