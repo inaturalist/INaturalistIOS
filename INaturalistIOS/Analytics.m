@@ -139,9 +139,6 @@ NSString *kAnalyticsEventExploreSearchMine =                    @"Explore - Sear
 NSString *kAnalyticsEventExploreAddComment =                    @"Explore - Add Comment";
 NSString *kAnalyticsEventExploreAddIdentification =             @"Explore - Add Identification";
 
-// share in explore
-NSString *kAnalyticsEventExploreObservationShare =              @"Explore - Observation - Share";
-
 // observation activities
 NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";

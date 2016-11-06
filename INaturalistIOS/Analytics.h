@@ -43,9 +43,6 @@ extern NSString *kAnalyticsEventExploreSearchMine;
 extern NSString *kAnalyticsEventExploreAddComment;
 extern NSString *kAnalyticsEventExploreAddIdentification;
 
-// share in explore
-extern NSString *kAnalyticsEventExploreObservationShare;
-
 // observations activites
 extern NSString *kAnalyticsEventCreateObservation;
 extern NSString *kAnalyticsEventSyncObservation;
