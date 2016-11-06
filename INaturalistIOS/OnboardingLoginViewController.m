@@ -488,11 +488,14 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (IBAction)skipPressed:(id)sender {
     if (self.skipAction) {
+        [[Analytics sharedClient] event:kAnalyticsEventSplashSkip];
         self.skipAction();
     }
 }
 
 - (IBAction)closePressed:(id)sender {
+    [[Analytics sharedClient] event:kAnalyticsEventSplashCancel];
+
     if (self.closeAction) {
         self.closeAction();
     } else {
