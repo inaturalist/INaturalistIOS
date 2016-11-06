@@ -22,7 +22,7 @@
 #import "INaturalistAppDelegate.h"
 #import "Analytics.h"
 #import "ProjectAboutViewController.h"
-#import "NewsViewController.h"
+#import "SiteNewsViewController.h"
 #import "UIImage+INaturalist.h"
 #import "ProjectNewsButton.h"
 #import "OnboardingLoginViewController.h"
@@ -137,6 +137,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     } else if ([segue.identifier isEqualToString:@"segueToObservationDetail"]) {
         ObsDetailV2ViewController *vc = [segue destinationViewController];
         vc.observation = sender;
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
+                         withProperties:@{ @"via": @"Project Details" }];
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxon = sender;
@@ -144,7 +146,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         ProjectAboutViewController *vc = [segue destinationViewController];
         vc.project = self.project;
     } else if ([segue.identifier isEqualToString:@"projectNewsSegue"]) {
-        NewsViewController *vc = [segue destinationViewController];
+        SiteNewsViewController *vc = [segue destinationViewController];
         vc.project = self.project;
     }
 }

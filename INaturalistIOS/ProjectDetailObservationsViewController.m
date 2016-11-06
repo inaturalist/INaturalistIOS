@@ -96,7 +96,6 @@
     UIViewController *parent = self.parentViewController;
     UIViewController *grandParent = parent.parentViewController;
     UIViewController *greatGrandParent = grandParent.parentViewController;
-    NSLog(@"greatGrandParent is %@", greatGrandParent);
     [greatGrandParent performSegueWithIdentifier:@"segueToObservationDetail"
                                           sender:obs];
 }

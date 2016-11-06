@@ -36,6 +36,7 @@
 #import "INatPhoto.h"
 #import "ExploreObservation.h"
 #import "ObservationAPI.h"
+#import "INatUITabBarController.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -121,6 +122,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
     [UIView animateWithDuration:0.3 animations:^{
         [self.navigationController.navigationBar setBackgroundImage:nil
                                                       forBarMetrics:UIBarMetricsDefault];
@@ -179,7 +182,7 @@
     
     // load the full observation from the server, to fetch comments, ids & faves
     [[Analytics sharedClient] debugLog:@"Network - Load complete observation details"];
-    if ([self.observation isKindOfClass:[Observation class]]) {
+    if ([self.observation isKindOfClass:[Observation class]] || !self.observation) {
         Observation *obs = (Observation *)self.observation;
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", obs.recordID]
                                                      objectMapping:[Observation mapping]
@@ -227,6 +230,10 @@
 }
 
 #pragma mark - obs detail view model delegate
+
+- (void)setUpdatesBadge {
+    [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
+}
 
 - (void)showProgressHud {
     dispatch_async(dispatch_get_main_queue(), ^{

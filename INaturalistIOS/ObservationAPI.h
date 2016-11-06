@@ -11,5 +11,7 @@
 @interface ObservationAPI : INatAPI
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)railsObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)updatesWithHandler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

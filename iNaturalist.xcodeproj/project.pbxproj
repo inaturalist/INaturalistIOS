@@ -102,6 +102,7 @@
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
 		CA0213AC0FF824B557AAE618 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9DFF9097662B40EF98B3675 /* libPods-iNaturalist.a */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
+		FA067F601DBACF0A00CBA5EF /* UpdatesItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */; };
 		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
 		FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */; };
 		FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */; };
@@ -227,7 +228,7 @@
 		FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */; };
 		FACADF881CA1A731004B9D4A /* ProjectAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACADF871CA1A731004B9D4A /* ProjectAboutViewController.m */; };
 		FACADF8B1CA1A920004B9D4A /* ProjectAboutInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACADF8A1CA1A920004B9D4A /* ProjectAboutInfoCell.m */; };
-		FACC30251C47398100234BF3 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30241C47398100234BF3 /* NewsViewController.m */; };
+		FACC30251C47398100234BF3 /* SiteNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC30241C47398100234BF3 /* SiteNewsViewController.m */; };
 		FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE2D1A082139001A9684 /* DisambiguationCell.m */; };
 		FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FACD11EE1C56E9720041E318 /* TaxonCell.xib */; };
 		FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FACEEB271D1C607600B2EC62 /* ExploreUser.m */; };
@@ -235,6 +236,8 @@
 		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
+		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
+		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
 		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
@@ -252,6 +255,11 @@
 		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
+		FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */; };
+		FAFED1F61DB59EA90015CCBA /* ExploreUpdateRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */; };
+		FAFED1F91DB5A25C0015CCBA /* ExploreUserRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */; };
+		FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */; };
+		FAFED1FF1DB5A2730015CCBA /* ExploreIdentificationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */; };
 		FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */; };
 /* End PBXBuildFile section */
 
@@ -446,6 +454,8 @@
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
 		FA0600691DCEE1700025473C /* iNaturalist.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = iNaturalist.entitlements; path = iNaturalist/iNaturalist.entitlements; sourceTree = "<group>"; };
+		FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatesItemCell.h; sourceTree = "<group>"; };
+		FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatesItemCell.m; sourceTree = "<group>"; };
 		FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationValidationErrorView.h; sourceTree = "<group>"; };
 		FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationValidationErrorView.m; sourceTree = "<group>"; };
 		FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewUploadingCell.h; sourceTree = "<group>"; };
@@ -732,8 +742,8 @@
 		FACADF871CA1A731004B9D4A /* ProjectAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectAboutViewController.m; sourceTree = "<group>"; };
 		FACADF891CA1A920004B9D4A /* ProjectAboutInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectAboutInfoCell.h; sourceTree = "<group>"; };
 		FACADF8A1CA1A920004B9D4A /* ProjectAboutInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectAboutInfoCell.m; sourceTree = "<group>"; };
-		FACC30231C47398100234BF3 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
-		FACC30241C47398100234BF3 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
+		FACC30231C47398100234BF3 /* SiteNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SiteNewsViewController.h; sourceTree = "<group>"; };
+		FACC30241C47398100234BF3 /* SiteNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SiteNewsViewController.m; sourceTree = "<group>"; };
 		FACC30261C48476800234BF3 /* INaturalist2.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.11.xcdatamodel; sourceTree = "<group>"; };
 		FACCFE2C1A082139001A9684 /* DisambiguationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisambiguationCell.h; sourceTree = "<group>"; };
 		FACCFE2D1A082139001A9684 /* DisambiguationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisambiguationCell.m; sourceTree = "<group>"; };
@@ -747,6 +757,10 @@
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
+		FADDA3BA1DBABA9900FB054F /* NewsPagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsPagerViewController.h; sourceTree = "<group>"; };
+		FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsPagerViewController.m; sourceTree = "<group>"; };
+		FADDA3BD1DBABAD500FB054F /* UpdatesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatesViewController.h; sourceTree = "<group>"; };
+		FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatesViewController.m; sourceTree = "<group>"; };
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
@@ -787,6 +801,16 @@
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
 		FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubtitleDisclosureCell.m; sourceTree = "<group>"; };
+		FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreUpdate.h; sourceTree = "<group>"; };
+		FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUpdate.m; sourceTree = "<group>"; };
+		FAFED1F41DB59EA90015CCBA /* ExploreUpdateRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreUpdateRealm.h; sourceTree = "<group>"; };
+		FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUpdateRealm.m; sourceTree = "<group>"; };
+		FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreUserRealm.h; sourceTree = "<group>"; };
+		FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUserRealm.m; sourceTree = "<group>"; };
+		FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreCommentRealm.h; sourceTree = "<group>"; };
+		FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreCommentRealm.m; sourceTree = "<group>"; };
+		FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentificationRealm.h; sourceTree = "<group>"; };
+		FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreIdentificationRealm.m; sourceTree = "<group>"; };
 		FAFFFBEB1BFFD6B5003B7B7B /* Fave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fave.h; sourceTree = "<group>"; };
 		FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Fave.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1058,10 +1082,7 @@
 				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
 				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
-				FACC30231C47398100234BF3 /* NewsViewController.h */,
-				FACC30241C47398100234BF3 /* NewsViewController.m */,
-				FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */,
-				FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */,
+				FADDA3B91DBABA7800FB054F /* News */,
 				FA711AA81D53D6E600C4FFDB /* Onboarding */,
 				FA430BE31CA48E3F00FDC6E4 /* Observation Detail */,
 				FA430BE21CA48E3A00FDC6E4 /* Project Detail */,
@@ -1136,6 +1157,8 @@
 				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
 				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
 				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
+				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
+				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
 				FAEF23421C7D0DD300208F44 /* Project Details */,
 				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
 				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
@@ -1529,6 +1552,14 @@
 			children = (
 				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
 				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
+				FAFED1F41DB59EA90015CCBA /* ExploreUpdateRealm.h */,
+				FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */,
+				FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */,
+				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
+				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
+				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
+				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
+				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
 			);
 			name = Realm;
 			sourceTree = "<group>";
@@ -1560,8 +1591,25 @@
 				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
 				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
 				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
+				FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */,
+				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
 			);
 			name = Mantle;
+			sourceTree = "<group>";
+		};
+		FADDA3B91DBABA7800FB054F /* News */ = {
+			isa = PBXGroup;
+			children = (
+				FADDA3BA1DBABA9900FB054F /* NewsPagerViewController.h */,
+				FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */,
+				FACC30231C47398100234BF3 /* SiteNewsViewController.h */,
+				FACC30241C47398100234BF3 /* SiteNewsViewController.m */,
+				FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */,
+				FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */,
+				FADDA3BD1DBABAD500FB054F /* UpdatesViewController.h */,
+				FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */,
+			);
+			name = News;
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
@@ -1674,6 +1722,9 @@
 					1927513214E9CCC9000ABAC4 = {
 						DevelopmentTeam = N5J7L4P93Z;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -1930,12 +1981,14 @@
 				191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */,
 				FACADF8B1CA1A920004B9D4A /* ProjectAboutInfoCell.m in Sources */,
 				19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
+				FAFED1F61DB59EA90015CCBA /* ExploreUpdateRealm.m in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
 				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
+				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
 				FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */,
 				FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */,
 				FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */,
@@ -1972,6 +2025,7 @@
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
 				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
+				FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */,
 				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
 				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
 				19F87448152254FC00A65F9A /* ProjectDetailViewController.m in Sources */,
@@ -1990,18 +2044,21 @@
 				FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */,
 				19F874961526763F00A65F9A /* TaxaSearchController.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */,
 				FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */,
 				FAEF23351C7D00A600208F44 /* INatAPI.m in Sources */,
 				FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */,
+				FA067F601DBACF0A00CBA5EF /* UpdatesItemCell.m in Sources */,
 				FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */,
 				FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */,
-				FACC30251C47398100234BF3 /* NewsViewController.m in Sources */,
+				FACC30251C47398100234BF3 /* SiteNewsViewController.m in Sources */,
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
 				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
 				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
+				FAFED1FF1DB5A2730015CCBA /* ExploreIdentificationRealm.m in Sources */,
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
 				FA711AAB1D53D71500C4FFDB /* OnboardingPageViewController.m in Sources */,
 				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
@@ -2036,6 +2093,7 @@
 				FA51BA681C0107EC00101807 /* ObsDetailAddFaveHeader.m in Sources */,
 				FA4D56B91C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m in Sources */,
 				FA78DFC01BC5C97B002DCCB1 /* ProjectObservationHeaderView.m in Sources */,
+				FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
@@ -2052,6 +2110,7 @@
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
 				FACADF881CA1A731004B9D4A /* ProjectAboutViewController.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
+				FAFED1F91DB5A25C0015CCBA /* ExploreUserRealm.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,

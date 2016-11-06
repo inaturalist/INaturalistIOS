@@ -20,6 +20,7 @@
 #import "Fave.h"
 #import "User.h"
 #import "ExploreTaxonRealm.h"
+#import "ExploreUpdateRealm.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -549,7 +550,19 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (BOOL)hasUnviewedActivityBool {
-    return [self.hasUnviewedActivity boolValue];
+    return [self.hasUnviewedActivity boolValue] || [[self unseenUpdates] count] > 0;
+}
+
+- (RLMResults *)updates {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld",
+                              self.recordID.integerValue];
+    return [ExploreUpdateRealm objectsWithPredicate:predicate];
+}
+
+- (RLMResults *)unseenUpdates {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld and viewed == false",
+                              self.recordID.integerValue];
+    return [ExploreUpdateRealm objectsWithPredicate:predicate];
 }
 
 @end

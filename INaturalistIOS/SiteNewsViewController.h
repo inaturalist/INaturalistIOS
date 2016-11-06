@@ -10,7 +10,7 @@
 
 @class Project;
 
-@interface NewsViewController : UIViewController
+@interface SiteNewsViewController : UIViewController
 
 @property Project *project;
 

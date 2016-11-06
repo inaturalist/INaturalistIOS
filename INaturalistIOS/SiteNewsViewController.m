@@ -12,7 +12,7 @@
 #import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-#import "NewsViewController.h"
+#import "SiteNewsViewController.h"
 #import "NewsItem.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
@@ -26,7 +26,7 @@
 
 static UIImage *briefcase;
 
-@interface NewsViewController () <NSFetchedResultsControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITableViewDelegate, UITableViewDataSource> {
+@interface SiteNewsViewController () <NSFetchedResultsControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITableViewDelegate, UITableViewDataSource> {
     NSFetchedResultsController *_frc;
 }
 
@@ -35,29 +35,11 @@ static UIImage *briefcase;
 @property IBOutlet UITableView *tableView;
 @end
 
-@implementation NewsViewController
+@implementation SiteNewsViewController
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        
-        if (self.project) {
-            NSString *base = NSLocalizedString(@"%@ News", @"title for project news screen. %@ is the project name.");
-            self.title = [NSString stringWithFormat:base, self.project.title];
-        } else {
-            self.title = NSLocalizedString(@"News", nil);
-        }
-        
-        self.tabBarItem.image = ({
-            FAKIcon *news = [FAKIonIcons iosListOutlineIconWithSize:35];
-            [news addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[news imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.tabBarItem.selectedImage = ({
-            FAKIcon *news = [FAKIonIcons iosListIconWithSize:35];
-            [news imageWithSize:CGSizeMake(34, 45)];
-        });
-        
+                
         briefcase = ({
             FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
             [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
@@ -109,18 +91,7 @@ static UIImage *briefcase;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateNewsList];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateNewsList];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateNewsList];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

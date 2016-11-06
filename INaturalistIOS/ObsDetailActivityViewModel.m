@@ -37,6 +37,7 @@
 #import "ExploreComment.h"
 #import "UIImage+INaturalist.h"
 #import "TAxaAPI.h"
+#import "ExploreUpdateRealm.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -576,6 +577,13 @@
         NSError *error = nil;
         [[[RKObjectManager sharedManager] objectStore] save:&error];
     }
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
+    RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
+    [[RLMRealm defaultRealm] transactionWithBlock:^{
+        [results setValue:@(YES) forKey:@"viewed"];
+    }];
+    [self.delegate setUpdatesBadge];
 }
 
 - (BOOL)loggedInUserProducedActivity:(id <ActivityVisualization>)activity {

@@ -39,6 +39,10 @@
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
 #import "ABSorter.h"
+#import "ObservationAPI.h"
+#import "ExploreUpdate.h"
+#import "ExploreUpdateRealm.h"
+#import "NewsPagerViewController.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -46,6 +50,7 @@
 }
 
 @property (readonly) RKManagedObjectStore *inatObjectStore;
+@property UIBackgroundTaskIdentifier backgroundFetchTask;
 
 @end
 
@@ -54,6 +59,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	[FBSDKAppEvents activateApp];
+    
+    [self loadUpdatesWithCompletionHandler:nil];
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -72,12 +79,152 @@
 	                        annotation:annotation];
 }
 
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
+    NSLog(@"deviceToken: %@", deviceToken);
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
+    NSLog(@"Failed to register with error : %@", error);
+}
+
+
+- (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    if (!self.loginController) {
+        self.loginController = [[LoginController alloc] init];
+    }
+    
+    if (!self.loginController.isLoggedIn) {
+        if (completionHandler) {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    } else {
+        NSNumber *userIdObj = nil;
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
+            userIdObj = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];
+        }
+        
+        if (!userIdObj) {
+            if (completionHandler) {
+                completionHandler(UIBackgroundFetchResultNoData);
+            }
+        } else {
+            NSInteger userId = userIdObj.integerValue;
+            
+            self.backgroundFetchTask = [application beginBackgroundTaskWithExpirationHandler:^{
+                [application endBackgroundTask:self.backgroundFetchTask];
+                self.backgroundFetchTask = UIBackgroundTaskInvalid;
+            }];
+            
+            [self.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+                ObservationAPI *api = [[ObservationAPI alloc] init];
+                [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+                    
+                    if (error) {
+                        if (completionHandler) {
+                            [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
+                                             withProperties:@{
+                                                              @"reason": error.localizedDescription,
+                                                              }];
+                            completionHandler(UIBackgroundFetchResultFailed);
+                        }
+                        [application endBackgroundTask:self.backgroundFetchTask];
+                        self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                        return;
+                    }
+                    
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
+                    NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
+                    
+                    NSPredicate *newPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreUpdate *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+                        if ([ExploreUpdateRealm objectForPrimaryKey:@(evaluatedObject.updateId)]) {
+                            return NO;
+                        } else if ([evaluatedObject viewed]) {
+                            return NO;
+                        } else {
+                            return YES;
+                        }
+                    }];
+                    NSArray *myNewResults = [myResults filteredArrayUsingPredicate:newPredicate];
+                    
+                    RLMRealm *realm = [RLMRealm defaultRealm];
+                    [realm beginWriteTransaction];
+                    // all results get written to Realm
+                    for (ExploreUpdate *eu in results) {
+                        ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
+                        [realm addOrUpdateObject:eur];
+                    }
+                    [realm commitWriteTransaction];
+                    UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+                    if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
+                        [((INatUITabBarController *)rootVC) setUpdatesBadge];
+                    }
+                    
+                    if (completionHandler) {
+                        // if we have a completion handler, we need to post notifications
+                        if (myNewResults.count == 0) {
+                            [application endBackgroundTask:self.backgroundFetchTask];
+                            self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                            
+                            completionHandler(UIBackgroundFetchResultNoData);
+                            return;
+                        } else if (myNewResults.count == 1) {
+                            UILocalNotification *note = [[UILocalNotification alloc] init];
+                            note.fireDate = [NSDate date];
+                            ExploreUpdate *update = [results firstObject];
+                            if (update.identification) {
+                                note.alertBody = NSLocalizedString(@"There is a new identification on one of your observations.", nil);
+                            } else {
+                                note.alertBody = NSLocalizedString(@"There is a new comment on one of your observations.", nil);
+                            }
+                            [[UIApplication sharedApplication] presentLocalNotificationNow:note];
+                        } else {
+                            UILocalNotification *note = [[UILocalNotification alloc] init];
+                            note.fireDate = [NSDate date];
+                            note.alertBody = NSLocalizedString(@"There is new activity on your observations!", nil);
+                            [[UIApplication sharedApplication] presentLocalNotificationNow:note];
+                        }
+                        completionHandler(UIBackgroundFetchResultNewData);
+                    }
+                    
+                    [application endBackgroundTask:self.backgroundFetchTask];
+                    self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                }];
+                
+            } failure:^(NSError *error) {
+                if (completionHandler) {
+                    [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
+                                     withProperties:@{
+                                                      @"reason": error.localizedDescription,
+                                                      }];
+                    completionHandler(UIBackgroundFetchResultFailed);
+                }
+                [application endBackgroundTask:self.backgroundFetchTask];
+                self.backgroundFetchTask = UIBackgroundTaskInvalid;
+            }];
+        }
+    }
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [self loadUpdatesWithCompletionHandler:completionHandler];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self setupAnalytics];
     
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 
+    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+    
+    
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
     // we need a login controller to handle google auth, can't do this in the background
     self.loginController = [[LoginController alloc] init];
@@ -87,6 +234,22 @@
     [self configureApplicationInBackground];
     
     return YES;
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    if ([application.keyWindow.rootViewController isKindOfClass:[INatUITabBarController class]]) {
+        INatUITabBarController *tabVC = (INatUITabBarController *)application.keyWindow.rootViewController;
+        UIViewController *vc = [[tabVC viewControllers] objectAtIndex:1];
+        if ([vc isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)vc;
+            [tabVC setSelectedViewController:nav];
+            UIViewController *top = [nav topViewController];
+            if ([top isKindOfClass:[NewsPagerViewController class]]) {
+                NewsPagerViewController *newsPager = (NewsPagerViewController *)top;
+                newsPager.shouldShowUpdatesOnLoad = YES;
+            }
+        }
+    }
 }
 
 - (void)setupAnalytics {
@@ -127,18 +290,25 @@
 - (void)configureApplicationInBackground {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 3;
-	config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
-  	if (oldSchemaVersion < 1) {
-  		// add searchable (ie diacritic-less) taxon names
-  		[migration enumerateObjects:ExploreTaxonRealm.className
-        	                  block:^(RLMObject *oldObject, RLMObject *newObject) {
-        	newObject[@"searchableScientificName"] = [oldObject[@"scientificName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
-        	newObject[@"searchableCommonName"] = [oldObject[@"commonName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
-	    	}];
-  		}
-	};
-	[RLMRealmConfiguration setDefaultConfiguration:config];
+	config.schemaVersion = 5;
+    config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
+        if (oldSchemaVersion < 1) {
+            // add searchable (ie diacritic-less) taxon names
+            [migration enumerateObjects:ExploreTaxonRealm.className
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                                      newObject[@"searchableScientificName"] = [oldObject[@"scientificName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
+                                      newObject[@"searchableCommonName"] = [oldObject[@"commonName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale currentLocale]];
+                                  }];
+        }
+        if (oldSchemaVersion < 5) {
+            // add viewed to updates.
+            [migration enumerateObjects:ExploreUpdateRealm.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                                      newObject[@"viewed"] = @(YES);
+                                  }];
+        }
+    };
+    [RLMRealmConfiguration setDefaultConfiguration:config];
     
     [self configureOAuth2Client];
 

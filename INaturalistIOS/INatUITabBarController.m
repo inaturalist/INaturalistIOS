@@ -32,6 +32,8 @@
 #import "LoginController.h"
 #import "User.h"
 #import "NSFileManager+INaturalist.h"
+#import "ExploreUpdateRealm.h"
+#import "NewsPagerViewController.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -73,7 +75,6 @@ static char PROJECT_ASSOCIATED_KEY;
 {
     [super viewDidLoad];
 
-    [self setObservationsTabBadge];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(handleUserSavedObservationNotification:) 
                                                  name:INatUserSavedObservationNotification 
@@ -98,6 +99,8 @@ static char PROJECT_ASSOCIATED_KEY;
     
     // don't allow the user to re-order the items in the tab bar
     self.customizableViewControllers = nil;
+    
+    [self setUpdatesBadge];
 }
 
 - (void)dealloc {
@@ -526,6 +529,35 @@ static char PROJECT_ASSOCIATED_KEY;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark badging
+
+- (void)setUpdatesBadge {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *me = [appDelegate.loginController fetchMe];
+    if (me) {
+        NSPredicate *myNewPredicate = [NSPredicate predicateWithFormat:@"viewed == false and resourceOwnerId == %ld",
+                                     (unsigned long)me.recordID.integerValue];
+        
+        RLMResults *myNewResults = [ExploreUpdateRealm objectsWithPredicate:myNewPredicate];
+        UINavigationController *activity = [self.viewControllers objectAtIndex:1];
+        
+        if ([myNewResults count] > 0) {
+            activity.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (unsigned long)[myNewResults count]];
+        } else {
+            activity.tabBarItem.badgeValue = nil;
+        }
+        
+        // request permission to badge the app
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge
+                                                                                     categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        }
+        
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[myNewResults count]];
+    }
+}
+
 #pragma mark lifecycle
 
 // make sure view controllers in the tabs can autorotate
@@ -543,32 +575,6 @@ static char PROJECT_ASSOCIATED_KEY;
     } else {
         return [self.selectedViewController supportedInterfaceOrientations];
     }
-}
-
-- (void)handleUserSavedObservationNotification:(NSNotification *)notification
-{
-    [self setObservationsTabBadge];
-}
-
-- (void)setObservationsTabBadge {
-    NSInteger theCount = [[Observation needingUpload] count];
-    theCount += [Observation deletedRecordCount];
-    
-    UITabBarItem *item = [self.tabBar.items objectAtIndex:ME_TAB_INDEX];
-    if (theCount > 0) {
-        item.badgeValue = [NSString stringWithFormat:@"%ld", (long)theCount];
-    } else {
-        item.badgeValue = nil;
-    }
-    
-    // request permission to badge the app
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge
-                                                                                 categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    }
-    
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:theCount];
 }
 
 - (void)userSignedIn {
