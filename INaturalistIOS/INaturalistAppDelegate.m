@@ -140,12 +140,13 @@
 	};
 	[RLMRealmConfiguration setDefaultConfiguration:config];
     
+    [self configureOAuth2Client];
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
         [self configureGlobalStyles];
         
         [self configureRestKit];
-        [self configureOAuth2Client];
         
         if (![self.loginController isLoggedIn]) {
             dispatch_async(dispatch_get_main_queue(), ^{
