@@ -101,9 +101,6 @@
     }
 }
 
-
-// separator #efeff4
-
 - (UIView *)viewPager:(ViewPagerController *)viewPager viewForTabAtIndex:(NSUInteger)index {
     
     UIView *tab = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.parentViewController.view.bounds.size.width / 2.0f, 60.0f)];
@@ -137,11 +134,7 @@
     
     UIView *separator = [UIView new];
     separator.translatesAutoresizingMaskIntoConstraints = NO;
-    if (index == 3) {
-        separator.backgroundColor = [UIColor clearColor];
-    } else {
-        separator.backgroundColor = [UIColor colorWithHexString:@"#efeff4"];
-    }
+    separator.backgroundColor = [UIColor colorWithHexString:@"#efeff4"];
     [tab addSubview:separator];
     
     NSDictionary *views = @{
