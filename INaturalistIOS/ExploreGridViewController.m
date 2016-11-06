@@ -164,6 +164,8 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     ExploreObservation *selectedObservation = [self.observationDataSource.observationsWithPhotos objectAtIndex:indexPath.item];
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
+                     withProperties:@{ @"via": @"Explore Grid" }];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {

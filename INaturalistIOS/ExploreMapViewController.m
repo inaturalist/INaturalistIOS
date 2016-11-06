@@ -285,6 +285,8 @@
     ExploreObservation *selectedObservation = (ExploreObservation *)view.annotation;
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
+                     withProperties:@{ @"via": @"Explore Map" }];
 }
 
 #pragma mark - iNat API Calls
