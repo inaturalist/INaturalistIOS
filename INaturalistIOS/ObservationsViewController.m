@@ -1402,6 +1402,8 @@
     } else if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (Observation *)sender;
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
+                         withProperties:@{ @"via": @"Me Tab" }];
     }
 }
 
