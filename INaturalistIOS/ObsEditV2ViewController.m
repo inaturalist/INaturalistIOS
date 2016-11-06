@@ -198,18 +198,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         }
         
         [self startUpdatingLocation];
-    }
-    
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationEdit
-                          withProperties:@{ @"Mode": self.isMakingNewObservation ? @"New" : @"Edit" }];
+    }    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
     [self stopUpdatingLocation];
-    
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationEdit];
 }
 
 - (void)dealloc {

@@ -83,16 +83,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideMenu];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideMenu];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

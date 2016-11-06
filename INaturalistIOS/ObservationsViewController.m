@@ -78,30 +78,18 @@
 }
 
 - (void)presentLoginSplashWithReason:(NSString *)reason {
-    
-    __weak typeof(self)weakSelf = self;
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Projects",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
     login.startsInLoginMode = YES;
-    [weakSelf presentViewController:login animated:YES completion:nil];
+    [self presentViewController:login animated:YES completion:nil];
 }
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
-    
-    __weak typeof(self)weakSelf = self;
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Projects",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
-    [weakSelf presentViewController:login animated:YES completion:nil];    
+    [self presentViewController:login animated:YES completion:nil];
 }
 
 - (void)presentAutouploadAlert {
@@ -1365,20 +1353,11 @@
         [self checkForDeleted];
         [self checkNewActivity];
     }
-    
-
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservations];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];    
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservations];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

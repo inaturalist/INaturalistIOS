@@ -96,16 +96,6 @@
 	[self.searchDisplayController.searchBar becomeFirstResponder];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-	[[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTaxaSearch];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-	[[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTaxaSearch];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {

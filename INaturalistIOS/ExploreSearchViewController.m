@@ -236,15 +236,10 @@
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
-    __weak typeof(self) weakSelf = self;
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Explore Search My Obs",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
-    [weakSelf presentViewController:login animated:YES completion:nil];
+    [self presentViewController:login animated:YES completion:nil];
 }
 
 #pragma mark - UIControl targets

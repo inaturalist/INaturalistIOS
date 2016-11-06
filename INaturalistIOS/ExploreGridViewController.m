@@ -100,15 +100,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     // reset it here
     observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreGrid];
-    
   	[self configureFlowLayout:flowLayout inCollectionView:observationsCollectionView forTraits:self.traitCollection];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreGrid];
-    
-    [super viewDidDisappear:animated];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator

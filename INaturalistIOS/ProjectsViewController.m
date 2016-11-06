@@ -242,10 +242,6 @@ static const int ListControlIndexNearby = 2;
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
     
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Projects",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
@@ -377,7 +373,6 @@ static const int ListControlIndexNearby = 2;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjects];
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyOldTutorialSeen] &&
         ![[NSUserDefaults standardUserDefaults] boolForKey:kDefaultsKeyTutorialNeverAgain] &&
@@ -401,11 +396,6 @@ static const int ListControlIndexNearby = 2;
         [self.locationManager startUpdatingLocation];
     }
     [self loadData];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjects];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

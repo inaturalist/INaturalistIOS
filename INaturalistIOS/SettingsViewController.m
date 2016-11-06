@@ -240,8 +240,6 @@ static const int AutouploadSwitchTag = 102;
 
 - (void)launchTutorial
 {
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateTutorial];
-    
     NSArray *tutorialImages = @[
                                 [UIImage imageNamed:@"tutorial1"],
                                 [UIImage imageNamed:@"tutorial2"],
@@ -271,7 +269,6 @@ static const int AutouploadSwitchTag = 102;
     
     gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateTutorial];
             [blockGallery dismissViewControllerAnimated:YES completion:nil];
         });
     };
@@ -313,8 +310,6 @@ static const int AutouploadSwitchTag = 102;
 }
 
 - (void)launchCredits {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateAcknowledgements];
-    
     VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
     
     NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@",
@@ -368,16 +363,6 @@ static const int AutouploadSwitchTag = 102;
     
     // don't show a toolbar in Settings
     [self.navigationController setToolbarHidden:YES];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateSettings];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateSettings];
 }
 
 - (void)selectedPartner:(Partner *)partner {
@@ -678,15 +663,10 @@ static const int AutouploadSwitchTag = 102;
 }
 
 - (void)presentSignup {
-    __weak typeof(self) weakSelf = self;
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"Settings",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
-    [weakSelf presentViewController:login animated:YES completion:nil];
+    [self presentViewController:login animated:YES completion:nil];
 }
 
 - (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{

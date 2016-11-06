@@ -17,11 +17,6 @@
 - (void)logAllPageViewForTarget:(UIViewController *)target;
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
-- (void)timedEvent:(NSString *)name;
-- (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
-- (void)endTimedEvent:(NSString *)name;
-- (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties;
-
 - (void)debugLog:(NSString *)logMessage;
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue;
@@ -32,50 +27,7 @@
 
 extern NSString *kAnalyticsEventAppLaunch;
 
-// navigation
-extern NSString *kAnalyticsEventNavigateExploreGrid;
-extern NSString *kAnalyticsEventNavigateExploreMap;
-extern NSString *kAnalyticsEventNavigateExploreList;
-extern NSString *kAnalyticsEventNavigateExploreObsDetails;
-extern NSString *kAnalyticsEventNavigateExploreTaxonDetails;
-
-extern NSString *kAnalyticsEventNavigateExploreLeaderboard;
-
-extern NSString *kAnalyticsEventNavigateGuides;             // list of guides
-extern NSString *kAnalyticsEventNavigateGuideCollection;    // collection of taxa photos in guide
-extern NSString *kAnalyticsEventNavigateGuideMenu;          // guide details menu
-extern NSString *kAnalyticsEventNavigateGuideTaxon;         // taxon details in a guide
-extern NSString *kAnalyticsEventNavigateGuidePhoto;         // custom photo viewer for taxon photos
-
-extern NSString *kAnalyticsEventNavigateSettings;
-extern NSString *kAnalyticsEventNavigateTutorial;
-extern NSString *kAnalyticsEventNavigateLogin;
-extern NSString *kAnalyticsEventNavigateSignup;
-extern NSString *kAnalyticsEventNavigateSignupSplash;
-extern NSString *kAnalyticsEventNavigateAcknowledgements;
-
-extern NSString *kAnalyticsEventNavigateMap;
-
-extern NSString *kAnalyticsEventNavigateObservationActivity;
 extern NSString *kAnalyticsEventNavigateObservationDetail;
-extern NSString *kAnalyticsEventNavigateObservationEdit;
-extern NSString *kAnalyticsEventNavigateObservations;
-extern NSString *kAnalyticsEventNavigatePhoto;
-extern NSString *kAnalyticsEventNavigateAddComment;
-extern NSString *kAnalyticsEventNavigateAddIdentification;
-extern NSString *kAnalyticsEventNavigateEditLocation;
-extern NSString *kAnalyticsEventNavigateProjectChooser;     // in obs details, choose project
-
-extern NSString *kAnalyticsEventNavigateProjectDetail;      // project details
-extern NSString *kAnalyticsEventNavigateProjectList;        // project obs list
-extern NSString *kAnalyticsEventNavigateProjects;           // list of projects
-
-extern NSString *kAnalyticsEventNavigateTaxaSearch;
-extern NSString *kAnalyticsEventNavigateTaxonDetails;
-
-extern NSString *kAnalyticsEventNavigateNewsList;
-extern NSString *kAnalyticsEventNavigateNewsDetail;
-extern NSString *kAnalyticsEventNavigateUpdates;
 
 // search in explore
 extern NSString *kAnalyticsEventExploreSearchPeople;

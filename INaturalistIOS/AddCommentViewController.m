@@ -32,16 +32,6 @@
     self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddComment];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddComment];
-}
-
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }

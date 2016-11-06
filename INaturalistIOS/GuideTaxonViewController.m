@@ -60,12 +60,6 @@ static const int WebViewTag = 1;
     [super viewDidAppear:animated];
     
     [self.navigationController setToolbarHidden:YES animated:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideTaxon];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideTaxon];
 }
 
 - (IBAction)clickedObserve:(id)sender {

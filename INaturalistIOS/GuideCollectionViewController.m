@@ -115,12 +115,6 @@ static const int GutterWidth  = 5;
 {
     [super viewDidAppear:animated];
     [self.navigationController setToolbarHidden:YES animated:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateGuideCollection];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateGuideCollection];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

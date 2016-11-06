@@ -101,13 +101,6 @@ static UIImage *defaultPersonImage;
     [self refreshData];
 	[self markAsRead];
 	[self reload];
-    
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationActivity];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationActivity];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -48,12 +48,6 @@
     [super viewDidAppear:animated];
     
     viewHasPresented = YES;
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateAddIdentification];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateAddIdentification];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

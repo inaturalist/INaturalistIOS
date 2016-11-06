@@ -125,51 +125,7 @@
 
 NSString *kAnalyticsEventAppLaunch = @"AppLaunch";
 
-// navigation
-NSString *kAnalyticsEventNavigateExploreGrid =                  @"Explore - Navigate - Grid";
-NSString *kAnalyticsEventNavigateExploreMap =                   @"Explore - Navigate - Map";
-NSString *kAnalyticsEventNavigateExploreList =                  @"Explore - Navigate - List";
-NSString *kAnalyticsEventNavigateExploreObsDetails =            @"Explore - Navigate - Obs Details";
-NSString *kAnalyticsEventNavigateExploreTaxonDetails =          @"Explore - Navigate - Taxon Details";
-
-NSString *kAnalyticsEventNavigateExploreLeaderboard =           @"Navigate - Explore - Leaderboard";
-
-NSString *kAnalyticsEventNavigateGuides =                       @"Navigate - Guides - List";
-NSString *kAnalyticsEventNavigateGuideCollection =              @"Navigate - Guides - Collection";
-NSString *kAnalyticsEventNavigateGuideMenu =                    @"Navigate - Guides - Menu";
-NSString *kAnalyticsEventNavigateGuideTaxon =                   @"Navigate - Guides - Taxon";
-NSString *kAnalyticsEventNavigateGuidePhoto =                   @"Navigate - Guides - Photo";
-
-NSString *kAnalyticsEventNavigateSettings =                     @"Navigate - Settings";
-NSString *kAnalyticsEventNavigateTutorial =                     @"Navigate - Tutorial";
-NSString *kAnalyticsEventNavigateLogin =                        @"Navigate - Login";
-NSString *kAnalyticsEventNavigateSignup =                       @"Navigate - Signup";
-NSString *kAnalyticsEventNavigateSignupSplash =                 @"Navigate - Signup Splash";
-NSString *kAnalyticsEventNavigateAcknowledgements =             @"Navigate - Acknowledgements";
-
-NSString *kAnalyticsEventNavigateMap =                          @"Navigate - Map";
-
-NSString *kAnalyticsEventNavigateObservationActivity =          @"Navigate - Observations - Activity";
 NSString *kAnalyticsEventNavigateObservationDetail =            @"Navigate - Observations - Details";
-NSString *kAnalyticsEventNavigateObservationEdit =              @"Navigate - Observations - Details Edit";
-NSString *kAnalyticsEventNavigateObservations =                 @"Navigate - Observations - List";
-NSString *kAnalyticsEventNavigatePhoto =                        @"Navigate - Observations - Photo";
-NSString *kAnalyticsEventNavigateAddComment =                   @"Navigate - Observations - Add Comment";
-NSString *kAnalyticsEventNavigateAddIdentification =            @"Navigate - Observations - Add Identification";
-NSString *kAnalyticsEventNavigateEditLocation =                 @"Navigate - Observations - Edit Location";
-NSString *kAnalyticsEventNavigateProjectChooser =               @"Navigate - Observations - Project Chooser";
-
-NSString *kAnalyticsEventNavigateProjectDetail =                @"Navigate - Projects - Details";
-NSString *kAnalyticsEventNavigateProjectList =                  @"Navigate - Projects - Listed Taxa";
-NSString *kAnalyticsEventNavigateProjects =                     @"Navigate - Projects - List";
-
-NSString *kAnalyticsEventNavigateTaxaSearch =                   @"Navigate - Taxa Search";
-NSString *kAnalyticsEventNavigateTaxonDetails =                 @"Navigate - Taxon Details";
-
-NSString *kAnalyticsEventNavigateNewsList =                     @"Navigate - News List";
-NSString *kAnalyticsEventNavigateNewsDetail =                   @"Navigate - News Detail";
-NSString *kAnalyticsEventNavigateUpdates =                      @"Navigate - Updates Feed";
-
 
 // search in explore
 NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";

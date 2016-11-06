@@ -594,15 +594,9 @@
 }
 
 - (void)showInitialSignupUI {
-    __weak typeof(self) weakSelf = self;
-    __strong typeof(weakSelf) strongSelf = weakSelf;
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"App Launch",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
-    strongSelf.window.rootViewController = onboardingVC;
+    self.window.rootViewController = onboardingVC;
 }
 
 @end

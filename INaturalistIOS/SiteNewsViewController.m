@@ -88,12 +88,6 @@ static UIImage *briefcase;
     }];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateNewsList];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"detail"]) {
         NewsItemViewController *vc = (NewsItemViewController *)[segue destinationViewController];

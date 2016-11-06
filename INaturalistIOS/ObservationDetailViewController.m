@@ -542,13 +542,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
                                                                 animated:animated];
     
     [self.coverflowView setCurrentCoverAtIndex:0 animated:YES];
-
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateObservationDetail];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateObservationDetail];
 }
 
 - (void)didReceiveMemoryWarning

@@ -68,20 +68,9 @@
         }
     }
     
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreMap];
-    
     // wait to set the delegate and receive regionDidChange notifications until
     // after the view has completely finished loading
     mapView.delegate = self;
-    
-    
-    
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreMap];
 }
 
 - (void)viewDidLoad {

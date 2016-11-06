@@ -152,16 +152,10 @@ static const int LeaveProjectAlertViewTag = 1;
 }
 
 - (void)showSignupPrompt:(NSString *)reason {
-    __weak typeof(self) weakSelf = self;
-    
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateSignupSplash
-                     withProperties:@{ @"From": @"ProjectDetail",
-                                       @"Version": @"Onboarding" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
-    [weakSelf presentViewController:login animated:YES completion:nil];
+    [self presentViewController:login animated:YES completion:nil];
 }
 
 
@@ -200,16 +194,6 @@ static const int LeaveProjectAlertViewTag = 1;
     [self.navigationController setToolbarHidden:YES animated:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateProjectDetail];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateProjectDetail];
 }
 
 - (void)dealloc {

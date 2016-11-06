@@ -94,8 +94,6 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateExploreLeaderboard];
-    
     loadingSpinner.hidden = NO;
     [loadingSpinner startAnimating];
 

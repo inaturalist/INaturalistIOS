@@ -94,14 +94,6 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     // presenting from this collection view is screwing up the content inset
     // reset it here
     observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-    
-    [[Analytics sharedClient] timedEvent:kAnalyticsEventNavigateExploreList];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    [[Analytics sharedClient] endTimedEvent:kAnalyticsEventNavigateExploreList];
 }
 
 #pragma mark - UI Helper

@@ -48,7 +48,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateUpdates];
     [self.tableView reloadData];
 }
 
