@@ -157,8 +157,6 @@ NSString *kAnalyticsEventForgotPassword =                       @"Forgot Passwor
 // signup splash
 NSString *kAnalyticsEventSplashFacebook =                       @"Splash Screen - Facebook";
 NSString *kAnalyticsEventSplashGoogle =                         @"Splash Screen - Google";
-NSString *kAnalyticsEventSplashSignupEmail =                    @"Splash Screen - Signup Email";
-NSString *kAnalyticsEventSplashLogin =                          @"Splash Screen - Login";
 NSString *kAnalyticsEventSplashCancel =                         @"Splash Screen - Cancel";
 NSString *kAnalyticsEventSplashSkip =                           @"Splash Screen - Skip";
 

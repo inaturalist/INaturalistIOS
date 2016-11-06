@@ -61,8 +61,6 @@ extern NSString *kAnalyticsEventForgotPassword;
 // signup splash
 extern NSString *kAnalyticsEventSplashFacebook;
 extern NSString *kAnalyticsEventSplashGoogle;
-extern NSString *kAnalyticsEventSplashSignupEmail;
-extern NSString *kAnalyticsEventSplashLogin;
 extern NSString *kAnalyticsEventSplashCancel;
 extern NSString *kAnalyticsEventSplashSkip;
 
