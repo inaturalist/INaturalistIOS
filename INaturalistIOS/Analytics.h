@@ -75,6 +75,7 @@ extern NSString *kAnalyticsEventNavigateTaxonDetails;
 
 extern NSString *kAnalyticsEventNavigateNewsList;
 extern NSString *kAnalyticsEventNavigateNewsDetail;
+extern NSString *kAnalyticsEventNavigateUpdates;
 
 // search in explore
 extern NSString *kAnalyticsEventExploreSearchPeople;
@@ -184,3 +185,6 @@ extern NSString *kAnalyticsEventDeleteDownloadedGuide;
 // A/B testing
 extern NSString *kAnalyticsEventAssignedToOnboardingGroupA;
 extern NSString *kAnalyticsEventAssignedToOnboardingGroupB;
+
+// background fetch
+extern NSString *kAnalyticsEventBackgroundFetchFailed;

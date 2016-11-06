@@ -168,6 +168,8 @@ NSString *kAnalyticsEventNavigateTaxonDetails =                 @"Navigate - Tax
 
 NSString *kAnalyticsEventNavigateNewsList =                     @"Navigate - News List";
 NSString *kAnalyticsEventNavigateNewsDetail =                   @"Navigate - News Detail";
+NSString *kAnalyticsEventNavigateUpdates =                      @"Navigate - Updates Feed";
+
 
 // search in explore
 NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";
@@ -277,3 +279,10 @@ NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download
 // A/B testing
 NSString *kAnalyticsEventAssignedToOnboardingGroupA =			@"AB Testing - Assigned To Onboarding A";
 NSString *kAnalyticsEventAssignedToOnboardingGroupB =			@"AB Testing - Assigned To Onboarding B";
+
+// background fetch
+NSString *kAnalyticsEventBackgroundFetchTriggered =             @"Background Fetch Triggered";
+NSString *kAnalyticsEventBackgroundFetchFailed =                @"Background Fetch Failed";
+NSString *kAnalyticsEventBackgroundFetchDone =                  @"Background Fetch Done";
+NSString *kAnalyticsEventBackgroundFetchNotificationOpened =    @"Background Fetch Notification Opened";
+
