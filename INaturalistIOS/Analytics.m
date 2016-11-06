@@ -10,6 +10,7 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <Amplitude-iOS/Amplitude.h>
 
 #import "Analytics.h"
 
@@ -29,6 +30,10 @@
 
 #ifdef INatCrashlyticsKey
         [Fabric with:@[CrashlyticsKit]];
+#endif
+        
+#ifdef INatAmplitudeKey
+        [[Amplitude instance] initializeApiKey:INatAmplitudeKey];
 #endif
     });
     return _sharedClient;
@@ -51,6 +56,10 @@
 #endif
     
     [FBSDKAppEvents logEvent:name];
+    
+#ifdef INatAmplitudeKey
+    [[Amplitude instance] logEvent:name];
+#endif
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
@@ -63,6 +72,10 @@
 #endif
     
     [FBSDKAppEvents logEvent:name parameters:properties];
+    
+#ifdef INatAmplitudeKey
+    [[Amplitude instance] logEvent:name withEventProperties:properties];
+#endif
 }
 
 - (void)logAllPageViewForTarget:(UIViewController *)target {
