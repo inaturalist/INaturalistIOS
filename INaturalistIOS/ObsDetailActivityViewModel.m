@@ -417,7 +417,6 @@
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    
     if (![identification taxonCommonName]) {
         // no common name, so only show scientific name in the main label
         cell.taxonNameLabel.text = [identification taxonScientificName];
@@ -448,6 +447,22 @@
             
         }
     }
+    
+    if (![identification isCurrent]) {
+        NSDictionary *attrs = @{
+                                NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)
+                                };
+        
+        
+        NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:cell.taxonNameLabel.text
+                                                                       attributes:attrs];
+        cell.taxonNameLabel.attributedText = attrText;
+        
+        attrText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
+                                                   attributes:attrs];
+        cell.taxonSecondaryNameLabel.attributedText = attrText;
+    }
+
     
     if ([identification taxonIconUrl]) {
         [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
