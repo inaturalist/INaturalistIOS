@@ -32,6 +32,7 @@
 }
 @property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
 @property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
+@property NSDate *jwtTokenExpiration;
 
 @end
 
@@ -54,7 +55,8 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)logout {
-    
+    self.jwtToken = nil;
+    self.jwtTokenExpiration = nil;
 }
 
 #pragma mark - Facebook
@@ -578,5 +580,66 @@ NSInteger INatMinPasswordLength = 6;
     NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
     return (inatToken && inatToken.length > 0);
 }
+
+- (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
+    // jwt tokens expire after 30 minutes
+    // if the token is more than 25 minutes old, fetch a new one
+    // in case the request we're making takes a looooong time
+    if (([self.jwtTokenExpiration timeIntervalSinceNow] < (25 * 60)) && self.jwtToken) {
+        if (success) {
+            success(nil);
+            return;
+        }
+    }
+    
+    NSURL *url = [NSURL URLWithString:@"http://www.inaturalist.org/users/api_token.json"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"GET";
+    
+    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+   forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    __weak typeof(self)weakSelf = self;
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        
+        if (error) {
+            if (failure) {
+                failure(nil);
+            }
+            strongSelf.jwtToken = nil;
+        } else if ([httpResponse statusCode] != 200) {
+            strongSelf.jwtToken = nil;
+            if (failure) {
+                failure(nil);
+            }
+        } else {
+            NSError *jsonError = nil;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+            if (jsonError) {
+                strongSelf.jwtToken = nil;
+                if (failure) {
+                    failure(jsonError);
+                }
+            } else {
+                if ([json valueForKey:@"api_token"]) {
+                    strongSelf.jwtToken = [json valueForKey:@"api_token"];
+                    strongSelf.jwtTokenExpiration = [NSDate date];
+                    if (success) {
+                        success(nil);
+                    }
+                } else {
+                    strongSelf.jwtToken = nil;
+                    if (failure) {
+                        failure(nil);
+                    }
+                }
+            }
+        }
+    }] resume];
+}
+
 
 @end
