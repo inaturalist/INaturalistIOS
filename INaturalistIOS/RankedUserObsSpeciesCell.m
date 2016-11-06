@@ -17,6 +17,7 @@
     self.userImageView.clipsToBounds = YES;
     self.userImageView.layer.borderWidth = 1.0f;
     self.userImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.userImageView.backgroundColor = [UIColor lightGrayColor];
     self.userImageView.image = nil;
 
     self.observationsCountLabel.text = @"";
