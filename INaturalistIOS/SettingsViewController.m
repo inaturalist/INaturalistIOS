@@ -17,6 +17,7 @@
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <Realm/Realm.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -223,8 +224,17 @@ static const int AutouploadSwitchTag = 102;
         [sharedStore removeAccount:account];
     }
     
+    // clear realm
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
+    
+    // clear anything stashed in login
+    [appDelegate.loginController logout];
+    
     // update UI
-    [(INatUITabBarController *)self.tabBarController setObservationsTabBadge];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [self initUI];
 }
 
