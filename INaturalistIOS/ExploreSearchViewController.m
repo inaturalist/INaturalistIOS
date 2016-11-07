@@ -206,6 +206,9 @@
                                                  animated:NO];
         }
     }];
+    // force the navigation bar to re-layout since the segmented control has changed
+    // doesn't happen automatically as of xcode8
+    [self.navigationController.navigationBar setNeedsLayout];
     
     // display first item
     [self.segmentedControl setSelectedSegmentIndex:0];
