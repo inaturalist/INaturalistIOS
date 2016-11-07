@@ -144,7 +144,6 @@ NSString *kAnalyticsEventCreateObservation =                    @"Create Observa
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
 NSString *kAnalyticsEventSyncStopped =                          @"Sync Stopped";
 NSString *kAnalyticsEventSyncFailed =                           @"Sync Failed";
-NSString *kAnalyticsEventSyncOneRecord =                        @"Sync One Record";
 NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refresh Observations";
 
 // login

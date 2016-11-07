@@ -304,22 +304,11 @@
         if (recordToUpload.syncedAt) {
             NSString *msg = [NSString stringWithFormat:@"Network - Put One %@ Record During Upload", className];
             [[Analytics sharedClient] debugLog:msg];
-            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
-                             withProperties:@{
-                                              @"Type": className,
-                                              @"Method": @"PUT"
-                                              }];
 
             [objectManager putObject:recordToUpload usingBlock:loaderBlock];
         } else {
             NSString *msg = [NSString stringWithFormat:@"Network - Post One %@ Record During Upload", className];
             [[Analytics sharedClient] debugLog:msg];
-            [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
-                             withProperties:@{
-                                              @"Type": className,
-                                              @"Method": @"POST"
-                                              }];
-
 
             [objectManager postObject:recordToUpload usingBlock:loaderBlock];
         }
@@ -355,11 +344,6 @@
                                     nextDelete.recordID.intValue];
         
         [[Analytics sharedClient] debugLog:@"Network - Delete One Record During Upload"];
-        [[Analytics sharedClient] event:kAnalyticsEventSyncOneRecord
-                         withProperties:@{
-                                          @"Type": nextDelete.modelName,
-                                          @"Method": @"DELETE"
-                                          }];
 
         [[RKClient sharedClient] delete:nextDeletePath
                              usingBlock:^(RKRequest *request) {
