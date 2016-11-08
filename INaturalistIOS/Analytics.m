@@ -9,7 +9,6 @@
 #import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Amplitude-iOS/Amplitude.h>
 
 #import "Analytics.h"
@@ -55,8 +54,6 @@
     [Answers logCustomEventWithName:name customAttributes:nil];
 #endif
     
-    [FBSDKAppEvents logEvent:name];
-    
 #ifdef INatAmplitudeKey
     [[Amplitude instance] logEvent:name];
 #endif
@@ -70,8 +67,6 @@
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:name customAttributes:properties];
 #endif
-    
-    [FBSDKAppEvents logEvent:name parameters:properties];
     
 #ifdef INatAmplitudeKey
     [[Amplitude instance] logEvent:name withEventProperties:properties];
