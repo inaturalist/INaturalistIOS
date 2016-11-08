@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the camera to add photos to your observations of nature.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -78,9 +80,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>${PRODUCT_NAME} uses this information to automatically add locations to your observations.</string>
+	<string>${PRODUCT_NAME} uses this information to automatically add location to your observations of nature.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>${PRODUCT_NAME} uses the photo library to add photos to your observations.</string>
+	<string>${PRODUCT_NAME} uses the photo library to add photos to your observations of nature.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
