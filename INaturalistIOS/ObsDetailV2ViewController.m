@@ -54,8 +54,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if ([self.observation hasUnviewedActivityBool]) {
+    if ([self.observation hasUnviewedActivityBool] || self.shouldShowActivityOnLoad) {
         self.viewModel = [[ObsDetailActivityViewModel alloc] init];
+        self.viewModel.observation = self.observation;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSInteger numberOfSections = [self.viewModel numberOfSectionsInTableView:self.tableView];
+            NSInteger lastSection = numberOfSections > 0 ? numberOfSections-1 : 0;
+            NSInteger numberOfRowsInLastSection = [self.viewModel tableView:self.tableView
+                                                      numberOfRowsInSection:lastSection];
+            NSInteger lastRow = numberOfRowsInLastSection > 0 ? numberOfRowsInLastSection-1 : 0;
+            NSIndexPath *lastIp = [NSIndexPath indexPathForRow:lastRow
+                                                 inSection:lastSection];
+            
+            [self.tableView scrollToRowAtIndexPath:lastIp
+                                  atScrollPosition:UITableViewScrollPositionMiddle
+                                          animated:YES];
+        });
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
     }

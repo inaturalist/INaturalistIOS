@@ -182,6 +182,7 @@
         ExploreUpdateRealm *eur = (ExploreUpdateRealm *)sender;
         
         ObsDetailV2ViewController *vc = (ObsDetailV2ViewController *)segue.destinationViewController;
+        vc.shouldShowActivityOnLoad = YES;
         
         NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
         Observation *o = [Observation objectWithPredicate:obsPredicate];

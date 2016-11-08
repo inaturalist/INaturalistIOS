@@ -15,4 +15,6 @@
 
 @property id <ObservationVisualization, Uploadable> observation;
 
+@property BOOL shouldShowActivityOnLoad;
+
 @end
