@@ -127,10 +127,10 @@
     
     switch (index) {
         case 0:
-            label.text = NSLocalizedString(@"News", nil);
+            label.text = NSLocalizedString(@"My Content", nil);
             break;
         case 1:
-            label.text = NSLocalizedString(@"My Content", nil);
+            label.text = NSLocalizedString(@"News", nil);
             break;
         default:
             count = 0;
@@ -175,7 +175,7 @@
 
 - (UIViewController *)viewPager:(ViewPagerController *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
     switch (index) {
-        case 1:
+        case 0:
             return self.updates;
             break;
         default:
