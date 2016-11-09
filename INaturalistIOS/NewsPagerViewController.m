@@ -80,10 +80,12 @@
             return 1.0f;
             break;
         case ViewPagerOptionTabHeight:
-            return 60.0f;
+            // since we're not below the navigation bar anymore,
+            // we have to accommodate the status bar
+            return 20 + 52;
             break;
         case ViewPagerOptionTabWidth:
-            return self.parentViewController.view.bounds.size.width / 2.0f;
+            return self.parentViewController.view.frame.size.width / 2.0f;
             break;
         default:
             return value;
@@ -110,10 +112,10 @@
 
 - (UIView *)viewPager:(ViewPagerController *)viewPager viewForTabAtIndex:(NSUInteger)index {
     
-    UIView *tab = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.parentViewController.view.bounds.size.width / 2.0f, 60.0f)];
+    UIView *tab = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.parentViewController.view.frame.size.width / 2.0f, 60.0f)];
     
-    CGFloat width = self.parentViewController.view.bounds.size.width / 2.0f;
-    if (index < 3) {
+    CGFloat width = self.parentViewController.view.frame.size.width / 2.0f;
+    if (index < 1) {
         width = width - 0.5f;
     }
     UILabel *label = [UILabel new];
@@ -143,6 +145,7 @@
     separator.translatesAutoresizingMaskIntoConstraints = NO;
     separator.backgroundColor = [UIColor colorWithHexString:@"#efeff4"];
     [tab addSubview:separator];
+    separator.hidden = (index > 0);
     
     NSDictionary *views = @{
                             @"separator": separator,
@@ -162,7 +165,7 @@
                                                                 options:0
                                                                 metrics:0
                                                                   views:views]];
-    [tab addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[separator]-11-|"
+    [tab addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[separator(==30)]-11-|"
                                                                 options:0
                                                                 metrics:0
                                                                   views:views]];
