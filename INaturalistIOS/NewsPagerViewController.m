@@ -64,6 +64,13 @@
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    __weak typeof(self)weakSelf = self;
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        [weakSelf setNeedsReloadOptions];
+        [weakSelf reloadData];
+    } completion:nil];
+}
 
 #pragma mark - UIViewPagerDelegate
 
