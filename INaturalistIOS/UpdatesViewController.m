@@ -9,6 +9,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <YLMoment/YLMoment.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ExploreUpdateRealm.h"
 #import "UpdatesViewController.h"
@@ -41,6 +42,32 @@
     [self.tableView addPullToRefreshWithActionHandler:^{
         [weakSelf loadUpdates];
     }];
+    
+    self.tableView.backgroundView = ({
+        UILabel *label = [UILabel new];
+        label.numberOfLines = 0;
+        label.textAlignment = NSTextAlignmentCenter;
+        
+        label.attributedText = ({
+            NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] init];
+            [attr appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"No updates yet. Stay tuned!", nil)
+                                                                         attributes:@{
+                                                                                      NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
+                                                                                      NSForegroundColorAttributeName: [UIColor colorWithHexString:@"#505050"],
+                                                                                      }]];
+            [attr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+            [attr appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"You will receive updates once you've uploaded observations.", nil)
+                                                                        attributes:@{
+                                                                                     NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                                                                     NSForegroundColorAttributeName: [UIColor colorWithHexString:@"#8F8E94"],
+                                                                                     }]];
+            
+            attr;
+        });
+
+        label;
+    });
+
     
     [self loadUpdates];
 }
@@ -110,7 +137,13 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    if (self.updates.count > 0) {
+        tableView.backgroundView.hidden = YES;
+        return 1;
+    } else {
+        tableView.backgroundView.hidden = NO;
+        return 0;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
