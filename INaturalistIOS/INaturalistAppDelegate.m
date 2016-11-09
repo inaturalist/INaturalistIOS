@@ -137,6 +137,12 @@
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
                     NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
                     
+                    NSMutableArray *obsIds = [NSMutableArray array];
+                    for (ExploreUpdate *eu in myResults) {
+                        [obsIds addObject:@(eu.resourceId)];
+                    }
+                    [self loadObservationsForIds:obsIds];
+                    
                     NSPredicate *newPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreUpdate *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
                         if ([ExploreUpdateRealm objectForPrimaryKey:@(evaluatedObject.updateId)]) {
                             return NO;
@@ -204,6 +210,22 @@
                 self.backgroundFetchTask = UIBackgroundTaskInvalid;
             }];
         }
+    }
+}
+
+- (void)loadObservationsForIds:(NSArray *)obsIds {
+    for (NSNumber *obsId in obsIds) {
+        NSString *resourcePath = [NSString stringWithFormat:@"/observations/%ld.json",
+                                  (unsigned long)obsId.integerValue];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:resourcePath usingBlock:^(RKObjectLoader *loader) {
+            loader.objectMapping = [Observation mapping];
+            loader.onDidLoadObject = ^(Observation *obs) {
+                [[[RKObjectManager sharedManager] objectStore] save:nil];
+            };
+            loader.onDidFailWithError = ^(NSError *error) {
+                // do nothing?
+            };
+        }];
     }
 }
 
