@@ -60,16 +60,18 @@
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSInteger numberOfSections = [self.viewModel numberOfSectionsInTableView:self.tableView];
-            NSInteger lastSection = numberOfSections > 0 ? numberOfSections-1 : 0;
+            NSInteger lastSection = numberOfSections > 0 ? numberOfSections-1 : -1;
             NSInteger numberOfRowsInLastSection = [self.viewModel tableView:self.tableView
                                                       numberOfRowsInSection:lastSection];
-            NSInteger lastRow = numberOfRowsInLastSection > 0 ? numberOfRowsInLastSection-1 : 0;
-            NSIndexPath *lastIp = [NSIndexPath indexPathForRow:lastRow
-                                                 inSection:lastSection];
-            
-            [self.tableView scrollToRowAtIndexPath:lastIp
-                                  atScrollPosition:UITableViewScrollPositionMiddle
-                                          animated:YES];
+            NSInteger lastRow = numberOfRowsInLastSection > 0 ? numberOfRowsInLastSection-1 : -1;
+            if (lastSection >= 0 && lastRow >= 0) {
+                NSIndexPath *lastIp = [NSIndexPath indexPathForRow:lastRow
+                                                         inSection:lastSection];
+                
+                [self.tableView scrollToRowAtIndexPath:lastIp
+                                      atScrollPosition:UITableViewScrollPositionMiddle
+                                              animated:YES];
+            }
         });
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
