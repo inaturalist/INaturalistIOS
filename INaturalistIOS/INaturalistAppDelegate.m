@@ -138,11 +138,11 @@
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
                     NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
                     
-                    NSMutableArray *obsIds = [NSMutableArray array];
+                    NSMutableSet *obsIds = [NSMutableSet set];
                     for (ExploreUpdate *eu in myResults) {
                         [obsIds addObject:@(eu.resourceId)];
                     }
-                    [self loadObservationsForIds:obsIds];
+                    [self loadObservationsForIds:[obsIds allObjects]];
                     
                     NSPredicate *newPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreUpdate *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
                         if ([ExploreUpdateRealm objectForPrimaryKey:@(evaluatedObject.updateId)]) {
