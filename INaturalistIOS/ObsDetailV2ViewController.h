@@ -14,7 +14,7 @@
 @interface ObsDetailV2ViewController : UIViewController
 
 @property id <ObservationVisualization, Uploadable> observation;
-
+@property NSInteger observationId;
 @property BOOL shouldShowActivityOnLoad;
 
 @end

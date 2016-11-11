@@ -43,6 +43,7 @@
 #import "ExploreUpdate.h"
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
+#import "UpdatesViewController.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -184,6 +185,9 @@
                             } else {
                                 note.alertBody = NSLocalizedString(@"There is a new comment on one of your observations.", nil);
                             }
+                            note.userInfo = @{
+                                              @"updateId": @(update.updateId),
+                                              };
                             [[UIApplication sharedApplication] presentLocalNotificationNow:note];
                         } else {
                             UILocalNotification *note = [[UILocalNotification alloc] init];
@@ -269,6 +273,17 @@
             if ([top isKindOfClass:[NewsPagerViewController class]]) {
                 NewsPagerViewController *newsPager = (NewsPagerViewController *)top;
                 newsPager.shouldShowUpdatesOnLoad = YES;
+                NSNumber *updateId = [[notification userInfo] valueForKey:@"updateId"];
+                if (updateId) {
+                    ExploreUpdateRealm *eur = [ExploreUpdateRealm objectForPrimaryKey:updateId];
+                    if (eur) {
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [newsPager reloadData];
+                            [newsPager.updates performSegueWithIdentifier:@"obsDetail"
+                                                                   sender:eur];
+                        });
+                    }
+                }
             }
         }
     }

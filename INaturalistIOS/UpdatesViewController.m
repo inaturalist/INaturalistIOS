@@ -219,8 +219,12 @@
         
         NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
         Observation *o = [Observation objectWithPredicate:obsPredicate];
-        vc.observation = o;
-        
+        if (o) {
+            vc.observation = o;
+        } else {
+            vc.observationId = eur.resourceId;
+        }
+    
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
                          withProperties:@{ @"via": @"Updates" }];
     }

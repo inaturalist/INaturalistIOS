@@ -9,6 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <ICViewPager/ViewPagerController.h>
 
+@class SiteNewsViewController;
+@class UpdatesViewController;
+
 @interface NewsPagerViewController : ViewPagerController
 @property BOOL shouldShowUpdatesOnLoad;
+@property SiteNewsViewController *siteNews;
+@property UpdatesViewController *updates;
 @end

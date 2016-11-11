@@ -15,8 +15,6 @@
 #import "UpdatesViewController.h"
 
 @interface NewsPagerViewController () <ViewPagerDelegate, ViewPagerDataSource>
-@property SiteNewsViewController *siteNews;
-@property UpdatesViewController *updates;
 @end
 
 @implementation NewsPagerViewController
@@ -48,7 +46,7 @@
     
     if (self.shouldShowUpdatesOnLoad) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self selectTabAtIndex:1];
+            [self selectTabAtIndex:0];
         });
     }
     

@@ -71,6 +71,8 @@
                 [self.tableView scrollToRowAtIndexPath:lastIp
                                       atScrollPosition:UITableViewScrollPositionMiddle
                                               animated:YES];
+                // mark updates as seen
+                [((ObsDetailActivityViewModel *)self.viewModel) markActivityAsSeen];
             }
         });
     } else {
@@ -199,7 +201,12 @@
     
     // load the full observation from the server, to fetch comments, ids & faves
     [[Analytics sharedClient] debugLog:@"Network - Load complete observation details"];
-    if ([self.observation isKindOfClass:[Observation class]] || !self.observation) {
+    if (!self.observation) {
+        NSString *path = [NSString stringWithFormat:@"/observations/%ld", (unsigned long)self.observationId];
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
+                                                     objectMapping:[Observation mapping]
+                                                          delegate:self];
+    } else if ([self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
         [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", obs.recordID]
                                                      objectMapping:[Observation mapping]
