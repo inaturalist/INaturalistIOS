@@ -155,6 +155,12 @@
                     }];
                     NSArray *myNewResults = [myResults filteredArrayUsingPredicate:newPredicate];
                     
+                    // keep track of the count of unique observation ids for new updates
+                    NSMutableSet *myNewObsIds = [NSMutableSet set];
+                    for (ExploreUpdate *eu in myNewResults) {
+                        [myNewObsIds addObject:@(eu.resourceId)];
+                    }
+
                     RLMRealm *realm = [RLMRealm defaultRealm];
                     [realm beginWriteTransaction];
                     // all results get written to Realm
@@ -179,7 +185,7 @@
                         } else if (myNewResults.count == 1) {
                             UILocalNotification *note = [[UILocalNotification alloc] init];
                             note.fireDate = [NSDate date];
-                            ExploreUpdate *update = [results firstObject];
+                            ExploreUpdate *update = [myNewResults firstObject];
                             if (update.identification) {
                                 note.alertBody = NSLocalizedString(@"There is a new identification on one of your observations.", nil);
                             } else {
@@ -191,8 +197,14 @@
                             [[UIApplication sharedApplication] presentLocalNotificationNow:note];
                         } else {
                             UILocalNotification *note = [[UILocalNotification alloc] init];
+                            if (myNewObsIds.count == 1) {
+                                ExploreUpdate *update = [myNewResults firstObject];
+                                note.userInfo = @{
+                                                  @"updateId": @(update.updateId),
+                                                  };
+                            }
                             note.fireDate = [NSDate date];
-                            note.alertBody = NSLocalizedString(@"There is new activity on your observations!", nil);
+                            note.alertBody = NSLocalizedString(@"There is new activity on your observations.", nil);
                             [[UIApplication sharedApplication] presentLocalNotificationNow:note];
                         }
                         completionHandler(UIBackgroundFetchResultNewData);
