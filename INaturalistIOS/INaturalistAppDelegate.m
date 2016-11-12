@@ -431,13 +431,6 @@
 }
 
 - (void)rebuildCoreData {
-    /*
-     // this causes restkit/core data to descend into a nightmarish unstability
-    RKManagedObjectStore *objectStore = [[RKObjectManager sharedManager] objectStore];
-    [objectStore deletePersistentStore];
-    [objectStore save:nil];
-     */
-    
     [Comment deleteAll];
     [Identification deleteAll];
     [User deleteAll];
