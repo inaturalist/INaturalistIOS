@@ -269,7 +269,7 @@
 
     [self showLoadingScreen];
     
-    [self configureApplicationInBackground];
+    [self configureApplication];
     
     return YES;
 }
@@ -336,7 +336,7 @@
     [self.window setRootViewController:loadingVC];
 }
 
-- (void)configureApplicationInBackground {
+- (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
 	config.schemaVersion = 5;
@@ -360,26 +360,23 @@
     [RLMRealmConfiguration setDefaultConfiguration:config];
     
     [self configureOAuth2Client];
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        
-        [self configureGlobalStyles];
-        
-        [self configureRestKit];
-        
-        if (![self.loginController isLoggedIn]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-                
-                User *me = self.loginController.fetchMe;
-                [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
-            });
-        }
-    });
+    
+    [self configureGlobalStyles];
+    
+    [self configureRestKit];
+    
+    if (![self.loginController isLoggedIn]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+            
+            User *me = self.loginController.fetchMe;
+            [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
+        });
+    }
 }
 
 
