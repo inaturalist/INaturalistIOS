@@ -20,6 +20,7 @@
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 #define kINatUserIdPrefKey @"INatUserIdPrefKey"
 
+#define kINatLoggedInNotificationKey @"kINatLoggedInNotificationKey"
 
 #ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"

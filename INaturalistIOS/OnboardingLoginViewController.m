@@ -404,6 +404,8 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                  [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                                completion:nil];
                                                              }
+                                                             [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
+                                                                                                                 object:nil];
 
                                                          } failure:^(NSError *error) {
                                                              NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
@@ -453,6 +455,8 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
                                                                                                                  completion:nil];
                                                                }
+                                                                [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
+                                                                                                                    object:nil];
 
                                                             } failure:^(NSError *error) {
                                                                NSString *alertTitle = NSLocalizedString(@"Log In Problem",
@@ -565,18 +569,19 @@ static char PARTNER_ASSOCIATED_KEY;
                                                     
                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                         [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+                                                        if (strongSelf.selectedPartner) {
+                                                            [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                          completion:nil];
+                                                        }
+                                                        
+                                                        if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
+                                                            [appDelegate showMainUI];
+                                                        } else {
+                                                            [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                        }
+                                                        [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
+                                                                                                            object:nil];
                                                     });
-
-                                                    if (strongSelf.selectedPartner) {
-                                                        [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                      completion:nil];
-                                                    }
-                                                    
-                                                    if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                        [appDelegate showMainUI];
-                                                    } else {
-                                                        [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                    }
                                                 }
      
      
@@ -653,16 +658,18 @@ static char PARTNER_ASSOCIATED_KEY;
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+                                                   if (strongSelf.selectedPartner) {
+                                                       [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                     completion:nil];
+                                                   }
+                                                   if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
+                                                       [appDelegate showMainUI];
+                                                   } else {
+                                                       [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                   }
+                                                   [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
+                                                                                                       object:nil];
                                                });
-                                               if (strongSelf.selectedPartner) {
-                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                 completion:nil];
-                                               }
-                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                   [appDelegate showMainUI];
-                                               } else {
-                                                   [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                               }
                                            } failure:^(NSError *error) {
                                                __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{

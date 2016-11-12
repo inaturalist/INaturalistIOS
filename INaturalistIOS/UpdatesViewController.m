@@ -33,6 +33,25 @@
 
 @implementation UpdatesViewController
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(userLoggedIn)
+                                                     name:kINatLoggedInNotificationKey
+                                                   object:nil];
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)userLoggedIn {
+    [self loadUpdates];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -121,7 +140,11 @@
     return _api;
 }
 
-- (void)loadUpdates {    
+- (void)loadUpdates {
+    if (self.viewIfLoaded) {
+        [self.tableView.pullToRefreshView startAnimating];
+    }
+
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
         [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
@@ -143,14 +166,15 @@
                     [self.tableView reloadData];
                     [self markSeenObservations];
                     [self.tableView.pullToRefreshView stopAnimating];
-                    [self.tableView.infiniteScrollingView stopAnimating];
-                    
                     [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
                 });
             }
 
         }];
     } failure:^(NSError *error) {
+        if (self.viewIfLoaded) {
+            [self.tableView.pullToRefreshView stopAnimating];
+        }
         return;
     }];
 }
