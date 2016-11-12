@@ -44,6 +44,24 @@
                                                     }];
 }
 
+- (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
+    NSString *path = [NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)identifier];
+    [[RKClient sharedClient] put:path
+                      usingBlock:^(RKRequest *request) {
+                          request.onDidLoadResponse = ^(RKResponse *response) {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  done(@[], 0, nil);
+                              });
+                          };
+                          
+                          request.onDidFailLoadWithError = ^(NSError *error) {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  done(nil, 0, error);
+                              });
+                          };
+                      }];
+}
+
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }

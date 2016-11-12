@@ -22,6 +22,7 @@
         self.resourceOwnerId = model.resourceOwnerId;
         self.resourceId = model.resourceId;
         self.viewed = model.viewed;
+        self.viewedLocally = model.viewed;
     }
     return self;
 }

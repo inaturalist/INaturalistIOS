@@ -339,7 +339,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 5;
+	config.schemaVersion = 8;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -354,6 +354,13 @@
             [migration enumerateObjects:ExploreUpdateRealm.className
                                   block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
                                       newObject[@"viewed"] = @(YES);
+                                  }];
+        }
+        if (oldSchemaVersion < 8) {
+            // add locally viewed to updates.
+            [migration enumerateObjects:ExploreUpdateRealm.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                                      newObject[@"viewedLocally"] = @(YES);
                                   }];
         }
     };

@@ -582,6 +582,7 @@
     RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
     [[RLMRealm defaultRealm] transactionWithBlock:^{
         [results setValue:@(YES) forKey:@"viewed"];
+        [results setValue:@(YES) forKey:@"viewedLocally"];
     }];
     [self.delegate setUpdatesBadge];
 }

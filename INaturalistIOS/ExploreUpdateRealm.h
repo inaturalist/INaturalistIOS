@@ -20,7 +20,18 @@
 @property ExploreCommentRealm *comment;
 @property NSInteger resourceOwnerId;
 @property NSInteger resourceId;
+
+// inat-wide sense of whether the update has been seen
+// locally, this means whether it's been seen in the updates list view
+// tab and app badging are computed from this
 @property BOOL viewed;
+
+// local sense of whether the update has been seen
+// locally, this means whether it's been seen in the updates detail view
+// there's a special visual treatment for this state
+// this value may get overwritten by the inat-wide sense of
+// viewed on RLMRealm -addOrUpdate
+@property BOOL viewedLocally;
 
 - (instancetype)initWithMantleModel:(ExploreUpdate *)model;
 

@@ -68,14 +68,48 @@
         label;
     });
 
-    
-    [self loadUpdates];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    User *me = [appDelegate.loginController fetchMe];
+    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.recordID.integerValue];
+    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
+                    sortedResultsUsingProperty:@"createdAt" ascending:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     [self.tableView reloadData];
+    
+    [self markSeenObservations];
+}
+
+- (void)markSeenObservations {
+    // stash the new IDs so we can notify the server that it's been seen
+    NSMutableSet *obsIds = [NSMutableSet set];
+    for (ExploreUpdateRealm *new in [self.updates objectsWhere:@"viewed == NO"]) {
+        [obsIds addObject:@(new.resourceId)];
+    }
+    
+    // clear flag on all updates
+    [[RLMRealm defaultRealm] transactionWithBlock:^{
+        [self.updates setValue:@(YES) forKey:@"viewed"];
+    }];
+    
+    // set application and tab bar badge
+    [((INatUITabBarController *)self.tabBarController) setUpdatesBadge];
+    
+    for (NSNumber *obsId in obsIds) {
+        [[self observationApi] seenUpdatesForObservationId:obsId.integerValue handler:^(NSArray *results, NSInteger count, NSError *error) {
+            // update hasUnviewedActivity flag
+            NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %@", obsId];
+            Observation *obs = [[Observation objectsWithPredicate:obsPredicate] firstObject];
+            if (obs) {
+                obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
+                NSError *error = nil;
+                [[[RKObjectManager sharedManager] objectStore] save:&error];
+            }
+        }];
+    }
 }
 
 - (ObservationAPI *)observationApi {
@@ -89,11 +123,6 @@
 
 - (void)loadUpdates {    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
-    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.recordID.integerValue];
-    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
-                    sortedResultsUsingProperty:@"createdAt" ascending:NO];
-    
     [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
         [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
             
@@ -112,6 +141,7 @@
             if (self.viewIfLoaded) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView reloadData];
+                    [self markSeenObservations];
                     [self.tableView.pullToRefreshView stopAnimating];
                     [self.tableView.infiniteScrollingView stopAnimating];
                     
@@ -176,7 +206,7 @@
     YLMoment *moment = [YLMoment momentWithDate:eur.createdAt];
     cell.updateDateTextLabel.text = [moment fromNowWithSuffix:NO];
     
-    if (!eur.viewed) {
+    if (!eur.viewedLocally) {
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.1f];
     }
     

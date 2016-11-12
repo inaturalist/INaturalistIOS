@@ -13,5 +13,6 @@
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)railsObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)updatesWithHandler:(INatAPIFetchCompletionCountHandler)done;
+- (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end
