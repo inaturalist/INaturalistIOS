@@ -215,8 +215,16 @@
     if (!o) {
         // fetch this observation, reload the cell
         [[self observationApi] railsObservationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
-            [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                             withRowAnimation:UITableViewRowAnimationFade];
+            if (error) {
+                // just get rid of this update
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                [realm deleteObjects:eur];
+                [realm commitWriteTransaction];
+            } else {
+                [tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                 withRowAnimation:UITableViewRowAnimationFade];
+            }
         }];
     }
     if (o.observationPhotos.count > 0) {
