@@ -52,6 +52,7 @@
 #import "NSURL+INaturalist.h"
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
+#import "ExploreUpdateRealm.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -1515,6 +1516,17 @@
             record.syncedAt = nil;
             [record destroy];
         }
+        
+        // delete all related updates
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        for (NSNumber *recordId in recordIDs) {
+            NSString *predString = [NSString stringWithFormat:@"resourceId == %ld", (unsigned long)[recordId integerValue]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:predString];
+            RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
+            [realm deleteObjects:results];
+        }
+        [realm commitWriteTransaction];
         
         [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
 		[[NSUserDefaults standardUserDefaults] synchronize];

@@ -54,6 +54,7 @@
 #import "PhotoScrollViewCell.h"
 #import "ObsCenteredLabelCell.h"
 #import "ObsDetailTaxonCell.h"
+#import "ExploreUpdateRealm.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -224,6 +225,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         // delete this observation
         [[Analytics sharedClient] event:kAnalyticsEventObservationDelete];
         
+        // delete all related updates
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        NSString *predString = [NSString stringWithFormat:@"resourceId == %ld",
+                                (unsigned long)[[self.observation recordID] integerValue]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:predString];
+        RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
+        [realm deleteObjects:results];
+        [realm commitWriteTransaction];
+
         // delete locally
         [self.observation deleteEntity];
         self.observation = nil;
