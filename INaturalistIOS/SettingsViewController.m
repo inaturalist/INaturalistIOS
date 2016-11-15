@@ -207,7 +207,7 @@ static const int AutouploadSwitchTag = 102;
     [defaults removeObjectForKey:INatPasswordPrefKey];
     [defaults removeObjectForKey:INatTokenPrefKey];
     [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [defaults synchronize];
     
     // clear cached RKClient authentication details
     [RKClient.sharedClient setUsername:nil];
