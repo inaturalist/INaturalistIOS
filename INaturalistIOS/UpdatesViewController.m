@@ -226,7 +226,7 @@
                 // just get rid of this update
                 RLMRealm *realm = [RLMRealm defaultRealm];
                 [realm beginWriteTransaction];
-                [realm deleteObjects:eur];
+                [realm deleteObjects:@[ eur ]];
                 [realm commitWriteTransaction];
             } else {
                 [tableView reloadRowsAtIndexPaths:@[ indexPath ]
