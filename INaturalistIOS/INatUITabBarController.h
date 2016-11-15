@@ -17,3 +17,5 @@
 - (void)setUpdatesBadge;
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project;
 @end
+
+extern NSString *HasMadeAnObservationKey;

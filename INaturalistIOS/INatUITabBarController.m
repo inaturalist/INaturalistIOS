@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, INatPhotoSource) {
     INatPhotoSourcePhotos
 };
 
-static NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
+NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
