@@ -372,6 +372,20 @@
     
     [self configureRestKit];
     
+    // if we're not logged in, deleted records aren't meaningful
+    // if there are any around, they're stale and should be trashed
+    if (!self.loginController.isLoggedIn) {
+        for (DeletedRecord *record in [DeletedRecord allObjects]) {
+            [record deleteEntity];
+        }
+    }
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        [[Analytics sharedClient] debugLog:@"Object Store Failed Removing Stale Deleted Records at Launch"];
+        [[Analytics sharedClient] debugLog:error.localizedDescription];
+    }
+    
     if (![self.loginController isLoggedIn]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
