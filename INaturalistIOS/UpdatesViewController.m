@@ -29,6 +29,7 @@
 
 @interface UpdatesViewController ()
 @property RLMResults *updates;
+@property RLMNotificationToken *updatesToken;
 @end
 
 @implementation UpdatesViewController
@@ -45,6 +46,7 @@
 }
 
 - (void)dealloc {
+    [self.updatesToken stop];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -92,6 +94,12 @@
     NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.recordID.integerValue];
     self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
                     sortedResultsUsingProperty:@"createdAt" ascending:NO];
+    
+    self.updatesToken = [self.updates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -163,7 +171,6 @@
             
             if (self.viewIfLoaded) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView reloadData];
                     [self markSeenObservations];
                     [self.tableView.pullToRefreshView stopAnimating];
                     [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
