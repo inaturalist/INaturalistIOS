@@ -572,6 +572,10 @@
                                                  selector:@selector(reachabilityChanged:)
                                                      name:RKReachabilityDidChangeNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(loggedIn)
+                                                     name:kINatLoggedInNotificationKey
+                                                   object:nil];
         self.failedObjectLoaders = [NSMutableArray array];
         
         self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
@@ -585,6 +589,22 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - NSNotification targets
+
+- (void)loggedIn {
+    // if there are any deleted records around,
+    // they're stale and should be trashed
+    for (DeletedRecord *record in [DeletedRecord allObjects]) {
+        [record deleteEntity];
+    }
+    NSError *error = nil;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        [[Analytics sharedClient] debugLog:@"Object Store Failed Removing Stale Deleted Records at Login"];
+        [[Analytics sharedClient] debugLog:error.localizedDescription];
+    }
 }
 
 #pragma mark - Reachability Updates
