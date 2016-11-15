@@ -114,6 +114,7 @@
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
+		FA399A911DDBD45D007ABD3E /* Projects.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399A901DDBD45D007ABD3E /* Projects.storyboard */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
@@ -491,6 +492,7 @@
 		FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNoInteractionHeaderFooter.m; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
+		FA399A901DDBD45D007ABD3E /* Projects.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Projects.storyboard; sourceTree = "<group>"; };
 		FA3D905C1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA3D905D1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA3D90721A93FCF100BAA0EC /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -1447,6 +1449,7 @@
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
 				FA6F87661B0E996B0019B157 /* fonts */,
+				FA399A901DDBD45D007ABD3E /* Projects.storyboard */,
 			);
 			name = "User Interface";
 			path = ..;
@@ -1775,6 +1778,7 @@
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
 				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
+				FA399A911DDBD45D007ABD3E /* Projects.storyboard in Resources */,
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
