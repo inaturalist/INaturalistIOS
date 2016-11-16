@@ -1,0 +1,36 @@
+
+/* Class = "UILabel"; text = "Project name"; ObjectID = "5g3-Ck-7dj"; */
+"5g3-Ck-7dj.text" = "Project name";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "8Dx-bO-69j"; */
+"8Dx-bO-69j.text" = "Label";
+
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "AeY-f8-V2Q"; */
+"AeY-f8-V2Q.title" = "Projects";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "DxM-XT-Dil"; */
+"DxM-XT-Dil.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "VoO-3j-QSk"; */
+"VoO-3j-QSk.text" = "Label";
+
+/* Class = "UILabel"; text = "50"; ObjectID = "Wp5-th-kO8"; */
+"Wp5-th-kO8.text" = "50";
+
+/* Class = "UIButton"; normalTitle = "Join"; ObjectID = "XoY-j9-s3Z"; */
+"XoY-j9-s3Z.normalTitle" = "Join";
+
+/* Class = "UINavigationItem"; title = "Projects"; ObjectID = "erP-HQ-jwa"; */
+"erP-HQ-jwa.title" = "Projects";
+
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "f8w-lW-pBK"; */
+"f8w-lW-pBK.title" = "Projects";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "gpj-j1-cmk"; */
+"gpj-j1-cmk.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "About"; ObjectID = "mg1-3N-wrc"; */
+"mg1-3N-wrc.normalTitle" = "About";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "vWl-jb-1Ry"; */
+"vWl-jb-1Ry.text" = "Label";

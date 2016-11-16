@@ -259,7 +259,7 @@
         <!--SiteNewsViewController-->
         <scene sceneID="7MT-Gc-bnn">
             <objects>
-                <viewControllerPlaceholder storyboardName="MainStoryboard" referencedIdentifier="SiteNewsViewController" id="nut-ys-RVl" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Activity" referencedIdentifier="SiteNewsViewController" id="nut-ys-RVl" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IRF-yf-bed" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1554" y="2719"/>
@@ -458,6 +458,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="projects-tab.png" width="24" height="24"/>
+        <image name="projects-tab.png" width="414" height="736"/>
     </resources>
 </document>
