@@ -2264,6 +2264,7 @@
 				FA399AAB1DDBDB53007ABD3E /* ko */,
 			);
 			name = Projects.storyboard;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */ = {
@@ -2281,6 +2282,7 @@
 				FA399AC01DDBDC7F007ABD3E /* en */,
 			);
 			name = Activity.storyboard;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FA399AC31DDBDC88007ABD3E /* Guides.storyboard */ = {
@@ -2298,6 +2300,7 @@
 				FA399AD51DDBDC96007ABD3E /* en */,
 			);
 			name = Guides.storyboard;
+			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */ = {

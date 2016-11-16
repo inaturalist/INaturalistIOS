@@ -93,7 +93,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Explore and Connect with Nature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RqF-E7-mYe">
-                                        <rect key="frame" x="26" y="320" width="252" height="21"/>
+                                        <rect key="frame" x="26" y="320" width="252" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -128,10 +128,10 @@
                                 <rect key="frame" x="30" y="92" width="315" height="427"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-observe" translatesAutoresizingMaskIntoConstraints="NO" id="c12-6I-0ri">
-                                        <rect key="frame" x="6" y="0.0" width="304" height="290"/>
+                                        <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Observe" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0HC-89-zFL">
-                                        <rect key="frame" x="102" y="310" width="112" height="36"/>
+                                        <rect key="frame" x="101.5" y="310" width="112" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -202,7 +202,7 @@
                                 <rect key="frame" x="30" y="92" width="315" height="407"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-share" translatesAutoresizingMaskIntoConstraints="NO" id="3Jv-x6-KHK">
-                                        <rect key="frame" x="6" y="0.0" width="304" height="290"/>
+                                        <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCH-CP-6hM">
                                         <rect key="frame" x="119" y="310" width="77" height="36"/>
@@ -274,10 +274,10 @@
                                 <rect key="frame" x="30" y="92" width="315" height="427"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-learn" translatesAutoresizingMaskIntoConstraints="NO" id="WVA-09-tvX">
-                                        <rect key="frame" x="6" y="0.0" width="304" height="290"/>
+                                        <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Learn" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2hB-WM-pN1">
-                                        <rect key="frame" x="120" y="310" width="75" height="36"/>
+                                        <rect key="frame" x="120.5" y="310" width="74.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -605,16 +605,16 @@
                                 <rect key="frame" x="30" y="92" width="315" height="448"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-contribute" translatesAutoresizingMaskIntoConstraints="NO" id="jWP-nj-KdU">
-                                        <rect key="frame" x="6" y="0.0" width="304" height="290"/>
+                                        <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contribute" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sBd-1Y-eNL">
-                                        <rect key="frame" x="87" y="310" width="141" height="36"/>
+                                        <rect key="frame" x="87.5" y="310" width="140.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oro-uB-RY1">
-                                        <rect key="frame" x="6" y="366" width="304" height="82"/>
+                                        <rect key="frame" x="6" y="366" width="303.5" height="81.5"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="734" id="s1O-Nd-X9S">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
