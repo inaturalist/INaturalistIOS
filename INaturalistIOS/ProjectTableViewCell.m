@@ -11,6 +11,8 @@
 @implementation ProjectTableViewCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     // Add autolayout.
     [self setupConstraints];
 }
