@@ -419,10 +419,6 @@ static UIImage *defaultPersonImage;
 		UILabel *byline = (UILabel *)[cell viewWithTag:IdentificationCellBylineTag];
 		UIButton *agreeButton = (UIButton *)[cell viewWithTag:IdentificationCellAgreeTag];
 		UILabel *body = (UILabel *)[cell viewWithTag:IdentificationCellBodyTag];
-		
-		id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
-		
-		
         
         // Adding auto layout.
         if(!cell.constraints.count){

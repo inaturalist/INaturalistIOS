@@ -14,6 +14,8 @@
 @implementation ObservationViewUploadingCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
 	self.progressBar.trackTintColor = [UIColor colorWithHexString:@"#C6DFA4"];
     self.progressBar.type = YLProgressBarTypeFlat;
     self.progressBar.behavior = YLProgressBarBehaviorWaiting;

@@ -14,6 +14,8 @@
 
 // would be great to do all of this autolayout stuff in the storyboard, but that means migrating the whole storyboard to AutoLayout
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.validationErrorLabel.translatesAutoresizingMaskIntoConstraints = NO;
     

@@ -13,6 +13,8 @@
 @implementation RankedUserObsSpeciesCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.userImageView.layer.cornerRadius = self.userImageView.bounds.size.height / 2.0f;
     self.userImageView.clipsToBounds = YES;
     self.userImageView.layer.borderWidth = 1.0f;

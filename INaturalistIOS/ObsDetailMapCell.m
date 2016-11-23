@@ -12,6 +12,8 @@
 @implementation ObsDetailMapCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     // Initialization code
     
     self.locationNameContainer.layer.cornerRadius = 1.0f;

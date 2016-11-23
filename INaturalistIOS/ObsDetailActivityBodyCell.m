@@ -11,6 +11,8 @@
 @implementation ObsDetailActivityBodyCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     // Initialization code
     self.bodyTextView.dataDetectorTypes = UIDataDetectorTypeAll;
     

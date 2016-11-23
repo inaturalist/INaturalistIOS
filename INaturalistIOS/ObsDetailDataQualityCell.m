@@ -33,6 +33,7 @@
 @implementation ObsDetailDataQualityCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
     
     self.casualLabel.textColor = [UIColor colorWithHexString:@"#c8c7cc"];

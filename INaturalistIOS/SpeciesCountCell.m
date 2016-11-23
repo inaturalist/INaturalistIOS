@@ -14,6 +14,8 @@
 @implementation SpeciesCountCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.taxonImageView.layer.cornerRadius = 1.0f;
     self.taxonImageView.clipsToBounds = YES;
     

@@ -17,6 +17,8 @@
 // would be great to do all of this autolayout stuff in the storyboard, but that means migrating the whole storyboard to AutoLayout
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.activityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.interactiveActivityButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;

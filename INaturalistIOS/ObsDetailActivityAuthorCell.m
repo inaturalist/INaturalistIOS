@@ -14,6 +14,8 @@
 @implementation ObsDetailActivityAuthorCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     [self configureTextFieldColors];
 }
 

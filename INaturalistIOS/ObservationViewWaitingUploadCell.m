@@ -14,8 +14,9 @@
 
 @implementation ObservationViewWaitingUploadCell
 
-// would be great to do all of this autolayout stuff in the storyboard, but that means migrating the whole storyboard to AutoLayout
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.uploadButton.translatesAutoresizingMaskIntoConstraints = NO;
     
     FAKIcon *upload = [FAKIonIcons iosCloudUploadIconWithSize:30];

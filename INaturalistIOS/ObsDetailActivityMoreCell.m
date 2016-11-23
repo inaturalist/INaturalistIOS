@@ -14,6 +14,8 @@
 @implementation ObsDetailActivityMoreCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     [self.agreeButton setTitleColor:[UIColor inatTint]
                            forState:UIControlStateNormal];
     [self.agreeButton setTitleColor:[UIColor lightGrayColor]

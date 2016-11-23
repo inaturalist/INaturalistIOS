@@ -22,7 +22,6 @@ enum {
 @interface ImageStore : NSObject
 @property (nonatomic, strong) NSMutableDictionary *dictionary;
 + (ImageStore *)sharedImageStore;
-+ (UIImage*)imageWithImage:(UIImage*)sourceImage scaledToSizeWithSameAspectRatio:(CGSize)targetSize;
 - (UIImage *)find:(NSString *)key forSize:(int)size;
 - (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError **)error;
 - (void)destroy:(NSString *)key;

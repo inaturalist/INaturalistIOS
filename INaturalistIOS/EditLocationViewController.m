@@ -34,7 +34,7 @@
     
     if (!self.currentLocationButton) {
         self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location"]
-                                                                      style:UIBarButtonItemStyleBordered
+                                                                      style:UIBarButtonItemStylePlain
                                                                      target:self
                                                                      action:@selector(clickedCurrentLocationButton)];
         [self.currentLocationButton setWidth:30];
@@ -149,7 +149,7 @@
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     // this location manager requests authorization changes to set user tracking mode
     switch ([CLLocationManager authorizationStatus]) {
-        case kCLAuthorizationStatusAuthorized:
+        case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse: {
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
             break;
@@ -264,7 +264,7 @@
         [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
     } else {
         switch ([CLLocationManager authorizationStatus]) {
-            case kCLAuthorizationStatusAuthorized:
+            case kCLAuthorizationStatusAuthorizedAlways:
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
                 break;
@@ -329,7 +329,7 @@
         self.currentLocation.accuracy = [NSNumber numberWithDouble:self.mapView.userLocation.location.horizontalAccuracy];
         self.currentLocation.positioningMethod = @"gps";
     } else {
-        self.currentLocationButton.style = UIBarButtonItemStyleBordered;
+        self.currentLocationButton.style = UIBarButtonItemStylePlain;
         [self resetAccuracy];
         [self updateAccuracyCircle];
         self.currentLocation.positioningMethod = @"manual";

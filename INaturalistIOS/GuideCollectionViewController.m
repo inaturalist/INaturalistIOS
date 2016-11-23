@@ -291,7 +291,7 @@ static const int GutterWidth  = 5;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     self.searchBar.text = nil;
-    [self searchBar:searchBar textDidChange:nil];
+    [self searchBar:searchBar textDidChange:@""];
     [self.searchBar endEditing:YES];
 }
 

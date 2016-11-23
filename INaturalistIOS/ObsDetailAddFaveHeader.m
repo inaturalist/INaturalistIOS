@@ -109,6 +109,8 @@
 }
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.1f];
 
     self.faveContainer.layer.cornerRadius = self.faveContainer.bounds.size.height / 2.0f;
@@ -155,7 +157,7 @@
 - (void)setFaveCount:(NSInteger)faveCount {
     _faveCount = faveCount;
     
-    self.faveCountLabel.text = [NSString stringWithFormat:@"%ld", _faveCount];
+    self.faveCountLabel.text = [NSString stringWithFormat:@"%ld", (long)_faveCount];
 }
 
 - (NSInteger)faveCount {

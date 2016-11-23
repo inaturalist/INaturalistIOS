@@ -248,7 +248,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     NSDateFormatter *fmt = Observation.shortDateFormatter;
     NSDate *now = [NSDate date];
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *comps = [cal components:NSDayCalendarUnit fromDate:self.localObservedOn toDate:now options:0];
+    NSDateComponents *comps = [cal components:NSCalendarUnitDay fromDate:self.localObservedOn toDate:now options:0];
     if (comps.day == 0) {
         fmt.dateStyle = NSDateFormatterNoStyle;
         fmt.timeStyle = NSDateFormatterShortStyle;

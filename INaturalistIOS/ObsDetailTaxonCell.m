@@ -14,7 +14,7 @@
 @implementation ObsDetailTaxonCell
 
 - (void)awakeFromNib {
-    // Initialization code
+    [super awakeFromNib];
     
     self.taxonImageView.layer.borderWidth = 0.5f;
     self.taxonImageView.layer.borderColor = [UIColor colorWithHexString:@"#777777"].CGColor;
