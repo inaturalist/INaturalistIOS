@@ -186,13 +186,25 @@ static const int AutouploadSwitchTag = 102;
 - (void)signOut
 {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
-    
-    [[[RKClient sharedClient] requestQueue] cancelAllRequests];
 
-    [self localSignOut];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view
+                                              animated:YES];
+    hud.mode = MBProgressHUDModeIndeterminate;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Signing Out", nil);
+    hud.removeFromSuperViewOnHide = YES;
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate rebuildCoreData];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [[[RKClient sharedClient] requestQueue] cancelAllRequests];
+        
+        [self localSignOut];
+        
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate rebuildCoreData];
+        
+        [hud hide:YES afterDelay:2.0f];
+    });
 }
 
 - (void)localSignOut
