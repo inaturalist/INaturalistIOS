@@ -546,15 +546,6 @@ static char PROJECT_ASSOCIATED_KEY;
         } else {
             activity.tabBarItem.badgeValue = nil;
         }
-        
-        // request permission to badge the app
-        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge
-                                                                                     categories:nil];
-            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        }
-        
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[myNewResults count]];
     }
 }
 
