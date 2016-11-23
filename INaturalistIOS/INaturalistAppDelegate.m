@@ -144,23 +144,6 @@
                     }
                     [self loadObservationsForIds:[obsIds allObjects]];
                     
-                    NSPredicate *newPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreUpdate *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-                        if ([ExploreUpdateRealm objectForPrimaryKey:@(evaluatedObject.updateId)]) {
-                            return NO;
-                        } else if ([evaluatedObject viewed]) {
-                            return NO;
-                        } else {
-                            return YES;
-                        }
-                    }];
-                    NSArray *myNewResults = [myResults filteredArrayUsingPredicate:newPredicate];
-                    
-                    // keep track of the count of unique observation ids for new updates
-                    NSMutableSet *myNewObsIds = [NSMutableSet set];
-                    for (ExploreUpdate *eu in myNewResults) {
-                        [myNewObsIds addObject:@(eu.resourceId)];
-                    }
-
                     RLMRealm *realm = [RLMRealm defaultRealm];
                     [realm beginWriteTransaction];
                     // all results get written to Realm
@@ -175,38 +158,6 @@
                     }
                     
                     if (completionHandler) {
-                        // if we have a completion handler, we need to post notifications
-                        if (myNewResults.count == 0) {
-                            [application endBackgroundTask:self.backgroundFetchTask];
-                            self.backgroundFetchTask = UIBackgroundTaskInvalid;
-                            
-                            completionHandler(UIBackgroundFetchResultNoData);
-                            return;
-                        } else if (myNewResults.count == 1) {
-                            UILocalNotification *note = [[UILocalNotification alloc] init];
-                            note.fireDate = [NSDate date];
-                            ExploreUpdate *update = [myNewResults firstObject];
-                            if (update.identification) {
-                                note.alertBody = NSLocalizedString(@"There is a new identification on one of your observations.", nil);
-                            } else {
-                                note.alertBody = NSLocalizedString(@"There is a new comment on one of your observations.", nil);
-                            }
-                            note.userInfo = @{
-                                              @"updateId": @(update.updateId),
-                                              };
-                            [[UIApplication sharedApplication] presentLocalNotificationNow:note];
-                        } else {
-                            UILocalNotification *note = [[UILocalNotification alloc] init];
-                            if (myNewObsIds.count == 1) {
-                                ExploreUpdate *update = [myNewResults firstObject];
-                                note.userInfo = @{
-                                                  @"updateId": @(update.updateId),
-                                                  };
-                            }
-                            note.fireDate = [NSDate date];
-                            note.alertBody = NSLocalizedString(@"There is new activity on your observations.", nil);
-                            [[UIApplication sharedApplication] presentLocalNotificationNow:note];
-                        }
                         completionHandler(UIBackgroundFetchResultNewData);
                     }
                     
@@ -272,33 +223,6 @@
     [self configureApplication];
     
     return YES;
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    if ([application.keyWindow.rootViewController isKindOfClass:[INatUITabBarController class]]) {
-        INatUITabBarController *tabVC = (INatUITabBarController *)application.keyWindow.rootViewController;
-        UIViewController *vc = [[tabVC viewControllers] objectAtIndex:1];
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *nav = (UINavigationController *)vc;
-            [tabVC setSelectedViewController:nav];
-            UIViewController *top = [nav topViewController];
-            if ([top isKindOfClass:[NewsPagerViewController class]]) {
-                NewsPagerViewController *newsPager = (NewsPagerViewController *)top;
-                newsPager.shouldShowUpdatesOnLoad = YES;
-                NSNumber *updateId = [[notification userInfo] valueForKey:@"updateId"];
-                if (updateId) {
-                    ExploreUpdateRealm *eur = [ExploreUpdateRealm objectForPrimaryKey:updateId];
-                    if (eur) {
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                            [newsPager reloadData];
-                            [newsPager.updates performSegueWithIdentifier:@"obsDetail"
-                                                                   sender:eur];
-                        });
-                    }
-                }
-            }
-        }
-    }
 }
 
 - (void)setupAnalytics {
