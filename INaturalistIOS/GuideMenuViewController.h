@@ -20,7 +20,7 @@
 - (void)guideMenuControllerGuideDeletedNGZForGuide:(GuideXML *)guide;
 @end
 
-@interface GuideMenuViewController : UITableViewController <UIAlertViewDelegate, UIActionSheetDelegate>
+@interface GuideMenuViewController : UITableViewController
 @property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, weak) id <GuideMenuControllerDelegate> delegate;
 @property (nonatomic, strong) NSArray *tagPredicates;

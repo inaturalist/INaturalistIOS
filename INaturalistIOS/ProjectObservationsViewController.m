@@ -134,12 +134,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         NSString *msg = [NSString stringWithFormat:NSLocalizedString(@"'%@' requires that you fill out the '%@' field.",nil),
                          projectNameFailingValidation,
                          projectFieldFailingValidation];
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Required Field",nil)
-                                                     message:msg
-                                                    delegate:nil
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Missing Required Field",nil)
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

@@ -54,7 +54,7 @@
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -351,12 +351,13 @@
     }
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                     message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org",nil)
-                                                    delegate:self 
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required", nil)
+                                                                       message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                 style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -420,12 +421,13 @@
         ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
         
         if (notify) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Network unavailable", nil)
-                                        message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
-
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unavailable", nil)
+                                                                           message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
             [self.refreshControl endRefreshing];
         }
         
@@ -588,8 +590,13 @@
 }
 
 - (void)showError:(NSString *)errorMessage{
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[alert show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                                                   message:errorMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)viewActivity:(UIButton *)sender {
@@ -1273,12 +1280,14 @@
     if (fetchError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
                                             fetchError.localizedDescription]];
-
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Fetch Error", nil)
-                                    message:fetchError.localizedDescription
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Fetch Error", nil)
+                                                                       message:fetchError.localizedDescription
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
     
     self.navigationItem.leftBarButtonItem = nil;
@@ -1404,11 +1413,13 @@
             [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
                                                 saveError.localizedDescription]];
             
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
-                                        message:saveError.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
+                                                                           message:saveError.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         }
         
         // triggers reconfiguration of the header
@@ -1479,12 +1490,13 @@
             title = NSLocalizedString(@"Whoops!",nil);
             msg = [NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg];
         }
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:title
-                                                     message:msg
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
     [self.refreshControl endRefreshing];
 }
@@ -1702,12 +1714,13 @@
                                       @"Alert": alertMessage,
                                       }];
     
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                 message:alertMessage
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {
@@ -1742,11 +1755,13 @@
         alertMsg = NSLocalizedString(@"Unknown error while attempting to delete.", @"unknown delete error");
     }
     
-    [[[UIAlertView alloc] initWithTitle:alertTitle
-                                message:alertMsg
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

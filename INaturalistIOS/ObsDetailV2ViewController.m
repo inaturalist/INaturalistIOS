@@ -255,6 +255,16 @@
 
 #pragma mark - obs detail view model delegate
 
+- (void)noticeWithTitle:(NSString *)title message:(NSString *)message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)setUpdatesBadge {
     [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
 }

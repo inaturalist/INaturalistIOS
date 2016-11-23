@@ -66,7 +66,7 @@ static const int GutterWidth  = 5;
             [self downloadXML:self.guide.xmlURL];
         }
     }
-
+    
     self.scale = 1.0;
     UIPinchGestureRecognizer *gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(didReceivePinchGesture:)];
@@ -141,7 +141,7 @@ static const int GutterWidth  = 5;
 }
 
 #pragma mark - UICollectionViewDelegate
- -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     if (!self.guide) {
         return 0;
@@ -261,7 +261,7 @@ static const int GutterWidth  = 5;
     }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        sleep(2); // uncomment to test device-like response time
+        //        sleep(2); // uncomment to test device-like response time
         [self loadData];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.collectionView reloadData];
@@ -583,11 +583,13 @@ static const int GutterWidth  = 5;
     }
     
     if (!self.quiet) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide", nil)
-                                    message:error.localizedDescription
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", nil)
+                                                                       message:error.localizedDescription
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self.controller presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -597,7 +599,7 @@ static const int GutterWidth  = 5;
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
     });
@@ -610,20 +612,24 @@ static const int GutterWidth  = 5;
         
         NSError *error;
         if (![self.receivedData writeToFile:self.filePath options:NSDataWritingAtomic error:&error]) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to save guide", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to save guide", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self.controller presentViewController:alert animated:YES completion:nil];
         }
         [self.controller loadXML:self.filePath];
     } else {
         if (!self.quiet) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Guide download error", nil)
-                                        message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Guide download error", nil)
+                                                                           message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self.controller presentViewController:alert animated:YES completion:nil];
         }
     }
 }

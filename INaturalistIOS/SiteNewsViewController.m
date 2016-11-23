@@ -39,7 +39,7 @@ static UIImage *briefcase;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-                
+        
         briefcase = ({
             FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
             [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
@@ -56,13 +56,13 @@ static UIImage *briefcase;
     
     // hide empty cell divider lines
     self.tableView.tableFooterView = [UIView new];
-
+    
     [self.tableView registerClass:[NewsItemCell class]
            forCellReuseIdentifier:@"newsItem"];
     
     // tableview configuration
     //self.refreshControl.tintColor = [UIColor inatTint];
-
+    
     // infinite scroll for tableview
     __weak typeof(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -214,7 +214,7 @@ static UIImage *briefcase;
     if ([sectionInfo numberOfObjects] > 0) {
         // most recent item will be last
         NewsItem *oldestItem = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:[sectionInfo numberOfObjects] - 1
-                                                                                      inSection:0]];
+                                                                               inSection:0]];
         path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)oldestItem.recordID.integerValue]];
     }
     
@@ -311,12 +311,12 @@ static UIImage *briefcase;
 #pragma mark - RKObjectLoaderDelegate
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-
+    
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
         [o setSyncedAt:now];
     }
-
+    
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     
@@ -339,11 +339,13 @@ static UIImage *briefcase;
     // in case load was triggered by infinite scrolling, stop the animation
     [self.tableView.infiniteScrollingView stopAnimating];
     
-    [[[UIAlertView alloc] initWithTitle:@"Error"
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 

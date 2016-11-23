@@ -49,7 +49,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
@@ -113,7 +113,7 @@
                 forState:UIControlStateNormal];
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         button.titleLabel.font = [UIFont boldSystemFontOfSize:15.0f];
-
+        
         
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
@@ -147,7 +147,7 @@
         [button addTarget:self
                    action:@selector(confirm)
          forControlEvents:UIControlEventTouchUpInside];
-
+        
         button;
     });
     [self.view addSubview:confirm];
@@ -190,7 +190,7 @@
         hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
-
+        
         // embed geo
         CLLocationManager *loc = [[CLLocationManager alloc] init];
         NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
@@ -215,12 +215,14 @@
                               if (error) {
                                   [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
                                                                       error.localizedDescription]];
-                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
-                                                              message:error.localizedDescription
-                                                             delegate:nil
-                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                    otherButtonTitles:nil] show];
-
+                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
+                                                                                                 message:error.localizedDescription
+                                                                                          preferredStyle:UIAlertControllerStyleAlert];
+                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                            style:UIAlertActionStyleCancel
+                                                                          handler:nil]];
+                                  [self presentViewController:alert animated:YES completion:nil];
+                                  
                               } else {
                                   [lib assetForURL:newAssetUrl
                                        resultBlock:^(ALAsset *asset) {
@@ -229,22 +231,26 @@
                                                self.confirmFollowUpAction(@[ asset ]);
                                            } else {
                                                [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
-                                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error using newly saved image", @"Error title when we can't load a newly saved image")
-                                                                           message:NSLocalizedString(@"No asset found", @"Error message for asset fetch failure")
-                                                                          delegate:nil
-                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                 otherButtonTitles:nil] show];
+                                               UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error using newly saved image", @"Error title when we can't load a newly saved image")
+                                                                                                              message:NSLocalizedString(@"No asset found", @"Error message for asset fetch failure")
+                                                                                                       preferredStyle:UIAlertControllerStyleAlert];
+                                               [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                         style:UIAlertActionStyleCancel
+                                                                                       handler:nil]];
+                                               [self presentViewController:alert animated:YES completion:nil];
                                            }
                                            
                                        } failureBlock:^(NSError *error) {
                                            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
                                                                                error.localizedDescription]];
                                            
-                                           [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Fetching Image Asset", @"image fetch error title")
-                                                                       message:error.localizedDescription
-                                                                      delegate:nil
-                                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                             otherButtonTitles:nil] show];
+                                           UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Fetching Image Asset", @"image fetch error title")
+                                                                                                          message:error.localizedDescription
+                                                                                                   preferredStyle:UIAlertControllerStyleAlert];
+                                           [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                     style:UIAlertActionStyleCancel
+                                                                                   handler:nil]];
+                                           [self presentViewController:alert animated:YES completion:nil];                                           
                                        }];
                                   
                               }

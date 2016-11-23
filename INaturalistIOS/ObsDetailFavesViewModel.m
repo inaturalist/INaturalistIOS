@@ -157,24 +157,18 @@
 - (void)tappedFave:(UIControl *)control {
     
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Fave", nil)
-                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Fave", nil)
+                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.loginController.isLoggedIn) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Fave", nil)
-                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Fave", nil)
+                               message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }
-
+    
     NSString *requestPath = nil;
     NSString *hudText;
     NSString *method;
@@ -182,7 +176,7 @@
     if ([self loggedInUserHasFavedThisObservation]) {
         // need to unfave it
         [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
-
+        
         // delete to /votes/unvote/observation/{obs.recordID}.json
         requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId];
         hudText = NSLocalizedString(@"Un-faving...", nil);
@@ -190,7 +184,7 @@
     } else {
         // need to fave it
         [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
-
+        
         // post to /votes/vote/observation/{obs.recordID}.json
         requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.inatRecordId];
         hudText = NSLocalizedString(@"Faving...", nil);

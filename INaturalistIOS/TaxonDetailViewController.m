@@ -329,33 +329,4 @@ static char SUMMARY_ASSOCIATED_KEY;
     }
 }
 
-#pragma mark - UIActionSheetDelegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex > 2) {
-        return;
-    }
-    
-    NSString *wikipediaTitle = self.fullTaxon.wikipediaTitle;
-    NSString *escapedName = [self.fullTaxon.name stringByAddingURLEncoding];
-    NSString *urlString;
-    
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    if (buttonIndex == 0) {
-        urlString = [NSString stringWithFormat:@"%@/taxa/%d.mobile?locale=%@-%@", INatWebBaseURL, self.fullTaxon.recordID.intValue, language, countryCode];
-    } else if (buttonIndex == 1) {
-        urlString = [NSString stringWithFormat:@"http://eol.org/%@", escapedName];
-    } else if (buttonIndex == 2) {
-        if (!wikipediaTitle) {
-            wikipediaTitle = escapedName;
-        }
-        urlString = [NSString stringWithFormat:@"http://wikipedia.org/wiki/%@", wikipediaTitle];
-    } else {
-        return;
-    }
-    
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-}
-
 @end

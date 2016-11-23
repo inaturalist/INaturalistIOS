@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, ObsDetailSection) {
 - (void)showProgressHud;
 - (void)hideProgressHud;
 - (void)setUpdatesBadge;
+- (void)noticeWithTitle:(NSString *)title message:(NSString *)message;
 @end
 
 @class Observation;

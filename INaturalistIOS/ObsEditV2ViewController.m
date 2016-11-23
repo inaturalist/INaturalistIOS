@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate, UIActionSheetDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -89,11 +89,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
                                                                                           action:@selector(cancelledNewObservation:)];
-
+    
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
-
+        
         tv.dataSource = self;
         tv.delegate = self;
         
@@ -110,7 +110,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         tv.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
         tv.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tv.bounds.size.width, 0.01f)];
-
+        
         tv;
     });
     [self.view addSubview:self.tableView];
@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         button.tintColor = [UIColor whiteColor];
         button.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         button.titleLabel.font = [UIFont boldSystemFontOfSize:button.titleLabel.font.pointSize];
-
+        
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.isLoggedIn && [appDelegate.loginController.uploadManager isAutouploadEnabled]) {
             [button setTitle:NSLocalizedString(@"SHARE", @"Title for share new observation button")
@@ -133,7 +133,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [button setTitle:NSLocalizedString(@"SAVE", @"Title for save new observation button")
                     forState:UIControlStateNormal];
         }
-
+        
         [button addTarget:self action:@selector(saved:) forControlEvents:UIControlEventTouchUpInside];
         
         button;
@@ -171,13 +171,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                           options:0
                                                                           metrics:0
                                                                             views:views]];
-
+        
         // save existing obs has a Done nav bar button
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
                                                                                                action:@selector(saved:)];
     }
-
+    
     self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
 }
@@ -199,7 +199,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         }
         
         [self startUpdatingLocation];
-    }    
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -216,49 +216,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self stopUpdatingLocation];
 }
 
-#pragma mark - UIActionSheet delegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        // cancel, do nothing
-    } else if (buttonIndex == 0) {
-        // delete this observation
-        [[Analytics sharedClient] event:kAnalyticsEventObservationDelete];
-        
-        // delete all related updates
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        [realm beginWriteTransaction];
-        NSString *predString = [NSString stringWithFormat:@"resourceId == %ld",
-                                (unsigned long)[[self.observation recordID] integerValue]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:predString];
-        RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
-        [realm deleteObjects:results];
-        [realm commitWriteTransaction];
-
-        // delete locally
-        [self.observation deleteEntity];
-        self.observation = nil;
-        NSError *error;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
-        if (error) {
-            // TODO: log it at least, also notify the user
-        }
-        
-        // trigger the delete to happen on the server
-        [self triggerAutoUpload];
-        
-        // pop to the root view controller
-        // dispatch/enqueue this to allow the popover controller on ipad
-        // (which presents the action sheet) to dismiss first
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UITabBarController *tab = (UITabBarController *)self.presentingViewController;
-            UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
-            
-            [tab dismissViewControllerAnimated:YES completion:^{
-                [nav popToRootViewControllerAnimated:YES];
-            }];
-        });
+- (void)deleteThisObservation {
+    // delete this observation
+    [[Analytics sharedClient] event:kAnalyticsEventObservationDelete];
+    
+    // delete all related updates
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    NSString *predString = [NSString stringWithFormat:@"resourceId == %ld",
+                            (unsigned long)[[self.observation recordID] integerValue]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:predString];
+    RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
+    [realm deleteObjects:results];
+    [realm commitWriteTransaction];
+    
+    // delete locally
+    [self.observation deleteEntity];
+    self.observation = nil;
+    NSError *error;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        // TODO: log it at least, also notify the user
     }
+    
+    // trigger the delete to happen on the server
+    [self triggerAutoUpload];
+    
+    // pop to the root view controller
+    // dispatch/enqueue this to allow the popover controller on ipad
+    // (which presents the action sheet) to dismiss first
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UITabBarController *tab = (UITabBarController *)self.presentingViewController;
+        UINavigationController *nav = (UINavigationController *)tab.selectedViewController;
+        
+        [tab dismissViewControllerAnimated:YES completion:^{
+            [nav popToRootViewControllerAnimated:YES];
+        }];
+    });
 }
 
 #pragma mark - Autoupload Helper
@@ -372,11 +366,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
         UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
         if (img) {
-	        return [MHGalleryItem itemWithImage:img];
-	    } else {
+            return [MHGalleryItem itemWithImage:img];
+        } else {
             return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
                                   galleryType:MHGalleryTypeImage];
-	    }
+        }
     }];
     
     MHUICustomization *customization = [[MHUICustomization alloc] init];
@@ -404,7 +398,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                      withProperties:@{ @"Via": [self analyticsVia] }];
     
     [self presentMHGalleryController:gallery animated:YES completion:nil];
-
+    
 }
 
 - (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
@@ -552,7 +546,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Source": @"Camera",
                                       @"Count": @(1)
                                       }];
-
+    
     // set the follow up action
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
         
@@ -650,13 +644,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             }
             break;
         case kCLAuthorizationStatusRestricted:
-        case kCLAuthorizationStatusDenied:
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Location Services Denied", nil)
-                                        message:NSLocalizedString(@"Cannot use your location", nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+        case kCLAuthorizationStatusDenied: {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location Services Denied", nil)
+                                                                           message:NSLocalizedString(@"Cannot use your location", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
             break;
+        }
         case kCLAuthorizationStatusNotDetermined:
         default:
             // do nothing
@@ -665,7 +662,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-
+    
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     
     // self.observation can be momentarily nil when it's being deleted
@@ -775,7 +772,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Via": [self analyticsVia],
                                       @"New Value": @"No Taxon"
                                       }];
-
+    
     self.observation.speciesGuess = nil;
     self.observation.taxon = nil;
     self.observation.taxonID = nil;
@@ -790,7 +787,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
-	[self stopUpdatingLocation];
+    [self stopUpdatingLocation];
     
     if (self.isMakingNewObservation) {
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
@@ -811,43 +808,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)saved:(UIButton *)button {
-	UIAlertController *alert = nil;
- 
-	if (!self.observation.taxonID && !self.observation.speciesGuess && self.observation.observationPhotos.count == 0) {
-		// alert about the combo of no photos and no taxon/species guess being bad
-		NSString *title = NSLocalizedString(@"No Photos and Missing Identification", nil);
-		NSString *msg = NSLocalizedString(@"Without at least one photo, this observation will be impossible for others to help identify.", nil);
-		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-	} else if (!self.observation.localObservedOn) {		
-		// alert about no date
-		NSString *title = NSLocalizedString(@"Missing Date", nil);
-		NSString *msg = NSLocalizedString(@"Without a date, this observation may be very hard for others to identify accurately, and will never attain research grade.", nil);
-		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-	} else if (!self.observation.latitude) {
-		// alert about no location
-				NSString *title = NSLocalizedString(@"Missing Location", nil);
-		NSString *msg = NSLocalizedString(@"Without a location, this observation will be very hard for others to identify and will never attain research grade.", nil);
-		alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-	}
-	if (alert) {
-		// finish configuring the alert
-		UIAlertAction* saveAnyway = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save Anyway", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-			[self validatedSave];
-		}];
-		[alert addAction:saveAnyway];
-
-		UIAlertAction* goBack = [UIAlertAction actionWithTitle:NSLocalizedString(@"Go Back", nil) style:UIAlertActionStyleCancel handler:nil];
-		[alert addAction:goBack];
-	
-		// show the alert
-		[self presentViewController:alert animated:YES completion:nil];
-	} else {
-		// good to go
-		[self validatedSave];
-	}
+    UIAlertController *alert = nil;
+    
+    if (!self.observation.taxonID && !self.observation.speciesGuess && self.observation.observationPhotos.count == 0) {
+        // alert about the combo of no photos and no taxon/species guess being bad
+        NSString *title = NSLocalizedString(@"No Photos and Missing Identification", nil);
+        NSString *msg = NSLocalizedString(@"Without at least one photo, this observation will be impossible for others to help identify.", nil);
+        alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+    } else if (!self.observation.localObservedOn) {
+        // alert about no date
+        NSString *title = NSLocalizedString(@"Missing Date", nil);
+        NSString *msg = NSLocalizedString(@"Without a date, this observation may be very hard for others to identify accurately, and will never attain research grade.", nil);
+        alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+    } else if (!self.observation.latitude) {
+        // alert about no location
+        NSString *title = NSLocalizedString(@"Missing Location", nil);
+        NSString *msg = NSLocalizedString(@"Without a location, this observation will be very hard for others to identify and will never attain research grade.", nil);
+        alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
+    }
+    if (alert) {
+        // finish configuring the alert
+        UIAlertAction* saveAnyway = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save Anyway", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            [self validatedSave];
+        }];
+        [alert addAction:saveAnyway];
+        
+        UIAlertAction* goBack = [UIAlertAction actionWithTitle:NSLocalizedString(@"Go Back", nil) style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:goBack];
+        
+        // show the alert
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        // good to go
+        [self validatedSave];
+    }
 }
 
-- (void)validatedSave {	
+- (void)validatedSave {
     [self.view endEditing:YES];
     
     [self stopUpdatingLocation];
@@ -908,7 +905,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             ofv.observation = self.observation;
             ofv.observationField = pof.observationField;
         }
-
+        
         self.observation.localUpdatedAt = [NSDate date];
     }
     
@@ -920,7 +917,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
     self.observation.taxonID = @(taxon.taxonId);
     self.observation.localUpdatedAt = [NSDate date];
-
+    
     NSString *newTaxonName = taxon.commonName ?: taxon.scientificName;
     if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }
     
@@ -930,7 +927,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"New Value": newTaxonName,
                                       @"Is Taxon": @"Yes",
                                       }];
-
+    
     [self.navigationController popToViewController:self animated:YES];
 }
 
@@ -940,9 +937,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.taxonID = nil;
     self.observation.iconicTaxonName = nil;
     self.observation.iconicTaxonID = nil;
-
+    
     self.observation.localUpdatedAt = [NSDate date];
-
+    
     self.observation.speciesGuess = speciesGuess;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
@@ -961,11 +958,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
-    	self.observation.latitude = nil;
-    	self.observation.longitude = nil;
-    	self.observation.positionalAccuracy = nil;
-    	self.observation.positioningMethod = nil;
-    	self.observation.placeGuess = nil;
+        self.observation.latitude = nil;
+        self.observation.longitude = nil;
+        self.observation.positionalAccuracy = nil;
+        self.observation.positioningMethod = nil;
+        self.observation.placeGuess = nil;
         return;
     }
     
@@ -979,9 +976,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                      withProperties:@{
                                       @"Via": [self analyticsVia],
                                       }];
-
+    
     [self.navigationController popToViewController:self animated:YES];
-
+    
     [self reverseGeocodeCoordinatesForObservation:self.observation];
 }
 
@@ -1022,7 +1019,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             return 130;
             break;
         case ConfirmObsSectionIdentify:
-        	return 60;
+            return 60;
         case ConfirmObsSectionNotes:
             if (indexPath.item == 0) {
                 // notes
@@ -1041,7 +1038,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 }
                 
                 return CLLocationCoordinate2DIsValid(coords) ? 66 : 44;
-
+                
             } else if (indexPath.item == 3) {
                 return [DisclosureCell heightForRowWithTitle:[self geoPrivacyTitle]
                                                  inTableView:tableView];
@@ -1118,7 +1115,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
     switch (indexPath.section) {
         case ConfirmObsSectionPhotos:
             // do nothing
@@ -1160,11 +1157,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                                      @"Invalid date alert title");
                                                             NSString *alertMsg = NSLocalizedString(@"Cannot choose a date in the future.",
                                                                                                    @"Alert message for invalid date");
-                                                            [[[UIAlertView alloc] initWithTitle:alertTitle
-                                                                                        message:alertMsg
-                                                                                       delegate:nil
-                                                                              cancelButtonTitle:@"OK"
-                                                                              otherButtonTitles:nil] show];
+                                                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                           message:alertMsg
+                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                                                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                                      style:UIAlertActionStyleCancel
+                                                                                                    handler:nil]];
+                                                            [weakSelf presentViewController:alert animated:YES completion:nil];
                                                             return;
                                                         }
                                                         
@@ -1172,7 +1171,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                          withProperties:@{
                                                                                           @"Via": [self analyticsVia]
                                                                                           }];
-
+                                                        
                                                         
                                                         __strong typeof(weakSelf) strongSelf = self;
                                                         strongSelf.observation.localObservedOn = date;
@@ -1200,7 +1199,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 } else {
                     [map setCurrentLocation:nil];
                 }
-
+                
                 [self.navigationController pushViewController:map animated:YES];
             } else if (indexPath.item == 3) {
                 // geoprivacy
@@ -1212,7 +1211,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSLocalizedString(@"Obscured", @"obscured geoprivacy"),
                                                           NSLocalizedString(@"Private", @"private geoprivacy"),
                                                           ];
-
+                
                 NSInteger initialSelection = [geoprivacyOptions indexOfObject:self.observation.geoprivacy];
                 if (initialSelection == NSNotFound) {
                     initialSelection = 0;
@@ -1230,7 +1229,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSString *newValue = geoprivacyOptions[selectedIndex];
                                                           
                                                           strongSelf.observation.geoprivacy = newValue;
-
+                                                          
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
                                                                            withProperties:@{ @"Via": [self analyticsVia],
                                                                                              @"New Value": newValue}];
@@ -1239,7 +1238,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                                                                       withRowAnimation:UITableViewRowAnimationFade];
                                                           [strongSelf.tableView endUpdates];
-
+                                                          
                                                       } cancelBlock:nil
                                                          origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 4) {
@@ -1285,28 +1284,39 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     projectsVC.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
                         return [p1.title compare:p2.title];
                     }];
-
+                    
                     [self.navigationController pushViewController:projectsVC animated:YES];
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You must be logged in!", nil)
-                                                message:NSLocalizedString(@"You must be logged in to access projects.", nil)
-                                               delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                      otherButtonTitles:nil] show];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You must be logged in!", nil)
+                                                                                   message:NSLocalizedString(@"You must be logged in to access projects.", nil)
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                              style:UIAlertActionStyleCancel
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];                    
                 }
-
-            
+                
+                
             } else {
                 // do nothing
             }
             break;
-        case ConfirmObsSectionDelete:
+        case ConfirmObsSectionDelete: {
             // show alertview
-            [[[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
-                                         delegate:self
-                                cancelButtonTitle:NSLocalizedString(@"Never mind", nil)
-                           destructiveButtonTitle:NSLocalizedString(@"Yes, delete this observation", nil)
-                                otherButtonTitles:nil] showInView:self.view];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
+                                                                           message:nil
+                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Never mind",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Yes, delete this observation",nil)
+                                                      style:UIAlertActionStyleDestructive
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self deleteThisObservation];
+                                                    }]];
+
+            [self presentViewController:alert animated:YES completion:nil];
+        }
             
             break;
         default:
@@ -1332,7 +1342,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     cell.delegate = self;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    
     return cell;
 }
 
@@ -1351,13 +1361,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         button;
     });
-
-	cell.taxonNameLabel.textColor = [UIColor blackColor];
-	cell.taxonSecondaryNameLabel.textColor = [UIColor blackColor];
-	cell.accessoryType = UITableViewCellAccessoryNone;
-		
+    
+    cell.taxonNameLabel.textColor = [UIColor blackColor];
+    cell.taxonSecondaryNameLabel.textColor = [UIColor blackColor];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.observation.taxonID.integerValue];
-
+    
     if (results.count == 1) {
         ExploreTaxonRealm *etr = [results firstObject];
         if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
@@ -1385,10 +1395,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
                                                      [etr.rankName capitalizedString], etr.scientificName];
-
+                
             }
         }
-
+        
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {
@@ -1404,7 +1414,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
         // the question icon has a rendered border
         cell.taxonImageView.layer.borderWidth = 0.0f;
-
+        
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
@@ -1433,7 +1443,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         cell.textView.textColor = [UIColor grayColor];
     }
     cell.textView.delegate = self;
-
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
     return cell;
@@ -1459,9 +1469,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(-19999.0, -19999.0);
     
     if (self.observation.visibleLatitude) {
-    	coords = CLLocationCoordinate2DMake(self.observation.visibleLatitude.doubleValue, self.observation.visibleLongitude.doubleValue);
+        coords = CLLocationCoordinate2DMake(self.observation.visibleLatitude.doubleValue, self.observation.visibleLongitude.doubleValue);
     }
-
+    
     if (CLLocationCoordinate2DIsValid(coords)) {
         SubtitleDisclosureCell *subtitleCell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
         cell = subtitleCell;

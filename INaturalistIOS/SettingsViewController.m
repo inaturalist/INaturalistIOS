@@ -51,10 +51,9 @@ static const int AutouploadLabelTag = 52;
 static const int AutocompleteNamesSwitchTag = 101;
 static const int AutouploadSwitchTag = 102;
 
-@interface SettingsViewController () <UIActionSheetDelegate> {
+@interface SettingsViewController () {
     UITapGestureRecognizer *tapAway;
     JDFTooltipView *tooltip;
-    UIActionSheet *changeNetworkActionSheet;
 }
 @property (nonatomic, strong) NSString *versionText;
 @property PartnerController *partnerController;
@@ -544,36 +543,31 @@ static const int AutouploadSwitchTag = 102;
     }
 }
 
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ([actionSheet isEqual:changeNetworkActionSheet]) {
-        if (buttonIndex == 0) {
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            User *me = [appDelegate.loginController fetchMe];
-            if (!me) { return; }
-            
-            NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
-                return p.name;
-            }];
-            
-            Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
-            
-            __weak typeof(self) weakSelf = self;
-            [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
-                                                       rows:partnerNames
-                                           initialSelection:[partnerNames indexOfObject:currentPartner.name]
-                                                  doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                                      __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                      // update base url
-                                                      Partner *p = strongSelf.partnerController.partners[selectedIndex];
-                                                      if (![p isEqual:currentPartner]) {
-                                                          [weakSelf selectedPartner:p];
-                                                      }
-                                                  }
-                                                cancelBlock:nil
-                                                     origin:self.view] showActionSheetPicker];
-        }
-    }
+- (void)choseToChangeNetworkPartner {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    User *me = [appDelegate.loginController fetchMe];
+    if (!me) { return; }
+    
+    NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
+        return p.name;
+    }];
+    
+    Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+    
+    __weak typeof(self) weakSelf = self;
+    [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
+                                               rows:partnerNames
+                                   initialSelection:[partnerNames indexOfObject:currentPartner.name]
+                                          doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                                              // update base url
+                                              Partner *p = strongSelf.partnerController.partners[selectedIndex];
+                                              if (![p isEqual:currentPartner]) {
+                                                  [weakSelf selectedPartner:p];
+                                              }
+                                          }
+                                        cancelBlock:nil
+                                             origin:self.view] showActionSheetPicker];
 }
 
 #pragma mark - UITableViewDataSource
@@ -595,12 +589,18 @@ static const int AutouploadSwitchTag = 102;
                 NSString *cancelBtnMsg = NSLocalizedString(@"No, don't change my affiliation", @"cancel button before changing network affiliation.");
                 NSString *continueBtnMsg = NSLocalizedString(@"Yes, change my affiliation", @"continue button before changing network affiliation.");
                 
-                changeNetworkActionSheet = [[UIActionSheet alloc] initWithTitle:alertMsg
-                                                                       delegate:self
-                                                              cancelButtonTitle:cancelBtnMsg
-                                                         destructiveButtonTitle:nil
-                                                              otherButtonTitles:continueBtnMsg, nil];
-                [changeNetworkActionSheet showFromTabBar:self.tabBarController.tabBar];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Warning", nil)
+                                                                               message:alertMsg
+                                                                        preferredStyle:UIAlertControllerStyleActionSheet];
+                [alert addAction:[UIAlertAction actionWithTitle:cancelBtnMsg
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [alert addAction:[UIAlertAction actionWithTitle:continueBtnMsg
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * _Nonnull action) {
+                                                            [self choseToChangeNetworkPartner];
+                                                        }]];
+                [self.tabBarController presentViewController:alert animated:YES completion:nil];
             }
             
             return;

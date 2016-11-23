@@ -10,10 +10,6 @@
 
 @implementation TaxonPhotoCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
 - (void)prepareForReuse {
     [self.creditsButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
 }

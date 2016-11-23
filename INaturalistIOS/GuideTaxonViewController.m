@@ -109,15 +109,22 @@ static const int WebViewTag = 1;
         if ([self.guideTaxon.xml atXPath:[NSString stringWithFormat:@"descendant::*[text()='%@']", urlString]]) {
             [self showAssetByURL:urlString];
         } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-            if (!linkActionSheet) {
-                linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                              delegate:self
-                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                destructiveButtonTitle:nil
-                                                     otherButtonTitles:NSLocalizedString(@"Open link in Safari", nil), nil];
-            }
-            lastURL = request.URL;
-            [linkActionSheet showFromTabBar:self.tabBarController.tabBar];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                           message:nil
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Open link in Safari", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        if (lastURL) {
+                                                            [[UIApplication sharedApplication] openURL:lastURL];
+                                                        }
+                                                        lastURL = nil;
+                                                    }]];
+
+            [self.tabBarController presentViewController:alert animated:YES completion:nil];
         }
     } else if ([urlString hasPrefix:@"file:"]) {
         return YES;
@@ -125,14 +132,6 @@ static const int WebViewTag = 1;
     return NO;
 }
 
-# pragma mark - UIActionSheetDelegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0 && lastURL) {
-        [[UIApplication sharedApplication] openURL:lastURL];
-    }
-    lastURL = nil;
-}
 
 # pragma mark - GuideTaxonViewController
 - (void)showAssetByURL:(NSString *)url

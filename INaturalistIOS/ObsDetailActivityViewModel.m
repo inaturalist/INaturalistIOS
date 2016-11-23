@@ -463,7 +463,7 @@
                                                    attributes:attrs];
         cell.taxonSecondaryNameLabel.attributedText = attrText;
     }
-
+    
     
     if ([identification taxonIconUrl]) {
         [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
@@ -480,21 +480,15 @@
 
 - (void)addComment {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Comment", nil)
-                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Comment", nil)
+                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.loginController.isLoggedIn) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Comment", nil)
-                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Comment", nil)
+                               message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }
     
@@ -503,21 +497,15 @@
 
 - (void)addIdentification {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Add ID", nil)
-                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Add ID", nil)
+                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.loginController.isLoggedIn) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Add ID", nil)
-                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Add ID", nil)
+                               message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }
     
@@ -526,21 +514,15 @@
 
 - (void)agree:(UIButton *)button {
     if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
-                                    message:NSLocalizedString(@"Network is required.", @"Network is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
+                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.loginController.isLoggedIn) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Agree", nil)
-                                    message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
+                               message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }
     
@@ -624,7 +606,7 @@
     
     [self.delegate hideProgressHud];
     
-
+    
     if (request.method ==RKRequestMethodGET) {
         return;
     }
@@ -636,18 +618,12 @@
     } else {
         if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
             // identification
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                        message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                   message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding content")];
         } else {
-            // refresh activity
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                        message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            // comment
+            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                   message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding content")];
         }
     }
 }
@@ -656,13 +632,11 @@
     [self.delegate hideProgressHud];
     
     if ([request.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                    message:error.localizedDescription
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                               message:error.localizedDescription];
     } else {
-        // refresh activity
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                               message:error.localizedDescription];
     }
 }
 

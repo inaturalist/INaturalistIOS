@@ -29,9 +29,8 @@
 
 static char PARTNER_ASSOCIATED_KEY;
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate> {
-    UIAlertView *partnerAlert;
-}
+@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate>
+
 @property IBOutlet UILabel *titleLabel;
 
 @property IBOutlet UIStackView *textfieldStackView;
@@ -75,25 +74,25 @@ static char PARTNER_ASSOCIATED_KEY;
     }
     
     self.leftViewIcons = @[
-                                 ({
-                                     FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
-                                     [email addAttribute:NSForegroundColorAttributeName
-                                                   value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                      email;
-                                 }),
-                                 ({
-                                     FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
-                                     [lock addAttribute:NSForegroundColorAttributeName
-                                                  value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                     lock;
-                                 }),
-                                 ({
-                                     FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
-                                     [person addAttribute:NSForegroundColorAttributeName
-                                                    value:[UIColor colorWithHexString:@"#4a4a4a"]];
-                                     person;
-                                 }),
-                                 ];
+                           ({
+                               FAKIcon *email = [FAKIonIcons iosEmailOutlineIconWithSize:30];
+                               [email addAttribute:NSForegroundColorAttributeName
+                                             value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                               email;
+                           }),
+                           ({
+                               FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
+                               [lock addAttribute:NSForegroundColorAttributeName
+                                            value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                               lock;
+                           }),
+                           ({
+                               FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
+                               [person addAttribute:NSForegroundColorAttributeName
+                                              value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                               person;
+                           }),
+                           ];
     NSArray *fields = @[ self.emailField, self.passwordField, self.usernameField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
         field.tag = idx;
@@ -174,7 +173,7 @@ static char PARTNER_ASSOCIATED_KEY;
     }];
     self.termsLabel.userInteractionEnabled = YES;
     [self.termsLabel addGestureRecognizer:tap];
-
+    
     
     // license my content label
     
@@ -196,20 +195,20 @@ static char PARTNER_ASSOCIATED_KEY;
             NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
             NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle
-                                                            message:creativeCommons
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                           message:creativeCommons
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];            
         }];
         
         self.licenseMyDataLabel.userInteractionEnabled = YES;
         [self.licenseMyDataLabel addGestureRecognizer:tap];
     }
     self.licenseMyDataLabel.attributedText = attr;
-
+    
     [@[self.facebookButton, self.googleButton] enumerateObjectsUsingBlock:^(IconAndTextControl *btn, NSUInteger idx, BOOL * _Nonnull stop) {
         btn.layer.cornerRadius = 2.0f;
         btn.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
@@ -250,11 +249,13 @@ static char PARTNER_ASSOCIATED_KEY;
         [button bk_addEventHandler:^(id sender) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
             if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                            message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                  otherButtonTitles:nil] show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                               message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
                 return;
             }
             
@@ -276,13 +277,15 @@ static char PARTNER_ASSOCIATED_KEY;
         
         button;
     });
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     PartnerController *partners = [[PartnerController alloc] init];
+    [self showPartnerAlertForPartner: [[partners partners] lastObject]];
+    
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
         CTCarrier *carrier = info.subscriberCellularProvider;
@@ -338,7 +341,7 @@ static char PARTNER_ASSOCIATED_KEY;
     if (self.textfieldStackView.arrangedSubviews.count == 2) {
         [self login];
     } else {
-    	[self signup];
+        [self signup];
     }
 }
 
@@ -381,11 +384,13 @@ static char PARTNER_ASSOCIATED_KEY;
                      withProperties:@{ @"Version": @"Onboarding" }];
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -406,7 +411,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                              }
                                                              [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
                                                                                                                  object:nil];
-
+                                                             
                                                          } failure:^(NSError *error) {
                                                              NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
                                                              NSString *alertMsg;
@@ -417,11 +422,13 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                               @"Unknown facebook login error");
                                                              }
                                                              
-                                                             [[[UIAlertView alloc] initWithTitle:alertTitle
-                                                                                         message:alertMsg
-                                                                                        delegate:nil
-                                                                               cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                               otherButtonTitles:nil] show];
+                                                             UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                            message:alertMsg
+                                                                                                                     preferredStyle:UIAlertControllerStyleAlert];
+                                                             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                                       style:UIAlertActionStyleCancel
+                                                                                                     handler:nil]];
+                                                             [weakSelf presentViewController:alert animated:YES completion:nil];
                                                          }];
 }
 
@@ -430,11 +437,13 @@ static char PARTNER_ASSOCIATED_KEY;
                      withProperties:@{ @"Version": @"Onboarding" }];
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -443,37 +452,39 @@ static char PARTNER_ASSOCIATED_KEY;
     
     [appDelegate.loginController loginWithGoogleUsingViewController:self
                                                             success:^(NSDictionary *info) {
-                                                               __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                               
-                                                               if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                                   [appDelegate showMainUI];
-                                                               } else {
-                                                                   [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                               }
-
-                                                               if (strongSelf.selectedPartner) {
-                                                                   [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                                 completion:nil];
-                                                               }
+                                                                __strong typeof(weakSelf)strongSelf = weakSelf;
+                                                                
+                                                                if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
+                                                                    [appDelegate showMainUI];
+                                                                } else {
+                                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
+                                                                }
+                                                                
+                                                                if (strongSelf.selectedPartner) {
+                                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
+                                                                                                                  completion:nil];
+                                                                }
                                                                 [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
                                                                                                                     object:nil];
-
+                                                                
                                                             } failure:^(NSError *error) {
-                                                               NSString *alertTitle = NSLocalizedString(@"Log In Problem",
-                                                                                                        @"Title for login problem alert");
-                                                               NSString *alertMsg;
-                                                               if (error) {
-                                                                   alertMsg = error.localizedDescription;
-                                                               } else {
-                                                                   alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                @"Unknown google login error");
-                                                               }
-                                                               [[[UIAlertView alloc] initWithTitle:alertTitle
-                                                                                           message:alertMsg
-                                                                                          delegate:nil
-                                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                                 otherButtonTitles:nil] show];
-                                                           }];
+                                                                NSString *alertTitle = NSLocalizedString(@"Log In Problem",
+                                                                                                         @"Title for login problem alert");
+                                                                NSString *alertMsg;
+                                                                if (error) {
+                                                                    alertMsg = error.localizedDescription;
+                                                                } else {
+                                                                    alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
+                                                                                                 @"Unknown google login error");
+                                                                }
+                                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                               message:alertMsg
+                                                                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                                                                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                                          style:UIAlertActionStyleCancel
+                                                                                                        handler:nil]];
+                                                                [weakSelf presentViewController:alert animated:YES completion:nil];
+                                                            }];
 }
 
 
@@ -499,7 +510,7 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (IBAction)closePressed:(id)sender {
     [[Analytics sharedClient] event:kAnalyticsEventSplashCancel];
-
+    
     if (self.closeAction) {
         self.closeAction();
     } else {
@@ -512,11 +523,13 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (void)signup {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                   delegate:self
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -539,11 +552,13 @@ static char PARTNER_ASSOCIATED_KEY;
         NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
         
-        [[[UIAlertView alloc] initWithTitle:alertTitle
-                                    message:alertMsg
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -556,7 +571,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                       @"Notice while we're creating an iNat account for them");
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     __weak typeof(self)weakSelf = self;
     [appDelegate.loginController createAccountWithEmail:self.emailField.text
@@ -586,36 +601,40 @@ static char PARTNER_ASSOCIATED_KEY;
      
      
                                                 failure:^(NSError *error) {
-
+                                                    
                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                         [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
                                                     });
-
+                                                    
                                                     NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
                                                     NSString *alertMsg;
                                                     if (error) {
                                                         alertMsg = error.localizedDescription;
                                                     } else {
                                                         alertMsg = NSLocalizedString(@"Failed to create an iNaturalist account. Please try again.",
-                                                                                   @"Unknown iNaturalist create account error");
+                                                                                     @"Unknown iNaturalist create account error");
                                                     }
                                                     
-                                                    [[[UIAlertView alloc] initWithTitle:alertTitle
-                                                                                message:alertMsg
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                      otherButtonTitles:nil] show];
+                                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                   message:alertMsg
+                                                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                                                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                              style:UIAlertActionStyleCancel
+                                                                                            handler:nil]];
+                                                    [weakSelf presentViewController:alert animated:YES completion:nil];
                                                 }];
 }
 
 
 - (void)login {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                    message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                   delegate:self
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -636,11 +655,13 @@ static char PARTNER_ASSOCIATED_KEY;
         NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
         if (!alertMsg) alertMsg = NSLocalizedString(@"Invalid input", @"Unknown invalid input");
         
-        [[[UIAlertView alloc] initWithTitle:alertTitle
-                                    message:alertMsg
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -689,13 +710,15 @@ static char PARTNER_ASSOCIATED_KEY;
                                                    alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
                                                                                 @"Unknown iNat login error");
                                                }
-                                               [[[UIAlertView alloc] initWithTitle:alertTitle
-                                                                           message:alertMsg
-                                                                          delegate:nil
-                                                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                 otherButtonTitles:nil] show];
+                                               UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                              message:alertMsg
+                                                                                                       preferredStyle:UIAlertControllerStyleAlert];
+                                               [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                         style:UIAlertActionStyleCancel
+                                                                                       handler:nil]];
+                                               [weakSelf presentViewController:alert animated:YES completion:nil];                                               
                                            }];
-
+    
 }
 
 #pragma mark - Partner alert helper
@@ -713,55 +736,47 @@ static char PARTNER_ASSOCIATED_KEY;
                                               @"join iNat network partner alert message");
     NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.name, partner.countryName];
     
-    partnerAlert = [[UIAlertView alloc] initWithTitle:alertTitle
-                                              message:alertMsg
-                                             delegate:self
-                                    cancelButtonTitle:NSLocalizedString(@"No", nil)
-                                    otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"No", nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:^(UIAlertAction * _Nonnull action) {
+                                                // revert to default base URL
+                                                [[NSUserDefaults standardUserDefaults] setObject:nil
+                                                                                          forKey:kInatCustomBaseURLStringKey];
+                                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+                                            }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * _Nonnull action) {
+                                                // be extremely defensive here. an invalid baseURL shouldn't be possible,
+                                                // but if it does happen, nothing in the app will work.
+                                                NSURL *partnerURL = [partner baseURL];
+                                                if (partnerURL) {
+                                                    [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
+                                                                                              forKey:kInatCustomBaseURLStringKey];
+                                                    [[NSUserDefaults standardUserDefaults] synchronize];
+                                                    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
+                                                    self.selectedPartner = partner;
+                                                }
+                                            }]];
     
     if (partner.logo) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 45)];
-        
-        UIImageView *iv = [[UIImageView alloc] initWithImage:partner.logo];
-        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        iv.center = CGPointMake(view.center.x, view.center.y - 5);
+        UIViewController *v = [[UIViewController alloc] init];
+        UIImageView *iv = [UIImageView new];
+        [v.view addSubview:iv];
+        iv.frame = v.view.bounds;
+        iv.image = partner.logo;
+        iv.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        iv.center = v.view.center;
         iv.contentMode = UIViewContentModeScaleAspectFit;
         
-        [view addSubview:iv];
-        [partnerAlert setValue:view forKey:@"accessoryView"];
+        [alert setValue:v forKey:@"contentViewController"];
     }
-    objc_setAssociatedObject(partnerAlert, &PARTNER_ASSOCIATED_KEY, partner, OBJC_ASSOCIATION_RETAIN);
-    [partnerAlert show];
-}
-
-#pragma mark AlertView delegate
-
-- (void)alertView:(nonnull UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (alertView == partnerAlert) {
-        
-        [[Analytics sharedClient] event:kAnalyticsEventPartnerAlertResponse
-                         withProperties:@{ @"Response": (buttonIndex == 1) ? @"Yes" : @"No" }];
-        
-        if (buttonIndex == 1) {
-            Partner *p = objc_getAssociatedObject(alertView, &PARTNER_ASSOCIATED_KEY);
-            // be extremely defensive here. an invalid baseURL shouldn't be possible,
-            // but if it does happen, nothing in the app will work.
-            NSURL *partnerURL = [p baseURL];
-            if (partnerURL) {
-                [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
-                                                          forKey:kInatCustomBaseURLStringKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
-                self.selectedPartner = p;
-            }
-        } else {
-            // revert to default base URL
-            [[NSUserDefaults standardUserDefaults] setObject:nil
-                                                      forKey:kInatCustomBaseURLStringKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
-        }
-    }
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark WebViewDelegate
@@ -773,23 +788,30 @@ static char PARTNER_ASSOCIATED_KEY;
     [self dismissViewControllerAnimated:YES completion:nil];
     
     // webviews may trigger their delegate methods more than once
-    static UIAlertView *av;
-    if (av) {
-        [av dismissWithClickedButtonIndex:0 animated:YES];
-        av = nil;
+    static UIAlertController *alert;
+    if (alert) {
+        [alert dismissViewControllerAnimated:YES completion:^{
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        alert = nil;
+    } else {
+        
+        NSString *alertTitle = NSLocalizedString(@"Check your email",
+                                                 @"title of alert after you reset your password");
+        NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
+                                               @"body of alert after you reset your password");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    [self dismissViewControllerAnimated:YES completion:nil];
+                                                }]];
+
+
     }
-    
-    NSString *alertTitle = NSLocalizedString(@"Check your email",
-                                             @"title of alert after you reset your password");
-    NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
-                                           @"body of alert after you reset your password");
-    
-    av = [[UIAlertView alloc] initWithTitle:alertTitle
-                                    message:alertMsg
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil];
-    [av show];
     
     return YES;
 }

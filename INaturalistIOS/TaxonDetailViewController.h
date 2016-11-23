@@ -14,7 +14,7 @@
 - (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId;
 @end
 
-@interface TaxonDetailViewController : UITableViewController <UIActionSheetDelegate>
+@interface TaxonDetailViewController : UITableViewController
 @property (nonatomic) id <TaxonVisualization> taxon;
 @property (nonatomic, weak) id <TaxonDetailViewControllerDelegate> delegate;
 - (IBAction)clickedActionButton:(id)sender;

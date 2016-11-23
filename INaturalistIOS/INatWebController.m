@@ -27,7 +27,7 @@
     self.webView.scalesPageToFit = YES;
     
     [self.view addSubview:self.webView];
-
+    
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.hidden = YES;
     [spinner setHidesWhenStopped:YES];
@@ -90,11 +90,13 @@
         return;
     }
     
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Unable to load page", @"Title for error")
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Unable to load page", @"Title for error")
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

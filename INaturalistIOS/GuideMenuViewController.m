@@ -29,7 +29,6 @@
 @synthesize ngzFilePath = _ngzFilePath;
 
 static int TextCellTextViewTag = 101;
-static int ConfirmDownloadAlertViewTag = 100;
 static int ProgressViewTag = 102;
 static int ProgressLabelTag = 103;
 static int AboutSection = 1;
@@ -281,6 +280,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     NSString *tag = [self tagForIndexPath:indexPath];
     if (tag && self.delegate) {
         [self.delegate guideMenuControllerAddedFilterByTag:tag];
@@ -289,19 +290,52 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSInteger i = indexPath.section - self.tagPredicates.count;
     if (i == AboutSection && indexPath.row == DownloadRow) {
         if (self.guide.ngzDownloadedAt) {
-            UIActionSheet *as = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Manage download", nil)
-                                                            delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                              destructiveButtonTitle:NSLocalizedString(@"Delete download", nil)
-                                                   otherButtonTitles:NSLocalizedString(@"Re-download", nil), nil];
-            [as showFromTabBar:self.tabBarController.tabBar];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Manage download", nil)
+                                                                           message:nil
+                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete download",nil)
+                                                      style:UIAlertActionStyleDestructive
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self.guide deleteNGZ];
+                                                        
+                                                        [[Analytics sharedClient] event:kAnalyticsEventDeleteDownloadedGuide];
+                                                        
+                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDeletedNGZForGuide:)]) {
+                                                            [self.delegate guideMenuControllerGuideDeletedNGZForGuide:self.guide];
+                                                        }
+                                                        GuideViewController *gvc = (GuideViewController *)self.revealViewController;
+                                                        if (gvc && gvc.guideDelegate && [gvc.guideDelegate respondsToSelector:@selector(guideViewControllerDeletedNGZForGuide:)]) {
+                                                            [gvc.guideDelegate guideViewControllerDeletedNGZForGuide:self.guide];
+                                                        }
+                                                        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2
+                                                                                                     inSection:self.tagPredicates.count+1];
+                                                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                                                    }]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Re-download",nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self downloadNGZ];
+                                                    }]];
+
+            [self.tabBarController presentViewController:alert animated:YES completion:nil];
         } else if (self.guide.ngzURL) {
-            UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?",nil)
-                                                         message:[NSString stringWithFormat:NSLocalizedString(@"This will download %@ of data so you can use this guide even when you don't have Internet access.", nil), self.guide.ngzFileSize]
-                                                        delegate:self
-                                               cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                               otherButtonTitles:NSLocalizedString(@"Download",nil), nil];
-            av.tag = ConfirmDownloadAlertViewTag;
-            [av show];
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure?",nil)
+                                                                           message:[NSString stringWithFormat:NSLocalizedString(@"This will download %@ of data so you can use this guide even when you don't have Internet access.", nil), self.guide.ngzFileSize]
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Download",nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                                                        [self downloadNGZ];
+                                                    }]];
+
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
@@ -315,42 +349,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     if (self.delegate) {
         [self.delegate guideMenuControllerRemovedFilterByTag:tag];
     }
-}
-
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == ConfirmDownloadAlertViewTag) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:self.tagPredicates.count+1];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        if (buttonIndex == 1) {
-            [self downloadNGZ];
-        }
-    }
-}
-
-#pragma mark - UIActionSheetDelegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        [self.guide deleteNGZ];
-        
-        [[Analytics sharedClient] event:kAnalyticsEventDeleteDownloadedGuide];
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDeletedNGZForGuide:)]) {
-            [self.delegate guideMenuControllerGuideDeletedNGZForGuide:self.guide];
-        }
-        GuideViewController *gvc = (GuideViewController *)self.revealViewController;
-        if (gvc && gvc.guideDelegate && [gvc.guideDelegate respondsToSelector:@selector(guideViewControllerDeletedNGZForGuide:)]) {
-            [gvc.guideDelegate guideViewControllerDeletedNGZForGuide:self.guide];
-        }
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2
-                                                     inSection:self.tagPredicates.count+1];
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    } else if (buttonIndex == 1) {
-        [self downloadNGZ];
-    }
-    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 #pragma mark - GuideMenuViewController
@@ -412,12 +410,14 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
-                                                 message:error.localizedDescription
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                       otherButtonTitles:nil];
-    [av show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+
     [self stopDownloadNGZ];
 }
 
@@ -441,12 +441,14 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         }
         [self extractNGZ];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failed to download guide",nil)
-                                                     message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", nil)
+                                                                       message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+
         [self stopDownloadNGZ];
     }
 }
@@ -499,24 +501,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:metrics views:views]];
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @end

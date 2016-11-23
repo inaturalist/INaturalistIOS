@@ -51,9 +51,8 @@ NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
     INatTooltipView *makeFirstObsTooltip;
-    UIAlertView *authAlertView;
 }
 
 @end
@@ -74,10 +73,10 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(handleUserSavedObservationNotification:) 
-                                                 name:INatUserSavedObservationNotification 
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleUserSavedObservationNotification:)
+                                                 name:INatUserSavedObservationNotification
                                                object:nil];
     
     
@@ -121,11 +120,13 @@ static char PROJECT_ASSOCIATED_KEY;
     // check for free disk space
     if ([NSFileManager freeDiskSpaceMB] < 100) {
         // less than 100MB of free space
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You're running low on iPhone disk space!", nil)
-                                    message:NSLocalizedString(@"We don't have enough room to make new observations!", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You're running low on iPhone disk space!", nil)
+                                                                       message:NSLocalizedString(@"We don't have enough room to make new observations!", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -175,39 +176,34 @@ static char PROJECT_ASSOCIATED_KEY;
             break;
     }
     
-    authAlertView = [[UIAlertView alloc] initWithTitle:alertTitle
-                                               message:alertMsg
-                                              delegate:self
-                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                     otherButtonTitles:nil];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
     
-    BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+    BOOL canOpenSettings = (UIApplicationOpenSettingsURLString != NULL);
     if (canOpenSettings) {
-        NSString *settingsButtonTitle = NSLocalizedString(@"Settings",
-                                                          @"The name of the iOS Settings app, used in an alert button that will launch Settings.");
-        [authAlertView addButtonWithTitle:settingsButtonTitle];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", @"The name of the iOS Settings app")
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                                                    [[UIApplication sharedApplication] openURL:url];
+                                                }]];
     }
-    [authAlertView show];
-}
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (alertView == authAlertView && buttonIndex == 1) {
-        BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
-        if (canOpenSettings) {
-            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-            [[UIApplication sharedApplication] openURL:url];
-        }
-    }
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
-
+    
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     [makeFirstObsTooltip hideAnimated:YES];
-
+    
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -231,7 +227,7 @@ static char PROJECT_ASSOCIATED_KEY;
         [overlay configureFlashForMode:picker.cameraFlashMode];
         
         __weak typeof(self) weakSelf = self;
-
+        
         [overlay.close bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -316,7 +312,7 @@ static char PROJECT_ASSOCIATED_KEY;
         
         //[self noPhotoTaxon:taxon project:project];
         return;
-
+        
     }
     
 }
@@ -329,7 +325,7 @@ static char PROJECT_ASSOCIATED_KEY;
     if ([tabBarController.viewControllers indexOfObject:viewController] == OBSERVE_TAB_INDEX) {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
-
+        
         [self triggerNewObservationFlowForTaxon:nil project:nil];
         
         return NO;
@@ -372,7 +368,7 @@ static char PROJECT_ASSOCIATED_KEY;
                                                            tooltipText:firstObsText
                                                         arrowDirection:JDFTooltipViewArrowDirectionDown
                                                                  width:200];
-
+    
     makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
     makeFirstObsTooltip.shouldCenter = YES;
     
@@ -400,7 +396,7 @@ static char PROJECT_ASSOCIATED_KEY;
     if (project) {
         confirm.project = project;
     }
-
+    
     [picker pushViewController:confirm animated:NO];
 }
 
@@ -444,7 +440,7 @@ static char PROJECT_ASSOCIATED_KEY;
     
     NSDate *now = [NSDate date];
     o.localCreatedAt = now;
-
+    
     // photoless observation defaults to now
     o.observedOn = now;
     o.localObservedOn = o.observedOn;
@@ -465,7 +461,7 @@ static char PROJECT_ASSOCIATED_KEY;
     confirmObs.observation = o;
     confirmObs.shouldContinueUpdatingLocation = YES;
     confirmObs.isMakingNewObservation = YES;
-
+    
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO animated:YES];
     [nav pushViewController:confirmObs animated:YES];
@@ -480,11 +476,13 @@ static char PROJECT_ASSOCIATED_KEY;
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving new obs: %@",
                                             saveError.localizedDescription]];
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Save Error", nil)
-                                    message:saveError.localizedDescription
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
+                                                                       message:saveError.localizedDescription
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -492,7 +490,7 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
     [controller.navigationController setToolbarHidden:YES animated:NO];
-
+    
     @try {
         [controller.observation destroy];
     } @catch (NSException *exception) {
@@ -520,7 +518,7 @@ static char PROJECT_ASSOCIATED_KEY;
     if (project) {
         confirm.project = project;
     }
-
+    
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav pushViewController:confirm animated:NO];
 }
@@ -536,7 +534,7 @@ static char PROJECT_ASSOCIATED_KEY;
     User *me = [appDelegate.loginController fetchMe];
     if (me) {
         NSPredicate *myNewPredicate = [NSPredicate predicateWithFormat:@"viewed == false and resourceOwnerId == %ld",
-                                     (unsigned long)me.recordID.integerValue];
+                                       (unsigned long)me.recordID.integerValue];
         
         RLMResults *myNewResults = [ExploreUpdateRealm objectsWithPredicate:myNewPredicate];
         UINavigationController *activity = [self.viewControllers objectAtIndex:1];

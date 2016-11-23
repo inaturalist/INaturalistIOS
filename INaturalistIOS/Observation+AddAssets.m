@@ -51,7 +51,7 @@
             [op destroy];
             return;
         }
-
+        
         op.localCreatedAt = now;
         op.localUpdatedAt = now;
         

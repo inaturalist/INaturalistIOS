@@ -11,6 +11,8 @@
 @implementation ObservationViewCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+    
     self.observationImage.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -20,6 +22,8 @@
     
     NSDictionary *views = @{
                             @"imageView": self.observationImage,
+                            @"title": self.titleLabel,
+                            @"subtitle": self.subtitleLabel,
                             };
 
     

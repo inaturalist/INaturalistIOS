@@ -28,7 +28,7 @@
     [super viewWillAppear:animated];
     
     self.navigationController.navigationBar.translucent = NO;
-	[self.textView becomeFirstResponder];
+    [self.textView becomeFirstResponder];
     self.textView.textAlignment = NSTextAlignmentNatural;
 }
 
@@ -37,46 +37,50 @@
 }
 
 - (IBAction)clickedCancel:(id)sender {
-	[self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)clickedSave:(id)sender {
-	NSDictionary *params = @{
-							 @"comment[body]": self.textView.text,
-							 @"comment[parent_id]": @([self.observation inatRecordId]),
-							 @"comment[parent_type]": @"Observation"
-							 };
+    NSDictionary *params = @{
+                             @"comment[body]": self.textView.text,
+                             @"comment[parent_id]": @([self.observation inatRecordId]),
+                             @"comment[parent_type]": @"Observation"
+                             };
     [[Analytics sharedClient] debugLog:@"Network - Post Comment"];
-
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     hud.labelText = NSLocalizedString(@"Saving...", nil);
-	[[RKClient sharedClient] post:@"/comments" params:params delegate:self];
+    [[RKClient sharedClient] post:@"/comments" params:params delegate:self];
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     
-	if (response.statusCode == 200) {
-		[self dismissViewControllerAnimated:YES completion:nil];
-	} else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding comment")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
-	}
+    if (response.statusCode == 200) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                                                       message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding comment")
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
     [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];    
 }
 
 -(BOOL)prefersStatusBarHidden { return YES; }

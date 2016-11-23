@@ -11,9 +11,8 @@
 #import "ObservationDetailViewController.h"
 #import "GuideTaxonXML.h"
 
-@interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate>
+@interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate, UIWebViewDelegate>
 {
-    UIActionSheet *linkActionSheet;
     NSURL *lastURL;
 }
 @property (strong, nonatomic) IBOutlet UIWebView *webView;

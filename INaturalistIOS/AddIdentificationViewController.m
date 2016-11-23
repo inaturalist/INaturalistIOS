@@ -34,14 +34,14 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-	if (!self.taxon) {
+    if (!self.taxon) {
         if (viewHasPresented) {
             // user is trying to cancel adding an ID
             [self.navigationController popViewControllerAnimated:YES];
         } else {
             [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
         }
-	}
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -51,7 +51,7 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	if ([segue.identifier isEqualToString:@"IdentificationTaxaSearchSegue"]) {
+    if ([segue.identifier isEqualToString:@"IdentificationTaxaSearchSegue"]) {
         TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
         //vc.query = self.observation.speciesGuess;
@@ -63,7 +63,7 @@
 }
 
 - (IBAction)cancelAction:(id)sender {
-	[self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)saveAction:(id)sender {
@@ -86,33 +86,36 @@
         if (!alertMsg) {
             alertMsg = NSLocalizedString(@"Unknown error while making an identification.", @"Unknown error");
         }
-        [[[UIAlertView alloc] initWithTitle:alertTitle
-                                    message:alertMsg
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        
         return;
     }
     
-	NSDictionary *params = @{
-							 @"identification[body]": self.descriptionTextView.text,
-							 @"identification[observation_id]": @([self.observation inatRecordId]),
-							 @"identification[taxon_id]": @([self.taxon taxonId])
-							 };
+    NSDictionary *params = @{
+                             @"identification[body]": self.descriptionTextView.text,
+                             @"identification[observation_id]": @([self.observation inatRecordId]),
+                             @"identification[taxon_id]": @([self.taxon taxonId])
+                             };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = NSLocalizedString(@"Saving...",nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     [[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
     if (self.taxon) {
-		self.taxon = nil;
-		[self taxonToUI];
+        self.taxon = nil;
+        [self taxonToUI];
     } else {
         [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
     }
@@ -120,26 +123,30 @@
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-
-	if (response.statusCode == 200) {
-		[self.navigationController popViewControllerAnimated:YES];
-	} else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                    message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
-	}
+    
+    if (response.statusCode == 200) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                       message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
     [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
@@ -147,16 +154,16 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
-	[self taxonToUI];
+    [self taxonToUI];
 }
 
 - (void)taxonToUI
 {
     [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
     
-	UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-	UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
-	UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
+    UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
+    UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
     img.layer.cornerRadius = 5.0f;
     img.clipsToBounds = YES;
     [img sd_cancelCurrentImageLoad];

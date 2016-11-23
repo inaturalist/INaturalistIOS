@@ -99,7 +99,7 @@
         
         spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
-
+        
         
         observationsController = [[ExploreObservationsController alloc] init];
         observationsController.notificationDelegate = self;
@@ -115,7 +115,7 @@
     searchMenu = ({
         ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
         view.translatesAutoresizingMaskIntoConstraints = NO;
-          
+        
         // autocomplete items
         AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"organisms", nil)
                                                                               action:^(NSString *searchText) {
@@ -275,16 +275,18 @@
 #pragma mark - iNat API Calls
 
 - (void)searchForMyObservations {
-
+    
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-
+    
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
@@ -293,32 +295,35 @@
     LoginController *login = [appDelegate loginController];
     User *me = [login fetchMe];
     if (me) {
-    	ExploreUser *exploreMe = [[ExploreUser alloc] init];
-    	exploreMe.userId = me.recordID.integerValue;
-    	exploreMe.login = me.login;
-    	exploreMe.name = me.name;
-    	exploreMe.userIcon = [NSURL URLWithString:me.userIconURL];
-    	
+        ExploreUser *exploreMe = [[ExploreUser alloc] init];
+        exploreMe.userId = me.recordID.integerValue;
+        exploreMe.login = me.login;
+        exploreMe.name = me.name;
+        exploreMe.userIcon = [NSURL URLWithString:me.userIconURL];
+        
        	[observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
         [searchMenu showActiveSearch];
     } else {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                            message:NSLocalizedString(@"Can't find search for your observations right now. Please try later.", nil)
-                           delegate:nil
-                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                  otherButtonTitles:nil] show];
-
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                       message:NSLocalizedString(@"Can't find search for your observations right now. Please try later.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
 - (void)searchForNearbyObservations {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -344,12 +349,15 @@
             break;
             
         case kCLAuthorizationStatusDenied:
-        case kCLAuthorizationStatusRestricted:
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Permission denied", nil)
-                                        message:NSLocalizedString(@"We don't have permission from iOS to use your location.", nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+        case kCLAuthorizationStatusRestricted: {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Permission denied", nil)
+                                                                           message:NSLocalizedString(@"We don't have permission from iOS to use your location.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
         default:
             break;
     }
@@ -358,11 +366,13 @@
 - (void)searchForTaxon:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -370,28 +380,32 @@
     hud.labelText = NSLocalizedString(@"Searching for organisms...", nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
         
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
-
+            
             if (results.count == 0) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                            message:NSLocalizedString(@"No such organisms found. :(", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                               message:NSLocalizedString(@"No such organisms found. :(", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
@@ -426,11 +440,13 @@
 - (void)searchForPerson:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
@@ -438,28 +454,32 @@
     hud.labelText = NSLocalizedString(@"Searching for people...", nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
         
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
             
             if (results.count == 0) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                            message:NSLocalizedString(@"No such person found. :(", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                               message:NSLocalizedString(@"No such person found. :(", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
@@ -474,7 +494,7 @@
                 __weak typeof(self)weakSelf = self;
                 disambiguator.chosenBlock = ^void(id choice) {
                     __strong typeof(weakSelf)strongSelf = weakSelf;
-
+                    
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExploreUser *)choice]];
                     
@@ -492,34 +512,38 @@
 - (void)searchForLocation:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = NSLocalizedString(@"Searching for place...", nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
-
+        
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
-
+            
             // filter out garbage locations
             NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
                 // all administrative places are valid
@@ -536,18 +560,22 @@
                                       inRegion:nil  // if we're auth'd for location svcs, uses the user's location as the region
                              completionHandler:^(NSArray *placemarks, NSError *error) {
                                  if (error.code == kCLErrorNetwork) {
-                                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                                                 message:NSLocalizedString(@"Please try again in a few moments.", @"Error message for the user, when the geocoder is telling us to slow down.")
-                                                                delegate:nil
-                                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                       otherButtonTitles:nil] show];
+                                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                                                    message:NSLocalizedString(@"Please try again in a few moments.", @"Error message for the user, when the geocoder is telling us to slow down.")
+                                                                                             preferredStyle:UIAlertControllerStyleAlert];
+                                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                               style:UIAlertActionStyleCancel
+                                                                             handler:nil]];
+                                     [self presentViewController:alert animated:YES completion:nil];
                                  } else {
                                      if (placemarks.count == 0) {
-                                         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                                                     message:NSLocalizedString(@"No such place found. :(", nil)
-                                                                    delegate:nil
-                                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                           otherButtonTitles:nil] show];
+                                         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                                                        message:NSLocalizedString(@"No such place found. :(", nil)
+                                                                                                 preferredStyle:UIAlertControllerStyleAlert];
+                                         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                   style:UIAlertActionStyleCancel
+                                                                                 handler:nil]];
+                                         [self presentViewController:alert animated:YES completion:nil];
                                      } else {
                                          CLPlacemark *place = placemarks.firstObject;
                                          [mapVC mapShouldZoomToCoordinates:place.location.coordinate showUserLocation:YES];
@@ -568,10 +596,10 @@
                 __weak typeof(self)weakSelf = self;
                 disambiguator.chosenBlock = ^void(id choice) {
                     __strong typeof(weakSelf)strongSelf = weakSelf;
-
+                    
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
-
+                    
                     [strongSelf->searchMenu showActiveSearch];
                 };
                 // dispatch after a bit to allow the hud to finish animating dismissal
@@ -587,45 +615,51 @@
 - (void)searchForProject:(NSString *)text {
     
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                    message:NSLocalizedString(@"Network unavailable", nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                       message:NSLocalizedString(@"Network unavailable", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = NSLocalizedString(@"Searching for project...", nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-
+    
     [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
         
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
             
             if (results.count == 0) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops", nil)
-                                            message:NSLocalizedString(@"No such project found. :(", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                               message:NSLocalizedString(@"No such project found. :(", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
                 
                 [searchMenu showActiveSearch];
-
+                
             } else {
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
                 disambiguator.title = NSLocalizedString(@"Which project?", nil);
@@ -634,10 +668,10 @@
                 __weak typeof(self)weakSelf = self;
                 disambiguator.chosenBlock = ^void(id choice) {
                     __strong typeof(weakSelf)strongSelf = weakSelf;
-
+                    
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
-
+                    
                     [strongSelf->searchMenu showActiveSearch];
                 };
                 // dispatch after a bit to allow the hud to finish animating dismissal
@@ -646,7 +680,7 @@
                 });
             }
         }
-    }];    
+    }];
 }
 
 
@@ -656,13 +690,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     });
-
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Location Fetch Error", nil)
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
-
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location Fetch Error", nil)
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
     isFetchingLocation = NO;
 }
 
@@ -706,11 +741,13 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
             });
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Permission denied", nil)
-                                        message:NSLocalizedString(@"We don't have permission from iOS to use your location.", nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Permission denied", nil)
+                                                                           message:NSLocalizedString(@"We don't have permission from iOS to use your location.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
         }
         default:
             break;
@@ -752,12 +789,14 @@
                                                                       [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                                                                   });
                                                                   
-                                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Timeout", nil)
-                                                                                              message:NSLocalizedString(@"Unable to find location", nil)
-                                                                                             delegate:nil
-                                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                                    otherButtonTitles:nil] show];
-                          
+                                                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Timeout", nil)
+                                                                                                                                 message:NSLocalizedString(@"Unable to find location", nil)
+                                                                                                                          preferredStyle:UIAlertControllerStyleAlert];
+                                                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                                            style:UIAlertActionStyleCancel
+                                                                                                          handler:nil]];
+                                                                  [self presentViewController:alert animated:YES completion:nil];
+                                                                                                                                    
                                                                   [locationManager stopUpdatingLocation];
                                                                   locationManager = nil;
                                                                   isFetchingLocation = NO;
@@ -793,11 +832,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     });
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error Fetching Observations", nil)
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                      otherButtonTitles:nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Fetching Observations", nil)
+                                                                   message:error.localizedDescription
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+
     // set the right bar button item to the reload button
     self.navigationItem.rightBarButtonItem = leaderboardItem;
     // stop the progress view

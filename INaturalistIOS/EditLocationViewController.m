@@ -155,13 +155,16 @@
             break;
         }
         case kCLAuthorizationStatusDenied:
-        case kCLAuthorizationStatusRestricted:
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Not Allowed", nil)
-                                        message:NSLocalizedString(@"Location Services Restricted", nil)
-                                       delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                              otherButtonTitles:nil] show];
+        case kCLAuthorizationStatusRestricted: {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Not Allowed", nil)
+                                                                           message:NSLocalizedString(@"Location Services Restricted", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
             break;
+        }
         case kCLAuthorizationStatusNotDetermined:
             [self.locationManager requestWhenInUseAuthorization];
             break;
@@ -269,13 +272,17 @@
                 [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
                 break;
             case kCLAuthorizationStatusDenied:
-            case kCLAuthorizationStatusRestricted:
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Not Allowed", nil)
-                                            message:NSLocalizedString(@"Location Services Restricted", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
+            case kCLAuthorizationStatusRestricted: {
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Not Allowed", nil)
+                                                                               message:NSLocalizedString(@"Location Services Restricted", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];                
                 break;
+            }
             case kCLAuthorizationStatusNotDetermined:
                 [self.locationManager requestWhenInUseAuthorization];
                 break;

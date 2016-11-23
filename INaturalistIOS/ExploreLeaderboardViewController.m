@@ -96,28 +96,29 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     
     loadingSpinner.hidden = NO;
     [loadingSpinner startAnimating];
-
+    
     [self.observationsController loadLeaderboardCompletion:^(NSArray *results, NSError *error) {
-                                            
-                                              if (error) {
-                                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
-                                                                                      error.localizedDescription]];
-                                                  [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
-                                                                              message:error.localizedDescription
-                                                                             delegate:nil
-                                                                    cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                    otherButtonTitles:nil] show];
-
-                                                  return;
-                                              }
-                                              
-                                              leaderboard = results;
-
-                                              [leaderboardTableView reloadData];
-                                              
-                                              [loadingSpinner stopAnimating];
-                                              loadingSpinner.hidden = YES;
-                                          }];
+        
+        if (error) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error loading leaderboard: %@",
+                                                error.localizedDescription]];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error loading leaderboard", @"error loading leaderboard title")
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+            return;
+        }
+        
+        leaderboard = results;
+        
+        [leaderboardTableView reloadData];
+        
+        [loadingSpinner stopAnimating];
+        loadingSpinner.hidden = YES;
+    }];
 }
 
 #pragma mark - UITableView delegate/datasource
@@ -135,7 +136,7 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     ExploreLeaderboardCell *cell = (ExploreLeaderboardCell *)[tableView dequeueReusableCellWithIdentifier:LeaderboardCellReuseID];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     [self configureCell:cell forIndexPath:indexPath];
-
+    
     return cell;
 }
 
@@ -169,11 +170,11 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     }
     
     if (userIconUrl) {
-    	[cell.userIcon sd_setImageWithURL:userIconUrl];
+        [cell.userIcon sd_setImageWithURL:userIconUrl];
     } else {
         cell.userIcon.image = [UIImage inat_defaultUserImage];
     }
-        
+    
     cell.rank.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row + 1];
 }
 

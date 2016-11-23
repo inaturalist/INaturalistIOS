@@ -33,7 +33,7 @@
 // 20 is the height of the status bar
 static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
-@interface ProjectDetailV2ViewController () <ContainedScrollViewDelegate, UIAlertViewDelegate, RKObjectLoaderDelegate>
+@interface ProjectDetailV2ViewController () <ContainedScrollViewDelegate, RKObjectLoaderDelegate>
 
 @property IBOutlet UIView *projectHeader;
 @property IBOutlet UILabel *projectNameLabel;
@@ -47,8 +47,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 @property IBOutlet UIView *container;
 
 @property ProjectUser *projectUser;
-
-@property UIAlertView *leaveAlert;
 
 @end
 
@@ -80,7 +78,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                      forState:UIControlStateNormal];
     self.joinButton.layer.cornerRadius = 15.0f;
     [self.aboutButton setTitle:[NSLocalizedString(@"About", @"About project button") uppercaseString]
-                     forState:UIControlStateNormal];
+                      forState:UIControlStateNormal];
     self.aboutButton.layer.cornerRadius = 15.0f;
     
     self.newsButton.newsTextLabel.text = [NSLocalizedString(@"News",a @"News project button") uppercaseString];
@@ -190,14 +188,14 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                      } completion:^(BOOL finished) {
                          self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
                      }];
-
+    
     [self.navigationController setToolbarHidden:YES animated:YES];
     
     [self.navigationController.navigationBar setTitleTextAttributes:@{
                                                                       NSFontAttributeName: [UIFont systemFontOfSize:17],
                                                                       NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                       }];
-
+    
     [self configureJoinButton];
 }
 
@@ -207,7 +205,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     [self.navigationController.navigationBar setTitleTextAttributes:@{
                                                                       NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
                                                                       NSForegroundColorAttributeName: [UIColor blackColor],
-                                                                      }];    
+                                                                      }];
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
 }
 
@@ -292,7 +290,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                 self.title = nil;
             }
         }
-
+        
         headerTransform = CATransform3DTranslate(headerTransform, 0, tz, 0);
         self.container.frame = CGRectMake(0,
                                           200 + tz,
@@ -306,21 +304,29 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)joinTapped:(UIButton *)button {
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Internet required",nil)
-                                    message:NSLocalizedString(@"You must be connected to the Internet to do this.",nil)
-                                   delegate:nil
-                          cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                          otherButtonTitles:nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet required", nil)
+                                                                       message:NSLocalizedString(@"You must be connected to the Internet to do this.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];        
         return;
     }
     
     if (self.projectUser && self.projectUser.syncedAt) {
-        self.leaveAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?",nil)
-                                                     message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                           otherButtonTitles:NSLocalizedString(@"Leave",nil), nil];
-        [self.leaveAlert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?", nil)
+                                                                       message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Leave", nil)
+                                                  style:UIAlertActionStyleDestructive
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    [self leave];
+                                                }]];
+        [self presentViewController:alert animated:YES completion:nil];
     } else {
         if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
             [self join];
@@ -358,15 +364,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
     [self presentViewController:login animated:YES completion:nil];
-}
-
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (alertView == self.leaveAlert && buttonIndex == 1) {
-        [self leave];
-    }
 }
 
 #pragma mark - Project Actions
@@ -439,12 +436,13 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     if (objectLoader.response.statusCode == 401) {
         [self presentSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
     } else {
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                     message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
-                                                    delegate:self
-                                           cancelButtonTitle:NSLocalizedString(@"OK",nil)
-                                           otherButtonTitles:nil];
-        [av show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
