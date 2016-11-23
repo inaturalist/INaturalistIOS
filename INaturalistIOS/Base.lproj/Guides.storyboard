@@ -13,7 +13,7 @@
             <objects>
                 <navigationController id="U2b-ia-MFn" userLabel="Guides" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="DJO-9O-mI1"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="DHd-TS-Tau">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="DHd-TS-Tau">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -46,7 +46,7 @@
                                 <rect key="frame" x="0.0" y="66" width="375" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="s3l-Ch-o5M" id="ZY1-1b-UZ9">
-                                    <rect key="frame" x="0.0" y="0.0" width="342" height="53"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="53.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" fixedFrame="YES" text="Guide name" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="349-K6-4Od">
@@ -77,7 +77,7 @@
                         <outlet property="searchBar" destination="OIi-9q-adJ" id="eul-sX-lN9"/>
                         <outlet property="searchDisplayController" destination="VLW-30-4ir" id="pdy-qe-eJM"/>
                         <outlet property="syncButton" destination="bEW-pD-dnC" id="ZHM-MN-ff9"/>
-                        <segue destination="Fem-T6-s3n" kind="push" identifier="GuideDetailSegue" id="hpf-2r-2cJ"/>
+                        <segue destination="Fem-T6-s3n" kind="show" identifier="GuideDetailSegue" id="hpf-2r-2cJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UY0-4k-0dg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -264,7 +264,7 @@
         <scene sceneID="JXf-OK-Bwb">
             <objects>
                 <collectionViewController autoresizesArchivedViewToFullSize="NO" id="XGL-HN-Q4P" customClass="GuideCollectionViewController" sceneMemberID="viewController">
-                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="84F-hy-77P">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="84F-hy-77P">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -312,7 +312,7 @@
                     </collectionView>
                     <navigationItem key="navigationItem" title="Guide Title" id="lIl-fs-5kb"/>
                     <connections>
-                        <segue destination="BVH-jQ-CWa" kind="push" identifier="GuidePageSegue" id="xwA-jm-JjS"/>
+                        <segue destination="BVH-jQ-CWa" kind="show" identifier="GuidePageSegue" id="xwA-jm-JjS"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Znm-sk-SQ7" userLabel="First Responder" sceneMemberID="firstResponder"/>

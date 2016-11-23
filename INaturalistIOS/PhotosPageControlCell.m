@@ -14,6 +14,7 @@
 @implementation PhotosPageControlCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
     
     self.shareButton.layer.cornerRadius = 31.0 / 2;
