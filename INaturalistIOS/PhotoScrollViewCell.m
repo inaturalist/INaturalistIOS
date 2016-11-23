@@ -83,7 +83,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 }
 
 - (UIImageView *)imageViewForIndex:(NSInteger)idx {
-    PhotoChicletCell *cell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:idx+1 inSection:0]];
+    PhotoChicletCell *cell = (PhotoChicletCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:idx+1 inSection:0]];
     return cell.photoImageView;
 }
 
