@@ -623,6 +623,20 @@
 		FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoScrollViewCell.m; sourceTree = "<group>"; };
 		FA55648B1BD9BC3C0049803B /* AddChicletCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddChicletCell.h; sourceTree = "<group>"; };
 		FA55648C1BD9BC3C0049803B /* AddChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddChicletCell.m; sourceTree = "<group>"; };
+		FA59AFA11DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA59AFA21DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA59AFA31DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA59AFA41DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA59AFA51DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA59AFA61DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA59AFA71DE6436E001D3AC8 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA59AFA81DE645D6001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA59AFA91DE645D6001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA59AFAA1DE645D6001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA59AFAB1DE645D6001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA59AFAC1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA59AFAD1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA59AFAE1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLocale+INaturalist.h"; sourceTree = "<group>"; };
 		FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLocale+INaturalist.m"; sourceTree = "<group>"; };
 		FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+INaturalist.h"; sourceTree = "<group>"; };
@@ -1782,6 +1796,8 @@
 				pt,
 				he,
 				ko,
+				id,
+				"es-MX",
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2206,6 +2222,8 @@
 				FA1B37C41AD88EED002A00A5 /* pt */,
 				890DE36A1B41357000207219 /* he */,
 				FAE9D0961D13807900137660 /* ko */,
+				FA59AFA11DE6436E001D3AC8 /* id */,
+				FA59AFA81DE645D6001D3AC8 /* es-MX */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2223,6 +2241,8 @@
 				FA1B37C51AD88EF3002A00A5 /* pt */,
 				890DE36B1B41357000207219 /* he */,
 				FAE9D0971D13807900137660 /* ko */,
+				FA59AFA61DE6436E001D3AC8 /* id */,
+				FA59AFAD1DE645D7001D3AC8 /* es-MX */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2239,6 +2259,8 @@
 				FA1B37C21AD88EDC002A00A5 /* pt */,
 				890DE36C1B41357000207219 /* he */,
 				FAE9D0981D13807900137660 /* ko */,
+				FA59AFA71DE6436E001D3AC8 /* id */,
+				FA59AFAE1DE645D7001D3AC8 /* es-MX */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2256,6 +2278,8 @@
 				FA399AA71DDBDB50007ABD3E /* pt */,
 				FA399AA91DDBDB52007ABD3E /* he */,
 				FA399AAB1DDBDB53007ABD3E /* ko */,
+				FA59AFA31DE6436E001D3AC8 /* id */,
+				FA59AFAA1DE645D6001D3AC8 /* es-MX */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2274,6 +2298,8 @@
 				FA399ABC1DDBDC7D007ABD3E /* ja */,
 				FA399ABE1DDBDC7E007ABD3E /* es */,
 				FA399AC01DDBDC7F007ABD3E /* en */,
+				FA59AFA41DE6436E001D3AC8 /* id */,
+				FA59AFAB1DE645D6001D3AC8 /* es-MX */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2292,6 +2318,8 @@
 				FA399AD11DDBDC93007ABD3E /* ja */,
 				FA399AD31DDBDC95007ABD3E /* es */,
 				FA399AD51DDBDC96007ABD3E /* en */,
+				FA59AFA51DE6436E001D3AC8 /* id */,
+				FA59AFAC1DE645D7001D3AC8 /* es-MX */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2310,6 +2338,8 @@
 				FAB6215D1D7397BF0026FDC6 /* pt */,
 				FAB6215F1D7397C00026FDC6 /* he */,
 				FAB621611D7397C10026FDC6 /* ko */,
+				FA59AFA21DE6436E001D3AC8 /* id */,
+				FA59AFA91DE645D6001D3AC8 /* es-MX */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

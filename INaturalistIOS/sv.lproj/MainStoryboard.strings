@@ -7,6 +7,10 @@
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Fyll i namnen automatiskt";
 
+/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Automatically upload";
+
+
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "Kategorisera nya observationer";
 
