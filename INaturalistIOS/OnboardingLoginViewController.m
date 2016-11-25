@@ -284,7 +284,6 @@ static char PARTNER_ASSOCIATED_KEY;
     [super viewDidAppear:animated];
     
     PartnerController *partners = [[PartnerController alloc] init];
-    [self showPartnerAlertForPartner: [[partners partners] lastObject]];
     
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
