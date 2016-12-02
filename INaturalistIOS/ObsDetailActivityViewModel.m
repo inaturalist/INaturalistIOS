@@ -459,9 +459,11 @@
                                                                        attributes:attrs];
         cell.taxonNameLabel.attributedText = attrText;
         
-        attrText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
-                                                   attributes:attrs];
-        cell.taxonSecondaryNameLabel.attributedText = attrText;
+        if (cell.taxonSecondaryNameLabel.text) {
+            attrText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
+                                                       attributes:attrs];
+            cell.taxonSecondaryNameLabel.attributedText = attrText;
+        }
     }
     
     
