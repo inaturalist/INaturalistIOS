@@ -78,7 +78,7 @@ PODS:
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
-  - QBImagePickerController (2.2.2)
+  - QBImagePickerController (3.4.0)
   - RaptureXML (1.0.1)
   - Realm (1.0.1):
     - Realm/Headers (= 1.0.1)
@@ -171,7 +171,7 @@ DEPENDENCIES:
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController (= 2.2.2)
+  - QBImagePickerController (= 3.4.0)
   - RaptureXML (= 1.0.1)
   - Realm (= 1.0.1)
   - RestKit (= 0.10.3)
@@ -254,7 +254,7 @@ SPEC CHECKSUMS:
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
-  QBImagePickerController: ae67bf033086d49575e0709b2c848bc710cc05bd
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   Realm: 2e15e39d35b08abb529e212ed5d8af107b5236c8
   RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
@@ -274,6 +274,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 2891ce1c1a665e44024f354d4d10f2f5c1963936
+PODFILE CHECKSUM: 853057407f9d88ef2bfd02b8c095e91afef8540c
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

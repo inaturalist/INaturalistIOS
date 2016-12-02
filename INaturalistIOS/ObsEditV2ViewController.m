@@ -418,11 +418,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     imagePickerController.delegate = self;
     imagePickerController.allowsMultipleSelection = YES;
     imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-    imagePickerController.showsCancelButton = NO;           // so we get a back button
-    imagePickerController.groupTypes = @[
-                                         @(ALAssetsGroupSavedPhotos),
-                                         @(ALAssetsGroupAlbum)
-                                         ];
     
     if (self.presentedViewController && [self.presentedViewController isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)self.presentedViewController;
@@ -538,7 +533,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
     [meta setValue:[self getGPSDictionaryForLocation:loc]
             forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-    confirm.metadata = meta;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{

@@ -604,7 +604,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
     [meta setValue:[self getGPSDictionaryForLocation:loc]
             forKey:((NSString * )kCGImagePropertyGPSDictionary)];
-    confirm.metadata = meta;
     
     // set the follow up action
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
@@ -1844,11 +1843,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
     imagePickerController.delegate = self;
     imagePickerController.allowsMultipleSelection = YES;
     imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-    imagePickerController.showsCancelButton = NO;           // so we get a back button
-    imagePickerController.groupTypes = @[
-                                         @(ALAssetsGroupSavedPhotos),
-                                         @(ALAssetsGroupAlbum)
-                                         ];
     
     
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
@@ -1932,11 +1926,6 @@ NSString *const ObservationFieldValueSwitchCell = @"ObservationFieldValueSwitchC
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-        imagePickerController.showsCancelButton = NO;           // so we get a back button
-        imagePickerController.groupTypes = @[
-                                             @(ALAssetsGroupSavedPhotos),
-                                             @(ALAssetsGroupAlbum)
-                                             ];
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
         [self presentViewController:nav animated:YES completion:nil];

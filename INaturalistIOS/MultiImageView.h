@@ -10,7 +10,7 @@
 
 @interface MultiImageView : UIView
 
-@property NSArray *images;
+@property NSArray *assets;
 @property CGFloat borderWidth;
 @property UIColor *borderColor;
 

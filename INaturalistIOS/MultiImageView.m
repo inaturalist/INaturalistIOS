@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "MultiImageView.h"
 
 @interface MultiImageView () {
-    NSArray *_images;
+    NSArray *_assets;
     CGFloat _borderWidth;
     UIColor *_borderColor;
     
@@ -26,18 +28,42 @@
     return @[ one, two, three, four ];
 }
 
-- (void)setImages:(NSArray *)images {
-    NSAssert(images.count < 5, @"MultiImageView can display at most four images.");
-    
-    _images = images;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self setNeedsLayout];
-    });
+- (void)setAssets:(NSArray *)assets {
+    NSArray *ivs = @[ one, two, three, four ];
+    for (id asset in assets) {
+        NSInteger idx = [assets indexOfObject:asset];
+        UIImageView *iv = ivs[idx];
+
+        if ([asset isKindOfClass:[UIImage class]]) {
+            [iv setImage:(UIImage *)asset];
+        } else {
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            options.networkAccessAllowed = YES;
+            options.resizeMode = PHImageRequestOptionsResizeModeNone;
+            options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+                NSLog(@"%f", progress);
+            };
+            
+            __weak typeof(self) weakSelf = self;
+            [[PHImageManager defaultManager] requestImageForAsset:asset
+                                                       targetSize:CGSizeMake(2000, 2000)
+                                                      contentMode:PHImageContentModeAspectFill
+                                                          options:options
+                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                            __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                            [iv setImage:result];
+                                                            [strongSelf setNeedsLayout];
+                                                        });
+                                                    }];
+        }
+    }
 }
 
-- (NSArray *)images {
-    return _images;
+- (NSArray *)assets {
+    return _assets;
 }
 
 - (void)setBorderWidth:(CGFloat)borderWidth {
@@ -109,7 +135,7 @@
         iv.layer.borderColor = _borderColor.CGColor;
     }
     
-    if (self.images.count == 1) {
+    if (self.assets.count == 1) {
         // single photo, don't crop it
         one.contentMode = UIViewContentModeScaleAspectFit;
 
@@ -117,9 +143,7 @@
         two.hidden = three.hidden = four.hidden = YES;
         
         one.frame = self.bounds;
-        one.image = self.images[0];
-        
-    } else if (self.images.count == 2) {
+    } else if (self.assets.count == 2) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = NO;
@@ -129,11 +153,7 @@
                                self.bounds.size.width, self.bounds.size.height / 2);
         two.frame = CGRectMake(self.frame.origin.x, self.bounds.size.height / 2,
                                self.bounds.size.width, self.bounds.size.height / 2);
-        
-        one.image = self.images[0];
-        two.image = self.images[1];
-        
-    } else if (self.images.count == 3) {
+    } else if (self.assets.count == 3) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = NO;
@@ -145,12 +165,7 @@
                                self.bounds.size.width / 2, self.bounds.size.height / 2);
         three.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
                                  self.bounds.size.width / 2, self.bounds.size.height / 2);
-        
-        one.image = self.images[0];
-        two.image = self.images[1];
-        three.image = self.images[2];
-        
-    } else if (self.images.count == 4) {
+    } else if (self.assets.count == 4) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = four.hidden = NO;
@@ -163,11 +178,6 @@
                                  self.bounds.size.width / 2, self.bounds.size.height / 2);
         four.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
                                 self.bounds.size.width / 2, self.bounds.size.height / 2);
-        
-        one.image = self.images[0];
-        two.image = self.images[1];
-        three.image = self.images[2];
-        four.image = self.images[3];
     }
     
     [super layoutSubviews];

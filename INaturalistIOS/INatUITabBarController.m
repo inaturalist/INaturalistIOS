@@ -12,6 +12,7 @@
 #import <BlocksKit+UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <objc/runtime.h>
+#import <Photos/Photos.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -51,10 +52,15 @@ NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
+@interface QBImagePickerController ()
+@property (nonatomic, strong) UINavigationController *albumsNavigationController;
+@end
+
+
 @interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
-
+@property QBImagePickerController *imagePicker;
 @end
 
 @implementation INatUITabBarController
@@ -130,18 +136,15 @@ static char PROJECT_ASSOCIATED_KEY;
         return;
     }
     
-    // check for access to assets library
-    ALAuthorizationStatus alAuthStatus = [ALAssetsLibrary authorizationStatus];
-    switch (alAuthStatus) {
-        case ALAuthorizationStatusDenied:
-        case ALAuthorizationStatusRestricted:
+    PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
+    switch (phAuthStatus) {
+        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusDenied:
             [self presentAuthAlertForSource:INatPhotoSourcePhotos];
-            return;
             break;
-        case ALAuthorizationStatusAuthorized:
-        case ALAuthorizationStatusNotDetermined:
-        default:
-            // continue
+        case PHAuthorizationStatusNotDetermined:
+        case PHAuthorizationStatusAuthorized:
+            // continue;
             break;
     }
     
@@ -292,11 +295,6 @@ static char PROJECT_ASSOCIATED_KEY;
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-        imagePickerController.showsCancelButton = NO;           // so we get a back button
-        imagePickerController.groupTypes = @[
-                                             @(ALAssetsGroupSavedPhotos),
-                                             @(ALAssetsGroupAlbum)
-                                             ];
         
         if (taxon) {
             objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
@@ -306,15 +304,8 @@ static char PROJECT_ASSOCIATED_KEY;
             objc_setAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
         }
         
-        
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
-        [self presentViewController:nav animated:YES completion:nil];
-        
-        //[self noPhotoTaxon:taxon project:project];
-        return;
-        
+        [self presentViewController:imagePickerController animated:YES completion:nil];
     }
-    
 }
 
 #pragma mark - UITabBarControllerDelegate
@@ -385,7 +376,6 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
     confirm.shouldContinueUpdatingLocation = YES;
     
     Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
@@ -408,32 +398,24 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
     // qbimagepicker for library multi-select
-    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
-    imagePickerController.delegate = self;
-    imagePickerController.allowsMultipleSelection = YES;
-    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-    imagePickerController.showsCancelButton = NO;           // so we get a back button
-    imagePickerController.groupTypes = @[
-                                         @(ALAssetsGroupSavedPhotos),
-                                         @(ALAssetsGroupAlbum)
-                                         ];
+    self.imagePicker = [[QBImagePickerController alloc] init];
+    self.imagePicker.delegate = self;
+    self.imagePicker.allowsMultipleSelection = YES;
+    self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
     
     if (taxon) {
-        objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(self.imagePicker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
     }
     
     if (project) {
-        objc_setAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(self.imagePicker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
     }
     
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:imagePickerController animated:YES];
+    [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
     [nav setNavigationBarHidden:NO animated:YES];
-    imagePickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", @"Next button when picking photos for a new observation")
-                                                                                               style:UIBarButtonItemStylePlain
-                                                                                              target:imagePickerController
-                                                                                              action:@selector(done:)];
 }
+
 
 - (void)noPhotoTaxon:(Taxon *)taxon project:(Project *)project {
     Observation *o = [Observation object];
@@ -503,7 +485,7 @@ static char PROJECT_ASSOCIATED_KEY;
 
 #pragma mark - QBImagePicker delegate
 
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryPicked
                      withProperties:@{ @"numPics": @(assets.count) }];
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];

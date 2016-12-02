@@ -26,7 +26,7 @@ target :iNaturalist do
   pod 'NXOAuth2Client', '1.2.8'
   pod 'RaptureXML', '1.0.1'
   pod 'DCRoundSwitch', '0.0.1'
-  pod 'QBImagePickerController', '2.2.2'
+  pod 'QBImagePickerController', '3.4.0'
   pod 'VTAcknowledgementsViewController', '0.15'
   pod 'JDFTooltips', '1.0'
   pod 'CustomIOSAlertView', '0.9.3'

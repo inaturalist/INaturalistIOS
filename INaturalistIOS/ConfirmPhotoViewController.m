@@ -13,6 +13,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
+#import <Photos/Photos.h>
 
 #import "ConfirmPhotoViewController.h"
 #import "Taxon.h"
@@ -38,6 +39,7 @@
 #define CHICLETPADDING 2.0
 
 @interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
+    PHPhotoLibrary *phLib;
     ALAssetsLibrary *lib;
     UIButton *retake, *confirm;
 }
@@ -86,6 +88,7 @@
         };
     }
     
+    phLib = [PHPhotoLibrary sharedPhotoLibrary];
     lib = [[ALAssetsLibrary alloc] init];
     
     self.multiImageView = ({
@@ -185,7 +188,7 @@
     retake.hidden = YES;
     
     if (self.image) {
-        // we need to save to the AssetsLibrary...
+        // we need to save to the Photos library
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
         hud.removeFromSuperViewOnHide = YES;
@@ -193,70 +196,34 @@
         
         // embed geo
         CLLocationManager *loc = [[CLLocationManager alloc] init];
-        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-        if (loc.location) {
-            
-            double latitude = fabs(loc.location.coordinate.latitude);
-            double longitude = fabs(loc.location.coordinate.longitude);
-            NSString *latitudeRef = loc.location.coordinate.latitude > 0 ? @"N" : @"S";
-            NSString *longitudeRef = loc.location.coordinate.longitude > 0 ? @"E" : @"W";
-            
-            NSDictionary *gps = @{ @"Latitude": @(latitude), @"Longitude": @(longitude),
-                                   @"LatitudeRef": latitudeRef, @"LongitudeRef": longitudeRef };
-            
-            mutableMetadata[@"{GPS}"] = gps;
-        }
         
-        [lib writeImageToSavedPhotosAlbum:self.image.CGImage
-                                 metadata:mutableMetadata
-                          completionBlock:^(NSURL *newAssetUrl, NSError *error) {
-                              [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                              
-                              if (error) {
-                                  [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                                      error.localizedDescription]];
-                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
-                                                                                                 message:error.localizedDescription
-                                                                                          preferredStyle:UIAlertControllerStyleAlert];
-                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                            style:UIAlertActionStyleCancel
-                                                                          handler:nil]];
-                                  [self presentViewController:alert animated:YES completion:nil];
-                                  
-                              } else {
-                                  [lib assetForURL:newAssetUrl
-                                       resultBlock:^(ALAsset *asset) {
-                                           // be defensive
-                                           if (asset) {
-                                               self.confirmFollowUpAction(@[ asset ]);
-                                           } else {
-                                               [[Analytics sharedClient] debugLog:@"error loading newly saved asset"];
-                                               UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error using newly saved image", @"Error title when we can't load a newly saved image")
-                                                                                                              message:NSLocalizedString(@"No asset found", @"Error message for asset fetch failure")
-                                                                                                       preferredStyle:UIAlertControllerStyleAlert];
-                                               [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                         style:UIAlertActionStyleCancel
-                                                                                       handler:nil]];
-                                               [self presentViewController:alert animated:YES completion:nil];
-                                           }
-                                           
-                                       } failureBlock:^(NSError *error) {
-                                           [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching asset: %@",
-                                                                               error.localizedDescription]];
-                                           
-                                           UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Fetching Image Asset", @"image fetch error title")
-                                                                                                          message:error.localizedDescription
-                                                                                                   preferredStyle:UIAlertControllerStyleAlert];
-                                           [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                     style:UIAlertActionStyleCancel
-                                                                                   handler:nil]];
-                                           [self presentViewController:alert animated:YES completion:nil];                                           
-                                       }];
-                                  
-                              }
-                          }];
+        [phLib performChanges:^{
+            PHAssetChangeRequest *request = [PHAssetChangeRequest creationRequestForAssetFromImage:self.image];
+            if (loc.location) {
+                request.location = loc.location;
+            }
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+            
+            if (error) {
+                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                    error.localizedDescription]];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
+                                                                               message:error.localizedDescription
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            } else {
+                if (success) {
+                    self.confirmFollowUpAction( @[ self.image ]);
+                }
+            }
+        }];
     } else if (self.assets) {
         // can proceed directly to followup
+        
         self.confirmFollowUpAction(self.assets);
     }
 }
@@ -268,15 +235,9 @@
     [self.navigationController setToolbarHidden:YES animated:NO];
     
     if (self.image) {
-        self.multiImageView.images = @[ self.image ];
+        self.multiImageView.assets = @[ self.image ];
     } else if (self.assets && self.assets.count > 0) {
-        NSArray *images = [[self.assets bk_map:^id(ALAsset *asset) {
-            return [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-        }] bk_select:^BOOL(id obj) {
-            // imageWithCGImage can return nil, which bk_map converts to NSNull
-            return obj && obj != [NSNull null];
-        }];
-        self.multiImageView.images = images;
+        self.multiImageView.assets = self.assets;
         self.multiImageView.hidden = NO;
     }
 }
