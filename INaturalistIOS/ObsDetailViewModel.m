@@ -427,6 +427,10 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // do nothing, subclass may implement this
+}
+
 #pragma mark - UITableView helpers
 
 
