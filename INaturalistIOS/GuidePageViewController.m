@@ -20,7 +20,7 @@
 {
     [super viewDidLoad];
     if (self.viewControllers == nil || self.viewControllers.count == 0) {
-        GuideTaxonViewController *gtvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"GuideTaxonViewController"];
+        GuideTaxonViewController *gtvc = [self.storyboard instantiateViewControllerWithIdentifier:@"GuideTaxonViewController"];
         RXMLElement *rx = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%ld]", [self currentXPath], (long)self.currentPosition]];
         gtvc.guideTaxon = [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:rx];
         gtvc.localPosition = self.currentPosition;
