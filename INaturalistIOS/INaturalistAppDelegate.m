@@ -80,15 +80,6 @@
 	                        annotation:annotation];
 }
 
-- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
-    NSLog(@"deviceToken: %@", deviceToken);
-}
-
-- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
-    NSLog(@"Failed to register with error : %@", error);
-}
-
-
 - (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     UIApplication *application = [UIApplication sharedApplication];
     
@@ -206,13 +197,6 @@
     [self setupAnalytics];
     
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-
-    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
-    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-    
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     

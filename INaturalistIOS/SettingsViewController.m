@@ -245,7 +245,6 @@ static const int AutouploadSwitchTag = 102;
     [appDelegate.loginController logout];
     
     // update UI
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [self initUI];
 }
 
