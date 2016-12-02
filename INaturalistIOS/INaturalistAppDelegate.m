@@ -167,9 +167,10 @@
                 
             } failure:^(NSError *error) {
                 if (completionHandler) {
+                    NSString *errorMsg = error.localizedDescription ?: @"Unknown error";
                     [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
                                      withProperties:@{
-                                                      @"reason": error.localizedDescription,
+                                                      @"reason": errorMsg,
                                                       }];
                     completionHandler(UIBackgroundFetchResultFailed);
                 }
