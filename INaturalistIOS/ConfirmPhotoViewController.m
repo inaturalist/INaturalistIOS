@@ -40,7 +40,6 @@
 
 @interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
     PHPhotoLibrary *phLib;
-    ALAssetsLibrary *lib;
     UIButton *retake, *confirm;
 }
 @property NSArray *iconicTaxa;
@@ -89,7 +88,6 @@
     }
     
     phLib = [PHPhotoLibrary sharedPhotoLibrary];
-    lib = [[ALAssetsLibrary alloc] init];
     
     self.multiImageView = ({
         MultiImageView *iv = [[MultiImageView alloc] initWithFrame:CGRectZero];
