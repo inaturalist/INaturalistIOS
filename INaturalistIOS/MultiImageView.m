@@ -7,8 +7,10 @@
 //
 
 #import <Photos/Photos.h>
+#import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "MultiImageView.h"
+#import "UIColor+INaturalist.h"
 
 @interface MultiImageView () {
     NSArray *_assets;
@@ -29,6 +31,8 @@
 }
 
 - (void)setAssets:(NSArray *)assets {
+    _assets = assets;
+    [self layoutIfNeeded];
     NSArray *ivs = @[ one, two, three, four ];
     for (id asset in assets) {
         NSInteger idx = [assets indexOfObject:asset];
@@ -39,23 +43,42 @@
         } else {
             PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
             
-            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
             options.networkAccessAllowed = YES;
             options.resizeMode = PHImageRequestOptionsResizeModeNone;
+
             options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-                NSLog(@"%f", progress);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([iv viewWithTag:0x99]) {
+                        M13ProgressViewPie *progressView = [iv viewWithTag:0x99];
+                        [progressView setProgress:progress animated:YES];
+                    }
+                });
             };
             
-            __weak typeof(self) weakSelf = self;
             [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                       targetSize:CGSizeMake(2000, 2000)
+                                                       targetSize:iv.bounds.size
                                                       contentMode:PHImageContentModeAspectFill
                                                           options:options
                                                     resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                        NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
+                                                        if ([isDegraded boolValue]) {
+                                                            if (![iv viewWithTag:0x99]) {
+                                                                M13ProgressViewPie *progressView = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+                                                                progressView.primaryColor = [UIColor lightGrayColor];
+                                                                progressView.secondaryColor = [UIColor lightGrayColor];
+                                                                progressView.backgroundRingWidth = 2.0f;
+                                                                progressView.tag = 0x99;
+                                                                progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleWidth;
+                                                                [iv addSubview:progressView];
+                                                                progressView.center = iv.center;
+                                                            }
+                                                        } else {
+                                                            UIView *view = [iv viewWithTag:0x99];
+                                                            [view removeFromSuperview];
+                                                        }
                                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                                            __strong typeof(weakSelf) strongSelf = weakSelf;
                                                             [iv setImage:result];
-                                                            [strongSelf setNeedsLayout];
                                                         });
                                                     }];
         }

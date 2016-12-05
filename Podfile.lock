@@ -1,6 +1,4 @@
 PODS:
-  - ABFRealmSearchViewController (2.1):
-    - Realm (>= 0.100.0)
   - ActionSheetPicker-3.0 (1.3.12)
   - AFNetworking (1.3.4)
   - Amplitude-iOS (3.7.1)
@@ -68,6 +66,7 @@ PODS:
   - LibComponentLogging-Core (1.3.3)
   - LibComponentLogging-NSLog (1.1.1):
     - LibComponentLogging-Core (>= 1.3.1)
+  - M13ProgressSuite (1.2.9)
   - Mantle (1.5.8):
     - Mantle/extobjc (= 1.5.8)
   - Mantle/extobjc (1.5.8)
@@ -140,7 +139,6 @@ PODS:
   - YLProgressBar (3.9.0)
 
 DEPENDENCIES:
-  - ABFRealmSearchViewController
   - ActionSheetPicker-3.0 (= 1.3.12)
   - AFNetworking (= 1.3.4)
   - Amplitude-iOS (~> 3.7.0)
@@ -165,6 +163,7 @@ DEPENDENCIES:
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
   - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
+  - M13ProgressSuite
   - Mantle (= 1.5.8)
   - MBProgressHUD (= 0.9.1)
   - MHVideoPhotoGallery (= 1.6.6)
@@ -218,7 +217,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/inaturalist/YLMoment.git
 
 SPEC CHECKSUMS:
-  ABFRealmSearchViewController: 3281ba31dfeffc7ca065474902409781f1e76ea6
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
   AFNetworking: cf8e418e16f0c9c7e5c3150d019a3c679d015018
   Amplitude-iOS: 4c49e5b00ebe5bf3800f219aaba8a55cf667c6c9
@@ -247,6 +245,7 @@ SPEC CHECKSUMS:
   JSONKit: d64c81f94cf4fa7a11ee1e0e996237ab672e1e0d
   LibComponentLogging-Core: 769c6f596b96348911fe75f9825728213d334941
   LibComponentLogging-NSLog: ae0ad111653e6c955e3f93b95386285fcdf94ab3
+  M13ProgressSuite: ea9f7263e73e9215e6849dfa54e29ee0ad6a145c
   Mantle: f03b2b606c3f0cabd80214ad8a2fed6b464a7359
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
@@ -274,6 +273,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 853057407f9d88ef2bfd02b8c095e91afef8540c
+PODFILE CHECKSUM: 63047f857084269add9e341d8e5121233b9c4776
 
 COCOAPODS: 1.1.1
