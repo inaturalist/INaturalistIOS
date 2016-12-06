@@ -6,87 +6,89 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <Photos/Photos.h>
 #import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "MultiImageView.h"
 #import "UIColor+INaturalist.h"
 
 @interface MultiImageView () {
-    NSArray *_assets;
     CGFloat _borderWidth;
     UIColor *_borderColor;
+    CGFloat _pieBorderWidth;
+    UIColor *_pieColor;
+    NSInteger _imageCount;
+
     
     UIImageView *one;
     UIImageView *two;
     UIImageView *three;
     UIImageView *four;
+    
+    M13ProgressViewPie *onePie;
+    M13ProgressViewPie *twoPie;
+    M13ProgressViewPie *threePie;
+    M13ProgressViewPie *fourPie;
+
 }
 @end
 
 @implementation MultiImageView
 
+- (NSArray *)progressViews {
+    return @[ onePie, twoPie, threePie, fourPie];
+}
+
 - (NSArray *)imageViews {
     return @[ one, two, three, four ];
 }
 
-- (void)setAssets:(NSArray *)assets {
-    _assets = assets;
-    [self layoutIfNeeded];
-    NSArray *ivs = @[ one, two, three, four ];
-    for (id asset in assets) {
-        NSInteger idx = [assets indexOfObject:asset];
-        UIImageView *iv = ivs[idx];
-
-        if ([asset isKindOfClass:[UIImage class]]) {
-            [iv setImage:(UIImage *)asset];
-        } else {
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-            
-            options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
-            options.networkAccessAllowed = YES;
-            options.resizeMode = PHImageRequestOptionsResizeModeNone;
-
-            options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([iv viewWithTag:0x99]) {
-                        M13ProgressViewPie *progressView = [iv viewWithTag:0x99];
-                        [progressView setProgress:progress animated:YES];
-                    }
-                });
-            };
-            
-            [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                       targetSize:iv.bounds.size
-                                                      contentMode:PHImageContentModeAspectFill
-                                                          options:options
-                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                                        NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
-                                                        if ([isDegraded boolValue]) {
-                                                            if (![iv viewWithTag:0x99]) {
-                                                                M13ProgressViewPie *progressView = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-                                                                progressView.primaryColor = [UIColor lightGrayColor];
-                                                                progressView.secondaryColor = [UIColor lightGrayColor];
-                                                                progressView.backgroundRingWidth = 2.0f;
-                                                                progressView.tag = 0x99;
-                                                                progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleWidth;
-                                                                [iv addSubview:progressView];
-                                                                progressView.center = iv.center;
-                                                            }
-                                                        } else {
-                                                            UIView *view = [iv viewWithTag:0x99];
-                                                            [view removeFromSuperview];
-                                                        }
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            [iv setImage:result];
-                                                        });
-                                                    }];
-        }
-    }
+- (void)setImageCount:(NSInteger)imageCount {
+    _imageCount = imageCount;
+    
+    __weak __typeof__(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf setNeedsLayout];
+    });
 }
 
-- (NSArray *)assets {
-    return _assets;
+- (NSInteger)imageCount {
+    return _imageCount;
+}
+
+- (CGFloat)pieBorderWidth {
+    return _pieBorderWidth;
+}
+
+- (void)setPieBorderWidth:(CGFloat)pieBorderWidth {
+    if (_pieBorderWidth == pieBorderWidth)
+        return;
+    
+    _pieBorderWidth = pieBorderWidth;
+    
+    
+    __weak __typeof__(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf setNeedsLayout];
+    });
+}
+
+- (UIColor *)pieColor {
+    return _pieColor;
+}
+
+- (void)setPieColor:(UIColor *)pieColor {
+    if ([_pieColor isEqual:pieColor])
+        return;
+    
+    _pieColor = pieColor;
+    
+    __weak __typeof__(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        [strongSelf setNeedsLayout];
+    });
 }
 
 - (void)setBorderWidth:(CGFloat)borderWidth {
@@ -146,6 +148,26 @@
             [self addSubview:iv];
         }
         
+        onePie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        twoPie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        threePie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        fourPie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        
+        for (int i = 0; i < 4; i++) {
+            M13ProgressViewPie *pie = [self progressViews][i];
+            UIImageView *iv = [self imageViews][i];
+            pie.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin   |
+                                    UIViewAutoresizingFlexibleRightMargin  |
+                                    UIViewAutoresizingFlexibleTopMargin    |
+                                    UIViewAutoresizingFlexibleBottomMargin);
+            pie.hidden = YES;
+            pie.backgroundRingWidth = _pieBorderWidth;
+            pie.primaryColor = _pieColor;
+            pie.secondaryColor = _pieColor;
+            
+            [iv addSubview:pie];
+            pie.center = iv.center;
+        }
     }
     
     return self;
@@ -158,7 +180,13 @@
         iv.layer.borderColor = _borderColor.CGColor;
     }
     
-    if (self.assets.count == 1) {
+    for (M13ProgressViewPie *pie in [self progressViews]) {
+        pie.backgroundRingWidth = _pieBorderWidth;
+        pie.primaryColor = _pieColor;
+        pie.secondaryColor = _pieColor;
+    }
+    
+    if (_imageCount == 1) {
         // single photo, don't crop it
         one.contentMode = UIViewContentModeScaleAspectFit;
 
@@ -166,7 +194,7 @@
         two.hidden = three.hidden = four.hidden = YES;
         
         one.frame = self.bounds;
-    } else if (self.assets.count == 2) {
+    } else if (_imageCount == 2) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = NO;
@@ -176,7 +204,7 @@
                                self.bounds.size.width, self.bounds.size.height / 2);
         two.frame = CGRectMake(self.frame.origin.x, self.bounds.size.height / 2,
                                self.bounds.size.width, self.bounds.size.height / 2);
-    } else if (self.assets.count == 3) {
+    } else if (_imageCount == 3) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = NO;
@@ -188,7 +216,7 @@
                                self.bounds.size.width / 2, self.bounds.size.height / 2);
         three.frame = CGRectMake(self.bounds.size.width / 2, self.bounds.size.height / 2,
                                  self.bounds.size.width / 2, self.bounds.size.height / 2);
-    } else if (self.assets.count == 4) {
+    } else if (_imageCount == 4) {
         one.contentMode = UIViewContentModeScaleAspectFill;
 
         one.hidden = two.hidden = three.hidden = four.hidden = NO;

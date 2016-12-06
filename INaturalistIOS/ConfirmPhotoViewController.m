@@ -9,11 +9,11 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreLocation/CoreLocation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <Photos/Photos.h>
+#import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "ConfirmPhotoViewController.h"
 #import "Taxon.h"
@@ -44,6 +44,7 @@
 }
 @property NSArray *iconicTaxa;
 @property RKObjectLoader *taxaLoader;
+@property (atomic, assign) NSInteger numberOfLoadedImages;
 @end
 
 @implementation ConfirmPhotoViewController
@@ -94,6 +95,8 @@
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
         iv.borderColor = [UIColor blackColor];
+        iv.pieBorderWidth = 2.0f;
+        iv.pieColor = [UIColor blackColor];
         
         iv;
     });
@@ -148,6 +151,8 @@
         [button addTarget:self
                    action:@selector(confirm)
          forControlEvents:UIControlEventTouchUpInside];
+        
+        button.enabled = NO;
         
         button;
     });
@@ -231,17 +236,70 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.navigationController setToolbarHidden:YES animated:NO];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
     if (self.image) {
-        self.multiImageView.assets = @[ self.image ];
+        self.multiImageView.imageCount = 1;
+        UIImageView *iv = [[self.multiImageView imageViews] firstObject];
+        iv.image = self.image;
+        self.numberOfLoadedImages = 1;
+        [self configureNextButton];
     } else if (self.assets && self.assets.count > 0) {
-        self.multiImageView.assets = self.assets;
+        self.multiImageView.imageCount = self.assets.count;
+        
+        // load images for assets
+        for (int i = 0; i < self.assets.count; i++) {
+            PHAsset *asset = self.assets[i];
+            UIImageView *iv = self.multiImageView.imageViews[i];
+            M13ProgressViewPie *pie = self.multiImageView.progressViews[i];
+            
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+            options.networkAccessAllowed = YES;
+            options.resizeMode = PHImageRequestOptionsResizeModeNone;
+            
+            options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+                pie.hidden = NO;
+                [iv bringSubviewToFront:pie];
+                [pie setProgress:progress animated:YES];
+            };
+            
+            [[PHImageManager defaultManager] requestImageForAsset:asset
+                                                       targetSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                      contentMode:PHImageContentModeAspectFit
+                                                          options:options
+                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                        NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
+                                                        if ([isDegraded boolValue]) {
+                                                            pie.hidden = NO;
+                                                        } else {
+                                                            pie.hidden = YES;
+                                                            self.numberOfLoadedImages++;
+                                                            [self configureNextButton];
+                                                        }
+                                                        [iv setImage:result];
+                                                    }];
+        }
         self.multiImageView.hidden = NO;
     }
 }
 
 - (void)dealloc {
     [[RKClient sharedClient].requestQueue cancelRequest:self.taxaLoader];
+}
+
+- (void)configureNextButton {
+    if (self.numberOfLoadedImages == self.assets.count) {
+        confirm.enabled = YES;
+    } else if (self.numberOfLoadedImages == 1 && self.image) {
+        confirm.enabled = YES;
+    } else {
+        confirm.enabled = NO;
+    }
 }
 
 #pragma mark - ObservationDetailViewController delegate

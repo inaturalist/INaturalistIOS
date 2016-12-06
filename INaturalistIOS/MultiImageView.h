@@ -10,10 +10,14 @@
 
 @interface MultiImageView : UIView
 
-@property NSArray *assets;
 @property CGFloat borderWidth;
 @property UIColor *borderColor;
+@property UIColor *pieColor;
+@property CGFloat pieBorderWidth;
 
 @property (readonly) NSArray *imageViews;
+@property (readonly) NSArray *progressViews;
+
+@property NSInteger imageCount;
 
 @end
