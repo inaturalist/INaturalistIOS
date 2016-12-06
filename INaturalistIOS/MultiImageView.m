@@ -200,9 +200,9 @@
         one.hidden = two.hidden = NO;
         three.hidden = four.hidden = YES;
         
-        one.frame = CGRectMake(self.frame.origin.x, self.bounds.origin.y,
+        one.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y,
                                self.bounds.size.width, self.bounds.size.height / 2);
-        two.frame = CGRectMake(self.frame.origin.x, self.bounds.size.height / 2,
+        two.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height / 2,
                                self.bounds.size.width, self.bounds.size.height / 2);
     } else if (_imageCount == 3) {
         one.contentMode = UIViewContentModeScaleAspectFill;

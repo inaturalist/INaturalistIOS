@@ -501,8 +501,12 @@ static char PROJECT_ASSOCIATED_KEY;
         confirm.project = project;
     }
     
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:confirm animated:NO];
+    if (self.presentedViewController == imagePickerController) {
+        [imagePickerController.albumsNavigationController pushViewController:confirm animated:NO];
+    } else {
+        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+        [nav pushViewController:confirm animated:NO];
+    }
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {

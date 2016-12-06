@@ -542,17 +542,58 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       }];
     
     // set the follow up action
+    __weak typeof(self)weakSelf = self;
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
         
-        __weak __typeof__(self) weakSelf = self;
-        [self.observation addAssets:assets afterEach:^(ObservationPhoto *op) {
-            __strong typeof(weakSelf)strongSelf = weakSelf;
-            if (strongSelf) {
-                [strongSelf.tableView reloadData];
+        NSInteger lastIndex = [[[self.observation sortedObservationPhotos] lastObject] index];
+        NSInteger idx = lastIndex + 1;
+        for (UIImage *image in assets) {
+            ObservationPhoto *op = [ObservationPhoto object];
+            op.position = @(idx);
+            [op setObservation:strongSelf.observation];
+            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+            
+            NSError *saveError = nil;
+            BOOL saved = [[ImageStore sharedImageStore] storeImage:image
+                                                            forKey:op.photoKey
+                                                             error:&saveError];
+            NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+            if (saveError) {
+                [op destroy];
+                [self dismissViewControllerAnimated:YES completion:^{
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                   message:saveError.localizedDescription
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [strongSelf presentViewController:alert animated:YES completion:nil];
+                }];
+                return;
+            } else if (!saved) {
+                [op destroy];
+                [self dismissViewControllerAnimated:YES completion:^{
+                    NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                   message:unknownErrMsg
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [strongSelf presentViewController:alert animated:YES completion:nil];
+                }];
+                return;
             }
-        }];
+            
+            op.localCreatedAt = [NSDate date];
+            op.localUpdatedAt = [NSDate date];
+            
+            idx++;
+        }
         
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [strongSelf.tableView reloadData];
+        [strongSelf dismissViewControllerAnimated:YES completion:nil];
     };
     
     [picker pushViewController:confirm animated:YES];

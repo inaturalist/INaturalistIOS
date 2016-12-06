@@ -26,7 +26,6 @@
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Observation.h"
-#import "Observation+AddAssets.h"
 #import "Analytics.h"
 #import "Project.h"
 #import "ProjectObservation.h"
@@ -44,13 +43,23 @@
 }
 @property NSArray *iconicTaxa;
 @property RKObjectLoader *taxaLoader;
-@property (atomic, assign) NSInteger numberOfLoadedImages;
+@property NSMutableArray *downloadedImages;
+@property (copy) CLLocation *obsLocation;
+@property (copy) NSDate *obsDate;
+@property CLLocationManager *locationManager;
 @end
 
 @implementation ConfirmPhotoViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.shouldContinueUpdatingLocation) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        [self.locationManager startUpdatingLocation];
+    }
+    
+    self.downloadedImages = [NSMutableArray array];
     
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
@@ -60,6 +69,18 @@
             // go straight to making the observation
             Observation *o = [Observation object];
             o.localCreatedAt = [NSDate date];
+            o.localUpdatedAt = [NSDate date];
+            
+            if (strongSelf.obsLocation) {
+                o.latitude = @(strongSelf.obsLocation.coordinate.latitude);
+                o.longitude = @(strongSelf.obsLocation.coordinate.longitude);
+            }
+            
+            if (strongSelf.obsDate) {
+                o.observedOn = strongSelf.obsDate;
+                o.localObservedOn = o.observedOn;
+                o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+            }
             
             if (weakSelf.taxon) {
                 o.taxon = weakSelf.taxon;
@@ -72,7 +93,42 @@
                 po.project = weakSelf.project;
             }
             
-            [o addAssets:confirmedAssets];
+            NSInteger idx = 0;
+            for (UIImage *image in confirmedAssets) {
+                ObservationPhoto *op = [ObservationPhoto object];
+                op.position = @(idx);
+                [op setObservation:o];
+                [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+                
+                NSError *saveError = nil;
+                BOOL saved = [[ImageStore sharedImageStore] storeImage:image
+                                                                forKey:op.photoKey
+                                                                 error:&saveError];
+                if (saveError) {
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                                message:saveError.localizedDescription
+                                               delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                      otherButtonTitles:nil] show];
+                    [o destroy];
+                    [op destroy];
+                    return;
+                } else if (!saved) {
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                                message:NSLocalizedString(@"Unknown error", @"Message body when we don't know the error")
+                                               delegate:nil
+                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                      otherButtonTitles:nil] show];
+                    [o destroy];
+                    [op destroy];
+                    return;
+                }
+                
+                op.localCreatedAt = [NSDate date];
+                op.localUpdatedAt = [NSDate date];
+
+                idx++;
+            }
             
             ObsEditV2ViewController *editObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
             editObs.observation = o;
@@ -81,10 +137,10 @@
             
             // for sizzle
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            [weakSelf.navigationController setDelegate:appDelegate];
+            [strongSelf.navigationController setDelegate:appDelegate];
             
-            [weakSelf.navigationController setNavigationBarHidden:NO animated:YES];
-            [weakSelf.navigationController pushViewController:editObs animated:YES];
+            [strongSelf.navigationController setNavigationBarHidden:NO animated:YES];
+            [strongSelf.navigationController pushViewController:editObs animated:YES];
         };
     }
     
@@ -198,36 +254,41 @@
         hud.dimBackground = YES;
         
         // embed geo
-        CLLocationManager *loc = [[CLLocationManager alloc] init];
+        if (self.locationManager.location) {
+            self.obsLocation = self.locationManager.location;
+        }
+        self.obsDate = [NSDate date];
         
         [phLib performChanges:^{
             PHAssetChangeRequest *request = [PHAssetChangeRequest creationRequestForAssetFromImage:self.image];
-            if (loc.location) {
-                request.location = loc.location;
+            if (self.locationManager.location) {
+                request.location = self.locationManager.location;
             }
+            request.creationDate = [NSDate date];
         } completionHandler:^(BOOL success, NSError * _Nullable error) {
-            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-            
-            if (error) {
-                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                    error.localizedDescription]];
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
-                                                                               message:error.localizedDescription
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                          style:UIAlertActionStyleCancel
-                                                        handler:nil]];
-                [self presentViewController:alert animated:YES completion:nil];
-            } else {
-                if (success) {
-                    self.confirmFollowUpAction( @[ self.image ]);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                
+                if (error) {
+                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
+                                                        error.localizedDescription]];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
+                                                                                   message:error.localizedDescription
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                              style:UIAlertActionStyleCancel
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                } else {
+                    if (success) {
+                        self.confirmFollowUpAction( @[ self.image ]);
+                    }
                 }
-            }
+            });
         }];
-    } else if (self.assets) {
+    } else if (self.downloadedImages) {
         // can proceed directly to followup
-        
-        self.confirmFollowUpAction(self.assets);
+        self.confirmFollowUpAction(self.downloadedImages);
     }
 }
 
@@ -236,16 +297,13 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.navigationController setToolbarHidden:YES animated:NO];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
     if (self.image) {
         self.multiImageView.imageCount = 1;
         UIImageView *iv = [[self.multiImageView imageViews] firstObject];
         iv.image = self.image;
-        self.numberOfLoadedImages = 1;
+        iv.contentMode = UIViewContentModeScaleAspectFit;
+        [self.downloadedImages addObject:self.image];
         [self configureNextButton];
     } else if (self.assets && self.assets.count > 0) {
         self.multiImageView.imageCount = self.assets.count;
@@ -253,6 +311,13 @@
         // load images for assets
         for (int i = 0; i < self.assets.count; i++) {
             PHAsset *asset = self.assets[i];
+            if (asset.location && !self.obsLocation) {
+                self.obsLocation = asset.location;
+            }
+            if (asset.creationDate && !self.obsDate) {
+                self.obsDate = asset.creationDate;
+            }
+            
             UIImageView *iv = self.multiImageView.imageViews[i];
             M13ProgressViewPie *pie = self.multiImageView.progressViews[i];
             
@@ -278,7 +343,7 @@
                                                             pie.hidden = NO;
                                                         } else {
                                                             pie.hidden = YES;
-                                                            self.numberOfLoadedImages++;
+                                                            [self.downloadedImages addObject:result];
                                                             [self configureNextButton];
                                                         }
                                                         [iv setImage:result];
@@ -286,6 +351,12 @@
         }
         self.multiImageView.hidden = NO;
     }
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
 }
 
 - (void)dealloc {
@@ -293,9 +364,9 @@
 }
 
 - (void)configureNextButton {
-    if (self.numberOfLoadedImages == self.assets.count) {
+    if (self.downloadedImages.count == self.assets.count) {
         confirm.enabled = YES;
-    } else if (self.numberOfLoadedImages == 1 && self.image) {
+    } else if (self.downloadedImages.count == 1 && self.image) {
         confirm.enabled = YES;
     } else {
         confirm.enabled = NO;
@@ -326,59 +397,5 @@
         }
     }
 }
-
-#pragma mark - iNat API Request
-
-- (void)loadRemoteIconicTaxa {
-    // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
-        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        
-        return;
-    }
-    
-    __weak typeof(self)weakSelf = self;
-    self.taxaLoader = [[RKObjectManager sharedManager] loaderWithResourcePath:@"/taxa"];
-    self.taxaLoader.objectMapping = [Taxon mapping];
-    self.taxaLoader.onDidLoadObjects = ^(NSArray *objects) {
-        __strong typeof(weakSelf)strongSelf = weakSelf;
-        
-        // update timestamps on us and taxa objects
-        NSDate *now = [NSDate date];
-        [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                              NSUInteger idx,
-                                              BOOL *stop) {
-            [o setSyncedAt:now];
-        }];
-        
-        // save into core data
-        NSError *saveError = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-        if (saveError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving object store: %@",
-                                                saveError.localizedDescription]];
-            return;
-        }
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
-        request.sortDescriptors = @[ [[NSSortDescriptor alloc] initWithKey:@"defaultName" ascending:YES] ];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"isIconic == YES"]];
-        
-        NSError *fetchError;
-        strongSelf.iconicTaxa = [[NSManagedObjectContext defaultContext] executeFetchRequest:request
-                                                                                       error:&fetchError];
-    };
-    self.taxaLoader.onDidFailLoadWithError = ^(NSError *error) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                            error.localizedDescription]];
-    };
-    self.taxaLoader.onDidFailLoadWithError = ^(NSError *error) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error loading: %@",
-                                            error.localizedDescription]];
-    };
-    [[Analytics sharedClient] debugLog:@"Network - Load iconic taxa in confirm"];
-    [self.taxaLoader sendAsynchronously];
-}
-
 
 @end

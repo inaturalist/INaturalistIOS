@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <SDWebImage/SDImageCache.h>
+#import <ImageIO/ImageIO.h>
 
 #import "ImageStore.h"
 #import "Analytics.h"
@@ -80,6 +81,72 @@
     }
     
     return img;
+}
+
+- (BOOL)storeImage:(UIImage *)image forKey:(NSString *)key error:(NSError **)error {
+    [[Analytics sharedClient] debugLog:@"IMAGE STORE: begin"];
+
+    @autoreleasepool {
+        // large = fullsize image but truncated to 2048x2048 pixels max (aspect ratio scaled)
+        CGSize imageSize = image.size;
+        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
+        CGFloat scale = 1;
+        
+        if (longestSide > INATURALIST_ORG_MAX_PHOTO_EDGE) {
+            scale = INATURALIST_ORG_MAX_PHOTO_EDGE / longestSide;
+        }
+        
+        // resize with CGImage is fast enough for us
+        UIImage *resized = [UIImage imageWithCGImage:image.CGImage
+                                               scale:scale
+                                         orientation:image.imageOrientation];
+        NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
+        [[self nonexpiringImageCache] storeImage:resized forKey:largeKey];
+    }
+    
+    @autoreleasepool {
+        // small = 640x640
+        CGSize imageSize = image.size;
+        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
+        CGFloat scale = 1;
+        
+        if (longestSide > 640.0) {
+            scale = 640.0 / longestSide;
+        }
+        
+        // resize with CGImage is fast enough for us
+        UIImage *resized = [UIImage imageWithCGImage:image.CGImage
+                                               scale:scale
+                                         orientation:image.imageOrientation];
+
+        NSString *smallKey = [self keyForKey:key forSize:ImageStoreSmallSize];
+        [[SDImageCache sharedImageCache] storeImage:resized forKey:smallKey];
+    }
+    
+    @autoreleasepool {
+        UIImage *thumb = [[self class] imageWithImage:image scaledToFillSize:CGSizeMake(128, 128)];
+        NSString *squareKey = [self keyForKey:key forSize:ImageStoreSquareSize];
+        [[SDImageCache sharedImageCache] storeImage:thumb forKey:squareKey];
+    }
+    
+    [[Analytics sharedClient] debugLog:@"IMAGE STORE: done"];
+    return YES;
+}
+
++ (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size {
+    CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
+    CGFloat width = image.size.width * scale;
+    CGFloat height = image.size.height * scale;
+    CGRect imageRect = CGRectMake((size.width - width)/2.0f,
+                                  (size.height - height)/2.0f,
+                                  width,
+                                  height);
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    [image drawInRect:imageRect];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 - (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError *__autoreleasing *)storeError {

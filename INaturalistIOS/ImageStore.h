@@ -24,6 +24,7 @@ enum {
 + (ImageStore *)sharedImageStore;
 - (UIImage *)find:(NSString *)key forSize:(int)size;
 - (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError **)error;
+- (BOOL)storeImage:(UIImage *)image forKey:(NSString *)key error:(NSError **)error;
 - (void)destroy:(NSString *)key;
 - (NSString *)createKey;
 - (NSString *)pathForKey:(NSString *)key;
