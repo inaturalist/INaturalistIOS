@@ -601,8 +601,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
     }
     
-    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observation isEqual:self.observation];
+    
+    NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
+        return [ofv.observationField.recordID isEqual:field.observationField.recordID];
     }];
     
     if (ofvs.count > 0) {
