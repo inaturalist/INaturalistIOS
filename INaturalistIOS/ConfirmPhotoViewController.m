@@ -150,9 +150,9 @@
         MultiImageView *iv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
         
-        iv.borderColor = [UIColor blackColor];
-        iv.pieBorderWidth = 2.0f;
-        iv.pieColor = [UIColor blackColor];
+        iv.borderColor = [UIColor lightGrayColor];
+        iv.pieBorderWidth = 4.0f;
+        iv.pieColor = [UIColor lightGrayColor];
         
         iv;
     });
@@ -320,6 +320,7 @@
             
             UIImageView *iv = self.multiImageView.imageViews[i];
             M13ProgressViewPie *pie = self.multiImageView.progressViews[i];
+            UILabel *alertDecoration = self.multiImageView.alertViews[i];
             
             PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
             
@@ -327,10 +328,15 @@
             options.networkAccessAllowed = YES;
             options.resizeMode = PHImageRequestOptionsResizeModeNone;
             
+            __weak typeof(self)weakSelf = self;
             options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-                pie.hidden = NO;
-                [iv bringSubviewToFront:pie];
-                [pie setProgress:progress animated:YES];
+                if (error) {
+                    *stop = YES;
+                } else {
+                    pie.hidden = NO;
+                    [iv bringSubviewToFront:pie];
+                    [pie setProgress:progress animated:YES];
+                }
             };
             
             [[PHImageManager defaultManager] requestImageForAsset:asset
@@ -338,15 +344,36 @@
                                                       contentMode:PHImageContentModeAspectFit
                                                           options:options
                                                     resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                        __strong typeof(weakSelf) strongSelf = weakSelf;
                                                         NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
-                                                        if ([isDegraded boolValue]) {
-                                                            pie.hidden = NO;
-                                                        } else {
+                                                        NSError *error = [info valueForKey:PHImageErrorKey];
+                                                        if (result) {
+                                                            [iv setImage:result];
+                                                            if ([isDegraded boolValue]) {
+                                                                pie.hidden = NO;
+                                                            } else {
+                                                                pie.hidden = YES;
+                                                                [self.downloadedImages addObject:result];
+                                                                [self configureNextButton];
+                                                            }
+                                                        } else if (error) {
                                                             pie.hidden = YES;
-                                                            [self.downloadedImages addObject:result];
-                                                            [self configureNextButton];
+                                                            alertDecoration.hidden = NO;
+                                                            
+                                                            NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
+                                                            if (underlyingError) {
+                                                                error = underlyingError;
+                                                            }
+
+                                                            NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
+                                                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                           message:error.localizedDescription
+                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                                                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                                                      style:UIAlertActionStyleDefault
+                                                                                                    handler:nil]];
+                                                            [strongSelf presentViewController:alert animated:YES completion:nil];
                                                         }
-                                                        [iv setImage:result];
                                                     }];
         }
         self.multiImageView.hidden = NO;

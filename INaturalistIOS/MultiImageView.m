@@ -7,6 +7,7 @@
 //
 
 #import <M13ProgressSuite/M13ProgressViewPie.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "MultiImageView.h"
 #import "UIColor+INaturalist.h"
@@ -29,6 +30,11 @@
     M13ProgressViewPie *threePie;
     M13ProgressViewPie *fourPie;
 
+    UILabel *oneAlert;
+    UILabel *twoAlert;
+    UILabel *threeAlert;
+    UILabel *fourAlert;
+
 }
 @end
 
@@ -40,6 +46,10 @@
 
 - (NSArray *)imageViews {
     return @[ one, two, three, four ];
+}
+
+- (NSArray *)alertViews {
+    return @[ oneAlert, twoAlert, threeAlert, fourAlert ];
 }
 
 - (void)setImageCount:(NSInteger)imageCount {
@@ -148,10 +158,19 @@
             [self addSubview:iv];
         }
         
-        onePie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-        twoPie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-        threePie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-        fourPie = [[M13ProgressViewPie alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        CGRect decoratorRect = CGRectMake(0, 0, 50, 50);
+        onePie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
+        twoPie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
+        threePie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
+        fourPie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
+        
+        oneAlert = [[UILabel alloc] initWithFrame:decoratorRect];
+        twoAlert = [[UILabel alloc] initWithFrame:decoratorRect];
+        threeAlert = [[UILabel alloc] initWithFrame:decoratorRect];
+        fourAlert = [[UILabel alloc] initWithFrame:decoratorRect];
+        
+        FAKIcon *alert = [FAKIonIcons alertCircledIconWithSize:50];
+        [alert addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
         
         for (int i = 0; i < 4; i++) {
             M13ProgressViewPie *pie = [self progressViews][i];
@@ -164,9 +183,20 @@
             pie.backgroundRingWidth = _pieBorderWidth;
             pie.primaryColor = _pieColor;
             pie.secondaryColor = _pieColor;
-            
             [iv addSubview:pie];
             pie.center = iv.center;
+            
+            UILabel *label = [self alertViews][i];
+            label.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin  |
+                                    UIViewAutoresizingFlexibleRightMargin   |
+                                    UIViewAutoresizingFlexibleTopMargin     |
+                                    UIViewAutoresizingFlexibleBottomMargin);
+            label.textAlignment = NSTextAlignmentCenter;
+            label.clipsToBounds = YES;
+            label.hidden = YES;
+            [iv addSubview:label];
+            label.center = iv.center;
+            label.attributedText = [alert attributedString];
         }
     }
     

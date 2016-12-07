@@ -17,6 +17,7 @@
 
 @property (readonly) NSArray *imageViews;
 @property (readonly) NSArray *progressViews;
+@property (readonly) NSArray *alertViews;
 
 @property NSInteger imageCount;
 
