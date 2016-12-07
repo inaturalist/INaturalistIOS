@@ -302,6 +302,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
         [self configureSimpleCell:cell forObsField:field];
         return cell;
+    } else if ([field.observationField.datatype isEqualToString:@"time"]) {
+        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
+        [self configureSimpleCell:cell forObsField:field];
+        return cell;
     } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
         [self configureSimpleCell:cell forObsField:field];
@@ -512,8 +516,32 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                                          } cancelBlock:nil
                                                origin:self.view] showActionSheetPicker];
         
-    } else {
+    } else if ([field.observationField.datatype isEqualToString:@"time"]) {
         
+        ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        static NSDateFormatter *dateFormatter;
+        if (!dateFormatter) {
+            dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.dateFormat = @"HH:mm:ss";
+        }
+        NSDate *date;
+        if (cell.valueLabel.text && cell.valueLabel.text.length > 0) {
+            date = [dateFormatter dateFromString:cell.valueLabel.text];
+        }
+        if (!date) {
+            date = [NSDate date];
+        }
+        
+        __weak typeof(self) weakSelf = self;
+        [[[ActionSheetDatePicker alloc] initWithTitle:field.observationField.name
+                                       datePickerMode:UIDatePickerModeTime
+                                         selectedDate:date
+                                            doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+                                                NSDate *date = (NSDate *)selectedDate;
+                                                cell.valueLabel.text = [dateFormatter stringFromDate:date];
+                                                [weakSelf saveVisibleObservationFieldValues];
+                                            } cancelBlock:nil
+                                               origin:self.view] showActionSheetPicker];
     }
     
 }
