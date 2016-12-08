@@ -63,6 +63,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
+@interface QBImagePickerController ()
+@property (nonatomic, strong) UINavigationController *albumsNavigationController;
+@end
+
 @interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
     
     CLLocationManager *_locationManager;
@@ -72,6 +76,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (readonly) CLLocationManager *locationManager;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
+@property QBImagePickerController *imagePicker;
 @end
 
 @implementation ObsEditV2ViewController
@@ -413,19 +418,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 
 - (void)pushLibrary {
-    // no camera available
-    QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
-    imagePickerController.delegate = self;
-    imagePickerController.allowsMultipleSelection = YES;
-    imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+    // qbimagepicker for library multi-select
+    self.imagePicker = [[QBImagePickerController alloc] init];
+    self.imagePicker.delegate = self;
+    self.imagePicker.allowsMultipleSelection = YES;
+    self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
     
-    if (self.presentedViewController && [self.presentedViewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-        [nav setNavigationBarHidden:NO animated:YES];
-        [nav pushViewController:imagePickerController animated:YES];
+    if (self.presentedViewController) {
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
+    [nav setNavigationBarHidden:NO animated:YES];
     } else {
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:imagePickerController];
-        [self presentViewController:nav animated:YES completion:nil];
+        [self presentViewController:self.imagePicker animated:YES completion:nil];
     }
 }
 
@@ -496,25 +500,62 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - QBImagePicker delegate
 
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets {
-    // add to observation
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
+    confirm.assets = assets;
+    __weak typeof(self) weakSelf = self;
+    confirm.confirmFollowUpAction = ^(NSArray *confirmedAssets) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        NSInteger idx = 0;
+        ObservationPhoto *op = self.observation.sortedObservationPhotos.lastObject;
+        if (op) {
+            idx = op.position.integerValue + 1;
+        }
+        for (UIImage *image in confirmedAssets) {
+            ObservationPhoto *op = [ObservationPhoto object];
+            op.position = @(idx);
+            [op setObservation:strongSelf.observation];
+            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+            
+            NSError *saveError = nil;
+            BOOL saved = [[ImageStore sharedImageStore] storeImage:image
+                                                            forKey:op.photoKey
+                                                             error:&saveError];
+            if (saveError) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                            message:saveError.localizedDescription
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
+                [op destroy];
+                return;
+            } else if (!saved) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
+                                            message:NSLocalizedString(@"Unknown error", @"Message body when we don't know the error")
+                                           delegate:nil
+                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                  otherButtonTitles:nil] show];
+                [op destroy];
+                return;
+            }
+            
+            op.localCreatedAt = [NSDate date];
+            op.localUpdatedAt = [NSDate date];
+            
+            idx++;
+        }
+        
+        [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+    };
+
+    if (self.presentedViewController == imagePickerController) {
+        [imagePickerController.albumsNavigationController pushViewController:confirm animated:NO];
+    } else {
+        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+        [nav pushViewController:confirm animated:NO];
+    }
     
-    [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
-                     withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"Source": @"Library",
-                                      @"Count": @(assets.count)
-                                      }];
-    
-    __weak __typeof__(self) weakSelf = self;
-    [self.observation addAssets:assets
-                      afterEach:^(ObservationPhoto *op) {
-                          __typeof__(self) strongSelf = weakSelf;
-                          if (strongSelf) {
-                              [strongSelf.tableView reloadData];
-                          }
-                      }];
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
