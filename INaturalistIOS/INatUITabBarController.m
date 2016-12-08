@@ -80,12 +80,6 @@ static char PROJECT_ASSOCIATED_KEY;
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleUserSavedObservationNotification:)
-                                                 name:INatUserSavedObservationNotification
-                                               object:nil];
-    
-    
     // tab bar delegate to intercept selection of the "observe" tab
     self.delegate = self;
     
@@ -213,7 +207,6 @@ static char PROJECT_ASSOCIATED_KEY;
         picker.delegate = self;
         picker.allowsEditing = NO;
         picker.showsCameraControls = NO;
-        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
         
         if (taxon) {
             objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
@@ -285,7 +278,9 @@ static char PROJECT_ASSOCIATED_KEY;
         
         picker.cameraOverlayView = overlay;
         
-        [self presentViewController:picker animated:YES completion:nil];
+        [self presentViewController:picker animated:YES completion:^{
+            picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
+        }];
     } else {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];

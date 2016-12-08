@@ -13,7 +13,6 @@
 
 @interface INatUITabBarController : UITabBarController
 
-- (void)handleUserSavedObservationNotification:(NSNotification *)notification;
 - (void)setUpdatesBadge;
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project;
 @end
