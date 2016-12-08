@@ -72,7 +72,7 @@
 {
     RXMLElement *rx = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%ld]", [self currentXPath], (long)position]];
     if (rx) {
-        GuideTaxonViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"GuideTaxonViewController"];
+        GuideTaxonViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"GuideTaxonViewController"];
         vc.guideTaxon = [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:rx];
         vc.localPosition = position;
         return vc;
