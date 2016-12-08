@@ -29,6 +29,7 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "User.h"
+#import "ExploreTaxonRealm.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -250,7 +251,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 #pragma mark - TaxaSearchViewControllerDelegate
 
-- (void)taxaSearchViewControllerChoseTaxon:(Taxon *)taxon {
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
     [self.navigationController popToViewController:self animated:YES];
     
     if (!self.taxaSearchIndexPath) { return; }
@@ -265,7 +266,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     if (ofvs.count > 0) {
         // pick one?
         ObservationFieldValue *ofv = ofvs.anyObject;
-        ofv.value = [taxon.recordID stringValue];
+        ofv.value = [NSString stringWithFormat:@"%ld", taxon.taxonId];
         ofv.localUpdatedAt = [NSDate date];
     }
     
@@ -610,11 +611,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         // pick one?
         ObservationFieldValue *ofv = ofvs.anyObject;
         if ([field.observationField.datatype isEqualToString:@"taxon"]) {
-            Taxon *t = [Taxon objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", ofv.value]];
-            if (t) {
-                cell.valueLabel.text = t.name;
+            ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(ofv.value.integerValue)];
+            if (etr) {
+                cell.valueLabel.text = etr.commonName ?: etr.scientificName;
             } else {
-                cell.valueLabel.text = ofv.value.length == 0 ? @"unknown" : ofv.value;
+                cell.valueLabel.text = (ofv.value.length == 0) ? @"unknown" : ofv.value;
             }
 
         } else {
