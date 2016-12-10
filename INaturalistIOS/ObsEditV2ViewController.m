@@ -587,8 +587,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     confirm.confirmFollowUpAction = ^(NSArray *assets) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
         
-        NSInteger lastIndex = [[[self.observation sortedObservationPhotos] lastObject] index];
-        NSInteger idx = lastIndex + 1;
+        NSInteger idx = 0;
+        ObservationPhoto *lastOp = [[self.observation sortedObservationPhotos] lastObject];
+        if (lastOp) {
+            idx = [[lastOp position] integerValue] + 1;
+        }
         for (UIImage *image in assets) {
             ObservationPhoto *op = [ObservationPhoto object];
             op.position = @(idx);
