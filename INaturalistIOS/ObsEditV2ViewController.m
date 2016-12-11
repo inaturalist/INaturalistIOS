@@ -546,7 +546,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             idx++;
         }
         
-        [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+        [strongSelf dismissViewControllerAnimated:YES completion:nil];
     };
 
     if (self.presentedViewController == imagePickerController) {
