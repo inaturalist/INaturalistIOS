@@ -548,14 +548,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         [strongSelf dismissViewControllerAnimated:YES completion:nil];
     };
-
-    if (self.presentedViewController == imagePickerController) {
-        [imagePickerController.albumsNavigationController pushViewController:confirm animated:NO];
-    } else {
-        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-        [nav pushViewController:confirm animated:NO];
-    }
     
+    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+    [nav pushViewController:confirm animated:YES];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
