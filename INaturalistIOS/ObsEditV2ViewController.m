@@ -425,9 +425,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
     
     if (self.presentedViewController) {
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
-    [nav setNavigationBarHidden:NO animated:YES];
+        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
+        [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
+        [nav setNavigationBarHidden:NO animated:YES];
     } else {
         [self presentViewController:self.imagePicker animated:YES completion:nil];
     }
