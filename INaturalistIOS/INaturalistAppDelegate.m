@@ -32,7 +32,6 @@
 #import "Analytics.h"
 #import "LoginController.h"
 #import "INatUITabBarController.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "NSURL+INaturalist.h"
 #import "DeletedRecord.h"
 #import "Fave.h"

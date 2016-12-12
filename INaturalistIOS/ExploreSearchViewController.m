@@ -34,11 +34,11 @@
 #import "AutocompleteSearchItem.h"
 #import "ShortcutSearchItem.h"
 #import "ExploreLeaderboardViewController.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
 #import "User.h"
+#import "INaturalistAppDelegate.h"
 
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {

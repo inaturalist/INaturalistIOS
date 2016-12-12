@@ -31,7 +31,7 @@
 #import "ProjectObservation.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "INaturalistAppDelegate.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f

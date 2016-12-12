@@ -32,7 +32,6 @@
 #import "NXOAuth2.h"
 #import "Analytics.h"
 #import "INaturalistAppDelegate.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "PartnerController.h"
 #import "Partner.h"
 #import "LoginController.h"

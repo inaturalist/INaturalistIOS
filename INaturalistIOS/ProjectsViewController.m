@@ -15,7 +15,6 @@
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
 #import "ProjectTableViewCell.h"

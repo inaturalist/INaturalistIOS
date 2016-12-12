@@ -235,13 +235,11 @@
 		FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FACD11EE1C56E9720041E318 /* TaxonCell.xib */; };
 		FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FACEEB271D1C607600B2EC62 /* ExploreUser.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
-		FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
 		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
-		FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
 		FAEF23311C7CF20500208F44 /* ProjectDetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */; };
 		FAEF23351C7D00A600208F44 /* INatAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23341C7D00A600208F44 /* INatAPI.m */; };
@@ -796,8 +794,6 @@
 		FACEEB271D1C607600B2EC62 /* ExploreUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUser.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
-		FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmPhotoToEditObsTransitionAnimator.h; sourceTree = "<group>"; };
-		FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmPhotoToEditObsTransitionAnimator.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
@@ -808,8 +804,6 @@
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
-		FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "INaturalistAppDelegate+TransitionAnimators.h"; sourceTree = "<group>"; };
-		FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "INaturalistAppDelegate+TransitionAnimators.m"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
 		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -978,11 +972,8 @@
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
-				FAE924CE1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.h */,
-				FAE924CF1B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m */,
 				FA711AA51D52873600C4FFDB /* User Interface */,
 				19F621A1150ECD0100C58F28 /* Models */,
-				FAA872D21B15124D00366521 /* Sizzle */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 				19F621A3150ECD8000C58F28 /* Views */,
 			);
@@ -1575,23 +1566,6 @@
 			name = "Taxon Details";
 			sourceTree = "<group>";
 		};
-		FAA872D21B15124D00366521 /* Sizzle */ = {
-			isa = PBXGroup;
-			children = (
-				FAD6F0AD1C17C32B0097899F /* New Obs Animators */,
-			);
-			name = Sizzle;
-			sourceTree = "<group>";
-		};
-		FAD6F0AD1C17C32B0097899F /* New Obs Animators */ = {
-			isa = PBXGroup;
-			children = (
-				FAD6F0AE1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.h */,
-				FAD6F0AF1C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m */,
-			);
-			name = "New Obs Animators";
-			sourceTree = "<group>";
-		};
 		FADBED5E1D2C81D400753692 /* Realm */ = {
 			isa = PBXGroup;
 			children = (
@@ -2049,9 +2023,7 @@
 				FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */,
 				FA1B58CC1D626DFD00663150 /* ABSorter.m in Sources */,
 				FA74A6251CB4C517002EBD0A /* RankedUserObsSpeciesCell.m in Sources */,
-				FAE924D01B1E5EC700B43B46 /* INaturalistAppDelegate+TransitionAnimators.m in Sources */,
 				FA4E730419FAD14E00A9AB5D /* ExploreContainerViewController.m in Sources */,
-				FAD6F0B01C17C3580097899F /* ConfirmPhotoToEditObsTransitionAnimator.m in Sources */,
 				19F62199150ECC1200C58F28 /* Project.m in Sources */,
 				19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */,
 				FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */,

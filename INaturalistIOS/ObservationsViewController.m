@@ -38,7 +38,7 @@
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
-#import "INaturalistAppDelegate+TransitionAnimators.h"
+#import "INaturalistAppDelegate.h"
 #import "UploadManagerNotificationDelegate.h"
 #import "ObservationViewNormalCell.h"
 #import "ObservationViewUploadingCell.h"
