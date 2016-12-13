@@ -108,6 +108,7 @@
                 self.backgroundFetchTask = UIBackgroundTaskInvalid;
             }];
             
+            __weak typeof(self)weakSelf = self;
             [self.loginController getJWTTokenSuccess:^(NSDictionary *info) {
                 ObservationAPI *api = [[ObservationAPI alloc] init];
                 [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
@@ -120,8 +121,8 @@
                                                               }];
                             completionHandler(UIBackgroundFetchResultFailed);
                         }
-                        [application endBackgroundTask:self.backgroundFetchTask];
-                        self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                        [application endBackgroundTask:weakSelf.backgroundFetchTask];
+                        weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
                         return;
                     }
                     
@@ -132,7 +133,7 @@
                     for (ExploreUpdate *eu in myResults) {
                         [obsIds addObject:@(eu.resourceId)];
                     }
-                    [self loadObservationsForIds:[obsIds allObjects]];
+                    [weakSelf loadObservationsForIds:[obsIds allObjects]];
                     
                     RLMRealm *realm = [RLMRealm defaultRealm];
                     [realm beginWriteTransaction];
@@ -151,8 +152,8 @@
                         completionHandler(UIBackgroundFetchResultNewData);
                     }
                     
-                    [application endBackgroundTask:self.backgroundFetchTask];
-                    self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                    [application endBackgroundTask:weakSelf.backgroundFetchTask];
+                    weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
                 }];
                 
             } failure:^(NSError *error) {
@@ -164,8 +165,8 @@
                                                       }];
                     completionHandler(UIBackgroundFetchResultFailed);
                 }
-                [application endBackgroundTask:self.backgroundFetchTask];
-                self.backgroundFetchTask = UIBackgroundTaskInvalid;
+                [application endBackgroundTask:weakSelf.backgroundFetchTask];
+                weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
             }];
         }
     }
