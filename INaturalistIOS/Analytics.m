@@ -139,7 +139,6 @@ NSString *kAnalyticsEventCreateObservation =                    @"Create Observa
 NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
 NSString *kAnalyticsEventSyncStopped =                          @"Sync Stopped";
 NSString *kAnalyticsEventSyncFailed =                           @"Sync Failed";
-NSString *kAnalyticsEventObservationsPullToRefresh =            @"Pull to Refresh Observations";
 
 // login
 NSString *kAnalyticsEventLogin =                                @"Login";
@@ -147,12 +146,6 @@ NSString *kAnalyticsEventLoginFailed =                          @"Login Failed";
 NSString *kAnalyticsEventSignup =                               @"Create Account";
 NSString *kAnalyticsEventLogout =                               @"Logout";
 NSString *kAnalyticsEventForgotPassword =                       @"Forgot Password";
-
-// signup splash
-NSString *kAnalyticsEventSplashFacebook =                       @"Splash Screen - Facebook";
-NSString *kAnalyticsEventSplashGoogle =                         @"Splash Screen - Google";
-NSString *kAnalyticsEventSplashCancel =                         @"Splash Screen - Cancel";
-NSString *kAnalyticsEventSplashSkip =                           @"Splash Screen - Skip";
 
 // partners
 NSString *kAnalyticsEventPartnerAlertPresented =                @"Partner Alert Presented";
@@ -196,9 +189,6 @@ NSString *kAnalyticsEventObservationShareCancelled =            @"Obs - Share Ca
 NSString *kAnalyticsEventObservationShareFinished =             @"Obs - Share Finished";
 NSString *kAnalyticsEventObservationFave =                      @"Obs - Fave";
 NSString *kAnalyticsEventObservationUnfave =                    @"Obs - Unfave";
-NSString *kAnalyticsEventObservationChangeSection =             @"Obs - Change Section";
-NSString *kAnalyticsEventObservationViewMap =                   @"Obs - View Map";
-NSString *kAnalyticsEventObservationViewProjects =              @"Obs - View Projects";
 NSString *kAnalyticsEventObservationPhotoFailedToLoad =         @"Obs - Photo Failed to Load";
 
 // settings

@@ -379,9 +379,6 @@ static char PARTNER_ASSOCIATED_KEY;
 
 
 - (IBAction)facebookPressed:(id)sender {
-    [[Analytics sharedClient] event:kAnalyticsEventSplashFacebook
-                     withProperties:@{ @"Version": @"Onboarding" }];
-    
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
@@ -434,10 +431,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                                          }];
 }
 
-- (IBAction)googlePressed:(id)sender {
-    [[Analytics sharedClient] event:kAnalyticsEventSplashGoogle
-                     withProperties:@{ @"Version": @"Onboarding" }];
-    
+- (IBAction)googlePressed:(id)sender {    
     if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)

@@ -449,13 +449,9 @@
         // no implicit upload
         if (!notify) { return; }
         
-        [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
-                         withProperties:@{ @"ActionTaken" : @"Sync" }];
         [self.refreshControl endRefreshing];
         [self sync:nil];
     } else {
-        [[Analytics sharedClient] event:kAnalyticsEventObservationsPullToRefresh
-                         withProperties:@{ @"ActionTaken" : @"RefreshData" }];
         [self refreshData];
     }
 }

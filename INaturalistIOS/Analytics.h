@@ -48,7 +48,6 @@ extern NSString *kAnalyticsEventCreateObservation;
 extern NSString *kAnalyticsEventSyncObservation;
 extern NSString *kAnalyticsEventSyncStopped;
 extern NSString *kAnalyticsEventSyncFailed;
-extern NSString *kAnalyticsEventObservationsPullToRefresh;
 
 // login
 extern NSString *kAnalyticsEventLogin;
@@ -56,12 +55,6 @@ extern NSString *kAnalyticsEventLoginFailed;
 extern NSString *kAnalyticsEventSignup;
 extern NSString *kAnalyticsEventLogout;
 extern NSString *kAnalyticsEventForgotPassword;
-
-// signup splash
-extern NSString *kAnalyticsEventSplashFacebook;
-extern NSString *kAnalyticsEventSplashGoogle;
-extern NSString *kAnalyticsEventSplashCancel;
-extern NSString *kAnalyticsEventSplashSkip;
 
 // partners
 extern NSString *kAnalyticsEventPartnerAlertPresented;
@@ -105,9 +98,6 @@ extern NSString *kAnalyticsEventObservationShareCancelled;
 extern NSString *kAnalyticsEventObservationShareFinished;
 extern NSString *kAnalyticsEventObservationFave;
 extern NSString *kAnalyticsEventObservationUnfave;
-extern NSString *kAnalyticsEventObservationChangeSection;
-extern NSString *kAnalyticsEventObservationViewMap;
-extern NSString *kAnalyticsEventObservationViewProjects;
 extern NSString *kAnalyticsEventObservationPhotoFailedToLoad;
 
 // settings
