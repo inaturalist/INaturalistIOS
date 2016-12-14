@@ -261,6 +261,9 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"guides" }];
+
     __weak typeof(self) weakSelf = self;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];

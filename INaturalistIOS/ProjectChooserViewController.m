@@ -80,6 +80,9 @@
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"project chooser" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

@@ -79,6 +79,9 @@
 }
 
 - (void)presentLoginSplashWithReason:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"observations" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
@@ -87,6 +90,9 @@
 }
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"observations" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

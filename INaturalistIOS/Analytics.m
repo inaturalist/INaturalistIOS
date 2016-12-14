@@ -223,3 +223,14 @@ NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download
 // background fetch
 NSString *kAnalyticsEventBackgroundFetchFailed =                @"Background Fetch Failed";
 
+// onboarding
+NSString *kAnalyticsEventNavigateOnboardingScreenLogo =         @"Navigate - Onboarding - Logo";
+NSString *kAnalyticsEventNavigateOnboardingScreenObserve =      @"Navigate - Onboarding - Observe";
+NSString *kAnalyticsEventNavigateOnboardingScreenShare =        @"Navigate - Onboarding - Share";
+NSString *kAnalyticsEventNavigateOnboardingScreenLearn =        @"Navigate - Onboarding - Learn";
+NSString *kAnalyticsEventNavigateOnboardingScreenContribue =    @"Navigate - Onboarding - Contribute";
+NSString *kAnalyticsEventNavigateOnboardingScreenLogin =        @"Navigate - Onboarding - Login";
+NSString *kAnalyticsEventOnboardingLoginSkip =                  @"Onboarding Login Skip";
+NSString *kAnalyticsEventOnboardingLoginCancel =                @"Onboarding Login Cancel";
+NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Login Action";
+

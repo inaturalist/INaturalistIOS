@@ -130,3 +130,15 @@ extern NSString *kAnalyticsEventDeleteDownloadedGuide;
 
 // background fetch
 extern NSString *kAnalyticsEventBackgroundFetchFailed;
+
+// onboarding
+extern NSString *kAnalyticsEventNavigateOnboardingScreenLogo;
+extern NSString *kAnalyticsEventNavigateOnboardingScreenObserve;
+extern NSString *kAnalyticsEventNavigateOnboardingScreenShare;
+extern NSString *kAnalyticsEventNavigateOnboardingScreenLearn;
+extern NSString *kAnalyticsEventNavigateOnboardingScreenContribue;
+extern NSString *kAnalyticsEventNavigateOnboardingScreenLogin;
+extern NSString *kAnalyticsEventOnboardingLoginSkip;
+extern NSString *kAnalyticsEventOnboardingLoginCancel;
+extern NSString *kAnalyticsEventOnboardingLoginPressed;
+

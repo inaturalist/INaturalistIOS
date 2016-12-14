@@ -12,6 +12,7 @@
 #import "OnboardingPageViewController.h"
 #import "OnboardingLoginViewController.h"
 #import "INaturalistAppDelegate.h"
+#import "Analytics.h"
 
 @interface OnboardingPageViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 @property NSArray *orderedViewControllers;
@@ -50,6 +51,8 @@
             return [onboarding instantiateViewControllerWithIdentifier:identifier];
         }
     }];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogo];
     
     [self setViewControllers:@[ [self.orderedViewControllers firstObject] ]
                    direction:UIPageViewControllerNavigationDirectionForward
@@ -139,6 +142,9 @@
 }
 
 - (void)scrollToViewControllerAtIndex:(NSInteger)newIndex {
+    [[Analytics sharedClient] event:[self analyticsEventForIndex:newIndex]
+                     withProperties:@{ @"via": @"onboarding" }];
+    
     UIViewController *first = [self.viewControllers firstObject];
     NSInteger currentIndex = [self.orderedViewControllers indexOfObject:first];
     UIPageViewControllerNavigationDirection direction = newIndex >= currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
@@ -165,5 +171,14 @@
     [self.onboardingDelegate onboardingPageViewController:self didUpdatePageIndex:index];
 }
 
+- (NSString *)analyticsEventForIndex:(NSInteger)index {
+    return @[
+             kAnalyticsEventNavigateOnboardingScreenLogo,
+             kAnalyticsEventNavigateOnboardingScreenObserve,
+             kAnalyticsEventNavigateOnboardingScreenShare,
+             kAnalyticsEventNavigateOnboardingScreenLearn,
+             kAnalyticsEventNavigateOnboardingScreenContribue,
+             kAnalyticsEventNavigateOnboardingScreenLogin][index];
+}
 
 @end

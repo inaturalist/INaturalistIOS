@@ -242,6 +242,9 @@ static const int ListControlIndexNearby = 2;
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
     
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"projects" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

@@ -673,6 +673,9 @@ static const int AutouploadSwitchTag = 102;
 }
 
 - (void)presentSignup {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"settings" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

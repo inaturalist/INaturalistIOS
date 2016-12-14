@@ -360,6 +360,9 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"project detail" }];
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

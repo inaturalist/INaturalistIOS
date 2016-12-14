@@ -393,6 +393,9 @@ static char PARTNER_ASSOCIATED_KEY;
         return;
     }
     
+    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
+                     withProperties:@{ @"mode": @"facebook" }];
+    
     __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController loginWithFacebookViewController:self
@@ -445,6 +448,9 @@ static char PARTNER_ASSOCIATED_KEY;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
+                     withProperties:@{ @"mode": @"google" }];
     
     __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -502,13 +508,13 @@ static char PARTNER_ASSOCIATED_KEY;
 
 - (IBAction)skipPressed:(id)sender {
     if (self.skipAction) {
-        [[Analytics sharedClient] event:kAnalyticsEventSplashSkip];
+        [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginSkip];
         self.skipAction();
     }
 }
 
 - (IBAction)closePressed:(id)sender {
-    [[Analytics sharedClient] event:kAnalyticsEventSplashCancel];
+    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginCancel];
     
     if (self.closeAction) {
         self.closeAction();
@@ -560,6 +566,9 @@ static char PARTNER_ASSOCIATED_KEY;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
+                     withProperties:@{ @"mode": @"signup" }];
     
     NSString *license = self.licenseMyData ? @"CC-BY_NC" : @"on";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
@@ -663,6 +672,9 @@ static char PARTNER_ASSOCIATED_KEY;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
+    
+    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
+                     withProperties:@{ @"mode": @"login" }];
     
     UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:hudView animated:YES];
