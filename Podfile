@@ -34,6 +34,7 @@ target :iNaturalist do
   pod 'TapkuLibrary', '0.3.8'
   pod 'SWRevealViewController', '2.3.0'
   pod 'RestKit', '0.10.3'
+  pod 'RestKit/Testing', '0.10.3'
   pod 'SDWebImage', '3.7.3'
   pod 'IFTTTLaunchImage', '0.4.4'
   pod 'JDStatusBarNotification', '1.5.2'

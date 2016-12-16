@@ -10,6 +10,7 @@
 
 #import "NewsItem.h"
 #import "User.h"
+#import "NSURL+INaturalist.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 
@@ -96,6 +97,25 @@ static RKManagedObjectMapping *defaultMapping = nil;
                 self.postCoverImageUrl = urlString;
             }
         }
+    }
+}
+
+- (NSURL *)urlForNewsItem {
+    NSString *path;
+    if ([self.parentTypeString isEqualToString:@"Project"]) {
+        // site baseurl
+        path = [NSString stringWithFormat:@"/projects/%ld/journal/%ld",
+                (long)self.parentRecordID.integerValue,
+                (long)self.recordID.integerValue];
+    } else {
+        path = [NSString stringWithFormat:@"/blog/%ld",
+                (long)self.recordID.integerValue];
+    }
+
+    if (path) {
+        return [[NSURL inat_baseURL] URLByAppendingPathComponent:path];
+    } else {
+        return nil;
     }
 }
 

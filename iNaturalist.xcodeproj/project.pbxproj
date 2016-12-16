@@ -169,6 +169,9 @@
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
+		FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6513361E04A03B0059FD70 /* NewsItemTests.m */; };
+		FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */ = {isa = PBXBuildFile; fileRef = FA6513391E04A1F80059FD70 /* SiteBlogPost.json */; };
+		FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */ = {isa = PBXBuildFile; fileRef = FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */; };
 		FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
 		FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */; };
 		FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */; };
@@ -648,6 +651,9 @@
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.10.xcdatamodel; sourceTree = "<group>"; };
+		FA6513361E04A03B0059FD70 /* NewsItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemTests.m; sourceTree = "<group>"; };
+		FA6513391E04A1F80059FD70 /* SiteBlogPost.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = SiteBlogPost.json; path = Fixtures/SiteBlogPost.json; sourceTree = "<group>"; };
+		FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = ProjectBlogPost.json; path = Fixtures/ProjectBlogPost.json; sourceTree = "<group>"; };
 		FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+INaturalist.h"; sourceTree = "<group>"; };
 		FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+INaturalist.m"; sourceTree = "<group>"; };
 		FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldSimpleValueCell.h; sourceTree = "<group>"; };
@@ -1463,6 +1469,23 @@
 			name = "Obs Detail View Models";
 			sourceTree = "<group>";
 		};
+		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
+				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
+			);
+			name = Fixtures;
+			sourceTree = "<group>";
+		};
+		FA65133D1E04A4900059FD70 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA6513361E04A03B0059FD70 /* NewsItemTests.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		FA6F87661B0E996B0019B157 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1634,6 +1657,8 @@
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA65133D1E04A4900059FD70 /* Model */,
+				FA6513381E04A1CA0059FD70 /* Fixtures */,
 				FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */,
 				FADE28B21B02D9AA00CA55FF /* Supporting Files */,
 			);
@@ -1821,6 +1846,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
+				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2167,6 +2194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
+				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

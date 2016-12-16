@@ -119,6 +119,7 @@ PODS:
     - RestKit/Network
     - RestKit/ObjectMapping/Core
     - XMLReader
+  - RestKit/Testing (0.10.3)
   - RestKit/UI (0.10.3)
   - SDWebImage (3.7.3):
     - SDWebImage/Core (= 3.7.3)
@@ -174,6 +175,7 @@ DEPENDENCIES:
   - RaptureXML (= 1.0.1)
   - Realm (= 1.0.1)
   - RestKit (= 0.10.3)
+  - RestKit/Testing (= 0.10.3)
   - SDWebImage (= 3.7.3)
   - SlackTextViewController (= 1.9)
   - Specta
@@ -273,6 +275,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 63047f857084269add9e341d8e5121233b9c4776
+PODFILE CHECKSUM: 0a9352fb394f981ba7ea943aeb8ad9cd69b2c995
 
 COCOAPODS: 1.1.1

@@ -33,4 +33,6 @@
 
 - (NSString *)parentTitleText;
 
+@property (readonly) NSURL *urlForNewsItem;
+
 @end
