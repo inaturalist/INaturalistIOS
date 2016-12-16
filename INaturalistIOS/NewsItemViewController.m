@@ -7,6 +7,7 @@
 //
 
 #import <YLMoment/YLMoment.h>
+#import <ARSafariActivity/ARSafariActivity.h>
 
 #import "NewsItemViewController.h"
 #import "NewsItem.h"
@@ -24,6 +25,12 @@
     
     self.title = self.newsItem.parentTitleText;
     
+    if (self.newsItem.urlForNewsItem) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                               target:self
+                                                                                               action:@selector(share:)];
+    }
+    
     [self loadPostBodyIntoWebView];
 }
 
@@ -31,6 +38,32 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
+- (void)share:(UIBarButtonItem *)button {
+    
+    [[Analytics sharedClient] event:kAnalyticsEventNewsShareStarted];
+    
+    
+    ARSafariActivity *safariActivity = [[ARSafariActivity alloc] init];
+    
+    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.newsItem.urlForNewsItem]
+                                                                           applicationActivities:@[safariActivity]];
+    activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        if (completed) {
+            [[Analytics sharedClient] event:kAnalyticsEventNewsShareFinished
+                             withProperties:@{ @"destination": activityType }];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventNewsShareCancelled];
+        }
+    };
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        activity.modalPresentationStyle = UIModalPresentationPopover;
+        activity.popoverPresentationController.barButtonItem = button;
+    }
+    [self presentViewController:activity animated:YES completion:nil];
+
 }
 
 - (void)loadPostBodyIntoWebView {

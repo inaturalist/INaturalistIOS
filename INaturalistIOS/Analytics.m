@@ -204,6 +204,9 @@ NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile Userna
 // news
 NSString *kAnalyticsEventNewsOpenArticle =                      @"News - Open Article";
 NSString *kAnalyticsEventNewsTapLink =                          @"News - Tap Link";
+NSString *kAnalyticsEventNewsShareStarted =                     @"News - Share Started";
+NSString *kAnalyticsEventNewsShareCancelled =                   @"News - Share Cancelled";
+NSString *kAnalyticsEventNewsShareFinished =                    @"News - Share Finished";
 
 // guides
 NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";

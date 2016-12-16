@@ -112,6 +112,9 @@ extern NSString *kAnalyticsEventProfileLoginChanged;
 // news
 extern NSString *kAnalyticsEventNewsOpenArticle;
 extern NSString *kAnalyticsEventNewsTapLink;
+extern NSString *kAnalyticsEventNewsShareStarted;
+extern NSString *kAnalyticsEventNewsShareCancelled;
+extern NSString *kAnalyticsEventNewsShareFinished;
 
 // guides
 extern NSString *kAnalyticsEventDownloadGuideStarted;
