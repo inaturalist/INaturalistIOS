@@ -130,6 +130,9 @@
     
     UIViewController *pending = [pendingViewControllers firstObject];
     NSInteger newIndex = [self.orderedViewControllers indexOfObject:pending];
+    [[Analytics sharedClient] event:[self analyticsEventForIndex:newIndex]
+                     withProperties:@{ @"via": @"onboarding" }];
+
     [self.onboardingDelegate onboardingPageViewController:self willUpdateToPageIndex:newIndex fromPageIndex:oldIndex];
 }
 
