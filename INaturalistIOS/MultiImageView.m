@@ -30,10 +30,10 @@
     M13ProgressViewPie *threePie;
     M13ProgressViewPie *fourPie;
 
-    UILabel *oneAlert;
-    UILabel *twoAlert;
-    UILabel *threeAlert;
-    UILabel *fourAlert;
+    UIImageView *oneAlert;
+    UIImageView *twoAlert;
+    UIImageView *threeAlert;
+    UIImageView *fourAlert;
 
 }
 @end
@@ -48,7 +48,7 @@
     return @[ one, two, three, four ];
 }
 
-- (NSArray *)alertViews {
+- (NSArray *)alertImageViews {
     return @[ oneAlert, twoAlert, threeAlert, fourAlert ];
 }
 
@@ -164,13 +164,17 @@
         threePie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
         fourPie = [[M13ProgressViewPie alloc] initWithFrame:decoratorRect];
         
-        oneAlert = [[UILabel alloc] initWithFrame:decoratorRect];
-        twoAlert = [[UILabel alloc] initWithFrame:decoratorRect];
-        threeAlert = [[UILabel alloc] initWithFrame:decoratorRect];
-        fourAlert = [[UILabel alloc] initWithFrame:decoratorRect];
+        oneAlert = [[UIImageView alloc] initWithFrame:decoratorRect];
+        twoAlert = [[UIImageView alloc] initWithFrame:decoratorRect];
+        threeAlert = [[UIImageView alloc] initWithFrame:decoratorRect];
+        fourAlert = [[UIImageView alloc] initWithFrame:decoratorRect];
         
-        FAKIcon *alert = [FAKIonIcons alertCircledIconWithSize:50];
+        FAKIcon *alert = [FAKIonIcons alertCircledIconWithSize:30.0f];
         [alert addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
+        FAKIcon *circle = [FAKIonIcons recordIconWithSize:50.0f];
+        [circle addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        UIImage *alertImage = [UIImage imageWithStackedIcons:@[ circle, alert ]
+                                                   imageSize:CGSizeMake(50, 50)];
         
         for (int i = 0; i < 4; i++) {
             M13ProgressViewPie *pie = [self progressViews][i];
@@ -186,17 +190,16 @@
             [iv addSubview:pie];
             pie.center = iv.center;
             
-            UILabel *label = [self alertViews][i];
-            label.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin  |
-                                    UIViewAutoresizingFlexibleRightMargin   |
-                                    UIViewAutoresizingFlexibleTopMargin     |
-                                    UIViewAutoresizingFlexibleBottomMargin);
-            label.textAlignment = NSTextAlignmentCenter;
-            label.clipsToBounds = YES;
-            label.hidden = YES;
-            [iv addSubview:label];
-            label.center = iv.center;
-            label.attributedText = [alert attributedString];
+            UIImageView *alertIv = [self alertImageViews][i];
+            alertIv.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin  |
+                                        UIViewAutoresizingFlexibleRightMargin   |
+                                        UIViewAutoresizingFlexibleTopMargin     |
+                                        UIViewAutoresizingFlexibleBottomMargin);
+            alertIv.clipsToBounds = YES;
+            alertIv.hidden = YES;
+            [iv addSubview:alertIv];
+            alertIv.center = iv.center;
+            alertIv.image = alertImage;
         }
     }
     
