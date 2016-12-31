@@ -320,7 +320,7 @@
             
             UIImageView *iv = self.multiImageView.imageViews[i];
             M13ProgressViewPie *pie = self.multiImageView.progressViews[i];
-            UILabel *alertDecoration = self.multiImageView.alertViews[i];
+            UIView *alertDecoration = self.multiImageView.alertViews[i];
             
             PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
             
