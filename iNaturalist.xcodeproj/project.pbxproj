@@ -206,6 +206,9 @@
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
+		FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */; };
+		FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07441E1B15B100AE7833 /* Diptera.json */; };
+		FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9E07461E1B15D100AE7833 /* TaxonTests.m */; };
 		FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */; };
 		FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA20BB91C5079830075EF2C /* NewsItemCell.m */; };
 		FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB0A1C8F820000F43552 /* ExploreFave.m */; };
@@ -725,6 +728,9 @@
 		FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+INaturalist.h"; sourceTree = "<group>"; };
 		FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+INaturalist.m"; sourceTree = "<group>"; };
 		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
+		FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Octopus_rubescens.json; path = Fixtures/Octopus_rubescens.json; sourceTree = "<group>"; };
+		FA9E07441E1B15B100AE7833 /* Diptera.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Diptera.json; path = Fixtures/Diptera.json; sourceTree = "<group>"; };
+		FA9E07461E1B15D100AE7833 /* TaxonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonTests.m; sourceTree = "<group>"; };
 		FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
 		FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
 		FAA20BB81C5079830075EF2C /* NewsItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemCell.h; sourceTree = "<group>"; };
@@ -1474,6 +1480,8 @@
 			children = (
 				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
 				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
+				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
+				FA9E07441E1B15B100AE7833 /* Diptera.json */,
 			);
 			name = Fixtures;
 			sourceTree = "<group>";
@@ -1482,6 +1490,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6513361E04A03B0059FD70 /* NewsItemTests.m */,
+				FA9E07461E1B15D100AE7833 /* TaxonTests.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1848,7 +1857,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
+				FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
+				FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2196,6 +2207,7 @@
 			files = (
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
+				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

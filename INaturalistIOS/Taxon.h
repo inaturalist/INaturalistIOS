@@ -58,4 +58,5 @@
 - (BOOL)isGenusOrLower;
 - (NSArray *)sortedTaxonPhotos;
 - (BOOL)fullyLoaded;
+- (NSURL *)wikipediaUrl;
 @end

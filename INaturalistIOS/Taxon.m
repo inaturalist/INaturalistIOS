@@ -8,6 +8,8 @@
 
 #import "Taxon.h"
 #import "TaxonPhoto.h"
+#import "NSString+Helpers.h"
+#import <TapkuLibrary/NSString+TKCategory.h>
 
 static RKManagedObjectMapping *defaultMapping = nil;
 
@@ -167,6 +169,23 @@ static RKManagedObjectMapping *defaultMapping = nil;
 
 - (NSInteger)taxonId {
     return [self.recordID integerValue];
+}
+
+- (NSURL *)wikipediaUrl {
+    NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
+    NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
+    NSString *urlEncodedTaxon = [self.name URLEncode];
+    NSString *articleTitle;
+    
+    // the server sometimes sends "" and sometimes null for empty wikipedia_title
+    // in either case, fallback to using scientific name
+    if (self.wikipediaTitle && [self.wikipediaTitle length] > 0) {
+        articleTitle = self.wikipediaTitle;
+    } else {
+        articleTitle = urlEncodedTaxon;
+    }
+    NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, articleTitle];
+    return [NSURL URLWithString:urlString];
 }
 
 @end

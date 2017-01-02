@@ -140,11 +140,7 @@ static char SUMMARY_ASSOCIATED_KEY;
 }
 
 - (void)wikipediaTapped:(UIButton *)sender {
-    NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
-    NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
-    NSString *urlEncodedTaxon = [self.fullTaxon.name URLEncode];
-    NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, self.fullTaxon.wikipediaTitle ?: urlEncodedTaxon];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    [[UIApplication sharedApplication] openURL:[self.fullTaxon wikipediaUrl]];
 }
 
 - (IBAction)clickedActionButton:(id)sender {
