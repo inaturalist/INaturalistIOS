@@ -179,14 +179,14 @@ static char SUMMARY_ASSOCIATED_KEY;
     self.clearsSelectionOnViewWillAppear = YES;
     
     if ([self.taxon isKindOfClass:[Taxon class]]) {
-    	self.fullTaxon = self.taxon;
+    	self.fullTaxon = (Taxon *)self.taxon;
     	[self.tableView reloadData];
     } else {
 	    NSInteger taxonId = self.taxon.taxonId;
 	    // try to load taxon from disk in case we have it
 	    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.taxon.taxonId];
 	    self.taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-        self.fullTaxon = self.taxon;
+        self.fullTaxon = (Taxon *)self.taxon;
         [self.tableView reloadData];
 
 	    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
