@@ -12,6 +12,7 @@
 #import "ProjectDetailObservationsViewController.h"
 #import "ExploreObservation.h"
 #import "ExploreObservationPhoto.h"
+#import "ExploreTaxon.h"
 #import "ProjectObsPhotoCell.h"
 #import "ImageStore.h"
 #import "FAKInaturalist.h"
@@ -84,7 +85,14 @@
         cell.photoImageView.image = [taxonIcon imageWithSize:CGSizeMake(90, 90)];
         cell.photoImageView.contentMode = UIViewContentModeTop;  // don't scale
     }
-    cell.obsText.text = obs.speciesGuess;
+    
+    if (obs.taxon) {
+        cell.obsText.text = obs.taxon.commonName ?: obs.taxon.scientificName;
+    } else if (obs.speciesGuess) {
+        cell.obsText.text = obs.speciesGuess;
+    } else {
+        cell.obsText.text = NSLocalizedString(@"Unknown", @"unknown taxon");
+    }
     
     return cell;
 }
