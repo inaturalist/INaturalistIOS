@@ -138,11 +138,13 @@
 
     }
     
-    observationNameLabel.text = observation.taxon.commonName;
-    if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
+    if ([observation taxon]) {
+        observationNameLabel.text = observation.taxon.commonName ?: observation.taxon.scientificName;
+    } else if (observation.speciesGuess) {
         observationNameLabel.text = observation.speciesGuess;
-    if (!observationNameLabel.text || [observationNameLabel.text isEqualToString:@""])
-        observationNameLabel.text = NSLocalizedString(@"Unknown", nil);
+    } else {
+        observationNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
+    }
 }
 
 @end
