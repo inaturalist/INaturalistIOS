@@ -42,27 +42,27 @@
 }
 
 - (void)testWikipediaUrlNullTitle {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:@"Octopus_rubescens.json"];
-    
-    Taxon *taxon = [Taxon createEntity];
-    
-    RKMappingTest *test = [RKMappingTest testForMapping:[Taxon mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:taxon];
-    @try {
-        [test performMapping];
-    } @catch (NSException *exception) {
-        // restkit can throw spurious exceptions during taxon mappings
-        // maybe isn't correctly mapping relationships?
-        // do nothing
-    }
-    
+    Taxon *taxon = [self taxonForFixture:@"Octopus_rubescens.json"];
     XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Octopus%20rubescens"]],
                   @"Constructured URL for Octopus rubescens with null wikipedia title is incorrect.");
 }
 
 - (void)testWikipediaUrlEmptyTitle {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:@"Diptera.json"];
+    Taxon *taxon = [self taxonForFixture:@"Diptera.json"];
+    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Diptera"]],
+                  @"Constructured URL for Diptera with empty wikipedia title is incorrect.");
+}
+
+
+- (void)testWikipediaUrlValidTitle {
+    Taxon *taxon = [self taxonForFixture:@"Gollum.json"];
+    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Gollum_(genus)"]],
+                  @"Constructured URL for Diptera with empty wikipedia title is incorrect.");
+}
+
+
+- (Taxon *)taxonForFixture:(NSString *)fixtureFileName {
+    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:fixtureFileName];
     
     Taxon *taxon = [Taxon createEntity];
     
@@ -77,10 +77,7 @@
         // do nothing
     }
     
-    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Diptera"]],
-                  @"Constructured URL for Diptera with empty wikipedia title is incorrect.");
+    return taxon;
 }
-
-
 
 @end

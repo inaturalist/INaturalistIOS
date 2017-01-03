@@ -259,6 +259,7 @@
 		FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23531C7D2DC300208F44 /* ObserverCount.m */; };
 		FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */; };
 		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
+		FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */ = {isa = PBXBuildFile; fileRef = FAF73BE01E1B1FF2002456AF /* Gollum.json */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 		FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */; };
@@ -847,6 +848,7 @@
 		FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoChicletCell.h; sourceTree = "<group>"; };
 		FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoChicletCell.m; sourceTree = "<group>"; };
 		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
+		FAF73BE01E1B1FF2002456AF /* Gollum.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Gollum.json; path = Fixtures/Gollum.json; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
@@ -1482,6 +1484,7 @@
 				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
 				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
 				FA9E07441E1B15B100AE7833 /* Diptera.json */,
+				FAF73BE01E1B1FF2002456AF /* Gollum.json */,
 			);
 			name = Fixtures;
 			sourceTree = "<group>";
@@ -1858,6 +1861,7 @@
 			files = (
 				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
 				FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */,
+				FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
 				FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */,
 			);
