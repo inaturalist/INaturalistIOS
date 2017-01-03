@@ -260,6 +260,7 @@
 		FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */; };
 		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
 		FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */ = {isa = PBXBuildFile; fileRef = FAF73BE01E1B1FF2002456AF /* Gollum.json */; };
+		FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF73BE31E1B2472002456AF /* PartnerTests.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 		FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */; };
@@ -849,6 +850,7 @@
 		FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoChicletCell.m; sourceTree = "<group>"; };
 		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
 		FAF73BE01E1B1FF2002456AF /* Gollum.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Gollum.json; path = Fixtures/Gollum.json; sourceTree = "<group>"; };
+		FAF73BE31E1B2472002456AF /* PartnerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartnerTests.m; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
 		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
@@ -1669,6 +1671,7 @@
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
+				FAF73BE21E1B245F002456AF /* Misc */,
 				FA65133D1E04A4900059FD70 /* Model */,
 				FA6513381E04A1CA0059FD70 /* Fixtures */,
 				FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */,
@@ -1718,6 +1721,14 @@
 				FA11A7761CBFF8740039481B /* ProjectNewsButton.m */,
 			);
 			name = "Project Details";
+			sourceTree = "<group>";
+		};
+		FAF73BE21E1B245F002456AF /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				FAF73BE31E1B2472002456AF /* PartnerTests.m */,
+			);
+			name = Misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2209,6 +2220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
