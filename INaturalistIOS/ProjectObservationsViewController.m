@@ -299,7 +299,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
         [self configureSimpleCell:cell forObsField:field];
         return cell;
-    } else if ([field.observationField.datatype isEqualToString:@"date"]) {
+    } else if ([field.observationField.datatype isEqualToString:@"date"] || [field.observationField.datatype isEqualToString:@"datetime"]) {
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
         [self configureSimpleCell:cell forObsField:field];
         return cell;
@@ -489,7 +489,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         // stash the selected index path so we know what ofv to update
         self.taxaSearchIndexPath = indexPath;
         
-    } else if ([field.observationField.datatype isEqualToString:@"date"]) {
+    } else if ([field.observationField.datatype isEqualToString:@"date"] || [field.observationField.datatype isEqualToString:@"datetime"]) {
         // date field
         
         ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
