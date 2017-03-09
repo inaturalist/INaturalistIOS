@@ -200,6 +200,7 @@
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */; };
+		FA8382471E70FD7400F73E90 /* WilletObservation.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservation.json */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
@@ -715,6 +716,7 @@
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
 		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
+		FA8382461E70FD7400F73E90 /* WilletObservation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WilletObservation.json; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
@@ -1488,6 +1490,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
+				FA8382461E70FD7400F73E90 /* WilletObservation.json */,
 				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
 				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
 				FA9E07441E1B15B100AE7833 /* Diptera.json */,
@@ -1889,6 +1892,7 @@
 				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
 				FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */,
 				FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */,
+				FA8382471E70FD7400F73E90 /* WilletObservation.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
 				FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */,
 			);
