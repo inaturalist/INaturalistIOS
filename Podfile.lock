@@ -29,7 +29,6 @@ PODS:
   - Crashlytics (3.3.3)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
-  - Expecta (1.0.5)
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
   - Fabric/Base (1.5.4)
@@ -126,7 +125,6 @@ PODS:
   - SDWebImage/Core (3.7.3)
   - SlackTextViewController (1.9)
   - SOCKit (1.1)
-  - Specta (1.0.5)
   - SSZipArchive (0.3.2)
   - SVPullToRefresh (0.4.1)
   - SWRevealViewController (2.3.0)
@@ -149,7 +147,6 @@ DEPENDENCIES:
   - Crashlytics (= 3.3.3)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
-  - Expecta
   - Fabric (= 1.5.4)
   - FBSDKCoreKit (= 4.10.1)
   - FBSDKLoginKit (= 4.10.1)
@@ -178,7 +175,6 @@ DEPENDENCIES:
   - RestKit/Testing (= 0.10.3)
   - SDWebImage (= 3.7.3)
   - SlackTextViewController (= 1.9)
-  - Specta
   - SSZipArchive (= 0.3.2)
   - SVPullToRefresh (= 0.4.1)
   - SWRevealViewController (= 2.3.0)
@@ -229,7 +225,6 @@ SPEC CHECKSUMS:
   Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
-  Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
   FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
   FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
@@ -262,7 +257,6 @@ SPEC CHECKSUMS:
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
   SlackTextViewController: d51503f7be846cb9976a273499dc90f2445e9447
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
-  Specta: ac94d110b865115fe60ff2c6d7281053c6f8e8a2
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
@@ -275,6 +269,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 0a9352fb394f981ba7ea943aeb8ad9cd69b2c995
+PODFILE CHECKSUM: 9c6616b24a4609c28b4eaf95a34f9f525fbdc47d
 
 COCOAPODS: 1.1.1

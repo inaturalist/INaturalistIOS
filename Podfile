@@ -54,8 +54,6 @@ target :iNaturalist do
 end
 
 target :iNaturalistTests do
-  pod 'Specta'
-  pod 'Expecta'
 end
 
 # Append to your Podfile
