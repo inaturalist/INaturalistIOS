@@ -199,6 +199,7 @@
 		FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */; };
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
+		FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
@@ -712,6 +713,8 @@
 		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
 		FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+IOS9_Autorotate.m"; sourceTree = "<group>"; };
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
+		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
+		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
@@ -1498,6 +1501,9 @@
 			children = (
 				FA6513361E04A03B0059FD70 /* NewsItemTests.m */,
 				FA9E07461E1B15D100AE7833 /* TaxonTests.m */,
+				FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */,
+				FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */,
+				FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1543,7 +1549,6 @@
 		FA81DF0C1E6F7376006E7132 /* Obs Detail */ = {
 			isa = PBXGroup;
 			children = (
-				FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */,
 			);
 			name = "Obs Detail";
 			sourceTree = "<group>";
@@ -2236,6 +2241,7 @@
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
+				FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,9 +7,9 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "RKModelBaseTests.h"
 
-@interface ObsDetailViewModelTests : XCTestCase
-
+@interface ObsDetailViewModelTests : RKModelBaseTests
 @end
 
 @implementation ObsDetailViewModelTests
@@ -21,6 +21,8 @@
 - (void)tearDown {
     [super tearDown];
 }
+
+
 
 
 @end
