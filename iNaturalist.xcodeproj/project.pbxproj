@@ -183,6 +183,8 @@
 		FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D01E7241F000135C5E /* ExploreObservationTests.m */; };
 		FA6F81D31E7244B600135C5E /* PolychaeteObservationNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */; };
 		FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D61E72459900135C5E /* MantleHelpers.m */; };
+		FA6F81D91E733ECE00135C5E /* ImageStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */; };
+		FA6F81DB1E73404200135C5E /* willet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA6F81DA1E73404200135C5E /* willet.jpg */; };
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
@@ -685,6 +687,8 @@
 		FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = PolychaeteObservationNode.json; path = Fixtures/PolychaeteObservationNode.json; sourceTree = "<group>"; };
 		FA6F81D51E72459900135C5E /* MantleHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MantleHelpers.h; sourceTree = "<group>"; };
 		FA6F81D61E72459900135C5E /* MantleHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MantleHelpers.m; sourceTree = "<group>"; };
+		FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStoreTests.m; sourceTree = "<group>"; };
+		FA6F81DA1E73404200135C5E /* willet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = willet.jpg; sourceTree = "<group>"; };
 		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
 		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
@@ -1498,12 +1502,13 @@
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */,
 				FA9E07441E1B15B100AE7833 /* Diptera.json */,
 				FAF73BE01E1B1FF2002456AF /* Gollum.json */,
 				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
+				FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */,
 				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
 				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
+				FA6F81DA1E73404200135C5E /* willet.jpg */,
 				FA6F81CB1E723D2200135C5E /* WilletObservationNode.json */,
 				FA8382461E70FD7400F73E90 /* WilletObservationRails.json */,
 			);
@@ -1768,6 +1773,7 @@
 			isa = PBXGroup;
 			children = (
 				FAF73BE31E1B2472002456AF /* PartnerTests.m */,
+				FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -1918,6 +1924,7 @@
 				FA6F81D31E7244B600135C5E /* PolychaeteObservationNode.json in Resources */,
 				FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
+				FA6F81DB1E73404200135C5E /* willet.jpg in Resources */,
 				FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2272,6 +2279,7 @@
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
 				FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */,
 				FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */,
+				FA6F81D91E733ECE00135C5E /* ImageStoreTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
