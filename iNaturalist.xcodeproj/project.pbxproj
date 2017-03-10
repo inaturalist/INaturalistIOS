@@ -179,6 +179,10 @@
 		FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D69581B06A6CD000983F8 /* LoginController.m */; };
 		FA6D695F1B06B4B6000983F8 /* EditableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */; };
 		FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */; };
+		FA6F81CC1E723D2200135C5E /* WilletObservationNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA6F81CB1E723D2200135C5E /* WilletObservationNode.json */; };
+		FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D01E7241F000135C5E /* ExploreObservationTests.m */; };
+		FA6F81D31E7244B600135C5E /* PolychaeteObservationNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */; };
+		FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D61E72459900135C5E /* MantleHelpers.m */; };
 		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
@@ -200,7 +204,7 @@
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */; };
-		FA8382471E70FD7400F73E90 /* WilletObservation.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservation.json */; };
+		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
@@ -676,6 +680,11 @@
 		FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextFieldCell.m; sourceTree = "<group>"; };
 		FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemViewController.h; sourceTree = "<group>"; };
 		FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemViewController.m; sourceTree = "<group>"; };
+		FA6F81CB1E723D2200135C5E /* WilletObservationNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationNode.json; path = Fixtures/WilletObservationNode.json; sourceTree = "<group>"; };
+		FA6F81D01E7241F000135C5E /* ExploreObservationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationTests.m; sourceTree = "<group>"; };
+		FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = PolychaeteObservationNode.json; path = Fixtures/PolychaeteObservationNode.json; sourceTree = "<group>"; };
+		FA6F81D51E72459900135C5E /* MantleHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MantleHelpers.h; sourceTree = "<group>"; };
+		FA6F81D61E72459900135C5E /* MantleHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MantleHelpers.m; sourceTree = "<group>"; };
 		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
 		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
@@ -716,7 +725,7 @@
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
 		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
-		FA8382461E70FD7400F73E90 /* WilletObservation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WilletObservation.json; sourceTree = "<group>"; };
+		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WilletObservationRails.json; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
@@ -1489,12 +1498,14 @@
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
-				FA8382461E70FD7400F73E90 /* WilletObservation.json */,
-				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
-				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
+				FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */,
 				FA9E07441E1B15B100AE7833 /* Diptera.json */,
 				FAF73BE01E1B1FF2002456AF /* Gollum.json */,
+				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
+				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
+				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
+				FA6F81CB1E723D2200135C5E /* WilletObservationNode.json */,
+				FA8382461E70FD7400F73E90 /* WilletObservationRails.json */,
 			);
 			name = Fixtures;
 			sourceTree = "<group>";
@@ -1502,6 +1513,7 @@
 		FA65133D1E04A4900059FD70 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FA6F81CD1E72404E00135C5E /* Mantle */,
 				FA6513361E04A03B0059FD70 /* NewsItemTests.m */,
 				FA9E07461E1B15D100AE7833 /* TaxonTests.m */,
 				FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */,
@@ -1509,6 +1521,23 @@
 				FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		FA6F81CD1E72404E00135C5E /* Mantle */ = {
+			isa = PBXGroup;
+			children = (
+				FA6F81D01E7241F000135C5E /* ExploreObservationTests.m */,
+			);
+			name = Mantle;
+			sourceTree = "<group>";
+		};
+		FA6F81D41E72458100135C5E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FA6F81D51E72459900135C5E /* MantleHelpers.h */,
+				FA6F81D61E72459900135C5E /* MantleHelpers.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		FA6F87661B0E996B0019B157 /* fonts */ = {
@@ -1547,13 +1576,6 @@
 				FA711AAD1D53E52600C4FFDB /* OnboardingLoginViewController.m */,
 			);
 			name = Onboarding;
-			sourceTree = "<group>";
-		};
-		FA81DF0C1E6F7376006E7132 /* Obs Detail */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Obs Detail";
 			sourceTree = "<group>";
 		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
@@ -1689,7 +1711,7 @@
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
-				FA81DF0C1E6F7376006E7132 /* Obs Detail */,
+				FA6F81D41E72458100135C5E /* Helpers */,
 				FAF73BE21E1B245F002456AF /* Misc */,
 				FA65133D1E04A4900059FD70 /* Model */,
 				FA6513381E04A1CA0059FD70 /* Fixtures */,
@@ -1891,8 +1913,10 @@
 			files = (
 				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
 				FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */,
+				FA6F81CC1E723D2200135C5E /* WilletObservationNode.json in Resources */,
 				FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */,
-				FA8382471E70FD7400F73E90 /* WilletObservation.json in Resources */,
+				FA6F81D31E7244B600135C5E /* PolychaeteObservationNode.json in Resources */,
+				FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
 				FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */,
 			);
@@ -2244,7 +2268,9 @@
 				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
+				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
+				FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */,
 				FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

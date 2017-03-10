@@ -7,15 +7,23 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "RKModelBaseTests.h"
-#import "Observation.h"
-#import "User.h"
-#import "ObsDetailViewModel.h"
-#import "DisclosureCell.h"
+#import <Mantle/Mantle.h>
 
-@interface ObsDetailViewModelTests : RKModelBaseTests
-@property ObsDetailViewModel *viewModel;
-@property UITableView *tableView;
+#import "ObsDetailViewModel.h"
+#import "ObsDetailInfoViewModel.h"
+#import "ObsDetailActivityViewModel.h"
+#import "ObsDetailFavesViewModel.h"
+#import "ExploreObservation.h"
+#import "MantleHelpers.h"
+#import "DisclosureCell.h"
+#import "ObsDetailTaxonCell.h"
+
+@interface ObsDetailViewModelTests : XCTestCase
+@property ObsDetailInfoViewModel *info;
+@property ObsDetailActivityViewModel *activity;
+@property ObsDetailFavesViewModel *faves;
+
+@property UITableView *tv;
 @end
 
 @implementation ObsDetailViewModelTests
@@ -23,87 +31,102 @@
 - (void)setUp {
     [super setUp];
     
-    self.viewModel = [[ObsDetailViewModel alloc] init];
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero
-                                                  style:UITableViewStylePlain];
-    [self.tableView registerClass:[DisclosureCell class]
-           forCellReuseIdentifier:@"disclosure"];
+    self.info = [[ObsDetailInfoViewModel alloc] init];
+    self.activity = [[ObsDetailActivityViewModel alloc] init];
+    self.faves = [[ObsDetailFavesViewModel alloc] init];
+    
+    self.tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    [self.tv registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
+  forCellReuseIdentifier:@"taxonFromNib"];
 }
 
 - (void)tearDown {
     [super tearDown];
 }
 
-- (void)testUsernameCell {
-    Observation *observation = [self observationForFixture:@"WilletObservation.json"];
-    [self.viewModel setObservation:observation];
 
-    // because of how the [observation username] call is implemented,
-    // we need a user object here, too. sorry :(
-    // this will generate an unused variable warning that we can safely ignore
-    User *user __unused = [self userForObservationFixture:@"WilletObservation.json"];
+- (void)testSectionCounts {
+    // the number of info view model sections are computed based on the
+    // properties of the backing observation.
     
-    NSIndexPath *usernameIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    DisclosureCell *cell = (DisclosureCell *)[self.viewModel tableView:self.tableView
-                                                 cellForRowAtIndexPath:usernameIndexPath];
+    ExploreObservation *willet = [MantleHelpers willetFixture];
+    self.info.observation = self.activity.observation = self.faves.observation = willet;
+    XCTAssertEqual([self.info numberOfSectionsInTableView:self.tv], 4,
+                   @"incorrect number of info sections for willet");
+    XCTAssertEqual([self.activity numberOfSectionsInTableView:self.tv], 4,
+                   @"incorrect number of activity sections for willet");
+    XCTAssertEqual([self.faves numberOfSectionsInTableView:self.tv], 3,
+                   @"incorrect number of faves sections for willet");
     
-    XCTAssertTrue([cell.titleLabel.text isEqualToString:@"alexshepard"],
-                  @"wrong username text for username row of Willet Observation");
     
-    // this assumes the test is being run in US locale
-    XCTAssertTrue([cell.secondaryLabel.text isEqualToString:@"Jan 21, 2017"],
-                  @"wrong date text for username row of Willet Observation");
-
+    ExploreObservation *polychaete = [MantleHelpers polychaeteFixture];
+    self.info.observation = self.activity.observation = self.faves.observation = polychaete;
+    XCTAssertEqual([self.info numberOfSectionsInTableView:self.tv], 4,
+                   @"incorrect number of info sections for polychaete");
+    XCTAssertEqual([self.activity numberOfSectionsInTableView:self.tv], 19,
+                   @"incorrect number of activity sections for polychaete");
+    XCTAssertEqual([self.faves numberOfSectionsInTableView:self.tv], 3,
+                   @"incorrect number of faves sections for polychaete");
 }
 
-
-
-- (Observation *)observationForFixture:(NSString *)fixtureFileName {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:fixtureFileName];
+- (void)testActiveIdentifications {
+    // inactive identifications have their Taxon row taxon name struck through.
+    // active identifications do not.
     
-    Observation *observation = [Observation createEntity];
+    NSArray *activeTaxaIps = nil;
+    NSArray *inactiveTaxaIps = nil;
     
-    // this doesn't seem to be generating the cmplete object
-    RKMappingTest *test = [RKMappingTest testForMapping:[Observation mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:observation];
-    @try {
-        [test performMapping];
-    } @catch (NSException *exception) {
-        // restkit can throw spurious exceptions during taxon mappings
-        // maybe isn't correctly mapping relationships?
-        // do nothing
+    NSArray *fixtures = @[ [MantleHelpers willetFixture], [MantleHelpers polychaeteFixture] ];
+    
+    // the willet has two active identifications, no inactives
+    // the polychaete has 6 active ids, 2 inactives
+    
+    NSArray *allActiveIps = @[
+                              @[ @(2), @(3) ],                                  // willet
+                              @[ @(6), @(7), @(8), @(10), @(12), @(18) ],       // polychaete
+                              ];
+    
+    NSArray *allInactiveIps = @[
+                                @[ ],                  // willet
+                                @[ @(2), @(3) ],       // polychaete
+                                ];
+    
+    for (int i = 0; i < fixtures.count; i++) {
+        self.activity.observation = fixtures[i];
+
+        NSArray *activeIps = allActiveIps[i];
+        for (NSNumber *section in activeIps) {
+            // taxa are always row 1 in a section
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:1 inSection:section.integerValue];
+            ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[self.activity tableView:self.tv cellForRowAtIndexPath:ip];
+            XCTAssertTrue([cell isKindOfClass:[ObsDetailTaxonCell class]],
+                          @"wrong kind of cell for taxon in identification");
+            XCTAssertTrue([self taxonCellIsActive:cell],
+                          @"cell at %@ should be active for %@",
+                          ip, fixtures[i]);
+        }
+        
+        NSArray *inactiveIps = allInactiveIps[i];
+        for (NSNumber *section in inactiveIps) {
+            // taxa are always row 1 in a section
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:1 inSection:section.integerValue];
+            ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[self.activity tableView:self.tv cellForRowAtIndexPath:ip];
+            XCTAssertTrue([cell isKindOfClass:[ObsDetailTaxonCell class]],
+                          @"wrong kind of cell for taxon in identification");
+            XCTAssertFalse([self taxonCellIsActive:cell],
+                           @"cell at %@ should be inactive for %@",
+                           ip, fixtures[i]);
+        }
+
     }
-    
-    // pretend we awoke from CoreData
-    // this is needed to compute some properties
-    [observation awakeFromFetch];
-
-    return observation;
 }
 
-- (User *)userForObservationFixture:(NSString *)fixtureFileName {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:fixtureFileName];
-    parsedJSON = [parsedJSON valueForKey:@"user"];
-    
-    User *user = [User createEntity];
-    
-    // this doesn't seem to be generating the cmplete object
-    RKMappingTest *test = [RKMappingTest testForMapping:[User mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:user];
-    @try {
-        [test performMapping];
-    } @catch (NSException *exception) {
-        // restkit can throw spurious exceptions during taxon mappings
-        // maybe isn't correctly mapping relationships?
-        // do nothing
-    }
-    
-    return user;
+- (BOOL)taxonCellIsActive:(ObsDetailTaxonCell *)cell {
+    NSRange taxonRange = NSMakeRange(0, cell.taxonNameLabel.text.length);
+    NSDictionary *attrs = [cell.taxonNameLabel.attributedText attributesAtIndex:0 effectiveRange:&taxonRange];
+    return !([attrs[NSStrikethroughStyleAttributeName] isEqual:@(NSUnderlineStyleSingle)]);
 }
 
-                  
 
 
 @end
