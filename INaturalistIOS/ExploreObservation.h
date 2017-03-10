@@ -13,7 +13,6 @@
 
 #import "ObservationVisualization.h"
 #import "Uploadable.h"
-#import "Taxon.h"
 
 @class ExploreTaxon;
 @class ExploreUser;
