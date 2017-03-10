@@ -11,7 +11,6 @@
 #import "MantleHelpers.h"
 #import "ExploreObservation.h"
 
-
 @interface ExploreObservationTests : XCTestCase
 @end
 
@@ -33,6 +32,7 @@
     XCTAssertEqual(willet.identifications.count, 2, @"wrote number of ids for willet fixture");
     XCTAssertEqual(willet.faves.count, 0, @"wrong number of faves for willet fixture");
     XCTAssertEqual(willet.observationPhotos.count, 1, @"wrong number of photos for willet fixture");
+    XCTAssertEqualObjects(willet.username, @"alexshepard", @"wrong observer for willet fixture");
     
     ExploreObservation *polychaete = [MantleHelpers polychaeteFixture];
     
@@ -40,6 +40,8 @@
     XCTAssertEqual(polychaete.identifications.count, 8, @"wrote number of ids for polychaete fixture");
     XCTAssertEqual(polychaete.faves.count, 5, @"wrong number of faves for polychaete fixture");
     XCTAssertEqual(polychaete.observationPhotos.count, 22, @"wrong number of photos for polychaete fixture");
+    XCTAssertEqualObjects(polychaete.username, @"raulagrait", @"wrong observer for polychaete fixture");
+
 }
 
 
