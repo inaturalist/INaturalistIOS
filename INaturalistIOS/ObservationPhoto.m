@@ -171,7 +171,8 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [super willSave];
     
     if (!self.uuid && !self.recordID) {
-        [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [self setPrimitiveValue:[[[NSUUID UUID] UUIDString] lowercaseString]
+                         forKey:@"uuid"];
     }
 }
 
