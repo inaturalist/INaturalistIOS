@@ -227,7 +227,9 @@
                 uuid = (NSString *)[recordToUpload performSelector:@selector(uuid)];
             }
             if (uuid) {
-                self.startTimesForPhotoUploads[uuid] = [NSDate date];
+                // for older observations, uuids could have been uppercase
+                // or lowercase depending on where they originated.
+                self.startTimesForPhotoUploads[[uuid lowercaseString]] = [NSDate date];
             }
         }
         
@@ -521,8 +523,11 @@
     if ([object respondsToSelector:@selector(uuid)]) {
         uuid = (NSString *)[object performSelector:@selector(uuid)];
     }
-    if (uuid && [self.startTimesForPhotoUploads objectForKey:uuid]) {
-        NSDate *startTime = self.startTimesForPhotoUploads[uuid];
+    
+    // for older observations, uuids could have been uppercase
+    // or lowercase depending on where they originated.
+    if (uuid && [self.startTimesForPhotoUploads objectForKey:[uuid lowercaseString]]) {
+        NSDate *startTime = self.startTimesForPhotoUploads[[uuid lowercaseString]];
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:startTime];
 
         [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
