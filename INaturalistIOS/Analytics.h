@@ -99,6 +99,9 @@ extern NSString *kAnalyticsEventObservationShareFinished;
 extern NSString *kAnalyticsEventObservationFave;
 extern NSString *kAnalyticsEventObservationUnfave;
 extern NSString *kAnalyticsEventObservationPhotoFailedToLoad;
+// test whether users are trying to tap the description
+// in the obs detail screen
+extern NSString *kAnalyticsEventObservationDescriptionTapped;
 
 // settings
 extern NSString *kAnalyticsEventSettingEnabled;

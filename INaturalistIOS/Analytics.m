@@ -190,6 +190,7 @@ NSString *kAnalyticsEventObservationShareFinished =             @"Obs - Share Fi
 NSString *kAnalyticsEventObservationFave =                      @"Obs - Fave";
 NSString *kAnalyticsEventObservationUnfave =                    @"Obs - Unfave";
 NSString *kAnalyticsEventObservationPhotoFailedToLoad =         @"Obs - Photo Failed to Load";
+NSString *kAnalyticsEventObservationDescriptionTapped =         @"Obs - User Tapped Description";
 
 // settings
 NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";

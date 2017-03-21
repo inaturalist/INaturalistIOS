@@ -23,9 +23,26 @@
 #import "Analytics.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
+// keep track of the number of times the user has tapped the
+// description for this viewing of this observation
+@property NSInteger numDescriptionTaps;
 @end
 
 @implementation ObsDetailInfoViewModel
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.numDescriptionTaps = 0;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    // report the number of times the user has tapped the
+    // description for this viewing of this observation
+    [[Analytics sharedClient] event:kAnalyticsEventObservationDescriptionTapped
+                     withProperties:@{ @"Number of Taps": @(self.numDescriptionTaps) }];
+}
 
 #pragma mark - MKMapViewDelegate
 
@@ -69,6 +86,11 @@
             // notes
             ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
             cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            // disable user interaction on this textview to make the cell
+            // fully selectable (only for kAnalyticsEventObservationDescriptionTapped)
+            cell.notesTextView.userInteractionEnabled = NO;
             
             NSError *err;
             NSDictionary *opts = @{
@@ -361,7 +383,10 @@
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
         // notes / map
-        if (indexPath.item == 1) {
+        if (indexPath.item == 0) {
+            // test whether users are trying to tap the description in the obs detail screen
+            self.numDescriptionTaps++;
+        } else if (indexPath.item == 1) {
             // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             
