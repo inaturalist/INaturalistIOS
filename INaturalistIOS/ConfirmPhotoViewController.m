@@ -243,16 +243,23 @@
     // make sure we have permission to the photo library
     switch ([PHPhotoLibrary authorizationStatus]) {
         case PHAuthorizationStatusDenied:
-        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusRestricted: {
             // don't notify, don't try to save photo
-            [self moveOnToSaveNewObservation];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self moveOnToSaveNewObservation];
+            });
             break;
+        }
         case PHAuthorizationStatusNotDetermined:
             // ask permission
             [self requestPhotoLibraryPermission];
             break;
-        case PHAuthorizationStatusAuthorized:
-            [self savePhotoAndMoveOn];
+        case PHAuthorizationStatusAuthorized: {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self savePhotoAndMoveOn];
+            });
+            break;
+        }
         default:
             break;
     }
@@ -263,12 +270,19 @@
         switch (status) {
             case PHAuthorizationStatusDenied:
             case PHAuthorizationStatusRestricted:
-            case PHAuthorizationStatusNotDetermined:
+            case PHAuthorizationStatusNotDetermined: {
                 // don't notify, don't try to save photo
-                [self moveOnToSaveNewObservation];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self moveOnToSaveNewObservation];
+                });
                 break;
-            case PHAuthorizationStatusAuthorized:
-                [self savePhotoAndMoveOn];
+            }
+            case PHAuthorizationStatusAuthorized: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self savePhotoAndMoveOn];
+                });
+                break;
+            }
             default:
                 break;
         }
@@ -285,9 +299,13 @@
         // embed photo date
         self.obsDate = [NSDate date];
         
-        self.confirmFollowUpAction(@[ self.image ]);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.confirmFollowUpAction(@[ self.image ]);
+        });
     } else if (self.downloadedImages) {
-        self.confirmFollowUpAction(self.downloadedImages);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.confirmFollowUpAction(self.downloadedImages);
+        });
     }
 }
 
