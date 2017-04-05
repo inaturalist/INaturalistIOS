@@ -130,18 +130,6 @@ static char PROJECT_ASSOCIATED_KEY;
         return;
     }
     
-    PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
-    switch (phAuthStatus) {
-        case PHAuthorizationStatusRestricted:
-        case PHAuthorizationStatusDenied:
-            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
-            break;
-        case PHAuthorizationStatusNotDetermined:
-        case PHAuthorizationStatusAuthorized:
-            // continue;
-            break;
-    }
-    
     // check for access to camera
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
         if (granted) {
@@ -189,8 +177,12 @@ static char PROJECT_ASSOCIATED_KEY;
                                                     [[UIApplication sharedApplication] openURL:url];
                                                 }]];
     }
-
-    [self presentViewController:alert animated:YES completion:nil];
+    
+    if (self.presentedViewController) {
+        [self.presentedViewController presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
@@ -392,6 +384,19 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Add New Observation methods
 
 - (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
+    PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
+    switch (phAuthStatus) {
+        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusDenied:
+            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
+            return;
+            break;
+        case PHAuthorizationStatusNotDetermined:
+        case PHAuthorizationStatusAuthorized:
+            // continue;
+            break;
+    }
+
     // qbimagepicker for library multi-select
     self.imagePicker = [[QBImagePickerController alloc] init];
     self.imagePicker.delegate = self;

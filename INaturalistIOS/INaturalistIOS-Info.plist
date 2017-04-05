@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>404</string>
+	<string>406</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -82,9 +82,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the camera to add photos to your observations of nature.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>${PRODUCT_NAME} uses this information to automatically add location to your observations of nature.</string>
+	<string>Add GPS coordinates to observations, show your location on maps, and more.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>${PRODUCT_NAME} uses the photo library to add photos to your observations of nature.</string>
+	<string>Export and import ${PRODUCT_NAME} photos to and from your library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

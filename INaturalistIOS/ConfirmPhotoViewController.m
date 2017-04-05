@@ -240,6 +240,58 @@
 }
 
 - (void)confirm {
+    // make sure we have permission to the photo library
+    switch ([PHPhotoLibrary authorizationStatus]) {
+        case PHAuthorizationStatusDenied:
+        case PHAuthorizationStatusRestricted:
+            // don't notify, don't try to save photo
+            [self moveOnToSaveNewObservation];
+            break;
+        case PHAuthorizationStatusNotDetermined:
+            // ask permission
+            [self requestPhotoLibraryPermission];
+            break;
+        case PHAuthorizationStatusAuthorized:
+            [self savePhotoAndMoveOn];
+        default:
+            break;
+    }
+}
+
+- (void)requestPhotoLibraryPermission {
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        switch (status) {
+            case PHAuthorizationStatusDenied:
+            case PHAuthorizationStatusRestricted:
+            case PHAuthorizationStatusNotDetermined:
+                // don't notify, don't try to save photo
+                [self moveOnToSaveNewObservation];
+                break;
+            case PHAuthorizationStatusAuthorized:
+                [self savePhotoAndMoveOn];
+            default:
+                break;
+        }
+    }];
+    
+}
+
+- (void)moveOnToSaveNewObservation {
+    if (self.image) {
+        // embed geo
+        if (self.locationManager.location) {
+            self.obsLocation = self.locationManager.location;
+        }
+        // embed photo date
+        self.obsDate = [NSDate date];
+        
+        self.confirmFollowUpAction(@[ self.image ]);
+    } else if (self.downloadedImages) {
+        self.confirmFollowUpAction(self.downloadedImages);
+    }
+}
+
+- (void)savePhotoAndMoveOn {
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
     
     // this can take a moment, so hide the retake/confirm buttons
@@ -252,12 +304,6 @@
         hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
-        
-        // embed geo
-        if (self.locationManager.location) {
-            self.obsLocation = self.locationManager.location;
-        }
-        self.obsDate = [NSDate date];
         
         [phLib performChanges:^{
             PHAssetChangeRequest *request = [PHAssetChangeRequest creationRequestForAssetFromImage:self.image];
@@ -281,14 +327,14 @@
                     [self presentViewController:alert animated:YES completion:nil];
                 } else {
                     if (success) {
-                        self.confirmFollowUpAction( @[ self.image ]);
+                        [self moveOnToSaveNewObservation];
                     }
                 }
             });
         }];
     } else if (self.downloadedImages) {
         // can proceed directly to followup
-        self.confirmFollowUpAction(self.downloadedImages);
+        [self moveOnToSaveNewObservation];
     }
 }
 
