@@ -710,6 +710,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
+                     withProperties:@{
+                                      @"Via": NSStringFromClass(self.class),
+                                      @"NewValue": @(status),
+                                      }];
+
     switch (status) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:

@@ -148,12 +148,18 @@
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     // this location manager requests authorization changes to set user tracking mode
+    
+    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
+                     withProperties:@{
+                                      @"Via": NSStringFromClass(self.class),
+                                      @"NewValue": @(status),
+                                      }];
+
     switch ([CLLocationManager authorizationStatus]) {
         case kCLAuthorizationStatusAuthorizedAlways:
-        case kCLAuthorizationStatusAuthorizedWhenInUse: {
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
             break;
-        }
         case kCLAuthorizationStatusDenied:
         case kCLAuthorizationStatusRestricted: {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Not Allowed", nil)

@@ -225,3 +225,6 @@ NSString *kAnalyticsEventOnboardingLoginSkip =                  @"Onboarding Log
 NSString *kAnalyticsEventOnboardingLoginCancel =                @"Onboarding Login Cancel";
 NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Login Action";
 
+// permissions
+NSString *kAnalyticsEventLocationPermissionsChanged =             @"Location Permissions Changed";
+

@@ -736,6 +736,12 @@
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
+                     withProperties:@{
+                                      @"Via": NSStringFromClass(self.class),
+                                      @"NewValue": @(status),
+                                      }];
+    
     if (hasFulfilledLocationFetch)
         return;
     

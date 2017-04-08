@@ -138,3 +138,7 @@ extern NSString *kAnalyticsEventOnboardingLoginSkip;
 extern NSString *kAnalyticsEventOnboardingLoginCancel;
 extern NSString *kAnalyticsEventOnboardingLoginPressed;
 
+// permissions
+extern NSString *kAnalyticsEventLocationPermissionsChanged;
+
+
