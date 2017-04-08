@@ -39,10 +39,7 @@
 }
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue {
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:metricName customAttributes:@{ @"Amount": metricValue }];
-#endif
-    
+    [self event:metricName withProperties:@{ @"Amount": metricValue }];
 }
 
 - (void)event:(NSString *)name {
