@@ -228,4 +228,4 @@ NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Log
 // permissions
 NSString *kAnalyticsEventLocationPermissionsChanged =           @"Location Permissions Changed";
 NSString *kAnalyticsEventCameraPermissionsChanged =             @"Camera Permissions Changed";
-
+NSString *kAnalyticsEventPhotoLibraryPermissionsChanged =       @"Photo Library Permissions Changed";

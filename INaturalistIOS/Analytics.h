@@ -141,5 +141,7 @@ extern NSString *kAnalyticsEventOnboardingLoginPressed;
 // permissions
 extern NSString *kAnalyticsEventLocationPermissionsChanged;
 extern NSString *kAnalyticsEventCameraPermissionsChanged;
+extern NSString *kAnalyticsEventPhotoLibraryPermissionsChanged;
+
 
 

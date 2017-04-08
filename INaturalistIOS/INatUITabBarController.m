@@ -409,7 +409,25 @@ static char PROJECT_ASSOCIATED_KEY;
             [self presentAuthAlertForSource:INatPhotoSourcePhotos];
             return;
             break;
-        case PHAuthorizationStatusNotDetermined:
+        case PHAuthorizationStatusNotDetermined: {
+            __weak typeof(self)weakSelf = self;
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                [[Analytics sharedClient] event:kAnalyticsEventPhotoLibraryPermissionsChanged
+                                 withProperties:@{
+                                                  @"Via": NSStringFromClass(weakSelf.class),
+                                                  @"NewValue": @(status),
+                                                  }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (status == PHAuthorizationStatusAuthorized) {
+                        [weakSelf openLibraryTaxon:taxon project:project];
+                    } else {
+                        [weakSelf presentAuthAlertForSource:INatPhotoSourcePhotos];
+                    }
+                });
+            }];
+            return;
+            break;
+        }
         case PHAuthorizationStatusAuthorized:
             // continue;
             break;

@@ -267,6 +267,11 @@
 
 - (void)requestPhotoLibraryPermission {
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        [[Analytics sharedClient] event:kAnalyticsEventPhotoLibraryPermissionsChanged
+                         withProperties:@{
+                                          @"Via": NSStringFromClass(self.class),
+                                          @"NewValue": @(status),
+                                          }];
         switch (status) {
             case PHAuthorizationStatusDenied:
             case PHAuthorizationStatusRestricted:
