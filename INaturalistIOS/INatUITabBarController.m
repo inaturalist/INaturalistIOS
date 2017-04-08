@@ -131,17 +131,35 @@ static char PROJECT_ASSOCIATED_KEY;
     }
     
     // check for access to camera
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self newObservationForTaxon:taxon project:project];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self presentAuthAlertForSource:INatPhotoSourceCamera];
-            });
-        }
-    }];
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusAuthorized:
+            [self newObservationForTaxon:taxon project:project];
+            break;
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            [self presentAuthAlertForSource:INatPhotoSourceCamera];
+            break;
+        case AVAuthorizationStatusNotDetermined:
+        default:
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                [[Analytics sharedClient] event:kAnalyticsEventCameraPermissionsChanged
+                                 withProperties:@{
+                                                  @"Via": NSStringFromClass(self.class),
+                                                  @"NewValue": @(granted),
+                                                  }];
+                if (granted) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self newObservationForTaxon:taxon project:project];
+                    });
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentAuthAlertForSource:INatPhotoSourceCamera];
+                    });
+                }
+
+            }];
+            break;
+    }
 }
 
 - (void)presentAuthAlertForSource:(INatPhotoSource)source {

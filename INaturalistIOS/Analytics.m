@@ -226,5 +226,6 @@ NSString *kAnalyticsEventOnboardingLoginCancel =                @"Onboarding Log
 NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Login Action";
 
 // permissions
-NSString *kAnalyticsEventLocationPermissionsChanged =             @"Location Permissions Changed";
+NSString *kAnalyticsEventLocationPermissionsChanged =           @"Location Permissions Changed";
+NSString *kAnalyticsEventCameraPermissionsChanged =             @"Camera Permissions Changed";
 
