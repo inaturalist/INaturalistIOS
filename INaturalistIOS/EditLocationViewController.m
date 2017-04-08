@@ -166,8 +166,6 @@
             break;
         }
         case kCLAuthorizationStatusNotDetermined:
-            [self.locationManager requestWhenInUseAuthorization];
-            break;
         default:
             break;
     }
