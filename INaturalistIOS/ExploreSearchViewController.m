@@ -235,7 +235,18 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self startLookingForCurrentLocationNotify:NO];
+    switch ([CLLocationManager authorizationStatus]) {
+        case kCLAuthorizationStatusRestricted:
+        case kCLAuthorizationStatusDenied:
+            // do nothing
+            break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+        case kCLAuthorizationStatusNotDetermined:
+        default:
+            [self startLookingForCurrentLocationNotify:NO];
+            break;
+    }
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
