@@ -7,6 +7,7 @@
 //
 
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <SDWebImage/UIView+WebCache.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ExploreGridCell.h"

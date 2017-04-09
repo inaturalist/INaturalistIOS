@@ -19,11 +19,7 @@
 
 #define INATURALIST_ORG_MAX_PHOTO_EDGE      2048
 
-@interface ImageStore () {
-    NSOperationQueue *resizeQueue;
-    SDImageCache *_nonexpiringImageCache;
-}
-@property (readonly) SDImageCache *nonexpiringImageCache;
+@interface ImageStore ()
 @end
 
 @implementation ImageStore
@@ -39,23 +35,10 @@
     return _sharedInstance;
 }
 
-- (SDImageCache *)nonexpiringImageCache {
-    if (!_nonexpiringImageCache) {
-        _nonexpiringImageCache = [[SDImageCache alloc] initWithNamespace:@"inat.nonexpiring"];
-        _nonexpiringImageCache.maxCacheAge = DBL_MAX;
-        _nonexpiringImageCache.maxCacheSize = 0;
-    }
-    
-    return _nonexpiringImageCache;
-}
-
 
 - (instancetype)init {
     if (self = [super init]) {
         [self setDictionary:[[NSMutableDictionary alloc] init]];
-        
-        resizeQueue = [[NSOperationQueue alloc] init];
-        resizeQueue.maxConcurrentOperationCount = 1;
         
         [NSNotificationCenter.defaultCenter addObserver:self
                                                selector:@selector(clearCache:)
@@ -65,22 +48,19 @@
     return self;
 }
 
-- (UIImage *)find:(NSString *)key
-{
+- (UIImage *)find:(NSString *)key {
     return [self find:key forSize:ImageStoreLargeSize];
 }
 
 - (UIImage *)find:(NSString *)key forSize:(int)size {
-    NSString *imgKey = [self keyForKey:key forSize:size];
-    UIImage *img = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imgKey];
+    NSString *sizedKey = [self keyForKey:key forSize:size];
     
-    if (!img) {
-        // attempt to find it at the old path
-        NSString *oldPath = [self oldPathForKey:key forSize:size];
-        img = [UIImage imageWithContentsOfFile:oldPath];
+    // prefer the non-expiring version
+    UIImage *image = [self findInNonExpiringCacheSizedKey:sizedKey];
+    if (!image) {
+        image = [self findInExpiringCacheSizedKey:sizedKey];
     }
-    
-    return img;
+    return image;
 }
 
 - (BOOL)storeImage:(UIImage *)image forKey:(NSString *)key error:(NSError **)error {
@@ -101,7 +81,7 @@
                                                scale:scale
                                          orientation:image.imageOrientation];
         NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
-        [[self nonexpiringImageCache] storeImage:resized forKey:largeKey];
+        [self storeInNonExpiringCacheImage:image withSizedKey:largeKey];
     }
     
     @autoreleasepool {
@@ -120,13 +100,13 @@
                                          orientation:image.imageOrientation];
 
         NSString *smallKey = [self keyForKey:key forSize:ImageStoreSmallSize];
-        [[SDImageCache sharedImageCache] storeImage:resized forKey:smallKey];
+        [self storeInNonExpiringCacheImage:resized withSizedKey:smallKey];
     }
     
     @autoreleasepool {
         UIImage *thumb = [[self class] imageWithImage:image scaledToFillSize:CGSizeMake(128, 128)];
         NSString *squareKey = [self keyForKey:key forSize:ImageStoreSquareSize];
-        [[SDImageCache sharedImageCache] storeImage:thumb forKey:squareKey];
+        [self storeInNonExpiringCacheImage:thumb withSizedKey:squareKey];
     }
     
     [[Analytics sharedClient] debugLog:@"IMAGE STORE: done"];
@@ -167,38 +147,39 @@
                                                scale:scale
                                          orientation:[[asset defaultRepresentation] orientation]];
         NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
-        [[self nonexpiringImageCache] storeImage:resized forKey:largeKey];
+        [self storeInNonExpiringCacheImage:resized withSizedKey:largeKey];
     }
     
     @autoreleasepool {
         // small = full screen asset
-        UIImage *image = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
+        UIImage *small = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
         NSString *smallKey = [self keyForKey:key forSize:ImageStoreSmallSize];
-        [[SDImageCache sharedImageCache] storeImage:image forKey:smallKey];
+        [self storeInNonExpiringCacheImage:small withSizedKey:smallKey];
     }
     
     @autoreleasepool {
         // square = asset thumbnail
-        UIImage *image = [UIImage imageWithCGImage:asset.thumbnail];
+        UIImage *thumb = [UIImage imageWithCGImage:asset.thumbnail];
         NSString *squareKey = [self keyForKey:key forSize:ImageStoreSquareSize];
-        [[SDImageCache sharedImageCache] storeImage:image forKey:squareKey];
+        [self storeInNonExpiringCacheImage:thumb withSizedKey:squareKey];
     }
     
     [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
     return YES;
 }
 
-- (void)destroy:(NSString *)key
-{
-    if (!key) {
+- (void)destroy:(NSString *)baseKey {
+    if (!baseKey) {
         return;
     }
-    [self.dictionary removeObjectForKey:key];
-    [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:key] error:NULL];
+    [self.dictionary removeObjectForKey:baseKey];
+    [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:baseKey] error:nil];
     
     for (int size = 1; size <= ImageStoreLargeSize; size++) {
-        [self.dictionary removeObjectForKey:[self keyForKey:key forSize:size]];
-        [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:[self keyForKey:key forSize:size]] error:NULL];
+        NSString *sizedKey = [self keyForKey:baseKey forSize:size];
+        [self.dictionary removeObjectForKey:sizedKey];
+        [self deleteFromNonExpiringCacheSizedKey:sizedKey];
+        [self deleteFromExpiringCacheSizedKey:sizedKey];
     }
 }
 
@@ -206,50 +187,42 @@
     return [[NSUUID UUID] UUIDString];
 }
 
-- (NSString *)pathForKey:(NSString *)key
-{
+- (NSString *)pathForKey:(NSString *)key {
     return [self pathForKey:key forSize:ImageStoreLargeSize];
 }
 
-- (NSString *)pathForKey:(NSString *)key forSize:(int)size
-{
-    NSString *imgKey = [self keyForKey:key forSize:size];
+- (NSString *)pathForKey:(NSString *)key forSize:(int)size {
+    NSString *sizedKey = [self keyForKey:key forSize:size];
     
-    if (size == ImageStoreLargeSize) {
-        // try the nonexpiring cache
-        if ([[self nonexpiringImageCache] diskImageExistsWithKey:imgKey]) {
-            return [[self nonexpiringImageCache] defaultCachePathForKey:imgKey];
-        }
-    }
-    
-    // trying the default cache
-    if ([[SDImageCache sharedImageCache] diskImageExistsWithKey:imgKey]) {
-        return [[SDImageCache sharedImageCache] defaultCachePathForKey:imgKey];
+    // prefer nonexpiring
+    NSString *path = [self pathInNonExpiringCacheSizedKey:sizedKey];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return path;
     } else {
-        // try the old path
-        NSString *oldPath = [self oldPathForKey:key forSize:size];
-        NSFileManager *fm = [NSFileManager defaultManager];
-        if ([fm fileExistsAtPath:oldPath]) {
-	        return oldPath;
-	    }
-    }
-    
-    return nil;
+        return [self pathInExpiringCacheSizedKey:sizedKey];
+    }    
 }
 
 - (void)makeExpiring:(NSString *)imgKey {
     if (!imgKey) { return; }
     
-    if ([[self nonexpiringImageCache] diskImageExistsWithKey:imgKey]) {
-        // fetch the image from the non-expiring cache
-        UIImage *image = [[self nonexpiringImageCache] imageFromDiskCacheForKey:imgKey];
-        
-        // store in the default cache
-        [[SDImageCache sharedImageCache] storeImage:image forKey:imgKey];
-        
-        // delete from the non-expiring cache
-        [[self nonexpiringImageCache] removeImageForKey:imgKey fromDisk:TRUE];
-    }
+    NSString *largeKey = [self keyForKey:imgKey forSize:ImageStoreLargeSize];
+    UIImage *large = [self findInNonExpiringCacheSizedKey:largeKey];
+    [[SDImageCache sharedImageCache] storeImage:large forKey:largeKey toDisk:YES completion:^{
+        [self deleteFromNonExpiringCacheSizedKey:largeKey];
+    }];
+
+    NSString *smallKey = [self keyForKey:imgKey forSize:ImageStoreSmallSize];
+    UIImage *small = [self findInNonExpiringCacheSizedKey:smallKey];
+    [[SDImageCache sharedImageCache] storeImage:small forKey:smallKey toDisk:YES completion:^{
+        [self deleteFromNonExpiringCacheSizedKey:smallKey];
+    }];
+
+    NSString *thumbKey = [self keyForKey:imgKey forSize:ImageStoreSquareSize];
+    UIImage *thumb = [self findInNonExpiringCacheSizedKey:thumbKey];
+    [[SDImageCache sharedImageCache] storeImage:thumb forKey:thumbKey toDisk:YES completion:^{
+        [self deleteFromNonExpiringCacheSizedKey:thumbKey];
+    }];
 }
 
 - (NSString *)oldPathForKey:(NSString *)key forSize:(int)size {
@@ -291,6 +264,45 @@
     return str;
 }
 
+- (NSString *)usageStatsString {
+    static NSNumberFormatter *numberFormatter = nil;
+    if (!numberFormatter) {
+        numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+        numberFormatter.groupingSize = 3;
+        numberFormatter.groupingSeparator = @",";
+    }
+    
+    NSString *sdSize = [numberFormatter stringFromNumber:@([[SDImageCache sharedImageCache] getSize])];
+    NSString *sdCount = [numberFormatter stringFromNumber:@([[SDImageCache sharedImageCache] getDiskCount])];
+    NSString *sdCacheStats = [NSString stringWithFormat:@"SDImageCache: %@ for %@ files",
+                              sdSize, sdCount];
+    
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
+    }
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:nil];
+    NSString *photosCount = [numberFormatter stringFromNumber:@([files count])];
+
+    unsigned long long int allPhotosSize = 0;
+    for (NSString *fileName in files) {
+        NSString *filePath = [photoDirPath stringByAppendingPathComponent:fileName];
+        NSDictionary *fileDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+        allPhotosSize += [fileDictionary fileSize];
+    }
+    NSString *photosSize = [numberFormatter stringFromNumber:@(allPhotosSize)];
+
+    NSString *photoCacheStats = [NSString stringWithFormat:@"Un-Uploaded Photos: %@ for %@ files",
+                                 photosSize, photosCount];
+    return [NSString stringWithFormat:@"%@ - %@", sdCacheStats, photoCacheStats];
+}
+
 - (void)clearCache
 {
     [dictionary removeAllObjects];
@@ -301,16 +313,63 @@
     [self clearCache];
 }
 
-- (NSString *)urlStringForKey:(NSString *)key forSize:(int)size
-{
-    return [NSString stringWithFormat:@"documents://photos/%@.jpg", [self keyForKey:key forSize:size]];
-}
-
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
 {
     NSString *iconicTaxonName = name ? [name lowercaseString] : @"unknown";
     NSString *key = [NSString stringWithFormat:@"ic_%@", iconicTaxonName];
     return [UIImage imageNamed:key];
 }
+
+#pragma mark - Expiring Cache Methods
+
+- (UIImage *)findInExpiringCacheSizedKey:(NSString *)sizedKey {
+    return [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:sizedKey];
+}
+
+- (NSString *)pathInExpiringCacheSizedKey:(NSString *)sizedKey {
+    return [[SDImageCache sharedImageCache] defaultCachePathForKey:sizedKey];
+}
+
+- (void)storeInExpiringCacheImage:(UIImage *)image withSizedKey:(NSString *)sizedKey {
+    [[SDImageCache sharedImageCache] storeImage:image forKey:sizedKey toDisk:YES completion:nil];
+}
+
+- (void)deleteFromExpiringCacheSizedKey:(NSString *)sizedKey {
+    [[SDImageCache sharedImageCache] removeImageForKey:sizedKey fromDisk:YES withCompletion:nil];
+}
+
+#pragma mark - Non-expiring Cache Methods
+
+- (UIImage *)findInNonExpiringCacheSizedKey:(NSString *)sizedKey {
+    return [UIImage imageWithContentsOfFile:[self pathInNonExpiringCacheSizedKey:sizedKey]];
+}
+
+- (NSString *)pathInNonExpiringCacheSizedKey:(NSString *)sizedKey {
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
+    }
+    
+    NSString *filePath = [photoDirPath stringByAppendingPathComponent:sizedKey];
+    return filePath;
+}
+
+- (BOOL)storeInNonExpiringCacheImage:(UIImage *)image withSizedKey:(NSString *)sizedKey {
+    NSString *path = [self pathInNonExpiringCacheSizedKey:sizedKey];
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.9);
+    return [imageData writeToFile:path atomically:YES];
+}
+
+- (void)deleteFromNonExpiringCacheSizedKey:(NSString *)sizedKey {
+    NSString *path = [self pathInNonExpiringCacheSizedKey:sizedKey];
+    [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+}
+
+
 
 @end

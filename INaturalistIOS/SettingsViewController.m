@@ -39,6 +39,7 @@
 #import "UIColor+INaturalist.h"
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
+#import "ImageStore.h"
 
 static const int CreditsSection = 3;
 
@@ -276,7 +277,7 @@ static const int AutouploadSwitchTag = 102;
     
     __weak MHGalleryController *blockGallery = gallery;
     
-    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+    gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [blockGallery dismissViewControllerAnimated:YES completion:nil];
         });
@@ -289,6 +290,7 @@ static const int AutouploadSwitchTag = 102;
     NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help: version %@",
                        self.versionText];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    
     if ([appDelegate.loginController isLoggedIn]) {
         User *me = [appDelegate.loginController fetchMe];
         email = [email stringByAppendingString:[NSString stringWithFormat:@" user id %ld", (long)me.recordID.integerValue]];
@@ -438,7 +440,9 @@ static const int AutouploadSwitchTag = 102;
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 4 && indexPath.row == 0) {
-        cell.textLabel.text = self.versionText;
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@",
+                               self.versionText,
+                               [[ImageStore sharedImageStore] usageStatsString]];
         cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.backgroundView = nil;
     } else if (indexPath.section == 0) {

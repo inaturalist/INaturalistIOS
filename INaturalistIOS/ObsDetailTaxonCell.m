@@ -8,6 +8,7 @@
 
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 
 #import "ObsDetailTaxonCell.h"
 

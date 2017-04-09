@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
+#import <UIView+WebCache.h>
 
 #import "AddIdentificationViewController.h"
 #import "Observation.h"

@@ -43,7 +43,39 @@
     
     UIImage *small = [is find:baseKey forSize:ImageStoreSmallSize];
     XCTAssertNotNil(small, @"failed to load small size for willet size");
+}
 
+- (void)testPathVsFind {
+    ImageStore *is = [ImageStore sharedImageStore];
+    NSString *baseKey = [is createKey];
+    UIImage *willet = [self willetImage];
+    
+    XCTAssertNotNil(willet, @"willet fixture image can't be nil");
+    
+    NSError *storeError = nil;
+    [is storeImage:willet forKey:baseKey error:&storeError];
+    XCTAssertNil(storeError,
+                 @"failed to store fixture image: %@",
+                 storeError.localizedDescription);
+    
+    UIImage *squareViaFind = [is find:baseKey forSize:ImageStoreSquareSize];
+    XCTAssertNotNil(squareViaFind, @"square via find doesn't exist");
+
+    // need to wait for the cutdown to flush to disk. frustrating
+    // how long this wait is, but shorter waits don't seem to work,
+    // and i haven't found a way to force SDWebImage to process its
+    // ioQueue.
+    NSDate *runUntil = [NSDate dateWithTimeIntervalSinceNow: 10.0];
+    [[NSRunLoop currentRunLoop] runUntilDate:runUntil];
+
+    NSString *squarePath = [is pathForKey:baseKey forSize:ImageStoreSquareSize];
+    UIImage *squareViaPath = [UIImage imageWithContentsOfFile:squarePath];
+
+    XCTAssertNotNil(squareViaPath, @"square via path doesn't exist");
+    
+    // can't test equality because while most of the bytes are the same,
+    // SDWebImage returns a slightly different image from find vs what is
+    // on the disk. why? no idea.
 }
 
 - (UIImage *)willetImage {

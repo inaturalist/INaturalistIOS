@@ -69,9 +69,12 @@ PODS:
   - Mantle (1.5.8):
     - Mantle/extobjc (= 1.5.8)
   - Mantle/extobjc (1.5.8)
+  - Masonry (1.0.2)
   - MBProgressHUD (0.9.1)
-  - MHVideoPhotoGallery (1.6.6):
+  - MHVideoPhotoGallery (2.1.3):
+    - Masonry
     - SDWebImage
+    - TTTAttributedLabel (= 1.13.3)
   - NSData+Base64 (1.0.0)
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
@@ -120,9 +123,9 @@ PODS:
     - XMLReader
   - RestKit/Testing (0.10.3)
   - RestKit/UI (0.10.3)
-  - SDWebImage (3.7.3):
-    - SDWebImage/Core (= 3.7.3)
-  - SDWebImage/Core (3.7.3)
+  - SDWebImage (4.0.0):
+    - SDWebImage/Core (= 4.0.0)
+  - SDWebImage/Core (4.0.0)
   - SlackTextViewController (1.9)
   - SOCKit (1.1)
   - SSZipArchive (0.3.2)
@@ -130,6 +133,7 @@ PODS:
   - SWRevealViewController (2.3.0)
   - TapkuLibrary (0.3.8)
   - Toast (3.0)
+  - TTTAttributedLabel (1.13.3)
   - UIColor-HTMLColors (1.0.0)
   - VICMAImageView (1.0)
   - VTAcknowledgementsViewController (0.15)
@@ -164,7 +168,7 @@ DEPENDENCIES:
   - M13ProgressSuite
   - Mantle (= 1.5.8)
   - MBProgressHUD (= 0.9.1)
-  - MHVideoPhotoGallery (= 1.6.6)
+  - MHVideoPhotoGallery (from `https://github.com/alexshepard/MHVideoPhotoGallery`, commit `63c1c3d3578a913c26956b1c9c9f4411a8cfe226`)
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
@@ -173,7 +177,7 @@ DEPENDENCIES:
   - Realm (= 1.0.1)
   - RestKit (= 0.10.3)
   - RestKit/Testing (= 0.10.3)
-  - SDWebImage (= 3.7.3)
+  - SDWebImage (= 4.0.0)
   - SlackTextViewController (= 1.9)
   - SSZipArchive (= 0.3.2)
   - SVPullToRefresh (= 0.4.1)
@@ -196,6 +200,9 @@ EXTERNAL SOURCES:
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
+  MHVideoPhotoGallery:
+    :commit: 63c1c3d3578a913c26956b1c9c9f4411a8cfe226
+    :git: https://github.com/alexshepard/MHVideoPhotoGallery
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -210,6 +217,9 @@ CHECKOUT OPTIONS:
   JSONKit:
     :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
     :git: https://github.com/alexshepard/JSONKit.git
+  MHVideoPhotoGallery:
+    :commit: 63c1c3d3578a913c26956b1c9c9f4411a8cfe226
+    :git: https://github.com/alexshepard/MHVideoPhotoGallery
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -244,8 +254,9 @@ SPEC CHECKSUMS:
   LibComponentLogging-NSLog: ae0ad111653e6c955e3f93b95386285fcdf94ab3
   M13ProgressSuite: ea9f7263e73e9215e6849dfa54e29ee0ad6a145c
   Mantle: f03b2b606c3f0cabd80214ad8a2fed6b464a7359
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
-  MHVideoPhotoGallery: 0e16b8a70fccbaedc30081c8d2c7b3de281cd57c
+  MHVideoPhotoGallery: aa36cdd9b75c6d5a19b48005cddb9b730c2e27e8
   NSData+Base64: 4e84902c4db907a15673474677e57763ef3903e4
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
@@ -254,7 +265,7 @@ SPEC CHECKSUMS:
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   Realm: 2e15e39d35b08abb529e212ed5d8af107b5236c8
   RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
-  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SlackTextViewController: d51503f7be846cb9976a273499dc90f2445e9447
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
@@ -262,6 +273,7 @@ SPEC CHECKSUMS:
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
   TapkuLibrary: 7a406dac46eff8595e191557eba88959f97f69b7
   Toast: 32c59229abfcf41850162b83bb9259dc84372473
+  TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
   VICMAImageView: 9f1811d4482ebe37b7eb09f640018554a81a21b2
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
@@ -269,6 +281,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 9c6616b24a4609c28b4eaf95a34f9f525fbdc47d
+PODFILE CHECKSUM: ca1fa1c0e010a2a200a2c4cb836ddb8ad5ece692
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0

@@ -8,6 +8,7 @@
 
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"

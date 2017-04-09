@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MBPRogressHUD/MBProgressHUD.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationActivityViewController.h"
@@ -386,6 +387,7 @@ static UIImage *defaultPersonImage;
 		UILabel *byline = (UILabel *)[cell viewWithTag:CommentCellBylineTag];
 		Comment *comment = (Comment *)activity;
         
+        [imageView sd_cancelCurrentAnimationImagesLoad];
         [imageView sd_cancelCurrentImageLoad];
         [imageView sd_setImageWithURL:[NSURL URLWithString:comment.user.userIconURL]
                      placeholderImage:defaultPersonImage];

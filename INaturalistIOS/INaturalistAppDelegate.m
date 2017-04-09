@@ -61,6 +61,8 @@
 	[FBSDKAppEvents activateApp];
     
     [self loadUpdatesWithCompletionHandler:nil];
+    
+    [self clearOutdatedCaches];
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -566,6 +568,14 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
     self.window.rootViewController = onboardingVC;
+}
+
+- (void)clearOutdatedCaches {
+    for (ObservationPhoto *op in [ObservationPhoto allObjects]) {
+        if ([op needsSync]) {
+            continue;
+        }
+    }
 }
 
 @end

@@ -31,7 +31,7 @@ enum {
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size;
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size;
 - (void)clearCache;
-- (NSString *)urlStringForKey:(NSString *)key forSize:(int)size;
 - (UIImage *)iconicTaxonImageForName:(NSString *)name;
 - (void)makeExpiring:(NSString *)imgKey;
+- (NSString *)usageStatsString;
 @end

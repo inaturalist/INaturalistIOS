@@ -307,7 +307,8 @@
         
         __weak MHGalleryController *blockGallery = gallery;
         
-        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+            
             __strong typeof(blockGallery)strongGallery = blockGallery;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [strongGallery dismissViewControllerAnimated:YES completion:nil];

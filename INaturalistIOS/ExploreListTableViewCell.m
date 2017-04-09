@@ -7,6 +7,7 @@
 //
 
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ExploreListTableViewCell.h"
