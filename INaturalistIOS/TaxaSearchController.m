@@ -63,7 +63,16 @@
     	// species guess row
     	[self.delegate recordSearchControllerSelectedRecord:nil];
     } else {
-    	[self.delegate recordSearchControllerSelectedRecord:[self.searchResults objectAtIndex:indexPath.row]];
+        // if the results are updating, the selection could be out of bounds
+        @try {
+            [self.delegate recordSearchControllerSelectedRecord:[self.searchResults objectAtIndex:indexPath.row]];
+        } @catch (NSException *exception) {
+            if ([exception.name isEqualToString:RLMExceptionName]) {
+                // do nothing
+            } else {
+                @throw exception;
+            }
+        }
     }
 }
 
