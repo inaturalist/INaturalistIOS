@@ -225,22 +225,6 @@
     }];
 }
 
-- (NSString *)oldPathForKey:(NSString *)key forSize:(int)size {
-    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docDir = [docDirs objectAtIndex:0];
-    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:nil];
-    }
-    
-    return [NSString stringWithFormat:@"%@.jpg",
-            [photoDirPath stringByAppendingPathComponent:
-             [self keyForKey:key forSize:size]]];
-}
-
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size
 {
     NSString *str;
