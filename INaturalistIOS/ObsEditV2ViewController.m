@@ -1386,7 +1386,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             // show alertview
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
                                                                            message:nil
-                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Never mind",nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
