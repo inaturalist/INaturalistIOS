@@ -283,15 +283,7 @@
     NSString *sdCacheStats = [NSString stringWithFormat:@"SDImageCache: %@ for %@ files",
                               sdSize, sdCount];
     
-    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docDir = [docDirs objectAtIndex:0];
-    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:nil];
-    }
+    NSString *photoDirPath = [self nonExpiringCacheBasePath];
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:nil];
     NSString *photosCount = [numberFormatter stringFromNumber:@([files count])];
 
@@ -340,17 +332,7 @@
 }
 
 - (NSString *)pathInNonExpiringCacheSizedKey:(NSString *)sizedKey {
-    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docDir = [docDirs objectAtIndex:0];
-    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:nil];
-    }
-    
-    NSString *filePath = [photoDirPath stringByAppendingPathComponent:sizedKey];
+    NSString *filePath = [[self nonExpiringCacheBasePath] stringByAppendingPathComponent:sizedKey];
     return filePath;
 }
 
