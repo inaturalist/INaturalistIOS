@@ -196,7 +196,7 @@
 	ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
 	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
 		
-  	[cell.taxonImageView sd_cancelCurrentImageLoad];	
+    
 	UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
 	if (etr.photoUrl) {
 		[cell.taxonImageView sd_setImageWithURL:etr.photoUrl placeholderImage:iconicTaxonImage];
