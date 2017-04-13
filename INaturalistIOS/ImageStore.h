@@ -30,7 +30,6 @@ enum {
 - (NSString *)pathForKey:(NSString *)key;
 - (NSString *)pathForKey:(NSString *)key forSize:(int)size;
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size;
-- (void)clearCache;
 - (UIImage *)iconicTaxonImageForName:(NSString *)name;
 - (void)makeExpiring:(NSString *)imgKey;
 - (NSString *)usageStatsString;

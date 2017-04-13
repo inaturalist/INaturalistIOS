@@ -41,7 +41,7 @@
         [self setDictionary:[[NSMutableDictionary alloc] init]];
         
         [NSNotificationCenter.defaultCenter addObserver:self
-                                               selector:@selector(clearCache:)
+                                               selector:@selector(clearMemoryCache:)
                                                    name:UIApplicationDidReceiveMemoryWarningNotification
                                                  object:nil];
     }
@@ -303,14 +303,12 @@
     return [NSString stringWithFormat:@"%@ - %@", sdCacheStats, photoCacheStats];
 }
 
-- (void)clearCache
-{
+- (void)clearMemoryCache {
     [dictionary removeAllObjects];
 }
 
-- (void)clearCache:(NSNotification *)note
-{
-    [self clearCache];
+- (void)clearMemoryCache:(NSNotification *)note {
+    [self clearMemoryCache];
 }
 
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
