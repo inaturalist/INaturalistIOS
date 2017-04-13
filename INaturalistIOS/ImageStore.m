@@ -248,6 +248,27 @@
     return str;
 }
 
+#pragma mark - cache clearing methods
+
+- (void)clearMemoryCache {
+    [dictionary removeAllObjects];
+}
+
+- (void)clearMemoryCache:(NSNotification *)note {
+    [self clearMemoryCache];
+}
+
+- (void)clearNonExpiringCache {
+    NSString *photoDirPath = [self nonExpiringCacheBasePath];
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:nil];
+    for (NSString *fileName in files) {
+        NSString *filePath = [photoDirPath stringByAppendingPathComponent:fileName];
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+    }
+}
+
+#pragma mark -
+
 - (NSString *)usageStatsString {
     static NSNumberFormatter *numberFormatter = nil;
     if (!numberFormatter) {
@@ -285,14 +306,6 @@
     NSString *photoCacheStats = [NSString stringWithFormat:@"Un-Uploaded Photos: %@ for %@ files",
                                  photosSize, photosCount];
     return [NSString stringWithFormat:@"%@ - %@", sdCacheStats, photoCacheStats];
-}
-
-- (void)clearMemoryCache {
-    [dictionary removeAllObjects];
-}
-
-- (void)clearMemoryCache:(NSNotification *)note {
-    [self clearMemoryCache];
 }
 
 - (UIImage *)iconicTaxonImageForName:(NSString *)name
@@ -352,6 +365,18 @@
     [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
 }
 
+- (NSString *)nonExpiringCacheBasePath {
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *photoDirPath = [docDir stringByAppendingPathComponent:@"photos"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:photoDirPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:photoDirPath
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
+    }
+    return photoDirPath;
+}
 
 
 @end
