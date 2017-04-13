@@ -244,6 +244,9 @@ static const int AutouploadSwitchTag = 102;
     // clear anything stashed in login
     [appDelegate.loginController logout];
     
+    // clear the imagestore
+    [[ImageStore sharedImageStore] clearEntireStore];
+    
     // update UI
     [self initUI];
 }

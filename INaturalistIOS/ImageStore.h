@@ -33,5 +33,5 @@ enum {
 - (UIImage *)iconicTaxonImageForName:(NSString *)name;
 - (void)makeExpiring:(NSString *)imgKey;
 - (NSString *)usageStatsString;
-- (void)clearNonExpiringCache;
+- (void)clearEntireStore;
 @end

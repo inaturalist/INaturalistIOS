@@ -258,13 +258,20 @@
     [self clearMemoryCache];
 }
 
-- (void)clearNonExpiringCache {
+- (void)clearEntireStore {
+    [self clearMemoryCache];
+    
+    // clear the expiring cache
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+    
+    // clear the non-expiring cache
     NSString *photoDirPath = [self nonExpiringCacheBasePath];
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:nil];
     for (NSString *fileName in files) {
         NSString *filePath = [photoDirPath stringByAppendingPathComponent:fileName];
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
+    [[NSFileManager defaultManager] removeItemAtPath:photoDirPath error:nil];
 }
 
 #pragma mark -
