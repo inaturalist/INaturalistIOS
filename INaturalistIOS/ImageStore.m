@@ -129,45 +129,6 @@
     return newImage;
 }
 
-- (BOOL)storeAsset:(ALAsset *)asset forKey:(NSString *)key error:(NSError *__autoreleasing *)storeError {
-    [[Analytics sharedClient] debugLog:@"ASSET STORE: begin"];
-    
-    @autoreleasepool {
-        // large = fullsize image but truncated to 2048x2048 pixels max (aspect ratio scaled)
-        CGSize imageSize = [[asset defaultRepresentation] dimensions];
-        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
-        CGFloat scale = [[asset defaultRepresentation] scale];
-        
-        if (longestSide > INATURALIST_ORG_MAX_PHOTO_EDGE) {
-            scale = INATURALIST_ORG_MAX_PHOTO_EDGE / longestSide;
-        }
-        
-        // resize with CGImage is fast enough for us
-        UIImage *resized = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]
-                                               scale:scale
-                                         orientation:[[asset defaultRepresentation] orientation]];
-        NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
-        [self storeInNonExpiringCacheImage:resized withSizedKey:largeKey];
-    }
-    
-    @autoreleasepool {
-        // small = full screen asset
-        UIImage *small = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
-        NSString *smallKey = [self keyForKey:key forSize:ImageStoreSmallSize];
-        [self storeInNonExpiringCacheImage:small withSizedKey:smallKey];
-    }
-    
-    @autoreleasepool {
-        // square = asset thumbnail
-        UIImage *thumb = [UIImage imageWithCGImage:asset.thumbnail];
-        NSString *squareKey = [self keyForKey:key forSize:ImageStoreSquareSize];
-        [self storeInNonExpiringCacheImage:thumb withSizedKey:squareKey];
-    }
-    
-    [[Analytics sharedClient] debugLog:@"ASSET STORE: done"];
-    return YES;
-}
-
 - (void)destroy:(NSString *)baseKey {
     if (!baseKey) {
         return;

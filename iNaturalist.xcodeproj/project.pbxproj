@@ -226,7 +226,6 @@
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
-		FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */; };
 		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
@@ -778,8 +777,6 @@
 		FAB6215D1D7397BF0026FDC6 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB6215F1D7397C00026FDC6 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB621611D7397C10026FDC6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Observation+AddAssets.h"; sourceTree = "<group>"; };
-		FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Observation+AddAssets.m"; sourceTree = "<group>"; };
 		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
 		FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityAuthorCell.m; sourceTree = "<group>"; };
 		FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityBodyCell.h; sourceTree = "<group>"; };
@@ -1050,8 +1047,6 @@
 				FA7BC8CA1C59D2460032E709 /* NewsItem.m */,
 				1985521C14ECA3CD00DB55C5 /* Observation.h */,
 				1985521D14ECA3CD00DB55C5 /* Observation.m */,
-				FAB87E5B1AC61D900014CB43 /* Observation+AddAssets.h */,
-				FAB87E5C1AC61D900014CB43 /* Observation+AddAssets.m */,
 				191FB4CB16014A6700C1F5DE /* ObservationField.h */,
 				191FB4CC16014A6700C1F5DE /* ObservationField.m */,
 				191FB4CE16014FF400C1F5DE /* ObservationFieldValue.h */,
@@ -2177,7 +2172,6 @@
 				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
-				FAB87E5D1AC61D900014CB43 /* Observation+AddAssets.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
 				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,

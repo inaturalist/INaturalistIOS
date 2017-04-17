@@ -37,7 +37,6 @@
 #import "SubtitleDisclosureCell.h"
 #import "ObservationPhoto.h"
 #import "ObsCameraOverlay.h"
-#import "Observation+AddAssets.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
 #import "ProjectChooserViewController.h"
