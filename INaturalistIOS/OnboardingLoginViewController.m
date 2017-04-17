@@ -697,7 +697,6 @@ static char PARTNER_ASSOCIATED_KEY;
                                                                                                        object:nil];
                                                });
                                            } failure:^(NSError *error) {
-                                               __strong typeof(weakSelf)strongSelf = weakSelf;
                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
                                                });
