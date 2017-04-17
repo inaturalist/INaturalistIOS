@@ -81,7 +81,7 @@
                                                scale:scale
                                          orientation:image.imageOrientation];
         NSString *largeKey = [self keyForKey:key forSize:ImageStoreLargeSize];
-        [self storeInNonExpiringCacheImage:image withSizedKey:largeKey];
+        [self storeInNonExpiringCacheImage:resized withSizedKey:largeKey];
     }
     
     @autoreleasepool {
