@@ -137,5 +137,13 @@
         return nil;
 }
 
+- (NSURL *)squarePhotoUrl {
+    return [self thumbPhotoUrl];
+}
+
+- (NSString *)photoKey {
+    return nil;
+}
+
 
 @end
