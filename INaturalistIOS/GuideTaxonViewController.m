@@ -91,18 +91,7 @@ static const int WebViewTag = 1;
 {
     NSString *urlString = [[request URL] absoluteString];
     if ([urlString hasPrefix:@"js:"]) {
-        NSString *jsonString = [[[urlString componentsSeparatedByString:@"js:"] lastObject]
-                                stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-        
-        NSError *error;
-        id parameters = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers
-                                                          error:&error];
-        if (error) {
-            NSLog(@"error: %@", error);
-        } else {
-            // TODO: Logic based on parameters
-        }
+        // do nothing
     } else if ([urlString hasPrefix:@"file:"] && [urlString rangeOfString:@"files/"].location != NSNotFound) {
         [self showAssetByURL:urlString];
     } else if ([urlString hasPrefix:@"http:"] || [urlString hasPrefix:@"https:"]) {
@@ -135,12 +124,7 @@ static const int WebViewTag = 1;
 
 # pragma mark - GuideTaxonViewController
 - (void)showAssetByURL:(NSString *)url
-{
-    NSString *name = [self.guideTaxon.xml atXPath:@"displayName"].text;
-    if (!name) {
-        name = [self.guideTaxon.xml atXPath:@"name"].text;
-    }
-    
+{    
     NSArray *galleryData = [self.guideTaxon.guidePhotos bk_map:^id(GuideImageXML *image) {
         if (image.mediumPhotoUrl.host) {
             return [MHGalleryItem itemWithURL:image.mediumPhotoUrl.absoluteString
