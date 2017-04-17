@@ -304,7 +304,6 @@ static UIImage *defaultPersonImage;
     });
 	
     NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
     switch (objectLoader.response.statusCode) {
             // UNPROCESSABLE ENTITY
         case 422:
@@ -312,9 +311,6 @@ static UIImage *defaultPersonImage;
             break;
             
         default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
             errorMsg = error.localizedDescription;
     }
     
