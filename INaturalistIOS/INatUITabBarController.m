@@ -541,7 +541,7 @@ static char PROJECT_ASSOCIATED_KEY;
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
         UINavigationController *nc = (UINavigationController *)self.selectedViewController;
