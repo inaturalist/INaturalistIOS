@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sdd-Yp-Z36">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sdd-Yp-Z36">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -54,7 +54,7 @@
                     <navigationItem key="navigationItem" id="t2J-ja-lz0"/>
                     <connections>
                         <outlet property="tableView" destination="VoR-F0-Qcr" id="3u5-kR-9gU"/>
-                        <segue destination="fYY-NN-ewF" kind="push" identifier="detail" id="snY-nz-Jlj"/>
+                        <segue destination="fYY-NN-ewF" kind="show" identifier="detail" id="snY-nz-Jlj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PQD-XU-HF1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -75,7 +75,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="64"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B7i-Zd-oxG" id="mgS-9U-uNe">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="63"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="63.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ga5-J8-yAb">
@@ -203,7 +203,7 @@
                 <navigationController id="sdd-Yp-Z36" userLabel="News" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" id="3sI-qo-Abn" userLabel="News"/>
                     <navigationItem key="navigationItem" id="6cI-rD-XsN"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="gJc-mH-hx8">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gJc-mH-hx8">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
