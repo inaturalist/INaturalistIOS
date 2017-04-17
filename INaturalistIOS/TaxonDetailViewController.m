@@ -9,13 +9,13 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/SDWebImageManager.h>
 #import <objc/runtime.h>
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "TaxonDetailViewController.h"
 #import "Taxon.h"
 #import "Observation.h"
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
-#import "ObservationDetailViewController.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "INatUITabBarController.h"
@@ -319,7 +319,7 @@ static char SUMMARY_ASSOCIATED_KEY;
     } else {
         RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"roundedButton" forIndexPath:indexPath];
         
-        cell.roundedButton.backgroundColor = [UIColor colorWithHex:0xE4E4E4];
+        cell.roundedButton.backgroundColor = [UIColor colorWithHexString:@"#E4E4E4"];
         cell.roundedButton.tintColor = [UIColor blackColor];
         [cell.roundedButton setTitle:NSLocalizedString(@"Wikipedia Article", @"title for button to open taxon page on wikipedia")
                             forState:UIControlStateNormal];

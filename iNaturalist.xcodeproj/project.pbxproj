@@ -35,7 +35,6 @@
 		1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */; };
 		1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */; };
 		193BD57014F41FEA005209CA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 193BD56F14F41FEA005209CA /* MapKit.framework */; };
-		195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 195515F018470F1300FEE783 /* ObservationPageViewController.m */; };
 		1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1955FCFC17F102FA004F57F2 /* GuideXML.m */; };
 		19570CC417EB92D8000C800A /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC317EB92D8000C800A /* GuideViewController.m */; };
 		19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19570CC617EBB624000C800A /* GuideMenuViewController.m */; };
@@ -67,7 +66,6 @@
 		19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898418DD0B2300505918 /* ObservationAnnotation.m */; };
 		19AE898818DD0B9600505918 /* RefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898718DD0B9600505918 /* RefreshControl.m */; };
 		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
-		19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
 		19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
 		19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
@@ -344,8 +342,6 @@
 		1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObservationsViewController.h; sourceTree = "<group>"; };
 		1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObservationsViewController.m; sourceTree = "<group>"; };
 		193BD56F14F41FEA005209CA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		195515EF18470F1300FEE783 /* ObservationPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationPageViewController.h; sourceTree = "<group>"; };
-		195515F018470F1300FEE783 /* ObservationPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationPageViewController.m; sourceTree = "<group>"; };
 		1955FCFB17F102FA004F57F2 /* GuideXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideXML.h; sourceTree = "<group>"; };
 		1955FCFC17F102FA004F57F2 /* GuideXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideXML.m; sourceTree = "<group>"; };
 		19570CC217EB92D8000C800A /* GuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewController.h; sourceTree = "<group>"; };
@@ -405,8 +401,6 @@
 		19AE898718DD0B9600505918 /* RefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshControl.m; sourceTree = "<group>"; };
 		19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UIViewHelpers.h"; sourceTree = "<group>"; };
 		19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UIViewHelpers.m"; sourceTree = "<group>"; };
-		19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationDetailViewController.h; sourceTree = "<group>"; };
-		19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationDetailViewController.m; sourceTree = "<group>"; };
 		19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Helpers.h"; sourceTree = "<group>"; };
 		19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Helpers.m"; sourceTree = "<group>"; };
 		19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RXMLElement+Helpers.h"; sourceTree = "<group>"; };
@@ -1120,12 +1114,8 @@
 				19640DE51508100A003BF888 /* MapTypeViewController.m */,
 				19AE898018DD0AEB00505918 /* ObservationActivityViewController.h */,
 				19AE898118DD0AEB00505918 /* ObservationActivityViewController.m */,
-				19C3A92414EA35CB0008F441 /* ObservationDetailViewController.h */,
-				19C3A92514EA35CB0008F441 /* ObservationDetailViewController.m */,
 				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
 				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
-				195515EF18470F1300FEE783 /* ObservationPageViewController.h */,
-				195515F018470F1300FEE783 /* ObservationPageViewController.m */,
 				191490A21513C7C300231C80 /* ProjectChooserViewController.h */,
 				191490A31513C7C300231C80 /* ProjectChooserViewController.m */,
 				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
@@ -2066,7 +2056,6 @@
 				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
-				19C3A92714EA35CB0008F441 /* ObservationDetailViewController.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
 				FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */,
 				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
@@ -2256,7 +2245,6 @@
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
-				195515F118470F1300FEE783 /* ObservationPageViewController.m in Sources */,
 				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

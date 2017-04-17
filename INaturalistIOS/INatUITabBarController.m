@@ -18,7 +18,6 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "INatWebController.h"
-#import "ObservationDetailViewController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
@@ -57,7 +56,7 @@ static char PROJECT_ASSOCIATED_KEY;
 @end
 
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
 @property QBImagePickerController *imagePicker;
@@ -483,40 +482,6 @@ static char PROJECT_ASSOCIATED_KEY;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO animated:YES];
     [nav pushViewController:confirmObs animated:YES];
-}
-
-#pragma mark - ObservationDetailViewController delegate
-
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
-    NSError *saveError;
-    [[Observation managedObjectContext] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving new obs: %@",
-                                            saveError.localizedDescription]];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
-                                                                       message:saveError.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
-    [controller.navigationController setToolbarHidden:YES animated:NO];
-    
-    @try {
-        [controller.observation destroy];
-    } @catch (NSException *exception) {
-        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
-            // if observation has been deleted or is otherwise inaccessible, do nothing
-            return;
-        }
-    }
 }
 
 #pragma mark - QBImagePicker delegate

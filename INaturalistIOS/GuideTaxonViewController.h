@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "RXMLElement.h"
-#import "ObservationDetailViewController.h"
 #import "GuideTaxonXML.h"
 
-@interface GuideTaxonViewController : UIViewController <ObservationDetailViewControllerDelegate, UIWebViewDelegate>
+@interface GuideTaxonViewController : UIViewController <UIWebViewDelegate>
 {
     NSURL *lastURL;
 }

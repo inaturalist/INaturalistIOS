@@ -22,7 +22,6 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "MultiImageView.h"
-#import "ObservationDetailViewController.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Observation.h"
@@ -37,7 +36,7 @@
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
-@interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
+@interface ConfirmPhotoViewController () <TaxaSearchViewControllerDelegate> {
     PHPhotoLibrary *phLib;
     UIButton *retake, *confirm;
 }
@@ -466,31 +465,6 @@
         confirm.enabled = YES;
     } else {
         confirm.enabled = NO;
-    }
-}
-
-#pragma mark - ObservationDetailViewController delegate
-
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
-    NSError *saveError;
-    [[Observation managedObjectContext] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving observation: %@",
-                                            saveError.localizedDescription]];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
-    @try {
-        [controller.observation destroy];
-    } @catch (NSException *exception) {
-        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
-            // if observation has been deleted or is otherwise inaccessible, do nothing
-            return;
-        }
     }
 }
 

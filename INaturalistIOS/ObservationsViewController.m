@@ -22,7 +22,6 @@
 #import "LoginController.h"
 #import "Observation.h"
 #import "ObservationFieldValue.h"
-#import "ObservationPageViewController.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
@@ -44,7 +43,6 @@
 #import "ObservationViewUploadingCell.h"
 #import "ObservationViewWaitingUploadCell.h"
 #import "ObservationViewErrorCell.h"
-#import "ObservationDetailViewController.h"
 #import "DeletedRecord.h"
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
@@ -54,7 +52,7 @@
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -804,15 +802,15 @@
     if (appDelegate.loginController.uploadManager.isUploading) {
         // waiting upload, with uploads happening
         cell.uploadButton.enabled = NO;
-        cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
-        cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
-        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
+        cell.backgroundColor = [UIColor colorWithHexString:@"#eaeaea"];
+        cell.titleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
+        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
         cell.observationImage.alpha = 0.5f;
     } else {
         // waiting upload, with uploads not happening
         cell.uploadButton.enabled = YES;
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
-        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
+        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#787878"];
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
     }
@@ -1380,17 +1378,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"observationDetail"]) {
-        ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-        ObservationPageViewController *pvc = [segue destinationViewController];
-        [ovc setDelegate:self];
-        Observation *o = (Observation *)sender;
-        [ovc setObservation:o];
-        [pvc setViewControllers:[NSArray arrayWithObject:ovc]
-                       direction:UIPageViewControllerNavigationDirectionForward
-                        animated:YES
-                      completion:nil];
-    } else if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
+    if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (Observation *)sender;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail

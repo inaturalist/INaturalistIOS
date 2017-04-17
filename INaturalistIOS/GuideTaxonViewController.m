@@ -13,10 +13,11 @@
 
 #import "GuideTaxonViewController.h"
 #import "Observation.h"
-#import "ObservationDetailViewController.h"
 #import "RXMLElement+Helpers.h"
 #import "GuideImageXML.h"
 #import "Analytics.h"
+#import "Taxon.h"
+#import "INatUITabBarController.h"
 
 static const int WebViewTag = 1;
 
@@ -63,25 +64,31 @@ static const int WebViewTag = 1;
 }
 
 - (IBAction)clickedObserve:(id)sender {
-    [self performSegueWithIdentifier:@"GuideTaxonObserveSegue" sender:sender];
-}
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"GuideTaxonObserveSegue"]) {
-        ObservationDetailViewController *vc = [segue destinationViewController];
-        [vc setDelegate:self];
-        Observation *o = [Observation object];
-        o.localCreatedAt = [NSDate date];
-        o.localObservedOn = [NSDate date];
-        o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-        if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
-            vc.taxonID = self.guideTaxon.taxonID;
-            o.speciesGuess = self.guideTaxon.displayName;
+    // we're working from serialized taxon objects (GuideTaxonXML) but this API wants
+    // regular Taxon objects.
+    INatUITabBarController *tabBar = (INatUITabBarController *)self.tabBarController;
+    Taxon *observedTaxon = nil;
+    if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
+        NSArray *records = @[ self.guideTaxon.taxonID ];
+        observedTaxon = [[Taxon matchingRecordIDs:records] firstObject];
+    }
+    if (observedTaxon) {
+        [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
+    } else {
+        observedTaxon = [[Taxon alloc] initWithEntity:[Taxon entity]
+                       insertIntoManagedObjectContext:[NSManagedObjectContext defaultContext]];
+        observedTaxon.recordID = @(self.guideTaxon.taxonID.integerValue);
+        observedTaxon.name = self.guideTaxon.name;
+        
+        NSError *saveError = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
+        if (saveError) {
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
+                                                saveError.localizedDescription]];
+            [tabBar triggerNewObservationFlowForTaxon:nil project:nil];
+        } else {
+            [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
         }
-        if (!o.speciesGuess || o.speciesGuess.length == 0) {
-            o.speciesGuess = self.guideTaxon.name;
-        }
-        [vc setObservation:o];
     }
 }
 
