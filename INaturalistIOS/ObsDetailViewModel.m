@@ -84,7 +84,7 @@
             return [self taxonCellForTableView:tableView indexPath:indexPath];
         }
     } else {
-        return nil;
+        return [UITableViewCell new];
     }
 }
 
