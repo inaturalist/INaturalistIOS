@@ -15,7 +15,7 @@
 #import "ExploreTaxon.h"
 #import "ProjectObsPhotoCell.h"
 #import "ImageStore.h"
-#import "FAKInaturalist.h"
+#import "FAKINaturalist.h"
 
 @interface ProjectDetailObservationsViewController () <UICollectionViewDelegateFlowLayout>
 @end
