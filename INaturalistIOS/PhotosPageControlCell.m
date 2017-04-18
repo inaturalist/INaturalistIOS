@@ -6,8 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonicons.h>
 
 #import "PhotosPageControlCell.h"
@@ -36,7 +35,7 @@
 }
 
 - (void)prepareForReuse {
-    [self.iv sd_cancelCurrentImageLoad];
+    [self.iv cancelImageRequestOperation];
     self.pageControl.currentPage = 0;
     self.captiveContainer.hidden = YES;
     // clear all targets/actions

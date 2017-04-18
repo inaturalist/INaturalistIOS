@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailObservationsViewController.h"
@@ -73,7 +73,7 @@
     if (photo) {
         NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
                                                                          withString:@"small"];
-        [cell.photoImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+        [cell.photoImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
     } else {
         // show iconic taxon image
         FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:obs.iconicTaxonName

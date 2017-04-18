@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailObserversViewController.h"
@@ -77,7 +77,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
     cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.observerCounts indexOfObject:count] + 1];
     
     if (count.observer.userIcon) {
-        [cell.userImageView sd_setImageWithURL:count.observer.userIcon];
+        [cell.userImageView setImageWithURL:count.observer.userIcon];
     } else {
         cell.userImageView.image = [UIImage inat_defaultUserImage];
     }

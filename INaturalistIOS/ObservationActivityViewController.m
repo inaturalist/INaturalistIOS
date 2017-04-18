@@ -9,8 +9,7 @@
 #import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MBPRogressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ObservationActivityViewController.h"
@@ -383,10 +382,9 @@ static UIImage *defaultPersonImage;
 		UILabel *byline = (UILabel *)[cell viewWithTag:CommentCellBylineTag];
 		Comment *comment = (Comment *)activity;
         
-        [imageView sd_cancelCurrentAnimationImagesLoad];
-        [imageView sd_cancelCurrentImageLoad];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:comment.user.userIconURL]
-                     placeholderImage:defaultPersonImage];
+        [imageView cancelImageRequestOperation];
+        [imageView setImageWithURL:[NSURL  URLWithString:comment.user.userIconURL]
+                  placeholderImage:defaultPersonImage];
 
         body.text = [comment.body stringByStrippingHTML];
 		byline.text = [NSString stringWithFormat:@"Posted by %@ on %@", comment.user.login, comment.createdAtShortString];

@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIView+WebCache.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
@@ -437,9 +436,9 @@ static const int ListControlIndexNearby = 2;
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
     cell.titleLabel.text = p.title;
-    [cell.projectImage sd_cancelCurrentImageLoad];
-    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage inat_defaultProjectImage]];
+    [cell.projectImage cancelImageRequestOperation];
+    [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
+                      placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;
 }

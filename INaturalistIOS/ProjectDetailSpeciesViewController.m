@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailSpeciesViewController.h"
@@ -90,7 +90,7 @@
         }
     }
     
-    [cell.taxonImageView sd_setImageWithURL:count.taxon.photoUrl];
+    [cell.taxonImageView setImageWithURL:count.taxon.photoUrl];
     
     return cell;
 }

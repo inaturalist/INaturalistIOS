@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/SDWebImageManager.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <objc/runtime.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
@@ -252,8 +251,8 @@ static char SUMMARY_ASSOCIATED_KEY;
                                                        context:nil].size.height + 20;
     } else if (indexPath.row == 0) {
         TaxonPhoto *tp = self.fullTaxon.taxonPhotos.firstObject;
-        NSString *cacheKey = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:tp.thumbURL]];
-        UIImage *image = [[[SDWebImageManager sharedManager] imageCache] imageFromDiskCacheForKey:cacheKey];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tp.thumbURL]];
+        UIImage *image = [[UIImageView sharedImageCache] cachedImageForRequest:request];
         
         if (image) {
             CGFloat aspectRatio = image.size.height / image.size.width;
@@ -295,14 +294,20 @@ static char SUMMARY_ASSOCIATED_KEY;
                 [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
                 [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
                 
-                [cell.taxonPhoto sd_setImageWithURL:[NSURL URLWithString:tp.mediumURL]
-                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                  [cell setNeedsDisplay];
-                                                  [tableView beginUpdates];
-                                                  [tableView endUpdates];
-                                              });
-                                          }];
+                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tp.mediumURL]];
+                
+                __weak typeof(cell)weakCell = cell;
+                __weak typeof(tableView)weakTableView = tableView;
+                [cell.taxonPhoto setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                    
+                    weakCell.taxonPhoto.image = image;
+                    [weakCell setNeedsDisplay];
+                    // update tableview because the cell height is set
+                    // according to the image dimensions
+                    [weakTableView beginUpdates];
+                    [weakTableView endUpdates];
+                    
+                } failure:nil];
             } else {
                 cell.scrim.hidden = YES;
                 cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.fullTaxon.iconicTaxonName];

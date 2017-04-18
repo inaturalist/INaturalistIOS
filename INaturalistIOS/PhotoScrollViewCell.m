@@ -7,7 +7,7 @@
 //
 
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "PhotoScrollViewCell.h"
 #import "PhotoChicletCell.h"
@@ -146,7 +146,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         } else if (obsPhoto.squareURL) {
             NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
             if (squarePhotoUrl) {
-                [cell.photoImageView sd_setImageWithURL:squarePhotoUrl];
+                [cell.photoImageView setImageWithURL:squarePhotoUrl];
             }
         }
         

@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ProjectDetailIdentifiersViewController.h"
@@ -76,7 +76,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 
 	NSLog(@"identifier usericon: %@", count.identifier.userIcon);
     if (count.identifier.userIcon) {
-        [cell.userImageView sd_setImageWithURL:count.identifier.userIcon];
+        [cell.userImageView setImageWithURL:count.identifier.userIcon];
     } else {
         cell.userImageView.image = [UIImage inat_defaultUserImage];
     }

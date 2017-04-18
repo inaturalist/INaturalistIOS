@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <YLMoment/YLMoment.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
@@ -236,7 +236,7 @@
     }
     if (o.observationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos firstObject];
-        [cell.observationImageView sd_setImageWithURL:op.squarePhotoUrl];
+        [cell.observationImageView setImageWithURL:op.squarePhotoUrl];
     } else {
         NSString *iconicTaxonName = o.iconicTaxonName;
         cell.observationImageView.image = [UIImage imageForIconicTaxon:iconicTaxonName];
@@ -251,7 +251,7 @@
     
     if (eur.identification) {
         if (eur.identification.identifier.userIcon) {
-            [cell.profileImageView sd_setImageWithURL:eur.identification.identifier.userIcon];
+            [cell.profileImageView setImageWithURL:eur.identification.identifier.userIcon];
         } else {
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }
@@ -262,7 +262,7 @@
                                      ];
     } else if (eur.comment) {
         if (eur.comment.commenter.userIcon) {
-            [cell.profileImageView sd_setImageWithURL:eur.comment.commenter.userIcon];
+            [cell.profileImageView setImageWithURL:eur.comment.commenter.userIcon];
         } else {
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }

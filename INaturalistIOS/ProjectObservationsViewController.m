@@ -6,7 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <ActionSheetPicker-3.0/ActionSheetPicker.h>
 #import <FontAwesomeKit/FAKIonicons.h>
@@ -344,7 +344,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     if (url) {
         header.projectThumbnailImageView.backgroundColor = [UIColor clearColor];
         header.projectThumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [header.projectThumbnailImageView sd_setImageWithURL:url];
+        [header.projectThumbnailImageView setImageWithURL:url];
     } else {
         // use standard projects icon
         header.projectThumbnailImageView.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];

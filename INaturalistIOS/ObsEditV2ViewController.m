@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
@@ -15,7 +15,6 @@
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
@@ -1482,7 +1481,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {
-            [cell.taxonImageView sd_setImageWithURL:etr.photoUrl];
+            [cell.taxonImageView setImageWithURL:etr.photoUrl];
         } else {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         }

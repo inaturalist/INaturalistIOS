@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ExploreLeaderboardCell.h"
 
@@ -139,7 +138,7 @@
 
 - (void)prepareForReuse {
     self.userIcon.image = nil;
-    [self.userIcon sd_cancelCurrentImageLoad];
+    [self.userIcon cancelImageRequestOperation];
     
     self.username.text = nil;
     self.observationCount.text = nil;

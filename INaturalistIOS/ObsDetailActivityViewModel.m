@@ -6,7 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <YLMoment/YLMoment.h>
@@ -360,9 +360,8 @@
     if (activity) {
         NSURL *userIconUrl = [activity userIconUrl];
         if (userIconUrl) {
-            [cell.authorImageView sd_setImageWithURL:userIconUrl
-                                    placeholderImage:[UIImage inat_defaultUserImage]
-                                             options:SDWebImageRefreshCached];
+            [cell.authorImageView setImageWithURL:userIconUrl
+                                 placeholderImage:[UIImage inat_defaultUserImage]];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
         } else {
@@ -471,7 +470,7 @@
     
     
     if ([identification taxonIconUrl]) {
-        [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
+        [cell.taxonImageView setImageWithURL:[identification taxonIconUrl]];
     } else {
         cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:[identification taxonIconicName]];
     }

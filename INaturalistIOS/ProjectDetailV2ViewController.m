@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
@@ -87,8 +87,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     
     NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
     if (projectThumbUrl) {
-        [self.projectThumbnail sd_setImageWithURL:projectThumbUrl];
-        [self.projectHeaderBackground sd_setImageWithURL:projectThumbUrl];
+        [self.projectThumbnail setImageWithURL:projectThumbUrl];
+        [self.projectHeaderBackground setImageWithURL:projectThumbUrl];
     } else {
         self.projectThumbnail.image = [UIImage inat_defaultProjectImage];
         self.projectThumbnail.backgroundColor = [UIColor whiteColor];

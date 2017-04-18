@@ -7,8 +7,7 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"
@@ -146,7 +145,7 @@
 	
 	FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
 	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-	[cell.taxonImageView sd_cancelCurrentImageLoad];
+    [cell.taxonImageView cancelImageRequestOperation];
 	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
 	cell.taxonImageView.layer.borderWidth = 0.0f;
 	
@@ -199,7 +198,8 @@
     
 	UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
 	if (etr.photoUrl) {
-		[cell.taxonImageView sd_setImageWithURL:etr.photoUrl placeholderImage:iconicTaxonImage];
+        [cell.taxonImageView setImageWithURL:etr.photoUrl
+                            placeholderImage:iconicTaxonImage];
 	} else {
 		[cell.taxonImageView setImage:iconicTaxonImage];
 	}

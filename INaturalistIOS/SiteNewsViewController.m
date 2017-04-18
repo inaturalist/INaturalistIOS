@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
@@ -121,7 +121,7 @@ static UIImage *briefcase;
         cell.newsCategoryTitle.text = self.project.title;
         NSURL *iconURL = [NSURL URLWithString:self.project.iconURL];
         if (iconURL) {
-            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+            [cell.newsCategoryImageView setImageWithURL:iconURL];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
@@ -129,7 +129,7 @@ static UIImage *briefcase;
         cell.newsCategoryTitle.text = newsItem.parentTitleText;
         NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
         if (iconURL) {
-            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+            [cell.newsCategoryImageView setImageWithURL:iconURL];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
@@ -137,7 +137,7 @@ static UIImage *briefcase;
     
     NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
     if (coverImageURL) {
-        [cell.postImageView sd_setImageWithURL:coverImageURL];
+        [cell.postImageView setImageWithURL:coverImageURL];
         [cell showPostImageView:YES];
     } else {
         [cell showPostImageView:NO];

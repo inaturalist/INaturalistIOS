@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "GuidesViewController.h"
@@ -459,12 +458,12 @@ static const int ListControlIndexNearby = 2;
     
     Guide *p = [self.guides objectAtIndex:[indexPath row]];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
+    [imageView cancelImageRequestOperation];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
     title.textAlignment = NSTextAlignmentNatural;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage inat_defaultGuideImage]];
+    [imageView setImageWithURL:[NSURL URLWithString:p.iconURL]
+              placeholderImage:[UIImage inat_defaultGuideImage]];
     
     return cell;
 }

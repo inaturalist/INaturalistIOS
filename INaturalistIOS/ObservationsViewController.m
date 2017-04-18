@@ -11,12 +11,12 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
-#import <SDWebImage/UIButton+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <YLMoment/YLMoment.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h> 
+#import <AFNetworking/UIButton+AFNetworking.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -868,7 +868,7 @@
 }
 
 - (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
-    [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+    [view.iconButton cancelImageRequestOperationForState:UIControlStateNormal];
     [view.iconButton setImage:nil forState:UIControlStateNormal];
     [view.iconButton setTintColor:[UIColor whiteColor]];
     view.iconButton.backgroundColor = [UIColor inatTint];
@@ -943,7 +943,7 @@
                                      range:NSMakeRange(2, uploadIconString.length - 2)];
             
             // image seems to override title text, so clear it
-            [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+            [view.iconButton cancelImageRequestOperationForState:UIControlStateNormal];
             [view.iconButton setImage:nil forState:UIControlStateNormal];
             
             view.iconButton.backgroundColor = [UIColor inatTint];
@@ -1006,23 +1006,27 @@
         
         // icon
         if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
-            // render the user icon as an image, not a mask,
-            // which sdwebimage doesn't seem to be able to do directly
-            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]
-                                       forState:UIControlStateNormal
-                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+            // render the user icon as an image, not a mask
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:user.mediumUserIconURL]];
+            __weak typeof(view)weakView = view;
+            [view.iconButton setImageForState:UIControlStateNormal
+                               withURLRequest:request
+                             placeholderImage:nil
+                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                          [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                            forState:UIControlStateNormal];
-                                      }];
+                                      } failure:nil];
         } else if (user.userIconURL && ![user.userIconURL isEqualToString:@""]) {
-            // render the user icon as an image, not a mask,
-            // which sdwebimage doesn't seem to be able to do directly
-            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]
-                                       forState:UIControlStateNormal
-                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                                           forState:UIControlStateNormal];
-                                      }];
+            // render the user icon as an image, not a mask
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:user.userIconURL]];
+            __weak typeof(view)weakView = view;
+            [view.iconButton setImageForState:UIControlStateNormal
+                               withURLRequest:request
+                             placeholderImage:nil
+                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                          [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                               forState:UIControlStateNormal];
+                                      } failure:nil];
         } else {
             FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
             [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];

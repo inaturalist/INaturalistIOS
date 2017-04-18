@@ -48,35 +48,20 @@
 - (void)uploadProfilePhoto:(UIImage *)image forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
     if (imageData) {
+        
         // use afnetworking to deal with icky multi-part forms
-        AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL inat_baseURL]];
-        
         NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue];
-        
-        NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"PUT"
-                                                                             path:path
-                                                                       parameters:nil
-                                                        constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-                                                            [formData appendPartWithFileData:imageData
-                                                                                        name:@"user[icon]"
-                                                                                    fileName:@"icon.jpg"
-                                                                                    mimeType:@"image/jpeg"];
-                                                            
-                                                        }];
-        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-       forHTTPHeaderField:@"Authorization"];
-        
-        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                done(@[], 0, nil);
-            });
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                done(nil, 0, error);
-            });
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+        [manager POST:path parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            [formData appendPartWithFileData:imageData
+                                        name:@"user[icon]"
+                                    fileName:@"icon.jpg"
+                                    mimeType:@"image/jpeg"];
+        } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            done(@[], 0, nil);
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            done(@[], 0, error);
         }];
-        [httpClient enqueueHTTPRequestOperation:operation];
     }
 }
 

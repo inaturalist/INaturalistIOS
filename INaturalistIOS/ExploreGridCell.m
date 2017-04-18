@@ -7,8 +7,7 @@
 //
 
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <SDWebImage/UIView+WebCache.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ExploreGridCell.h"
 #import "ExploreObservation.h"
@@ -103,7 +102,7 @@
 
 - (void)prepareForReuse {
     observationImageView.image = nil;
-    [observationImageView sd_cancelCurrentImageLoad];
+    [observationImageView cancelImageRequestOperation];
     observationNameLabel.text = @"";
 }
 
@@ -129,12 +128,7 @@
         if (photo) {
             NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
                                                                              withString:@"medium"];
-            
-            [observationImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]
-                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                               if ([_observation isEqual:observation])
-                                                   [observationImageView setNeedsDisplay];
-                                           }];
+            [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
         }
 
     }

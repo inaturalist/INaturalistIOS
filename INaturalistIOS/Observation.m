@@ -520,9 +520,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return user.login;
 }
 
-- (NSString *)userThumbUrl {
+- (NSURL *)userThumbUrl {
     User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
-    return user.userIconURL;
+    return [NSURL URLWithString:user.userIconURL];
 }
 
 - (BOOL)isEditable {

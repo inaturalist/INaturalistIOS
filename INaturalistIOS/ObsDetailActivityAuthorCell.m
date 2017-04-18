@@ -6,8 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ObsDetailActivityAuthorCell.h"
@@ -21,7 +20,7 @@
 }
 
 - (void)prepareForReuse {
-    [self.authorImageView sd_cancelCurrentImageLoad];
+    [self.authorImageView cancelImageRequestOperation];
     self.authorImageView.image = nil;
     self.authorNameLabel.text = nil;
     self.dateLabel.text = nil;

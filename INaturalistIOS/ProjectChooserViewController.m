@@ -7,8 +7,7 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectChooserViewController.h"
@@ -164,9 +163,9 @@
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
     cell.titleLabel.text = pu.project.title;
-    [cell.projectImage sd_cancelCurrentImageLoad];
-    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
-                 placeholderImage:[UIImage inat_defaultProjectImage]];
+    [cell.projectImage cancelImageRequestOperation];
+    [cell.projectImage setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
+                      placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {

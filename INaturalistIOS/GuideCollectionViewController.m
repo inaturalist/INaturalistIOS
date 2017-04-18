@@ -7,8 +7,7 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
@@ -155,15 +154,15 @@ static const int GutterWidth  = 5;
     static NSString *identifier = @"GuideTaxonCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
-    [img sd_cancelCurrentImageLoad];
+    [img cancelImageRequestOperation];
     img.image = [UIImage imageNamed:@"ic_unknown"];
     img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
         if (guideTaxon.smallPhotoUrl.host) {
-            [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
-                   placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
+            [img setImageWithURL:guideTaxon.smallPhotoUrl
+                placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
         } else if (guideTaxon.smallPhotoUrl) {
             [img setImage:[UIImage imageWithContentsOfFile:guideTaxon.smallPhotoUrl.path]];
         }

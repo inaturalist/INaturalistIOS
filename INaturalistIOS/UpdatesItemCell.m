@@ -6,8 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "UpdatesItemCell.h"
 
@@ -37,8 +36,8 @@
 }
 
 - (void)prepareForReuse {
-    [self.profileImageView sd_cancelCurrentImageLoad];
-    [self.observationImageView sd_cancelCurrentImageLoad];
+    [self.profileImageView cancelImageRequestOperation];
+    [self.observationImageView cancelImageRequestOperation];
     self.updateTextLabel.text = nil;
     self.backgroundColor = [UIColor clearColor];
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 
 #import "ObsDetailFavesViewModel.h"
@@ -128,7 +128,7 @@
         
         id <FaveVisualization> fave = [self.observation.sortedFaves objectAtIndex:indexPath.item];
         if ([fave userIconUrl]) {
-            [cell.authorImageView sd_setImageWithURL:[fave userIconUrl]];
+            [cell.authorImageView setImageWithURL:[fave userIconUrl]];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
         } else {

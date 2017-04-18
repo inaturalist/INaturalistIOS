@@ -14,7 +14,7 @@ target :iNaturalist do
   pod 'HexColors', '2.3.0'
   pod 'BlocksKit', '2.2.5'
   pod 'GeoJSONSerialization', '0.0.4'
-  pod 'AFNetworking', '1.3.4'
+  pod 'AFNetworking', '2.6.3'
   pod 'UIColor-HTMLColors', '1.0.0'
   pod 'SlackTextViewController', '1.9'
   pod 'SVPullToRefresh', '0.4.1'
