@@ -266,6 +266,9 @@
             return cell;
         }
     }
+    
+    // avoid the warning
+    return [UITableViewCell new];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
