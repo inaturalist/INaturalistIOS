@@ -7,7 +7,6 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreLocation/CoreLocation.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
