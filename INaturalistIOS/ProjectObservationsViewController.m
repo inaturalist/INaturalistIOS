@@ -266,7 +266,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     if (ofvs.count > 0) {
         // pick one?
         ObservationFieldValue *ofv = ofvs.anyObject;
-        ofv.value = [NSString stringWithFormat:@"%ld", taxon.taxonId];
+        ofv.value = [NSString stringWithFormat:@"%ld", (long)taxon.taxonId];
         ofv.localUpdatedAt = [NSDate date];
     }
     
