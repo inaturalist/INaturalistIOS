@@ -103,7 +103,7 @@
         return;
     }
     
-    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatTint]];
+    [[UIView appearanceWhenContainedInInstancesOfClasses:@[ [UIAlertController class] ]] setBackgroundColor:[UIColor inatTint]];
     
     // existing users see a one-time autoupload notice
     NSString *alertTitle = NSLocalizedString(@"Introducing Auto Upload!", @"title of autoupload introduction alert view");
