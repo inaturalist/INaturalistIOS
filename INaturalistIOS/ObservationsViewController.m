@@ -159,7 +159,7 @@
                                                 [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                             }]];
     [self.navigationController presentViewController:alert animated:YES completion:^{
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
+        [[UIView appearanceWhenContainedInInstancesOfClasses:@[ [UIAlertController class] ]] setBackgroundColor:nil];
     }];
 
 }
