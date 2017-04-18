@@ -36,7 +36,7 @@
 #import "ActivityVisualization.h"
 #import "ExploreComment.h"
 #import "UIImage+INaturalist.h"
-#import "TAxaAPI.h"
+#import "TaxaAPI.h"
 #import "ExploreUpdateRealm.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
