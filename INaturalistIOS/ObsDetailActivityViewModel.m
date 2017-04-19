@@ -617,8 +617,10 @@
     
     // set "seen" call returns 204 on success, add ID returns 200
     if (response.statusCode == 200 || response.statusCode == 204) {
-        // either id or refresh activity, reload the UI for the obs if the request succeeded
-        [self.delegate reloadObservation];
+        if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
+            // reload the observation after the user has agreed (thus made a new ID)
+            [self.delegate reloadObservation];
+        }
     } else {
         if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
             // identification
