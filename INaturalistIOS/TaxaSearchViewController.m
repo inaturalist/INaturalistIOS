@@ -19,61 +19,90 @@
 #import "ExploreTaxonRealm.h"
 #import "ExploreTaxonRealm.h"
 #import "ObsDetailTaxonCell.h"
+#import "TaxaAPI.h"
+
+@interface TaxaSearchViewController () <UISearchResultsUpdating>
+@property UISearchController *searchController;
+@property RLMResults <ExploreTaxonRealm *> *searchResults;
+@end
 
 @implementation TaxaSearchViewController
 
-#pragma mark - UIControl interactions
+#pragma mark - Taxa Search Stuff
 
-- (void)clickedAccessory:(id)sender event:(UIEvent *)event {
-	NSArray *targetTaxa = self.taxaSearchController.searchResults;
-	UITableView *tableView = self.searchDisplayController.searchResultsTableView;
-	CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:tableView];
-	NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:currentTouchPosition];
-	
-	// be defensive
-	if (indexPath) {		
-		NSString *activeSearchText = self.searchDisplayController.searchBar.text;
-		if (self.taxaSearchController.allowsFreeTextSelection && activeSearchText.length > 0 && indexPath.section == 0) {
-			[self.delegate taxaSearchViewControllerChoseSpeciesGuess:activeSearchText];
-			return;
-		}
-
-		ExploreTaxonRealm *etr;
-		@try {
-			// either of these paths could throw an exception
-			// if something isn't found at this index path
-			// in that case, silently do nothing
-			etr = [targetTaxa objectAtIndex:indexPath.row];
-		} @catch (NSException *e) { }   // silently do nothing
-		
-		if (etr) {
-			[self showTaxon:etr];
-		}
-	}
+- (TaxaAPI *)api {
+    static TaxaAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[TaxaAPI alloc] init];
+    });
+    return _api;
 }
 
-- (IBAction)clickedCancel:(id)sender {
-	[[self parentViewController] dismissViewControllerAnimated:YES
-													completion:nil];
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    self.tableView.backgroundView.hidden = TRUE;
+    
+    // don't bother querying api until the user has entered a reasonable amount of text
+    if (searchController.searchBar.text.length < 2) {
+        return;
+    }
+    
+    // query node, put into realm, update UI
+    [self.api taxaMatching:searchController.searchBar.text handler:^(NSArray *results, NSInteger count, NSError *error) {
+        // put the results into realm
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        for (ExploreTaxon *taxon in results) {
+            ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:taxon];
+            [realm addOrUpdateObject:etr];
+        }
+        [realm commitWriteTransaction];
+        
+        // update the UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self searchLocal:searchController.searchBar.text];
+        });
+    }];
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-	[self.navigationController popViewControllerAnimated:YES];
-	//[[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
+- (void)searchLocal:(NSString *)term {
+    term = [term stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                     locale:[NSLocale currentLocale]];
+    // query realm
+    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@ OR searchableLastMatchedTerm contains[c] %@", term, term, term];
+    
+    self.searchResults = [results sortedResultsUsingDescriptors:@[
+                                                                  [RLMSortDescriptor sortDescriptorWithProperty:@"rankLevel" ascending:NO],
+                                                                  [RLMSortDescriptor sortDescriptorWithProperty:@"observationCount" ascending:NO],
+                                                                  ]];
+    [self.tableView reloadData];
+}
+
+- (void)clickedCancel:(UIControl *)control {
+    [self.delegate taxaSearchViewControllerCancelled];
 }
 
 #pragma mark - UIViewController lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
-		
-	// setup our search controller
-	if (!self.taxaSearchController) {
-		self.taxaSearchController = [[TaxaSearchController alloc] 
-									 initWithSearchDisplayController:self.searchDisplayController];
-		self.taxaSearchController.delegate = self;
-		self.taxaSearchController.allowsFreeTextSelection = self.allowsFreeTextSelection;
-	}
-	
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = false;
+    self.searchController.searchBar.placeholder = NSLocalizedString(@"Enter species name",
+                                                                    @"placeholder text for taxon search bar");
+    self.definesPresentationContext = true;
+    
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
+         forCellReuseIdentifier:@"TaxonCell"];
+    if (self.hidesDoneButton) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    
 	[self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
 	
 	// show blank screen when empty
@@ -81,19 +110,19 @@
 
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
-        [self.searchDisplayController.searchBar setAutocorrectionType:UITextAutocorrectionTypeYes];
-        [self.searchDisplayController.searchBar setSpellCheckingType:UITextSpellCheckingTypeDefault];
+        [self.searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeYes];
+        [self.searchController.searchBar setSpellCheckingType:UITextSpellCheckingTypeDefault];
     } else {
-        [self.searchDisplayController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
-        [self.searchDisplayController.searchBar setSpellCheckingType:UITextSpellCheckingTypeNo];
+        [self.searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [self.searchController.searchBar setSpellCheckingType:UITextSpellCheckingTypeNo];
     }
 	
-	[self.searchDisplayController setActive:YES];
 	if (self.query && self.query.length > 0) {
-		self.searchDisplayController.searchBar.text = self.query;
+		self.searchController.searchBar.text = self.query;
 	}
-	self.searchDisplayController.searchBar.delegate = self;
-	[self.searchDisplayController.searchBar becomeFirstResponder];
+    
+	[self.searchController.searchBar becomeFirstResponder];
+    [self.searchController setActive:YES];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -140,6 +169,85 @@
 
 #pragma mark - UITableViewDelegate
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        return [self cellForUnknownTaxonInTableView:tableView];
+    } else {
+        ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
+        return [self cellForTaxon:etr inTableView:tableView];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        // do nothing
+    } else {
+        ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
+        [self showTaxon:etr];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // add the ID
+    if (indexPath.section == 1 && self.searchController.searchBar.text.length > 2) {
+        [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
+    } else {
+        ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
+        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+    }
+}
+
+#pragma mark - Table view data source
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.searchController.searchBar.text.length > 2) {
+        return 2;
+    } else {
+        return 0;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (self.searchController.searchBar.text.length > 0 && section == 0) {
+        if (self.searchResults.count > 0) {
+            return @"iNaturalist";
+        } else {
+            return NSLocalizedString(@"No iNaturalist Results", nil);
+        }
+    } else if (self.searchController.searchBar.text.length > 0 && section == 1) {
+        return NSLocalizedString(@"Placeholder", nil);
+    } else {
+        return nil;
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 1) {
+        return 1;
+    } else {
+        return self.searchResults.count;
+    }
+}
+
+#pragma mark - TaxonDetailViewControllerDelegate
+
+- (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
+    ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
+    [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+}
+
+#pragma mark - TableView helpers
+
+- (void)showTaxon:(ExploreTaxonRealm *)taxon {
+    TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+    tdvc.taxon = taxon;
+    tdvc.delegate = self;
+    [self.navigationController pushViewController:tdvc animated:YES];
+}
+
 - (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
 	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
 	
@@ -149,7 +257,7 @@
 	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
 	cell.taxonImageView.layer.borderWidth = 0.0f;
 	
-	cell.taxonNameLabel.text = self.searchDisplayController.searchBar.text;
+	cell.taxonNameLabel.text = self.searchController.searchBar.text;
 	cell.taxonNameLabel.textColor = [UIColor blackColor];
 	cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
 	cell.taxonSecondaryNameLabel.text = @"";
@@ -159,52 +267,23 @@
 	return cell;
 }
 
-#pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 60;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
-}
-
-
-- (void)showTaxon:(ExploreTaxonRealm *)taxon {
-	TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-	tdvc.taxon = taxon;
-	tdvc.delegate = self;
-	[self.navigationController pushViewController:tdvc animated:YES];
-}
-
-#pragma mark - RecordSearchControllerDelegate
-- (void)recordSearchControllerSelectedRecord:(id)record {
-	// add the ID
-    if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
-        ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
-        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
-    } else if (!record && [self.searchDisplayController.searchBar.text length] > 2) {
-    	[self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchDisplayController.searchBar.text];
+- (UITableViewCell *)cellForTaxon:(ExploreTaxonRealm *)etr inTableView:(UITableView *)tableView {
+    if (!etr) {
+        return [self cellForUnknownTaxonInTableView:tableView];
     }
-}
-
-- (UITableViewCell *)recordSearchControllerCellForRecord:(NSObject *)record inTableView:(UITableView *)tableView {
-	if (!record) {
-		return [self cellForUnknownTaxonInTableView:tableView];
-	}
-	
-	ExploreTaxonRealm *etr = (ExploreTaxonRealm *)record;
-	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
-		
     
-	UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
-	if (etr.photoUrl) {
+    ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
+    
+    
+    UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+    if (etr.photoUrl) {
         [cell.taxonImageView setImageWithURL:etr.photoUrl
                             placeholderImage:iconicTaxonImage];
-	} else {
-		[cell.taxonImageView setImage:iconicTaxonImage];
-	}
-	cell.taxonImageView.layer.borderWidth = 1.0f;
-	
+    } else {
+        [cell.taxonImageView setImage:iconicTaxonImage];
+    }
+    cell.taxonImageView.layer.borderWidth = 1.0f;
+    
     
     if (etr.commonName) {
         cell.taxonNameLabel.text = etr.commonName;
@@ -231,26 +310,10 @@
                                         [etr scientificName]];
         }
     }
-	
-	cell.accessoryType = UITableViewCellAccessoryDetailButton;
-	
-	return cell;
-}
-
-
-- (void)recordSearchControllerClickedAccessoryForRecord:(id)record {
-	if ([record isKindOfClass:[ExploreTaxonRealm class]]) {
-		[self showTaxon:(ExploreTaxonRealm *)record];
-	}
-}
-
-#pragma mark - TaxonDetailViewControllerDelegate
-- (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
-    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", taxonId];
-    if (results.count == 1) {
-        ExploreTaxonRealm *etr = [results firstObject];
-        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
-    }
+    
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    
+    return cell;
 }
 
 @end

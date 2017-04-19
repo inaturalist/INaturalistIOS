@@ -158,6 +158,10 @@
     [self taxonToUI];
 }
 
+- (void)taxaSearchViewControllerCancelled {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)taxonToUI
 {
     [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
