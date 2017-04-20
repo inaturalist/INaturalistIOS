@@ -314,8 +314,21 @@
 #pragma mark - section helpers
 
 - (id <ActivityVisualization>)activityForSection:(NSInteger)section {
-    // first 2 sections are for observation metadata
-    return self.observation.sortedActivity[section - 2];
+    id activity = nil;
+    
+    @try {
+        // first 2 sections are for observation metadata
+        activity = self.observation.sortedActivity[section - 2];
+    } @catch (NSException *exception) {
+        if (exception.name == NSRangeException) {
+            // if the observation is being reloaded, sortedActivity might be empty
+            // do nothing
+        } else {
+            @throw;
+        }
+    } @finally {
+        return activity;
+    }
 }
 
 - (ObsDetailSection)sectionType {
