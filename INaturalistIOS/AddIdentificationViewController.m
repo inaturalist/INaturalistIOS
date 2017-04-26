@@ -55,7 +55,6 @@
     if ([segue.identifier isEqualToString:@"IdentificationTaxaSearchSegue"]) {
         TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
-        //vc.query = self.observation.speciesGuess;
     }
 }
 
