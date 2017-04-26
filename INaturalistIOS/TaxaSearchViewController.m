@@ -48,6 +48,10 @@
         return;
     }
     
+    // update the local results
+    [self searchLocal:searchController.searchBar.text];
+    
+    
     // query node, put into realm, update UI
     [self.api taxaMatching:searchController.searchBar.text handler:^(NSArray *results, NSInteger count, NSError *error) {
         // put the results into realm
