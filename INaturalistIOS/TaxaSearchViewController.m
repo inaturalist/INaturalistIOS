@@ -21,6 +21,8 @@
 #import "ObsDetailTaxonCell.h"
 #import "TaxaAPI.h"
 
+#define MIN_CHARS_TAXA_SEARCH 3
+
 @interface TaxaSearchViewController () <UISearchResultsUpdating>
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
@@ -44,7 +46,9 @@
     self.tableView.backgroundView.hidden = TRUE;
     
     // don't bother querying api until the user has entered a reasonable amount of text
-    if (searchController.searchBar.text.length < 2) {
+    if (searchController.searchBar.text.length < MIN_CHARS_TAXA_SEARCH) {
+        self.searchResults = nil;
+        [self.tableView reloadData];
         return;
     }
     
@@ -132,7 +136,7 @@
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1) {
+    if (self.allowsFreeTextSelection && indexPath.section == 1) {
         return [self cellForUnknownTaxonInTableView:tableView];
     } else {
         ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
@@ -150,8 +154,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // add the ID
-    if (indexPath.section == 1 && self.searchController.searchBar.text.length > 2) {
+    // add the ID or the species guess
+    if (indexPath.section == 1) {
         [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
     } else {
         ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
@@ -165,25 +169,27 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.searchController.searchBar.text.length > 2) {
-        return 2;
+    if (self.allowsFreeTextSelection && self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+            return 2;
     } else {
-        return 0;
+        return 1;
     }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.searchController.searchBar.text.length > 0 && section == 0) {
-        if (self.searchResults.count > 0) {
-            return @"iNaturalist";
-        } else {
-            return NSLocalizedString(@"No iNaturalist Results", nil);
+    if (self.allowsFreeTextSelection) {
+        if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 0) {
+            if (self.searchResults.count > 0) {
+                return @"iNaturalist";
+            } else {
+                return NSLocalizedString(@"No iNaturalist Results", nil);
+            }
+        } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 1) {
+            return NSLocalizedString(@"Placeholder", nil);
         }
-    } else if (self.searchController.searchBar.text.length > 0 && section == 1) {
-        return NSLocalizedString(@"Placeholder", nil);
-    } else {
-        return nil;
     }
+    
+    return nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
