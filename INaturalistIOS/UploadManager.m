@@ -167,14 +167,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate uploadManagerUploadSessionFinished:self];
         });
-        
-        if (self.shouldAutoupload) {
-            // check to see if there's anything else to upload
-            // if so, upload it
-            // exclude anything that's failed validation, so we don't
-            // try to upload these observations over and over and over
-            [self autouploadPendingContentExcludeInvalids:YES];
-        }
     }
 }
 
