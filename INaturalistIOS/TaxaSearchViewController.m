@@ -23,12 +23,18 @@
 
 #define MIN_CHARS_TAXA_SEARCH 3
 
-@interface TaxaSearchViewController () <UISearchResultsUpdating>
+@interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
 @end
 
 @implementation TaxaSearchViewController
+
+#pragma mark - UISearchControllerDelegate
+
+- (void)didPresentSearchController:(UISearchController *)searchController {
+    [searchController.searchBar becomeFirstResponder];
+}
 
 #pragma mark - Taxa Search Stuff
 
@@ -100,6 +106,7 @@
     self.searchController.dimsBackgroundDuringPresentation = false;
     self.searchController.searchBar.placeholder = NSLocalizedString(@"Enter species name",
                                                                     @"placeholder text for taxon search bar");
+    self.searchController.delegate = self;
     self.definesPresentationContext = true;
     
     self.tableView.tableHeaderView = self.searchController.searchBar;
@@ -129,7 +136,6 @@
 		self.searchController.searchBar.text = self.query;
 	}
     
-	[self.searchController.searchBar becomeFirstResponder];
     [self.searchController setActive:YES];
 }
 
