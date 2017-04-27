@@ -320,6 +320,12 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                                                         [self downloadNGZ];
                                                     }]];
 
+            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            CGRect rect = [self.view convertRect:cell.frame fromView:tableView];
+            alert.popoverPresentationController.sourceView = cell;
+            alert.popoverPresentationController.sourceRect = rect;
+
             [self.tabBarController presentViewController:alert animated:YES completion:nil];
         } else if (self.guide.ngzURL) {
             
