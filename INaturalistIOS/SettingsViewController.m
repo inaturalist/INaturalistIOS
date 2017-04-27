@@ -596,7 +596,7 @@ static const int AutouploadSwitchTag = 102;
                 
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Warning", nil)
                                                                                message:alertMsg
-                                                                        preferredStyle:UIAlertControllerStyleActionSheet];
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:cancelBtnMsg
                                                           style:UIAlertActionStyleCancel
                                                         handler:nil]];
