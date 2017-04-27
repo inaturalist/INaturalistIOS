@@ -33,4 +33,5 @@ enum {
 - (void)makeExpiring:(NSString *)imgKey;
 - (NSString *)usageStatsString;
 - (void)clearEntireStore;
++ (NSArray *)assetCollectionSubtypes;
 @end

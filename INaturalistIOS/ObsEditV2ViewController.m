@@ -422,6 +422,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.imagePicker.delegate = self;
     self.imagePicker.allowsMultipleSelection = YES;
     self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
+    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
+    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
     
     if (self.presentedViewController) {
         UINavigationController *nav = (UINavigationController *)self.presentedViewController;

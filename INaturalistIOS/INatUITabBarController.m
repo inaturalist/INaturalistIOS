@@ -34,6 +34,7 @@
 #import "NSFileManager+INaturalist.h"
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
+#import "ImageStore.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -299,6 +300,8 @@ static char PROJECT_ASSOCIATED_KEY;
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.mediaType = QBImagePickerMediaTypeImage;
+        imagePickerController.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
         
         if (taxon) {
             objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
@@ -437,7 +440,9 @@ static char PROJECT_ASSOCIATED_KEY;
     self.imagePicker.delegate = self;
     self.imagePicker.allowsMultipleSelection = YES;
     self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
-    
+    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
+    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
+
     if (taxon) {
         objc_setAssociatedObject(self.imagePicker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
     }

@@ -13,6 +13,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <SDWebImage/SDImageCache.h>
 #import <ImageIO/ImageIO.h>
+#import <Photos/Photos.h>
 
 #import "ImageStore.h"
 #import "Analytics.h"
@@ -35,6 +36,19 @@
     return _sharedInstance;
 }
 
++ (NSArray *)assetCollectionSubtypes {
+    return @[
+             @(PHAssetCollectionSubtypeSmartAlbumUserLibrary),
+             @(PHAssetCollectionSubtypeAlbumMyPhotoStream),
+             @(PHAssetCollectionSubtypeSmartAlbumPanoramas),
+             @(PHAssetCollectionSubtypeSmartAlbumBursts),
+             @(PHAssetCollectionSubtypeSmartAlbumFavorites),
+             @(PHAssetCollectionSubtypeAlbumRegular),
+             @(PHAssetCollectionSubtypeAlbumImported),
+             @(PHAssetCollectionSubtypeAlbumCloudShared),
+             @(PHAssetCollectionSubtypeAlbumSyncedAlbum),
+             ];
+}
 
 - (instancetype)init {
     if (self = [super init]) {
