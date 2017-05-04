@@ -57,8 +57,8 @@
     if ([self.observation hasUnviewedActivityBool] || self.shouldShowActivityOnLoad) {
         self.viewModel = [[ObsDetailActivityViewModel alloc] init];
         self.viewModel.observation = self.observation;
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             CGPoint offset = CGPointMake(0, self.tableView.contentSize.height - self.tableView.frame.size.height);
             [self.tableView setContentOffset:offset animated:YES];
         });
