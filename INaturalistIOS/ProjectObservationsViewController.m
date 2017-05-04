@@ -464,7 +464,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         cell.valueLabel.hidden = YES;
         
         UITextField *tf = [[UITextField alloc] initWithFrame:cell.valueLabel.frame];
-        tf.keyboardType = UIKeyboardTypeNumberPad;
+        tf.keyboardType = UIKeyboardTypeDecimalPad;
         tf.textAlignment = NSTextAlignmentRight;
         tf.returnKeyType = UIReturnKeyDone;
         tf.text = cell.valueLabel.text;
