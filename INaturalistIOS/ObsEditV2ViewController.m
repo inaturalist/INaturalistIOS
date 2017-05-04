@@ -794,6 +794,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
+    self.shouldContinueUpdatingLocation = NO;
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -1036,6 +1037,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - EditLocationDelegate
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
+    
+    [self stopUpdatingLocation];
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
