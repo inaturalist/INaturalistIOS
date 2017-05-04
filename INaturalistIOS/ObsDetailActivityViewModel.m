@@ -79,9 +79,9 @@
             
             NSInteger baseRows = 3;
             
-            Taxon *myIdTaxon = [self taxonForIdentificationByLoggedInUser];
+            NSInteger myTaxonId = [self taxonIdForIdentificationByLoggedInUser];
             // can't agree with my ID, can't agree with an ID that matches my own
-            if ([self loggedInUserProducedActivity:activity] || (myIdTaxon && [myIdTaxon.recordID isEqual:@([identification taxonId])])) {
+            if ([self loggedInUserProducedActivity:activity] || (myTaxonId == [identification taxonId])) {
                 // can't agree with your own identification
                 // so don't show row with agree button
                 baseRows--;
@@ -410,10 +410,10 @@
         // can't agree with your identification
         cell.agreeButton.enabled = ![self loggedInUserProducedActivity:activity];
         
-        Taxon *t = [self taxonForIdentificationByLoggedInUser];
-        if (t) {
+        NSInteger myTaxonId = [self taxonIdForIdentificationByLoggedInUser];
+        if (myTaxonId != 0) {
             // can't agree with an identification that matches your own
-            if ([t.recordID isEqual:@([identification taxonId])]) {
+            if (myTaxonId == [identification taxonId]) {
                 cell.agreeButton.enabled = NO;
             }
         }
@@ -598,7 +598,7 @@
     return NO;
 }
 
-- (Taxon *)taxonForIdentificationByLoggedInUser {
+- (NSInteger)taxonIdForIdentificationByLoggedInUser {
     // get "my" current identification
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
@@ -610,11 +610,12 @@
                 NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", [eachId taxonId]];
                 Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
                 
-                return taxon;
+                return [[taxon recordID] integerValue];
             }
         }
     }
-    return nil;
+    return 0;
+
 }
 
 #pragma mark - RKRequestDelegate
