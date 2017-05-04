@@ -54,7 +54,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"conservation_status", @"conservationStatusCode",
          @"conservation_status_name", @"conservationStatusName",
          @"conservation_status_source.title", @"conservationStatusSourceName",
-         @"default_name.name", @"defaultName",
+         @"common_name.name", @"defaultName",
          @"iconic_taxon_name", @"iconicTaxonName",
          @"iconic_taxon_id", @"iconicTaxonID",
          @"is_iconic", @"isIconic",
