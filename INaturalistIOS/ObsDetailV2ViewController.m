@@ -59,21 +59,8 @@
         self.viewModel.observation = self.observation;
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSInteger numberOfSections = [self.viewModel numberOfSectionsInTableView:self.tableView];
-            NSInteger lastSection = numberOfSections > 0 ? numberOfSections-1 : -1;
-            NSInteger numberOfRowsInLastSection = [self.viewModel tableView:self.tableView
-                                                      numberOfRowsInSection:lastSection];
-            NSInteger lastRow = numberOfRowsInLastSection > 0 ? numberOfRowsInLastSection-1 : -1;
-            if (lastSection >= 0 && lastRow >= 0) {
-                NSIndexPath *lastIp = [NSIndexPath indexPathForRow:lastRow
-                                                         inSection:lastSection];
-                
-                [self.tableView scrollToRowAtIndexPath:lastIp
-                                      atScrollPosition:UITableViewScrollPositionMiddle
-                                              animated:YES];
-                // mark updates as seen
-                [((ObsDetailActivityViewModel *)self.viewModel) markActivityAsSeen];
-            }
+            CGPoint offset = CGPointMake(0, self.tableView.contentSize.height - self.tableView.frame.size.height);
+            [self.tableView setContentOffset:offset animated:YES];
         });
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
