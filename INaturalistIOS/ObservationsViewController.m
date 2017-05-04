@@ -51,6 +51,7 @@
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
+#import "Taxon.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -755,6 +756,8 @@
     // configure the title
     if ([o exploreTaxonRealm]) {
     	[cell.titleLabel setText:o.exploreTaxonRealm.commonName ?: o.exploreTaxonRealm.scientificName];
+    } else if ([o taxon]) {
+        [cell.titleLabel setText:o.taxon.defaultName ?: o.taxon.name];
     } else if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else if (o.inatDescription && o.inatDescription.length > 0) {
