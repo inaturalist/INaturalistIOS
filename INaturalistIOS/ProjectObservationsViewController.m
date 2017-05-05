@@ -285,7 +285,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     Project *project = [self projectForSection:indexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     
-    if ([field.observationField.datatype isEqualToString:@"text"]) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
         if (field.observationField.allowedValuesArray.count > 1) {
             ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
             [self configureSimpleCell:cell forObsField:field];
@@ -384,7 +384,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     UIFont *fieldFont = field.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
 
     
-    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count == 1) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count == 1) {
         return [self heightForLongTextProjectField:field inTableView:tableView font:fieldFont];
     } else {
         return [self heightForSimpleProjectField:field inTableView:tableView font:fieldFont];
@@ -429,7 +429,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         initialSelection = [values indexOfObject:ofv.value];
     }
     
-    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count > 1) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count > 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
         ProjectObsFieldViewController *pofVC = [[ProjectObsFieldViewController alloc] initWithNibName:nil bundle:nil];
@@ -440,7 +440,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
         [self.navigationController pushViewController:pofVC animated:YES];
 
-    } else if ([field.observationField.datatype isEqualToString:@"text"]) {
+    } else if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
         // free text
         
         // deselect
