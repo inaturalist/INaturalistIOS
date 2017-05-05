@@ -969,17 +969,24 @@
                 }
                 
                 [UIView animateWithDuration:0.2f
+                                      delay:0.0f
+                                    options:UIViewAnimationOptionAllowUserInteraction
                                  animations:^{
                                      view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
                                  } completion:^(BOOL finished) {
                                      [UIView animateWithDuration:0.2f
+                                                           delay:0.0f
+                                                         options:UIViewAnimationOptionAllowUserInteraction
                                                       animations:^{
                                                           view.iconButton.transform = CGAffineTransformMakeScale(0.95f, 0.95f);
                                                       } completion:^(BOOL finished) {
                                                           [UIView animateWithDuration:0.2f
+                                                                                delay:0.0f
+                                                                              options:UIViewAnimationOptionAllowUserInteraction
                                                                            animations:^{
                                                                                view.iconButton.transform = CGAffineTransformIdentity;
-                                                                           }];
+                                                                           }
+                                                                           completion:nil];
                                                       }];
                                  }];
             });
