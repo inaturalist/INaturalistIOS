@@ -48,20 +48,34 @@
 - (void)uploadProfilePhoto:(UIImage *)image forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
     if (imageData) {
-        
         // use afnetworking to deal with icky multi-part forms
         NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue];
         AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-        [manager POST:path parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-            [formData appendPartWithFileData:imageData
-                                        name:@"user[icon]"
-                                    fileName:@"icon.jpg"
-                                    mimeType:@"image/jpeg"];
-        } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            done(@[], 0, nil);
-        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-            done(@[], 0, error);
+        
+        NSString *urlString = [[NSURL URLWithString:path relativeToURL:[NSURL inat_baseURL]] absoluteString];
+        NSMutableURLRequest *request = [[manager.requestSerializer multipartFormRequestWithMethod:@"PUT"
+                                                                                        URLString:urlString
+                                                                                       parameters:nil
+                                                                        constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+                                                                            [formData appendPartWithFileData:imageData
+                                                                                                        name:@"user[icon]"
+                                                                                                    fileName:@"icon.jpg"
+                                                                                                    mimeType:@"image/jpeg"];
+                                                                        }
+                                                                                            error:nil] mutableCopy];
+        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+       forHTTPHeaderField:@"Authorization"];
+        
+        AFHTTPRequestOperation *operation = [manager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(@[], 0, nil);
+            });
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(@[], 0, error);
+            });
         }];
+        [manager.operationQueue addOperation:operation];
     }
 }
 
