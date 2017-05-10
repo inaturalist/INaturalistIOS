@@ -19,7 +19,7 @@
 @property (nonatomic, retain) NSDate *faveDate;
 @property (nonatomic, retain) Observation *observation;
 @property (nonatomic, retain) NSString *userLogin;
-@property (nonatomic, retain) NSString *userIconUrl;
+@property (nonatomic, retain) NSString *userIconUrlString;
 @property (nonatomic, retain) NSNumber *userRecordID;
 
 + (RKManagedObjectMapping *)mapping;

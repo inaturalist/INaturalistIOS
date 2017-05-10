@@ -16,7 +16,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 
 @dynamic observation;
 @dynamic faveDate;
-@dynamic userIconUrl;
+@dynamic userIconUrlString;
 @dynamic userLogin;
 @dynamic userRecordID;
 
@@ -28,7 +28,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
         [defaultMapping mapKeyPath:@"created_at" toAttribute:@"faveDate"];
         [defaultMapping mapKeyPath:@"user.id" toAttribute:@"userRecordID"];
         [defaultMapping mapKeyPath:@"user.login" toAttribute:@"userLogin"];
-        [defaultMapping mapKeyPath:@"user.user_icon_url" toAttribute:@"userIconUrl"];
+        [defaultMapping mapKeyPath:@"user.user_icon_url" toAttribute:@"userIconUrlString"];
 
     }
     
@@ -51,6 +51,10 @@ static RKManagedObjectMapping *defaultMapping = nil;
 
 - (NSDate *)createdAt {
     return self.faveDate;
+}
+
+- (NSURL *)userIconUrl {
+    return [NSURL URLWithString:self.userIconUrlString];
 }
 
 @end
