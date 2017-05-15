@@ -153,57 +153,6 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else {
-        id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
-        if ([activity conformsToProtocol:@protocol(CommentVisualization)]) {
-            if (indexPath.item == 0) {
-                // size for user/date
-                return 44;
-            } else {
-                // body row
-                return [self heightForRowInTableView:tableView withBodyText:activity.body];
-            }
-        } else {
-            // identification
-            if (indexPath.item == 1) {
-                // taxon
-                return 60;
-            }
-            if ([self tableView:tableView numberOfRowsInSection:indexPath.section] == 4) {
-                // contains body
-                if (indexPath.item == 2) {
-                    // body row
-                    return [self heightForRowInTableView:tableView withBodyText:activity.body];
-                } else {
-                    // user/date, agree/action
-                    return 44;
-                }
-            } else {
-                // no body row, everything else 44
-                return 44;
-            }
-        }
-    }
-}
-
-- (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 22 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 22;
-    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
-    UIFont *font = [UIFont systemFontOfSize:14.0f];
-    
-    CGRect textRect = [text boundingRectWithSize:maxSize
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: font }
-                                         context:nil];
-    
-    // 20 for padding above/below
-    return MAX(44, textRect.size.height + 20);
-}
-
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section < 2) {

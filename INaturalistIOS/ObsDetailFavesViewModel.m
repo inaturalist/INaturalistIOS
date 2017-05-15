@@ -111,14 +111,6 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else {
-        return 44;
-    }
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];

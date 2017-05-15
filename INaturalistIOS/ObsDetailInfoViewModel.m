@@ -65,7 +65,74 @@
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
-        if (indexPath.item == 0) {
+        if (self.observation.inatDescription.length == 0 || indexPath.item == 1) {
+            // map
+            ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
+            cell.mapView.delegate = self;
+            cell.mapView.userInteractionEnabled = NO;
+            
+            CLLocationCoordinate2D coords = [self.observation visibleLocation];
+            
+            if (CLLocationCoordinate2DIsValid(coords)) {
+                cell.mapView.hidden = NO;
+                cell.noLocationLabel.hidden = YES;
+                
+                CLLocationDistance distance;
+                if ([self.observation visiblePositionalAccuracy] == 0) {
+                    distance = 500;
+                } else {
+                    distance = MAX([self.observation visiblePositionalAccuracy], 200);
+                }
+                
+                cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
+                
+                MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
+                pin.coordinate = coords;
+                pin.title = @"Title";
+                [cell.mapView addAnnotation:pin];
+                
+                if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
+                    cell.locationNameLabel.text = self.observation.placeGuess;
+                } else {
+                    NSString *positionalAccuracy = nil;
+                    if ([self.observation visiblePositionalAccuracy] != 0) {
+                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)[self.observation visiblePositionalAccuracy]];
+                    } else {
+                        positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
+                    }
+                    
+                    NSString *baseStr = NSLocalizedString(@"Lat: %.5f Long: %.5f Acc: %@", @"visualization of latitude/longitude/accuracy");
+                    NSString *subtitleString = [NSString stringWithFormat:baseStr,
+                                                coords.latitude,
+                                                coords.longitude,
+                                                positionalAccuracy];
+                    cell.locationNameLabel.text = subtitleString;
+                }
+            } else {
+                cell.mapView.hidden = YES;
+                cell.noLocationLabel.hidden = NO;
+            }
+            
+            
+            if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
+                cell.geoprivacyLabel.attributedText = ({
+                    FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
+                    [obscured addAttribute:NSForegroundColorAttributeName
+                                     value:[UIColor lightGrayColor]];
+                    obscured.attributedString;
+                });
+            } else if ([self.observation.geoprivacy isEqualToString:@"private"]) {
+                cell.geoprivacyLabel.attributedText = ({
+                    FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
+                    [private addAttribute:NSForegroundColorAttributeName
+                                    value:[UIColor lightGrayColor]];
+                    private.attributedString;
+                });
+            } else {
+                cell.geoprivacyLabel.text = nil;
+            }
+            return cell;
+        } else {
             // notes
             ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
             cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
@@ -91,74 +158,8 @@
                           range:NSMakeRange(0, notes.length)];
             if (notes) {
                 cell.notesTextView.attributedText = notes;
-            }
-            
-            return cell;
-        } else if (indexPath.item == 1) {
-            // map
-            ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
-            cell.mapView.delegate = self;
-            cell.mapView.userInteractionEnabled = NO;
-            
-            CLLocationCoordinate2D coords = [self.observation visibleLocation];
-            
-            if (CLLocationCoordinate2DIsValid(coords)) {
-                cell.mapView.hidden = NO;
-                cell.noLocationLabel.hidden = YES;
-                
-            	CLLocationDistance distance;
-            	if ([self.observation visiblePositionalAccuracy] == 0) {
-            		distance = 500;
-            	} else {
-            		distance = MAX([self.observation visiblePositionalAccuracy], 200);
-            	}
-            	
-                cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
-                
-                MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
-                pin.coordinate = coords;
-                pin.title = @"Title";
-                [cell.mapView addAnnotation:pin];
-                
-                if (self.observation.placeGuess && self.observation.placeGuess.length > 0) {
-                    cell.locationNameLabel.text = self.observation.placeGuess;
-                } else {
-                    NSString *positionalAccuracy = nil;
-                    if ([self.observation visiblePositionalAccuracy] != 0) {
-                        positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)[self.observation visiblePositionalAccuracy]];
-                    } else {
-                        positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
-                    }
-
-                    NSString *baseStr = NSLocalizedString(@"Lat: %.5f Long: %.5f Acc: %@", @"visualization of latitude/longitude/accuracy");
-                    NSString *subtitleString = [NSString stringWithFormat:baseStr,
-                                                coords.latitude,
-                                                coords.longitude,
-                                                positionalAccuracy];
-                    cell.locationNameLabel.text = subtitleString;
-                }
             } else {
-                cell.mapView.hidden = YES;
-                cell.noLocationLabel.hidden = NO;
-            }
-            
-            
-            if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
-                cell.geoprivacyLabel.attributedText = ({
-                    FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
-                    [obscured addAttribute:NSForegroundColorAttributeName
-                                     value:[UIColor lightGrayColor]];
-                    obscured.attributedString;
-                });
-            } else if ([self.observation.geoprivacy isEqualToString:@"private"]) {
-                cell.geoprivacyLabel.attributedText = ({
-                    FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
-                    [private addAttribute:NSForegroundColorAttributeName
-                                     value:[UIColor lightGrayColor]];
-                    private.attributedString;
-                });
-            } else {
-                cell.geoprivacyLabel.text = nil;
+                cell.notesTextView.text = @"";
             }
             
             return cell;
@@ -293,54 +294,16 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 2) {
-        if (indexPath.row == 0) {
-            // notes
-            if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
-                return [self heightForRowInTableView:tableView withBodyText:self.observation.inatDescription];
-            } else {
-                return CGFLOAT_MIN;
-            }
-        } else if (indexPath.row == 1) {
-            // maps
-            return 180;
-        }
-    } else if (indexPath.section == 3) {
-        // data quality
-        return 80;
-    } else if (indexPath.section == 4) {
-        // projects
-        return 44;
-    }
-    
-    return CGFLOAT_MIN;
-}
-
-- (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 30 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 30;
-    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
-    UIFont *font = [UIFont systemFontOfSize:14.0f];
-    
-    CGRect textRect = [text boundingRectWithSize:maxSize
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: font }
-                                         context:nil];
-    
-    // 22 for notes padding above and below
-    return MAX(44, textRect.size.height + 22);
-}
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
     } else if (section == 2) {
         // notes/map
-        return 2;
+        if (self.observation.inatDescription.length > 0) {
+            return 2;
+        } else {
+            return 1;
+        }
     } else if (section == 3 || section == 4) {
         // data quality, projects
         return 1;
@@ -366,7 +329,7 @@
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
         // notes / map
-        if (indexPath.item == 1) {
+        if (self.observation.inatDescription.length == 0 || indexPath.item == 1) {
             // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             

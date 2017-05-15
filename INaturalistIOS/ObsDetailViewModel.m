@@ -370,27 +370,6 @@
     return nil;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        if (indexPath.item == 0) {
-            // user
-            return 44;
-        } else if (indexPath.item == 1) {
-            // wider tableview shows more photo,
-            if (tableView.bounds.size.width > 369) {
-            	return MAX(tableView.bounds.size.height * 0.6, 253);
-            } else {
-                return 200;
-            }
-        } else if (indexPath.item == 2) {
-            // taxon
-            return 60;
-        }
-    }
-    
-    return CGFLOAT_MIN;
-}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return nil;
 }
