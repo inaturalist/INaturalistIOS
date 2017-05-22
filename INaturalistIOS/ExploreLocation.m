@@ -16,7 +16,7 @@
 	return @{
 		@"locationId": @"id",
 		@"type": @"place_type",
-		@"name": @"name",
+		@"name": @"display_name",
 		@"location": @"location",
 		@"adminLevel": @"admin_level",
 	};
