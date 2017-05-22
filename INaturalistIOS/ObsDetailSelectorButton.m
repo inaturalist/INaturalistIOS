@@ -108,11 +108,11 @@
                                                       multiplier:1.0f
                                                         constant:0.0f]];
 
-    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[icon]-6-|"
+    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[icon]-12-|"
                                                                    options:0
                                                                    metrics:0
                                                                      views:views]];
-    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[count]-6-|"
+    [button addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[count]-12-|"
                                                                    options:0
                                                                    metrics:0
                                                                      views:views]];
