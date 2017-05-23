@@ -159,11 +159,13 @@
             [mapView removeOverlays:mapView.overlays];
             
             CLLocationCoordinate2D newCenter;
+            MKMapRect newMapRect = MKMapRectNull;
             NSInteger overlayLocationId = 0;
             for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
                 if (predicate.type == ExploreSearchPredicateTypeLocation) {
                     newCenter = predicate.searchLocation.location;
                     overlayLocationId = predicate.searchLocation.locationId;
+                    newMapRect = predicate.searchLocation.boundingBox;
                     break;  // prefer places to projects
                 } if (predicate.type == ExploreSearchPredicateTypeProject) {
                     if (predicate.searchProject.latitude != 0) {
@@ -175,7 +177,13 @@
                 }
             }
             
-            if (overlayLocationId != 0) {
+            if (!MKMapRectIsEmpty(newMapRect)) {
+                [self addOverlaysForLocationId:overlayLocationId];
+                if (shouldZoomToNewCenter) {
+                    MKCoordinateRegion region = MKCoordinateRegionForMapRect(newMapRect);
+                    [mapView setRegion:region animated:YES];
+                }
+            } else if (overlayLocationId != 0) {
                 [self addOverlaysForLocationId:overlayLocationId];
                 if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter)) {
                     [mapView setCenterCoordinate:newCenter animated:YES];

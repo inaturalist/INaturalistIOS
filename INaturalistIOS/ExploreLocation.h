@@ -10,6 +10,7 @@
 #import <Mantle/Mantle.h>
 
 @import CoreLocation;
+@import MapKit;
 
 @interface ExploreLocation : MTLModel <MTLJSONSerializing>
 
@@ -18,5 +19,9 @@
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (nonatomic, copy) NSNumber *adminLevel;
+@property (nonatomic, assign) CLLocationCoordinate2D boundingBoxOrigin;
+@property (nonatomic, assign) CGSize boundingBoxCGSize;
+
+@property (nonatomic, assign) MKMapRect boundingBox;
 
 @end
