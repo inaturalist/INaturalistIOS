@@ -720,7 +720,9 @@ static char PARTNER_ASSOCIATED_KEY;
                                                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                                                                          style:UIAlertActionStyleCancel
                                                                                        handler:nil]];
-                                               [weakSelf presentViewController:alert animated:YES completion:nil];                                               
+                                               [weakSelf presentViewController:alert animated:YES completion:nil];
+                                               [weakSelf.passwordField setText:@""];
+                                               
                                            }];
     
 }
