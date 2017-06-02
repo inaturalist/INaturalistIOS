@@ -1213,6 +1213,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 search.delegate = self;
                 search.query = self.observation.speciesGuess;
                 search.allowsFreeTextSelection = YES;
+                search.observationCoordinate = self.observation.visibleLocation;
                 [self.navigationController pushViewController:search animated:YES];
             } else {
                 // do nothing

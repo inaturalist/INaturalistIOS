@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Realm/Realm.h>
 #import "ExploreTaxon.h"
+#import "ExploreTaxonPhotoRealm.h"
 #import "TaxonVisualization.h"
 
 @interface ExploreTaxonRealm : RLMObject <TaxonVisualization>
@@ -27,6 +28,10 @@
 @property (nonatomic, copy) NSString *lastMatchedTerm;
 @property (nonatomic, copy) NSString *searchableLastMatchedTerm;
 @property (nonatomic, assign) NSInteger observationCount;
+
+// to-many relationships
+@property RLMArray<ExploreTaxonPhotoRealm *><ExploreTaxonPhotoRealm> *taxonPhotos;
+
 
 - (BOOL)isGenusOrLower;
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;

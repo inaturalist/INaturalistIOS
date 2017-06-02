@@ -6,12 +6,16 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+@import MapKit;
+
+#import <FontAwesomeKit/FAKIonIcons.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <objc/runtime.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "TaxonDetailViewController.h"
-#import "Taxon.h"
+#import "TaxaAPI.h"
+#import "ExploreTaxon.h"
+#import "ExploreTaxonRealm.h"
 #import "Observation.h"
 #import "TaxonPhoto.h"
 #import "ImageStore.h"
@@ -22,150 +26,56 @@
 #import "TaxonPhotoCell.h"
 #import "TaxonSummaryCell.h"
 #import "RoundedButtonCell.h"
+#import "TaxonPhotoPageViewController.h"
+#import "TaxonMapCell.h"
+#import "TaxonMapViewController.h"
+#import "UIColor+ExploreColors.h"
+#import "INatPhoto.h"
+#import "TaxonSelectButtonCell.h"
 
-static char SUMMARY_ASSOCIATED_KEY;
+@interface TaxonDetailViewController () <MKMapViewDelegate>
+@property ExploreTaxonRealm *fullTaxon;
+@property MKMapRect mapRect;
+@property NSInteger numberOfObservations;
 
-@interface Taxon (Summary)
-- (NSAttributedString *)attributedBody;
-@end
-
-@implementation Taxon (Summary)
-// extracting attributed strings from HTML is expensive
-// stash the attributed summary in an associated object on the taxon itself
-- (NSAttributedString *)attributedBody {
-    NSAttributedString *_attributedBody = objc_getAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY);
-    if (_attributedBody) {
-        return _attributedBody;
-    } else {
-        NSMutableAttributedString *attributedBody = [[NSMutableAttributedString alloc] init];
- 
-        if ([self.name isEqualToString:self.defaultName] || self.defaultName == nil || [self.defaultName isEqualToString:@""]) {
-            // no common name, so only show scientific name in the main label
-            NSString *name;
-            NSDictionary *attributes;
-            if (self.isGenusOrLower) {
-                name = [NSString stringWithFormat:@"%@\n\n", self.name];
-                attributes = @{
-                               NSFontAttributeName: [UIFont italicSystemFontOfSize:24],
-                               };
-            } else {
-                name = [NSString stringWithFormat:@"%@ %@\n\n", [self.rank capitalizedString], self.name];
-                attributes = @{
-                               NSFontAttributeName: [UIFont systemFontOfSize:24],
-                               };
-            }
-            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:name
-                                                                                   attributes:attributes]];
-        } else {
-            // show both common & scientfic names
-            NSString *commonName = [NSString stringWithFormat:@"%@\n", self.defaultName];
-
-            NSDictionary *commonNameAttrs = @{
-                                              NSFontAttributeName:[UIFont systemFontOfSize:24],
-                                              };
-            
-            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:commonName
-                                                                                   attributes:commonNameAttrs]];
-            
-            NSString *sciName;
-            NSDictionary *sciNameAttrs;
-
-            
-            if (self.isGenusOrLower) {
-                sciName = [NSString stringWithFormat:@"%@\n\n", self.name];
-                sciNameAttrs = @{
-                                 NSFontAttributeName: [UIFont italicSystemFontOfSize:16],
-                                 };
-            } else {
-                sciName = [NSString stringWithFormat:@"%@ %@\n\n", [self.rank capitalizedString], self.name];
-                sciNameAttrs = @{
-                                 NSFontAttributeName: [UIFont systemFontOfSize:16],
-                                 };
-            }
-            
-            [attributedBody appendAttributedString:[[NSAttributedString alloc] initWithString:sciName
-                                                                                   attributes:sciNameAttrs]];
-
-        }
-        
-        if (self.wikipediaSummary && self.wikipediaSummary.length > 0 ) {
-            NSData *sumData = [self.wikipediaSummary dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *sumOpts = @{
-                                      NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                      NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
-                                      };
-            NSMutableAttributedString *summary = [[NSMutableAttributedString alloc] initWithData:sumData
-                                                                                         options:sumOpts
-                                                                              documentAttributes:nil
-                                                                                           error:nil];
-            [summary setAttributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:16] }
-                             range:NSMakeRange(0, [summary length])];
-            
-            [attributedBody appendAttributedString:summary];
-        } else {
-            NSString *placeHolderText = NSLocalizedString(@"We have no information about this taxon.", nil);
-            NSDictionary *placeholderAttrs = @{
-                                               NSFontAttributeName: [UIFont systemFontOfSize:16],
-                                               };
-            NSAttributedString *placeHolder = [[NSAttributedString alloc] initWithString:placeHolderText
-                                                                              attributes:placeholderAttrs];
-            [attributedBody appendAttributedString:placeHolder];
-        }
-        
-        objc_setAssociatedObject(self, &SUMMARY_ASSOCIATED_KEY, attributedBody, OBJC_ASSOCIATION_COPY);
-        return attributedBody;
-    }
-}
-
-@end
-
-@interface TaxonDetailViewController ()
-@property Taxon *fullTaxon;
+@property IBOutlet UIButton *infoButton;
 @end
 
 @implementation TaxonDetailViewController
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.observationCoordinate = kCLLocationCoordinate2DInvalid;
+        self.showsActionButton = NO;
+    }
+    
+    return self;
+}
+
+- (void)actionTapped:(id)sender {
+    [self.delegate taxonDetailViewControllerClickedActionForTaxonId:[self.taxon taxonId]];
+}
+
+- (void)infoTapped:(id)sender {
+    if (self.taxon) {
+        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", [self.taxon taxonId]];
+        NSURL *taxonUrl = [[NSURL inat_baseURL] URLByAppendingPathComponent:taxonPath];
+        [[UIApplication sharedApplication] openURL:taxonUrl];
+    }
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark - UIControl targets
-
-- (void)creditsTapped:(UIButton *)sender {
-    TaxonPhoto *tp = [self.fullTaxon.taxonPhotos firstObject];
-    NSURL *url = [NSURL URLWithString:[tp nativePageURL]];
-    [[UIApplication sharedApplication] openURL:url];
-}
-
-- (void)wikipediaTapped:(UIButton *)sender {
-    [[UIApplication sharedApplication] openURL:[self.fullTaxon wikipediaUrl]];
-}
-
-- (IBAction)clickedActionButton:(id)sender {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(taxonDetailViewControllerClickedActionForTaxonId:)]) {
-        [self.delegate taxonDetailViewControllerClickedActionForTaxonId:[self.taxon taxonId]];
-    } else {
-        // be defensive
-        if (self.tabBarController && [self.tabBarController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
-            [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TaxonDetails" }];
-            [((INatUITabBarController *)self.tabBarController) triggerNewObservationFlowForTaxon:self.taxon
-                                                                                         project:nil];
-        } else if (self.presentingViewController && [self.presentingViewController respondsToSelector:@selector(triggerNewObservationFlowForTaxon:project:)]) {
-            // can't present from the tab bar while it's out of the view hierarchy
-            // so dismiss the presented view (ie the parent of this taxon details VC)
-            // and then trigger the new observation flow once the tab bar is back
-            // in thei heirarchy.
-            INatUITabBarController *tabBar = (INatUITabBarController *)self.presentingViewController;
-            [tabBar dismissViewControllerAnimated:YES
-                                       completion:^{
-                                           [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart
-                                                            withProperties:@{ @"From": @"TaxonDetails" }];
-                                           [tabBar triggerNewObservationFlowForTaxon:self.taxon
-                                                                             project:nil];
-                                       }];
-        }
-    }
+- (TaxaAPI *)taxaApi {
+    static TaxaAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[TaxaAPI alloc] init];
+    });
+    return _api;
 }
 
 #pragma mark - lifecycle
@@ -173,57 +83,82 @@ static char SUMMARY_ASSOCIATED_KEY;
 {
     [super viewDidLoad];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"RoundedButtonCell" bundle:[NSBundle mainBundle]]
-         forCellReuseIdentifier:@"roundedButton"];
-    self.clearsSelectionOnViewWillAppear = YES;
+    self.tableView.estimatedRowHeight = 44;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     
-    if ([self.taxon isKindOfClass:[Taxon class]]) {
-    	self.fullTaxon = (Taxon *)self.taxon;
-    	[self.tableView reloadData];
-    } else {
-	    NSInteger taxonId = self.taxon.taxonId;
-	    // try to load taxon from disk in case we have it
-	    NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", self.taxon.taxonId];
-	    self.taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-        self.fullTaxon = (Taxon *)self.taxon;
-        [self.tableView reloadData];
-
-	    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-	        NSString *urlString = [[NSURL URLWithString:[NSString stringWithFormat:@"/taxa/%ld.json", (long)taxonId]
-	                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
-	
-	        __weak typeof(self)weakSelf = self;
-	        RKObjectLoaderDidLoadObjectBlock loadedTaxonBlock = ^(id object) {
-	            
-	            // save into core data
-	            NSError *saveError = nil;
-	            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-	            if (saveError) {
-	                NSString *errMsg = [NSString stringWithFormat:@"Taxon Save Error: %@",
-	                                    saveError.localizedDescription];
-	                [[Analytics sharedClient] debugLog:errMsg];
-	                return;
-	            }
-		            
-	            NSPredicate *taxonByIDPredicate = [NSPredicate predicateWithFormat:@"recordID = %d", taxonId];
-	            Taxon *taxon = [Taxon objectWithPredicate:taxonByIDPredicate];
-	            if (taxon) {
-	                __strong typeof(weakSelf)strongSelf = weakSelf;
-	                strongSelf.taxon = taxon;
-	                strongSelf.fullTaxon = taxon;
-	                [strongSelf.tableView reloadData];
-	            }
-	        };
+    // cannot seem to do this in the storyboard
+    if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular &&
+        self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular) {
         
-	        [[Analytics sharedClient] debugLog:@"Network - Load taxon for details"];
-	        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:urlString
-	                                                        usingBlock:^(RKObjectLoader *loader) {
-	                                                            loader.objectMapping = [Taxon mapping];
-	                                                            loader.onDidLoadObject = loadedTaxonBlock;
-	                                                            // If something went wrong, just ignore it.
-	                                                            // Because, you know, that's always a good idea.
-	                                                        }];
-	    }
+        self.tableView.tableHeaderView.frame = CGRectMake(0,
+                                                          0,
+                                                          self.tableView.bounds.size.width,
+                                                          420);
+    }
+    
+    self.title = self.taxon.commonName ?: self.taxon.scientificName;
+    
+    NSInteger taxonId = [self.taxon taxonId];
+    self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
+    
+    self.mapRect = MKMapRectNull;
+    [[self taxaApi] boundingBoxForTaxon:taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        self.numberOfObservations = count;
+        NSDictionary *coords = [results firstObject];
+        CLLocationCoordinate2D sw = CLLocationCoordinate2DMake([[coords valueForKey:@"swlat"] floatValue],
+                                                               [[coords valueForKey:@"swlng"] floatValue]);
+        CLLocationCoordinate2D ne = CLLocationCoordinate2DMake([[coords valueForKey:@"nelat"] floatValue],
+                                                               [[coords valueForKey:@"nelng"] floatValue]);
+        
+        MKMapPoint p1 = MKMapPointForCoordinate(sw);
+        MKMapPoint p2 = MKMapPointForCoordinate(ne);
+        
+        self.mapRect = MKMapRectMake(fmin(p1.x,p2.x),
+                                     fmin(p1.y,p2.y),
+                                     fabs(p1.x-p2.x),
+                                     fabs(p1.y-p2.y));
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
+    
+    [[self taxaApi] taxonWithId:taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        for (ExploreTaxon *et in results) {
+            ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:et];
+            [realm addOrUpdateObject:etr];
+        }
+        [realm commitWriteTransaction];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // reload the full taxon on the main thread
+            self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
+            self.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
+            self.photoPageVC.taxon = self.fullTaxon;
+            [self.photoPageVC reloadPages];
+            [self.tableView reloadData];
+        });
+    }];
+        
+    self.infoButton.clipsToBounds = YES;
+    self.infoButton.layer.cornerRadius = 22.0f;
+    self.infoButton.layer.borderColor = [UIColor colorWithHexString:@"#cccccc"].CGColor;
+    self.infoButton.layer.borderWidth = 2.0f;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"taxonPhotoEmbed"]) {
+        self.photoPageVC = segue.destinationViewController;
+    } else if ([segue.identifier isEqualToString:@"map"]) {
+        TaxonMapViewController *vc = (TaxonMapViewController *)segue.destinationViewController;
+        vc.etr = self.fullTaxon;
+        if (CLLocationCoordinate2DIsValid(self.observationCoordinate)) {
+            vc.observationCoordinate = self.observationCoordinate;
+        }
+        if (!MKMapRectIsEmpty(self.mapRect)) {
+            vc.mapRect = self.mapRect;
+        }
     }
 }
 
@@ -243,95 +178,199 @@ static char SUMMARY_ASSOCIATED_KEY;
 }
 
 #pragma mark - UITableView
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 1) {
-        return [self.fullTaxon.attributedBody boundingRectWithSize:CGSizeMake(290, CGFLOAT_MAX)
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                       context:nil].size.height + 20;
-    } else if (indexPath.row == 0) {
-        TaxonPhoto *tp = self.fullTaxon.taxonPhotos.firstObject;
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tp.thumbURL]];
-        UIImage *image = [[UIImageView sharedImageCache] cachedImageForRequest:request];
-        
-        if (image) {
-            CGFloat aspectRatio = image.size.height / image.size.width;
-            return tableView.bounds.size.width * aspectRatio;
-        } else {
-            return tableView.bounds.size.width;
-        }
-    } else {
-        return 59;
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 0.0f;
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.fullTaxon.wikipediaUrl) {
-        return 3;
+    if (section == 0) {
+        // selector and name/wikipedia excerpt section
+        if (self.showsActionButton) {
+            return 2;
+        } else {
+            return 1;
+        }
     } else {
-        return 2;
+        // map
+        return 1;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.item == 0) {
-        TaxonPhotoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonPhoto" forIndexPath:indexPath];
-        
-        if (self.fullTaxon) {
-            TaxonPhoto *tp = self.fullTaxon.taxonPhotos.firstObject;
-            if (tp) {
-                cell.scrim.hidden = NO;
-                [cell.creditsButton setTitle:tp.attribution forState:UIControlStateNormal];
-                [cell.creditsButton addTarget:self action:@selector(creditsTapped:) forControlEvents:UIControlEventTouchUpInside];
-                
-                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tp.mediumURL]];
-                
-                __weak typeof(cell)weakCell = cell;
-                __weak typeof(tableView)weakTableView = tableView;
-                [cell.taxonPhoto setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                    
-                    weakCell.taxonPhoto.image = image;
-                    [weakCell setNeedsDisplay];
-                    // update tableview because the cell height is set
-                    // according to the image dimensions
-                    [weakTableView beginUpdates];
-                    [weakTableView endUpdates];
-                    
-                } failure:nil];
+    if (indexPath.section == 0) {
+        if (self.showsActionButton && indexPath.item == 0) {
+            // selector
+            TaxonSelectButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"selectButton"
+                                                                          forIndexPath:indexPath];
+            
+            NSString *selectTitle = NSLocalizedString(@"Select", @"default select title");
+            NSString *selectBase = NSLocalizedString(@"Select \"%@\"", @"select taxon title");
+
+            if (self.fullTaxon) {
+                if (self.fullTaxon.commonName && self.fullTaxon.commonName.length != 0) {
+                    selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.commonName];
+                } else {
+                    selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.scientificName];
+                }
+            } else if (self.taxon) {
+                if (self.taxon.commonName && self.taxon.commonName.length != 0) {
+                    selectTitle = [NSString stringWithFormat:selectBase, self.taxon.commonName];
+                } else {
+                    selectTitle = [NSString stringWithFormat:selectBase, self.taxon.scientificName];
+                }
+            }
+            [cell.button setTitle:selectTitle forState:UIControlStateNormal];
+            
+            return cell;
+        } else {
+            // name/wikipedia
+            TaxonSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"nameInfo"
+                                                                     forIndexPath:indexPath];
+            if (self.fullTaxon) {
+                cell.commonNameLabel.text = self.fullTaxon.commonName;
+                cell.scientificNameLabel.text = self.fullTaxon.scientificName;
+                cell.summaryLabel.text = nil;
             } else {
-                cell.scrim.hidden = YES;
-                cell.taxonPhoto.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.fullTaxon.iconicTaxonName];
+                cell.commonNameLabel.text = self.taxon.commonName;
+                cell.scientificNameLabel.text = self.taxon.scientificName;
+                cell.summaryLabel.text = nil;
+            }
+            
+            CGFloat scientificNameSize = cell.scientificNameLabel.font.pointSize;
+            if (self.taxon.isGenusOrLower) {
+                cell.scientificNameLabel.font = [UIFont italicSystemFontOfSize:scientificNameSize];
+                cell.scientificNameLabel.text = self.taxon.scientificName;
+            } else {
+                cell.scientificNameLabel.font = [UIFont systemFontOfSize:scientificNameSize];
+                cell.scientificNameLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                                 [self.taxon.rankName capitalizedString],
+                                                 self.taxon.scientificName];
+            }
+            
+            if (self.fullTaxon.webContent && [self.fullTaxon.webContent length] > 0) {
+                cell.summaryLabel.text = [NSString stringWithFormat:@"%@ (%@)",
+                                          [self.fullTaxon.webContent stringByStrippingHTML],
+                                          NSLocalizedString(@"Source: Wikipedia", nil)
+                                          ];
+            }
+
+            return cell;
+        }
+    } else {
+        // map
+        TaxonMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonMap"
+                                                             forIndexPath:indexPath];
+        // setting this in IB doesn't work
+        cell.mapView.userInteractionEnabled = NO;
+        cell.mapView.delegate = self;
+        
+        if (![[RKClient sharedClient] isNetworkReachable]) {
+            cell.mapView.hidden = YES;
+            cell.noObservationsLabel.hidden = YES;
+            cell.noNetworkLabel.hidden = NO;
+            cell.noNetworkAlertIcon.hidden = NO;
+        } else {
+            cell.noNetworkLabel.hidden = YES;
+            cell.noNetworkAlertIcon.hidden = YES;
+            
+            if ([self.taxon taxonId]) {
+                if (self.numberOfObservations == 0) {
+                    cell.mapView.hidden = YES;
+                    cell.noObservationsLabel.hidden = NO;
+                } else {
+                    cell.mapView.hidden = NO;
+                    cell.noObservationsLabel.hidden = YES;
+                    NSString *template = [NSString stringWithFormat:@"https://tiles.inaturalist.org/v1/colored_heatmap/{z}/{x}/{y}.png?taxon_id=%ld&verifiable=true",
+                                          (long)[self.taxon taxonId]];
+                    MKTileOverlay *overlay = [[MKTileOverlay alloc] initWithURLTemplate:template];
+                    overlay.tileSize = CGSizeMake(512, 512);
+                    overlay.canReplaceMapContent = NO;
+                    [cell.mapView addOverlay:overlay
+                                       level:MKOverlayLevelAboveLabels];
+                    if (!MKMapRectIsNull(self.mapRect)) {
+                        if (CLLocationCoordinate2DIsValid(self.observationCoordinate)) {
+                            // try to show both the map tiles of other observations _and_
+                            // the point for the current observation
+                            MKMapPoint obsPoint = MKMapPointForCoordinate(self.observationCoordinate);
+                            MKMapRect obsCoordRect = MKMapRectMake(obsPoint.x,
+                                                                   obsPoint.y,
+                                                                   0.1,
+                                                                   0.1);
+                            self.mapRect = MKMapRectUnion(self.mapRect, obsCoordRect);
+                        }
+                        [cell.mapView setVisibleMapRect:self.mapRect
+                                            edgePadding:UIEdgeInsetsMake(20, 20, 20, 20)
+                                               animated:NO];
+                    }
+                    
+                    if (CLLocationCoordinate2DIsValid(self.observationCoordinate)) {
+                        MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+                        annotation.coordinate = self.observationCoordinate;
+                        annotation.title = NSLocalizedString(@"Selected Observation", nil);
+                        [cell.mapView addAnnotation:annotation];
+                        if (!MKMapRectContainsPoint([cell.mapView visibleMapRect], MKMapPointForCoordinate(self.observationCoordinate))) {
+                            [cell.mapView setCenterCoordinate:self.observationCoordinate];
+                        }
+                    }
+                }
             }
         }
-        
-        return cell;
-    } else if (indexPath.item == 1) {
-        TaxonSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonSummary" forIndexPath:indexPath];
-        
-        cell.summaryLabel.attributedText = self.fullTaxon.attributedBody;
-
-        return cell;
-    } else {
-        RoundedButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"roundedButton" forIndexPath:indexPath];
-        
-        cell.roundedButton.backgroundColor = [UIColor colorWithHexString:@"#E4E4E4"];
-        cell.roundedButton.tintColor = [UIColor blackColor];
-        [cell.roundedButton setTitle:NSLocalizedString(@"Wikipedia Article", @"title for button to open taxon page on wikipedia")
-                            forState:UIControlStateNormal];
-        [cell.roundedButton addTarget:self action:@selector(wikipediaTapped:) forControlEvents:UIControlEventTouchUpInside];
-        
         return cell;
     }
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        [self performSegueWithIdentifier:@"map" sender:nil];
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 1) {
+        return NSLocalizedString(@"Map of Observations", nil);
+    } else {
+        return nil;
+    }
+}
+
+#pragma mark - MKMapViewDelegate
+
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay {
+    if ([overlay isKindOfClass:[MKTileOverlay class]]) {
+        return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+    }
+    
+    return nil;
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MKUserLocation class]])
+        return nil;
+    
+    static NSString *const AnnotationViewReuseID = @"ObservationAnnotationMarkerReuseID";
+    
+    MKAnnotationView *annotationView = [map dequeueReusableAnnotationViewWithIdentifier:AnnotationViewReuseID];
+    if (!annotationView) {
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
+                                                      reuseIdentifier:AnnotationViewReuseID];
+        annotationView.canShowCallout = NO;
+    }
+    
+    // style for iconic taxon of the observation
+    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
+    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:self.taxon.iconicTaxonName]];
+    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:25.0f];
+    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:self.taxon.iconicTaxonName] darkerColor]];
+    
+    // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
+    [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
+    [mapOutline addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
+    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 50.0f)];
+    
+    return annotationView;
+}
+
 
 @end

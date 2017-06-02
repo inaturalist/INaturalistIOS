@@ -22,4 +22,5 @@
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) BOOL hidesDoneButton;
 @property (nonatomic, assign) BOOL allowsFreeTextSelection;
+@property (nonatomic, assign) CLLocationCoordinate2D observationCoordinate;
 @end

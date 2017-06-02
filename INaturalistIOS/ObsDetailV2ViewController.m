@@ -164,6 +164,7 @@
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxon = sender;
+        vc.observationCoordinate = [self.observation visibleLocation];
     } else if ([segue.identifier isEqualToString:@"map"]) {
         LocationViewController *location = [segue destinationViewController];
         location.observation = self.observation;

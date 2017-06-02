@@ -28,6 +28,11 @@
         self.searchableLastMatchedTerm = [taxon.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                           		locale:[NSLocale currentLocale]];
         self.observationCount = taxon.observationCount;
+        
+        for (ExploreTaxonPhoto *etp in [taxon taxonPhotos]) {
+            ExploreTaxonPhotoRealm *etpr = [[ExploreTaxonPhotoRealm alloc] initWithMantleModel:etp];
+            [self.taxonPhotos addObject:etpr];
+        }
 	}
 	return self;
 }

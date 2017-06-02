@@ -98,6 +98,14 @@
 }
 
 #pragma mark - UIViewController lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.observationCoordinate = kCLLocationCoordinate2DInvalid;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
     
@@ -219,6 +227,10 @@
     TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
     tdvc.taxon = taxon;
     tdvc.delegate = self;
+    tdvc.showsActionButton = YES;
+    if (CLLocationCoordinate2DIsValid(self.observationCoordinate)) {
+        tdvc.observationCoordinate = self.observationCoordinate;
+    }
     [self.navigationController pushViewController:tdvc animated:YES];
 }
 

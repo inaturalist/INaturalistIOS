@@ -38,5 +38,46 @@
 
 }
 
+- (void)boundingBoxForTaxon:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - bounding box for taxon"];
+    NSString *path = [NSString stringWithFormat:@"observations?taxon_id=%ld&per_page=1&return_bounds=true&verifiable=true",
+                      (long)taxonId];
+    
+    path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    if (url) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        [[session dataTaskWithRequest:[NSURLRequest requestWithURL:url]
+                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                        if (error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
+                        } else {
+                            NSError *error;
+                            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+                            if (error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    done(nil, 0, error);
+                                });
+                            } else {
+                                NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
+
+                                if ([json valueForKey:@"total_bounds"]) {
+                                    done(@[ [json valueForKey:@"total_bounds"] ], totalResults, nil);
+                                } else {
+                                    done(nil, 0, nil);
+                                }
+                            }
+                        }
+                    }] resume];
+    }
+    
+
+}
+
 
 @end

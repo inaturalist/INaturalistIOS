@@ -12,5 +12,6 @@
 
 - (void)taxaMatching:(NSString *)name handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)taxonWithId:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)boundingBoxForTaxon:(NSInteger)taxon handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end
