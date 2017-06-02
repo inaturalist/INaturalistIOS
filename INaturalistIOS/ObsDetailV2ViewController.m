@@ -238,7 +238,19 @@
 #pragma mark - notifications
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    [self.tableView reloadData];
+    BOOL updatedMe = NO;
+    for (id object in [notification.userInfo valueForKey:@"updated"]) {
+        if ([object isKindOfClass:[Observation class]]) {
+            Observation *update = (Observation *)object;
+            if ([update inatRecordId] == [self.observation inatRecordId]) {
+                updatedMe = YES;
+            }
+        }
+    }
+    
+    if (updatedMe) {
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - obs detail view model delegate
