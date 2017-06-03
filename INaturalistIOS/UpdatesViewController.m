@@ -180,7 +180,9 @@
         }];
     } failure:^(NSError *error) {
         if (self.viewIfLoaded) {
-            [self.tableView.pullToRefreshView stopAnimating];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView.pullToRefreshView stopAnimating];
+            });
         }
         return;
     }];
@@ -229,8 +231,10 @@
                 [realm deleteObjects:@[ eur ]];
                 [realm commitWriteTransaction];
             } else {
-                [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                 withRowAnimation:UITableViewRowAnimationFade];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                     withRowAnimation:UITableViewRowAnimationFade];
+                });
             }
         }];
     }
