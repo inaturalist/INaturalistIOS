@@ -424,8 +424,10 @@
     if (objects.count == 0) return;
     
     NSError *error = nil;
-    // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
     
     if (self.observation.hasUnviewedActivityBool && self.activeSection == ObsDetailSectionActivity) {
         
