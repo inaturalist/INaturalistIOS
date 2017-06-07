@@ -34,7 +34,8 @@ static int KVOContext;
     
     _observationDataSource = newDataSource;
     [self startObserving:_observationDataSource forKeyPath:@"observations"];
-
+    
+    [self startObserving:_observationDataSource forKeyPath:@"activeSearchPredicates"];
 }
 
 #pragma mark - KVO
@@ -57,6 +58,10 @@ static int KVOContext;
             if ([keyPath isEqualToString:@"observations"]) {
                 if ([self respondsToSelector:@selector(observationChangedCallback)])
                     [self observationChangedCallback];
+            } else if ([keyPath isEqualToString:@"activeSearchPredicates"]) {
+                if ([self respondsToSelector:@selector(activeSearchPredicatesChanged)]) {
+                    [self activeSearchPredicatesChanged];
+                }
             }
         }
     } else {

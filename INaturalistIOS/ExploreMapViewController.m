@@ -110,6 +110,49 @@
 
 #pragma mark - KVO
 
+- (void)activeSearchPredicatesChanged {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.observationDataSource activeSearchLimitedBySearchedLocation]) {
+            // remove any overlays that were already there
+            [mapView removeOverlays:mapView.overlays];
+            
+            CLLocationCoordinate2D newCenter;
+            MKMapRect newMapRect = MKMapRectNull;
+            NSInteger overlayLocationId = 0;
+            for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
+                if (predicate.type == ExploreSearchPredicateTypeLocation) {
+                    newCenter = predicate.searchLocation.location;
+                    overlayLocationId = predicate.searchLocation.locationId;
+                    newMapRect = predicate.searchLocation.boundingBox;
+                    break;  // prefer places to projects
+                } if (predicate.type == ExploreSearchPredicateTypeProject) {
+                    if (predicate.searchProject.latitude != 0) {
+                        newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
+                                                               predicate.searchProject.longitude);
+                        overlayLocationId = predicate.searchProject.locationId;
+                        break;
+                    }
+                }
+            }
+            
+            if (!MKMapRectIsEmpty(newMapRect)) {
+                [self addOverlaysForLocationId:overlayLocationId];
+                MKCoordinateRegion region = MKCoordinateRegionForMapRect(newMapRect);
+                [mapView setRegion:region animated:YES];
+            } else if (overlayLocationId != 0) {
+                [self addOverlaysForLocationId:overlayLocationId];
+                if (CLLocationCoordinate2DIsValid(newCenter)) {
+                    [mapView setCenterCoordinate:newCenter animated:YES];
+                }
+            }:
+            
+        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
+            // if necessary, remove the overlays
+            [mapView removeOverlays:mapView.overlays];
+        }
+    });
+}
+
 - (void)observationChangedCallback {
     dispatch_async(dispatch_get_main_queue(), ^{
         // in case this callback fires because of a change in search,
@@ -146,54 +189,6 @@
         
         [mapView addAnnotations:annotationsToAdd];
         
-        if ([self.observationDataSource activeSearchLimitedBySearchedLocation]) {
-            BOOL shouldZoomToNewCenter = NO;
-            
-            // if we didn't already have an overlay, this is probably a new one
-            // so we should zoom to it at the end of the cycle if we found a newCenter
-            if (mapView.overlays.count == 0) {
-                shouldZoomToNewCenter = YES;
-            }
-            
-            // remove any overlays that were already there
-            [mapView removeOverlays:mapView.overlays];
-            
-            CLLocationCoordinate2D newCenter;
-            MKMapRect newMapRect = MKMapRectNull;
-            NSInteger overlayLocationId = 0;
-            for (ExploreSearchPredicate *predicate in self.observationDataSource.activeSearchPredicates) {
-                if (predicate.type == ExploreSearchPredicateTypeLocation) {
-                    newCenter = predicate.searchLocation.location;
-                    overlayLocationId = predicate.searchLocation.locationId;
-                    newMapRect = predicate.searchLocation.boundingBox;
-                    break;  // prefer places to projects
-                } if (predicate.type == ExploreSearchPredicateTypeProject) {
-                    if (predicate.searchProject.latitude != 0) {
-                        newCenter = CLLocationCoordinate2DMake(predicate.searchProject.latitude,
-                                                               predicate.searchProject.longitude);
-                        overlayLocationId = predicate.searchProject.locationId;
-                        break;
-                    }
-                }
-            }
-            
-            if (!MKMapRectIsEmpty(newMapRect)) {
-                [self addOverlaysForLocationId:overlayLocationId];
-                if (shouldZoomToNewCenter) {
-                    MKCoordinateRegion region = MKCoordinateRegionForMapRect(newMapRect);
-                    [mapView setRegion:region animated:YES];
-                }
-            } else if (overlayLocationId != 0) {
-                [self addOverlaysForLocationId:overlayLocationId];
-                if (shouldZoomToNewCenter && CLLocationCoordinate2DIsValid(newCenter)) {
-                    [mapView setCenterCoordinate:newCenter animated:YES];
-                }
-            }
-            
-        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
-            // if necessary, remove the overlays
-            [mapView removeOverlays:mapView.overlays];
-        }
     });
 }
 

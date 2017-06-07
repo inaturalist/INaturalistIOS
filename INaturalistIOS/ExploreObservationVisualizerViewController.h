@@ -24,6 +24,10 @@
  Observations have changed.
  */
 - (void)observationChangedCallback;
+/**
+  Active Search Predicates have changed.
+ */
+- (void)activeSearchPredicatesChanged;
 @end
 
 /**
