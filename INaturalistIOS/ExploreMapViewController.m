@@ -144,7 +144,7 @@
                 if (CLLocationCoordinate2DIsValid(newCenter)) {
                     [mapView setCenterCoordinate:newCenter animated:YES];
                 }
-            }:
+            }
             
         } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
             // if necessary, remove the overlays
