@@ -214,7 +214,7 @@
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
 	NSString *pathPattern = @"observations";
 	// for iOS, we treat "mappable" as "exploreable"
-	NSString *query = @"?per_page=100&mappable=true";
+	NSString *query = @"?per_page=100&mappable=true&verifiable=true";
 	
 	NSString *localeString = [NSLocale inat_serverFormattedLocale];
 	if (localeString && ![localeString isEqualToString:@""]) {
