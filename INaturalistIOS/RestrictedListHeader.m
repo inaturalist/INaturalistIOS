@@ -14,8 +14,8 @@
 
 @implementation RestrictedListHeader
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
         
         self.contentView.backgroundColor = [UIColor colorWithHexString:@"#f0f0f0"];
         
