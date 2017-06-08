@@ -134,7 +134,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"geoprivacy", @"geoprivacy",
          @"user_id", @"userID",
          @"quality_grade", @"qualityGrade",
-         @"captive", @"captive",
+         @"captive_flag", @"captive",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
