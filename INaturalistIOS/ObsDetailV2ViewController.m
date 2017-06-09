@@ -128,6 +128,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // reload the tableview in case we've just come from editing view
+    [self.tableView reloadData];
+
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     [UIView animateWithDuration:0.3 animations:^{
@@ -141,7 +144,8 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (!self.observation.needsUpload) {
+    // don't clobber any un-uploaded edits to this observation or its children
+    if (!self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
         [self reloadObservation];
     }
 }
@@ -182,8 +186,8 @@
 }
 
 - (void)reloadObservation {
-    if (self.observation.needsUpload) {
-        // don't clobber any local edits to this observation
+    if (self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
+        // don't clobber any un-uploaded edits to this observation or its children
         return;
     }
     

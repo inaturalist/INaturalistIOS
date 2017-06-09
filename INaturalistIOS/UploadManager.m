@@ -181,7 +181,7 @@
         return;
     }
 
-    if (!observation.needsUpload || !observation.uuid) {
+    if ((!observation.needsUpload && observation.childrenNeedingUpload.count == 0) || !observation.uuid) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate uploadManager:self uploadSuccessFor:observation];
         });
@@ -194,15 +194,19 @@
     RKObjectLoaderBlock loaderBlock = nil;
     INatModel <Uploadable> *recordToUpload = nil;
     
-    if (observation.needsSync) {
-        // upload the observation itself
+    if (observation.needsSync && !observation.syncedAt) {
+        // if the observation has never been uploaded, POST
+        // the observation first.
         loaderBlock = ^(RKObjectLoader *loader) {
             loader.objectMapping = [Observation mapping];
             loader.delegate = self;
         };
         recordToUpload = observation;
+    } else if ([[observation childrenNeedingUpload] count] > 0) {
+        // if the observation has been uploaded, PUT the children
+        // first. or the observation has been uploaded, POST the
+        // children next.
         
-    } else {
         // upload a child record for the obs
         recordToUpload = [[observation childrenNeedingUpload] firstObject];
         
@@ -229,7 +233,8 @@
             loader.objectMapping = [[recordToUpload class] mapping];
             loader.delegate = self;
             
-            if ([recordToUpload respondsToSelector:@selector(fileUploadParameter)]) {
+            // only upload files via POST
+            if (!recordToUpload.syncedAt && [recordToUpload respondsToSelector:@selector(fileUploadParameter)]) {
                 NSString *path = [recordToUpload performSelector:@selector(fileUploadParameter)];
                 
                 if (!path) {
@@ -289,6 +294,14 @@
                 loader.params = params;
             }
         };
+    } else if (observation.needsSync) {
+        // if the observation has been uploaded, PUT it
+        // after the children have been PUT.
+        loaderBlock = ^(RKObjectLoader *loader) {
+            loader.objectMapping = [Observation mapping];
+            loader.delegate = self;
+        };
+        recordToUpload = observation;
     }
     
     if (recordToUpload && loaderBlock) {

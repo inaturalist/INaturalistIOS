@@ -658,7 +658,7 @@
         ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
         [self configureErrorCell:cell forIndexPath:indexPath];
         return cell;
-    } else if (o.needsUpload) {
+    } else if (o.needsUpload || o.childrenNeedingUpload.count > 0) {
         if (appDelegate.loginController.uploadManager.isUploading && [appDelegate.loginController.uploadManager.currentlyUploadingObservation isEqual:o]) {
             // actively uploading this observation
             ObservationViewUploadingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationUploadingCell"];
@@ -726,7 +726,7 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
+    if ([appDelegate.loginController.uploadManager isUploading] && (o.needsUpload || o.childrenNeedingUpload.count > 0)) {
         return;
     } else {
         [self performSegueWithIdentifier:@"obsDetailV2" sender:o];

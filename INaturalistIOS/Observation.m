@@ -426,17 +426,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (BOOL)needsUpload {
-    // needs upload if this obs needs sync, or any children need sync
+    // needs upload if this obs needs sync
     if (self.needsSync) { return YES; }
-    for (ObservationPhoto *op in self.observationPhotos) {
-        if (op.needsSync) { return YES; }
-    }
-    for (ObservationFieldValue *ofv in self.observationFieldValues) {
-        if (ofv.needsSync) { return YES; }
-    }
-    for (ProjectObservation *po in self.projectObservations) {
-        if (po.needsSync) { return YES; }
-    }
     return NO;
 }
 

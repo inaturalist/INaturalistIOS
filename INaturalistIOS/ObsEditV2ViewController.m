@@ -291,6 +291,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
         // text changed
         self.observation.inatDescription = textView.text;
+        self.observation.localUpdatedAt = [NSDate date];
         [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
                          withProperties:@{
                                           @"Via": [self analyticsVia]
@@ -318,12 +319,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - PhotoScrollViewDelegate
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
+    ObservationPhoto *newDefault = self.observation.sortedObservationPhotos[idx];
+    newDefault.position = @(0);
+    newDefault.localUpdatedAt = [NSDate date];
+    
     for (ObservationPhoto *photo in self.observation.observationPhotos) {
-        if (photo.position.integerValue == idx) {
-            photo.position = @(0);
-        } else if (photo.position.integerValue < idx) {
+        if ([photo isEqual:newDefault]) {
+            continue;
+        }
+        if (photo.position.integerValue < idx) {
             // needs to move down one
             photo.position = @(photo.position.integerValue + 1);
+            photo.localUpdatedAt = [NSDate date];
         }
     }
     
@@ -350,6 +357,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     for (int i = 0; i < self.observation.sortedObservationPhotos.count; i++) {
         ObservationPhoto *op = self.observation.sortedObservationPhotos[i];
         op.position = @(i);
+        op.updatedAt = [NSDate date];
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
@@ -362,7 +370,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
-    // show the hires photo?
     ObservationPhoto *op = [self.observation.sortedObservationPhotos objectAtIndex:idx];
     if (!op) return;
     
@@ -831,6 +838,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           locality,
                                                           administrativeArea,
                                                           ISOcountryCode ] componentsJoinedByString:@", "];
+                                    obs.localUpdatedAt = [NSDate date];
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
                                     [self.tableView beginUpdates];
                                     [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
@@ -860,6 +868,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.taxonID = nil;
     self.observation.iconicTaxonID = nil;
     self.observation.iconicTaxonName = nil;
+    self.observation.localUpdatedAt = [NSDate date];
     
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
     [self.tableView beginUpdates];
@@ -939,14 +948,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"OFVs": @(self.observation.observationFieldValues.count)
                                       }];
     
-    self.observation.localUpdatedAt = [NSDate date];
-    
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
-    }
-    
     [self triggerAutoUpload];
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -966,7 +967,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [po deleteEntity];
             [deletedProjects addObject:po];
         }
-        self.observation.localUpdatedAt = [NSDate date];
     }
     [self.observation removeProjectObservations:deletedProjects];
     
@@ -986,9 +986,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             ObservationFieldValue *ofv = [ObservationFieldValue object];
             ofv.observation = self.observation;
             ofv.observationField = pof.observationField;
+            ofv.localUpdatedAt = [NSDate date];
+            ofv.localCreatedAt = [NSDate date];
         }
         
-        self.observation.localUpdatedAt = [NSDate date];
+        po.localUpdatedAt = [NSDate date];
+        po.localCreatedAt = [NSDate date];
     }
     
     [self.tableView reloadData];
@@ -1261,6 +1264,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         __strong typeof(weakSelf) strongSelf = self;
                                                         strongSelf.observation.localObservedOn = date;
                                                         strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:date];
+                                                        strongSelf.observation.localUpdatedAt = [NSDate date];
                                                         
                                                         [strongSelf.tableView beginUpdates];
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
@@ -1314,6 +1318,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSString *newValue = geoprivacyOptions[selectedIndex];
                                                           
                                                           strongSelf.observation.geoprivacy = newValue;
+                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
                                                                            withProperties:@{ @"Via": [self analyticsVia],
@@ -1347,6 +1352,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           __strong typeof(weakSelf) strongSelf = weakSelf;
                                                           
                                                           strongSelf.observation.captive = @(selectedIndex);
+                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
