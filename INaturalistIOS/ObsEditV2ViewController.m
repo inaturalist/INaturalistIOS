@@ -947,6 +947,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Photos": @(self.observation.observationPhotos.count),
                                       @"OFVs": @(self.observation.observationFieldValues.count)
                                       }];
+        
+    NSError *error;
+    [[[RKObjectManager sharedManager] objectStore] save:&error];
+    if (error) {
+        // TODO: log it at least, also notify the user
+    }
     
     [self triggerAutoUpload];
     
