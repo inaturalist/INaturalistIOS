@@ -331,11 +331,11 @@
         if (ts) {
             NSString *reason = @"";
             if (ts.visionScore > 0 && ts.frequencyScore > 0) {
-                reason = @"Visually Similar / Seen Nearby";
+                reason = NSLocalizedString(@"Visually Similar / Seen Nearby", @"basis for a species suggestion");
             } else if (ts.visionScore > 0) {
-                reason = @"Visually Similar";
+                reason = NSLocalizedString(@"Visually Similar", @"basis for a species suggestion");
             } else if (ts.frequencyScore > 0) {
-                reason = @"Seen Nearby";
+                reason = NSLocalizedString(@"Seen Nearby", @"basis for a suggestion");
             }
             cell.comment.text = reason;
         } else {
