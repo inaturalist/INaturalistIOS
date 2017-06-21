@@ -48,8 +48,10 @@ static const int NetworkTextLabelTag = 15;
 
 static const int AutocompleteNamesLabelTag = 51;
 static const int AutouploadLabelTag = 52;
+static const int SuggestionsLabelTag = 53;
 static const int AutocompleteNamesSwitchTag = 101;
 static const int AutouploadSwitchTag = 102;
+static const int SuggestionsSwitchTag = 103;
 
 @interface SettingsViewController () {
     UITapGestureRecognizer *tapAway;
@@ -398,6 +400,8 @@ static const int AutouploadSwitchTag = 102;
         key = kINatAutocompleteNamesPrefKey;
     else if (switcher.tag == AutouploadSwitchTag)
         key = kInatAutouploadPrefKey;
+    else if (switcher.tag == SuggestionsSwitchTag)
+        key = kINatSuggestionsPrefKey;
     
     if (key) {
         NSString *analyticsEvent;
@@ -475,7 +479,7 @@ static const int AutouploadSwitchTag = 102;
         
         if (indexPath.item == 0) {
             // do nothing
-        } else if (indexPath.item < 3) {
+        } else if (indexPath.item < 4) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
@@ -519,7 +523,9 @@ static const int AutouploadSwitchTag = 102;
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
             else if (switcher.tag == AutouploadSwitchTag)
                 switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
-
+            else if (switcher.tag == SuggestionsSwitchTag)
+                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey];
+            
         } else {
             // iNaturalist Network setting
             
@@ -582,7 +588,7 @@ static const int AutouploadSwitchTag = 102;
     if (indexPath.section == 1) {
         if (indexPath.item == 0) {
             [self tappedUsername];
-        } else if (indexPath.item == 3) {
+        } else if (indexPath.item == 4) {
 			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 			if (![appDelegate.loginController isLoggedIn]) {
 				[self presentSignup];
@@ -619,6 +625,9 @@ static const int AutouploadSwitchTag = 102;
                 // automatically upload
                 tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
                                                 @"tooltip text for automatically upload option.");
+            } else if (indexPath.item == 3) {
+                // suggestions
+                tooltipText = NSLocalizedString(@"Show species suggestions for observations or identifications", nil);
             }
             
             tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]

@@ -279,6 +279,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self saveVisibleObservationFieldValues];
 }
 
+- (void)taxaSearchViewControllerCancelled {
+    [self.navigationController popToViewController:self animated:YES];
+}
+
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -483,7 +487,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
         search.hidesDoneButton = YES;
         search.delegate = self;
-        search.query = self.observation.speciesGuess;
+        // only prime the query if there's a placeholder, not a taxon)
+        if (self.observation.speciesGuess && ! self.observation.taxon) {
+            search.query = self.observation.speciesGuess;
+        }
         [self.navigationController pushViewController:search animated:YES];
         
         // stash the selected index path so we know what ofv to update

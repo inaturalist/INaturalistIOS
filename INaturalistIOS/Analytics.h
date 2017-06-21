@@ -141,4 +141,9 @@ extern NSString *kAnalyticsEventCameraPermissionsChanged;
 extern NSString *kAnalyticsEventPhotoLibraryPermissionsChanged;
 
 
-
+// suggestions
+extern NSString *kAnalyticsEventLoadTaxaSearch;
+extern NSString *kAnalyticsEventSuggestionsLoaded;
+extern NSString *kAnalyticsEventSuggestionsFailed;
+extern NSString *kAnalyticsEventChoseTaxon;
+extern NSString *kAnalyticsEventShowTaxonDetails;

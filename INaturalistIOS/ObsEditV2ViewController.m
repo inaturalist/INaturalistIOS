@@ -1043,6 +1043,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 }
 
+- (void)taxaSearchViewControllerCancelled {
+    [self.navigationController popToViewController:self animated:YES];
+}
+
 #pragma mark - EditLocationDelegate
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
@@ -1220,9 +1224,42 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
                 search.hidesDoneButton = YES;
                 search.delegate = self;
-                search.query = self.observation.speciesGuess;
+                // only prime the query if there's a placeholder, not a taxon)
+                if (self.observation.speciesGuess && !self.observation.taxonID) {
+                    search.query = self.observation.speciesGuess;
+                }
                 search.allowsFreeTextSelection = YES;
-                search.observationCoordinate = self.observation.visibleLocation;
+                
+                if (self.observation.observationPhotos.count > 0) {
+                    ObservationPhoto *op = [self.observation.sortedObservationPhotos firstObject];
+                    NSString *imgKey = [op photoKey];
+                    if (imgKey) {
+                        UIImage *image = [[ImageStore sharedImageStore] find:imgKey forSize:ImageStoreSmallSize];
+                        search.imageToClassify = image;
+                    }
+                    if (!search.imageToClassify) {
+                        // if we couldn't find it in the imagestore,
+                        // try to load it from the afnetworking caches
+                        NSURLRequest *request = [NSURLRequest requestWithURL:op.smallPhotoUrl];
+                        UIImage *image = [[UIImageView sharedImageCache] cachedImageForRequest:request];
+                        if (image) {
+                            search.imageToClassify = image;
+                        } else if ([self.observation recordID]) {
+                            // if we _still_ can't find an image, and the obs has been uploaded
+                            // to inat, try classifying the observation by id
+                            search.observationToClassify = self.observation;
+                        }
+                    }
+                    
+                    if (search.imageToClassify) {
+                        if (CLLocationCoordinate2DIsValid(self.observation.visibleLocation)) {
+                            search.coordinate = self.observation.visibleLocation;
+                        }
+                        if (self.observation.observedOn) {
+                            search.observedOn = self.observation.observedOn;
+                        }
+                    }
+                }
                 [self.navigationController pushViewController:search animated:YES];
             } else {
                 // do nothing
@@ -1520,7 +1557,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
             cell.taxonSecondaryNameLabel.textColor = [UIColor colorWithHexString:@"#777777"];
             cell.taxonNameLabel.text = NSLocalizedString(@"What did you see?", @"unknown taxon title");
-            cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"Look up species name", @"unknown taxon subtitle");
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey] &&
+                self.observation.sortedObservationPhotos.count > 0) {
+                cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"View suggestions",
+                                                                      @"unknown taxon subtitle when suggestions are available");
+            } else {
+                cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"Look up species name",
+                                                                      @"unknown taxon subtitle when suggestions are unavailable");
+            }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     }

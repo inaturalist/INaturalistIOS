@@ -19,6 +19,7 @@
 #define kInatCustomBaseURLStringKey @"InatCustomBaseURLStringKey"
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 #define kINatUserIdPrefKey @"INatUserIdPrefKey"
+#define kINatSuggestionsPrefKey @"INatSuggestionsPrefKey"
 
 #define kINatLoggedInNotificationKey @"kINatLoggedInNotificationKey"
 

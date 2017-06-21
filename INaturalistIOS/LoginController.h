@@ -54,5 +54,6 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure;
 @property NSString *jwtToken;
+@property (readonly) NSString *anonymousJWT;
 
 @end

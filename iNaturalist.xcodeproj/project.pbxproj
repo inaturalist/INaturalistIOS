@@ -206,10 +206,12 @@
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */; };
 		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
+		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
@@ -731,6 +733,8 @@
 		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
 		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
 		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WilletObservationRails.json; sourceTree = "<group>"; };
+		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
+		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
 		FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedCollectionHeader.m; sourceTree = "<group>"; };
 		FA88726F1A2D048300D2168E /* RestrictedListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedListHeader.h; sourceTree = "<group>"; };
@@ -742,6 +746,8 @@
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.15.xcdatamodel; sourceTree = "<group>"; };
 		FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManagerNotificationDelegate.h; sourceTree = "<group>"; };
+		FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonScore.h; sourceTree = "<group>"; };
+		FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonScore.m; sourceTree = "<group>"; };
 		FA9437811C869AA400CB10F3 /* ProjectsAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsAPI.h; sourceTree = "<group>"; };
 		FA9437821C869AA400CB10F3 /* ProjectsAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsAPI.m; sourceTree = "<group>"; };
 		FA9437841C869B7300CB10F3 /* ObservationAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAPI.h; sourceTree = "<group>"; };
@@ -1176,15 +1182,12 @@
 				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
 				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
 				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
-				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
-				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
 				FA724ADE1AB150BD00D01773 /* MeHeaderView.h */,
 				FA724ADF1AB150BD00D01773 /* MeHeaderView.m */,
 				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
 				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
 				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
 				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
-				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
 				FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */,
 				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
 				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
@@ -1210,7 +1213,6 @@
 				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
 				FA5564851BD9A9340049803B /* PhotoScrollViewCell.h */,
 				FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */,
-				FAEF23421C7D0DD300208F44 /* Project Details */,
 				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
 				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
@@ -1230,6 +1232,12 @@
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
 				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
+				FAEF23421C7D0DD300208F44 /* Project Details */,
+				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
+				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
+				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
+				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
+				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1703,6 +1711,8 @@
 				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
 				FA427EED1ECD087F003B26C3 /* ExploreTaxonPhoto.h */,
 				FA427EEE1ECD087F003B26C3 /* ExploreTaxonPhoto.m */,
+				FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */,
+				FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */,
 				FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */,
 				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
 				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
@@ -2190,6 +2200,7 @@
 				FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */,
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
+				FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */,
 				FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 				FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */,
@@ -2213,6 +2224,7 @@
 				FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
 				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
+				FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,

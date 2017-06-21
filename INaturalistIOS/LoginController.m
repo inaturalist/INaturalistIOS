@@ -11,6 +11,7 @@
 #import <NXOAuth2Client/NXOAuth2.h>
 #import <GooglePlus/GPPSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <JWT/JWT.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
@@ -641,5 +642,23 @@ NSInteger INatMinPasswordLength = 6;
     }] resume];
 }
 
+- (NSString *)anonymousJWT {
+    if (INatAnonymousAPISecret) {
+        JWTClaimsSet *claimsSet = [[JWTClaimsSet alloc] init];
+        claimsSet.expirationDate = [[NSDate date] dateByAddingTimeInterval:300];
+        NSDate *expiration = [[NSDate date] dateByAddingTimeInterval:300];
+        NSTimeInterval expirationStamp = [expiration timeIntervalSince1970];
+        
+        NSDictionary *payload = @{
+                                  @"application" : @"ios",
+                                  @"exp": @((NSInteger)expirationStamp),
+                                  };
+        id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS512"];
+        NSString *encoded = [JWTBuilder encodePayload:payload].secret(INatAnonymousAPISecret).algorithm(algorithm).encode;
+        return encoded;
+    } else {
+        return nil;
+    }
+}
 
 @end

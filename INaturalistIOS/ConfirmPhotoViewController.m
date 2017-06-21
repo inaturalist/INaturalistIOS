@@ -35,7 +35,7 @@
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
-@interface ConfirmPhotoViewController () <TaxaSearchViewControllerDelegate> {
+@interface ConfirmPhotoViewController () {
     PHPhotoLibrary *phLib;
     UIButton *retake, *confirm;
 }

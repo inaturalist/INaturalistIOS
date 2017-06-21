@@ -142,8 +142,9 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[indexPath.item - 1];
         if (obsPhoto.photoKey) {
             cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
-                                                                    forSize:ImageStoreSmallSize];
-        } else if (obsPhoto.squareURL) {
+                                                                    forSize:ImageStoreSquareSize];
+        }
+        if (!cell.photoImageView.image) {
             NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
             if (squarePhotoUrl) {
                 [cell.photoImageView setImageWithURL:squarePhotoUrl];

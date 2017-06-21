@@ -8,6 +8,8 @@
 
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/AFNetworking.h>
+#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"
@@ -20,20 +22,64 @@
 #import "ExploreTaxonRealm.h"
 #import "ObsDetailTaxonCell.h"
 #import "TaxaAPI.h"
+#import "NSURL+INaturalist.h"
+#import "TaxonSuggestionCell.h"
+#import "UIColor+INaturalist.h"
+#import "ExploreTaxonScore.h"
+#import "ObservationPhoto.h"
 
 #define MIN_CHARS_TAXA_SEARCH 3
 
-@interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
+@interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
+@property NSArray <ExploreTaxonScore *> *scores;
+@property ExploreTaxonRealm *commonAncestor;
+@property BOOL showingSuggestions;
+
+@property IBOutlet UIImageView *headerImageView;
+@property IBOutlet UITableView *tableView;
+@property IBOutlet NSLayoutConstraint *headerHeightConstraint;
+@property IBOutlet UIView *loadingView;
+@property IBOutlet UILabel *statusLabel;
+@property IBOutlet UIActivityIndicatorView *loadingSpinner;
 @end
 
 @implementation TaxaSearchViewController
 
+
 #pragma mark - UISearchControllerDelegate
 
-- (void)didPresentSearchController:(UISearchController *)searchController {
+- (void)willPresentSearchController:(UISearchController *)searchController {
+    self.headerHeightConstraint.constant = 0.0f;
+    [self.view setNeedsLayout];
+    
+    self.showingSuggestions = NO;
+    [self.tableView reloadData];
     [searchController.searchBar becomeFirstResponder];
+}
+
+- (void)willDismissSearchController:(UISearchController *)searchController {
+    // if the we aren't showing suggestions for any reason, if the user
+    // dismisses the search controller then we should just totally bail
+    // on taxa search
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey]) {
+        // no suggestions without permission
+        [self.delegate taxaSearchViewControllerCancelled];
+    } else if (self.imageToClassify || (self.observationToClassify && self.observationToClassify.sortedObservationPhotos.count > 0)) {
+        // switch back to suggestions mode
+        self.headerHeightConstraint.constant = 132.0f;
+        [self.view setNeedsLayout];
+        
+        self.showingSuggestions = YES;
+        [self.tableView reloadData];
+        if (self.scores.count == 0 && !self.commonAncestor) {
+            self.tableView.backgroundView.hidden = NO;
+        }
+    } else {
+        // no suggestions without a photo
+        [self.delegate taxaSearchViewControllerCancelled];
+    }
 }
 
 #pragma mark - Taxa Search Stuff
@@ -49,7 +95,15 @@
 
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    if (self.showingSuggestions) {
+        return;
+    }
+    
     self.tableView.backgroundView.hidden = TRUE;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
     
     // don't bother querying api until the user has entered a reasonable amount of text
     if (searchController.searchBar.text.length < MIN_CHARS_TAXA_SEARCH) {
@@ -59,6 +113,7 @@
     }
     
     // update the local results
+    
     [self searchLocal:searchController.searchBar.text];
     
     
@@ -93,7 +148,7 @@
     [self.tableView reloadData];
 }
 
-- (void)clickedCancel:(UIControl *)control {
+- (IBAction)clickedCancel:(UIControl *)control {
     [self.delegate taxaSearchViewControllerCancelled];
 }
 
@@ -101,36 +156,23 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        self.observationCoordinate = kCLLocationCoordinate2DInvalid;
+        self.coordinate = kCLLocationCoordinate2DInvalid;
     }
     return self;
 }
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
     
+    // setup the search controller
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = false;
-    self.searchController.searchBar.placeholder = NSLocalizedString(@"Enter species name",
+    self.searchController.searchBar.placeholder = NSLocalizedString(@"Look up a species by name",
                                                                     @"placeholder text for taxon search bar");
     self.searchController.delegate = self;
-    self.definesPresentationContext = true;
-    
-    self.tableView.tableHeaderView = self.searchController.searchBar;
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
-         forCellReuseIdentifier:@"TaxonCell"];
-    if (self.hidesDoneButton) {
-        self.navigationItem.rightBarButtonItem = nil;
-    }
-    
-	[self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil] forCellReuseIdentifier:@"TaxonOneNameCell"];
-	
-	// show blank screen when empty
-	self.tableView.tableFooterView = [UIView new];
-
+    self.definesPresentationContext = YES;
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
     if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey]) {
         [self.searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeYes];
@@ -139,17 +181,205 @@
         [self.searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [self.searchController.searchBar setSpellCheckingType:UITextSpellCheckingTypeNo];
     }
-	
-	if (self.query && self.query.length > 0) {
-		self.searchController.searchBar.text = self.query;
-	}
+
+    // setup the table view
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
+         forCellReuseIdentifier:@"TaxonCell"];
+    // don't show the extra lines when no tv rows
+    self.tableView.tableFooterView = [UIView new];
+
+    // this is the callback for our suggestions api call
+    INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [[Analytics sharedClient] event:kAnalyticsEventSuggestionsFailed
+                                 withProperties:@{
+                                                  @"error": error.localizedDescription,
+                                                  }];
+                self.tableView.backgroundView = self.loadingView;
+                self.loadingSpinner.hidden = YES;
+                self.statusLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Cannot load suggestions: %@",
+                                                                                     @"error when loading suggestions. %@ is the error message"),
+                                         error.localizedDescription];
+            } else {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                if (parent) {
+                    ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:parent];
+                    [realm addOrUpdateObject:etr];
+                    self.commonAncestor = etr;
+                }
+                
+                for (ExploreTaxonScore *ets in suggestions) {
+                    ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:ets.exploreTaxon];
+                    [realm addOrUpdateObject:etr];
+                }
+                
+                [realm commitWriteTransaction];
+                self.scores = suggestions;
+
+                [[Analytics sharedClient] event:kAnalyticsEventSuggestionsLoaded
+                                 withProperties:@{
+                                                  @"WithAncestor": self.commonAncestor ? @"Yes": @"No",
+                                                  @"Ancestor": self.commonAncestor ? self.commonAncestor.scientificName : @"None",
+                                                  @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName,
+                                                  @"TopTaxonScore": @(self.scores.firstObject.combinedScore),
+                                                  }];
+
+                
+                // remove the loading view
+                self.tableView.backgroundView = nil;
+                [self.tableView reloadData];
+            }
+        });
+    };
     
+    if (self.hidesDoneButton) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey]) {
+        // no suggestions without permission
+        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
+                         withProperties:@{
+                                          @"Suggestions": @"No",
+                                          @"Reason": @"No Permissions",
+                                          }];
+        [self showNoSuggestions];
+    } else if (self.imageToClassify) {
+        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
+                         withProperties:@{
+                                          @"Suggestions": @"Yes",
+                                          @"Source": @"Local Image",
+                                          @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
+                                          @"Date": self.observedOn ? @"Yes" : @"No",
+                                          }];
+        [self loadAndShowImageSuggestionsWithCompletion:done];
+    } else if (self.observationToClassify && self.observationToClassify.sortedObservationPhotos.count > 0) {
+        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
+                         withProperties:@{
+                                          @"Suggestions": @"Yes",
+                                          @"Source": @"Observation",
+                                          @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
+                                          @"Date": self.observedOn ? @"Yes" : @"No",
+                                          }];
+        [self loadAndShowObservationSuggestionsWithCompletion:done];
+    } else {
+        // no suggestions without a photo
+        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
+                         withProperties:@{
+                                          @"Suggestions": @"No",
+                                          @"Reason": @"No Photo",
+                                          }];
+        [self showNoSuggestions];
+    }
+}
+
+- (void)loadAndShowImageSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
+    self.showingSuggestions = YES;
+    self.headerImageView.image = self.imageToClassify;
+    self.tableView.backgroundView = self.loadingView;
+    [[self api] suggestionsForImage:self.imageToClassify
+                           location:self.coordinate
+                               date:self.observedOn
+                            handler:done];
+
+}
+
+- (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
+    self.showingSuggestions = YES;
+    ObservationPhoto *op = [[self.observationToClassify sortedObservationPhotos] firstObject];
+    [self.headerImageView setImageWithURL:[op smallPhotoUrl]];
+    self.tableView.backgroundView = self.loadingView;
+    [[self api] suggestionsForObservationId:self.observationToClassify.inatRecordId
+                                    handler:done];
+}
+
+- (void)showNoSuggestions {
+    self.showingSuggestions = NO;
+    self.headerHeightConstraint.constant = 0.0f;
+    // if the query field is pre-populated with a placeholder,
+    // then search for it automatically.
+    if (self.query && self.query.length > 0) {
+        self.searchController.searchBar.text = self.query;
+    }
+    // start the search UI right away
+    [self.searchController.searchBar becomeFirstResponder];
     [self.searchController setActive:YES];
+
 }
 
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self showingSuggestions]) {
+        TaxonSuggestionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"suggestion"
+                                                                    forIndexPath:indexPath];
+        
+        ExploreTaxonScore *ts = nil;
+        id <TaxonVisualization> taxon = nil;
+        if (indexPath.section == 0 && self.commonAncestor) {
+            taxon = self.commonAncestor;
+        } else {
+            ts = [self.scores objectAtIndex:indexPath.item];
+            taxon = [ts exploreTaxon];
+        }
+        
+        if (ts) {
+            NSString *reason = @"";
+            if (ts.visionScore > 0 && ts.frequencyScore > 0) {
+                reason = @"Visually Similar / Seen Nearby";
+            } else if (ts.visionScore > 0) {
+                reason = @"Visually Similar";
+            } else if (ts.frequencyScore > 0) {
+                reason = @"Seen Nearby";
+            }
+            cell.comment.text = reason;
+        } else {
+            cell.comment.text = nil;
+        }
+        
+        UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
+        if (taxon.photoUrl) {
+            [cell.image setImageWithURL:taxon.photoUrl
+                       placeholderImage:iconicTaxonImage];
+        } else {
+            [cell.image setImage:iconicTaxonImage];
+        }
+        
+        if (taxon.commonName) {
+            cell.commonName.text = taxon.commonName;
+            cell.scientificName.text = taxon.scientificName;
+            CGFloat pointSize = cell.scientificName.font.pointSize;
+            if (taxon.rankLevel > 0 && taxon.rankLevel <= 20) {
+                cell.scientificName.font = [UIFont italicSystemFontOfSize:pointSize];
+            } else {
+                cell.scientificName.text = [NSString stringWithFormat:@"%@ %@",
+                                            [taxon.rankName capitalizedString],
+                                            [taxon scientificName]];
+                cell.scientificName.font = [UIFont systemFontOfSize:pointSize];
+            }
+        } else {
+            cell.commonName.text = taxon.scientificName;
+            cell.scientificName.text = @"";
+            CGFloat pointSize = cell.commonName.font.pointSize;
+            if (taxon.rankLevel > 0 && taxon.rankLevel <= 20) {
+                cell.commonName.font = [UIFont italicSystemFontOfSize:pointSize];
+            } else {
+                cell.commonName.font = [UIFont systemFontOfSize:pointSize];
+                cell.commonName.text = [NSString stringWithFormat:@"%@ %@",
+                                        [taxon.rankName capitalizedString],
+                                        [taxon scientificName]];
+            }
+        }
+
+        
+        return cell;
+    }
+    
     if (self.allowsFreeTextSelection && indexPath.section == 1) {
         return [self cellForUnknownTaxonInTableView:tableView];
     } else {
@@ -159,47 +389,135 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1) {
-        // do nothing
+    if ([self showingSuggestions]) {
+        if (indexPath.section == 0 && self.commonAncestor) {
+            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
+                             withProperties:@{
+                                              @"Suggestions": @"Yes",
+                                              @"Common Ancestor": @"Yes",
+                                              }];
+            [self showTaxonId:self.commonAncestor.taxonId];
+        } else {
+            ExploreTaxon *taxon = [[self.scores objectAtIndex:indexPath.item] exploreTaxon];
+            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
+                             withProperties:@{
+                                              @"Suggestions": @"Yes",
+                                              @"Common Ancestor": @"No",
+                                              }];
+            [self showTaxonId:taxon.taxonId];
+        }
     } else {
-        ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
-        [self showTaxon:etr];
+        if (self.searchResults.count > 0 && indexPath.section == 0) {
+            ExploreTaxonRealm *taxon = [self.searchResults objectAtIndex:indexPath.item];
+            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
+                             withProperties:@{
+                                              @"Suggestions": @"No",
+                                              }];
+            [self showTaxonId:taxon.taxonId];
+        } else {
+            // do nothing
+        }
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // add the ID or the species guess
-    if (indexPath.section == 1) {
-        [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
+    if ([self showingSuggestions]) {
+        if (indexPath.section == 0 && self.commonAncestor) {
+            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
+                             withProperties:@{
+                                              @"IsTaxon": @"Yes",
+                                              @"Suggestions": @"Yes",
+                                              @"Common Ancestor": @"Yes",
+                                              @"Via": @"List",
+                                              }];
+            [self.delegate taxaSearchViewControllerChoseTaxon:self.commonAncestor];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
+                             withProperties:@{
+                                              @"IsTaxon": @"Yes",
+                                              @"Suggestions": @"Yes",
+                                              @"Common Ancestor": @"No",
+                                              @"Suggestion Rank": @(indexPath.item+1),
+                                              @"Via": @"List",
+                                              }];
+            [self.delegate taxaSearchViewControllerChoseTaxon:[[self.scores objectAtIndex:indexPath.item] exploreTaxon]];
+        }
     } else {
-        ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
-        [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+        if (indexPath.section == 1) {
+            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
+                             withProperties:@{
+                                              @"IsTaxon": @"No",
+                                              @"Suggestions": @"No",
+                                              @"Common Ancestor": @"No",
+                                              @"Via": @"List",
+                                              }];
+            [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
+        } else if (self.searchResults.count > 0) {
+            ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
+            [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
+                             withProperties:@{
+                                              @"IsTaxon": @"Yes",
+                                              @"Suggestions": @"No",
+                                              @"Common Ancestor": @"No",
+                                              @"Via": @"List",
+                                              }];
+        } else {
+            // shouldn't happen, do nothing
+        }
     }
 }
 
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    if ([self showingSuggestions]) {
+        return 80;
+    } else {
+        return 60;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.allowsFreeTextSelection && self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+    if ([self showingSuggestions]) {
+        return self.commonAncestor ? 2 : 1;
+    } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+        return self.allowsFreeTextSelection ? 2 : 1;
+    } else if (self.scores.count > 0) {
+        if (self.commonAncestor) {
             return 2;
+        } else {
+            return 1;
+        }
     } else {
-        return 1;
+        return 0;
     }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.allowsFreeTextSelection) {
-        if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 0) {
-            if (self.searchResults.count > 0) {
-                return @"iNaturalist";
+    if ([self showingSuggestions]) {
+        if (self.commonAncestor) {
+            if (section == 0) {
+                NSString *base = NSLocalizedString(@"We're pretty sure this is in the %1$@ %2$@.",
+                                                   @"comment for common ancestor suggestion. %1$@ is the rank name (order, family), whereas %2$@ is the actual rank (Animalia, Insecta)");
+                return [NSString stringWithFormat:base,
+                        self.commonAncestor.rankName, self.commonAncestor.scientificName];
             } else {
-                return NSLocalizedString(@"No iNaturalist Results", nil);
+                return NSLocalizedString(@"Here are our top ten species suggestions:", nil);
             }
-        } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 1) {
-            return NSLocalizedString(@"Placeholder", nil);
+        } else if (self.scores.count > 0) {
+            return NSLocalizedString(@"We're not confident enough to make a recommendation, but here are our top 10 suggestions.", nil);
+        }
+    } else {
+        if (self.allowsFreeTextSelection) {
+            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 0) {
+                if (self.searchResults.count > 0) {
+                    return @"iNaturalist";
+                } else {
+                    return NSLocalizedString(@"No iNaturalist Results", nil);
+                }
+            } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 1) {
+                return NSLocalizedString(@"Placeholder", nil);
+            }
         }
     }
     
@@ -207,31 +525,79 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 1) {
-        return 1;
+    if ([self showingSuggestions]) {
+        if (self.commonAncestor) {
+            if (section == 0) {
+                return 1;
+            } else {
+                return self.scores.count;
+            }
+        } else {
+            return self.scores.count;
+        }
     } else {
-        return self.searchResults.count;
+        if (self.allowsFreeTextSelection) {
+            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+                if (section == 0) {
+                    return self.searchResults.count;
+                } else {
+                    return 1;
+                }
+            } else {
+                return 0;
+            }
+        } else {
+            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+                return self.searchResults.count;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if ([self showingSuggestions] && self.scores.count > 0) {
+        if (self.commonAncestor && section == 0) {
+            return nil;
+        } else {
+            return NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community.", nil);
+        }
+    } else {
+        return nil;
     }
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate
 
 - (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
+    
+    [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
+                     withProperties:@{
+                                      @"IsTaxon": @"Yes",
+                                      @"Suggestions": [self showingSuggestions] ? @"Yes" : @"No",
+                                      @"Common Ancestor": ([self showingSuggestions] && taxonId == self.commonAncestor.taxonId) ? @"Yes" : @"No",
+                                      @"Via": @"Details",
+                                      }];
+
     ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
     [self.delegate taxaSearchViewControllerChoseTaxon:etr];
 }
 
 #pragma mark - TableView helpers
 
-- (void)showTaxon:(ExploreTaxonRealm *)taxon {
-    TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-    tdvc.taxon = taxon;
-    tdvc.delegate = self;
-    tdvc.showsActionButton = YES;
-    if (CLLocationCoordinate2DIsValid(self.observationCoordinate)) {
-        tdvc.observationCoordinate = self.observationCoordinate;
+- (void)showTaxonId:(NSInteger)taxonId {
+    ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
+    if (etr) {
+        TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
+        tdvc.taxon = etr;
+        tdvc.delegate = self;
+        tdvc.showsActionButton = YES;
+        if (CLLocationCoordinate2DIsValid(self.coordinate)) {
+            tdvc.observationCoordinate = self.coordinate;
+        }
+        [self.navigationController pushViewController:tdvc animated:YES];
     }
-    [self.navigationController pushViewController:tdvc animated:YES];
 }
 
 - (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {

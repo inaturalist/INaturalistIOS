@@ -127,6 +127,16 @@
     return YES;
 }
 
++ (UIImage *)imageWithImage:(UIImage *)image squashedToFillSize:(CGSize)size {
+    CGRect imageRect = CGRectMake(0, 0, size.width, size.height);    
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    [image drawInRect:imageRect];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+
 + (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size {
     CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
     CGFloat width = image.size.width * scale;

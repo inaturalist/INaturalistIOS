@@ -4,6 +4,7 @@ platform :ios, :deployment_target => '8.0'
 inhibit_all_warnings!
 
 target :iNaturalist do
+  pod 'JWT', '2.2.0'
   pod 'Fabric', '1.5.4'
   pod 'Crashlytics', '3.3.3'
   pod 'Flurry-iOS-SDK/FlurrySDK', '7.1.0'

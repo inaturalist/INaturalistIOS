@@ -228,3 +228,11 @@ NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Log
 NSString *kAnalyticsEventLocationPermissionsChanged =           @"Location Permissions Changed";
 NSString *kAnalyticsEventCameraPermissionsChanged =             @"Camera Permissions Changed";
 NSString *kAnalyticsEventPhotoLibraryPermissionsChanged =       @"Photo Library Permissions Changed";
+
+// suggestions
+NSString *kAnalyticsEventLoadTaxaSearch =                       @"Load Taxa Search";
+NSString *kAnalyticsEventSuggestionsLoaded =                    @"Suggestions Loaded";
+NSString *kAnalyticsEventSuggestionsFailed =                    @"Suggestions Failed to Load";
+NSString *kAnalyticsEventChoseTaxon =                           @"User Chose Taxon";
+NSString *kAnalyticsEventShowTaxonDetails =                     @"User Chose Taxon Details";
+
