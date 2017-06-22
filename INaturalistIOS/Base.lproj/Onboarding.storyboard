@@ -186,10 +186,10 @@
             </objects>
             <point key="canvasLocation" x="302" y="733"/>
         </scene>
-        <!--Share-->
+        <!--Identify-->
         <scene sceneID="eWm-gD-3XX">
             <objects>
-                <viewController storyboardIdentifier="onboarding-share" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Grd-Qw-HnV" userLabel="Share" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="onboarding-identify" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Grd-Qw-HnV" userLabel="Identify" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="f9R-G0-tRK"/>
                         <viewControllerLayoutGuide type="bottom" id="Z6R-3Y-R2M"/>
@@ -199,19 +199,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6Iv-Oy-yzX">
-                                <rect key="frame" x="30" y="92" width="315" height="407"/>
+                                <rect key="frame" x="30" y="92" width="315" height="427"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-share" translatesAutoresizingMaskIntoConstraints="NO" id="3Jv-x6-KHK">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-identify" translatesAutoresizingMaskIntoConstraints="NO" id="3Jv-x6-KHK">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCH-CP-6hM">
-                                        <rect key="frame" x="119" y="310" width="77" height="36"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Identify" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCH-CP-6hM">
+                                        <rect key="frame" x="108" y="310" width="99" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share your observation with the iNaturalist community." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nb8-x2-D2v">
-                                        <rect key="frame" x="34" y="366" width="247" height="41"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iNaturalist will automatically generate suggestions based on your photo and location." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nb8-x2-D2v">
+                                        <rect key="frame" x="11" y="366" width="293" height="61"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="418" id="kEA-wO-xcL">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
@@ -258,10 +258,10 @@
             </objects>
             <point key="canvasLocation" x="1070" y="733"/>
         </scene>
-        <!--Learn-->
+        <!--Discuss-->
         <scene sceneID="KjJ-O2-cQn">
             <objects>
-                <viewController storyboardIdentifier="onboarding-learn" useStoryboardIdentifierAsRestorationIdentifier="YES" id="h3q-kt-O3d" userLabel="Learn" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="onboarding-discuss" useStoryboardIdentifierAsRestorationIdentifier="YES" id="h3q-kt-O3d" userLabel="Discuss" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4CM-y8-rfa"/>
                         <viewControllerLayoutGuide type="bottom" id="Ytx-XH-okQ"/>
@@ -273,17 +273,17 @@
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YMy-Rp-boP">
                                 <rect key="frame" x="30" y="92" width="315" height="427"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-learn" translatesAutoresizingMaskIntoConstraints="NO" id="WVA-09-tvX">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-discuss" translatesAutoresizingMaskIntoConstraints="NO" id="WVA-09-tvX">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Learn" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2hB-WM-pN1">
-                                        <rect key="frame" x="120.5" y="310" width="74.5" height="36"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discuss" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2hB-WM-pN1">
+                                        <rect key="frame" x="105.5" y="310" width="104.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Check back for activity on your observation from the community to discuss your encounter!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ixn-0U-lJ7">
-                                        <rect key="frame" x="21" y="366" width="273" height="61"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share your observation with the community to discuss and confirm your findings." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ixn-0U-lJ7">
+                                        <rect key="frame" x="4.5" y="366" width="306" height="61"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="698" id="e0M-Vn-eN4">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
@@ -664,9 +664,9 @@
     </scenes>
     <resources>
         <image name="img-contribute" width="304" height="290"/>
-        <image name="img-learn" width="304" height="290"/>
+        <image name="img-discuss" width="304" height="290"/>
+        <image name="img-identify" width="304" height="290"/>
         <image name="img-logo" width="304" height="290"/>
         <image name="img-observe" width="304" height="290"/>
-        <image name="img-share" width="304" height="290"/>
     </resources>
 </document>

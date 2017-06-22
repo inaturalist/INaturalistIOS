@@ -32,8 +32,8 @@
     
     NSArray *identifiers = @[@"onboarding-logo",
                              @"onboarding-observe",
-                             @"onboarding-share",
-                             @"onboarding-learn",
+                             @"onboarding-identify",
+                             @"onboarding-discuss",
                              @"onboarding-contribute",
                              @"onboarding-login"];
     
