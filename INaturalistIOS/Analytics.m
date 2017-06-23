@@ -235,4 +235,6 @@ NSString *kAnalyticsEventSuggestionsLoaded =                    @"Suggestions Lo
 NSString *kAnalyticsEventSuggestionsFailed =                    @"Suggestions Failed to Load";
 NSString *kAnalyticsEventChoseTaxon =                           @"User Chose Taxon";
 NSString *kAnalyticsEventShowTaxonDetails =                     @"User Chose Taxon Details";
+NSString *kAnalyticsEventSuggestionsImageGauge =                @"Suggestions API Call Time - Image";
+NSString *kAnalyticsEventSuggestionsObservationGauge =          @"Suggestions API Call Time - Observation";
 

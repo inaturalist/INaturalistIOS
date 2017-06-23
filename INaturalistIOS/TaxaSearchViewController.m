@@ -191,6 +191,8 @@
     // don't show the extra lines when no tv rows
     self.tableView.tableFooterView = [UIView new];
 
+    NSDate *beforeSuggestions = [NSDate date];
+    
     // this is the callback for our suggestions api call
     INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -205,6 +207,14 @@
                                                                                      @"error when loading suggestions. %@ is the error message"),
                                          error.localizedDescription];
             } else {
+                if (self.imageToClassify) {
+                    [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsImageGauge
+                                                  value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
+                } else {
+                    [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsObservationGauge
+                                                  value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
+                }
+                
                 RLMRealm *realm = [RLMRealm defaultRealm];
                 [realm beginWriteTransaction];
                 if (parent) {

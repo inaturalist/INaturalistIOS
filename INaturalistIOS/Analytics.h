@@ -147,3 +147,6 @@ extern NSString *kAnalyticsEventSuggestionsLoaded;
 extern NSString *kAnalyticsEventSuggestionsFailed;
 extern NSString *kAnalyticsEventChoseTaxon;
 extern NSString *kAnalyticsEventShowTaxonDetails;
+extern NSString *kAnalyticsEventSuggestionsImageGauge;
+extern NSString *kAnalyticsEventSuggestionsObservationGauge;
+
