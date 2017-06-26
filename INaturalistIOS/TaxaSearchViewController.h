@@ -14,7 +14,7 @@
 #import "ObservationVisualization.h"
 
 @protocol TaxaSearchViewControllerDelegate <NSObject>
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxonId;
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxonId chosenViaVision:(BOOL)visionFlag;
 - (void)taxaSearchViewControllerCancelled;
 @optional
 - (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess;

@@ -57,6 +57,7 @@
 @property (nonatomic, retain) NSNumber *captive;
 @property (nonatomic, retain) NSSet *faves;
 @property (nonatomic, retain) NSNumber *favesCount;
+@property (nonatomic, retain) NSNumber *ownersIdentificationFromVision;
 
 - (NSString *)observedOnPrettyString;
 - (NSString *)observedOnShortString;

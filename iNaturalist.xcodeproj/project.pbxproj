@@ -630,6 +630,7 @@
 		FA4F28171D2356F400449A1C /* TaxonVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonVisualization.h; sourceTree = "<group>"; };
 		FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailTaxonCell.h; sourceTree = "<group>"; };
 		FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailTaxonCell.m; sourceTree = "<group>"; };
+		FA511CC61F00892C00801435 /* INaturalist2.17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.17.xcdatamodel; sourceTree = "<group>"; };
 		FA51BA631C000A1900101807 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
 		FA51BA641C000A1900101807 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity.m; sourceTree = "<group>"; };
 		FA51BA661C0107EC00101807 /* ObsDetailAddFaveHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddFaveHeader.h; sourceTree = "<group>"; };
@@ -2721,6 +2722,7 @@
 		1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA511CC61F00892C00801435 /* INaturalist2.17.xcdatamodel */,
 				FA557E691EC2B569006DFFD8 /* INaturalist2.16.xcdatamodel */,
 				FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */,
 				FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */,
@@ -2739,7 +2741,7 @@
 				191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */,
 				1985521714EC97C200DB55C5 /* INaturalist.xcdatamodel */,
 			);
-			currentVersion = FA557E691EC2B569006DFFD8 /* INaturalist2.16.xcdatamodel */;
+			currentVersion = FA511CC61F00892C00801435 /* INaturalist2.17.xcdatamodel */;
 			path = INaturalist.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

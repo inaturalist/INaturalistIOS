@@ -440,7 +440,8 @@
                                               @"Common Ancestor": @"Yes",
                                               @"Via": @"List",
                                               }];
-            [self.delegate taxaSearchViewControllerChoseTaxon:self.commonAncestor];
+            [self.delegate taxaSearchViewControllerChoseTaxon:self.commonAncestor
+                                              chosenViaVision:YES];
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
@@ -450,7 +451,8 @@
                                               @"Suggestion Rank": @(indexPath.item+1),
                                               @"Via": @"List",
                                               }];
-            [self.delegate taxaSearchViewControllerChoseTaxon:[[self.scores objectAtIndex:indexPath.item] exploreTaxon]];
+            [self.delegate taxaSearchViewControllerChoseTaxon:[[self.scores objectAtIndex:indexPath.item] exploreTaxon]
+                                              chosenViaVision:YES];
         }
     } else {
         if (indexPath.section == 1) {
@@ -464,7 +466,8 @@
             [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
         } else if (self.searchResults.count > 0) {
             ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
-            [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+            [self.delegate taxaSearchViewControllerChoseTaxon:etr
+                                              chosenViaVision:NO];
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
                                               @"IsTaxon": @"Yes",
@@ -591,7 +594,8 @@
                                       }];
 
     ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
-    [self.delegate taxaSearchViewControllerChoseTaxon:etr];
+    [self.delegate taxaSearchViewControllerChoseTaxon:etr
+                                      chosenViaVision:[self showingSuggestions]];
 }
 
 #pragma mark - TableView helpers

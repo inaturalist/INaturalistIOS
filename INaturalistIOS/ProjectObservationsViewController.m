@@ -251,7 +251,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 #pragma mark - TaxaSearchViewControllerDelegate
 
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag {
     [self.navigationController popToViewController:self animated:YES];
     
     if (!self.taxaSearchIndexPath) { return; }

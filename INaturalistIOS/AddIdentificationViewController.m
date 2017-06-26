@@ -23,6 +23,7 @@
 }
 @property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
+@property BOOL taxonViaVision;
 
 - (IBAction)cancelAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
@@ -101,7 +102,8 @@
     NSDictionary *params = @{
                              @"identification[body]": self.descriptionTextView.text,
                              @"identification[observation_id]": @([self.observation inatRecordId]),
-                             @"identification[taxon_id]": @([self.taxon taxonId])
+                             @"identification[taxon_id]": @([self.taxon taxonId]),
+                             @"identification[vision]": @(self.taxonViaVision),
                              };
     [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
     
@@ -151,10 +153,11 @@
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
+    self.taxonViaVision = visionFlag;
     [self taxonToUI];
 }
 

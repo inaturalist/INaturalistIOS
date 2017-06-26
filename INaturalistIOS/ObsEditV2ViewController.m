@@ -1005,9 +1005,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - Taxa Search
 
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag {
     self.observation.taxonID = @(taxon.taxonId);
     self.observation.localUpdatedAt = [NSDate date];
+    self.observation.ownersIdentificationFromVision = @(visionFlag);
     
     NSString *newTaxonName = taxon.commonName ?: taxon.scientificName;
     if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }

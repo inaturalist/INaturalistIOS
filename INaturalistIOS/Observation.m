@@ -135,6 +135,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"user_id", @"userID",
          @"quality_grade", @"qualityGrade",
          @"captive_flag", @"captive",
+         @"owners_identification_from_vision", @"ownersIdentificationFromVision",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
@@ -188,6 +189,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"geoprivacy", @"observation[geoprivacy]",
          @"uuid", @"observation[uuid]",
          @"captive", @"observation[captive_flag]",
+         @"ownersIdentificationFromVision", @"observation[owners_identification_from_vision]",
          nil];
     }
     return defaultSerializationMapping;
