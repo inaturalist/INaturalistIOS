@@ -203,7 +203,8 @@
             // selector
             TaxonSelectButtonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"selectButton"
                                                                           forIndexPath:indexPath];
-            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
             NSString *selectTitle = NSLocalizedString(@"Select", @"default select title");
             NSString *selectBase = NSLocalizedString(@"Select \"%@\"", @"select taxon title");
 
@@ -227,6 +228,8 @@
             // name/wikipedia
             TaxonSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"nameInfo"
                                                                      forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
             if (self.fullTaxon) {
                 cell.commonNameLabel.text = self.fullTaxon.commonName;
                 cell.scientificNameLabel.text = self.fullTaxon.scientificName;
