@@ -167,7 +167,12 @@
                         if ([httpResponse statusCode] != 200) {
                             NSError *jsonError = nil;
                             NSString *errString = nil;
-                            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+                            NSDictionary *json = nil;
+                            if (data) {
+                                json = [NSJSONSerialization JSONObjectWithData:data
+                                                                       options:NSJSONReadingAllowFragments
+                                                                         error:&jsonError];
+                            }
                             if (!jsonError && json && [json valueForKey:@"error"]) {
                                 errString = [json valueForKey:@"error"];
                             } else {
