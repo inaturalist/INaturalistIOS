@@ -610,6 +610,8 @@
         tdvc.showsActionButton = YES;
         if (CLLocationCoordinate2DIsValid(self.coordinate)) {
             tdvc.observationCoordinate = self.coordinate;
+        } else if (self.observationToClassify && CLLocationCoordinate2DIsValid(self.observationToClassify.visibleLocation)) {
+            tdvc.observationCoordinate = self.observationToClassify.visibleLocation;
         }
         [self.navigationController pushViewController:tdvc animated:YES];
     }
