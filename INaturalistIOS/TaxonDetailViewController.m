@@ -281,7 +281,7 @@
                 } else {
                     cell.mapView.hidden = NO;
                     cell.noObservationsLabel.hidden = YES;
-                    NSString *template = [NSString stringWithFormat:@"https://tiles.inaturalist.org/v1/colored_heatmap/{z}/{x}/{y}.png?taxon_id=%ld&verifiable=true",
+                    NSString *template = [NSString stringWithFormat:@"https://tiles.inaturalist.org/v1/colored_heatmap/{z}/{x}/{y}.png?taxon_id=%ld",
                                           (long)[self.taxon taxonId]];
                     MKTileOverlay *overlay = [[MKTileOverlay alloc] initWithURLTemplate:template];
                     overlay.tileSize = CGSizeMake(512, 512);
