@@ -38,6 +38,8 @@
 - (void)prepareForReuse {
     [self.profileImageView cancelImageRequestOperation];
     [self.observationImageView cancelImageRequestOperation];
+    self.profileImageView.image = nil;
+    self.observationImageView.image = nil;
     self.updateTextLabel.text = nil;
     self.backgroundColor = [UIColor clearColor];
 }
