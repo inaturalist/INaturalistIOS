@@ -418,6 +418,7 @@
  */
 - (void)pullToRefresh {
     [self refreshRequestedNotify:YES];
+    [self checkForDeleted];
 }
 
 - (void)refreshRequestedNotify:(BOOL)notify {
