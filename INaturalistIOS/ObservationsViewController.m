@@ -487,7 +487,9 @@
 			// have never synced; use unix timestamp date of 0
 			lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
 		}
-		
+        // move last sync date back by a day
+        [lastSyncDate dateByAddingTimeInterval:-(60*60*24)];
+        
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 		NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
 		[dateFormatter setLocale:enUSPOSIXLocale];
