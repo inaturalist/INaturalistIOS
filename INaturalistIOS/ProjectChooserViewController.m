@@ -92,6 +92,8 @@
 
 #pragma mark - lifecycle
 - (void)viewDidLoad {
+    [super viewDidLoad];
+    
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
 }
