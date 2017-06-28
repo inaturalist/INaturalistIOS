@@ -98,7 +98,7 @@
         <attribute name="observedOn" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="observedOnString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="outOfRange" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="ownersIdentificationFromVision" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownersIdentificationFromVision" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="placeGuess" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="positionalAccuracy" optional="YES" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="positioningDevice" optional="YES" attributeType="String" syncable="YES"/>
