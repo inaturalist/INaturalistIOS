@@ -356,7 +356,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)configureNewsButton {
     self.newsButton.countLabel.text = [NSString stringWithFormat:@"%ld", (long)self.project.newsItemCount.integerValue];
-    self.newsButton.enabled = (self.project.newsItemCount > 0);
+    self.newsButton.enabled = (self.project.newsItemCount.integerValue > 0);
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
