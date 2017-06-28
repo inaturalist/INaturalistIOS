@@ -340,11 +340,7 @@
 #pragma mark - MKMapViewDelegate
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay {
-    if ([overlay isKindOfClass:[MKTileOverlay class]]) {
-        return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
-    }
-    
-    return nil;
+    return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)map viewForAnnotation:(id<MKAnnotation>)annotation
