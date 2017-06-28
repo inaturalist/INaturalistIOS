@@ -150,13 +150,8 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    if ([login jwtToken]) {
-        [request addValue:[login jwtToken]
-       forHTTPHeaderField:@"Authorization"];
-    } else {
-        [request addValue:[login anonymousJWT]
-       forHTTPHeaderField:@"Authorization"];
-    }
+    // only using the anonymous JWT for the suggestions API right now
+    [request addValue:[login anonymousJWT] forHTTPHeaderField:@"Authorization"];
     
     if (url) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -224,13 +219,8 @@
     AFHTTPRequestSerializer *requestSerializer = [[AFHTTPRequestSerializer alloc] init];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    if ([login jwtToken]) {
-        [requestSerializer setValue:[login jwtToken]
-                 forHTTPHeaderField:@"Authorization"];
-    } else {
-        [requestSerializer setValue:[login anonymousJWT]
-                 forHTTPHeaderField:@"Authorization"];
-    }
+    // only using the anonymous JWT for the suggestions API right now
+    [requestSerializer setValue:[login anonymousJWT] forHTTPHeaderField:@"Authorization"];
     manager.requestSerializer = requestSerializer;
     
     [manager POST:path parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
