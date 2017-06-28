@@ -28,35 +28,35 @@
 
 + (instancetype)buttonWithSelectorType:(ObsDetailSelectorButtonType)type {
     ObsDetailSelectorButton *button = [ObsDetailSelectorButton buttonWithType:UIButtonTypeSystem];
+    if (!button) {
+        return nil;
+    }
     
-    if (button) {
+    if (type == ObsDetailSelectorButtonTypeInfo) {
         
-        if (type == ObsDetailSelectorButtonTypeInfo) {
-
-            FAKIcon *info = [FAKIonIcons iosInformationIconWithSize:30];
-            [info addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-            button.enabledIcon = info.attributedString;
-            [info addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            button.disabledIcon = info.attributedString;
-            
-            [button.iconLabel setAttributedText:info.attributedString];
-        } else if (type == ObsDetailSelectorButtonTypeActivity) {
-            
-            FAKIcon *chat = [FAKIonIcons chatbubbleWorkingIconWithSize:30];
-            [chat addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-            button.enabledIcon = chat.attributedString;
-            [chat addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            button.disabledIcon = chat.attributedString;
-            
-        } else if (type == ObsDetailSelectorButtonTypeFaves) {
-            
-            FAKIcon *star = [FAKIonIcons iosStarIconWithSize:30];
-            [star addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
-            button.enabledIcon = star.attributedString;
-            [star addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            button.disabledIcon = star.attributedString;
-
-        }
+        FAKIcon *info = [FAKIonIcons iosInformationIconWithSize:30];
+        [info addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
+        button.enabledIcon = info.attributedString;
+        [info addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+        button.disabledIcon = info.attributedString;
+        
+        [button.iconLabel setAttributedText:info.attributedString];
+    } else if (type == ObsDetailSelectorButtonTypeActivity) {
+        
+        FAKIcon *chat = [FAKIonIcons chatbubbleWorkingIconWithSize:30];
+        [chat addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
+        button.enabledIcon = chat.attributedString;
+        [chat addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+        button.disabledIcon = chat.attributedString;
+        
+    } else if (type == ObsDetailSelectorButtonTypeFaves) {
+        
+        FAKIcon *star = [FAKIonIcons iosStarIconWithSize:30];
+        [star addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor]];
+        button.enabledIcon = star.attributedString;
+        [star addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+        button.disabledIcon = star.attributedString;
+        
     }
     
     button.underline = ({
