@@ -151,42 +151,27 @@
             cell.iv.image = localImage;
         } else {
             cell.spinner.hidden = NO;
+            cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
             [cell.spinner startAnimating];
-            NSURLRequest *request = [NSURLRequest requestWithURL:[op thumbPhotoUrl]];
             
-            __weak typeof(cell)weakCell = cell;
-            //[cell.iv setImageWithURL:[op thumbPhotoUrl]];
+            // while loading the medium sized image, try to find a placeholder
+            UIImage *thumb = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+            if (!thumb) {
+                // look for a placeholder in the AFNetworking cache
+                NSURLRequest *thumbRequest = [NSURLRequest requestWithURL:[op thumbPhotoUrl]];
+                thumb = [[UIImageView sharedImageCache] cachedImageForRequest:thumbRequest];
+            }
             
-            [cell.iv setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                
-                weakCell.iv.image = image;
-
-                NSURLRequest *medRequest = [NSURLRequest requestWithURL:[op mediumPhotoUrl]];
-                [weakCell.iv setImageWithURLRequest:medRequest placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                    
-                    weakCell.iv.image = image;
-                    [weakCell.spinner stopAnimating];
-                    
-                } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-                    [weakCell.spinner stopAnimating];
-                    [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
-                                     withProperties:@{
-                                                      @"Error": error.localizedDescription,
-                                                      @"Size": @"Medium",
-                                                      }];
-                }];
-
-                
-            } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-                [weakCell.spinner stopAnimating];
-                [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
-                                 withProperties:@{
-                                                  @"Error": error.localizedDescription,
-                                                  @"Size": @"Thumb",
-                                                  }];
-            }];
-            /*
-             */
+            __weak typeof(cell.spinner)weakSpinner = cell.spinner;
+            __weak typeof(cell.iv)weakIv = cell.iv;
+            [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
+                           placeholderImage:thumb
+                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                        weakIv.image = image;
+                                        [weakSpinner stopAnimating];
+                                    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                        [weakSpinner stopAnimating];
+                                    }];
         }
     } else {
         // show iconic taxon image
