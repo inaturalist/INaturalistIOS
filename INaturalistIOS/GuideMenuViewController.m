@@ -124,7 +124,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
+    UITableViewCell *cell = nil;
     static NSString *TextCellIdentifier = @"TextCell";
     static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     static NSString *ProgressCellIdentifier = @"ProgressCell";
