@@ -1127,7 +1127,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return 44;
             } else if (indexPath.item == 2) {
                 // location
-                CLLocationCoordinate2D coords;
+                CLLocationCoordinate2D coords = kCLLocationCoordinate2DInvalid;
                 
                 if (self.observation.privateLatitude.floatValue) {
                     coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
