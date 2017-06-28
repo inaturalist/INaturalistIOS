@@ -143,21 +143,18 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.userInteractionEnabled = NO;
-            }
-            if (indexPath.row == 0) {
+                
                 // Adding auto layout for cell.
                 [self setupConstraintsForCell:cell];
                 UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
                 UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-                textLabel.text = NSLocalizedString(@"Editor", nil);
-                detailTextLabel.text = self.guide.compiler;
-            } else if (indexPath.row == 1) {
-                // Adding auto layout for cell.
-                [self setupConstraintsForCell:cell];
-                UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
-                UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-                textLabel.text = NSLocalizedString(@"License", nil);
-                detailTextLabel.text = self.guide.license;
+                if (indexPath.row == 0) {
+                    textLabel.text = NSLocalizedString(@"Editor", nil);
+                    detailTextLabel.text = self.guide.compiler;
+                } else if (indexPath.row == 1) {
+                    textLabel.text = NSLocalizedString(@"License", nil);
+                    detailTextLabel.text = self.guide.license;
+                }
             } else {
                 if (self.isDownloading) {
                     cell = [tableView dequeueReusableCellWithIdentifier:ProgressCellIdentifier forIndexPath:indexPath];
