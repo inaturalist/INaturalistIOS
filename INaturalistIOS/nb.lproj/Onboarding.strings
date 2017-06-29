@@ -1,0 +1,62 @@
+/*Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL";*/
+"0HC-89-zFL.text" = "Observér";
+
+/*Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk";*/
+"2e2-wM-KPk.placeholder" = "E-post";
+
+/*Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1";*/
+"2hB-WM-pN1.text" = "Discuss";
+
+/*Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k";*/
+"Bfj-77-C1k.text" = "Eller logg inn med:";
+
+/*Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo";*/
+"FZ5-km-oDo.placeholder" = "Passord";
+
+/*Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb";*/
+"J6N-uD-ctb.normalTitle" = "Hopp over >";
+
+/*Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA";*/
+"LVz-7N-QYA.normalTitle" = "Bli med";
+
+/*Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph";*/
+"MC0-kW-bph.normalTitle" = "X";
+
+/*Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v";*/
+"Nb8-x2-D2v.text" = "iNaturalist will automatically generate suggestions based on your photo and location.";
+
+/*Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe";*/
+"RqF-E7-mYe.text" = "Utforsk og ta kontakt med naturen";
+
+/*Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb";*/
+"XWS-dF-hpb.text" = "Kom deg ut og observér en individuell organisme. Velg noe vilt, og ta et klart fullformatbilde.";
+
+/*Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc";*/
+"YtY-We-SSc.text" = "Ved å bruke iNaturalist godtar du vilkårene for bruk og personvernreglene";
+
+/*Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG";*/
+"dSw-gs-zGG.placeholder" = "Brukernavn";
+
+/*Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7";*/
+"ixn-0U-lJ7.text" = "Share your observation with the community to discuss and confirm your findings.";
+
+/*Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1";*/
+"oro-uB-RY1.text" = "Observasjonen din kan kanskje bli utvalgt som forskningsklasse og delt med forskere som jobber med å forstå og beskytte naturen. ";
+
+/*Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy";*/
+"pbQ-o3-5Xy.text" = "Bli med";
+
+/*Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL";*/
+"sBd-1Y-eNL.text" = "Bidra";
+
+/*Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF";*/
+"uop-S8-3lF.normalTitle" = "Har du allerede en konto?";
+
+/*Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM";*/
+"vCH-CP-6hM.text" = "Identify";
+
+/*Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN";*/
+"xUc-8o-XIN.text" = "Ja, lisensiér innholdet mitt slik at forskere kan bruke dataen min! Lær mer";
+
+/*Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09";*/
+"yxB-jO-b09.normalTitle" = "Knapp";

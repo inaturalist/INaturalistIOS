@@ -1,0 +1,363 @@
+/*Class = "IBUIBarButtonItem"; title = "Edit"; ObjectID = "0Fk-rY-9h1";*/
+"0Fk-rY-9h1.title" = "Redigér";
+
+/*Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ";*/
+"0Q2-fy-dMQ.text" = "Opplæring";
+
+/*Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3";*/
+"M0h-Eg-gr3.text" = "Autofullfør navn";
+
+/*Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "thU-yQ-HUV";*/
+"thU-yQ-HUV.text" = "Automatisk last opp";
+
+
+/*Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV";*/
+"thU-yQ-HUV.text" = "Kategorisér nye observasjoner";
+
+/*Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka";*/
+"g3B-dy-Lka.text" = "iNaturalist-nettverk";
+
+/*Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB";*/
+"0U1-va-cIB.title" = "Gaider";
+
+/*Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona";*/
+"1bw-oa-ona.placeholder" = "Ukjent sted";
+
+/*Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ";*/
+"1hu-IK-XsQ.text" = "Vitenskapelig navn";
+
+/*Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj";*/
+"1yP-Oa-9Kj.title" = "Logg inn";
+
+/*Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S";*/
+"31c-qh-A6S.title" = "Legg til";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe";*/
+"3DS-CL-NMe.headerTitle" = "Logg in med Facebook";
+
+/*Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn";*/
+"46e-pE-mJn.text" = "???";
+
+/*Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS";*/
+"6Eu-N7-evS.text" = "Tittel";
+
+/*Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW";*/
+"6UX-BL-9DW.title" = "Prosjekter";
+
+/*Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA";*/
+"nla-WE-iqA.text" = "Brukernavn";
+
+/*Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU";*/
+"7ua-fh-uvU.placeholder" = "iNaturalist-brukernavnet ditt";
+
+/*Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v";*/
+"9br-9C-J7v.headerTitle" = "Hva så du?";
+
+/*Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH";*/
+"AWa-0U-YdH.text" = "Egenskap";
+
+/*Class = "IBUITextField"; placeholder = "Your iNat password"; ObjectID = "AeG-t0-DTD";*/
+"AeG-t0-DTD.placeholder" = "iNaturalist-passordet ditt";
+
+/*Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl";*/
+"AiV-F7-sFl.text" = "Detalj";
+
+/*Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA";*/
+"Be1-xj-miA.text" = "Etikett";
+
+/*Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV";*/
+"CFS-AV-ZYV.text" = "Lengdegrad:";
+
+/*Class = "IBUILabel"; text = "Geoprivacy"; ObjectID = "CrY-as-UVn";*/
+"CrY-as-UVn.text" = "Geoprivat";
+
+/*Class = "IBUILabel"; text = "Label"; ObjectID = "D22-7s-3ca";*/
+"D22-7s-3ca.text" = "Etikett";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x";*/
+"Df8-ua-w8x.headerTitle" = "Wikipedia-beskrivelse";
+
+/*Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8";*/
+"EGB-Ac-Dg8.title" = "Gaider";
+
+/*Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF";*/
+"EcO-h2-uOF.text" = "Artsnavn (standard)";
+
+/*Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD";*/
+"Edp-cg-PsD.text" = "Tittel";
+
+/*Class = "IBUINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx";*/
+"F6V-RD-Yrx.title" = "Gruppe";
+
+/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA";*/
+"GC7-gQ-cDA.text" = "Ukjent";
+
+/*Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X";*/
+"GKo-Sv-g5X.title" = "Observér";
+
+/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU";*/
+"GmQ-fX-MuU.title" = "Prosjekter";
+
+/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ";*/
+"Gq1-rm-ccJ.text" = "Ukjent";
+
+/*Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS";*/
+"H2L-mX-7uS.text" = "Undertekst";
+
+/*Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB";*/
+"HB8-Oo-jRB.title" = "Lukk";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Version"; ObjectID = "I43-iz-miT";*/
+"I43-iz-miT.headerTitle" = "Versjon";
+
+/*Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev";*/
+"IvC-UJ-yev.text" = "Kontakt støtte";
+
+/*Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW";*/
+"r3a-dI-zLW.text" = "Elsker du iNaturalist? Vurdér oss";
+
+/*Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL";*/
+"J9i-XA-tlL.text" = "Velg prosjekter";
+
+/*Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ";*/
+"JRR-T4-jKQ.title" = "Ferdig";
+
+/*Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal";*/
+"JkM-AH-Zal.text" = "åpne";
+
+/*Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb";*/
+"Kfy-Up-oCb.title" = "Søk etter arter";
+
+/*Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv";*/
+"Kp6-B4-NJv.text" = "Bli med";
+
+/*Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT";*/
+"M93-9f-xgT.text" = "???";
+
+/*Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I";*/
+"ME2-ai-L2I.normalTitle" = "Vis mer...";
+
+/*Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD";*/
+"Nsa-pu-mCD.title" = "Velg prosjekter";
+
+/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "Obm-wO-wio";*/
+"Obm-wO-wio.title" = "Avbryt";
+
+/*Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM";*/
+"Ohz-Dw-0wM.text" = "Artsnavn";
+
+/*Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4";*/
+"P1E-WK-OB4.text" = "00:00";
+
+/*Class = "IBUINavigationItem"; title = "Project"; ObjectID = "Pc6-ER-pVU";*/
+"Pc6-ER-pVU.title" = "Prosjekt";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Location"; ObjectID = "Q0S-qE-f4O";*/
+"Q0S-qE-f4O.headerTitle" = "Posisjon";
+
+/*Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq";*/
+"QYT-BR-dNq.text" = "Trenger du ID-hjelp?";
+
+/*Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh";*/
+"Qrv-G3-6nh.text" = "Designet og bygget av iNaturalist på California Academy of Sciences, med hjelp av Encyclopedia of Life.\n\nDenne appen bruker mange åpne kilder og Creative Common-lisenserte materialer, inkludert Three20, Restkit, TapkuLibrary av Devin Ross, DejalActivityView av David Sinclair og Glyphish Icons av Joseph Wain. Tusen takk til disse sjenerøse og talentfulle ingeniørene og artistene! ";
+
+/*Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x";*/
+"R4F-3k-D7x.text" = "???";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ";*/
+"RVt-Kj-7RQ.headerTitle" = "Bevaringsstatus";
+
+/*Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM";*/
+"SQG-h4-rqM.text" = "Brukernavn";
+
+/*Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq";*/
+"SaM-EA-Ovq.title" = "Gruppegaid";
+
+/*Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI";*/
+"Sr1-uD-ljI.text" = "2.1.1, bygg 2.1.12";
+
+/*Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C";*/
+"TJg-mX-i6C.text" = "Logg inn med Facebook";
+
+/*Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU";*/
+"UWz-sc-ZIU.text" = "m";
+
+/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95";*/
+"VjR-qL-q95.segmentTitles[0]" = "Standard";
+
+/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95";*/
+"VjR-qL-q95.segmentTitles[1]" = "Satellitt";
+
+/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95";*/
+"VjR-qL-q95.segmentTitles[2]" = "Hybrid";
+
+/*Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j";*/
+"Vmt-AE-W0j.title" = "Redigér";
+
+/*Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ";*/
+"X8Y-bf-fBQ.text" = "Prosjekttittel er alt for lang";
+
+/*Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF";*/
+"XXq-bW-vbF.title" = "Prosjektdetaljer";
+
+/*Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh";*/
+"XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/*Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4";*/
+"Ypi-aU-Rf4.text" = "IUCN-rødliste";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs";*/
+"Z4l-tt-zMs.headerTitle" = "Dato / Tid";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Projects"; ObjectID = "ZOk-5a-K6O";*/
+"ZOk-5a-K6O.headerTitle" = "Prosjekter";
+
+/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "ZUi-2S-ebn";*/
+"ZUi-2S-ebn.title" = "Prosjekter";
+
+/*Class = "IBUILabel"; text = "Password"; ObjectID = "ZzY-Yv-hhu";*/
+"ZzY-Yv-hhu.text" = "Passord";
+
+/*Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA";*/
+"bKM-7Q-aRA.text" = "Prosjekttittel er alt for lang";
+
+/*Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF";*/
+"bTy-8i-NnF.text" = "Etikett";
+
+/*Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9";*/
+"bW0-Pb-mB9.text" = "Vitenskapelig navn";
+
+/*Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA";*/
+"cQc-hZ-KcA.headerTitle" = "Mer";
+
+/*Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "cSZ-cD-dfS";*/
+"cSZ-cD-dfS.title" = "Legg til";
+
+/*Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb";*/
+"cTI-n2-vmb.title" = "Gaidtittel";
+
+/*Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC";*/
+"dYu-ti-1gC.text" = "Legg til observasjon";
+
+/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk";*/
+"e0j-MT-hzk.text" = "Ukjent";
+
+/*Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY";*/
+"eMN-g3-ANY.text" = "Nøyaktighet";
+
+/*Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht";*/
+"exb-m5-Kht.text" = "Gruppenavn";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Observation Rules"; ObjectID = "gDe-P6-41D";*/
+"gDe-P6-41D.headerTitle" = "Observasjonsregler";
+
+/*Class = "IBUILabel"; text = "Lat:"; ObjectID = "gq3-Sv-hEY";*/
+"gq3-Sv-hEY.text" = "Breddegrad:";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh";*/
+"h2K-Kg-3dh.headerTitle" = "Logg inn med Google+";
+
+/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN";*/
+"hKK-sS-qAN.title" = "Avbryt";
+
+/*Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb";*/
+"hX2-Qg-qfb.normalTitle" = "Vis på iNaturalist";
+
+/*Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u";*/
+"hfA-vB-13u.text" = "Logg inn";
+
+/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT";*/
+"jaz-9S-FvT.title" = "Avbryt";
+
+/*Class = "IBUILabel"; text = "Common name"; ObjectID = "ju8-if-UDh";*/
+"ju8-if-UDh.text" = "Vanlig navn";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Description"; ObjectID = "kaD-3n-Xuk";*/
+"kaD-3n-Xuk.headerTitle" = "Beskrivelse";
+
+/*Class = "IBUITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0";*/
+"l3n-dl-Zr0.title" = "Innstillinger";
+
+/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku";*/
+"lPu-9O-6Ku.title" = "Prosjekter";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I";*/
+"ljj-kr-K3I.headerTitle" = "Har du ikke en konto?";
+
+/*Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p";*/
+"lol-PH-r6p.text" = "Velg en karttype";
+
+/*Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "mgd-CX-pVK";*/
+"mgd-CX-pVK.title" = "Ferdig";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY";*/
+"oWq-bA-sYY.headerTitle" = "iNaturalist-kontoen din";
+
+/*Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2";*/
+"LbD-zB-zU2.headerTitle" = "Appinnstillinger";
+
+/*Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM";*/
+"ohk-ES-lZM.text" = "Logg inn med Google";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB";*/
+"pL9-Nd-0JB.headerTitle" = "Hjelp";
+
+/*Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO";*/
+"sxb-6N-VGO.headerTitle" = "Om";
+
+/*Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh";*/
+"zPB-Sx-9Uh.text" = "Anerkjennelser";
+
+/*Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ";*/
+"pmm-Vg-XgJ.placeholder" = "Artsnavn";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE";*/
+"qJK-jT-EPE.headerTitle" = "Notater";
+
+/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C";*/
+"qfi-HT-h2C.title" = "Avbryt";
+
+/*Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP";*/
+"qsE-wG-WNP.text" = "Prosjekttittel";
+
+/*Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R";*/
+"r3N-gL-j8R.text" = "Prosjektnavn";
+
+/*Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj";*/
+"r7b-jc-Kqj.title" = "Synkronisér";
+
+/*Class = "IBUILabel"; text = "Title"; ObjectID = "rwB-lT-a3J";*/
+"rwB-lT-a3J.text" = "Tittel";
+
+/*Class = "IBUITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn";*/
+"s0d-iz-ydn.title" = "Observasjoner";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7";*/
+"tW8-NR-sj7.headerTitle" = "Logg på iNaturalist.org";
+
+/*Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV";*/
+"tiA-DP-jEV.title" = "Logg inn";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC";*/
+"tnA-n3-DOC.headerTitle" = "Vilkår";
+
+/*Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX";*/
+"tp5-5y-3mX.normalTitle" = "Detaljer";
+
+/*Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf";*/
+"uR8-0q-Vnf.title" = "Observasjoner";
+
+/*Class = "IBUIBarButtonItem"; title = "Join"; ObjectID = "wCV-Z1-3g6";*/
+"wCV-Z1-3g6.title" = "Bli med";
+
+/*Class = "IBUITableViewSection"; headerTitle = "Credits"; ObjectID = "wVj-s3-ngo";*/
+"wVj-s3-ngo.headerTitle" = "Anerkjennelser";
+
+/*Class = "IBUITabBarItem"; title = "Map"; ObjectID = "x9r-Ta-0Z8";*/
+"x9r-Ta-0Z8.title" = "Kart";
+
+/*Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps";*/
+"xdk-Tu-cps.text" = "Gaidnavn";
+
+/*Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G";*/
+"zpr-b5-V8G.title" = "Redigér posisjon";

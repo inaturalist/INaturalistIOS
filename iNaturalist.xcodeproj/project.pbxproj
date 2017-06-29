@@ -631,6 +631,20 @@
 		FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailTaxonCell.h; sourceTree = "<group>"; };
 		FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailTaxonCell.m; sourceTree = "<group>"; };
 		FA511CC61F00892C00801435 /* INaturalist2.17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.17.xcdatamodel; sourceTree = "<group>"; };
+		FA511CC71F04839000801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA511CC81F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA511CC91F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA511CCA1F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA511CCB1F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA511CCC1F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA511CCD1F04839100801435 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA511CCE1F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA511CCF1F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA511CD01F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA511CD11F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA511CD21F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA511CD31F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA511CD41F0483EB00801435 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA51BA631C000A1900101807 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
 		FA51BA641C000A1900101807 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity.m; sourceTree = "<group>"; };
 		FA51BA661C0107EC00101807 /* ObsDetailAddFaveHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailAddFaveHeader.h; sourceTree = "<group>"; };
@@ -1898,6 +1912,8 @@
 				ko,
 				id,
 				"es-MX",
+				nb,
+				ru,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2343,6 +2359,8 @@
 				FAE9D0961D13807900137660 /* ko */,
 				FA59AFA11DE6436E001D3AC8 /* id */,
 				FA59AFA81DE645D6001D3AC8 /* es-MX */,
+				FA511CC71F04839000801435 /* nb */,
+				FA511CCE1F0483EB00801435 /* ru */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2362,6 +2380,8 @@
 				FAE9D0971D13807900137660 /* ko */,
 				FA59AFA61DE6436E001D3AC8 /* id */,
 				FA59AFAD1DE645D7001D3AC8 /* es-MX */,
+				FA511CCC1F04839100801435 /* nb */,
+				FA511CD31F0483EB00801435 /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2380,6 +2400,8 @@
 				FAE9D0981D13807900137660 /* ko */,
 				FA59AFA71DE6436E001D3AC8 /* id */,
 				FA59AFAE1DE645D7001D3AC8 /* es-MX */,
+				FA511CCD1F04839100801435 /* nb */,
+				FA511CD41F0483EB00801435 /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2399,6 +2421,8 @@
 				FA399AAB1DDBDB53007ABD3E /* ko */,
 				FA59AFA31DE6436E001D3AC8 /* id */,
 				FA59AFAA1DE645D6001D3AC8 /* es-MX */,
+				FA511CC91F04839100801435 /* nb */,
+				FA511CD01F0483EB00801435 /* ru */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2419,6 +2443,8 @@
 				FA399AC01DDBDC7F007ABD3E /* en */,
 				FA59AFA41DE6436E001D3AC8 /* id */,
 				FA59AFAB1DE645D6001D3AC8 /* es-MX */,
+				FA511CCA1F04839100801435 /* nb */,
+				FA511CD11F0483EB00801435 /* ru */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2439,6 +2465,8 @@
 				FA399AD51DDBDC96007ABD3E /* en */,
 				FA59AFA51DE6436E001D3AC8 /* id */,
 				FA59AFAC1DE645D7001D3AC8 /* es-MX */,
+				FA511CCB1F04839100801435 /* nb */,
+				FA511CD21F0483EB00801435 /* ru */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2459,6 +2487,8 @@
 				FAB621611D7397C10026FDC6 /* ko */,
 				FA59AFA21DE6436E001D3AC8 /* id */,
 				FA59AFA91DE645D6001D3AC8 /* es-MX */,
+				FA511CC81F04839100801435 /* nb */,
+				FA511CCF1F0483EB00801435 /* ru */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

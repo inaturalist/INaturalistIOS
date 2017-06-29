@@ -1,0 +1,47 @@
+/*Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI";*/
+"1sf-TG-XOI.text" = "Detaljer";
+
+/*Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od";*/
+"349-K6-4Od.text" = "Gaidnavn";
+
+/*Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9";*/
+"5Yw-MQ-2n9.text" = "Tittel";
+
+/*Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o";*/
+"64U-Iz-e8o.text" = "Etikett";
+
+/*Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN";*/
+"7Ok-Hu-UbN.text" = "Undertekst";
+
+/*Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1";*/
+"DJO-9O-mI1.title" = "Gjenstand";
+
+/*Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj";*/
+"GJa-zU-aXj.title" = "Gruppegaid";
+
+/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI";*/
+"fUj-Ua-JrI.title" = "Observér";
+
+/*Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ";*/
+"fxG-Ko-HJJ.text" = "Gruppenavn";
+
+/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc";*/
+"gaA-yq-1wc.title" = "Observér";
+
+/*Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ";*/
+"hhs-MN-AbZ.title" = "Gaider";
+
+/*Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb";*/
+"lIl-fs-5kb.title" = "Gaidtittel";
+
+/*Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV";*/
+"oD3-aX-8WV.title" = "Gjenstand";
+
+/*Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi";*/
+"qtj-Qg-VZi.text" = "Etikett";
+
+/*Class = "UITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "r8K-jB-d91";*/
+"r8K-jB-d91.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/*Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX";*/
+"yLQ-uJ-TnX.text" = "Tittel";

@@ -1,0 +1,4 @@
+/*Localized versions of Info.plist keys*/
+// TODO figure out how to use ${PRODUCT_NAME} here
+
+"NSLocationWhenInUseUsageDescription" = "iNaturalist bruker denne informasjonen til å automatisk legge til posisjon til observasjonene dine og gi andre sørviser basert på posisjonen din.";
