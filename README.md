@@ -6,7 +6,7 @@ INaturalistIOS is the official iOS app for submitting data to [iNaturalist.org](
 Setup
 -----
 
-We've just finished transitioning to cocoapods: `gem install cocoapods`, then `pod install`.
+We use cocoapods for dependencies. Install it with: `gem install cocoapods`, then do `pod install` in this directory to install the INaturalistIOS dependencies..
 
 You'll also need to copy `config.h.example` to `config.h` and fill in your details.
 
