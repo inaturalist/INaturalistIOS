@@ -1287,6 +1287,10 @@
         // existing users default to suggestions on
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:kINatSuggestionsPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV27Key];
+        
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
