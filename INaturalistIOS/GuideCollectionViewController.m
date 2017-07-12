@@ -83,7 +83,9 @@ static const int GutterWidth  = 5;
     self.searchBar.translucent = NO;
     [self.view addSubview:self.searchBar];
     
-    [self.collectionView setContentOffset:CGPointMake(0, 44)];
+    // the collectionview wants to sit under the status bar, but we don't want that
+    // since we're adding a search bar
+    self.collectionView.contentInset = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
     
     SWRevealViewController *revealController = [self revealViewController];
     [self.view addGestureRecognizer:revealController.panGestureRecognizer];
@@ -277,8 +279,17 @@ static const int GutterWidth  = 5;
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
+    if ([self collectionView:self.collectionView numberOfItemsInSection:0] > 0) {
+        // scroll to the first item upon search
+        NSIndexPath *first = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self.collectionView scrollToItemAtIndexPath:first
+                                    atScrollPosition:UICollectionViewScrollPositionTop
+                                            animated:YES];
+
+    }
     self.searchBar.showsCancelButton = YES;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    self.searchBar.frame = CGRectMake(0, 20, CGRectGetWidth(self.collectionView.frame), 44);
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
@@ -286,6 +297,7 @@ static const int GutterWidth  = 5;
     self.searchBar.showsCancelButton = NO;
     [self.navigationController setNavigationBarHidden:NO
                                              animated:YES];
+    self.searchBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.collectionView.frame), 44);
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
