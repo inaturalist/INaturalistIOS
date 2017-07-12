@@ -40,6 +40,10 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.tableView.estimatedRowHeight = 44;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
     if (self.delegate && !self.guide) {
         self.guide = self.delegate.guideMenuControllerGuide;
         if (!self.tagsByPredicate) {
@@ -144,8 +148,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.userInteractionEnabled = NO;
                 
-                // Adding auto layout for cell.
-                [self setupConstraintsForCell:cell];
                 UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
                 UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
                 if (indexPath.row == 0) {
@@ -201,8 +203,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 {
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
     NSArray *pieces = [tag componentsSeparatedByString:@"="];
-    // Adding auto layout for cell.
-    [self setupConstraintsForCell:cell];
+
     UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
     UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
     
@@ -220,21 +221,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     bgv.backgroundColor = [UIColor inatTint];
     cell.selectedBackgroundView = bgv;
     return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *tag = [self tagForIndexPath:indexPath];
-    if (tag) {
-        return 44.0;
-    }
-    NSInteger i = indexPath.section - self.tagPredicates.count;
-    if (i != 0) return 44.0;
-    CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
-    CGSize labelSize = [self.guide.desc.stringByStrippingHTML sizeWithFont:[UIFont systemFontOfSize:15.0]
-                                                         constrainedToSize:constraintSize
-                                                             lineBreakMode:NSLineBreakByWordWrapping];
-    return labelSize.height + 20;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -472,39 +458,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     [self.tableView reloadData];
     [self stopDownloadNGZ];
 }
-
-- (void)setupConstraintsForCell:(UITableViewCell *)cell{
-    if(!cell.constraints.count){
-        UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
-        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        textLabel.textAlignment = NSTextAlignmentNatural;
-        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        CGFloat leftOffset;
-        CGFloat rightOffset;
-        NSLocaleLanguageDirection currentLanguageDirection = [NSLocale characterDirectionForLanguage:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]];
-        if(currentLanguageDirection == kCFLocaleLanguageDirectionRightToLeft){
-            leftOffset = 8.0;
-            rightOffset = 68.0;
-        }
-        else{
-            leftOffset = 68.0;
-            rightOffset = 8.0;
-        }
-        
-        NSDictionary *metrics = @{@"leftOffset":@(leftOffset), @"rightOffset":@(rightOffset)};
-        
-        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leftOffset-[textLabel]-[detailTextLabel]-rightOffset-|" options:0 metrics:metrics views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:metrics views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:metrics views:views]];
-    }
-}
-
 
 @end
                                     
