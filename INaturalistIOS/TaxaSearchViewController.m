@@ -289,6 +289,20 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (!self.showingSuggestions) {
+        // have to enqueue this, otherwise it's too early to have
+        // the searchBar -becomeFirstResponder, even in -viewDidAppear:
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // start the search UI right away
+            [self.searchController setActive:YES];
+            [self.searchController.searchBar becomeFirstResponder];
+        });
+    }
+}
+
 - (void)loadAndShowImageSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
     self.headerImageView.image = self.imageToClassify;
@@ -317,11 +331,8 @@
     if (self.query && self.query.length > 0) {
         self.searchController.searchBar.text = self.query;
     }
-    // start the search UI right away
-    [self.searchController.searchBar becomeFirstResponder];
-    [self.searchController setActive:YES];
-
 }
+
 
 #pragma mark - UITableViewDelegate
 
