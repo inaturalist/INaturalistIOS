@@ -20,13 +20,13 @@
 "GJa-zU-aXj.title" = "Guía de la especie o grupo";
 
 /*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI";*/
-"fUj-Ua-JrI.title" = "Observa";
+"fUj-Ua-JrI.title" = "Observar";
 
 /*Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ";*/
 "fxG-Ko-HJJ.text" = "Nombre del taxón";
 
 /*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc";*/
-"gaA-yq-1wc.title" = "Observa";
+"gaA-yq-1wc.title" = "Observar";
 
 /*Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ";*/
 "hhs-MN-AbZ.title" = "Guías";
