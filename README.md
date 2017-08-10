@@ -12,6 +12,11 @@ You'll also need to copy `config.h.example` to `config.h` and fill in your detai
 
 That should get you set up for local development with the Simulator. If you want to test on actual devices you'll need to get a provisioning profile from Apple and configure the project to use it: https://developer.apple.com/ios/manage/overview/index.action.
 
+Translations
+------------
+
+We do our translations on Crowdin. Head over to https://crowdin.com/project/inaturalistios and create an account, and you can start suggesting translations there. Our team regularly exports translations from crowdin and imports them to this project.
+
 Roadmap
 -----
 
