@@ -17,13 +17,14 @@
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "Analytics.h"
+#import "TextViewCell.h"
+#import "ObsDetailTaxonCell.h"
 
-@interface AddIdentificationViewController () <RKRequestDelegate> {
+@interface AddIdentificationViewController () <RKRequestDelegate, UITextViewDelegate> {
     BOOL viewHasPresented;
 }
-@property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
-@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 @property BOOL taxonViaVision;
+@property (copy) NSString *comment;
 
 - (IBAction)cancelAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
@@ -32,6 +33,15 @@
 @end
 
 @implementation AddIdentificationViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
+         forCellReuseIdentifier:@"taxonFromNib"];
+    [self.tableView registerClass:[TextViewCell class]
+           forCellReuseIdentifier:@"textViewCell"];
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -100,7 +110,7 @@
     }
     
     NSDictionary *params = @{
-                             @"identification[body]": self.descriptionTextView.text,
+                             @"identification[body]": self.comment ?: @"",
                              @"identification[observation_id]": @([self.observation inatRecordId]),
                              @"identification[taxon_id]": @([self.taxon taxonId]),
                              @"identification[vision]": @(self.taxonViaVision),
@@ -118,7 +128,7 @@
 - (IBAction)clickedSpeciesButton:(id)sender {
     if (self.taxon) {
         self.taxon = nil;
-        [self taxonToUI];
+        [self.tableView reloadData];
     } else {
         [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
     }
@@ -152,19 +162,84 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+- (void)textViewDidChange:(UITextView *)textView {
+    self.comment = textView.text;
+}
+
+
+#pragma mark - UITableViewDataSource & Delegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return NSLocalizedString(@"Identification Taxon", @"Title for taxon section when adding an ID");
+    } else {
+        return NSLocalizedString(@"Tell Us Why", @"Title for description/comment when adding an ID");
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
+        if (self.taxon) {
+            if (self.taxon.photoUrl) {
+                [cell.taxonImageView sd_setImageWithURL:self.taxon.photoUrl];
+            } else {
+                [cell.taxonImageView setImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
+            }
+            cell.taxonNameLabel.text = self.taxon.commonName;
+            cell.taxonSecondaryNameLabel.text = self.taxon.scientificName;
+        } else {
+            [cell.taxonImageView setImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:@"unknown"]];
+            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", nil);
+            cell.taxonSecondaryNameLabel.text = nil;
+        }
+        return cell;
+    } else {
+        TextViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"textViewCell"];
+        cell.textView.text = self.comment;
+        cell.textView.delegate = self;
+        return cell;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        return 55;
+    } else {
+        return 105;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        // begin taxon search (again, presumably)
+        [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+    }
+}
+
 #pragma mark - TaxaSearchViewControllerDelegate
 - (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
     self.taxonViaVision = visionFlag;
-    [self taxonToUI];
+    self.comment = nil;
+    [self.tableView reloadData];
 }
 
 - (void)taxaSearchViewControllerCancelled {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+/*
 - (void)taxonToUI
 {
     [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
@@ -190,5 +265,6 @@
         self.speciesGuessTextField.textColor = [UIColor blackColor];
     }
 }
+ */
 
 @end
