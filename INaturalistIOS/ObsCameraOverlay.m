@@ -19,12 +19,19 @@
 @implementation ObsCameraOverlay
 
 - (void)configureFlashForMode:(UIImagePickerControllerCameraFlashMode)mode {
-    if (mode == UIImagePickerControllerCameraFlashModeAuto)
+    if (mode == UIImagePickerControllerCameraFlashModeAuto) {
         [self.flash setAttributedTitle:flashAuto forState:UIControlStateNormal];
-    else if (mode == UIImagePickerControllerCameraFlashModeOff)
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is Auto",
+                                                          @"accessibility label for flash button when mode is auto");
+    } else if (mode == UIImagePickerControllerCameraFlashModeOff) {
         [self.flash setAttributedTitle:flashOff forState:UIControlStateNormal];
-    else if (mode == UIImagePickerControllerCameraFlashModeOn)
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is Off",
+                                                          @"accessibility label for flash button when mode is off");
+    } else if (mode == UIImagePickerControllerCameraFlashModeOn) {
         [self.flash setAttributedTitle:flashOn forState:UIControlStateNormal];
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is On",
+                                                          @"accessibility label for flash button when mode is on");
+    }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -83,6 +90,8 @@
         
         self.close = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Close Camera",
+                                                          @"accessibility label for close camera button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -97,6 +106,8 @@
         
         self.camera = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Reverse Camera",
+                                                          @"accessibility label for reverse/switch camera button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -112,6 +123,8 @@
         
         self.flash = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Change Flash",
+                                                          @"accessibility label for change flash button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -124,6 +137,8 @@
         
         self.noPhoto = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"No Photo",
+                                                          @"accessibility label for no photo button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -138,6 +153,8 @@
         
         self.shutter = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Camera Shutter",
+                                                          @"accessibility label for camera shutter button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -155,6 +172,8 @@
         
         self.library = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Pick from Library",
+                                                          @"accessibility label for pick from library button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.tintColor = [UIColor whiteColor];

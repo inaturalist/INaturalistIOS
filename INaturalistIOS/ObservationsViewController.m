@@ -885,6 +885,8 @@
     [view.iconButton setAttributedTitle:stopIcon.attributedString
                                forState:UIControlStateNormal];
     view.iconButton.enabled = YES;
+    view.iconButton.accessibilityLabel = NSLocalizedString(@"Stop Uploading",
+                                                           @"accessibility label for stop uploading button");
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploadManager = appDelegate.loginController.uploadManager;
@@ -952,6 +954,8 @@
             // image seems to override title text, so clear it
             [view.iconButton cancelImageRequestOperationForState:UIControlStateNormal];
             [view.iconButton setImage:nil forState:UIControlStateNormal];
+            view.iconButton.accessibilityLabel = NSLocalizedString(@"Upload",
+                                                                   @"accessibility labelf for upload button");
             
             view.iconButton.backgroundColor = [UIColor inatTint];
             view.iconButton.tintColor = [UIColor whiteColor];
@@ -1017,6 +1021,8 @@
         [view.iconButton setAttributedTitle:nil forState:UIControlStateNormal];
         view.iconButton.backgroundColor = [UIColor clearColor];
         view.iconButton.enabled = YES;
+        view.iconButton.accessibilityLabel = NSLocalizedString(@"Set Profile Photo",
+                                                               @"accessibility label for choose profile photo button");
         
         // icon
         if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
@@ -1326,11 +1332,14 @@
     settings.iconFontSize = 20;
     UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:settingsImage
-                                                                landscapeImagePhone:settingsLandscapeImage
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(settings)];
+    UIBarButtonItem *settingsBarButton = [[UIBarButtonItem alloc] initWithImage:settingsImage
+                                                            landscapeImagePhone:settingsLandscapeImage
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(settings)];
+    settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
+    self.navigationItem.rightBarButtonItem = settingsBarButton;
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
