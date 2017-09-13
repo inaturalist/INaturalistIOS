@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+@import AVFoundation;
+
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <AFNetworking/AFNetworking.h>
@@ -27,6 +29,7 @@
 #import "UIColor+INaturalist.h"
 #import "ExploreTaxonScore.h"
 #import "ObservationPhoto.h"
+#import "UIImage+INaturalist.h"
 
 #define MIN_CHARS_TAXA_SEARCH 3
 
@@ -43,6 +46,7 @@
 @property IBOutlet UIView *loadingView;
 @property IBOutlet UILabel *statusLabel;
 @property IBOutlet UIActivityIndicatorView *loadingSpinner;
+@property IBOutlet UIView *suggestionHeaderView;
 @end
 
 @implementation TaxaSearchViewController
@@ -190,6 +194,10 @@
          forCellReuseIdentifier:@"TaxonCell"];
     // don't show the extra lines when no tv rows
     self.tableView.tableFooterView = [UIView new];
+    
+    // design tweaks for suggestions header
+    self.suggestionHeaderView.layer.borderWidth = 0.5f;
+    self.suggestionHeaderView.layer.borderColor = [UIColor lightGrayColor].CGColor;
 
     NSDate *beforeSuggestions = [NSDate date];
     
@@ -305,7 +313,9 @@
 
 - (void)loadAndShowImageSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
-    self.headerImageView.image = self.imageToClassify;
+    self.headerImageView.image = [self.imageToClassify inat_imageByAddingBorderWidth:1.0f
+                                                                              radius:1.0f
+                                                                               color:[UIColor lightGrayColor]];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForImage:self.imageToClassify
                            location:self.coordinate
@@ -317,7 +327,16 @@
 - (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
     ObservationPhoto *op = [[self.observationToClassify sortedObservationPhotos] firstObject];
-    [self.headerImageView setImageWithURL:[op smallPhotoUrl]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[op smallPhotoUrl]];
+    __weak typeof(self)weakSelf = self;
+    [self.headerImageView setImageWithURLRequest:request
+                                placeholderImage:nil
+                                         success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                             __strong typeof(weakSelf)strongSelf = weakSelf;
+                                             strongSelf.headerImageView.image = [image inat_imageByAddingBorderWidth:1.0f
+                                                                                                              radius:1.0f
+                                                                                                               color:[UIColor lightGrayColor]];
+                                         } failure:nil];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForObservationId:self.observationToClassify.inatRecordId
                                     handler:done];

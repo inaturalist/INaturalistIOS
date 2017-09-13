@@ -1421,14 +1421,6 @@
                                     <constraint firstItem="EUI-Ra-o9T" firstAttribute="centerX" secondItem="0Zk-gJ-HxP" secondAttribute="centerX" id="og3-32-Jr8"/>
                                     <constraint firstItem="EUI-Ra-o9T" firstAttribute="centerY" secondItem="0Zk-gJ-HxP" secondAttribute="centerY" id="pWz-tB-gLI"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <integer key="value" value="1"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                        <color key="value" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kdw-UG-LDk">
                                 <rect key="frame" x="0.0" y="196" width="414" height="540"/>
@@ -1551,6 +1543,7 @@
                         <outlet property="loadingSpinner" destination="CaA-Xt-iev" id="OSd-Iw-94a"/>
                         <outlet property="loadingView" destination="Kdw-UG-LDk" id="cNs-Gc-GpC"/>
                         <outlet property="statusLabel" destination="qle-TF-Ddf" id="2n5-2S-eY2"/>
+                        <outlet property="suggestionHeaderView" destination="0Zk-gJ-HxP" id="3zk-bc-YJf"/>
                         <outlet property="tableView" destination="TQv-ED-g7a" id="OxD-aw-HmT"/>
                     </connections>
                 </viewController>

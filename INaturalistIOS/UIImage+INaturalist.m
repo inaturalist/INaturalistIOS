@@ -52,6 +52,27 @@
     return defaultUserImage;
 }
 
+/*
+ from
+ https://stackoverflow.com/questions/37832794/how-to-set-border-on-image-in-swift-not-on-uiimageview
+ */
+- (instancetype)inat_imageByAddingBorderWidth:(CGFloat)borderWidth radius:(CGFloat)radius color:(UIColor *)color {
+    CALayer *imageLayer = [CALayer layer];
+    imageLayer.frame = CGRectMake(0, 0, self.size.width, self.size.height);
+    imageLayer.contents = (id)self.CGImage;
+    
+    imageLayer.masksToBounds = YES;
+    imageLayer.cornerRadius = radius;
+    imageLayer.borderColor = color.CGColor;
+    imageLayer.borderWidth = borderWidth;
+    
+    UIGraphicsBeginImageContext(self.size);
+    [imageLayer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return roundedImage;
+}
 
 
 
