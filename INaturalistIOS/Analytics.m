@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <Flurry-iOS-SDK/Flurry.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Amplitude-iOS/Amplitude.h>
@@ -23,9 +22,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[Analytics alloc] init];
-#ifdef INatFlurryKey
-        [Flurry startSession:INatFlurryKey];
-#endif
 
 #ifdef INatCrashlyticsKey
         [Fabric with:@[CrashlyticsKit]];
@@ -43,10 +39,6 @@
 }
 
 - (void)event:(NSString *)name {
-#ifdef INatFlurryKey
-    [Flurry logEvent:name];
-#endif
-    
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:name customAttributes:nil];
 #endif
@@ -57,44 +49,12 @@
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
-#ifdef INatFlurryKey
-    [Flurry logEvent:name withParameters:properties];
-#endif
-    
 #ifdef INatCrashlyticsKey
     [Answers logCustomEventWithName:name customAttributes:properties];
 #endif
     
 #ifdef INatAmplitudeKey
     [[Amplitude instance] logEvent:name withEventProperties:properties];
-#endif
-}
-
-- (void)logAllPageViewForTarget:(UIViewController *)target {
-#ifdef INatFlurryKey
-    [Flurry logAllPageViewsForTarget:target];
-#endif
-}
-
-- (void)timedEvent:(NSString *)name {
-#ifdef INatFlurryKey
-    [Flurry logEvent:name timed:YES];
-#endif
-}
-- (void)timedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
-#ifdef INatFlurryKey
-    [Flurry logEvent:name withParameters:properties timed:YES];
-#endif
-}
-
-- (void)endTimedEvent:(NSString *)name {
-#ifdef INatFlurryKey
-    [Flurry endTimedEvent:name withParameters:nil];
-#endif
-}
-- (void)endTimedEvent:(NSString *)name withProperties:(NSDictionary *)properties {
-#ifdef INatFlurryKey
-    [Flurry endTimedEvent:name withParameters:properties];
 #endif
 }
 
