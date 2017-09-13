@@ -214,10 +214,7 @@
 
 - (void)setupAnalytics {
     // setup analytics
-    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];
-    
-    // log all page views for the tab bar controller
-    [[Analytics sharedClient] logAllPageViewForTarget:self.window.rootViewController];
+    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];    
 }
 
 - (void)showLoadingScreen {
