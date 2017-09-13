@@ -104,9 +104,9 @@ PODS:
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - QBImagePickerController (3.4.0)
   - RaptureXML (1.0.1)
-  - Realm (1.0.1):
-    - Realm/Headers (= 1.0.1)
-  - Realm/Headers (1.0.1)
+  - Realm (2.5.1):
+    - Realm/Headers (= 2.5.1)
+  - Realm/Headers (2.5.1)
   - RestKit (0.10.3):
     - RestKit/JSON (= 0.10.3)
   - RestKit/JSON (0.10.3):
@@ -198,7 +198,7 @@ DEPENDENCIES:
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - QBImagePickerController (= 3.4.0)
   - RaptureXML (= 1.0.1)
-  - Realm (= 1.0.1)
+  - Realm (= 2.5.1)
   - RestKit (= 0.10.3)
   - RestKit/Testing (= 0.10.3)
   - SDWebImage (= 4.0.0)
@@ -289,7 +289,7 @@ SPEC CHECKSUMS:
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
-  Realm: 2e15e39d35b08abb529e212ed5d8af107b5236c8
+  Realm: 32f86104d37c8521f864d4274050b38ba6190733
   RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SlackTextViewController: d51503f7be846cb9976a273499dc90f2445e9447
@@ -307,6 +307,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 458e795f07b3d002a397845223f0d6096ba999e1
+PODFILE CHECKSUM: 7b462149c7180ef3ee70642388e5a8ea82ab5c08
 
 COCOAPODS: 1.2.0
