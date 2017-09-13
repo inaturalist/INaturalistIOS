@@ -9,6 +9,9 @@
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
 #import "ExploreUpdate.h"
+#import "IdentifierCount.h"
+#import "ObserverCount.h"
+#import "IdentifierCount.h"
 #import "Analytics.h"
 #import "Observation.h"
 
@@ -61,6 +64,21 @@
                           };
                       }];
 }
+
+- (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch top observers from node"];
+    NSString *path = [NSString stringWithFormat:@"observations/observers?per_page=3&taxon_id=%@",
+                      [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path classMapping:ObserverCount.class handler:done];
+}
+
+- (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch top identifiers from node"];
+    NSString *path = [NSString stringWithFormat:@"observations/identifiers?per_page=3&taxon_id=%@",
+                      [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path classMapping:IdentifierCount.class handler:done];
+}
+
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];

@@ -24,11 +24,15 @@
 #import "ExploreTaxonRealm.h"
 #import "ObsDetailTaxonCell.h"
 #import "TaxaAPI.h"
+#import "ObservationAPI.h"
 #import "NSURL+INaturalist.h"
 #import "TaxonSuggestionCell.h"
 #import "UIColor+INaturalist.h"
 #import "ExploreTaxonScore.h"
 #import "ObservationPhoto.h"
+#import "ObserverCount.h"
+#import "IdentifierCount.h"
+#import "ExploreUser.h"
 #import "UIImage+INaturalist.h"
 
 #define MIN_CHARS_TAXA_SEARCH 3
@@ -37,6 +41,7 @@
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
 @property NSArray <ExploreTaxonScore *> *scores;
+@property NSArray <NSString *> *creditNames;
 @property ExploreTaxonRealm *commonAncestor;
 @property BOOL showingSuggestions;
 
@@ -97,6 +102,14 @@
     return _api;
 }
 
+- (ObservationAPI *)obsApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     if (self.showingSuggestions) {
@@ -252,6 +265,45 @@
                 // remove the loading view
                 self.tableView.backgroundView = nil;
                 [self.tableView reloadData];
+                
+                NSMutableArray *taxaIds = [NSMutableArray array];
+                if (self.commonAncestor) {
+                    [taxaIds addObject:@(self.commonAncestor.taxonId)];
+                }
+                for (ExploreTaxonScore *ets in self.scores) {
+                    [taxaIds addObject:@(ets.exploreTaxon.taxonId)];
+                }
+                
+                if (arc4random_uniform(2) == 1) {
+                    // load observers
+                    [[self obsApi] topObserversForTaxaIds:taxaIds handler:^(NSArray *results, NSInteger count, NSError *error) {
+                        NSMutableArray <NSString *> *credits = [NSMutableArray array];
+                        for (ObserverCount *oc in results) {
+                            if (oc.observer.name && oc.observer.name.length > 0) {
+                                [credits addObject:oc.observer.name];
+                            } else {
+                                [credits addObject:oc.observer.login];
+                            }
+                        }
+                        self.creditNames = [NSArray arrayWithArray:credits];
+                        [self.tableView reloadData];
+                    }];
+                } else {
+                    [[self obsApi] topIdentifiersForTaxaIds:taxaIds handler:^(NSArray *results, NSInteger count, NSError *error) {
+                        NSMutableArray <NSString *> *credits = [NSMutableArray array];
+                        for (IdentifierCount *ic in results) {
+                            if (ic.identifier.name && ic.identifier.name.length > 0) {
+                                [credits addObject:ic.identifier.name];
+                            } else {
+                                [credits addObject:ic.identifier.login];
+                            }
+                        }
+                        self.creditNames = [NSArray arrayWithArray:credits];
+                        [self.tableView reloadData];
+                    }];
+
+                }
+                
             }
         });
     };
@@ -605,7 +657,12 @@
         if (self.commonAncestor && section == 0) {
             return nil;
         } else {
-            return NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community.", nil);
+            if (self.creditNames && self.creditNames.count == 3) {
+                NSString *base = NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community, including %@, %@, %@, and many others.", nil);
+                return [NSString stringWithFormat:base, self.creditNames[0], self.creditNames[1], self.creditNames[2]];
+            } else {
+                return NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community.", nil);
+            }
         }
     } else {
         return nil;
