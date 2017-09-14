@@ -1879,7 +1879,7 @@
 				TargetAttributes = {
 					1927513214E9CCC9000ABAC4 = {
 						DevelopmentTeam = N5J7L4P93Z;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -2551,6 +2551,7 @@
 				CODE_SIGN_ENTITLEMENTS = iNaturalist/iNaturalist.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2578,8 +2579,8 @@
 					"$(inherited)",
 				);
 				PRODUCT_NAME = iNaturalist;
-				PROVISIONING_PROFILE = "a2f8920e-1169-4ad7-a77e-c1ee721e9367";
-				PROVISIONING_PROFILE_SPECIFIER = "iNaturalist Provisioning Profile";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2597,7 +2598,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iNaturalist/iNaturalist.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2621,9 +2623,9 @@
 					"$(inherited)",
 				);
 				PRODUCT_NAME = iNaturalist;
-				PROVISIONING_PROFILE = "95df64d8-e19c-48ec-857c-1d02750d78a5";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				PROVISIONING_PROFILE_SPECIFIER = "XC: org.inaturalist.inaturalist";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
