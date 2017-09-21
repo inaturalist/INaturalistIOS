@@ -593,7 +593,7 @@ NSInteger INatMinPasswordLength = 6;
         }
     }
     
-    NSURL *url = [NSURL URLWithString:@"http://www.inaturalist.org/users/api_token.json"];
+    NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"GET";
     
