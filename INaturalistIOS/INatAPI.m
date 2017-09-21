@@ -17,7 +17,7 @@
 @implementation INatAPI
 
 - (NSString *)apiBaseUrl {
-    return @"http://api.inaturalist.org/v1";
+    return @"https://api.inaturalist.org/v1";
 }
 
 - (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {

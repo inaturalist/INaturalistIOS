@@ -164,10 +164,10 @@ static char PARTNER_ASSOCIATED_KEY;
         
         UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
         if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:termsRange]) {
-            NSURL *termsURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/terms"];
+            NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
             [[UIApplication sharedApplication] openURL:termsURL];
         } else if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:privacyRange]) {
-            NSURL *privacyURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/privacy"];
+            NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
             [[UIApplication sharedApplication] openURL:privacyURL];
         }
     }];
