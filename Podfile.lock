@@ -58,7 +58,6 @@ PODS:
   - FBSDKLoginKit (4.10.1):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
-  - Flurry-iOS-SDK/FlurrySDK (7.1.0)
   - FontAwesomeKit (2.2.0):
     - FontAwesomeKit/Core (= 2.2.0)
     - FontAwesomeKit/FontAwesome (= 2.2.0)
@@ -178,7 +177,6 @@ DEPENDENCIES:
   - FBSDKCoreKit (= 4.10.1)
   - FBSDKLoginKit (= 4.10.1)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
-  - Flurry-iOS-SDK/FlurrySDK (= 7.1.0)
   - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
   - googleplus-ios-sdk (= 1.7.1)
@@ -264,7 +262,6 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
   FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
-  Flurry-iOS-SDK: 7b3fe6c3344c82b73c4c84163652eada84fbfcf4
   FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
@@ -307,6 +304,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 7b462149c7180ef3ee70642388e5a8ea82ab5c08
+PODFILE CHECKSUM: 33293cac172fbc79f23c28ad9ccd293358d019bd
 
 COCOAPODS: 1.2.0
