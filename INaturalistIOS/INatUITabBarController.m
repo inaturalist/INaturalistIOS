@@ -383,6 +383,7 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
     confirm.shouldContinueUpdatingLocation = YES;
     
     Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);

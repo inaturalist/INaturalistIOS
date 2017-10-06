@@ -30,6 +30,7 @@
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
+#import "CLLocation+EXIFGPSDictionary.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -326,9 +327,37 @@
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
         
+        // build the saved image data object, complete with exif and potentially
+        // GPS information
+        NSData *destData = nil;
+        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+        
+        if (self.locationManager) {
+            // update the provided GPSDictionary with values from the location manager
+            NSMutableDictionary *GPSDictionary = [[mutableMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
+            if (!GPSDictionary) {
+                GPSDictionary = [NSMutableDictionary dictionary];
+            }
+            [GPSDictionary setValuesForKeysWithDictionary:[self.locationManager.location GPSDictionary]];
+            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = GPSDictionary;
+        }
+        
+        NSData *jpegData = UIImageJPEGRepresentation(self.image, 1.0f);
+        CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)jpegData,
+                                                              NULL);
+        
+        destData = [NSMutableData data];
+        CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef) destData,
+                                                                             (CFStringRef) @"public.jpeg",
+                                                                             1,
+                                                                             NULL);
+        CGImageDestinationAddImageFromSource(destination, source,0, (CFDictionaryRef) mutableMetadata);
+        CGImageDestinationFinalize(destination);
+        
         [phLib performChanges:^{
-            PHAssetChangeRequest *request = [PHAssetChangeRequest creationRequestForAssetFromImage:self.image];
-            if (self.locationManager.location) {
+            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+            [request addResourceWithType:PHAssetResourceTypePhoto data:destData options:nil];
+            if (self.locationManager) {
                 request.location = self.locationManager.location;
             }
             request.creationDate = [NSDate date];
@@ -352,7 +381,9 @@
                     }
                 }
             });
+
         }];
+        
     } else if (self.downloadedImages) {
         // can proceed directly to followup
         [self moveOnToSaveNewObservation];

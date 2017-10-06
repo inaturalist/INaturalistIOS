@@ -221,6 +221,7 @@
 		FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9E07461E1B15D100AE7833 /* TaxonTests.m */; };
 		FA9EBE4C1ED50767001FE4AD /* TaxonMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */; };
 		FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */; };
+		FAA0A1981F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */; };
 		FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA20BB91C5079830075EF2C /* NewsItemCell.m */; };
 		FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB0A1C8F820000F43552 /* ExploreFave.m */; };
 		FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */; };
@@ -779,6 +780,8 @@
 		FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonMapViewController.m; sourceTree = "<group>"; };
 		FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
 		FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		FAA0A1961F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CLLocation+EXIFGPSDictionary.h"; sourceTree = "<group>"; };
+		FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CLLocation+EXIFGPSDictionary.m"; sourceTree = "<group>"; };
 		FAA20BB81C5079830075EF2C /* NewsItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemCell.h; sourceTree = "<group>"; };
 		FAA20BB91C5079830075EF2C /* NewsItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemCell.m; sourceTree = "<group>"; };
 		FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.12.xcdatamodel; sourceTree = "<group>"; };
@@ -1260,16 +1263,18 @@
 		19F621A4150ECDC700C58F28 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				FA1B58CA1D626DFD00663150 /* ABSorter.h */,
+				FA1B58CB1D626DFD00663150 /* ABSorter.m */,
 				FA63FA1319E4CE65007306F9 /* Analytics.h */,
 				FA63FA1419E4CE65007306F9 /* Analytics.m */,
+				FAA0A1961F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.h */,
+				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
 				FA2285601C8A49D700AC6FEA /* ContainedScrollViewDelegate.h */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
 				FABC6B7F1A1ECB9B009D5637 /* GooglePlusAuthViewController.h */,
 				FABC6B801A1ECB9B009D5637 /* GooglePlusAuthViewController.m */,
 				FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */,
-				FA1B58CA1D626DFD00663150 /* ABSorter.h */,
-				FA1B58CB1D626DFD00663150 /* ABSorter.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
@@ -2104,6 +2109,7 @@
 			files = (
 				FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */,
 				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
+				FAA0A1981F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m in Sources */,
 				FABC6B811A1ECB9B009D5637 /* GooglePlusAuthViewController.m in Sources */,
 				19AE898218DD0AEB00505918 /* ObservationActivityViewController.m in Sources */,
 				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
