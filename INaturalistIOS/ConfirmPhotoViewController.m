@@ -31,6 +31,7 @@
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "CLLocation+EXIFGPSDictionary.h"
+#import "UIImage+INaturalist.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -53,10 +54,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if (self.shouldContinueUpdatingLocation) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        [self.locationManager startUpdatingLocation];
-    }
+    // fetch location to insert into image exif when we save it
+    self.locationManager = [[CLLocationManager alloc] init];
+    [self.locationManager startUpdatingLocation];
     
     self.downloadedImages = [NSMutableArray array];
     
@@ -73,6 +73,7 @@
             if (strongSelf.obsLocation) {
                 o.latitude = @(strongSelf.obsLocation.coordinate.latitude);
                 o.longitude = @(strongSelf.obsLocation.coordinate.longitude);
+                o.positionalAccuracy = @(strongSelf.obsLocation.horizontalAccuracy);
             }
             
             if (strongSelf.obsDate) {
@@ -327,36 +328,27 @@
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
         
-        // build the saved image data object, complete with exif and potentially
-        // GPS information
-        NSData *destData = nil;
+        // build the metadata dictionary, with GPS if available
         NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-        
-        if (self.locationManager) {
+        if (self.locationManager && self.locationManager.location) {
             // update the provided GPSDictionary with values from the location manager
-            NSMutableDictionary *GPSDictionary = [[mutableMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
-            if (!GPSDictionary) {
-                GPSDictionary = [NSMutableDictionary dictionary];
+            NSMutableDictionary *gpsDictionary = [[mutableMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
+            if (!gpsDictionary) {
+                gpsDictionary = [NSMutableDictionary dictionary];
             }
-            [GPSDictionary setValuesForKeysWithDictionary:[self.locationManager.location GPSDictionary]];
-            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = GPSDictionary;
+            [gpsDictionary setValuesForKeysWithDictionary:[self.locationManager.location inat_GPSDictionary]];
+            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = gpsDictionary;
         }
         
-        NSData *jpegData = UIImageJPEGRepresentation(self.image, 1.0f);
-        CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)jpegData,
-                                                              NULL);
-        
-        destData = [NSMutableData data];
-        CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef) destData,
-                                                                             (CFStringRef) @"public.jpeg",
-                                                                             1,
-                                                                             NULL);
-        CGImageDestinationAddImageFromSource(destination, source,0, (CFDictionaryRef) mutableMetadata);
-        CGImageDestinationFinalize(destination);
+        // convert the UIImage into an NSData object, with the metadata included
+        // including GPS if we added it in the previous step
+        NSData *imageData = [self.image inat_JPEGDataRepresentationWithMetadata:[NSDictionary dictionaryWithDictionary:mutableMetadata]];
         
         [phLib performChanges:^{
             PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
-            [request addResourceWithType:PHAssetResourceTypePhoto data:destData options:nil];
+            [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:nil];
+            
+            // this updates the iOS photos database but not EXIF
             if (self.locationManager) {
                 request.location = self.locationManager.location;
             }

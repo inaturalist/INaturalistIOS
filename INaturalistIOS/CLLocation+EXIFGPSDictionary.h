@@ -10,6 +10,6 @@
 
 @interface CLLocation (EXIFGPSDictionary)
 
-- (NSDictionary *)GPSDictionary;
+- (NSDictionary *)inat_GPSDictionary;
 
 @end

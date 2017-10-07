@@ -75,5 +75,22 @@
 }
 
 
+- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata {
+    NSData *destData = nil;
+
+    NSData *jpegData = UIImageJPEGRepresentation(self, 1.0f);
+    CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)jpegData,
+                                                          NULL);
+    
+    destData = [NSMutableData data];
+    CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef) destData,
+                                                                         (CFStringRef) @"public.jpeg",
+                                                                         1,
+                                                                         NULL);
+    CGImageDestinationAddImageFromSource(destination, source,0, (CFDictionaryRef) metadata);
+    CGImageDestinationFinalize(destination);
+    return destData;
+}
+
 
 @end

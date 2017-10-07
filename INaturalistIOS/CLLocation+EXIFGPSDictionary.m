@@ -10,7 +10,7 @@
 
 @implementation CLLocation (EXIFGPSDictionary)
 
-- (NSDictionary *)GPSDictionary {
+- (NSDictionary *)inat_GPSDictionary {
     NSMutableDictionary *gps = [NSMutableDictionary dictionary];
 
     gps[(NSString *)kCGImagePropertyGPSLatitude] = @(fabs(self.coordinate.latitude));
