@@ -1055,14 +1055,15 @@
         }
         
         // observation count
-        if (user.observationsCount.integerValue > 0) {
+        NSInteger observationCount = MAX(user.observationsCount.integerValue, [[Observation allObjects] count]);
+        if (observationCount > 0) {
             NSString *baseObsCountStr;
-            if (user.observationsCount.integerValue == 1) {
+            if (observationCount == 1) {
                 baseObsCountStr = NSLocalizedString(@"%d Observation", @"Count of observations by this user, singular.");
             } else {
                 baseObsCountStr = NSLocalizedString(@"%d Observations", @"Count of observations by this user, plural.");
             }
-            view.obsCountLabel.text = [NSString stringWithFormat:baseObsCountStr, user.observationsCount.integerValue];
+            view.obsCountLabel.text = [NSString stringWithFormat:baseObsCountStr, observationCount];
         } else {
             view.obsCountLabel.text = NSLocalizedString(@"No Observations", @"Header observation count title when there are none.");
         }
