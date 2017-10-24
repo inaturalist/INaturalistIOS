@@ -32,6 +32,7 @@
 #import "INaturalistAppDelegate.h"
 #import "CLLocation+EXIFGPSDictionary.h"
 #import "UIImage+INaturalist.h"
+#import "NSData+INaturalist.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -429,42 +430,52 @@
                 }
             };
             
-            [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                       targetSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
-                                                      contentMode:PHImageContentModeAspectFit
-                                                          options:options
-                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                                        __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                        NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
-                                                        NSError *error = [info valueForKey:PHImageErrorKey];
-                                                        if (result) {
-                                                            [iv setImage:result];
-                                                            if ([isDegraded boolValue]) {
-                                                                pie.hidden = NO;
-                                                            } else {
-                                                                pie.hidden = YES;
-                                                                [self.downloadedImages addObject:result];
-                                                                [self configureNextButton];
-                                                            }
-                                                        } else if (error) {
-                                                            pie.hidden = YES;
-                                                            alertDecoration.hidden = NO;
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                              options:options
+                                                        resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                                                            __strong typeof(weakSelf)strongSelf = weakSelf;
                                                             
-                                                            NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
-                                                            if (underlyingError) {
-                                                                error = underlyingError;
-                                                            }
+                                                            BOOL isDegraded = [[info valueForKey:PHImageResultIsDegradedKey] boolValue];
+                                                            NSError *error = [info valueForKey:PHImageErrorKey];
+                                                            
+                                                            if (imageData) {
+                                                                UIImage *image = [UIImage imageWithData:imageData];
+                                                                [iv setImage:image];
+                                                                
+                                                                if (isDegraded) {
+                                                                    pie.hidden = NO;
+                                                                } else {
+                                                                    pie.hidden = YES;
+                                                                    [strongSelf.downloadedImages addObject:image];
+                                                                    
+                                                                    // look for horizontal positioning error in exif gps
+                                                                    NSDictionary *gps = [imageData inat_gpsDictFromImageData];
+                                                                    if (gps && [gps valueForKey:inat_GPSHPositioningError]) {
+                                                                        CLLocationDistance accuracy = [[gps valueForKey:inat_GPSHPositioningError] doubleValue];
+                                                                        strongSelf.obsLocation = [strongSelf.obsLocation inat_locationByAddingAccuracy:accuracy];
+                                                                    }
 
-                                                            NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
-                                                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                           message:error.localizedDescription
-                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-                                                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                                                      style:UIAlertActionStyleDefault
-                                                                                                    handler:nil]];
-                                                            [strongSelf presentViewController:alert animated:YES completion:nil];
-                                                        }
-                                                    }];
+                                                                    [self configureNextButton];
+                                                                }
+                                                            } else if (error) {
+                                                                pie.hidden = YES;
+                                                                alertDecoration.hidden = NO;
+                                                                
+                                                                NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
+                                                                if (underlyingError) {
+                                                                    error = underlyingError;
+                                                                }
+                                                                
+                                                                NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
+                                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                               message:error.localizedDescription
+                                                                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                                                                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                                                          style:UIAlertActionStyleDefault
+                                                                                                        handler:nil]];
+                                                                [strongSelf presentViewController:alert animated:YES completion:nil];
+                                                            }
+                                                        }];
         }
         self.multiImageView.hidden = NO;
     }

@@ -239,6 +239,7 @@
 		FABC6B831A1ECC28009D5637 /* GooglePlusAuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABC6B821A1ECC28009D5637 /* GooglePlusAuthViewController.xib */; };
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
+		FAC9A8531F9EC0F2008E75EC /* NSData+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */; };
 		FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */; };
 		FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */; };
 		FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */; };
@@ -827,6 +828,8 @@
 		FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ConfirmPhotoViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiImageView.h; sourceTree = "<group>"; };
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
+		FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+INaturalist.h"; sourceTree = "<group>"; };
+		FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+INaturalist.m"; sourceTree = "<group>"; };
 		FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailV2ViewController.h; sourceTree = "<group>"; };
 		FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailV2ViewController.m; sourceTree = "<group>"; };
 		FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailViewModel.h; sourceTree = "<group>"; };
@@ -1283,6 +1286,8 @@
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
+				FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */,
+				FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */,
 				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
 				FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */,
 				FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */,
@@ -2282,6 +2287,7 @@
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */,
+				FAC9A8531F9EC0F2008E75EC /* NSData+INaturalist.m in Sources */,
 				FA426A4B1C17B6590054563D /* ObsDetailMapCell.m in Sources */,
 				191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */,
 				FACACA271BFD27E1002223D7 /* ObsDetailFavesViewModel.m in Sources */,

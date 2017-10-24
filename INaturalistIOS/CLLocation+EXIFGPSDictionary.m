@@ -22,7 +22,7 @@
         gps[(NSString *)kCGImagePropertyGPSAltitude] = @(fabs(self.altitude));
         gps[(NSString *)kCGImagePropertyGPSAltitudeRef] = self.altitude > 0 ? @(0) : @(1);
     }
-    gps[(NSString *)kCGImagePropertyGPSDOP] = @(self.horizontalAccuracy);
+    gps[inat_GPSHPositioningError] = @(self.horizontalAccuracy);
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
@@ -34,4 +34,17 @@
     return [NSDictionary dictionaryWithDictionary:gps];
 }
 
+- (instancetype)inat_locationByAddingAccuracy:(CLLocationDistance)horizontalError {
+    return [[CLLocation alloc] initWithCoordinate:self.coordinate
+                                         altitude:self.altitude
+                               horizontalAccuracy:horizontalError
+                                 verticalAccuracy:self.verticalAccuracy
+                                           course:self.course
+                                            speed:self.speed
+                                        timestamp:self.timestamp];
+}
+
 @end
+
+NSString * const inat_GPSHPositioningError = @"HPositioningError";
+
