@@ -211,6 +211,16 @@
     // design tweaks for suggestions header
     self.suggestionHeaderView.layer.borderWidth = 0.5f;
     self.suggestionHeaderView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.headerImageView.layer.cornerRadius = 1.0f;
+    self.headerImageView.layer.borderWidth = 1.0f;
+    self.headerImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    // we're shrinking a decently sized image down to a small square,
+    // so provide a minification filter that's easier on the eyes and
+    // produces fewer resizing artifacts
+    self.headerImageView.layer.minificationFilter = kCAFilterTrilinear;
+    self.headerImageView.layer.minificationFilterBias = 0.1;
+
 
     NSDate *beforeSuggestions = [NSDate date];
     
@@ -365,9 +375,7 @@
 
 - (void)loadAndShowImageSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
-    self.headerImageView.image = [self.imageToClassify inat_imageByAddingBorderWidth:1.0f
-                                                                              radius:1.0f
-                                                                               color:[UIColor lightGrayColor]];
+    self.headerImageView.image = [self imageToClassify];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForImage:self.imageToClassify
                            location:self.coordinate
@@ -379,16 +387,7 @@
 - (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
     ObservationPhoto *op = [[self.observationToClassify sortedObservationPhotos] firstObject];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[op smallPhotoUrl]];
-    __weak typeof(self)weakSelf = self;
-    [self.headerImageView setImageWithURLRequest:request
-                                placeholderImage:nil
-                                         success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                                             __strong typeof(weakSelf)strongSelf = weakSelf;
-                                             strongSelf.headerImageView.image = [image inat_imageByAddingBorderWidth:1.0f
-                                                                                                              radius:1.0f
-                                                                                                               color:[UIColor lightGrayColor]];
-                                         } failure:nil];
+    [self.headerImageView setImageWithURL:[op squarePhotoUrl]];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForObservationId:self.observationToClassify.inatRecordId
                                     handler:done];
