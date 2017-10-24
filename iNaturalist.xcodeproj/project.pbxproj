@@ -588,6 +588,13 @@
 		FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailAddActivityFooter.m; sourceTree = "<group>"; };
 		FA4D56C01C1A6C7100C5C5AE /* ObsDetailNotesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailNotesCell.h; sourceTree = "<group>"; };
 		FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNotesCell.m; sourceTree = "<group>"; };
+		FA4DAD9F1F9FFE1D0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA4DADA01F9FFE1D0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA4DADA11F9FFE1D0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA4DADA21F9FFE1D0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA4DADA31F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA4DADA41F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA4DADA51F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
 		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
 		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
@@ -1924,6 +1931,7 @@
 				"es-MX",
 				nb,
 				ru,
+				"zh-Hant",
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2373,6 +2381,7 @@
 				FA59AFA81DE645D6001D3AC8 /* es-MX */,
 				FA511CC71F04839000801435 /* nb */,
 				FA511CCE1F0483EB00801435 /* ru */,
+				FA4DAD9F1F9FFE1D0042D2FD /* zh-Hant */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2394,6 +2403,7 @@
 				FA59AFAD1DE645D7001D3AC8 /* es-MX */,
 				FA511CCC1F04839100801435 /* nb */,
 				FA511CD31F0483EB00801435 /* ru */,
+				FA4DADA41F9FFE1E0042D2FD /* zh-Hant */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2414,6 +2424,7 @@
 				FA59AFAE1DE645D7001D3AC8 /* es-MX */,
 				FA511CCD1F04839100801435 /* nb */,
 				FA511CD41F0483EB00801435 /* ru */,
+				FA4DADA51F9FFE1E0042D2FD /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2435,6 +2446,7 @@
 				FA59AFAA1DE645D6001D3AC8 /* es-MX */,
 				FA511CC91F04839100801435 /* nb */,
 				FA511CD01F0483EB00801435 /* ru */,
+				FA4DADA11F9FFE1D0042D2FD /* zh-Hant */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2457,6 +2469,7 @@
 				FA59AFAB1DE645D6001D3AC8 /* es-MX */,
 				FA511CCA1F04839100801435 /* nb */,
 				FA511CD11F0483EB00801435 /* ru */,
+				FA4DADA21F9FFE1D0042D2FD /* zh-Hant */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2479,6 +2492,7 @@
 				FA59AFAC1DE645D7001D3AC8 /* es-MX */,
 				FA511CCB1F04839100801435 /* nb */,
 				FA511CD21F0483EB00801435 /* ru */,
+				FA4DADA31F9FFE1E0042D2FD /* zh-Hant */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2501,6 +2515,7 @@
 				FA59AFA91DE645D6001D3AC8 /* es-MX */,
 				FA511CC81F04839100801435 /* nb */,
 				FA511CCF1F0483EB00801435 /* ru */,
+				FA4DADA01F9FFE1D0042D2FD /* zh-Hant */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

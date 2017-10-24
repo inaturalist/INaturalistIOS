@@ -1,0 +1,35 @@
+/* Class = "UILabel"; text = "Project name"; ObjectID = "5g3-Ck-7dj"; */
+"5g3-Ck-7dj.text" = "任務名稱";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "8Dx-bO-69j"; */
+"8Dx-bO-69j.text" = "標籤";
+
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "AeY-f8-V2Q"; */
+"AeY-f8-V2Q.title" = "任務";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "DxM-XT-Dil"; */
+"DxM-XT-Dil.text" = "標籤";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "VoO-3j-QSk"; */
+"VoO-3j-QSk.text" = "標籤";
+
+/* Class = "UILabel"; text = "50"; ObjectID = "Wp5-th-kO8"; */
+"Wp5-th-kO8.text" = "50";
+
+/* Class = "UIButton"; normalTitle = "Join"; ObjectID = "XoY-j9-s3Z"; */
+"XoY-j9-s3Z.normalTitle" = "加入";
+
+/* Class = "UINavigationItem"; title = "Projects"; ObjectID = "erP-HQ-jwa"; */
+"erP-HQ-jwa.title" = "任務";
+
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "f8w-lW-pBK"; */
+"f8w-lW-pBK.title" = "任務";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "gpj-j1-cmk"; */
+"gpj-j1-cmk.text" = "標籤";
+
+/* Class = "UIButton"; normalTitle = "About"; ObjectID = "mg1-3N-wrc"; */
+"mg1-3N-wrc.normalTitle" = "關於";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "vWl-jb-1Ry"; */
+"vWl-jb-1Ry.text" = "標籤";
