@@ -701,6 +701,27 @@
 		FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsFieldSimpleValueCell.m; sourceTree = "<group>"; };
 		FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldLongTextValueCell.h; sourceTree = "<group>"; };
 		FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsFieldLongTextValueCell.m; sourceTree = "<group>"; };
+		FA6BED071FA2A0FB00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA6BED081FA2A0FB00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA6BED091FA2A0FB00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA6BED0A1FA2A0FC00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA6BED0B1FA2A0FC00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA6BED0C1FA2A0FC00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA6BED0D1FA2A0FC00543840 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FA6BED0E1FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA6BED0F1FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA6BED101FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA6BED111FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA6BED121FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA6BED131FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA6BED141FA2A11E00543840 /* zh-Hant-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-TW"; path = "zh-Hant-TW.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FA6BED151FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA6BED161FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA6BED171FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA6BED181FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA6BED191FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA6BED1A1FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA6BED1B1FA2A12800543840 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+InatHelpers.h"; sourceTree = "<group>"; };
 		FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+InatHelpers.m"; sourceTree = "<group>"; };
 		FA6D69571B06A6CD000983F8 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
@@ -1932,6 +1953,9 @@
 				nb,
 				ru,
 				"zh-Hant",
+				"zh-Hant-HK",
+				"zh-Hant-TW",
+				"zh-Hans",
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2382,6 +2406,9 @@
 				FA511CC71F04839000801435 /* nb */,
 				FA511CCE1F0483EB00801435 /* ru */,
 				FA4DAD9F1F9FFE1D0042D2FD /* zh-Hant */,
+				FA6BED071FA2A0FB00543840 /* zh-Hant-HK */,
+				FA6BED0E1FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED151FA2A12800543840 /* zh-Hans */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2404,6 +2431,9 @@
 				FA511CCC1F04839100801435 /* nb */,
 				FA511CD31F0483EB00801435 /* ru */,
 				FA4DADA41F9FFE1E0042D2FD /* zh-Hant */,
+				FA6BED0C1FA2A0FC00543840 /* zh-Hant-HK */,
+				FA6BED131FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED1A1FA2A12800543840 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2425,6 +2455,9 @@
 				FA511CCD1F04839100801435 /* nb */,
 				FA511CD41F0483EB00801435 /* ru */,
 				FA4DADA51F9FFE1E0042D2FD /* zh-Hant */,
+				FA6BED0D1FA2A0FC00543840 /* zh-Hant-HK */,
+				FA6BED141FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED1B1FA2A12800543840 /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2447,6 +2480,9 @@
 				FA511CC91F04839100801435 /* nb */,
 				FA511CD01F0483EB00801435 /* ru */,
 				FA4DADA11F9FFE1D0042D2FD /* zh-Hant */,
+				FA6BED091FA2A0FB00543840 /* zh-Hant-HK */,
+				FA6BED101FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED171FA2A12800543840 /* zh-Hans */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2470,6 +2506,9 @@
 				FA511CCA1F04839100801435 /* nb */,
 				FA511CD11F0483EB00801435 /* ru */,
 				FA4DADA21F9FFE1D0042D2FD /* zh-Hant */,
+				FA6BED0A1FA2A0FC00543840 /* zh-Hant-HK */,
+				FA6BED111FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED181FA2A12800543840 /* zh-Hans */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2493,6 +2532,9 @@
 				FA511CCB1F04839100801435 /* nb */,
 				FA511CD21F0483EB00801435 /* ru */,
 				FA4DADA31F9FFE1E0042D2FD /* zh-Hant */,
+				FA6BED0B1FA2A0FC00543840 /* zh-Hant-HK */,
+				FA6BED121FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED191FA2A12800543840 /* zh-Hans */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2516,6 +2558,9 @@
 				FA511CC81F04839100801435 /* nb */,
 				FA511CCF1F0483EB00801435 /* ru */,
 				FA4DADA01F9FFE1D0042D2FD /* zh-Hant */,
+				FA6BED081FA2A0FB00543840 /* zh-Hant-HK */,
+				FA6BED0F1FA2A11E00543840 /* zh-Hant-TW */,
+				FA6BED161FA2A12800543840 /* zh-Hans */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

@@ -1,35 +1,35 @@
-/*Class = "UILabel"; text = "Project name"; ObjectID = "5g3-Ck-7dj";*/
+/* Class = "UILabel"; text = "Project name"; ObjectID = "5g3-Ck-7dj"; */
 "5g3-Ck-7dj.text" = "Nombre del proyecto";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "8Dx-bO-69j";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "8Dx-bO-69j"; */
 "8Dx-bO-69j.text" = "Etiqueta";
 
-/*Class = "UITabBarItem"; title = "Projects"; ObjectID = "AeY-f8-V2Q";*/
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "AeY-f8-V2Q"; */
 "AeY-f8-V2Q.title" = "Proyectos";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "DxM-XT-Dil";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "DxM-XT-Dil"; */
 "DxM-XT-Dil.text" = "Etiqueta";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "VoO-3j-QSk";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "VoO-3j-QSk"; */
 "VoO-3j-QSk.text" = "Etiqueta";
 
-/*Class = "UILabel"; text = "50"; ObjectID = "Wp5-th-kO8";*/
+/* Class = "UILabel"; text = "50"; ObjectID = "Wp5-th-kO8"; */
 "Wp5-th-kO8.text" = "50";
 
-/*Class = "UIButton"; normalTitle = "Join"; ObjectID = "XoY-j9-s3Z";*/
+/* Class = "UIButton"; normalTitle = "Join"; ObjectID = "XoY-j9-s3Z"; */
 "XoY-j9-s3Z.normalTitle" = "Únete";
 
-/*Class = "UINavigationItem"; title = "Projects"; ObjectID = "erP-HQ-jwa";*/
+/* Class = "UINavigationItem"; title = "Projects"; ObjectID = "erP-HQ-jwa"; */
 "erP-HQ-jwa.title" = "Proyectos";
 
-/*Class = "UITabBarItem"; title = "Projects"; ObjectID = "f8w-lW-pBK";*/
+/* Class = "UITabBarItem"; title = "Projects"; ObjectID = "f8w-lW-pBK"; */
 "f8w-lW-pBK.title" = "Proyectos";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "gpj-j1-cmk";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "gpj-j1-cmk"; */
 "gpj-j1-cmk.text" = "Etiqueta";
 
-/*Class = "UIButton"; normalTitle = "About"; ObjectID = "mg1-3N-wrc";*/
+/* Class = "UIButton"; normalTitle = "About"; ObjectID = "mg1-3N-wrc"; */
 "mg1-3N-wrc.normalTitle" = "Acerca de";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "vWl-jb-1Ry";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "vWl-jb-1Ry"; */
 "vWl-jb-1Ry.text" = "Etiqueta";
