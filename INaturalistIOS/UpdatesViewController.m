@@ -259,8 +259,9 @@
         } else {
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }
-        
-        cell.updateTextLabel.text = [NSString stringWithFormat:@"%@ suggested an ID: %@",
+        NSString *base = NSLocalizedString(@"%1$@ suggested an ID: %2$@",
+                                           @"update notice when someone suggests an ID. %1$@ is the username, %2$@ is the species.");
+        cell.updateTextLabel.text = [NSString stringWithFormat:base,
                                      eur.identification.identifier.login,
                                      eur.identification.taxon.commonName ?: eur.identification.taxon.scientificName
                                      ];
@@ -271,7 +272,9 @@
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }
 
-        cell.updateTextLabel.text = [NSString stringWithFormat:@"%@ commented: %@",
+        NSString *base = NSLocalizedString(@"%1$@ commented: %2$@",
+                                           @"update notice when someone comments. %1$@ is the commenter name, %2$@ is the comment.");
+        cell.updateTextLabel.text = [NSString stringWithFormat:base,
                                      eur.comment.commenter.login,
                                      eur.comment.commentText
                                      ];
