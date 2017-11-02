@@ -234,7 +234,9 @@ static char PARTNER_ASSOCIATED_KEY;
     
     self.switchContextButton.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
     self.switchContextButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
-    
+    [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
+                              forState:UIControlStateNormal];
+
     self.passwordField.rightView = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.frame = CGRectMake(0, 0, 65, 44);
