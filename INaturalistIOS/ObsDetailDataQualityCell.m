@@ -40,6 +40,10 @@
     self.needsIDLabel.textColor = [UIColor colorWithHexString:@"#c8c7cc"];
     self.researchLabel.textColor = [UIColor colorWithHexString:@"#c8c7cc"];
     
+    self.casualLabel.text = NSLocalizedString(@"Casual Grade", @"casual data quality");
+    self.needsIDLabel.text = NSLocalizedString(@"Needs ID", @"needs id data quality");
+    self.researchLabel.text = NSLocalizedString(@"Research Grade", @"research data quality");
+    
     FAKIcon *check = [FAKIonIcons checkmarkIconWithSize:12.0f];
     
     self.casualCheckMark.textColor = [UIColor colorWithHexString:@"#c8c7cc"];
