@@ -19,7 +19,9 @@
     [super viewDidLoad];
 
     [self.pageControl addTarget:self action:@selector(pageControlChangedIndex:) forControlEvents:UIControlEventValueChanged];
+    [self.pageControl setTransform:CGAffineTransformMakeScale(1.2, 1.2)];
     
+
     UIPageControl *pageControl = [UIPageControl appearanceWhenContainedInInstancesOfClasses:@[ [OnboardingViewController class] ]];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     pageControl.currentPageIndicatorTintColor = [UIColor blackColor];

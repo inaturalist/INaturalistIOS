@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -44,24 +44,15 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Efo-ex-SWT" firstAttribute="leading" secondItem="jK3-VW-cec" secondAttribute="leading" id="2w4-rs-1ai"/>
-                            <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="sOh-eX-28k" secondAttribute="bottom" id="QLh-d2-NQu"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
+                            <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="sOh-eX-28k" secondAttribute="bottom" constant="10" id="QLh-d2-NQu"/>
+                            <constraint firstAttribute="leading" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
                             <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="V3h-ZB-opg" secondAttribute="bottom" constant="-20" id="cp9-aT-2MK"/>
-                            <constraint firstItem="sOh-eX-28k" firstAttribute="centerY" secondItem="jK3-VW-cec" secondAttribute="bottom" multiplier="0.75" id="dEB-Lu-1EE">
-                                <variation key="heightClass=regular-widthClass=regular" constant="1"/>
-                            </constraint>
-                            <constraint firstAttribute="trailingMargin" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
+                            <constraint firstAttribute="trailing" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
                             <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="Efo-ex-SWT" secondAttribute="bottom" id="f8M-ZR-GxP"/>
                             <constraint firstAttribute="trailing" secondItem="Efo-ex-SWT" secondAttribute="trailing" id="mXE-Jb-Rse"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="dEB-Lu-1EE"/>
-                            </mask>
-                        </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="dEB-Lu-1EE"/>
                                 <exclude reference="QLh-d2-NQu"/>
                             </mask>
                         </variation>
@@ -125,19 +116,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3yr-K1-cKR">
-                                <rect key="frame" x="30" y="92" width="315" height="427"/>
+                                <rect key="frame" x="30" y="92" width="315" height="366"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-observe" translatesAutoresizingMaskIntoConstraints="NO" id="c12-6I-0ri">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Observe" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0HC-89-zFL">
-                                        <rect key="frame" x="101.5" y="310" width="112" height="36"/>
+                                        <rect key="frame" x="103" y="310" width="109.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XWS-dF-hpb">
-                                        <rect key="frame" x="2" y="366" width="311" height="61"/>
+                                        <rect key="frame" x="-30" y="366" width="0.0" height="0.0"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="738" id="1AW-OI-064">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
@@ -199,19 +190,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6Iv-Oy-yzX">
-                                <rect key="frame" x="30" y="92" width="315" height="427"/>
+                                <rect key="frame" x="30" y="92" width="315" height="366"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-identify" translatesAutoresizingMaskIntoConstraints="NO" id="3Jv-x6-KHK">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Identify" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCH-CP-6hM">
-                                        <rect key="frame" x="108" y="310" width="99" height="36"/>
+                                        <rect key="frame" x="109.5" y="310" width="96.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iNaturalist will automatically generate suggestions based on your photo and location." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nb8-x2-D2v">
-                                        <rect key="frame" x="11" y="366" width="293" height="61"/>
+                                        <rect key="frame" x="-30" y="366" width="0.0" height="0.0"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="418" id="kEA-wO-xcL">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
@@ -271,19 +262,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YMy-Rp-boP">
-                                <rect key="frame" x="30" y="92" width="315" height="427"/>
+                                <rect key="frame" x="30" y="92" width="315" height="366"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-discuss" translatesAutoresizingMaskIntoConstraints="NO" id="WVA-09-tvX">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discuss" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2hB-WM-pN1">
-                                        <rect key="frame" x="105.5" y="310" width="104.5" height="36"/>
+                                        <rect key="frame" x="106.5" y="310" width="102" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share your observation with the community to discuss and confirm your findings." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ixn-0U-lJ7">
-                                        <rect key="frame" x="4.5" y="366" width="306" height="61"/>
+                                        <rect key="frame" x="-30" y="366" width="0.0" height="0.0"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="698" id="e0M-Vn-eN4">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
@@ -602,19 +593,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="xel-z6-qIE">
-                                <rect key="frame" x="30" y="92" width="315" height="447.5"/>
+                                <rect key="frame" x="30" y="92" width="315" height="366"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-contribute" translatesAutoresizingMaskIntoConstraints="NO" id="jWP-nj-KdU">
                                         <rect key="frame" x="5.5" y="0.0" width="304" height="290"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contribute" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sBd-1Y-eNL">
-                                        <rect key="frame" x="87.5" y="310" width="140.5" height="36"/>
+                                        <rect key="frame" x="89" y="310" width="137" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oro-uB-RY1">
-                                        <rect key="frame" x="6" y="366" width="303.5" height="81.5"/>
+                                        <rect key="frame" x="-30" y="366" width="0.0" height="0.0"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="734" id="s1O-Nd-X9S">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="500"/>
