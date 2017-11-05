@@ -61,7 +61,11 @@
         });
     } else {
         NSMutableArray *results = [NSMutableArray array];
-        NSInteger totalResults = [[json valueForKey:@"total_results"] integerValue];
+        NSInteger totalResults = 0;
+        NSString *totalResultsKey = @"total_results";
+        if ([json valueForKey:totalResultsKey] && [json valueForKey:totalResultsKey] != [NSNull null]) {
+            totalResults = [[json valueForKey:totalResultsKey] integerValue];
+        }
         
         for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
             NSError *error;
