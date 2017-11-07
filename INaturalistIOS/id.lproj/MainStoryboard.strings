@@ -1,363 +1,368 @@
-/*Class = "IBUIBarButtonItem"; title = "Edit"; ObjectID = "0Fk-rY-9h1";*/
+/* Class = "IBUIBarButtonItem"; title = "Edit"; ObjectID = "0Fk-rY-9h1"; */
 "0Fk-rY-9h1.title" = "Ubah";
 
-/*Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ";*/
+/* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
 "0Q2-fy-dMQ.text" = "Panduan";
 
-/*Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3";*/
+/* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
+"aTs-25-Wva.text" = "Change username";
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Penamaan otomatis";
 
-/*Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "thU-yQ-HUV";*/
-"thU-yQ-HUV.text" = "Automatically upload";
+/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
+"TeG-HZ-eQD.text" = "Automatically upload";
 
+/* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
+"RjU-G5-BWG.text" = "Suggest species";
 
-/*Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV";*/
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "Mengkategorikan pengamatan baru";
 
-/*Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka";*/
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
 "g3B-dy-Lka.text" = "Jaringan iNaturalist";
 
-/*Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB";*/
+/* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
 "0U1-va-cIB.title" = "Panduan";
 
-/*Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona";*/
+/* Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona"; */
 "1bw-oa-ona.placeholder" = "Tempat yang tidak diketahui";
 
-/*Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ";*/
+/* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ"; */
 "1hu-IK-XsQ.text" = "Nama ilmiah";
 
-/*Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj";*/
+/* Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj"; */
 "1yP-Oa-9Kj.title" = "Masuk";
 
-/*Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S";*/
+/* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S"; */
 "31c-qh-A6S.title" = "Tambahkan";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
 "3DS-CL-NMe.headerTitle" = "Masuk via Facebook";
 
-/*Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn";*/
+/* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
 "46e-pE-mJn.text" = "???";
 
-/*Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS";*/
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS"; */
 "6Eu-N7-evS.text" = "Judul";
 
-/*Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW";*/
+/* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
 "6UX-BL-9DW.title" = "Proyek";
 
-/*Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA";*/
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
 "nla-WE-iqA.text" = "Nama Pengguna";
 
-/*Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU";*/
+/* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
 "7ua-fh-uvU.placeholder" = "Nama pengguna iNat anda";
 
-/*Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v";*/
+/* Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
 "9br-9C-J7v.headerTitle" = "Apa yang Anda lihat?";
 
-/*Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH";*/
+/* Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH"; */
 "AWa-0U-YdH.text" = "Atribusi";
 
-/*Class = "IBUITextField"; placeholder = "Your iNat password"; ObjectID = "AeG-t0-DTD";*/
+/* Class = "IBUITextField"; placeholder = "Your iNat password"; ObjectID = "AeG-t0-DTD"; */
 "AeG-t0-DTD.placeholder" = "Sandi iNat anda";
 
-/*Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl";*/
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl"; */
 "AiV-F7-sFl.text" = "Detail";
 
-/*Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA";*/
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA"; */
 "Be1-xj-miA.text" = "Label";
 
-/*Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV";*/
+/* Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV"; */
 "CFS-AV-ZYV.text" = "Lon:";
 
-/*Class = "IBUILabel"; text = "Geoprivacy"; ObjectID = "CrY-as-UVn";*/
+/* Class = "IBUILabel"; text = "Geoprivacy"; ObjectID = "CrY-as-UVn"; */
 "CrY-as-UVn.text" = "Geoprivacy";
 
-/*Class = "IBUILabel"; text = "Label"; ObjectID = "D22-7s-3ca";*/
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "D22-7s-3ca"; */
 "D22-7s-3ca.text" = "Label";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x"; */
 "Df8-ua-w8x.headerTitle" = "Deskripsi Wikipedia";
 
-/*Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8";*/
+/* Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8"; */
 "EGB-Ac-Dg8.title" = "Panduan";
 
-/*Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF";*/
+/* Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF"; */
 "EcO-h2-uOF.text" = "Nama standar spesies";
 
-/*Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD";*/
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD"; */
 "Edp-cg-PsD.text" = "Judul";
 
-/*Class = "IBUINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx";*/
+/* Class = "IBUINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx"; */
 "F6V-RD-Yrx.title" = "Takson";
 
-/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA";*/
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA"; */
 "GC7-gQ-cDA.text" = "Tidak diketahui";
 
-/*Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X";*/
+/* Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X"; */
 "GKo-Sv-g5X.title" = "Mengamati";
 
-/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU";*/
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU"; */
 "GmQ-fX-MuU.title" = "Proyek";
 
-/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ";*/
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ"; */
 "Gq1-rm-ccJ.text" = "Tidak diketahui";
 
-/*Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS";*/
+/* Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS"; */
 "H2L-mX-7uS.text" = "Judul tambahan";
 
-/*Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB";*/
+/* Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB"; */
 "HB8-Oo-jRB.title" = "Tutup";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Version"; ObjectID = "I43-iz-miT";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Version"; ObjectID = "I43-iz-miT"; */
 "I43-iz-miT.headerTitle" = "Versi";
 
-/*Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev";*/
+/* Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev"; */
 "IvC-UJ-yev.text" = "Hubungi bantuan";
 
-/*Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW";*/
+/* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
 "r3a-dI-zLW.text" = "Menyukai iNat? Nilai kami";
 
-/*Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL";*/
+/* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "Memilih proyek";
 
-/*Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ";*/
+/* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ"; */
 "JRR-T4-jKQ.title" = "Selesai";
 
-/*Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal";*/
+/* Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal"; */
 "JkM-AH-Zal.text" = "buka";
 
-/*Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb";*/
+/* Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb"; */
 "Kfy-Up-oCb.title" = "Cari spesies";
 
-/*Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv";*/
+/* Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv"; */
 "Kp6-B4-NJv.text" = "Mendaftar";
 
-/*Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT";*/
+/* Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT"; */
 "M93-9f-xgT.text" = "???";
 
-/*Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I";*/
+/* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
 "ME2-ai-L2I.normalTitle" = "Lihat lebih banyak...";
 
-/*Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD";*/
+/* Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
 "Nsa-pu-mCD.title" = "Memilih proyek";
 
-/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "Obm-wO-wio";*/
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "Obm-wO-wio"; */
 "Obm-wO-wio.title" = "Batalkan";
 
-/*Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM";*/
+/* Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM"; */
 "Ohz-Dw-0wM.text" = "Nama spesies";
 
-/*Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4";*/
+/* Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4"; */
 "P1E-WK-OB4.text" = "00:00 AM";
 
-/*Class = "IBUINavigationItem"; title = "Project"; ObjectID = "Pc6-ER-pVU";*/
+/* Class = "IBUINavigationItem"; title = "Project"; ObjectID = "Pc6-ER-pVU"; */
 "Pc6-ER-pVU.title" = "Proyek";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Location"; ObjectID = "Q0S-qE-f4O";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Location"; ObjectID = "Q0S-qE-f4O"; */
 "Q0S-qE-f4O.headerTitle" = "Lokasi";
 
-/*Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq";*/
+/* Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq"; */
 "QYT-BR-dNq.text" = "Butuh bantuan identifikasi?";
 
-/*Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh";*/
+/* Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh"; */
 "Qrv-G3-6nh.text" = "Dirancang dan dibangun oleh iNaturalist di California Academy of Sciences, dengan dukungan dari Encyclopedia of Life.\n\nAplikasi ini menggunakan banyak sumber terbuka dan lisensi Creative Common-materials, termasuk Three20, Restkit, TapkuLibrary oleh Devin Ross, DejalActivityView oleh David Sinclair, dan Glyphish ikon oleh Joseph Wain. Terima kasih banyak kepada para insinyur dermawan, berbakat dan seniman ini! ";
 
-/*Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x";*/
+/* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
 "R4F-3k-D7x.text" = "???";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ"; */
 "RVt-Kj-7RQ.headerTitle" = "Status konservasi";
 
-/*Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM";*/
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM"; */
 "SQG-h4-rqM.text" = "Nama Pengguna";
 
-/*Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq";*/
+/* Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq"; */
 "SaM-EA-Ovq.title" = "Panduan takson";
 
-/*Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI";*/
+/* Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI"; */
 "Sr1-uD-ljI.text" = "2.1.1, membangun 2.1.12";
 
-/*Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C";*/
+/* Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C"; */
 "TJg-mX-i6C.text" = "Masuk via Facebook";
 
-/*Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU";*/
+/* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
 "UWz-sc-ZIU.text" = "m";
 
-/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95";*/
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95"; */
 "VjR-qL-q95.segmentTitles[0]" = "Standar";
 
-/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95";*/
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95"; */
 "VjR-qL-q95.segmentTitles[1]" = "Satelit";
 
-/*Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95";*/
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95"; */
 "VjR-qL-q95.segmentTitles[2]" = "Hibrida";
 
-/*Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j";*/
+/* Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j"; */
 "Vmt-AE-W0j.title" = "Ubah";
 
-/*Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ";*/
+/* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ"; */
 "X8Y-bf-fBQ.text" = "Judul proyek terlalu panjang";
 
-/*Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF";*/
+/* Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF"; */
 "XXq-bW-vbF.title" = "Rincian proyek";
 
-/*Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh";*/
+/* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh"; */
 "XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
 
-/*Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4";*/
+/* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
 "Ypi-aU-Rf4.text" = "Daftar merah IUCN";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs"; */
 "Z4l-tt-zMs.headerTitle" = "Tanggal & waktu";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Projects"; ObjectID = "ZOk-5a-K6O";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Projects"; ObjectID = "ZOk-5a-K6O"; */
 "ZOk-5a-K6O.headerTitle" = "Proyek";
 
-/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "ZUi-2S-ebn";*/
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "ZUi-2S-ebn"; */
 "ZUi-2S-ebn.title" = "Proyek";
 
-/*Class = "IBUILabel"; text = "Password"; ObjectID = "ZzY-Yv-hhu";*/
+/* Class = "IBUILabel"; text = "Password"; ObjectID = "ZzY-Yv-hhu"; */
 "ZzY-Yv-hhu.text" = "Sandi";
 
-/*Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA";*/
+/* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA"; */
 "bKM-7Q-aRA.text" = "Judul proyek terlalu panjang";
 
-/*Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF";*/
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF"; */
 "bTy-8i-NnF.text" = "Label";
 
-/*Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9";*/
+/* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9"; */
 "bW0-Pb-mB9.text" = "Nama ilmiah";
 
-/*Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA";*/
+/* Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA"; */
 "cQc-hZ-KcA.headerTitle" = "Selengkapnya";
 
-/*Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "cSZ-cD-dfS";*/
+/* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "cSZ-cD-dfS"; */
 "cSZ-cD-dfS.title" = "Tambahkan";
 
-/*Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb";*/
+/* Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb"; */
 "cTI-n2-vmb.title" = "Judul panduan";
 
-/*Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC";*/
+/* Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC"; */
 "dYu-ti-1gC.text" = "Menambahkan pengamatan";
 
-/*Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk";*/
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk"; */
 "e0j-MT-hzk.text" = "Tidak diketahui";
 
-/*Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY";*/
+/* Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY"; */
 "eMN-g3-ANY.text" = "Akun.";
 
-/*Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht";*/
+/* Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht"; */
 "exb-m5-Kht.text" = "Nama takson";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Observation Rules"; ObjectID = "gDe-P6-41D";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Observation Rules"; ObjectID = "gDe-P6-41D"; */
 "gDe-P6-41D.headerTitle" = "Aturan pengamatan";
 
-/*Class = "IBUILabel"; text = "Lat:"; ObjectID = "gq3-Sv-hEY";*/
+/* Class = "IBUILabel"; text = "Lat:"; ObjectID = "gq3-Sv-hEY"; */
 "gq3-Sv-hEY.text" = "Lat:";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh"; */
 "h2K-Kg-3dh.headerTitle" = "Masuk dengan akun Google+";
 
-/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN";*/
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN"; */
 "hKK-sS-qAN.title" = "Batalkan";
 
-/*Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb";*/
+/* Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb"; */
 "hX2-Qg-qfb.normalTitle" = "Lihat di iNaturalist";
 
-/*Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u";*/
+/* Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u"; */
 "hfA-vB-13u.text" = "Masuk";
 
-/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT";*/
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT"; */
 "jaz-9S-FvT.title" = "Batalkan";
 
-/*Class = "IBUILabel"; text = "Common name"; ObjectID = "ju8-if-UDh";*/
+/* Class = "IBUILabel"; text = "Common name"; ObjectID = "ju8-if-UDh"; */
 "ju8-if-UDh.text" = "Nama umum";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Description"; ObjectID = "kaD-3n-Xuk";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Description"; ObjectID = "kaD-3n-Xuk"; */
 "kaD-3n-Xuk.headerTitle" = "Keterangan";
 
-/*Class = "IBUITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0";*/
+/* Class = "IBUITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0"; */
 "l3n-dl-Zr0.title" = "Pengaturan";
 
-/*Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku";*/
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku"; */
 "lPu-9O-6Ku.title" = "Proyek";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I"; */
 "ljj-kr-K3I.headerTitle" = "Tidak memiliki akun?";
 
-/*Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p";*/
+/* Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p"; */
 "lol-PH-r6p.text" = "Pilih jenis peta";
 
-/*Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "mgd-CX-pVK";*/
+/* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "mgd-CX-pVK"; */
 "mgd-CX-pVK.title" = "Selesai";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
 "oWq-bA-sYY.headerTitle" = "Akun iNaturalist Anda";
 
-/*Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2";*/
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
 "LbD-zB-zU2.headerTitle" = "Pengaturan app";
 
-/*Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM";*/
+/* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
 "ohk-ES-lZM.text" = "Masuk menggunakan Google";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "Bantuan";
 
-/*Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO";*/
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
 "sxb-6N-VGO.headerTitle" = "Tentang";
 
-/*Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh";*/
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
 "zPB-Sx-9Uh.text" = "Ucapan Terimakasih";
 
-/*Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ";*/
+/* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "Nama spesies";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
 "qJK-jT-EPE.headerTitle" = "Catatan";
 
-/*Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C";*/
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C"; */
 "qfi-HT-h2C.title" = "Batalkan";
 
-/*Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP";*/
+/* Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP"; */
 "qsE-wG-WNP.text" = "Judul proyek";
 
-/*Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R";*/
+/* Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R"; */
 "r3N-gL-j8R.text" = "Nama Proyek";
 
-/*Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj";*/
+/* Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj"; */
 "r7b-jc-Kqj.title" = "Sinkronisasikan";
 
-/*Class = "IBUILabel"; text = "Title"; ObjectID = "rwB-lT-a3J";*/
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "rwB-lT-a3J"; */
 "rwB-lT-a3J.text" = "Judul";
 
-/*Class = "IBUITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn";*/
+/* Class = "IBUITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn"; */
 "s0d-iz-ydn.title" = "Pengamatan";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
 "tW8-NR-sj7.headerTitle" = "Masuk ke iNaturalist.org";
 
-/*Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV";*/
+/* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
 "tiA-DP-jEV.title" = "Masuk";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC"; */
 "tnA-n3-DOC.headerTitle" = "Ketentuan";
 
-/*Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX";*/
+/* Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX"; */
 "tp5-5y-3mX.normalTitle" = "Rincian";
 
-/*Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf";*/
+/* Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf"; */
 "uR8-0q-Vnf.title" = "Pengamatan";
 
-/*Class = "IBUIBarButtonItem"; title = "Join"; ObjectID = "wCV-Z1-3g6";*/
+/* Class = "IBUIBarButtonItem"; title = "Join"; ObjectID = "wCV-Z1-3g6"; */
 "wCV-Z1-3g6.title" = "Gabung";
 
-/*Class = "IBUITableViewSection"; headerTitle = "Credits"; ObjectID = "wVj-s3-ngo";*/
+/* Class = "IBUITableViewSection"; headerTitle = "Credits"; ObjectID = "wVj-s3-ngo"; */
 "wVj-s3-ngo.headerTitle" = "Kredit";
 
-/*Class = "IBUITabBarItem"; title = "Map"; ObjectID = "x9r-Ta-0Z8";*/
+/* Class = "IBUITabBarItem"; title = "Map"; ObjectID = "x9r-Ta-0Z8"; */
 "x9r-Ta-0Z8.title" = "Peta";
 
-/*Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps";*/
+/* Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps"; */
 "xdk-Tu-cps.text" = "Nama panduan";
 
-/*Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G";*/
+/* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Mengedit lokasi";

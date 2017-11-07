@@ -4,12 +4,17 @@
 /* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
 "0Q2-fy-dMQ.text" = "使用教學";
 
+/* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
+"aTs-25-Wva.text" = "Change username";
+
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "自動填上名字";
 
-/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "thU-yQ-HUV"; */
-"thU-yQ-HUV.text" = "自動上傳";
+/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
+"TeG-HZ-eQD.text" = "Automatically upload";
 
+/* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
+"RjU-G5-BWG.text" = "Suggest species";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "對新的觀察記錄進行分類";

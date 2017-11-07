@@ -1,62 +1,65 @@
-/*Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL";*/
+/* Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL"; */
 "0HC-89-zFL.text" = "Observer";
 
-/*Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk";*/
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
 "2e2-wM-KPk.placeholder" = "E-mail";
 
-/*Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1";*/
+/* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
 "2hB-WM-pN1.text" = "Discuter";
 
-/*Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k";*/
+/* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
 "Bfj-77-C1k.text" = "Ou connectez-vous avec:";
 
-/*Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo";*/
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
 "FZ5-km-oDo.placeholder" = "Mot de passe";
 
-/*Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb";*/
+/* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
 "J6N-uD-ctb.normalTitle" = "Passer >";
 
-/*Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA";*/
+/* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
 "LVz-7N-QYA.normalTitle" = "S'enregistrer";
 
-/*Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph";*/
+/* Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph"; */
 "MC0-kW-bph.normalTitle" = "X";
 
-/*Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v";*/
+/* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
 "Nb8-x2-D2v.text" = "iNaturalist génèrera automatiquement des suggestions basées sur votre photo et l'emplacement.";
 
-/*Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe";*/
+/* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
 "RqF-E7-mYe.text" = "Explorez et connectez vous avec la nature";
 
-/*Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb";*/
+/* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "Glisser >";
+
+/* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
 "XWS-dF-hpb.text" = "Sortez et observez un être vivant. Choisissez quelque chose dans la nature, et prenez une photo nette et bien cadrée.";
 
-/*Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc";*/
+/* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
 "YtY-We-SSc.text" = "En utilisant iNaturalist, vous acceptez les Conditions d'utilisation et la Politique de confidentialité";
 
-/*Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG";*/
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
 "dSw-gs-zGG.placeholder" = "Nom d'utilisateur";
 
-/*Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7";*/
+/* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
 "ixn-0U-lJ7.text" = "Partagez votre observation avec la communauté pour discuter et confirmer vos découvertes.";
 
-/*Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1";*/
+/* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
 "oro-uB-RY1.text" = "Votre observation peut être vérifiée comme Niveau Recherche et partagée avec des scientifiques qui travaillent pour mieux comprendre et protéger la nature. ";
 
-/*Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy";*/
+/* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
 "pbQ-o3-5Xy.text" = "S'enregistrer";
 
-/*Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL";*/
+/* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
 "sBd-1Y-eNL.text" = "Contribuer";
 
-/*Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF";*/
+/* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
 "uop-S8-3lF.normalTitle" = "Vous avez déjà un compte?";
 
-/*Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM";*/
+/* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
 "vCH-CP-6hM.text" = "Identifier";
 
-/*Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN";*/
+/* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
 "xUc-8o-XIN.text" = "Oui, accordez une licence à mon contenu pour que les scientifiques puissent l'utiliser. Apprenez-en davantage";
 
-/*Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09";*/
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
 "yxB-jO-b09.normalTitle" = "Bouton";

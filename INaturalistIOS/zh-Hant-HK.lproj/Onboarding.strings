@@ -28,6 +28,9 @@
 /* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
 "RqF-E7-mYe.text" = "探索和與大自然連繫";
 
+/* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "滑動 >";
+
 /* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
 "XWS-dF-hpb.text" = "走去戶外並觀察一種生物。選擇一些野生的生物做為對象，並拍攝一張清楚完整的照片。";
 
