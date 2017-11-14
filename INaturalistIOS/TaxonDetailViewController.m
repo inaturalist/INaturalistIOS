@@ -58,9 +58,18 @@
 
 - (void)infoTapped:(id)sender {
     if (self.taxon) {
-        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", [self.taxon taxonId]];
+        // path to the taxon detail screen
+        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", (long)[self.taxon taxonId]];
         NSURL *taxonUrl = [[NSURL inat_baseURL] URLByAppendingPathComponent:taxonPath];
-        [[UIApplication sharedApplication] openURL:taxonUrl];
+        NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:taxonUrl resolvingAgainstBaseURL:NO];
+        
+        // add a locale
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *queryString = [NSString stringWithFormat:@"locale=%@", language];
+        [urlComponents setQuery:queryString];
+        
+        // open the constructed URL
+        [[UIApplication sharedApplication] openURL:[urlComponents URL]];
     }
 }
 
