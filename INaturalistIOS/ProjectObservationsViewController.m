@@ -10,6 +10,7 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <ActionSheetPicker-3.0/ActionSheetPicker.h>
 #import <FontAwesomeKit/FAKIonicons.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"

@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <RestKit/RestKit.h>
 #import <CoreData/CoreData.h>
 
 @interface INatModel : NSManagedObject

@@ -10,6 +10,7 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <YLMoment/YLMoment.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"

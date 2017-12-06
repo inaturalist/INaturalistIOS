@@ -17,6 +17,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h> 
 #import <AFNetworking/UIButton+AFNetworking.h>
+#import <RestKit/RestKit.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"

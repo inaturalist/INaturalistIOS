@@ -11,6 +11,7 @@
 #import <MBPRogressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <RestKit/RestKit.h>
 
 #import "ObservationActivityViewController.h"
 #import "Observation.h"

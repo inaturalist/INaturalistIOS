@@ -11,6 +11,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
 #import <UIView+WebCache.h>
+#import <RestKit/RestKit.h>
 
 #import "AddIdentificationViewController.h"
 #import "Observation.h"

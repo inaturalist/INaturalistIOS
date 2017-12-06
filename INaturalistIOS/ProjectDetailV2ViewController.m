@@ -10,6 +10,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailV2ViewController.h"
 #import "Project.h"

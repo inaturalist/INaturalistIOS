@@ -13,7 +13,6 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#import <RestKit/RestKit.h>
 #import "constants.h"
 #import "config.h"
 #import "NSString+Helpers.h"

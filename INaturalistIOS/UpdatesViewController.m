@@ -10,6 +10,7 @@
 #import <YLMoment/YLMoment.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ExploreUpdateRealm.h"
 #import "UpdatesViewController.h"

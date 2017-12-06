@@ -8,6 +8,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailFavesViewModel.h"
 #import "Observation.h"

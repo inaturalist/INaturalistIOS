@@ -11,6 +11,7 @@
 #import <BlocksKit/BlocksKit.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <CoreLocation/CoreLocation.h>
+#import <RestKit/RestKit.h>
 
 #import "ExploreSearchViewController.h"
 #import "ExploreMapViewController.h"

@@ -13,6 +13,7 @@
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <Photos/Photos.h>
 #import <M13ProgressSuite/M13ProgressViewPie.h>
+#import <RestKit/RestKit.h>
 
 #import "ConfirmPhotoViewController.h"
 #import "Taxon.h"

@@ -8,6 +8,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailSpeciesViewController.h"
 #import "SpeciesCount.h"

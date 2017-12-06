@@ -6,6 +6,8 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+#import <RestKit/RestKit.h>
+
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
 #import "ExploreUpdate.h"

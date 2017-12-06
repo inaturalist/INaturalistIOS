@@ -11,6 +11,7 @@
 #import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <RestKit/RestKit.h>
 
 #import "SiteNewsViewController.h"
 #import "NewsItem.h"

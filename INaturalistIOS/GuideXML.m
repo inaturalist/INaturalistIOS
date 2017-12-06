@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
+#import <RestKit/RestKit.h>
+
 #import "GuideXML.h"
 #import "RXMLElement+Helpers.h"
 

@@ -8,6 +8,7 @@
 
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <RestKit/RestKit.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"

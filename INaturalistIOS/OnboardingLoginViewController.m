@@ -14,6 +14,7 @@
 #import <NXOAuth2Client/NXOAuth2.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <objc/runtime.h>
+#import <RestKit/RestKit.h>
 
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"

@@ -13,6 +13,7 @@
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <objc/runtime.h>
 #import <Photos/Photos.h>
+#import <RestKit/RestKit.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"

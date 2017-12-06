@@ -7,6 +7,7 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <RestKit/RestKit.h>
 
 #import "AddCommentViewController.h"
 #import "Observation.h"

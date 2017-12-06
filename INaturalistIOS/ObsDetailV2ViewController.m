@@ -11,6 +11,7 @@
 #import <Toast/UIView+Toast.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <ARSafariActivity/ARSafariActivity.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"

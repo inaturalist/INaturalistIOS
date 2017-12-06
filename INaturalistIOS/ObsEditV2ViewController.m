@@ -19,6 +19,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsEditV2ViewController.h"
 #import "Observation.h"

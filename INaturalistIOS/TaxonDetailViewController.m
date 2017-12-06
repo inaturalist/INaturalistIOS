@@ -11,6 +11,7 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "TaxonDetailViewController.h"
 #import "TaxaAPI.h"

@@ -6,8 +6,9 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import "DeletedRecord.h"
+#import <RestKit/RestKit.h>
 
+#import "DeletedRecord.h"
 
 @implementation DeletedRecord
 

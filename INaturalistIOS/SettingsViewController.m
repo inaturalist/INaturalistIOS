@@ -18,6 +18,7 @@
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <Realm/Realm.h>
+#import <RestKit/RestKit.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
