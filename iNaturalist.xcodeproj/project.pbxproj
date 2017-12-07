@@ -215,6 +215,7 @@
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
+		FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
 		FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */; };
 		FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07441E1B15B100AE7833 /* Diptera.json */; };
@@ -261,6 +262,7 @@
 		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
 		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
+		FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
 		FAEF23311C7CF20500208F44 /* ProjectDetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */; };
 		FAEF23351C7D00A600208F44 /* INatAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23341C7D00A600208F44 /* INatAPI.m */; };
@@ -799,6 +801,8 @@
 		FA9437851C869B7300CB10F3 /* ObservationAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAPI.m; sourceTree = "<group>"; };
 		FA9437881C869F5900CB10F3 /* ObservationVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationVisualization.h; sourceTree = "<group>"; };
 		FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		FA99BDC91FD794E300C9D985 /* CommentsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommentsAPI.h; sourceTree = "<group>"; };
+		FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommentsAPI.m; sourceTree = "<group>"; };
 		FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+INaturalist.h"; sourceTree = "<group>"; };
 		FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+INaturalist.m"; sourceTree = "<group>"; };
 		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
@@ -900,6 +904,8 @@
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
+		FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IdentificationsAPI.h; sourceTree = "<group>"; };
+		FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IdentificationsAPI.m; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
 		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1819,16 +1825,20 @@
 		FAEF23321C7D007C00208F44 /* iNat Node API */ = {
 			isa = PBXGroup;
 			children = (
+				FA99BDC91FD794E300C9D985 /* CommentsAPI.h */,
+				FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */,
+				FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */,
+				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
 				FAEF23331C7D00A600208F44 /* INatAPI.h */,
 				FAEF23341C7D00A600208F44 /* INatAPI.m */,
-				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
-				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
-				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
-				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA9437841C869B7300CB10F3 /* ObservationAPI.h */,
 				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
 				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
 				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
+				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
+				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
+				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
+				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
 			);
 			name = "iNat Node API";
 			sourceTree = "<group>";
@@ -2207,6 +2217,7 @@
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
 				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
 				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
+				FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */,
 				FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */,
 				FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */,
 				FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */,
@@ -2261,6 +2272,7 @@
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
 				FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */,
+				FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */,
 				FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
 				FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */,
