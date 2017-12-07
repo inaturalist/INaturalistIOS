@@ -16,15 +16,29 @@
 
 @implementation INatAPI
 
+- (void)post:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"POST" path:path params:params classMapping:classForMapping handler:done];
+}
+
+- (void)put:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"PUT" path:path params:params classMapping:classForMapping handler:done];
+}
+
+- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"GET" path:path params:nil classMapping:classForMapping handler:done];
+}
+
 - (NSString *)apiBaseUrl {
     return @"https://api.inaturalist.org/v1";
 }
 
-- (void)fetch:(NSString *)path classMapping:(Class)classMapping handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    
     path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = method;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
@@ -32,22 +46,42 @@
         [request addValue:[login jwtToken]
        forHTTPHeaderField:@"Authorization"];
     }
-
+    
+    if (params) {
+        NSError *paramsErr = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&paramsErr];
+        if (paramsErr) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(nil, 0, paramsErr);
+            });
+            return;
+        }
+        request.HTTPBody = jsonData;
+        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    }
+    
+    
     if (url) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
         [[session dataTaskWithRequest:request
-                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                    if (error) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            done(nil, 0, error);
-                        });
-                    } else {
-                        [self extractObjectsFromData:data
-                                        classMapping:classMapping
-                                             handler:done];
-                    }
-                }] resume];
+                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                        if (error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
+                        } else {
+                            if (classForMapping) {
+                                [self extractObjectsFromData:data
+                                                classMapping:classForMapping
+                                                     handler:done];
+                            } else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    done(nil, 0, nil);
+                                });
+                            }
+                        }
+                    }] resume];
     }
 }
 
