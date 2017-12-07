@@ -11,7 +11,6 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
 #import <UIView+WebCache.h>
-#import <RestKit/RestKit.h>
 
 #import "AddIdentificationViewController.h"
 #import "Observation.h"
@@ -20,6 +19,9 @@
 #import "Analytics.h"
 #import "TextViewCell.h"
 #import "ObsDetailTaxonCell.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "IdentificationsAPI.h"
 
 @interface AddIdentificationViewController () <RKRequestDelegate, UITextViewDelegate> {
     BOOL viewHasPresented;
@@ -71,10 +73,6 @@
     }
 }
 
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
-}
-
 - (IBAction)cancelAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -82,7 +80,7 @@
 - (IBAction)saveAction:(id)sender {
     
     BOOL inputValidated = YES;
-    NSString *alertMsg;
+    NSString *alertMsg = nil;
     
     if (!self.observation || ![self.observation inatRecordId]) {
         inputValidated = NO;
@@ -99,6 +97,7 @@
         if (!alertMsg) {
             alertMsg = NSLocalizedString(@"Unknown error while making an identification.", @"Unknown error");
         }
+        
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                        message:alertMsg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -110,20 +109,41 @@
         return;
     }
     
-    NSDictionary *params = @{
-                             @"identification[body]": self.comment ?: @"",
-                             @"identification[observation_id]": @([self.observation inatRecordId]),
-                             @"identification[taxon_id]": @([self.taxon taxonId]),
-                             @"identification[vision]": @(self.taxonViaVision),
-                             };
-    [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
+    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    __weak typeof(self) weakSelf = self;
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = NSLocalizedString(@"Saving...",nil);
-    hud.removeFromSuperViewOnHide = YES;
-    hud.dimBackground = YES;
-    
-    [[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
+    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+        [api addIdentificationTaxonId:weakSelf.taxon.taxonId
+                        observationId:weakSelf.observation.inatRecordId
+                                 body:weakSelf.comment ?: nil
+                               vision:self.taxonViaVision
+                              handler:^(NSArray *results, NSInteger count, NSError *error) {
+                                  [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
+                                  
+                                  if (error) {
+                                      UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                                                     message:error.localizedDescription
+                                                                                              preferredStyle:UIAlertControllerStyleAlert];
+                                      [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                                style:UIAlertActionStyleCancel
+                                                                              handler:nil]];
+                                      [weakSelf presentViewController:alert animated:YES completion:nil];
+                                  } else {
+                                      [self.navigationController popViewControllerAnimated:YES];
+                                  }
+                              }];
+    } failure:^(NSError *error) {
+        [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                       message:error.localizedDescription
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [weakSelf presentViewController:alert animated:YES completion:nil];
+    }];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
@@ -133,34 +153,6 @@
     } else {
         [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
     }
-}
-
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    
-    if (response.statusCode == 200) {
-        [self.navigationController popViewControllerAnimated:YES];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                       message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                   message:error.localizedDescription
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
@@ -239,33 +231,5 @@
 - (void)taxaSearchViewControllerCancelled {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-/*
-- (void)taxonToUI
-{
-    [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
-    
-    UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
-    UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
-    img.layer.cornerRadius = 5.0f;
-    img.clipsToBounds = YES;
-    [img sd_cancelCurrentImageLoad];
-    
-    if (self.taxon) {
-        img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
-        if ([self.taxon photoUrl]) {
-            [img sd_setImageWithURL:[self.taxon photoUrl]
-                   placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
-        }
-        self.speciesGuessTextField.enabled = NO;
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
-    } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
-        self.speciesGuessTextField.enabled = YES;
-        self.speciesGuessTextField.textColor = [UIColor blackColor];
-    }
-}
- */
 
 @end
