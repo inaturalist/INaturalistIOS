@@ -41,6 +41,7 @@
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
 #import "ImageStore.h"
+#import "INatReachability.h"
 
 static const int CreditsSection = 3;
 
@@ -86,7 +87,7 @@ static const int SuggestionsSwitchTag = 103;
 }
 
 - (void)tappedUsername {
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         NSString *title = NSLocalizedString(@"Change username?",nil);
         NSString *msg = NSLocalizedString(@"Are you really sure?",
                                           nil);
@@ -310,7 +311,7 @@ static const int SuggestionsSwitchTag = 103;
 
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
     } else {
         [self networkUnreachableAlert];
@@ -670,7 +671,7 @@ static const int SuggestionsSwitchTag = 103;
             if ([appDelegate.loginController isLoggedIn]) {
                 [self tappedUsername];
             } else {
-                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
                     [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
@@ -680,7 +681,7 @@ static const int SuggestionsSwitchTag = 103;
             if ([appDelegate.loginController isLoggedIn]) {
                 [self clickedSignOut];
             } else {
-                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
                     [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];

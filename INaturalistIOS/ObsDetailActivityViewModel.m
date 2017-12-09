@@ -39,6 +39,7 @@
 #import "UIImage+INaturalist.h"
 #import "TaxaAPI.h"
 #import "ExploreUpdateRealm.h"
+#import "INatReachability.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -446,7 +447,7 @@
 #pragma mark - uibutton targets
 
 - (void)addComment {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Comment", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -463,7 +464,7 @@
 }
 
 - (void)addIdentification {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Add ID", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -480,7 +481,7 @@
 }
 
 - (void)agree:(UIButton *)button {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;

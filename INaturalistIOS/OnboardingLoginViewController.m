@@ -27,6 +27,7 @@
 #import "PartnerController.h"
 #import "Partner.h"
 #import "INatWebController.h"
+#import "INatReachability.h"
 
 static char PARTNER_ASSOCIATED_KEY;
 
@@ -251,7 +252,7 @@ static char PARTNER_ASSOCIATED_KEY;
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
-            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            if (![[INatReachability sharedClient] isNetworkReachable]) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                                message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
@@ -382,7 +383,7 @@ static char PARTNER_ASSOCIATED_KEY;
 
 
 - (IBAction)facebookPressed:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -434,8 +435,8 @@ static char PARTNER_ASSOCIATED_KEY;
                                                          }];
 }
 
-- (IBAction)googlePressed:(id)sender {    
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+- (IBAction)googlePressed:(id)sender {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -524,7 +525,7 @@ static char PARTNER_ASSOCIATED_KEY;
 #pragma mark - Actions
 
 - (void)signup {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -632,7 +633,7 @@ static char PARTNER_ASSOCIATED_KEY;
 
 
 - (void)login {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];

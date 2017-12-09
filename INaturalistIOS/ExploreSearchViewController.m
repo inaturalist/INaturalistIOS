@@ -39,7 +39,7 @@
 #import "LoginController.h"
 #import "User.h"
 #import "INaturalistAppDelegate.h"
-
+#import "INatReachability.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
@@ -287,7 +287,7 @@
 
 - (void)searchForMyObservations {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -327,7 +327,7 @@
 
 - (void)searchForNearbyObservations {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -376,7 +376,7 @@
 
 - (void)searchForTaxon:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -450,7 +450,7 @@
 
 - (void)searchForPerson:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -522,7 +522,7 @@
 
 - (void)searchForLocation:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -625,7 +625,7 @@
 
 - (void)searchForProject:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];

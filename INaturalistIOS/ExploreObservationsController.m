@@ -20,6 +20,7 @@
 #import "Analytics.h"
 #import "INatAPI.h"
 #import "ObserverCount.h"
+#import "INatReachability.h"
 
 @interface ExploreObservationsController () {
 	NSInteger lastPagedFetched;
@@ -52,7 +53,7 @@
 }
 
 - (void)reload {
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsShouldNotify:YES];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -79,7 +80,7 @@
 		}];
 	}
 
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsShouldNotify:NO];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -111,7 +112,7 @@
 	// add our new predicate to the active group
 	self.activeSearchPredicates = [selected arrayByAddingObject:newPredicate];
 	
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		// fetch using new search predicate(s)
 		[self fetchObservationsShouldNotify:YES];
 	} else {
@@ -137,7 +138,7 @@
 	// clear any stashed objects
 	self.observations = [NSOrderedSet orderedSet];
 	
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		// fetch using new search predicate(s)
 		[self fetchObservationsShouldNotify:YES];
 	} else {
@@ -165,7 +166,7 @@
 	self.observations = [NSOrderedSet orderedSet];
 	
 	if (update) {
-		if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        if ([[INatReachability sharedClient] isNetworkReachable]) {
 			[self fetchObservationsShouldNotify:YES];
 		} else {
 			NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -181,7 +182,7 @@
 }
 
 - (void)expandActiveSearchToNextPageOfResults {
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsPage:++lastPagedFetched];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"

@@ -15,6 +15,7 @@
 #import "IdentifierCount.h"
 #import "ExploreUser.h"
 #import "UIImage+INaturalist.h"
+#import "INatReachability.h"
 
 // both the nib name and the reuse identifier
 static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
@@ -32,7 +33,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);

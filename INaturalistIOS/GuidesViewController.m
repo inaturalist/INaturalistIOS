@@ -24,6 +24,7 @@
 #import "UIColor+INaturalist.h"
 #import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -57,10 +58,7 @@ static const int ListControlIndexNearby = 2;
     [self checkEmpty];
     [self.tableView reloadData];
     
-    if (syncNeeded &&
-        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
         [self sync:NO];
     } else {
         [self syncFinished];
@@ -116,9 +114,8 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (IBAction)clickedSync:(id)sender {
-    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         [self sync:YES];
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unreachable",nil)
@@ -478,10 +475,7 @@ static const int ListControlIndexNearby = 2;
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     self.lastLocation = newLocation;
-    if (!self.nearbyGuidesSyncedAt &&
-        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if (!self.nearbyGuidesSyncedAt && [[INatReachability sharedClient] isNetworkReachable]) {
         [self syncNearbyGuides];
     }
 }

@@ -24,6 +24,7 @@
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
+#import "INatReachability.h"
 
 @implementation ObsDetailFavesViewModel
 
@@ -148,8 +149,7 @@
 }
 
 - (void)tappedFave:(UIControl *)control {
-    
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Fave", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;

@@ -14,6 +14,7 @@
 #import "SpeciesCount.h"
 #import "ExploreTaxon.h"
 #import "SpeciesCountCell.h"
+#import "INatReachability.h"
 
 @implementation ProjectDetailSpeciesViewController
 
@@ -27,7 +28,7 @@
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);

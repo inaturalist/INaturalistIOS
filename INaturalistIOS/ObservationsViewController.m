@@ -53,6 +53,7 @@
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
 #import "Taxon.h"
+#import "INatReachability.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -236,7 +237,7 @@
 }
 
 - (void)deleteProfilePhoto {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -273,7 +274,7 @@
         return;
     }
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -356,7 +357,7 @@
         return;
     }
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required", nil)
                                                                        message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -424,9 +425,7 @@
 
 - (void)refreshRequestedNotify:(BOOL)notify {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
-        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
-        
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         if (notify) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unavailable", nil)
                                                                            message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
@@ -507,8 +506,7 @@
 
 - (void)checkNewActivity
 {
-    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
-    if ([reachability isReachabilityDetermined] && [reachability isNetworkReachable] ) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
         [[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation"
                             delegate:self];
@@ -1077,8 +1075,7 @@
 		User *me = [appDelegate.loginController fetchMe];        
         self.navigationItem.title = me.login;
         
-        if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] && [[RKClient sharedClient]  isNetworkReachable]) {
-            
+        if ([[INatReachability sharedClient] isNetworkReachable]) {
             NSString *path = [NSString stringWithFormat:@"/people/%ld.json", (long)me.recordID.integerValue];
             
             [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
@@ -1397,8 +1394,7 @@
 
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn] &&
-        [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
-        [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
+        [[INatReachability sharedClient] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];

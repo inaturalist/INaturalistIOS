@@ -27,6 +27,7 @@
 #import "TaxonPhoto.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
+#import "INatReachability.h"
 
 static const int CommentCellImageTag = 1;
 static const int CommentCellBodyTag = 2;
@@ -245,10 +246,7 @@ static UIImage *defaultPersonImage;
 
 - (void)refreshData
 {
-	if (self.observation.recordID
-            && [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
-            && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-
+    if (self.observation.recordID && [[INatReachability sharedClient] isNetworkReachable]) {
         [[Analytics sharedClient] debugLog:@"Network - Refresh observation activity"];
 		[[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", self.observation.recordID]
 													 objectMapping:[Observation mapping]
@@ -489,8 +487,7 @@ static UIImage *defaultPersonImage;
 
 - (BOOL)checkForNetworkAndWarn
 {
-    if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined]
-        && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         return YES;
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You must be connected to the Internet to do this.", nil)

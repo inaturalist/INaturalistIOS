@@ -27,6 +27,7 @@
 #import "UIImage+INaturalist.h"
 #import "ProjectNewsButton.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
 
 // At this offset the Header stops its transformations
 // 200 is the height of the header
@@ -304,7 +305,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 #pragma mark - UIButton targets
 
 - (void)joinTapped:(UIButton *)button {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet required", nil)
                                                                        message:NSLocalizedString(@"You must be connected to the Internet to do this.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];

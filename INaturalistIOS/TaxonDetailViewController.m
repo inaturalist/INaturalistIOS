@@ -33,6 +33,7 @@
 #import "UIColor+ExploreColors.h"
 #import "INatPhoto.h"
 #import "TaxonSelectButtonCell.h"
+#import "INatReachability.h"
 
 @interface TaxonDetailViewController () <MKMapViewDelegate>
 @property ExploreTaxonRealm *fullTaxon;
@@ -278,7 +279,7 @@
         cell.mapView.userInteractionEnabled = NO;
         cell.mapView.delegate = self;
         
-        if (![[RKClient sharedClient] isNetworkReachable]) {
+        if (![[INatReachability sharedClient] isNetworkReachable]) {
             cell.mapView.hidden = YES;
             cell.noObservationsLabel.hidden = YES;
             cell.noNetworkLabel.hidden = NO;

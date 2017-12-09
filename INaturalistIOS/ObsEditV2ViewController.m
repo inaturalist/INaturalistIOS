@@ -54,6 +54,7 @@
 #import "ObsCenteredLabelCell.h"
 #import "ObsDetailTaxonCell.h"
 #import "ExploreUpdateRealm.h"
+#import "INatReachability.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -746,7 +747,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - geocoding helper
 
 - (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     

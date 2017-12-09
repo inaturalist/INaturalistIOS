@@ -20,6 +20,7 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "ImageStore.h"
+#import "INatReachability.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -58,9 +59,7 @@ static const int GutterWidth  = 5;
             self.title = self.guide.title;
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
-            if (self.guide.xmlURL
-                && RKClient.sharedClient.reachabilityObserver.isNetworkReachable
-                ) {
+            if (self.guide.xmlURL && [[INatReachability sharedClient] isNetworkReachable]) {
                 [self downloadXML:self.guide.xmlURL quietly:YES];
             }
         } else if (self.guide.xmlURL) {

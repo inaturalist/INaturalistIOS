@@ -233,6 +233,7 @@
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
+		FAB71E051FDC7D530039C45B /* INatReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB71E041FDC7D530039C45B /* INatReachability.m */; };
 		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
@@ -847,6 +848,8 @@
 		FAB6215D1D7397BF0026FDC6 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB6215F1D7397C00026FDC6 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB621611D7397C10026FDC6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB71E031FDC7D530039C45B /* INatReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatReachability.h; sourceTree = "<group>"; };
+		FAB71E041FDC7D530039C45B /* INatReachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatReachability.m; sourceTree = "<group>"; };
 		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
 		FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityAuthorCell.m; sourceTree = "<group>"; };
 		FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityBodyCell.h; sourceTree = "<group>"; };
@@ -1355,6 +1358,8 @@
 				1997410F15194E89006FBEA0 /* UploadManager.h */,
 				1997411015194E89006FBEA0 /* UploadManager.m */,
 				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
+				FAB71E031FDC7D530039C45B /* INatReachability.h */,
+				FAB71E041FDC7D530039C45B /* INatReachability.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2308,6 +2313,7 @@
 				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
+				FAB71E051FDC7D530039C45B /* INatReachability.m in Sources */,
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,

@@ -24,6 +24,7 @@
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "INatReachability.h"
 
 static UIImage *briefcase;
 
@@ -181,7 +182,7 @@ static UIImage *briefcase;
 - (void)loadNewNews {
     
     // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -205,7 +206,7 @@ static UIImage *briefcase;
 - (void)loadOldNews {
     
     // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     

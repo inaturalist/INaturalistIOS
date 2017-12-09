@@ -9,6 +9,7 @@
 #import "RecordSearchController.h"
 #import "INatModel.h"
 #import "Analytics.h"
+#import "INatReachability.h"
 
 @implementation RecordSearchController
 @synthesize searchResults = _searchResults;
@@ -189,7 +190,7 @@
     [self searchLocal:searchString];
     
     bool lengthOk = searchString.length > 2;
-    bool netOk = [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable];
+    bool netOk = [[INatReachability sharedClient] isNetworkReachable];
     
     if (lengthOk && netOk) {
         if (self.requestTimer) {

@@ -31,6 +31,7 @@
 #import "LoginController.h"
 #import "User.h"
 #import "ExploreTaxonRealm.h"
+#import "INatReachability.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -76,7 +77,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self.tableView registerClass:[ObsFieldSimpleValueCell class] forCellReuseIdentifier:SimpleFieldIdentifier];
     [self.tableView registerClass:[ObsFieldLongTextValueCell class] forCellReuseIdentifier:LongTextFieldIdentifier];
     
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if ([appDelegate.loginController isLoggedIn]) {
         	User *me = [appDelegate.loginController fetchMe];

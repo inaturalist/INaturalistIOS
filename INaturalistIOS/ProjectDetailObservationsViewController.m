@@ -17,6 +17,7 @@
 #import "ProjectObsPhotoCell.h"
 #import "ImageStore.h"
 #import "FAKINaturalist.h"
+#import "INatReachability.h"
 
 @interface ProjectDetailObservationsViewController () <UICollectionViewDelegateFlowLayout>
 @end
@@ -33,7 +34,7 @@
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);

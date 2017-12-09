@@ -21,6 +21,7 @@
 #import "LoginController.h"
 #import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
 
 @implementation ProjectChooserViewController
 
@@ -123,7 +124,7 @@
         }
     }
     
-    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ((!self.projectUsers || self.projectUsers.count == 0) && [[INatReachability sharedClient] isNetworkReachable]) {
     	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     	if ([appDelegate.loginController isLoggedIn]) {
     		User *me = [appDelegate.loginController fetchMe];

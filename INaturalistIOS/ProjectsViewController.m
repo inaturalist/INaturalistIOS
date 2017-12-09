@@ -24,6 +24,7 @@
 #import "ProjectDetailV2ViewController.h"
 #import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -54,7 +55,7 @@ static const int ListControlIndexNearby = 2;
     }
     [self checkEmpty];
     
-    if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
         [self sync];
     }
 }
@@ -344,9 +345,7 @@ static const int ListControlIndexNearby = 2;
     }
     
     // try to sync "featured" projects automatically
-    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         self.navigationItem.rightBarButtonItem = self.syncActivityItem;
         [self syncFeaturedProjects];
     }
