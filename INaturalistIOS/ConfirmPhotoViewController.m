@@ -13,7 +13,6 @@
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <Photos/Photos.h>
 #import <M13ProgressSuite/M13ProgressViewPie.h>
-#import <RestKit/RestKit.h>
 
 #import "ConfirmPhotoViewController.h"
 #import "Taxon.h"
@@ -44,7 +43,6 @@
     UIButton *retake, *confirm;
 }
 @property NSArray *iconicTaxa;
-@property RKObjectLoader *taxaLoader;
 @property NSMutableArray *downloadedImages;
 @property (copy) CLLocation *obsLocation;
 @property (copy) NSDate *obsDate;
@@ -486,10 +484,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-}
-
-- (void)dealloc {
-    [[RKClient sharedClient].requestQueue cancelRequest:self.taxaLoader];
 }
 
 - (void)configureNextButton {
