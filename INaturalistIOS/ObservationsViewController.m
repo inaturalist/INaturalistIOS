@@ -30,7 +30,6 @@
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
 #import "RefreshControl.h"
-#import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
@@ -500,6 +499,7 @@
         NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
         
         [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
+        
         [[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
     }
 }
