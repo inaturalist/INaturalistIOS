@@ -40,6 +40,7 @@
 #import "TaxaAPI.h"
 #import "ExploreUpdateRealm.h"
 #import "INatReachability.h"
+#import "IdentificationsAPI.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -495,20 +496,22 @@
     }
     
     // add an identification
-    [[Analytics sharedClient] debugLog:@"Network - Obs Detail Add Comment"];
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddIdentification
                      withProperties:@{ @"Via": @"View Obs Agree" }];
-    
-    NSDictionary *params = @{
-                             @"identification[observation_id]": @(self.observation.inatRecordId),
-                             @"identification[taxon_id]": @(button.tag),
-                             };
-    
+        
     [self.delegate showProgressHud];
     
-    [[RKClient sharedClient] post:@"/identifications"
-                           params:params
-                         delegate:self];
+    __weak typeof(self)weakSelf = self;
+    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
+    [api addIdentificationTaxonId:button.tag observationId:self.observation.inatRecordId body:nil vision:NO handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [weakSelf.delegate hideProgressHud];
+        if (error) {
+            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                   message:error.localizedDescription];
+        } else {
+            [weakSelf.delegate reloadObservation];
+        }
+    }];
 }
 
 #pragma mark - misc helpers
