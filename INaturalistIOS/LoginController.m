@@ -608,13 +608,17 @@ NSInteger INatMinPasswordLength = 6;
         
         if (error) {
             if (failure) {
-                failure(nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(nil);
+                });
             }
             strongSelf.jwtToken = nil;
         } else if ([httpResponse statusCode] != 200) {
             strongSelf.jwtToken = nil;
             if (failure) {
-                failure(nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(nil);
+                });
             }
         } else {
             NSError *jsonError = nil;
@@ -622,19 +626,25 @@ NSInteger INatMinPasswordLength = 6;
             if (jsonError) {
                 strongSelf.jwtToken = nil;
                 if (failure) {
-                    failure(jsonError);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        failure(jsonError);
+                    });
                 }
             } else {
                 if ([json valueForKey:@"api_token"]) {
                     strongSelf.jwtToken = [json valueForKey:@"api_token"];
                     strongSelf.jwtTokenExpiration = [NSDate date];
                     if (success) {
-                        success(nil);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            success(nil);
+                        });
                     }
                 } else {
                     strongSelf.jwtToken = nil;
                     if (failure) {
-                        failure(nil);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            failure(nil);
+                        });
                     }
                 }
             }
