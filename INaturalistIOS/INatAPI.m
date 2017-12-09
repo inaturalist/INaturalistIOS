@@ -34,55 +34,67 @@
 
 - (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     
-    path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.HTTPMethod = method;
+    __weak typeof(self)weakSelf = self;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    LoginController *login = appDelegate.loginController;
-    if ([login jwtToken]) {
-        [request addValue:[login jwtToken]
-       forHTTPHeaderField:@"Authorization"];
+    if (appDelegate.loggedIn) {
+        [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+            
+            NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
+            NSURL *url = [NSURL URLWithString:urlString];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+            request.HTTPMethod = method;
+            
+            LoginController *login = appDelegate.loginController;
+            if ([login jwtToken]) {
+                [request addValue:[login jwtToken]
+               forHTTPHeaderField:@"Authorization"];
+            }
+            
+            if (params) {
+                NSError *paramsErr = nil;
+                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&paramsErr];
+                if (paramsErr) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        done(nil, 0, paramsErr);
+                    });
+                    return;
+                }
+                request.HTTPBody = jsonData;
+                [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            }
+            
+            
+            if (url) {
+                NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+                NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+                [[session dataTaskWithRequest:request
+                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                if (error) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        done(nil, 0, error);
+                                    });
+                                } else {
+                                    if (classForMapping) {
+                                        [weakSelf extractObjectsFromData:data
+                                                            classMapping:classForMapping
+                                                                 handler:done];
+                                    } else {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            done(nil, 0, nil);
+                                        });
+                                    }
+                                }
+                            }] resume];
+            }
+
+            
+        } failure:^(NSError *error) {
+            done(nil, 0, error);
+        }];
     }
     
-    if (params) {
-        NSError *paramsErr = nil;
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&paramsErr];
-        if (paramsErr) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                done(nil, 0, paramsErr);
-            });
-            return;
-        }
-        request.HTTPBody = jsonData;
-        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    }
-    
-    
-    if (url) {
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-        [[session dataTaskWithRequest:request
-                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                        if (error) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                done(nil, 0, error);
-                            });
-                        } else {
-                            if (classForMapping) {
-                                [self extractObjectsFromData:data
-                                                classMapping:classForMapping
-                                                     handler:done];
-                            } else {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    done(nil, 0, nil);
-                                });
-                            }
-                        }
-                    }] resume];
-    }
 }
 
 // extract objects from server response data
