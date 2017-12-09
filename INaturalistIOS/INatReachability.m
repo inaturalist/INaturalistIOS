@@ -6,7 +6,8 @@
 //  Copyright © 2017 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
+#import <AFNetworking/AFNetworking.h>
+
 #import "INatReachability.h"
 
 @implementation INatReachability
@@ -16,16 +17,17 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[INatReachability alloc] init];
+        [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     });
     return _sharedClient;
 }
 
 - (BOOL)isNetworkReachable {
-    return [self isReachabilityDetermined] && [[RKClient sharedClient] isNetworkReachable];
+    return [self isReachabilityDetermined] && [[AFNetworkReachabilityManager sharedManager] isReachable];
 }
 
 - (BOOL)isReachabilityDetermined {
-    return [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined];
+    return [[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] != AFNetworkReachabilityStatusUnknown;
 }
 
 @end
