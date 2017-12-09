@@ -506,8 +506,7 @@ static const int ListControlIndexNearby = 2;
         shouldSync = YES;
     }
     
-    
-    if (shouldSync) {
+    if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
         [self syncFeaturedProjects];
         [self syncNearbyProjects];
     }
