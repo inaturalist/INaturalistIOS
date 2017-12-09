@@ -111,62 +111,48 @@
             }];
             
             __weak typeof(self)weakSelf = self;
-            [self.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-                ObservationAPI *api = [[ObservationAPI alloc] init];
-                [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
-                    
-                    if (error) {
-                        if (completionHandler) {
-                            [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
-                                             withProperties:@{
-                                                              @"reason": error.localizedDescription,
-                                                              }];
-                            completionHandler(UIBackgroundFetchResultFailed);
-                        }
-                        [application endBackgroundTask:weakSelf.backgroundFetchTask];
-                        weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-                        return;
-                    }
-                    
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
-                    NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
-                    
-                    NSMutableSet *obsIds = [NSMutableSet set];
-                    for (ExploreUpdate *eu in myResults) {
-                        [obsIds addObject:@(eu.resourceId)];
-                    }
-                    [weakSelf loadObservationsForIds:[obsIds allObjects]];
-                    
-                    RLMRealm *realm = [RLMRealm defaultRealm];
-                    [realm beginWriteTransaction];
-                    // all results get written to Realm
-                    for (ExploreUpdate *eu in results) {
-                        ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
-                        [realm addOrUpdateObject:eur];
-                    }
-                    [realm commitWriteTransaction];
-                    UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-                    if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
-                        [((INatUITabBarController *)rootVC) setUpdatesBadge];
-                    }
-                    
+            ObservationAPI *api = [[ObservationAPI alloc] init];
+            [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+                
+                if (error) {
                     if (completionHandler) {
-                        completionHandler(UIBackgroundFetchResultNewData);
+                        [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
+                                         withProperties:@{
+                                                          @"reason": error.localizedDescription,
+                                                          }];
+                        completionHandler(UIBackgroundFetchResultFailed);
                     }
-                    
                     [application endBackgroundTask:weakSelf.backgroundFetchTask];
                     weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-                }];
-                
-            } failure:^(NSError *error) {
-                if (completionHandler) {
-                    NSString *errorMsg = error.localizedDescription ?: @"Unknown error";
-                    [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
-                                     withProperties:@{
-                                                      @"reason": errorMsg,
-                                                      }];
-                    completionHandler(UIBackgroundFetchResultFailed);
+                    return;
                 }
+                
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
+                NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
+                
+                NSMutableSet *obsIds = [NSMutableSet set];
+                for (ExploreUpdate *eu in myResults) {
+                    [obsIds addObject:@(eu.resourceId)];
+                }
+                [weakSelf loadObservationsForIds:[obsIds allObjects]];
+                
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                // all results get written to Realm
+                for (ExploreUpdate *eu in results) {
+                    ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
+                    [realm addOrUpdateObject:eur];
+                }
+                [realm commitWriteTransaction];
+                UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+                if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
+                    [((INatUITabBarController *)rootVC) setUpdatesBadge];
+                }
+                
+                if (completionHandler) {
+                    completionHandler(UIBackgroundFetchResultNewData);
+                }
+                
                 [application endBackgroundTask:weakSelf.backgroundFetchTask];
                 weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
             }];

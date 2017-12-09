@@ -113,37 +113,25 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     __weak typeof(self) weakSelf = self;
     
-    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-        [api addIdentificationTaxonId:weakSelf.taxon.taxonId
-                        observationId:weakSelf.observation.inatRecordId
-                                 body:weakSelf.comment ?: nil
-                               vision:self.taxonViaVision
-                              handler:^(NSArray *results, NSInteger count, NSError *error) {
-                                  [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
-                                  
-                                  if (error) {
-                                      UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                                                     message:error.localizedDescription
-                                                                                              preferredStyle:UIAlertControllerStyleAlert];
-                                      [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                style:UIAlertActionStyleCancel
-                                                                              handler:nil]];
-                                      [weakSelf presentViewController:alert animated:YES completion:nil];
-                                  } else {
-                                      [self.navigationController popViewControllerAnimated:YES];
-                                  }
-                              }];
-    } failure:^(NSError *error) {
-        [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                       message:error.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [weakSelf presentViewController:alert animated:YES completion:nil];
-    }];
+    [api addIdentificationTaxonId:weakSelf.taxon.taxonId
+                    observationId:weakSelf.observation.inatRecordId
+                             body:weakSelf.comment ?: nil
+                           vision:self.taxonViaVision
+                          handler:^(NSArray *results, NSInteger count, NSError *error) {
+                              [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
+                              
+                              if (error) {
+                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                                                 message:error.localizedDescription
+                                                                                          preferredStyle:UIAlertControllerStyleAlert];
+                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                            style:UIAlertActionStyleCancel
+                                                                          handler:nil]];
+                                  [weakSelf presentViewController:alert animated:YES completion:nil];
+                              } else {
+                                  [self.navigationController popViewControllerAnimated:YES];
+                              }
+                          }];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {

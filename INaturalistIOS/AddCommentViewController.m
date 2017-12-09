@@ -55,36 +55,23 @@
     __weak typeof(self) weakSelf = self;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    // fetch the JWT
-    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-        // send the comment
-        [api addComment:self.textView.text observationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
-            // hide the hud regardless of success
-            [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
-            
-            if (error) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                                                                               message:error.localizedDescription
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                          style:UIAlertActionStyleCancel
-                                                        handler:nil]];
-                [weakSelf presentViewController:alert animated:YES completion:nil];
-            } else {
-                [weakSelf dismissViewControllerAnimated:YES completion:nil];
-                
-            }
-        }];
-    } failure:^(NSError *error) {
-        // handle JWT fetch error
+    // send the comment
+    [api addComment:self.textView.text observationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        // hide the hud regardless of success
         [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                                                                       message:error.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [weakSelf presentViewController:alert animated:YES completion:nil];
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            
+        }
     }];
 }
 

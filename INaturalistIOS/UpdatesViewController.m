@@ -155,37 +155,28 @@
     }
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-        [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            if (error) {
-                return;
-            }
-            
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            for (ExploreUpdate *eu in results) {
-                ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
-                [realm addOrUpdateObject:eur];
-            }
-            [realm commitWriteTransaction];
-            
-            if (self.viewIfLoaded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self markSeenObservations];
-                    [self.tableView.pullToRefreshView stopAnimating];
-                    [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
-                });
-            }
-
-        }];
-    } failure:^(NSError *error) {
+    [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        if (error) {
+            return;
+        }
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        for (ExploreUpdate *eu in results) {
+            ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
+            [realm addOrUpdateObject:eur];
+        }
+        [realm commitWriteTransaction];
+        
         if (self.viewIfLoaded) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self markSeenObservations];
                 [self.tableView.pullToRefreshView stopAnimating];
+                [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
             });
         }
-        return;
+        
     }];
 }
 
