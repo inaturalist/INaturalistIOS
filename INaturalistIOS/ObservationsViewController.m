@@ -603,18 +603,6 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)viewActivity:(UIButton *)sender {
-	
-	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
-	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    Observation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	
-	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
-	vc.observation = observation;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
