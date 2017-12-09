@@ -33,7 +33,7 @@
 @property NSDate *lastNetworkOutageNotificationDate;
 
 // workaround for restkit bug
-@property NSMutableArray *failedObjectLoaders;
+@property NSMutableArray *objectLoaders;
 @end
 
 @implementation UploadManager
@@ -375,10 +375,20 @@
     self.syncingDeletes = NO;
     self.currentlyUploadingObservation = nil;
     
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];    
+    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.objectLoaders removeAllObjects];
+    });
 }
 
 #pragma mark - RKRequestDelegate
+
+- (void)requestDidStartLoad:(RKRequest *)request {
+    // workaround for a bug where RestKit can release the objectLoader too soon in error conditions
+    if (![[self objectLoaders] containsObject:request]) {
+        [[self objectLoaders] addObject:request];
+    }
+}
 
 - (void)request:(RKRequest *)request didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
@@ -435,13 +445,6 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    
-    // workaround for a bug where RestKit can release the objectLoader too early in error conditions
-    [self.failedObjectLoaders addObject:objectLoader];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.failedObjectLoaders removeObject:objectLoader];
-    });
-    
     // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
     if (!self.isUploading) {
         return;
@@ -586,7 +589,7 @@
                                                  selector:@selector(loggedIn)
                                                      name:kINatLoggedInNotificationKey
                                                    object:nil];
-        self.failedObjectLoaders = [NSMutableArray array];
+        self.objectLoaders = [NSMutableArray array];
         
         self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
         self.photoUploads = [[NSMutableDictionary alloc] init];
