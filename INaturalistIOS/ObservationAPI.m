@@ -50,21 +50,9 @@
 }
 
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
-    NSString *path = [NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)identifier];
-    [[RKClient sharedClient] put:path
-                      usingBlock:^(RKRequest *request) {
-                          request.onDidLoadResponse = ^(RKResponse *response) {
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  done(@[], 0, nil);
-                              });
-                          };
-                          
-                          request.onDidFailLoadWithError = ^(NSError *error) {
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  done(nil, 0, error);
-                              });
-                          };
-                      }];
+    [[Analytics sharedClient] debugLog:@"Network - mark seen updates via node"];
+    NSString *path = [NSString stringWithFormat:@"observations/%ld/viewed_updates", (long)identifier];
+    [self put:path params:nil classMapping:nil handler:done];
 }
 
 - (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
