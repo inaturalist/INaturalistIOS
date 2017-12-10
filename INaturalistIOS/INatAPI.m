@@ -32,67 +32,68 @@
     return @"https://api.inaturalist.org/v1";
 }
 
+- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params jwt:(NSString *)jwtToken classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    
+    NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = method;
+    
+    if (jwtToken) {
+        [request addValue:jwtToken forHTTPHeaderField:@"Authorization"];
+    }
+    
+    if (params) {
+        NSError *paramsErr = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&paramsErr];
+        if (paramsErr) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(nil, 0, paramsErr);
+            });
+            return;
+        }
+        request.HTTPBody = jsonData;
+        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    }
+    
+    
+    if (url) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        __weak typeof(self)weakSelf = self;
+        [[session dataTaskWithRequest:request
+                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                        if (error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
+                        } else {
+                            if (classForMapping) {
+                                [weakSelf extractObjectsFromData:data
+                                                    classMapping:classForMapping
+                                                         handler:done];
+                            } else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    done(nil, 0, nil);
+                                });
+                            }
+                        }
+                    }] resume];
+    }
+}
+
 - (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    
-    __weak typeof(self)weakSelf = self;
-    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedIn) {
+        __weak typeof(self)weakSelf = self;
         [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-            
-            NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
-            NSURL *url = [NSURL URLWithString:urlString];
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-            request.HTTPMethod = method;
-            
-            LoginController *login = appDelegate.loginController;
-            if ([login jwtToken]) {
-                [request addValue:[login jwtToken]
-               forHTTPHeaderField:@"Authorization"];
-            }
-            
-            if (params) {
-                NSError *paramsErr = nil;
-                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&paramsErr];
-                if (paramsErr) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        done(nil, 0, paramsErr);
-                    });
-                    return;
-                }
-                request.HTTPBody = jsonData;
-                [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-            }
-            
-            
-            if (url) {
-                NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-                NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-                [[session dataTaskWithRequest:request
-                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                if (error) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        done(nil, 0, error);
-                                    });
-                                } else {
-                                    if (classForMapping) {
-                                        [weakSelf extractObjectsFromData:data
-                                                            classMapping:classForMapping
-                                                                 handler:done];
-                                    } else {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            done(nil, 0, nil);
-                                        });
-                                    }
-                                }
-                            }] resume];
-            }
-
-            
+            [weakSelf requestMethod:method path:path params:params jwt:info[@"token"] classMapping:classForMapping handler:done];
         } failure:^(NSError *error) {
             done(nil, 0, error);
         }];
+    } else {
+        [self requestMethod:method path:path params:params jwt:nil classMapping:classForMapping handler:done];
     }
     
 }
