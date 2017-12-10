@@ -362,38 +362,6 @@
 	}];
 }
 
-- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
-	[[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
-	[self postToPath:@"/identifications"
-			  params:@{ @"identification[observation_id]": @(observation.observationId),
-						@"identification[taxon_id]": @(taxonId) }
-		  completion:handler];
-}
-
-- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
-	[[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
-	[self postToPath:@"/comments"
-			  params:@{ @"comment[body]": commentBody,
-						@"comment[parent_id]": @(observation.observationId),
-						@"comment[parent_type]": @"Observation" }
-		  completion:handler];
-}
-
-- (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
-	
-	[[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
-		request.params = params;
-		
-		request.onDidLoadResponse = ^(RKResponse *response) {
-			handler(response, nil);
-		};
-		
-		request.onDidFailLoadWithError = ^(NSError *err) {
-			handler(nil, err);
-		};
-	}];
-}
-
 - (NSString *)pathForLeaderboardSearchPredicates:(NSArray *)predicates {
 	
 	NSString *path = @"observations/observers";

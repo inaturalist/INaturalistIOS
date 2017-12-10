@@ -66,9 +66,6 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 - (BOOL)activeSearchLimitedByCurrentMapRegion;
 - (void)expandActiveSearchToNextPageOfResults;
 
-- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
-- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
-
 - (void)loadLeaderboardCompletion:(FetchCompletionHandler)handler;
 
 @end
