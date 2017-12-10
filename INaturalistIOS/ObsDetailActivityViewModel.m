@@ -41,6 +41,7 @@
 #import "ExploreUpdateRealm.h"
 #import "INatReachability.h"
 #import "IdentificationsAPI.h"
+#import "ObservationAPI.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -517,18 +518,15 @@
 #pragma mark - misc helpers
 
 - (void)markActivityAsSeen {
-    // check for network
     if (self.observation.inatRecordId && self.observation.hasUnviewedActivityBool && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
-        
-        [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
-        
-        [[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)self.observation.inatRecordId]
-                              params:nil
-                            delegate:self];
         obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
         NSError *error = nil;
         [[[RKObjectManager sharedManager] objectStore] save:&error];
+
+        ObservationAPI *api = [[ObservationAPI alloc] init];
+        // the API won't take a nil callback at this point
+        [api seenUpdatesForObservationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
     }
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
