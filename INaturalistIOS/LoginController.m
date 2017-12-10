@@ -583,12 +583,14 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
+    static NSString *tokenKey = @"token";
+    
     // jwt tokens expire after 30 minutes
     // if the token is more than 25 minutes old, fetch a new one
     // in case the request we're making takes a looooong time
     if (([self.jwtTokenExpiration timeIntervalSinceNow] < (25 * 60)) && self.jwtToken) {
         if (success) {
-            success(nil);
+            success(@{ tokenKey: self.jwtToken });
             return;
         }
     }
@@ -636,7 +638,7 @@ NSInteger INatMinPasswordLength = 6;
                     strongSelf.jwtTokenExpiration = [NSDate date];
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            success(nil);
+                            success(@{ tokenKey: strongSelf.jwtToken });
                         });
                     }
                 } else {
