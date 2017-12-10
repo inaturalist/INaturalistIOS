@@ -609,7 +609,7 @@ NSInteger INatMinPasswordLength = 6;
         if (error) {
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    failure(nil);
+                    failure(error);
                 });
             }
             strongSelf.jwtToken = nil;
