@@ -1599,6 +1599,45 @@
 
 #pragma mark - Upload Notification Delegate
 
+- (void)uploadManagerSessionFailed:(UploadManager *)uploadManager errorCode:(NSInteger)httpErrorCode {
+    [self syncStopped];
+    
+    [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
+                     withProperties:@{
+                                      @"Alert": @(httpErrorCode),
+                                      }];
+    
+    if (httpErrorCode == 401) {
+        [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Auth Required",
+                                          }];
+        
+        NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
+                                                @"This is an explanation for why the sync button triggers a login prompt.");
+        [self presentSignupSplashWithReason:reasonMsg];
+    } else if (httpErrorCode == 403) {
+        [[Analytics sharedClient] debugLog:@"Upload - Forbidden"];
+        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                         withProperties:@{
+                                          @"Via": @"Auth Forbidden",
+                                          }];
+
+        NSString *alertTitle = NSLocalizedString(@"Not Authorized", @"403 unauthorized title");
+        NSString *alertMessage = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
+                                                   @"403 forbidden message");
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMessage
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
 - (void)uploadManagerUploadSessionAuthRequired:(UploadManager *)uploadManager {
 
     [self syncStopped];

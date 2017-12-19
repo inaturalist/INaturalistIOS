@@ -402,11 +402,11 @@
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    // check for 401 unauthorized
-    if (response.statusCode == 401) {
+    // check for 401 unauthorized and 403 forbidden
+    if (response.statusCode == 401 || response.statusCode == 403) {
         [self stopUploadActivity];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate uploadManagerUploadSessionAuthRequired:self];
+            [self.delegate uploadManagerSessionFailed:self errorCode:response.statusCode];
         });
         return;
     }

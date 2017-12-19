@@ -14,7 +14,8 @@
 @class UploadManager;
 
 @protocol UploadManagerNotificationDelegate <NSObject>
-- (void)uploadManagerUploadSessionAuthRequired:(UploadManager *)uploadManager;
+- (void)uploadManagerSessionFailed:(UploadManager *)uploadManager errorCode:(NSInteger)httpErrorCode;
+
 - (void)uploadManagerUploadSessionFinished:(UploadManager *)uploadManager;
 - (void)uploadManager:(UploadManager *)uploadManager
      uploadStartedFor:(Observation *)observation
