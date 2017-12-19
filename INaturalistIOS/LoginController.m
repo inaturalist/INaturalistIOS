@@ -619,7 +619,23 @@ NSInteger INatMinPasswordLength = 6;
             strongSelf.jwtToken = nil;
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    failure(nil);
+                    NSString *errorDesc = nil;
+                    if ([httpResponse statusCode] == 401) {
+                        errorDesc = NSLocalizedString(@"You need to login to do that.",
+                                                      @"401 unauthorized message");
+                    } else if ([httpResponse statusCode] == 403) {
+                        errorDesc = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org",
+                                                      @"403 forbidden message");
+                    } else {
+                        errorDesc = NSLocalizedString(@"Unknown error", nil);
+                    }
+                    NSDictionary *info = @{
+                                           NSLocalizedDescriptionKey: errorDesc
+                                           };
+                    NSError *error = [NSError errorWithDomain:@"org.inaturalist.ios"
+                                                         code:[httpResponse statusCode]
+                                                     userInfo:info];
+                    failure(error);
                 });
             }
         } else {
