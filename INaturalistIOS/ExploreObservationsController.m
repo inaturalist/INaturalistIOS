@@ -278,6 +278,11 @@
 	
 	[[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
 	[self.api fetch:path classMapping:ExploreObservation.class handler:^(NSArray *results, NSInteger count, NSError *error) {
+        if (error) {
+            [self.notificationDelegate failedObservationFetch:error];
+            return;
+        }
+        
 		NSSet *trimmedObservations;
 		NSSet *unorderedObservations;
 		if (self.limitingRegion) {
