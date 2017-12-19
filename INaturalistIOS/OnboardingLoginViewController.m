@@ -711,6 +711,9 @@ static char PARTNER_ASSOCIATED_KEY;
                                                    if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
                                                        alertMsg = NSLocalizedString(@"Incorrect username or password.",
                                                                                     @"Error msg when we get a 401 from the server");
+                                                   } else if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 403) {
+                                                       alertMsg = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
+                                                                                    @"403 forbidden message");
                                                    } else {
                                                        alertMsg = error.localizedDescription;
                                                    }
