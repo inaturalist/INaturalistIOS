@@ -12,6 +12,8 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <RestKit/RestKit.h>
+#import <ARSafariActivity/ARSafariActivity.h>
+#import <JDFTooltips/JDFTooltips.h>
 
 #import "TaxonDetailViewController.h"
 #import "TaxaAPI.h"
@@ -35,50 +37,91 @@
 #import "TaxonSelectButtonCell.h"
 #import "INatReachability.h"
 
+@interface INatCopyNameActivity: UIActivity
+@property NSString *inatName;
+@end
+
+
 @interface TaxonDetailViewController () <MKMapViewDelegate>
 @property ExploreTaxonRealm *fullTaxon;
 @property MKMapRect mapRect;
 @property NSInteger numberOfObservations;
 
 @property IBOutlet UIButton *infoButton;
+@property JDFTooltipView *tooltip;
 @end
 
 @implementation TaxonDetailViewController
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    if (self = [super initWithCoder:aDecoder]) {
-        self.observationCoordinate = kCLLocationCoordinate2DInvalid;
-        self.showsActionButton = NO;
+#pragma mark - Action Targets
+
+- (void)shareTapped:(UIBarButtonItem *)selector {
+    NSURL *url = [self moreDetailsURL];
+    if (!url) {
+        return;
     }
     
-    return self;
+    // analytics
+    [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
+    
+    ARSafariActivity *openInSafari = [[ARSafariActivity alloc] init];
+    INatCopyNameActivity *copyName = [[INatCopyNameActivity alloc] init];
+    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url, self.taxon.scientificName]
+                                                                           applicationActivities:@[openInSafari, copyName]];
+    
+    activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        if (completed) {
+            [[Analytics sharedClient] event:kAnalyticsEventObservationShareFinished
+                             withProperties:@{ @"destination": activityType }];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventObservationShareCancelled];
+        }
+    };
+    
+    // does this work on iPad?
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        self.modalPresentationStyle = UIModalPresentationPopover;
+    }
+    
+    [self presentViewController:activity animated:YES completion:nil];
+    
 }
 
 - (void)actionTapped:(id)sender {
     [self.delegate taxonDetailViewControllerClickedActionForTaxonId:[self.taxon taxonId]];
 }
 
+
 - (void)infoTapped:(id)sender {
     if (self.taxon) {
-        // path to the taxon detail screen
-        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", (long)[self.taxon taxonId]];
-        NSURL *taxonUrl = [[NSURL inat_baseURL] URLByAppendingPathComponent:taxonPath];
-        NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:taxonUrl resolvingAgainstBaseURL:NO];
-        
-        // add a locale
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *queryString = [NSString stringWithFormat:@"locale=%@", language];
-        [urlComponents setQuery:queryString];
-        
-        // open the constructed URL
-        [[UIApplication sharedApplication] openURL:[urlComponents URL]];
+        [[UIApplication sharedApplication] openURL:[self moreDetailsURL]];
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void)toggleTooltipInView:(UIView *)view parentView:(UIView *)parentView {
+    if (self.tooltip) {
+        // unclear why JDFTooltipView doesn't set/honor -hidden when
+        // performing -hideAnimated: and -show
+        if (self.tooltip.hidden) {
+            self.tooltip.hidden = NO;
+        } else {
+            self.tooltip.hidden = YES;
+        }
+    } else {
+        self.tooltip = [[JDFTooltipView alloc] initWithTargetView:view
+                                                         hostView:parentView
+                                                      tooltipText:NSLocalizedString(@"Copy Scientific Name", nil)
+                                                   arrowDirection:JDFTooltipViewArrowDirectionDown
+                                                            width:250];
+        self.tooltip.tooltipBackgroundColour = [UIColor inatTint];
+        [self.tooltip addTapTarget:self action:@selector(copiedName)];
+        self.tooltip.dismissOnTouch = YES;
+        [self.tooltip show];
+    }
 }
+
+
+#pragma mark - helpers
 
 - (TaxaAPI *)taxaApi {
     static TaxaAPI *_api = nil;
@@ -89,7 +132,43 @@
     return _api;
 }
 
-#pragma mark - lifecycle
+- (void)copiedName {
+    [[UIPasteboard generalPasteboard] setString:self.taxon.scientificName];
+}
+
+- (NSURL *)moreDetailsURL {
+    if (self.taxon) {
+        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", (long)[self.taxon taxonId]];
+        NSURL *taxonUrl = [[NSURL inat_baseURL] URLByAppendingPathComponent:taxonPath];
+        NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:taxonUrl resolvingAgainstBaseURL:NO];
+        
+        // add a locale
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *queryString = [NSString stringWithFormat:@"locale=%@", language];
+        [urlComponents setQuery:queryString];
+        
+        return [urlComponents URL];
+    } else {
+        return nil;
+    }
+}
+
+#pragma mark - UIViewController Lifecycle
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.observationCoordinate = kCLLocationCoordinate2DInvalid;
+        self.showsActionButton = NO;
+    }
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                           target:self
+                                                                                           action:@selector(shareTapped:)];
+    
+    return self;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -182,10 +261,10 @@
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor inatTint];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor inatTint];
     [self.navigationItem.leftBarButtonItem setEnabled:YES];
-    
-    if (!self.delegate) {
-        self.navigationItem.rightBarButtonItem = nil;
-    }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - UITableView
@@ -337,6 +416,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1) {
         [self performSegueWithIdentifier:@"map" sender:nil];
+    } else if (indexPath.section == 0) {
+        if ((self.showsActionButton && indexPath.item == 1) || (!self.showsActionButton)) {
+            TaxonSummaryCell *cell = (TaxonSummaryCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [self toggleTooltipInView:cell.scientificNameLabel parentView:cell.contentView];
+        }
     }
 }
 
@@ -382,5 +466,43 @@
     return annotationView;
 }
 
+
+@end
+
+#pragma mark -
+@implementation INatCopyNameActivity
+
+
+- (UIActivityType)activityType {
+    return @"org.inaturalist.copyname";
+}
+
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSString class]]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSString class]]) {
+            self.inatName = (NSString *)item;
+            break;
+        }
+    }
+}
+
+- (void)performActivity {
+    if (self.inatName) {
+        [[UIPasteboard generalPasteboard] setString:self.inatName];
+    }
+}
+
+- (NSString *)activityTitle {
+    return NSLocalizedString(@"Copy Scientific Name", nil);
+}
 
 @end
