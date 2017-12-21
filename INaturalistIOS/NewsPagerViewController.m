@@ -27,14 +27,15 @@
         self.title = NSLocalizedString(@"Activity", nil);
         
         self.tabBarItem.image = ({
-            FAKIcon *news = [FAKIonIcons iosListOutlineIconWithSize:35];
-            [news addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[news imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            FAKIcon *newsInactive = [FAKIonIcons iosBellIconWithSize:35];
+            [newsInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[newsInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.tabBarItem.selectedImage = ({
-            FAKIcon *news = [FAKIonIcons iosListIconWithSize:35];
-            [news imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *newsActive = [FAKIonIcons iosBellIconWithSize:35];
+            [newsActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[newsActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
     }
     

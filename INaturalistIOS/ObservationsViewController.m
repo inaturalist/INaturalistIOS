@@ -1140,15 +1140,15 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
-            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[meOutline imageWithSize:CGSizeMake(25, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            FAKIcon *meInactive = [FAKIonIcons iosPersonIconWithSize:40];
+            [meInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[meInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage = ({
-            FAKIcon *meFilled = [FAKIonIcons iosPersonIconWithSize:35];
-            [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [meFilled imageWithSize:CGSizeMake(25, 45)];
+            FAKIcon *meActive = [FAKIonIcons iosPersonIconWithSize:40];
+            [meActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[meActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
 
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);

@@ -73,15 +73,15 @@
     if (self = [super initWithCoder:aDecoder]) {
         
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *worldOutline = [FAKIonIcons iosWorldOutlineIconWithSize:35];
-            [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[worldOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
+            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage =({
-            FAKIcon *worldFilled = [FAKIonIcons iosWorldIconWithSize:35];
-            [worldFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [worldFilled imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
+            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Explore", nil);
