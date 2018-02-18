@@ -1,0 +1,5 @@
+/* Localized versions of Info.plist keys */
+
+// TODO figure out how to use ${PRODUCT_NAME} here
+"NSLocationWhenInUseUsageDescription" = "iNaturalist gözleminize otomatik olarak konum ekleyebilmek için bu bilgiyi kullanýr ve bulunduðunuz konuma göre baþka hizmetler saðlar.";
+"NSPhotoLibraryUsageDescription" = "iNaturalist Fotoðraflarýzý ve kütüphanenizdeki fotoðraflarýzý içe ve dýþa aktarýn.";
