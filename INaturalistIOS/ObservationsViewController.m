@@ -53,6 +53,7 @@
 #import "ExploreUpdateRealm.h"
 #import "Taxon.h"
 #import "INatReachability.h"
+#import "NSLocale+INaturalist.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -459,15 +460,27 @@
 {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
+        
 		User *me = [appDelegate.loginController fetchMe];
         [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields&per_page=10", me.login]
+        
+        NSString *obsFetchPath = [NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields",
+                                      me.login];
+        NSString *localeString = [NSLocale inat_serverFormattedLocale];
+        if (localeString && ![localeString isEqualToString:@""]) {
+            obsFetchPath = [obsFetchPath stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+        }
+
+        
+        // fetch the most recent 10
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=10"]
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
         
+        // then fetch the most recent 200
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", me.login]
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=200"]
                                                          objectMapping:[Observation mapping]
                                                               delegate:self];
         });
