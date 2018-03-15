@@ -2036,13 +2036,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iNaturalist-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		28BA59DA35B600064B9AA33B /* [CP] Embed Pods Frameworks */ = {
@@ -2081,9 +2084,102 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh",
+				"${PODS_ROOT}/ARSafariActivity/ARSafariActivity/ARSafariActivity.bundle",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/foundation-icons.ttf",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/ionicons.ttf",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/zocial-regular-webfont.ttf",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activityMH.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activtyMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControl.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControl@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControlSelected.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControlSelected@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/error.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/error@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/facebookMH.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/facebookMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/ic_square.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/ic_square@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/left_arrow.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/left_arrow@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/mailMH.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/mailMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/messageMH.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/messageMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/pause.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/pause@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/play.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/play@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/playButton.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/playButton@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/right_arrow.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/right_arrow@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/saveMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/sliderPoint.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/sliderPoint@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/twitterMH.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/twitterMH@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/unplay.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/unplay@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/videoIcon.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/videoIcon@2x.png",
+				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/MHGallery.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
+				"${PODS_ROOT}/TapkuLibrary/src/TapkuLibrary.bundle",
+				"${PODS_ROOT}/VTAcknowledgementsViewController/VTAcknowledgementsViewController.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/YLMoment/YLMoment-iOS.bundle",
+				"${PODS_ROOT}/googleplus-ios-sdk/google-plus-ios-sdk-1.7.1/GooglePlus.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ARSafariActivity.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.otf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/foundation-icons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zocial-regular-webfont.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activityMH.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activtyMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControl.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControl@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControlSelected.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControlSelected@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/error.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/error@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/facebookMH.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/facebookMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ic_square.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ic_square@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/left_arrow.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/left_arrow@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/mailMH.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/mailMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageMH.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pause.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pause@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/play.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/play@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/playButton.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/playButton@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/right_arrow.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/right_arrow@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/saveMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/sliderPoint.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/sliderPoint@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/twitterMH.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/twitterMH@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/unplay.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/unplay@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/videoIcon.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/videoIcon@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MHGallery.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TapkuLibrary.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/VTAcknowledgementsViewController.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/YLMoment-iOS.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlus.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2096,13 +2192,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iNaturalistTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F14A217966F2A44BF1E923C4 /* [CP] Embed Pods Frameworks */ = {
