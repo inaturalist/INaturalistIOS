@@ -22,6 +22,14 @@
     return _sharedClient;
 }
 
+- (void)startMonitoring {
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+}
+
+- (void)stopMonitoring {
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+}
+
 - (BOOL)isNetworkReachable {
     return [self isReachabilityDetermined] && [[AFNetworkReachabilityManager sharedManager] isReachable];
 }

@@ -1313,14 +1313,16 @@
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
 				1902812414F308AD005AC8D2 /* ImageStore.m */,
 				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
+				FAB71E031FDC7D530039C45B /* INatReachability.h */,
+				FAB71E041FDC7D530039C45B /* INatReachability.m */,
 				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
 				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
+				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
 				FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */,
 				FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */,
-				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
 				FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */,
 				FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */,
 				FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */,
@@ -1353,8 +1355,6 @@
 				1997410F15194E89006FBEA0 /* UploadManager.h */,
 				1997411015194E89006FBEA0 /* UploadManager.m */,
 				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
-				FAB71E031FDC7D530039C45B /* INatReachability.h */,
-				FAB71E041FDC7D530039C45B /* INatReachability.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";

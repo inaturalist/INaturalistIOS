@@ -43,6 +43,7 @@
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
 #import "UpdatesViewController.h"
+#import "INatReachability.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -56,13 +57,18 @@
 
 @implementation INaturalistAppDelegate
 
-
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	[FBSDKAppEvents activateApp];
-    
+
+    [[INatReachability sharedClient] startMonitoring];
+
     [self loadUpdatesWithCompletionHandler:nil];
     
     [self clearOutdatedCaches];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [[INatReachability sharedClient] stopMonitoring];
 }
 
 - (BOOL)application:(UIApplication *)application

@@ -11,4 +11,7 @@
 @interface INatReachability : NSObject
 + (INatReachability *)sharedClient;
 - (BOOL)isNetworkReachable;
+
+- (void)startMonitoring;
+- (void)stopMonitoring;
 @end
