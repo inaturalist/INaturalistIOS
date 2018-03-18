@@ -14,6 +14,7 @@
 #import <objc/runtime.h>
 #import <Photos/Photos.h>
 #import <RestKit/RestKit.h>
+#import <TOCropViewController/TOCropViewController.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -52,13 +53,14 @@ typedef NS_ENUM(NSInteger, INatPhotoSource) {
 NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
+static char METADATA_ASSOCIATED_KEY;
 
 @interface QBImagePickerController ()
 @property (nonatomic, strong) UINavigationController *albumsNavigationController;
 @end
 
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, TOCropViewControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
 @property QBImagePickerController *imagePicker;
@@ -379,24 +381,59 @@ static char PROJECT_ASSOCIATED_KEY;
     });
 }
 
-#pragma mark - UIImagePickerController delegate
+#pragma mark - TOCropViewController delegate
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+- (void)cropViewController:(TOCropViewController *)cropViewController didFinishCancelled:(BOOL)cancelled {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (void)cropViewController:(TOCropViewController *)cropVC didCropToImage:(UIImage *)cropImage withRect:(CGRect)cropRect angle:(NSInteger)angle {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
+    confirm.image = cropImage;
     confirm.shouldContinueUpdatingLocation = YES;
-    
-    Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
+
+    NSDictionary *metadata = objc_getAssociatedObject(cropVC, &METADATA_ASSOCIATED_KEY);
+    if (metadata) {
+        confirm.metadata = metadata;
+    }
+    Taxon *taxon = objc_getAssociatedObject(cropVC, &TAXON_ASSOCIATED_KEY);
     if (taxon) {
         confirm.taxon = taxon;
     }
-    Project *project = objc_getAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY);
+    Project *project = objc_getAssociatedObject(cropVC, &PROJECT_ASSOCIATED_KEY);
     if (project) {
         confirm.project = project;
     }
     
-    [picker pushViewController:confirm animated:NO];
+    [cropVC.navigationController pushViewController:confirm animated:NO];
+}
+
+#pragma mark - UIImagePickerController delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    NSDictionary *metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
+
+    if (image) {
+        TOCropViewController *cropVC = [[TOCropViewController alloc] initWithImage:image];
+        cropVC.delegate = self;
+        
+        Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
+        if (taxon) {
+            objc_setAssociatedObject(cropVC, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        }
+        Project *project = objc_getAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY);
+        if (project) {
+            objc_setAssociatedObject(cropVC, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        if (metadata) {
+            objc_setAssociatedObject(cropVC, &METADATA_ASSOCIATED_KEY, metadata, OBJC_ASSOCIATION_RETAIN);
+        }
+        
+        [picker pushViewController:cropVC animated:YES];
+    }
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
