@@ -155,6 +155,7 @@ PODS:
   - SWRevealViewController (2.3.0)
   - TapkuLibrary (0.3.8)
   - Toast (3.0)
+  - TOCropViewController (2.3.5)
   - TTTAttributedLabel (1.13.3)
   - UIColor-HTMLColors (1.0.0)
   - VICMAImageView (1.0)
@@ -206,6 +207,7 @@ DEPENDENCIES:
   - SWRevealViewController (= 2.3.0)
   - TapkuLibrary (= 0.3.8)
   - Toast (= 3.0)
+  - TOCropViewController (~> 2.3.5)
   - UIColor-HTMLColors (= 1.0.0)
   - VICMAImageView (~> 1.0)
   - VTAcknowledgementsViewController (= 0.15)
@@ -296,6 +298,7 @@ SPEC CHECKSUMS:
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
   TapkuLibrary: 7a406dac46eff8595e191557eba88959f97f69b7
   Toast: 32c59229abfcf41850162b83bb9259dc84372473
+  TOCropViewController: a21b39c910d161600a26b6e3f89a58707afaa4f8
   TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
   VICMAImageView: 9f1811d4482ebe37b7eb09f640018554a81a21b2
@@ -304,6 +307,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 33293cac172fbc79f23c28ad9ccd293358d019bd
+PODFILE CHECKSUM: b2c317d365b6d1edea2dcc5beff7668328cf61b8
 
 COCOAPODS: 1.4.0.rc.1
