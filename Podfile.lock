@@ -53,9 +53,9 @@ PODS:
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
   - Fabric/Base (1.5.4)
-  - FBSDKCoreKit (4.10.1):
-    - Bolts (~> 1.5)
-  - FBSDKLoginKit (4.10.1):
+  - FBSDKCoreKit (4.29.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.29.0):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
   - FontAwesomeKit (2.2.0):
@@ -175,8 +175,8 @@ DEPENDENCIES:
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Fabric (= 1.5.4)
-  - FBSDKCoreKit (= 4.10.1)
-  - FBSDKLoginKit (= 4.10.1)
+  - FBSDKCoreKit (= 4.29.0)
+  - FBSDKLoginKit (= 4.29.0)
   - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - FontAwesomeKit (= 2.2.0)
   - GeoJSONSerialization (= 0.0.4)
@@ -261,8 +261,8 @@ SPEC CHECKSUMS:
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
-  FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
-  FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
+  FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
+  FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
   FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
@@ -307,6 +307,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: b2c317d365b6d1edea2dcc5beff7668328cf61b8
+PODFILE CHECKSUM: 229617fe14196b1734cdf23a2ae6ce41e41e6b54
 
 COCOAPODS: 1.4.0.rc.1
