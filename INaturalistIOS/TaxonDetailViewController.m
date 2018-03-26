@@ -110,7 +110,7 @@
     } else {
         self.tooltip = [[JDFTooltipView alloc] initWithTargetView:view
                                                          hostView:parentView
-                                                      tooltipText:NSLocalizedString(@"Copy Scientific Name", nil)
+                                                      tooltipText:NSLocalizedString(@"Copy Scientific Name", @"Button to copy the scientific name")
                                                    arrowDirection:JDFTooltipViewArrowDirectionDown
                                                             width:250];
         self.tooltip.tooltipBackgroundColour = [UIColor inatTint];
@@ -502,7 +502,7 @@
 }
 
 - (NSString *)activityTitle {
-    return NSLocalizedString(@"Copy Scientific Name", nil);
+    return NSLocalizedString(@"Copy Scientific Name", @"Button to copy the scientific name");
 }
 
 @end
