@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -344,7 +344,7 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
-                                <rect key="frame" x="42.5" y="40" width="290" height="269"/>
+                                <rect key="frame" x="42.5" y="40" width="290" height="323"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pbQ-o3-5Xy">
                                         <rect key="frame" x="0.0" y="0.0" width="290" height="29"/>
@@ -437,9 +437,20 @@
                                             <action selector="actionPressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="PRF-jE-Bjh"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="082-Nj-s4i" customClass="LoginSwitchContextButton">
+                                        <rect key="frame" x="0.0" y="279" width="290" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="TFS-BY-Drm"/>
+                                        </constraints>
+                                        <state key="normal" title="Already have an account?"/>
+                                        <connections>
+                                            <action selector="switchAuthContext:" destination="j80-yK-ZbF" eventType="touchUpInside" id="95g-Dk-iSK"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="pbQ-o3-5Xy" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="Eim-Kl-IFS"/>
+                                    <constraint firstItem="082-Nj-s4i" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="Zfo-nH-XWj"/>
                                     <constraint firstItem="gUI-g3-aai" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="dRM-Xj-tix"/>
                                     <constraint firstItem="LVz-7N-QYA" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="vBm-fG-yLL"/>
                                     <constraint firstItem="Cjw-qm-xKX" firstAttribute="width" secondItem="31y-8d-eUf" secondAttribute="width" id="xIq-aj-qPj"/>
@@ -447,7 +458,7 @@
                                 <variation key="heightClass=regular-widthClass=regular" spacing="25"/>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-dJ-pka">
-                                <rect key="frame" x="42.5" y="455" width="290" height="138"/>
+                                <rect key="frame" x="42.5" y="509" width="290" height="138"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or Log in with:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bfj-77-C1k">
                                         <rect key="frame" x="0.0" y="0.0" width="290" height="16"/>
@@ -515,33 +526,19 @@
                                 </constraints>
                                 <variation key="heightClass=regular-widthClass=regular" spacing="25"/>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="082-Nj-s4i">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="TFS-BY-Drm"/>
-                                </constraints>
-                                <state key="normal" title="Already have an account?"/>
-                                <connections>
-                                    <action selector="switchAuthContext:" destination="j80-yK-ZbF" eventType="touchUpInside" id="95g-Dk-iSK"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="centerY" secondItem="sOT-vv-oc9" secondAttribute="centerY" constant="-100" id="4oF-Vb-jIf"/>
-                            <constraint firstItem="lno-pb-Pqa" firstAttribute="top" secondItem="082-Nj-s4i" secondAttribute="bottom" id="FS1-Z3-0Ql"/>
                             <constraint firstItem="LMC-dJ-pka" firstAttribute="top" secondItem="31y-8d-eUf" secondAttribute="bottom" constant="30" id="OBM-m4-LvD"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MC0-kW-bph" secondAttribute="trailing" id="Q8t-4Y-DFP"/>
+                            <constraint firstItem="lno-pb-Pqa" firstAttribute="top" secondItem="LMC-dJ-pka" secondAttribute="bottom" constant="20" id="RCr-J3-NA6"/>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="centerX" secondItem="sOT-vv-oc9" secondAttribute="centerX" id="SrQ-g6-qx6"/>
                             <constraint firstAttribute="trailing" secondItem="31y-8d-eUf" secondAttribute="trailing" priority="750" constant="30" id="TQV-5G-S7B"/>
                             <constraint firstItem="MC0-kW-bph" firstAttribute="top" secondItem="Hgf-d3-Me4" secondAttribute="bottom" constant="8" id="XN4-JN-Eta"/>
-                            <constraint firstItem="082-Nj-s4i" firstAttribute="leading" secondItem="sOT-vv-oc9" secondAttribute="leading" id="c4t-ZN-9ki"/>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="leading" secondItem="sOT-vv-oc9" secondAttribute="leading" priority="750" constant="30" id="h4U-RA-Wca"/>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="top" secondItem="Hgf-d3-Me4" secondAttribute="bottom" constant="20" id="khz-cV-7nr"/>
-                            <constraint firstItem="082-Nj-s4i" firstAttribute="top" secondItem="LMC-dJ-pka" secondAttribute="bottom" constant="30" id="o9v-gJ-uXm"/>
                             <constraint firstItem="LMC-dJ-pka" firstAttribute="centerX" secondItem="sOT-vv-oc9" secondAttribute="centerX" id="q0Y-MI-OTS"/>
-                            <constraint firstAttribute="trailing" secondItem="082-Nj-s4i" secondAttribute="trailing" id="rhy-Rh-Vqo"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -554,7 +551,6 @@
                                 <include reference="4oF-Vb-jIf"/>
                                 <exclude reference="khz-cV-7nr"/>
                                 <include reference="OBM-m4-LvD"/>
-                                <exclude reference="o9v-gJ-uXm"/>
                             </mask>
                         </variation>
                     </view>

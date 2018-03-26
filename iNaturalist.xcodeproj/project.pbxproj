@@ -263,6 +263,8 @@
 		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
 		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
 		FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */; };
+		FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */; };
+		FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
 		FAEF23311C7CF20500208F44 /* ProjectDetailPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */; };
 		FAEF23351C7D00A600208F44 /* INatAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23341C7D00A600208F44 /* INatAPI.m */; };
@@ -910,6 +912,9 @@
 		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FAE9D0981D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FAEB5C0D2069A19000BA3132 /* LoginSwitchContextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginSwitchContextButton.h; sourceTree = "<group>"; };
+		FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginSwitchContextButton.m; sourceTree = "<group>"; };
+		FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginSwitchContextButtonTests.m; sourceTree = "<group>"; };
 		FAEF232C1C7CD80300208F44 /* ProjectDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailV2ViewController.h; sourceTree = "<group>"; };
 		FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectDetailV2ViewController.m; sourceTree = "<group>"; };
 		FAEF232F1C7CF20500208F44 /* ProjectDetailPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailPageViewController.h; sourceTree = "<group>"; };
@@ -1235,12 +1240,16 @@
 				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
 				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
 				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
+				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
+				FAEB5C102069A1A700BA3132 /* Login Views */,
 				FA724ADE1AB150BD00D01773 /* MeHeaderView.h */,
 				FA724ADF1AB150BD00D01773 /* MeHeaderView.m */,
 				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
 				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
 				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
 				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
+				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
 				FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */,
 				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
 				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
@@ -1266,6 +1275,7 @@
 				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
 				FA5564851BD9A9340049803B /* PhotoScrollViewCell.h */,
 				FA5564861BD9A9340049803B /* PhotoScrollViewCell.m */,
+				FAEF23421C7D0DD300208F44 /* Project Details */,
 				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
 				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
@@ -1280,17 +1290,13 @@
 				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
 				FAA6EB121C90C12E00F43552 /* Taxon Details */,
 				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
+				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
+				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
 				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
 				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
 				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
 				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
-				FAEF23421C7D0DD300208F44 /* Project Details */,
-				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
-				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
-				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
-				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
-				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1804,6 +1810,7 @@
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
+				FAEB5C112069A5A100BA3132 /* Views */,
 				FA6F81D41E72458100135C5E /* Helpers */,
 				FAF73BE21E1B245F002456AF /* Misc */,
 				FA65133D1E04A4900059FD70 /* Model */,
@@ -1820,6 +1827,23 @@
 				FADE28B31B02D9AA00CA55FF /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FAEB5C102069A1A700BA3132 /* Login Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAEB5C0D2069A19000BA3132 /* LoginSwitchContextButton.h */,
+				FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */,
+			);
+			name = "Login Views";
+			sourceTree = "<group>";
+		};
+		FAEB5C112069A5A100BA3132 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		FAEF23321C7D007C00208F44 /* iNat Node API */ = {
@@ -2318,6 +2342,7 @@
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
 				FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
+				FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */,
 				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
 				FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */,
 				FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */,
@@ -2485,6 +2510,7 @@
 				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
+				FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
 				FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */,
 				FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */,

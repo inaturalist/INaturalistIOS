@@ -28,6 +28,7 @@
 #import "Partner.h"
 #import "INatWebController.h"
 #import "INatReachability.h"
+#import "LoginSwitchContextButton.h"
 
 static char PARTNER_ASSOCIATED_KEY;
 
@@ -44,7 +45,7 @@ static char PARTNER_ASSOCIATED_KEY;
 @property IBOutlet UIButton *licenseMyDataButton;
 
 @property IBOutlet UIButton *actionButton;
-@property IBOutlet UIButton *switchContextButton;
+@property IBOutlet LoginSwitchContextButton *switchContextButton;
 
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
@@ -233,11 +234,8 @@ static char PARTNER_ASSOCIATED_KEY;
     self.googleButton.textTitle = @"Google";
     [self.googleButton addTarget:self action:@selector(googlePressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    
-    self.switchContextButton.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
-    self.switchContextButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
-    [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
-                              forState:UIControlStateNormal];
+    // start in signup context
+    [self.switchContextButton setContext:LoginContextSignup];
 
     self.passwordField.rightView = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -359,12 +357,11 @@ static char PARTNER_ASSOCIATED_KEY;
                              [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
                                                 forState:UIControlStateNormal];
                              self.licenseStackView.hidden = YES;
-                             [self.switchContextButton setTitle:NSLocalizedString(@"New to iNaturalist? Sign up now!", nil)
-                                                       forState:UIControlStateNormal];
                              self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
+                             [self.switchContextButton setContext:LoginContextLogin];
                          }];
     } else {
-        // switch to signup mode
+        // switch to signup mode        
         [UIView animateWithDuration:0.2f
                          animations:^{
                              [self.textfieldStackView insertArrangedSubview:self.emailField
@@ -374,9 +371,8 @@ static char PARTNER_ASSOCIATED_KEY;
                              [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
                                                 forState:UIControlStateNormal];
                              self.licenseStackView.hidden = NO;
-                             [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
-                                                       forState:UIControlStateNormal];
                              self.passwordField.rightViewMode = UITextFieldViewModeNever;
+                             [self.switchContextButton setContext:LoginContextSignup];
                          }];
     }
 }
