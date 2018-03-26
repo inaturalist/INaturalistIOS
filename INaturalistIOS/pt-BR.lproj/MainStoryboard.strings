@@ -5,16 +5,16 @@
 "0Q2-fy-dMQ.text" = "Tutorial";
 
 /* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
-"aTs-25-Wva.text" = "Change username";
+"aTs-25-Wva.text" = "Alterar nome de usuário";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Auto-completar nomes";
 
 /* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
-"TeG-HZ-eQD.text" = "Automatically upload";
+"TeG-HZ-eQD.text" = "Upload automático";
 
 /* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
-"RjU-G5-BWG.text" = "Suggest species";
+"RjU-G5-BWG.text" = "Sugerir espécie";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "Categorizar novas observações";
@@ -204,9 +204,6 @@
 
 /* Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF"; */
 "XXq-bW-vbF.title" = "Detalhes do Projeto";
-
-/* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "XyN-zm-hAh"; */
-"XyN-zm-hAh.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
 
 /* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
 "Ypi-aU-Rf4.text" = "Lista vermelha da IUCN";

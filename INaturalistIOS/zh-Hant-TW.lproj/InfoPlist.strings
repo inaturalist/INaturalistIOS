@@ -2,3 +2,4 @@
 // TODO figure out how to use ${PRODUCT_NAME} here
 
 "NSLocationWhenInUseUsageDescription" = "iNaturalist 采用該信息自動為您的觀察記錄添加定位，並提供定位相關的其他服務。";
+"NSPhotoLibraryUsageDescription" = "Export and import iNaturalist photos to and from your library.";

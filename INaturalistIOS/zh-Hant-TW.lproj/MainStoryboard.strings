@@ -5,16 +5,16 @@
 "0Q2-fy-dMQ.text" = "使用教學";
 
 /* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
-"aTs-25-Wva.text" = "更改使用者名稱";
+"aTs-25-Wva.text" = "Change username";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
-"M0h-Eg-gr3.text" = "自動補齊名字";
+"M0h-Eg-gr3.text" = "自動填上名字";
 
 /* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
-"TeG-HZ-eQD.text" = "自動上傳";
+"TeG-HZ-eQD.text" = "Automatically upload";
 
 /* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
-"RjU-G5-BWG.text" = "建議物種";
+"RjU-G5-BWG.text" = "Suggest species";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "對新的觀察記錄進行分類";
@@ -26,10 +26,10 @@
 "0U1-va-cIB.title" = "指南";
 
 /* Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona"; */
-"1bw-oa-ona.placeholder" = "未知地點";
+"1bw-oa-ona.placeholder" = "未知的地方";
 
 /* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ"; */
-"1hu-IK-XsQ.text" = "學名";
+"1hu-IK-XsQ.text" = "科學名稱";
 
 /* Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj"; */
 "1yP-Oa-9Kj.title" = "登入";
@@ -38,7 +38,7 @@
 "31c-qh-A6S.title" = "新增";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
-"3DS-CL-NMe.headerTitle" = "使用 Facebook 登入";
+"3DS-CL-NMe.headerTitle" = "使用Facebook登入";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
 "46e-pE-mJn.text" = "???";
@@ -53,10 +53,10 @@
 "nla-WE-iqA.text" = "用戶名稱";
 
 /* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
-"7ua-fh-uvU.placeholder" = "您的 iNaturalist 用戶名";
+"7ua-fh-uvU.placeholder" = "你的 iNaturalist 用戶名稱";
 
 /* Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
-"9br-9C-J7v.headerTitle" = "您看到了什麼？";
+"9br-9C-J7v.headerTitle" = "你看到什麼？";
 
 /* Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH"; */
 "AWa-0U-YdH.text" = "著作權標示";
@@ -65,7 +65,7 @@
 "AeG-t0-DTD.placeholder" = "您的 iNaturalist 密碼";
 
 /* Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl"; */
-"AiV-F7-sFl.text" = "詳細資料";
+"AiV-F7-sFl.text" = "詳情";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA"; */
 "Be1-xj-miA.text" = "標籤";
@@ -80,7 +80,7 @@
 "D22-7s-3ca.text" = "標籤";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x"; */
-"Df8-ua-w8x.headerTitle" = "維基百科資訊";
+"Df8-ua-w8x.headerTitle" = "維基百科的描述";
 
 /* Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8"; */
 "EGB-Ac-Dg8.title" = "指南";
@@ -95,7 +95,7 @@
 "F6V-RD-Yrx.title" = "分類群";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA"; */
-"GC7-gQ-cDA.text" = "未知的";
+"GC7-gQ-cDA.text" = "不明";
 
 /* Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X"; */
 "GKo-Sv-g5X.title" = "觀察";
@@ -104,7 +104,7 @@
 "GmQ-fX-MuU.title" = "任務";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ"; */
-"Gq1-rm-ccJ.text" = "未知的";
+"Gq1-rm-ccJ.text" = "不明";
 
 /* Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS"; */
 "H2L-mX-7uS.text" = "副標題";
@@ -116,22 +116,22 @@
 "I43-iz-miT.headerTitle" = "版本";
 
 /* Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev"; */
-"IvC-UJ-yev.text" = "聯絡支援團隊";
+"IvC-UJ-yev.text" = "與支援部門聯繫";
 
 /* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
-"r3a-dI-zLW.text" = "喜愛 iNaturalist？給我們評分吧！";
+"r3a-dI-zLW.text" = "喜歡 iNaturalist? 對我們評分吧！";
 
 /* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
 "J9i-XA-tlL.text" = "選擇任務";
 
 /* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ"; */
-"JRR-T4-jKQ.title" = "已完成";
+"JRR-T4-jKQ.title" = "完成";
 
 /* Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal"; */
 "JkM-AH-Zal.text" = "開啟";
 
 /* Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb"; */
-"Kfy-Up-oCb.title" = "搜尋物種";
+"Kfy-Up-oCb.title" = "搜索物種";
 
 /* Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv"; */
 "Kp6-B4-NJv.text" = "註冊";
@@ -140,7 +140,7 @@
 "M93-9f-xgT.text" = "???";
 
 /* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
-"ME2-ai-L2I.normalTitle" = "瀏覽更多...";
+"ME2-ai-L2I.normalTitle" = "查看更多...";
 
 /* Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
 "Nsa-pu-mCD.title" = "選擇任務";
@@ -161,19 +161,19 @@
 "Q0S-qE-f4O.headerTitle" = "位置";
 
 /* Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq"; */
-"QYT-BR-dNq.text" = "需要物種鑑定協助嗎？";
+"QYT-BR-dNq.text" = "需要協助物種辨認嗎？";
 
 /* Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh"; */
-"Qrv-G3-6nh.text" = "由加州科學院(California Academy of Sciences) 的 iNaturalist 所設計開發，並透過生命大百科(Encyclopedia of Life) 支援。\n\n此 app 使用大量開源及經共享創意授權(Creative Common License) 的素材，包括 Three20、Restkit、 由Devin Ross 開發的 TapkuLibrary、由 David Sinclair 所開發的 DejalActivityView 以及由 Joseph Wain 開發的 Glyphish icons。 我們對於這些慷慨以及高材工程師和藝術家致上最高謝意。 ";
+"Qrv-G3-6nh.text" = "此應用程式得到網絡生命大百科的支持，由加利福尼亞州科學院的 iNaturalist 所設計及開發。iNaturalist 使用大量開源及經共享創意授權的素材，包括Three20、Restkit、 由Devin Ross 開發的 TapkuLibrary、由大衛·辛克萊開發的 DejalActivityView 以及由 Joseph Wain 開發的 Glyphish icons。 ";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
 "R4F-3k-D7x.text" = "???";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ"; */
-"RVt-Kj-7RQ.headerTitle" = "保育等級";
+"RVt-Kj-7RQ.headerTitle" = "物種的保護狀況";
 
 /* Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM"; */
-"SQG-h4-rqM.text" = "使用者名稱";
+"SQG-h4-rqM.text" = "用戶名稱";
 
 /* Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq"; */
 "SaM-EA-Ovq.title" = "分類指南";
@@ -182,31 +182,31 @@
 "Sr1-uD-ljI.text" = "2.1.1, 版本 2.1.12";
 
 /* Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C"; */
-"TJg-mX-i6C.text" = "使用 Facebook 登入";
+"TJg-mX-i6C.text" = "使用Facebook登入";
 
 /* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
 "UWz-sc-ZIU.text" = "m";
 
 /* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95"; */
-"VjR-qL-q95.segmentTitles[0]" = "街道圖";
+"VjR-qL-q95.segmentTitles[0]" = "一般街道地圖";
 
 /* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95"; */
-"VjR-qL-q95.segmentTitles[1]" = "衛星圖";
+"VjR-qL-q95.segmentTitles[1]" = "衛星地圖";
 
 /* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95"; */
-"VjR-qL-q95.segmentTitles[2]" = "衛星街道混和圖";
+"VjR-qL-q95.segmentTitles[2]" = "衛星街道地圖";
 
 /* Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j"; */
 "Vmt-AE-W0j.title" = "編輯";
 
 /* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ"; */
-"X8Y-bf-fBQ.text" = "任務的標題太長了";
+"X8Y-bf-fBQ.text" = "任務標題太長了！";
 
 /* Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF"; */
-"XXq-bW-vbF.title" = "任務細節";
+"XXq-bW-vbF.title" = "任務詳情";
 
 /* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
-"Ypi-aU-Rf4.text" = "IUCN 紅色名錄";
+"Ypi-aU-Rf4.text" = "世界自然保護聯盟紅色名錄";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs"; */
 "Z4l-tt-zMs.headerTitle" = "日期 / 時間";
@@ -221,13 +221,13 @@
 "ZzY-Yv-hhu.text" = "密碼";
 
 /* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA"; */
-"bKM-7Q-aRA.text" = "專案的標題太長了";
+"bKM-7Q-aRA.text" = "任務標題太長了！";
 
 /* Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF"; */
 "bTy-8i-NnF.text" = "標籤";
 
 /* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9"; */
-"bW0-Pb-mB9.text" = "學名";
+"bW0-Pb-mB9.text" = "科學名稱";
 
 /* Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA"; */
 "cQc-hZ-KcA.headerTitle" = "更多";
@@ -239,13 +239,13 @@
 "cTI-n2-vmb.title" = "指南標題";
 
 /* Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC"; */
-"dYu-ti-1gC.text" = "新增觀察記錄";
+"dYu-ti-1gC.text" = "添加觀察記錄";
 
 /* Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk"; */
-"e0j-MT-hzk.text" = "未知";
+"e0j-MT-hzk.text" = "不明";
 
 /* Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY"; */
-"eMN-g3-ANY.text" = "定位精確度";
+"eMN-g3-ANY.text" = "定位準確度";
 
 /* Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht"; */
 "exb-m5-Kht.text" = "分類群名稱";
@@ -257,13 +257,13 @@
 "gq3-Sv-hEY.text" = "緯度:";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh"; */
-"h2K-Kg-3dh.headerTitle" = "使用 Google+ 登入";
+"h2K-Kg-3dh.headerTitle" = "以 Google+ 登入";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN"; */
 "hKK-sS-qAN.title" = "取消";
 
 /* Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb"; */
-"hX2-Qg-qfb.normalTitle" = "在 iNaturalist 網站上查看";
+"hX2-Qg-qfb.normalTitle" = "在 iNaturalist 上查看";
 
 /* Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u"; */
 "hfA-vB-13u.text" = "登入";
@@ -281,10 +281,10 @@
 "l3n-dl-Zr0.title" = "設定";
 
 /* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku"; */
-"lPu-9O-6Ku.title" = "專案";
+"lPu-9O-6Ku.title" = "任務";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I"; */
-"ljj-kr-K3I.headerTitle" = "還沒有帳戶嗎？";
+"ljj-kr-K3I.headerTitle" = "仍未註冊？";
 
 /* Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p"; */
 "lol-PH-r6p.text" = "請選擇地圖類型";
@@ -296,34 +296,34 @@
 "oWq-bA-sYY.headerTitle" = "您的 iNaturalist 帳戶";
 
 /* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
-"LbD-zB-zU2.headerTitle" = "App 設定";
+"LbD-zB-zU2.headerTitle" = "應用程式設定";
 
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
-"ohk-ES-lZM.text" = "使用 Google 帳號登入";
+"ohk-ES-lZM.text" = "以 Google 帳號登入";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
-"pL9-Nd-0JB.headerTitle" = "說明";
+"pL9-Nd-0JB.headerTitle" = "幫助";
 
 /* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
 "sxb-6N-VGO.headerTitle" = "關於";
 
 /* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
-"zPB-Sx-9Uh.text" = "致謝";
+"zPB-Sx-9Uh.text" = "鳴謝";
 
 /* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
 "pmm-Vg-XgJ.placeholder" = "物種名稱";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
-"qJK-jT-EPE.headerTitle" = "附註";
+"qJK-jT-EPE.headerTitle" = "筆記";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C"; */
 "qfi-HT-h2C.title" = "取消";
 
 /* Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP"; */
-"qsE-wG-WNP.text" = "專案標題";
+"qsE-wG-WNP.text" = "任務標題";
 
 /* Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R"; */
-"r3N-gL-j8R.text" = "專案名稱";
+"r3N-gL-j8R.text" = "任務名稱";
 
 /* Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj"; */
 "r7b-jc-Kqj.title" = "同步";
@@ -335,7 +335,7 @@
 "s0d-iz-ydn.title" = "觀察記錄";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "登入 iNaturalist.org";
+"tW8-NR-sj7.headerTitle" = "登錄到 iNaturalist.org";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
 "tiA-DP-jEV.title" = "登入";
@@ -344,7 +344,7 @@
 "tnA-n3-DOC.headerTitle" = "服務條款";
 
 /* Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX"; */
-"tp5-5y-3mX.normalTitle" = "詳細資料";
+"tp5-5y-3mX.normalTitle" = "詳情";
 
 /* Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf"; */
 "uR8-0q-Vnf.title" = "觀察記錄";
@@ -362,4 +362,4 @@
 "xdk-Tu-cps.text" = "指南名稱";
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
-"zpr-b5-V8G.title" = "編輯位置";
+"zpr-b5-V8G.title" = "更改位置";

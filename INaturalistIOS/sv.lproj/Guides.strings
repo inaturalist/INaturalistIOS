@@ -1,44 +1,44 @@
-/*Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI";*/
+/* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
 "1sf-TG-XOI.text" = "Detaljer";
 
-/*Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od";*/
+/* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
 "349-K6-4Od.text" = "Guide namn";
 
-/*Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9";*/
+/* Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9"; */
 "5Yw-MQ-2n9.text" = "Rubrik";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o"; */
 "64U-Iz-e8o.text" = "Etikett";
 
-/*Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN";*/
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN"; */
 "7Ok-Hu-UbN.text" = "Underrubrik";
 
-/*Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1";*/
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1"; */
 "DJO-9O-mI1.title" = "Objekt";
 
-/*Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj";*/
+/* Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj"; */
 "GJa-zU-aXj.title" = "GuideTaxon";
 
-/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI";*/
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
 "fUj-Ua-JrI.title" = "Observera";
 
-/*Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ";*/
+/* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
 "fxG-Ko-HJJ.text" = "Taxon namn";
 
-/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc";*/
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
 "gaA-yq-1wc.title" = "Observera";
 
-/*Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ";*/
+/* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
 "hhs-MN-AbZ.title" = "Fältguider";
 
-/*Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb";*/
+/* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
 "lIl-fs-5kb.title" = "Guidetitel";
 
-/*Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV";*/
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV"; */
 "oD3-aX-8WV.title" = "Objekt";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi"; */
 "qtj-Qg-VZi.text" = "Etikett";
 
-/*Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX";*/
+/* Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX"; */
 "yLQ-uJ-TnX.text" = "Rubrik";

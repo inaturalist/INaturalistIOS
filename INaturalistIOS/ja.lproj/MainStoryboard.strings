@@ -5,16 +5,16 @@
 "0Q2-fy-dMQ.text" = "チュートリアル";
 
 /* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
-"aTs-25-Wva.text" = "Change username";
+"aTs-25-Wva.text" = "ユーザー名の変更";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "名称のオートコンプリート";
 
 /* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
-"TeG-HZ-eQD.text" = "Automatically upload";
+"TeG-HZ-eQD.text" = "自動アップロード";
 
 /* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
-"RjU-G5-BWG.text" = "Suggest species";
+"RjU-G5-BWG.text" = "種の提案";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "新規観察記録を分類する";

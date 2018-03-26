@@ -1,44 +1,44 @@
-/*Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI";*/
+/* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
 "1sf-TG-XOI.text" = "Details";
 
-/*Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od";*/
-"349-K6-4Od.text" = "Guide name";
+/* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
+"349-K6-4Od.text" = "Nama panduan";
 
-/*Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9";*/
-"5Yw-MQ-2n9.text" = "Title";
+/* Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9"; */
+"5Yw-MQ-2n9.text" = "Judul";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o"; */
 "64U-Iz-e8o.text" = "Label";
 
-/*Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN";*/
-"7Ok-Hu-UbN.text" = "Subtitle";
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN"; */
+"7Ok-Hu-UbN.text" = "Terjemahan";
 
-/*Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1";*/
-"DJO-9O-mI1.title" = "Item";
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1"; */
+"DJO-9O-mI1.title" = "Barang";
 
-/*Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj";*/
-"GJa-zU-aXj.title" = "GuideTaxon";
+/* Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj"; */
+"GJa-zU-aXj.title" = "Panduan Takson";
 
-/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI";*/
-"fUj-Ua-JrI.title" = "Observe";
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
+"fUj-Ua-JrI.title" = "Amati";
 
-/*Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ";*/
-"fxG-Ko-HJJ.text" = "Taxon name";
+/* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
+"fxG-Ko-HJJ.text" = "Nama Takson";
 
-/*Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc";*/
-"gaA-yq-1wc.title" = "Observe";
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
+"gaA-yq-1wc.title" = "Amati";
 
-/*Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ";*/
-"hhs-MN-AbZ.title" = "Guides";
+/* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
+"hhs-MN-AbZ.title" = "Panduan";
 
-/*Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb";*/
-"lIl-fs-5kb.title" = "Guide Title";
+/* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
+"lIl-fs-5kb.title" = "Judul Panduan";
 
-/*Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV";*/
-"oD3-aX-8WV.title" = "Item";
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV"; */
+"oD3-aX-8WV.title" = "Barang";
 
-/*Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi";*/
+/* Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi"; */
 "qtj-Qg-VZi.text" = "Label";
 
-/*Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX";*/
-"yLQ-uJ-TnX.text" = "Title";
+/* Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX"; */
+"yLQ-uJ-TnX.text" = "Judul";
