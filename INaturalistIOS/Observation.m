@@ -97,7 +97,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     o.latitude = [NSNumber numberWithInt:rand() % 89];
     o.longitude = [NSNumber numberWithInt:rand() % 179];
     o.positionalAccuracy = [NSNumber numberWithInt:rand() % 500];
-    o.inatDescription = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+    o.inatDescription = @"";
     return o;
 }
 
