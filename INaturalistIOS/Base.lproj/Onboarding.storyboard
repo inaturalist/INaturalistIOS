@@ -46,7 +46,7 @@
                             <constraint firstItem="Efo-ex-SWT" firstAttribute="leading" secondItem="jK3-VW-cec" secondAttribute="leading" id="2w4-rs-1ai"/>
                             <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="sOh-eX-28k" secondAttribute="bottom" constant="10" id="QLh-d2-NQu"/>
                             <constraint firstAttribute="leading" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
-                            <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="V3h-ZB-opg" secondAttribute="bottom" constant="-20" id="cp9-aT-2MK"/>
+                            <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="V3h-ZB-opg" secondAttribute="bottom" id="cp9-aT-2MK"/>
                             <constraint firstAttribute="trailing" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
                             <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="Efo-ex-SWT" secondAttribute="bottom" id="f8M-ZR-GxP"/>
                             <constraint firstAttribute="trailing" secondItem="Efo-ex-SWT" secondAttribute="trailing" id="mXE-Jb-Rse"/>
