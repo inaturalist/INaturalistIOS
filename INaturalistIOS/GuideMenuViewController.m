@@ -229,7 +229,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSInteger i = section - self.tagPredicates.count;
     if (section < self.tagPredicates.count) {
         NSString *humanTitle = [[[[self.tagPredicates objectAtIndex:section] componentsSeparatedByString:@":"] lastObject] humanize];
-        title = [NSLocalizedString(humanTitle, nil) uppercaseString];
+        title = [humanTitle uppercaseString];
     } else if (i == 0) {
         title = NSLocalizedString(@"DESCRIPTION", @"title for description section of the guide screen");
     } else {
