@@ -78,6 +78,8 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.photos = nil;
     [self.collectionView reloadData];
 }
