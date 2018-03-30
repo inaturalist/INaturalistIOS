@@ -52,6 +52,15 @@
 
 @implementation ObsDetailV2ViewController
 
+- (ObservationAPI *)observationApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -205,9 +214,8 @@
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
     } else if ([self.observation isKindOfClass:[ExploreObservation class]]) {
-        ObservationAPI *api = [[ObservationAPI alloc] init];
         __weak typeof(self) weakSelf = self;
-        [api observationWithId:self.observation.inatRecordId
+        [[self observationApi] observationWithId:self.observation.inatRecordId
                        handler:^(NSArray *results, NSInteger count, NSError *error) {
                            __strong typeof(weakSelf) strongSelf = weakSelf;
                            if (strongSelf && results && results.count == 1) {
