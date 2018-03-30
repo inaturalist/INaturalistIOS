@@ -307,9 +307,14 @@
 				});
 			else {
 				dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *description = NSLocalizedString(@"No observations found.", @"Error notice when exploring observations when no observations were found.");
+                    if ([path containsString:@"nelat"]) {
+                        description = NSLocalizedString(@"No observations found in map area.", "Error notice when exploring observations, when no obserations were found within a map area.");
+                    }
+                    
 					NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
 																code:-1014
-															userInfo:@{ NSLocalizedDescriptionKey: @"No observations found." }];
+															userInfo:@{ NSLocalizedDescriptionKey: description }];
 					[self.notificationDelegate failedObservationFetch:error];
 				});
 			}
