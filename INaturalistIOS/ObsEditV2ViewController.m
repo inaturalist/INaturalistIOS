@@ -702,7 +702,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
         [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
         
         if (newLocation.horizontalAccuracy < 10) {
@@ -776,7 +777,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
                                     [self.tableView beginUpdates];
                                     [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
-                                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                                                          withRowAnimation:UITableViewRowAnimationNone];
                                     [self.tableView endUpdates];
                                 } @catch (NSException *exception) {
                                     if ([exception.name isEqualToString:NSObjectInaccessibleException])
@@ -807,7 +808,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ speciesIndexPath ]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                          withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView endUpdates];
 }
 
@@ -1246,7 +1247,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         
                                                         [strongSelf.tableView beginUpdates];
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                                                                    withRowAnimation:UITableViewRowAnimationNone];
                                                         [strongSelf.tableView endUpdates];
                                                         
                                                     } cancelBlock:nil
@@ -1304,7 +1305,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                                                      withRowAnimation:UITableViewRowAnimationNone];
                                                           [strongSelf.tableView endUpdates];
                                                           
                                                       } cancelBlock:nil
@@ -1334,7 +1335,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                                                      withRowAnimation:UITableViewRowAnimationNone];
                                                           [strongSelf.tableView endUpdates];
                                                           
                                                       } cancelBlock:nil
