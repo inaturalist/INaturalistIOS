@@ -207,6 +207,11 @@
     if (observedOn) {
         params[@"observed_on"] = @([observedOn timeIntervalSince1970]);
     }
+        
+    NSString *localeString = [NSLocale inat_serverFormattedLocale];
+    if (localeString && ![localeString isEqualToString:@""]) {
+        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
+    }
     
     UIImage *thumb = [[ImageStore class] imageWithImage:image
                                      squashedToFillSize:CGSizeMake(299, 299)];
