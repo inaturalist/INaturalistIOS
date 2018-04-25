@@ -1,0 +1,365 @@
+/* Class = "IBUIBarButtonItem"; title = "Edit"; ObjectID = "0Fk-rY-9h1"; */
+"0Fk-rY-9h1.title" = "Upravit";
+
+/* Class = "IBUILabel"; text = "Launch tutorial"; ObjectID = "0Q2-fy-dMQ"; */
+"0Q2-fy-dMQ.text" = "Průvodce";
+
+/* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
+"aTs-25-Wva.text" = "Změnit uživatelské jméno";
+
+/* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
+"M0h-Eg-gr3.text" = "Automatické dokončování jmen";
+
+/* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
+"TeG-HZ-eQD.text" = "Automaticky nahrát";
+
+/* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
+"RjU-G5-BWG.text" = "Navrhnout druhy";
+
+/* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
+"thU-yQ-HUV.text" = "Třídit nová pozorování";
+
+/* Class = "IBUILabel"; text = "iNaturalist Network"; ObjectID = "g3B-dy-Lka"; */
+"g3B-dy-Lka.text" = "síť iNaturalist";
+
+/* Class = "IBUINavigationItem"; title = "Guides"; ObjectID = "0U1-va-cIB"; */
+"0U1-va-cIB.title" = "Návody";
+
+/* Class = "IBUITextField"; placeholder = "Unknown place"; ObjectID = "1bw-oa-ona"; */
+"1bw-oa-ona.placeholder" = "Neznámé místo";
+
+/* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "1hu-IK-XsQ"; */
+"1hu-IK-XsQ.text" = "Latinský název";
+
+/* Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj"; */
+"1yP-Oa-9Kj.title" = "Přihlásit se";
+
+/* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S"; */
+"31c-qh-A6S.title" = "Přidat";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
+"3DS-CL-NMe.headerTitle" = "Přihlásit se přes Facebook";
+
+/* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
+"46e-pE-mJn.text" = "???";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "6Eu-N7-evS"; */
+"6Eu-N7-evS.text" = "Název";
+
+/* Class = "IBUINavigationItem"; title = "Projects"; ObjectID = "6UX-BL-9DW"; */
+"6UX-BL-9DW.title" = "Projekty";
+
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "nla-WE-iqA"; */
+"nla-WE-iqA.text" = "Uživatelské jméno";
+
+/* Class = "IBUITextField"; placeholder = "Your iNat username"; ObjectID = "7ua-fh-uvU"; */
+"7ua-fh-uvU.placeholder" = "Vaše iNat uživatelské jméno";
+
+/* Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
+"9br-9C-J7v.headerTitle" = "Co jste viděli?";
+
+/* Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH"; */
+"AWa-0U-YdH.text" = "Atributy";
+
+/* Class = "IBUITextField"; placeholder = "Your iNat password"; ObjectID = "AeG-t0-DTD"; */
+"AeG-t0-DTD.placeholder" = "Vaše iNat heslo";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "AiV-F7-sFl"; */
+"AiV-F7-sFl.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "Be1-xj-miA"; */
+"Be1-xj-miA.text" = "Popisek";
+
+/* Class = "IBUILabel"; text = "Lon:"; ObjectID = "CFS-AV-ZYV"; */
+"CFS-AV-ZYV.text" = "Zem. délka:";
+
+/* Class = "IBUILabel"; text = "Geoprivacy"; ObjectID = "CrY-as-UVn"; */
+"CrY-as-UVn.text" = "Geo soukromí";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "D22-7s-3ca"; */
+"D22-7s-3ca.text" = "Popisek";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Wikipedia Description"; ObjectID = "Df8-ua-w8x"; */
+"Df8-ua-w8x.headerTitle" = "Popis Wikipedie";
+
+/* Class = "IBUITabBarItem"; title = "Guides"; ObjectID = "EGB-Ac-Dg8"; */
+"EGB-Ac-Dg8.title" = "Průvodci";
+
+/* Class = "IBUILabel"; text = "Species default name"; ObjectID = "EcO-h2-uOF"; */
+"EcO-h2-uOF.text" = "Výchozí jméno druhu";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "Edp-cg-PsD"; */
+"Edp-cg-PsD.text" = "Název";
+
+/* Class = "IBUINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx"; */
+"F6V-RD-Yrx.title" = "Taxon";
+
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "GC7-gQ-cDA"; */
+"GC7-gQ-cDA.text" = "Neznámý";
+
+/* Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X"; */
+"GKo-Sv-g5X.title" = "Pozorovat";
+
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU"; */
+"GmQ-fX-MuU.title" = "Projekty";
+
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "Gq1-rm-ccJ"; */
+"Gq1-rm-ccJ.text" = "Neznámý";
+
+/* Class = "IBUILabel"; text = "Subtitle"; ObjectID = "H2L-mX-7uS"; */
+"H2L-mX-7uS.text" = "Podtitul";
+
+/* Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "HB8-Oo-jRB"; */
+"HB8-Oo-jRB.title" = "Zavřít";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Version"; ObjectID = "I43-iz-miT"; */
+"I43-iz-miT.headerTitle" = "Verze";
+
+/* Class = "IBUILabel"; text = "Contact support"; ObjectID = "IvC-UJ-yev"; */
+"IvC-UJ-yev.text" = "Obrátit se na podporu";
+
+/* Class = "IBUILabel"; text = "Love iNat? Rate Us"; ObjectID = "r3a-dI-zLW"; */
+"r3a-dI-zLW.text" = "Milujete iNat? Ohodnoťte nás";
+
+/* Class = "IBUILabel"; text = "Choose projects"; ObjectID = "J9i-XA-tlL"; */
+"J9i-XA-tlL.text" = "Vyberte projekty";
+
+/* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "JRR-T4-jKQ"; */
+"JRR-T4-jKQ.title" = "Hotovo";
+
+/* Class = "IBUILabel"; text = "open"; ObjectID = "JkM-AH-Zal"; */
+"JkM-AH-Zal.text" = "otevřít";
+
+/* Class = "IBUINavigationItem"; title = "Search species"; ObjectID = "Kfy-Up-oCb"; */
+"Kfy-Up-oCb.title" = "Vyhledat druhy";
+
+/* Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv"; */
+"Kp6-B4-NJv.text" = "Přihlásit se";
+
+/* Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT"; */
+"M93-9f-xgT.text" = "???";
+
+/* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
+"ME2-ai-L2I.normalTitle" = "Zobrazit více...";
+
+/* Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
+"Nsa-pu-mCD.title" = "Vyberte projekty";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "Obm-wO-wio"; */
+"Obm-wO-wio.title" = "Zrušit";
+
+/* Class = "IBUILabel"; text = "Species name"; ObjectID = "Ohz-Dw-0wM"; */
+"Ohz-Dw-0wM.text" = "Druhové jméno";
+
+/* Class = "IBUILabel"; text = "00:00 AM"; ObjectID = "P1E-WK-OB4"; */
+"P1E-WK-OB4.text" = "0:00";
+
+/* Class = "IBUINavigationItem"; title = "Project"; ObjectID = "Pc6-ER-pVU"; */
+"Pc6-ER-pVU.title" = "Projekt";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Location"; ObjectID = "Q0S-qE-f4O"; */
+"Q0S-qE-f4O.headerTitle" = "Poloha";
+
+/* Class = "IBUILabel"; text = "Need ID help?"; ObjectID = "QYT-BR-dNq"; */
+"QYT-BR-dNq.text" = "Potřebujete pomoci s identifikací?";
+
+/* Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh"; */
+"Qrv-G3-6nh.text" = "Navrženo a vytvořeno iNaturalist na Kalifornské akademii věd s podporou Encyklopedií života.\n\nTato aplikace využívá širokou škálu materiálů Open Source a Creative Common-Licented, včetně Three20, Restkit, TapkuLibrary od Devino Ross, DejalActivityView od David Sinclair a Glyphish ikony Joseph Wain. Děkujeme těmto velkorysým a talentovaným inženýrům a umělcům! ";
+
+/* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
+"R4F-3k-D7x.text" = "???";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Conservation Status"; ObjectID = "RVt-Kj-7RQ"; */
+"RVt-Kj-7RQ.headerTitle" = "Stupeň ohrožení";
+
+/* Class = "IBUILabel"; text = "Username"; ObjectID = "SQG-h4-rqM"; */
+"SQG-h4-rqM.text" = "Uživatelské jméno";
+
+/* Class = "IBUINavigationItem"; title = "GuideTaxon"; ObjectID = "SaM-EA-Ovq"; */
+"SaM-EA-Ovq.title" = "Průvodce taxonem";
+
+/* Class = "IBUILabel"; text = "2.1.1, build 2.1.12"; ObjectID = "Sr1-uD-ljI"; */
+"Sr1-uD-ljI.text" = "2.1.1, vytvořeno 2.1.12";
+
+/* Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C"; */
+"TJg-mX-i6C.text" = "Přihlásit se přes Facebook";
+
+/* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
+"UWz-sc-ZIU.text" = "m";
+
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[0]" = "Standardní";
+
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[1]" = "Satelit";
+
+/* Class = "IBUISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[2]" = "Hybridní";
+
+/* Class = "IBUINavigationItem"; title = "Edit"; ObjectID = "Vmt-AE-W0j"; */
+"Vmt-AE-W0j.title" = "Upravit";
+
+/* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "X8Y-bf-fBQ"; */
+"X8Y-bf-fBQ.text" = "Název projektu je příliš dlouhý";
+
+/* Class = "IBUINavigationItem"; title = "Project Details"; ObjectID = "XXq-bW-vbF"; */
+"XXq-bW-vbF.title" = "Podrobnosti o projektu";
+
+/* Class = "IBUILabel"; text = "IUCN Red List"; ObjectID = "Ypi-aU-Rf4"; */
+"Ypi-aU-Rf4.text" = "Červený seznam IUCN";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Date / Time"; ObjectID = "Z4l-tt-zMs"; */
+"Z4l-tt-zMs.headerTitle" = "Datum / Čas";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Projects"; ObjectID = "ZOk-5a-K6O"; */
+"ZOk-5a-K6O.headerTitle" = "Projekty";
+
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "ZUi-2S-ebn"; */
+"ZUi-2S-ebn.title" = "Projekty";
+
+/* Class = "IBUILabel"; text = "Password"; ObjectID = "ZzY-Yv-hhu"; */
+"ZzY-Yv-hhu.text" = "Heslo";
+
+/* Class = "IBUILabel"; text = "Project title is way too long brother"; ObjectID = "bKM-7Q-aRA"; */
+"bKM-7Q-aRA.text" = "Název projektu je příliš dlouhý";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "bTy-8i-NnF"; */
+"bTy-8i-NnF.text" = "Popisek";
+
+/* Class = "IBUILabel"; text = "Scientific name"; ObjectID = "bW0-Pb-mB9"; */
+"bW0-Pb-mB9.text" = "Latinský název";
+
+/* Class = "IBUITableViewSection"; headerTitle = "More"; ObjectID = "cQc-hZ-KcA"; */
+"cQc-hZ-KcA.headerTitle" = "Více";
+
+/* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "cSZ-cD-dfS"; */
+"cSZ-cD-dfS.title" = "Přidat";
+
+/* Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb"; */
+"cTI-n2-vmb.title" = "Název průvodce";
+
+/* Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC"; */
+"dYu-ti-1gC.text" = "Přidat pozorování";
+
+/* Class = "IBUILabel"; text = "Unknown"; ObjectID = "e0j-MT-hzk"; */
+"e0j-MT-hzk.text" = "Neznámý";
+
+/* Class = "IBUILabel"; text = "Acc."; ObjectID = "eMN-g3-ANY"; */
+"eMN-g3-ANY.text" = "Přesnost.";
+
+/* Class = "IBUILabel"; text = "Taxon name"; ObjectID = "exb-m5-Kht"; */
+"exb-m5-Kht.text" = "Název taxonu";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Observation Rules"; ObjectID = "gDe-P6-41D"; */
+"gDe-P6-41D.headerTitle" = "Pravidla pozorování";
+
+/* Class = "IBUILabel"; text = "Lat:"; ObjectID = "gq3-Sv-hEY"; */
+"gq3-Sv-hEY.text" = "Zeměpisná šířka:";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh"; */
+"h2K-Kg-3dh.headerTitle" = "Přihlásit se přes Google+";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN"; */
+"hKK-sS-qAN.title" = "Zrušit";
+
+/* Class = "IBUIButton"; normalTitle = "View on iNaturalist"; ObjectID = "hX2-Qg-qfb"; */
+"hX2-Qg-qfb.normalTitle" = "Zobrazit na iNaturalist";
+
+/* Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u"; */
+"hfA-vB-13u.text" = "Registrovat se";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT"; */
+"jaz-9S-FvT.title" = "Zrušit";
+
+/* Class = "IBUILabel"; text = "Common name"; ObjectID = "ju8-if-UDh"; */
+"ju8-if-UDh.text" = "Běžný název";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Description"; ObjectID = "kaD-3n-Xuk"; */
+"kaD-3n-Xuk.headerTitle" = "Popis";
+
+/* Class = "IBUITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0"; */
+"l3n-dl-Zr0.title" = "Nastavení";
+
+/* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "lPu-9O-6Ku"; */
+"lPu-9O-6Ku.title" = "Projekty";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Don't have an account?"; ObjectID = "ljj-kr-K3I"; */
+"ljj-kr-K3I.headerTitle" = "Nemáte účet?";
+
+/* Class = "IBUILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p"; */
+"lol-PH-r6p.text" = "Vyberte typ mapy";
+
+/* Class = "IBUIBarButtonItem"; title = "Done"; ObjectID = "mgd-CX-pVK"; */
+"mgd-CX-pVK.title" = "Hotovo";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Your iNaturalist Account"; ObjectID = "oWq-bA-sYY"; */
+"oWq-bA-sYY.headerTitle" = "Váš účet iNaturalist";
+
+/* Class = "IBUITableViewSection"; headerTitle = "App Settings"; ObjectID = "LbD-zB-zU2"; */
+"LbD-zB-zU2.headerTitle" = "Nastavení aplikace";
+
+/* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
+"ohk-ES-lZM.text" = "Registrovat přes Google";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
+"pL9-Nd-0JB.headerTitle" = "Nápověda";
+
+/* Class = "IBUITableViewSection"; headerTitle = "About"; ObjectID = "sxb-6N-VGO"; */
+"sxb-6N-VGO.headerTitle" = "O";
+
+/* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
+"zPB-Sx-9Uh.text" = "Poděkování";
+
+/* Class = "IBUITextField"; placeholder = "Species name"; ObjectID = "pmm-Vg-XgJ"; */
+"pmm-Vg-XgJ.placeholder" = "Druhové jméno";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Notes"; ObjectID = "qJK-jT-EPE"; */
+"qJK-jT-EPE.headerTitle" = "Poznámky";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "qfi-HT-h2C"; */
+"qfi-HT-h2C.title" = "Zrušit";
+
+/* Class = "IBUILabel"; text = "Project title"; ObjectID = "qsE-wG-WNP"; */
+"qsE-wG-WNP.text" = "Nadpis projektu";
+
+/* Class = "IBUILabel"; text = "Project name"; ObjectID = "r3N-gL-j8R"; */
+"r3N-gL-j8R.text" = "Název projektu";
+
+/* Class = "IBUIBarButtonItem"; title = "Sync"; ObjectID = "r7b-jc-Kqj"; */
+"r7b-jc-Kqj.title" = "Synchronizovat";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "rwB-lT-a3J"; */
+"rwB-lT-a3J.text" = "Název";
+
+/* Class = "IBUITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn"; */
+"s0d-iz-ydn.title" = "Pozorování";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
+"tW8-NR-sj7.headerTitle" = "Registrovat se na iNaturalist.org";
+
+/* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
+"tiA-DP-jEV.title" = "Přihlásit se";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC"; */
+"tnA-n3-DOC.headerTitle" = "Podmínky";
+
+/* Class = "IBUIButton"; normalTitle = "Details"; ObjectID = "tp5-5y-3mX"; */
+"tp5-5y-3mX.normalTitle" = "Podrobnosti";
+
+/* Class = "IBUINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf"; */
+"uR8-0q-Vnf.title" = "Pozorování";
+
+/* Class = "IBUIBarButtonItem"; title = "Join"; ObjectID = "wCV-Z1-3g6"; */
+"wCV-Z1-3g6.title" = "Připojit se";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Credits"; ObjectID = "wVj-s3-ngo"; */
+"wVj-s3-ngo.headerTitle" = "Kredity";
+
+/* Class = "IBUITabBarItem"; title = "Map"; ObjectID = "x9r-Ta-0Z8"; */
+"x9r-Ta-0Z8.title" = "Mapa";
+
+/* Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps"; */
+"xdk-Tu-cps.text" = "Název průvodce";
+
+/* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
+"zpr-b5-V8G.title" = "Upravit polohu";

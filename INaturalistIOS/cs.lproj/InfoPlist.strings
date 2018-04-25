@@ -1,0 +1,5 @@
+/* Localized versions of Info.plist keys */
+// TODO figure out how to use ${PRODUCT_NAME} here
+
+"NSLocationWhenInUseUsageDescription" = "Přidejte GPS souřadnice do pozorování, ukažte svou polohu na mapách a další.";
+"NSPhotoLibraryUsageDescription" = "Exportování a importování fotografií iNaturalist do vaší knihovny.";

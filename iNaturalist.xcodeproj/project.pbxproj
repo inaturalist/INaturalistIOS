@@ -504,6 +504,13 @@
 		FA2552121D1F4D62005D2128 /* TaxaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaAPI.m; sourceTree = "<group>"; };
 		FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailNoInteractionHeaderFooter.h; sourceTree = "<group>"; };
 		FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNoInteractionHeaderFooter.m; sourceTree = "<group>"; };
+		FA30C2EC2090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA30C2ED2090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA30C2EE2090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA30C2EF2090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA30C2F02090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA30C2F12090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA30C2F22090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
 		FA399A981DDBDB3E007ABD3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Projects.storyboard; sourceTree = "<group>"; };
@@ -2014,6 +2021,7 @@
 				de,
 				da,
 				tr,
+				cs,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2577,6 +2585,7 @@
 				FAC3BDB020901B9C004B611D /* de */,
 				FAC3BDB720901BAB004B611D /* da */,
 				FAC3BDBE20901BBD004B611D /* tr */,
+				FA30C2EC2090D881006F7629 /* cs */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2605,6 +2614,7 @@
 				FAC3BDB520901B9C004B611D /* de */,
 				FAC3BDBC20901BAB004B611D /* da */,
 				FAC3BDC320901BBE004B611D /* tr */,
+				FA30C2F12090D882006F7629 /* cs */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2632,6 +2642,7 @@
 				FAC3BDB620901B9C004B611D /* de */,
 				FAC3BDBD20901BAC004B611D /* da */,
 				FAC3BDC420901BBE004B611D /* tr */,
+				FA30C2F22090D882006F7629 /* cs */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2660,6 +2671,7 @@
 				FAC3BDB220901B9C004B611D /* de */,
 				FAC3BDB920901BAB004B611D /* da */,
 				FAC3BDC020901BBE004B611D /* tr */,
+				FA30C2EE2090D881006F7629 /* cs */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2689,6 +2701,7 @@
 				FAC3BDB320901B9C004B611D /* de */,
 				FAC3BDBA20901BAB004B611D /* da */,
 				FAC3BDC120901BBE004B611D /* tr */,
+				FA30C2EF2090D881006F7629 /* cs */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2718,6 +2731,7 @@
 				FAC3BDB420901B9C004B611D /* de */,
 				FAC3BDBB20901BAB004B611D /* da */,
 				FAC3BDC220901BBE004B611D /* tr */,
+				FA30C2F02090D881006F7629 /* cs */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2747,6 +2761,7 @@
 				FAC3BDB120901B9C004B611D /* de */,
 				FAC3BDB820901BAB004B611D /* da */,
 				FAC3BDBF20901BBD004B611D /* tr */,
+				FA30C2ED2090D881006F7629 /* cs */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
