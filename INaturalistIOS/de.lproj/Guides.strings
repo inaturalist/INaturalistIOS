@@ -1,0 +1,44 @@
+/* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
+"1sf-TG-XOI.text" = "Details";
+
+/* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
+"349-K6-4Od.text" = "Führer Name";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9"; */
+"5Yw-MQ-2n9.text" = "Titel";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o"; */
+"64U-Iz-e8o.text" = "Kategorie";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN"; */
+"7Ok-Hu-UbN.text" = "Untertitel";
+
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1"; */
+"DJO-9O-mI1.title" = "Element";
+
+/* Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj"; */
+"GJa-zU-aXj.title" = "FührerTaxon";
+
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
+"fUj-Ua-JrI.title" = "Beobachten";
+
+/* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
+"fxG-Ko-HJJ.text" = "Taxon Name";
+
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
+"gaA-yq-1wc.title" = "Beobachten";
+
+/* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
+"hhs-MN-AbZ.title" = "Anleitungen";
+
+/* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
+"lIl-fs-5kb.title" = "Führer Titel";
+
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV"; */
+"oD3-aX-8WV.title" = "Element";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi"; */
+"qtj-Qg-VZi.text" = "Kategorie";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX"; */
+"yLQ-uJ-TnX.text" = "Titel";
