@@ -881,7 +881,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Projects": @(self.observation.projectObservations.count),
                                       @"Photos": @(self.observation.observationPhotos.count),
                                       @"OFVs": @(self.observation.observationFieldValues.count),
-                                      @"Online Reachability": @(INatReachability.sharedClient.isNetworkReachable)
+                                      @"Online Reachability": INatReachability.sharedClient.isNetworkReachable ? @"Yes": @"No"
                                       }];
         
     NSError *error;
