@@ -1,44 +1,44 @@
 /* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
-"1sf-TG-XOI.text" = "Details";
+"1sf-TG-XOI.text" = "Detalii";
 
 /* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
-"349-K6-4Od.text" = "Guide name";
+"349-K6-4Od.text" = "Numele ghidului";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9"; */
-"5Yw-MQ-2n9.text" = "Título";
+"5Yw-MQ-2n9.text" = "Titlu";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o"; */
-"64U-Iz-e8o.text" = "Label";
+"64U-Iz-e8o.text" = "Etichetă";
 
 /* Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN"; */
-"7Ok-Hu-UbN.text" = "Subtitle";
+"7Ok-Hu-UbN.text" = "Subtitlu";
 
 /* Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1"; */
-"DJO-9O-mI1.title" = "Item";
+"DJO-9O-mI1.title" = "Element";
 
 /* Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj"; */
-"GJa-zU-aXj.title" = "GuideTaxon";
+"GJa-zU-aXj.title" = "Ghid Taxon";
 
 /* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
-"fUj-Ua-JrI.title" = "Observe";
+"fUj-Ua-JrI.title" = "Observă";
 
 /* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
-"fxG-Ko-HJJ.text" = "Taxon name";
+"fxG-Ko-HJJ.text" = "Nume Taxon";
 
 /* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
-"gaA-yq-1wc.title" = "Observe";
+"gaA-yq-1wc.title" = "Observă";
 
 /* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
-"hhs-MN-AbZ.title" = "Guides";
+"hhs-MN-AbZ.title" = "Ghiduri";
 
 /* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
-"lIl-fs-5kb.title" = "Guide Title";
+"lIl-fs-5kb.title" = "Titlu ghid";
 
 /* Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV"; */
-"oD3-aX-8WV.title" = "Item";
+"oD3-aX-8WV.title" = "Element";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi"; */
-"qtj-Qg-VZi.text" = "Label";
+"qtj-Qg-VZi.text" = "Etichetă";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX"; */
-"yLQ-uJ-TnX.text" = "Title";
+"yLQ-uJ-TnX.text" = "Titlu";

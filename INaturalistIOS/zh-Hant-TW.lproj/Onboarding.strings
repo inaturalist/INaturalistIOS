@@ -14,7 +14,7 @@
 "FZ5-km-oDo.placeholder" = "密碼";
 
 /* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
-"J6N-uD-ctb.normalTitle" = "跳過 >";
+"J6N-uD-ctb.normalTitle" = "略過 >";
 
 /* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
 "LVz-7N-QYA.normalTitle" = "註冊";
@@ -23,10 +23,10 @@
 "MC0-kW-bph.normalTitle" = "X";
 
 /* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
-"Nb8-x2-D2v.text" = "iNaturalist 將會對你發表的相片及定位自動作出建議。";
+"Nb8-x2-D2v.text" = "iNaturalist 將會對您發佈的相片及定位自動作出建議。";
 
 /* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
-"RqF-E7-mYe.text" = "探索和與大自然連繫";
+"RqF-E7-mYe.text" = "探索和與大自然聯結";
 
 /* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
 "L6Y-1o-yPc.text" = "滑動 >";
@@ -38,13 +38,13 @@
 "YtY-We-SSc.text" = "使用 iNaturalist 您須同意服務條款以及隱私權政策";
 
 /* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
-"dSw-gs-zGG.placeholder" = "用戶名稱";
+"dSw-gs-zGG.placeholder" = "使用者名稱";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "將你的觀察記錄與 iNaturalist 社區分享，以討論及確定你的觀察結果。";
+"ixn-0U-lJ7.text" = "將您的觀察與社群討論並確認您的觀察記錄";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "你的觀察記錄將可能被列為研究級。為了讓大家更認識大自然，我們將與科學家分享你的觀察記錄。 ";
+"oro-uB-RY1.text" = "您的觀察記錄可能會被列為研究級並與科學家分享成果，以致於讓大眾更加了解及保護大自然。 ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
 "pbQ-o3-5Xy.text" = "註冊";
@@ -53,13 +53,13 @@
 "sBd-1Y-eNL.text" = "貢獻";
 
 /* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
-"uop-S8-3lF.normalTitle" = "已經註冊？";
+"uop-S8-3lF.normalTitle" = "已經有帳戶了嗎？";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
-"vCH-CP-6hM.text" = "辨認物種";
+"vCH-CP-6hM.text" = "鑑定";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
-"xUc-8o-XIN.text" = "好，將我的數據授權，以讓科學家使用我的數據！ 了解更多資訊";
+"xUc-8o-XIN.text" = "好的，授權我的內容讓科學家使用我的資料！ 了解更多資訊";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
 "yxB-jO-b09.normalTitle" = "按鈕";

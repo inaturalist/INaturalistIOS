@@ -704,6 +704,18 @@
 		FA6513361E04A03B0059FD70 /* NewsItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemTests.m; sourceTree = "<group>"; };
 		FA6513391E04A1F80059FD70 /* SiteBlogPost.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = SiteBlogPost.json; path = Fixtures/SiteBlogPost.json; sourceTree = "<group>"; };
 		FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = ProjectBlogPost.json; path = Fixtures/ProjectBlogPost.json; sourceTree = "<group>"; };
+		FA68C99820C094E700B5D8AC /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FA68C99920C094E700B5D8AC /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FA68C99A20C094E800B5D8AC /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FA68C99B20C094E800B5D8AC /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FA68C99C20C094E800B5D8AC /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FA68C99D20C094FF00B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA68C99E20C094FF00B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA68C99F20C0950000B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA68C9A020C0950000B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA68C9A120C0950000B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA68C9A220C0950000B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA68C9A320C0950000B5D8AC /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+INaturalist.h"; sourceTree = "<group>"; };
 		FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+INaturalist.m"; sourceTree = "<group>"; };
 		FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsFieldSimpleValueCell.h; sourceTree = "<group>"; };
@@ -2022,6 +2034,8 @@
 				da,
 				tr,
 				cs,
+				"pt-BR",
+				ro,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2586,6 +2600,8 @@
 				FAC3BDB720901BAB004B611D /* da */,
 				FAC3BDBE20901BBD004B611D /* tr */,
 				FA30C2EC2090D881006F7629 /* cs */,
+				FA68C99820C094E700B5D8AC /* pt-BR */,
+				FA68C99D20C094FF00B5D8AC /* ro */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2615,6 +2631,7 @@
 				FAC3BDBC20901BAB004B611D /* da */,
 				FAC3BDC320901BBE004B611D /* tr */,
 				FA30C2F12090D882006F7629 /* cs */,
+				FA68C9A220C0950000B5D8AC /* ro */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2643,6 +2660,7 @@
 				FAC3BDBD20901BAC004B611D /* da */,
 				FAC3BDC420901BBE004B611D /* tr */,
 				FA30C2F22090D882006F7629 /* cs */,
+				FA68C9A320C0950000B5D8AC /* ro */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2672,6 +2690,8 @@
 				FAC3BDB920901BAB004B611D /* da */,
 				FAC3BDC020901BBE004B611D /* tr */,
 				FA30C2EE2090D881006F7629 /* cs */,
+				FA68C99A20C094E800B5D8AC /* pt-BR */,
+				FA68C99F20C0950000B5D8AC /* ro */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2702,6 +2722,8 @@
 				FAC3BDBA20901BAB004B611D /* da */,
 				FAC3BDC120901BBE004B611D /* tr */,
 				FA30C2EF2090D881006F7629 /* cs */,
+				FA68C99B20C094E800B5D8AC /* pt-BR */,
+				FA68C9A020C0950000B5D8AC /* ro */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2732,6 +2754,8 @@
 				FAC3BDBB20901BAB004B611D /* da */,
 				FAC3BDC220901BBE004B611D /* tr */,
 				FA30C2F02090D881006F7629 /* cs */,
+				FA68C99C20C094E800B5D8AC /* pt-BR */,
+				FA68C9A120C0950000B5D8AC /* ro */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2762,6 +2786,8 @@
 				FAC3BDB820901BAB004B611D /* da */,
 				FAC3BDBF20901BBD004B611D /* tr */,
 				FA30C2ED2090D881006F7629 /* cs */,
+				FA68C99920C094E700B5D8AC /* pt-BR */,
+				FA68C99E20C094FF00B5D8AC /* ro */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

@@ -5,16 +5,16 @@
 "0Q2-fy-dMQ.text" = "Tutorial";
 
 /* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
-"aTs-25-Wva.text" = "Change username";
+"aTs-25-Wva.text" = "Cambia el nombre de usuario";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Autocompletar nombres";
 
 /* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
-"TeG-HZ-eQD.text" = "Automatically upload";
+"TeG-HZ-eQD.text" = "Sube automáticamente";
 
 /* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
-"RjU-G5-BWG.text" = "Suggest species";
+"RjU-G5-BWG.text" = "Sugiere especie";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "Clasificar nuevas observaciones";

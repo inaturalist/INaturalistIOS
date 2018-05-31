@@ -5,16 +5,16 @@
 "0Q2-fy-dMQ.text" = "Учебник";
 
 /* Class = "IBUILabel"; text = "Change username"; ObjectID = "aTs-25-Wva"; */
-"aTs-25-Wva.text" = "Change username";
+"aTs-25-Wva.text" = "Изменить имя пользователя";
 
 /* Class = "IBUILabel"; text = "Autocomplete names"; ObjectID = "M0h-Eg-gr3"; */
 "M0h-Eg-gr3.text" = "Автозаполнение имен";
 
 /* Class = "IBUILabel"; text = "Automatically upload"; ObjectID = "TeG-HZ-eQD"; */
-"TeG-HZ-eQD.text" = "Automatically upload";
+"TeG-HZ-eQD.text" = "Автоматическая выгрузка";
 
 /* Class = "IBUILabel"; text = "Suggest species"; ObjectID = "RjU-G5-BWG"; */
-"RjU-G5-BWG.text" = "Suggest species";
+"RjU-G5-BWG.text" = "Предложить вид";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
 "thU-yQ-HUV.text" = "Классифицировать новые наблюдения";

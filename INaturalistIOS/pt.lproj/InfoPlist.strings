@@ -1,5 +1,5 @@
 /* Localized versions of Info.plist keys */
 // TODO figure out how to use ${PRODUCT_NAME} here
 
-"NSLocationWhenInUseUsageDescription" = "iNaturalist utiliza esta informação para incluir dados de localização geográfica as suas observações e disponibilizar outros recursos baseados em sua localização.";
-"NSPhotoLibraryUsageDescription" = "Export and import iNaturalist photos to and from your library.";
+"NSLocationWhenInUseUsageDescription" = "Adiciona coordenadas GPS às observações, mostra a sua localização em mapas e mais.";
+"NSPhotoLibraryUsageDescription" = "Exporta e importa fotos do iNaturalist para e a partir da sua biblioteca.";
