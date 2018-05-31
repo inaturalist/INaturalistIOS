@@ -12,7 +12,7 @@
 		<key>name</key>
 		<string>NatureWatch NZ</string>
 		<key>baseUrl</key>
-		<string>http://naturewatch.org.nz</string>
+		<string>http://inaturalist.nz</string>
 		<key>mobileCountryCodes</key>
 		<array>
 			<string>530</string>
