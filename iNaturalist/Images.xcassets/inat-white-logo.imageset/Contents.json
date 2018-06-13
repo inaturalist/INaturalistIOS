@@ -2,6 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "logo.png",
       "scale" : "1x"
     },
     {
@@ -10,8 +11,7 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "Launch_Screen_4s_launch_screen_6plus.png"
+      "scale" : "3x"
     }
   ],
   "info" : {

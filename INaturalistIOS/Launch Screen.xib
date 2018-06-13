@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,16 +15,33 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iNat Logo for Launch Screen XIB" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
-                    <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
-                </imageView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="IHV-D8-iVY">
+                    <rect key="frame" x="0.0" y="110" width="480" height="274"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inat-white-logo" translatesAutoresizingMaskIntoConstraints="NO" id="ohQ-ca-M62">
+                            <rect key="frame" x="150" y="0.0" width="180" height="180"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="180" id="IGW-OF-TyL"/>
+                                <constraint firstAttribute="height" constant="180" id="x4D-SY-CIa"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iNaturalist is a joint initiative of the California Academy of Sciences and the National Geographic Society" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TuI-Cw-Kk1">
+                            <rect key="frame" x="90" y="220" width="300" height="54"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="300" id="FSQ-l7-hEj"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
             </subviews>
-            <color key="backgroundColor" red="0.38728412828947362" green="0.31491570723684209" blue="0.26973684210526316" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.4549019608" green="0.67450980390000004" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="ohQ-ca-M62" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="TXO-xV-w5F"/>
-                <constraint firstItem="ohQ-ca-M62" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="rDL-vy-4Hp"/>
-                <constraint firstAttribute="trailing" secondItem="ohQ-ca-M62" secondAttribute="trailing" id="uva-PP-JWR"/>
-                <constraint firstAttribute="bottom" secondItem="ohQ-ca-M62" secondAttribute="bottom" id="v9q-G4-DCH"/>
+                <constraint firstAttribute="trailing" secondItem="IHV-D8-iVY" secondAttribute="trailing" id="7x9-fi-Vg6"/>
+                <constraint firstItem="ohQ-ca-M62" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-40" id="XsC-kp-fcB"/>
+                <constraint firstItem="IHV-D8-iVY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gqe-Mm-tIF"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -31,6 +49,6 @@
         </view>
     </objects>
     <resources>
-        <image name="iNat Logo for Launch Screen XIB" width="414" height="736"/>
+        <image name="inat-white-logo" width="515" height="515"/>
     </resources>
 </document>
