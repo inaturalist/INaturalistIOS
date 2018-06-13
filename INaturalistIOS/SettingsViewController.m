@@ -74,7 +74,6 @@ static const int NetworkTextLabelTag = 15;
 
 static const int AutocompleteNamesLabelTag = 51;
 static const int AutouploadLabelTag = 52;
-static const int SuggestionsLabelTag = 53;
 static const int AutocompleteNamesSwitchTag = 101;
 static const int AutouploadSwitchTag = 102;
 static const int SuggestionsSwitchTag = 103;
