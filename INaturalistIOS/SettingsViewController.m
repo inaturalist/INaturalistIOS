@@ -98,18 +98,6 @@ static const int SuggestionsSwitchTag = 103;
     return _api;
 }
 
-- (void)initUI
-{
-    self.navigationController.navigationBar.translucent = NO;
-    
-    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
-                        [info objectForKey:@"CFBundleShortVersionString"],
-                        [info objectForKey:@"CFBundleVersion"]];
-    
-    [self.tableView reloadData];
-}
-
 #pragma mark - UI helpers
 
 - (void)presentSignup {
@@ -137,12 +125,12 @@ static const int SuggestionsSwitchTag = 103;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+        
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
+                        [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
+                        [info objectForKey:@"CFBundleVersion"] ?: @"unknown version"];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(initUI)
-                                                 name:kUserLoggedInNotificationName
-                                               object:nil];
-
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
@@ -162,7 +150,7 @@ static const int SuggestionsSwitchTag = 103;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self initUI];
+    [self.tableView reloadData];
     
     // don't show a toolbar in Settings
     [self.navigationController setToolbarHidden:YES];
@@ -337,7 +325,7 @@ static const int SuggestionsSwitchTag = 103;
     [[ImageStore sharedImageStore] clearEntireStore];
     
     // update UI
-    [self initUI];
+    [self.tableView reloadData];
 }
 
 - (void)launchTutorial
