@@ -10,7 +10,7 @@
 
 @implementation AboutHeaderView
 
-+(instancetype)fromXib {
++(nullable instancetype)fromXib {
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *views = [bundle loadNibNamed:@"AboutHeaderView" owner:self options:nil];
     return [views firstObject];

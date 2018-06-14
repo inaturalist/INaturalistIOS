@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface AboutHeaderView : UIView
-+ (instancetype)fromXib;
++ (nullable instancetype)fromXib;
 @property IBOutlet UILabel *headerTitleLabel;
 @property IBOutlet UIImageView *casLogo;
 @property IBOutlet UIImageView *ngsLogo;
