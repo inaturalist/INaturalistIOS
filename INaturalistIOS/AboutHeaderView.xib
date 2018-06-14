@@ -25,20 +25,20 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="top" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="Grz-sg-eDy">
-                            <rect key="frame" x="27.5" y="20" width="280" height="544"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="Grz-sg-eDy">
+                            <rect key="frame" x="13.5" y="20" width="308" height="544"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo-cas" translatesAutoresizingMaskIntoConstraints="NO" id="dGL-0A-Naf">
-                                    <rect key="frame" x="0.0" y="0.0" width="120" height="50"/>
+                                    <rect key="frame" x="0.0" y="245.5" width="134" height="53"/>
                                 </imageView>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo-natgeo" translatesAutoresizingMaskIntoConstraints="NO" id="Uch-97-zeb">
-                                    <rect key="frame" x="160" y="0.0" width="120" height="50"/>
+                                    <rect key="frame" x="174" y="248" width="134" height="48"/>
                                 </imageView>
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B9B-EC-vbu">
                             <rect key="frame" x="0.0" y="584" width="335" height="3"/>
-                            <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="backgroundColor" red="0.89803921568627454" green="0.89803921568627454" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="3" id="xfC-fj-REY"/>
                             </constraints>
@@ -73,7 +73,7 @@
         </view>
     </objects>
     <resources>
-        <image name="logo-cas" width="120" height="50"/>
-        <image name="logo-natgeo" width="120" height="50"/>
+        <image name="logo-cas" width="134" height="53"/>
+        <image name="logo-natgeo" width="134" height="48"/>
     </resources>
 </document>
