@@ -20,6 +20,8 @@
     
     self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedSectionHeaderHeight = 25;
+    
+    self.title = NSLocalizedString(@"About", @"title of about screen");
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
