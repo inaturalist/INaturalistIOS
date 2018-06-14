@@ -213,6 +213,9 @@
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
+		FA97666620D1E28F00D172DC /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA97666520D1E28F00D172DC /* AboutViewController.m */; };
+		FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA97666720D1E3D200D172DC /* AboutHeaderView.xib */; };
+		FA97666B20D1E45900D172DC /* AboutHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA97666A20D1E45900D172DC /* AboutHeaderView.m */; };
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
@@ -819,6 +822,11 @@
 		FA9437841C869B7300CB10F3 /* ObservationAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAPI.h; sourceTree = "<group>"; };
 		FA9437851C869B7300CB10F3 /* ObservationAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAPI.m; sourceTree = "<group>"; };
 		FA9437881C869F5900CB10F3 /* ObservationVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationVisualization.h; sourceTree = "<group>"; };
+		FA97666420D1E28F00D172DC /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		FA97666520D1E28F00D172DC /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		FA97666720D1E3D200D172DC /* AboutHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutHeaderView.xib; sourceTree = "<group>"; };
+		FA97666920D1E45900D172DC /* AboutHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutHeaderView.h; sourceTree = "<group>"; };
+		FA97666A20D1E45900D172DC /* AboutHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutHeaderView.m; sourceTree = "<group>"; };
 		FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		FA99BDC91FD794E300C9D985 /* CommentsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommentsAPI.h; sourceTree = "<group>"; };
 		FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommentsAPI.m; sourceTree = "<group>"; };
@@ -1246,8 +1254,7 @@
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
 				19F87491152670B000A65F9A /* RecordSearchController.h */,
 				19F87492152670B100A65F9A /* RecordSearchController.m */,
-				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+				FA97666320D1E26600D172DC /* Settings */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				FACCEB3D1ED4E590009C9A19 /* Taxon Details */,
@@ -1746,6 +1753,20 @@
 			name = ViewProtocols;
 			sourceTree = "<group>";
 		};
+		FA97666320D1E26600D172DC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+				FA97666420D1E28F00D172DC /* AboutViewController.h */,
+				FA97666520D1E28F00D172DC /* AboutViewController.m */,
+				FA97666720D1E3D200D172DC /* AboutHeaderView.xib */,
+				FA97666920D1E45900D172DC /* AboutHeaderView.h */,
+				FA97666A20D1E45900D172DC /* AboutHeaderView.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		FAA6EB121C90C12E00F43552 /* Taxon Details */ = {
 			isa = PBXGroup;
 			children = (
@@ -2058,6 +2079,7 @@
 				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
+				FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */,
 				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
 				FA399AAC1DDBDC73007ABD3E /* Activity.storyboard in Resources */,
@@ -2367,6 +2389,7 @@
 				FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */,
 				FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */,
 				FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */,
+				FA97666B20D1E45900D172DC /* AboutHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
@@ -2477,6 +2500,7 @@
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
+				FA97666620D1E28F00D172DC /* AboutViewController.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */,
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,

@@ -42,6 +42,7 @@
 #import "OnboardingLoginViewController.h"
 #import "ImageStore.h"
 #import "INatReachability.h"
+#import "AboutViewController.h"
 
 typedef NS_ENUM(NSInteger, SettingsSection) {
     SettingsSectionAccount = 0,
@@ -400,21 +401,9 @@ static const int SuggestionsSwitchTag = 103;
 }
 
 - (void)launchCredits {
-    VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
-    
-    NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@\n\n%@",
-                         NSLocalizedString(@"Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life. ", @"funding thank yous"),
-                         NSLocalizedString(@"iNaturalist is made by every single person who participates in our community. The people who build the software, maintain our infrastructure, and foster collaborations are Joelle Belmonte, Yaron Budowski, Tony Iwane, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
-                         NSLocalizedString(@"Special thanks to NVIDIA and Visipedia for technical assistance with iNaturalist's computer vision suggestions.", @"vision assistance"),
-                         NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain, ionicons by Ben Sperry, and icons by Luis Prado and Roman Shlyakov from the Noun Project. iNaturalist is also deeply grateful to the Cocoapods community, and to the contributions of our own open source community. See https://github.com/inaturalist/INaturalistIOS.", @"open source contributions"),
-                         NSLocalizedString(@"We are grateful for the translation assistance provided by the crowdin.com community, especially: Catherine B, Vladimir Belash, cgalindo, danieleseglie, Eduardo Martínez, naofum, Foss, jacquesboivin, Sungmin Ji, katunchik, NCAA, oarazy, sudachi, T.O, testamorta, and vilseskog. To join the iNaturalist iOS translation team, please visit https://crowdin.com/project/inaturalistios.", @"inat ios translators with more than 200 strings contributed, alphabetically"),
-                         @"IUCN category II places provided by IUCN and UNEP-WCMC (2015), The World Database on Protected Areas (WDPA) [On-line], [11/2014], Cambridge, UK: UNEP-WCMC. Available at: www.protectedplanet.net."];
-    
-    creditsVC.headerText = credits;
-    UILabel *label = creditsVC.tableView.tableHeaderView.subviews.firstObject;
-    label.textAlignment = NSTextAlignmentLeft;
-    
-    [self.navigationController pushViewController:creditsVC animated:YES];
+    AboutViewController *about = [AboutViewController acknowledgementsViewController];
+    [self.navigationController pushViewController:about animated:YES];
+    return;
 }
 
 - (void)selectedPartner:(Partner *)partner {
