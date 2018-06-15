@@ -155,18 +155,10 @@
             cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
             [cell.spinner startAnimating];
             
-            // while loading the medium sized image, try to find a placeholder
-            UIImage *thumb = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
-            if (!thumb) {
-                // look for a placeholder in the AFNetworking cache
-                NSURLRequest *thumbRequest = [NSURLRequest requestWithURL:[op thumbPhotoUrl]];
-                thumb = [[UIImageView sharedImageCache] cachedImageForRequest:thumbRequest];
-            }
-            
             __weak typeof(cell.spinner)weakSpinner = cell.spinner;
             __weak typeof(cell.iv)weakIv = cell.iv;
             [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
-                           placeholderImage:thumb
+                           placeholderImage:nil
                                     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
                                         weakIv.image = image;
                                         [weakSpinner stopAnimating];
