@@ -35,7 +35,7 @@
 }
 
 - (void)prepareForReuse {
-    [self.iv cancelImageRequestOperation];
+    [self.iv cancelImageDownloadTask];
     self.pageControl.currentPage = 0;
     self.captiveContainer.hidden = YES;
     // clear all targets/actions

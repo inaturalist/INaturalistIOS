@@ -156,7 +156,7 @@ static const int GutterWidth  = 5;
     static NSString *identifier = @"GuideTaxonCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
-    [img cancelImageRequestOperation];
+    [img cancelImageDownloadTask];
     img.image = [UIImage imageNamed:@"ic_unknown"];
     img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];

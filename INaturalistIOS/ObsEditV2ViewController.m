@@ -7,6 +7,7 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/AFImageDownloader.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
@@ -1178,7 +1179,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                         // if we couldn't find it in the imagestore,
                         // try to load it from the afnetworking caches
                         NSURLRequest *request = [NSURLRequest requestWithURL:op.smallPhotoUrl];
-                        UIImage *image = [[UIImageView sharedImageCache] cachedImageForRequest:request];
+                        UIImage *image = [[[UIImageView sharedImageDownloader] imageCache] imageforRequest:request
+                                                                                  withAdditionalIdentifier:nil];;
                         if (image) {
                             search.imageToClassify = image;
                         } else if ([self.observation recordID]) {

@@ -172,9 +172,9 @@
 }
 
 - (void)prepareForReuse {
-    [self.newsCategoryImageView cancelImageRequestOperation];
+    [self.newsCategoryImageView cancelImageDownloadTask];
     self.newsCategoryImageView.image = nil;
-    [self.postImageView cancelImageRequestOperation];
+    [self.postImageView cancelImageDownloadTask];
     self.postImageView.image = nil;
     
     self.newsCategoryTitle.text = nil;

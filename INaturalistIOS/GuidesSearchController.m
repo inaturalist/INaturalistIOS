@@ -39,7 +39,7 @@ static NSString *CellIdentifier = @"GuideCell";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView cancelImageRequestOperation];
+    [imageView cancelImageDownloadTask];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = g.title;
     

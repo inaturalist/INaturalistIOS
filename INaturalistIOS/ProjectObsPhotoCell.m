@@ -14,7 +14,7 @@
 
 - (void)prepareForReuse {
     self.photoImageView.image = nil;
-    [self.photoImageView cancelImageRequestOperation];
+    [self.photoImageView cancelImageDownloadTask];
     self.obsText.text = @"";
 }
 

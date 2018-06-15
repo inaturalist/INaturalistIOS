@@ -218,31 +218,27 @@
     NSData *imageData = UIImageJPEGRepresentation(thumb, 0.9);
 
     // use afnetworking to deal with icky multi-part forms
-    
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:self.apiBaseUrl]];
-
-    AFHTTPRequestSerializer *requestSerializer = [[AFHTTPRequestSerializer alloc] init];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:self.apiBaseUrl]];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     // only using the anonymous JWT for the suggestions API right now
-    [requestSerializer setValue:[login anonymousJWT] forHTTPHeaderField:@"Authorization"];
-    manager.requestSerializer = requestSerializer;
+    [manager.requestSerializer setValue:[login anonymousJWT] forHTTPHeaderField:@"Authorization"];
     
-    [manager POST:path parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    [manager POST:path parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         [formData appendPartWithFileData:imageData
                                     name:@"image"
                                 fileName:@"file.jpg"
                                 mimeType:@"image/jpeg"];
-    } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        [self extractSuggestionsFromDictionary:responseObject
-                                  classMapping:ExploreTaxonScore.class
-                                       handler:done];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            done(nil, nil, error);
-        });
-    }];
-
+    } progress:nil
+          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+              [self extractSuggestionsFromDictionary:responseObject
+                                        classMapping:ExploreTaxonScore.class
+                                             handler:done];
+          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+              dispatch_async(dispatch_get_main_queue(), ^{
+                  done(nil, nil, error);
+              });
+          }];
 }
 
 @end

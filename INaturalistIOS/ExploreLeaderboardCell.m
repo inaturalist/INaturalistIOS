@@ -138,7 +138,7 @@
 
 - (void)prepareForReuse {
     self.userIcon.image = nil;
-    [self.userIcon cancelImageRequestOperation];
+    [self.userIcon cancelImageDownloadTask];
     
     self.username.text = nil;
     self.observationCount.text = nil;

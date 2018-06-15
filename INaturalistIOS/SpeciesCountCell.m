@@ -30,7 +30,7 @@
     self.countLabel.text = @"";
     self.taxonNameLabel.text = @"";
     self.taxonImageView.image = nil;
-    [self.taxonImageView cancelImageRequestOperation];
+    [self.taxonImageView cancelImageDownloadTask];
 }
 
 @end

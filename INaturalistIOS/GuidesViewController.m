@@ -456,7 +456,7 @@ static const int ListControlIndexNearby = 2;
     
     Guide *p = [self.guides objectAtIndex:[indexPath row]];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView cancelImageRequestOperation];
+    [imageView cancelImageDownloadTask];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
     title.textAlignment = NSTextAlignmentNatural;

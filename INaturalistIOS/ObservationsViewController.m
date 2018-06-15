@@ -875,7 +875,7 @@
 }
 
 - (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
-    [view.iconButton cancelImageRequestOperationForState:UIControlStateNormal];
+    [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
     [view.iconButton setImage:nil forState:UIControlStateNormal];
     [view.iconButton setTintColor:[UIColor whiteColor]];
     view.iconButton.backgroundColor = [UIColor inatTint];
@@ -952,7 +952,7 @@
                                      range:NSMakeRange(2, uploadIconString.length - 2)];
             
             // image seems to override title text, so clear it
-            [view.iconButton cancelImageRequestOperationForState:UIControlStateNormal];
+            [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
             [view.iconButton setImage:nil forState:UIControlStateNormal];
             view.iconButton.accessibilityLabel = NSLocalizedString(@"Upload",
                                                                    @"accessibility labelf for upload button");

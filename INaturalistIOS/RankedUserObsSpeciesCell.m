@@ -30,7 +30,7 @@
 
 - (void)prepareForReuse {
     self.userImageView.image = nil;
-    [self.userImageView cancelImageRequestOperation];
+    [self.userImageView cancelImageDownloadTask];
     
     self.observationsCountLabel.text = @"";
     self.speciesCountLabel.text = @"";

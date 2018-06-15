@@ -708,7 +708,7 @@
 	
 	FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
 	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-    [cell.taxonImageView cancelImageRequestOperation];
+    [cell.taxonImageView cancelImageDownloadTask];
 	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
 	cell.taxonImageView.layer.borderWidth = 0.0f;
 	

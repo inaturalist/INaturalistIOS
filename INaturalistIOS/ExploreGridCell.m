@@ -102,7 +102,7 @@
 
 - (void)prepareForReuse {
     observationImageView.image = nil;
-    [observationImageView cancelImageRequestOperation];
+    [observationImageView cancelImageDownloadTask];
     observationNameLabel.text = @"";
 }
 

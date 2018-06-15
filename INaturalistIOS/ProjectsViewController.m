@@ -436,7 +436,7 @@ static const int ListControlIndexNearby = 2;
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
     cell.titleLabel.text = p.title;
-    [cell.projectImage cancelImageRequestOperation];
+    [cell.projectImage cancelImageDownloadTask];
     [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
                       placeholderImage:[UIImage inat_defaultProjectImage]];
     

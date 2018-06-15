@@ -20,7 +20,7 @@
 }
 
 - (void)prepareForReuse {
-    [self.authorImageView cancelImageRequestOperation];
+    [self.authorImageView cancelImageDownloadTask];
     self.authorImageView.image = nil;
     self.authorNameLabel.text = nil;
     self.dateLabel.text = nil;

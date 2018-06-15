@@ -100,7 +100,7 @@
 }
 
 - (void)prepareForReuse {
-    [self.cellImageView cancelImageRequestOperation];
+    [self.cellImageView cancelImageDownloadTask];
     self.cellImageView.layer.borderWidth = 0.0f;
     self.cellImageView.layer.borderColor = nil;
     self.cellImageView.layer.cornerRadius = 0.0f;

@@ -167,7 +167,7 @@
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
     cell.titleLabel.text = pu.project.title;
-    [cell.projectImage cancelImageRequestOperation];
+    [cell.projectImage cancelImageDownloadTask];
     [cell.projectImage setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
                       placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {

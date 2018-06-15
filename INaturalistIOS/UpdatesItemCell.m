@@ -36,8 +36,8 @@
 }
 
 - (void)prepareForReuse {
-    [self.profileImageView cancelImageRequestOperation];
-    [self.observationImageView cancelImageRequestOperation];
+    [self.profileImageView cancelImageDownloadTask];
+    [self.observationImageView cancelImageDownloadTask];
     self.profileImageView.image = nil;
     self.observationImageView.image = nil;
     self.updateTextLabel.text = nil;

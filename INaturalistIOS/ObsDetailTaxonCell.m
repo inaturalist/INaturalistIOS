@@ -34,7 +34,7 @@
     self.taxonSecondaryNameLabel.text = nil;
     self.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
     
-    [self.taxonImageView cancelImageRequestOperation];
+    [self.taxonImageView cancelImageDownloadTask];
     self.taxonImageView.image = nil;
 }
 
