@@ -27,7 +27,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     AboutHeaderView *header = [AboutHeaderView fromXib];
 
-    header.headerTitleLabel.text = @"iNaturalist is a joint initiative of the California Academy of Sciences and the National Geographic Society";
+    header.headerTitleLabel.text = NSLocalizedString(@"iNaturalist is a joint initiative of the California Academy of Sciences and the National Geographic Society", @"inat joint initiative statement");
     
     header.headerBodyLabel.text = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@\n\n%@",
                                    NSLocalizedString(@"Credits", @"intro to credits section."),
