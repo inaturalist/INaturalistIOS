@@ -237,8 +237,8 @@
     };
     
     void (^progressBlock)(NSProgress *) = ^(NSProgress * _Nonnull uploadProgress) {
-        
-        [self.uploadTasksProgress setObject:@(uploadProgress.completedUnitCount) forKey:[record uuid]];
+        [self.uploadTasksProgress setObject:@(uploadProgress.completedUnitCount)
+                                     forKey:[record uuid]];
         
         NSInteger totalDone = 0;
         for (NSNumber *completedUnitCount in self.uploadTasksProgress.allValues) {
