@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <AFNetworking/AFNetworking.h>
+
 #import "UploadManager.h"
 #import "INatModel.h"
 #import "DeletedRecord.h"
@@ -27,13 +29,17 @@
 
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
-@property RKReachabilityObserver *reachabilityObserver;
+@property AFNetworkReachabilityManager *reachabilityMgr;
 @property NSMutableDictionary *startTimesForPhotoUploads;
 @property NSMutableDictionary *photoUploads;
 @property NSDate *lastNetworkOutageNotificationDate;
 
 // workaround for restkit bug
 @property NSMutableArray *objectLoaders;
+@property AFHTTPSessionManager *sessionManager;
+@property NSInteger currentSessionTotalToUpload;
+@property NSInteger currentSessionTotalUploaded;
+@property NSMutableDictionary *uploadTasksProgress;
 @end
 
 @implementation UploadManager
@@ -50,6 +56,10 @@
     self.observationsToUpload = [observations mutableCopy];
     _currentUploadSessionTotalObservations = self.observationsToUpload.count;
     
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+    [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+                                 forHTTPHeaderField:@"Authorization"];
+    
     [self uploadNextObservation];
 }
 
@@ -63,10 +73,16 @@
     self.syncingDeletes = YES;
     self.cancelled = NO;
     
+    
+    
     self.recordsToDelete = [deletedRecords mutableCopy];
     
     self.observationsToUpload = [recordsToUpload mutableCopy];
     _currentUploadSessionTotalObservations = self.observationsToUpload.count;
+    
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+    [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+                                 forHTTPHeaderField:@"Authorization"];
     
     // when deletes are finished, the last delete callback will start the first upload
     [self syncNextDelete];
@@ -82,7 +98,7 @@
     [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate uploadManager:self cancelledFor:nil];
-    });    
+    });
 }
 
 - (void)autouploadPendingContent {
@@ -147,10 +163,8 @@
     if (self.observationsToUpload.count > 0) {
         // notify starting a new observation
         Observation *nextObservation = [self.observationsToUpload firstObject];
-        
         // clear any previous validation errors
         nextObservation.validationErrorMsg = nil;
-        
         self.currentlyUploadingObservation = nextObservation;
         NSInteger idx = [self indexOfCurrentlyUploadingObservation] + 1;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -159,7 +173,12 @@
                                   number:idx
                                       of:self.currentUploadSessionTotalObservations];
         });
-        [self uploadOneRecordForObservation:nextObservation];
+        if (nextObservation.syncedAt) {
+            // need to PUT it and its children
+        } else {
+            // need to POST it
+            [self postNewObservation:nextObservation];
+        }
     } else {
         [self stopUploadActivity];
 
@@ -170,13 +189,347 @@
     }
 }
 
+- (void)postRecord:(INatModel <Uploadable> *)record associatedObservation:(Observation *)observation {
+    NSString *path = [NSString stringWithFormat:@"/%@.json",
+                      NSStringFromClass(record.class).underscore.pluralize];
+    
+    void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
+        record.syncedAt = [NSDate date];
+        if ([responseObject valueForKey:@"id"]) {
+            record.recordID = @([[responseObject valueForKey:@"id"] integerValue]);
+        }
+        
+        NSError *syncError = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&syncError];
+        if (syncError) {
+            [self stopUploadActivity];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self
+                             uploadFailedFor:observation
+                                       error:syncError];
+            });
+        } else {
+            INatModel <Uploadable> *nextChild = [[observation childrenNeedingUpload] firstObject];
+            if (nextChild) {
+                [self postRecord:nextChild associatedObservation:observation];
+            } else {
+                [self.delegate uploadManager:self uploadSuccessFor:observation];
+                [self.observationsToUpload removeObject:observation];
+                [self uploadNextObservation];
+            }
+        }
+    };
+    
+    void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
+        NSLog(@"failure");
+    };
+    
+    void (^bodyBlock)(id <AFMultipartFormData>) = ^(id<AFMultipartFormData>  _Nonnull formData) {
+        NSString *path = [record fileUploadParameter];
+        NSURL *fileUrl = [NSURL fileURLWithPath:path];
+        NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+        NSLog(@"file size is %lld", [[attrs valueForKey:NSFileSize] longLongValue]);
+        [formData appendPartWithFileURL:fileUrl
+                                   name:@"file"
+                               fileName:@"original.jpg"
+                               mimeType:@"image/jpeg"
+                                  error:nil];
+    };
+    
+    void (^progressBlock)(NSProgress *) = ^(NSProgress * _Nonnull uploadProgress) {
+        
+        [self.uploadTasksProgress setObject:@(uploadProgress.completedUnitCount) forKey:[record uuid]];
+        
+        NSInteger totalDone = 0;
+        for (NSNumber *completedUnitCount in self.uploadTasksProgress.allValues) {
+            totalDone += [completedUnitCount integerValue];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self
+                          uploadProgress:(float)totalDone / self.currentSessionTotalToUpload
+                                     for:observation];
+        });
+    };
+    
+    if ([record respondsToSelector:@selector(fileUploadParameter)]) {
+        // multipart form post
+        [self.sessionManager POST:path
+                       parameters:[record uploadableRepresentation]
+        constructingBodyWithBlock:bodyBlock
+                         progress:progressBlock
+                          success:successBlock
+                          failure:failureBlock];
+    } else {
+        // regular post
+        [self.sessionManager POST:path
+                       parameters:[record uploadableRepresentation]
+                         progress:progressBlock
+                          success:successBlock
+                          failure:failureBlock];
+    }
+}
+
+- (void)postNewObservation:(Observation *)observation {
+    
+    // calculate total file size to upload
+    self.currentSessionTotalToUpload = 0.0f;
+    self.currentSessionTotalUploaded = 0.0f;
+    for (INatModel <Uploadable> *child in [observation childrenNeedingUpload]) {
+        if ([child respondsToSelector:@selector(fileUploadParameter)]) {
+            NSString *path = [child fileUploadParameter];
+            NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+            self.currentSessionTotalToUpload += [[attrs valueForKey:NSFileSize] longLongValue];
+        }
+    }
+    [self.uploadTasksProgress removeAllObjects];
+    
+    [self postRecord:observation associatedObservation:observation];
+    return;
+    //[self uploadRecord:observation associatedObservation:observation method:@"POST"];
+    
+    NSString *path = [NSString stringWithFormat:@"/%@.json",
+                      NSStringFromClass(observation.class).underscore.pluralize];
+    
+    [self.sessionManager POST:path parameters:[observation uploadableRepresentation] progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+        NSLog(@"got progress %f", uploadProgress.fractionCompleted);
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"success: %@", responseObject);
+        
+        for (INatModel <Uploadable> *child in observation.childrenNeedingUpload) {
+            NSString *path = [NSString stringWithFormat:@"/%@.json",
+                              NSStringFromClass(child.class).underscore.pluralize];
+            
+            if ([child respondsToSelector:@selector(fileUploadParameter)]) {
+                
+                [self.sessionManager POST:path parameters:[child uploadableRepresentation] constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+                    NSString *path = [child fileUploadParameter];
+                    NSURL *fileUrl = [NSURL fileURLWithPath:path];
+                    [formData appendPartWithFileURL:fileUrl
+                                               name:@"file"
+                                           fileName:@"original.jpg"
+                                           mimeType:@"image/jpeg"
+                                              error:nil];
+                } progress:^(NSProgress * _Nonnull uploadProgress) {
+                    NSLog(@"got progress in child %f", uploadProgress.fractionCompleted);
+                } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                    NSLog(@"success in child %@", responseObject);
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                    NSLog(@"failure in child, %@", error);
+                }];
+                
+            } else {
+                [self.sessionManager POST:path parameters:[child uploadableRepresentation]
+                                 progress:^(NSProgress * _Nonnull uploadProgress) {
+                                     NSLog(@"progress in child %f", uploadProgress.fractionCompleted);
+                                 } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                     NSLog(@"success in child %@", responseObject);
+                                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                     NSLog(@"failure in child %@", error);
+                                 }];
+            }
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"failure: %@", error);
+    }];
+}
+
+/*
+- (void)multipartPostChild:(INatModel <Uploadable> *)child ofObservation:(Observation *)observation {
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+
+    if ([child isKindOfClass:[ObservationPhoto class]]) {
+        NSString *uuid = nil;
+        if ([child respondsToSelector:@selector(uuid)]) {
+            uuid = (NSString *)[child performSelector:@selector(uuid)];
+        }
+        if (uuid) {
+            // for older observations, uuids could have been uppercase
+            // or lowercase depending on where they originated.
+            self.startTimesForPhotoUploads[[uuid lowercaseString]] = [NSDate date];
+        }
+    }
+    
+    NSString *nextUploadPath = [NSString stringWithFormat:@"/%@.json",
+                                NSStringFromClass(child.class).underscore.pluralize];
+    NSString *urlString = [[NSURL URLWithString:nextUploadPath
+                                  relativeToURL:[NSURL inat_baseURL]] absoluteString];
+    
+    NSDictionary *params = [child uploadableRepresentation];
+    NSMutableURLRequest *request = nil;
+    
+    NSError *uploadConstructionError = nil;
+    // upload as multipart post
+    NSString *path = [child fileUploadParameter];
+    
+    // TODO: handle no path
+    if (!path) {
+        if ([recordToUpload isKindOfClass:[ObservationPhoto class]]) {
+            // if there's no file for this photo, bail on it and the upload process
+            ObservationPhoto *op = (ObservationPhoto *)recordToUpload;
+            
+            // human readable index
+            NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
+            NSString *obsName;
+            if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
+                obsName = op.observation.speciesGuess;
+            else
+                obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
+            
+            NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
+                                                                              @"error message when an obs photo doesn't have a file on the phone."),
+                                  index, obsName];
+            NSError *error = [NSError errorWithDomain:@"org.inaturalist"
+                                                 code:1201
+                                             userInfo:@{
+                                                        NSLocalizedDescriptionKey: errorMsg,
+                                                        }];
+            [op destroy];
+            
+            [self stopUploadActivity];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
+            });
+            
+            return;
+        }
+    }
+    
+    
+    NSURL *fileUrl = [NSURL fileURLWithPath:path];
+    request = [[manager.requestSerializer multipartFormRequestWithMethod:@"POST"
+                                                               URLString:urlString
+                                                              parameters:params
+                                               constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+                                                   [formData appendPartWithFileURL:fileUrl
+                                                                              name:@"file"
+                                                                          fileName:@"original.jpg"
+                                                                          mimeType:@"image/jpeg"
+                                                                             error:nil];
+                                               }
+                                                                   error:&uploadConstructionError] mutableCopy];
+    
+    if (uploadConstructionError) {
+        [self.delegate uploadManager:self uploadFailedFor:observation error:uploadConstructionError];
+        // TODO: what to do here?
+        return;
+    }
+    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+   forHTTPHeaderField:@"Authorization"];
+    
+    AFHTTPRequestOperation *operation = [manager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        child.syncedAt = [NSDate date];
+        if ([responseObject valueForKey:@"id"]) {
+            child.recordID = @([[responseObject valueForKey:@"id"] integerValue]);
+        }
+        
+        NSError *syncError = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&syncError];
+        if (syncError) {
+            [self stopUploadActivity];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self
+                             uploadFailedFor:observation
+                                       error:syncError];
+            });
+        } else {
+            [self uploadOneRecordForObservation:observation];
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        NSLog(@"upload failed %@", error);
+        
+    }];
+    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+        float progress = ((float)totalBytesWritten) / totalBytesExpectedToWrite;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate uploadManager:self uploadProgress:progress for:observation];
+        });
+    }];
+    
+    [manager.operationQueue addOperation:operation];
+}
+     */
+
+/*
+- (void)uploadRecord:(INatModel <Uploadable> *)record associatedObservation:(Observation *)observation method:(NSString *)httpMethod {
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL];
+    
+    //AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+    
+    NSString *uploadPath = nil;
+    if ([httpMethod isEqualToString:@"POST"]) {
+        uploadPath = [NSString stringWithFormat:@"/%@.json",
+                      NSStringFromClass(record.class).underscore.pluralize];
+    } else {
+        uploadPath = [NSString stringWithFormat:@"/%@/%ld.json",
+                      NSStringFromClass(record.class).underscore.pluralize,
+                      (long)record.recordID.integerValue];
+    }
+    NSString *urlString = [[NSURL URLWithString:uploadPath
+                                  relativeToURL:[NSURL inat_baseURL]] absoluteString];
+    
+    NSDictionary *params = [record uploadableRepresentation];
+    NSMutableURLRequest *request = nil;
+    
+    NSError *uploadConstructionError = nil;
+    // upload as just a post/put
+    request = [[manager.requestSerializer requestWithMethod:httpMethod
+                                                  URLString:urlString
+                                                 parameters:params
+                                                      error:&uploadConstructionError] mutableCopy];
+    
+    if (uploadConstructionError) {
+        [self.delegate uploadManager:self uploadFailedFor:observation error:uploadConstructionError];
+        // TODO: what to do here?
+        return;
+    }
+    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+   forHTTPHeaderField:@"Authorization"];
+    
+    
+    
+    AFHTTPRequestOperation *operation = [manager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        record.syncedAt = [NSDate date];
+        if ([responseObject valueForKey:@"id"]) {
+            record.recordID = @([[responseObject valueForKey:@"id"] integerValue]);
+        }
+        
+        NSError *syncError = nil;
+        [[[RKObjectManager sharedManager] objectStore] save:&syncError];
+        if (syncError) {
+            [self stopUploadActivity];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self
+                             uploadFailedFor:observation
+                                       error:syncError];
+            });
+        } else {
+            [self uploadOneRecordForObservation:observation];
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        // TODO: handle this
+        NSLog(@"upload failed %@", error);
+        
+    }];
+    
+    [manager.operationQueue addOperation:operation];
+}
+ */
+
 /**
  * Upload a record for an observation. If the observation itself needs
  * upload, then upload that first. If not, then work on the child records
  * that need upload.
  */
 - (void)uploadOneRecordForObservation:(Observation *)observation {
-    
+    /*
     if (self.cancelled) {
         return;
     }
@@ -190,135 +543,32 @@
         [self uploadNextObservation];
         return;
     }
-        
-    RKObjectLoaderBlock loaderBlock = nil;
-    INatModel <Uploadable> *recordToUpload = nil;
     
     if (observation.needsSync && !observation.syncedAt) {
-        // if the observation has never been uploaded, POST
-        // the observation first.
-        loaderBlock = ^(RKObjectLoader *loader) {
-            loader.objectMapping = [Observation mapping];
-            loader.delegate = self;
-        };
-        recordToUpload = observation;
+        [self postNewObservation:observation];
     } else if ([[observation childrenNeedingUpload] count] > 0) {
-        // if the observation has been uploaded, PUT the children
-        // first. or the observation has been uploaded, POST the
-        // children next.
+        // if the observation needs to put PUT, do it after the
+        // children have been sent.
         
         // upload a child record for the obs
-        recordToUpload = [[observation childrenNeedingUpload] firstObject];
+        INatModel <Uploadable> *child = [[observation childrenNeedingUpload] firstObject];
         
-        if (!recordToUpload) {
+        if (!child) {
             // notify finished with this observation
             [self.observationsToUpload removeObject:observation];
             [self uploadNextObservation];
             return;
         }
         
-        if ([recordToUpload isKindOfClass:[ObservationPhoto class]]) {
-            NSString *uuid = nil;
-            if ([recordToUpload respondsToSelector:@selector(uuid)]) {
-                uuid = (NSString *)[recordToUpload performSelector:@selector(uuid)];
-            }
-            if (uuid) {
-                // for older observations, uuids could have been uppercase
-                // or lowercase depending on where they originated.
-                self.startTimesForPhotoUploads[[uuid lowercaseString]] = [NSDate date];
-            }
-        }
-        
-        loaderBlock = ^(RKObjectLoader *loader) {
-            loader.objectMapping = [[recordToUpload class] mapping];
-            loader.delegate = self;
-            
-            // only upload files via POST
-            if (!recordToUpload.syncedAt && [recordToUpload respondsToSelector:@selector(fileUploadParameter)]) {
-                NSString *path = [recordToUpload performSelector:@selector(fileUploadParameter)];
-                
-                if (!path) {
-                    // the only case for now
-                    if ([recordToUpload isKindOfClass:[ObservationPhoto class]]) {
-                        // if there's no file for this photo, bail on it and the upload process
-                        ObservationPhoto *op = (ObservationPhoto *)recordToUpload;
-                        
-                        // human readable index
-                        NSUInteger index = [op.observation.sortedObservationPhotos indexOfObject:op] + 1;
-                        NSString *obsName;
-                        if (op.observation.speciesGuess && ![op.observation.speciesGuess isEqualToString:@""])
-                            obsName = op.observation.speciesGuess;
-                        else
-                            obsName = NSLocalizedString(@"Something", @"Name of an observation when we don't have a species guess.");
-                        
-                        NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"Failed to upload photo # %d from observation '%@'",
-                                                                                          @"error message when an obs photo doesn't have a file on the phone."),
-                                              index, obsName];
-                        NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                                             code:1201
-                                                         userInfo:@{
-                                                                    NSLocalizedDescriptionKey: errorMsg,
-                                                                    }];
-                        [op destroy];
-                        
-                        [self stopUploadActivity];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
-                        });
-                        
-                        return;
-                    }
-                }
-                
-                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-                RKObjectMapping* serializationMapping = [appDelegate.photoObjectManager.mappingProvider
-                                                         serializationMappingForClass:[recordToUpload class]];
-                NSError* error = nil;
-                RKObjectSerializer *serializer = [RKObjectSerializer serializerWithObject:recordToUpload
-                                                                                  mapping:serializationMapping];
-                NSDictionary *dictionary = [serializer serializedObject:&error];
-                
-                if (error) {
-                    [self stopUploadActivity];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.delegate uploadManager:self uploadFailedFor:recordToUpload error:error];
-                    });
-                    
-                    return;
-                }
-                
-                RKParams* params = [RKParams paramsWithDictionary:dictionary];
-                RKParamsAttachment *attachment = [params setFile:path forParam:@"file"];
-                [attachment setMIMEType:@"image/jpeg"];
-                [attachment setFileName:@"original.jpg"];
-                loader.params = params;
-            }
-        };
-    } else if (observation.needsSync) {
-        // if the observation has been uploaded, PUT it
-        // after the children have been PUT.
-        loaderBlock = ^(RKObjectLoader *loader) {
-            loader.objectMapping = [Observation mapping];
-            loader.delegate = self;
-        };
-        recordToUpload = observation;
-    }
-    
-    if (recordToUpload && loaderBlock) {
-        RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        NSString *className = NSStringFromClass(recordToUpload.class);
-
-        if (recordToUpload.syncedAt) {
-            NSString *msg = [NSString stringWithFormat:@"Network - Put One %@ Record During Upload", className];
-            [[Analytics sharedClient] debugLog:msg];
-
-            [objectManager putObject:recordToUpload usingBlock:loaderBlock];
+        if ([child respondsToSelector:@selector(fileUploadParameter)]) {
+            [self multipartPostChild:child ofObservation:observation];
+        } else if (child.syncedAt) {
+            [self putChild:child ofObservation:observation];
         } else {
-            NSString *msg = [NSString stringWithFormat:@"Network - Post One %@ Record During Upload", className];
-            [[Analytics sharedClient] debugLog:msg];
-
-            [objectManager postObject:recordToUpload usingBlock:loaderBlock];
+            [self postChild:child ofObservation:observation];
         }
+    } else if (observation.needsSync) {
+        [self putObservation:observation];
     } else {
         // notify finished with this observation
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -329,6 +579,7 @@
         [self uploadNextObservation];
         return;
     }
+     */
 }
 
 
@@ -349,15 +600,62 @@
         NSString *nextDeletePath = [NSString stringWithFormat:@"/%@/%d",
                                     nextDelete.modelName.underscore.pluralize,
                                     nextDelete.recordID.intValue];
+        NSString *urlString = [[NSURL URLWithString:nextDeletePath
+                                      relativeToURL:[NSURL inat_baseURL]] absoluteString];
+        
+        [self.sessionManager DELETE:urlString parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            // update UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate uploadManager:self deleteSuccessFor:nextDelete];
+            });
+            
+            // debug log
+            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", nextDelete]];
+            
+            // update local work queue
+            [self.recordsToDelete removeObject:nextDelete];
+            
+            // delete the backing local entity
+            [nextDelete deleteEntity];
+            
+            // continue working on the work queue
+            [self syncNextDelete];
+            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)task.response;
+            if (httpResponse.statusCode == 404) {
+                // already deleted remotely, just keep going
+                
+                // update UI
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.delegate uploadManager:self deleteSuccessFor:nextDelete];
+                });
+                
+                // debug log
+                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", nextDelete]];
+                
+                // update local work queue
+                [self.recordsToDelete removeObject:nextDelete];
+                
+                // delete the backing local entity
+                [nextDelete deleteEntity];
+                
+                // continue working on the work queue
+                [self syncNextDelete];
+            } else {
+                [self stopUploadActivity];
+                
+                // debug log
+                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC delete failed %@", nextDelete]];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.delegate uploadManagerSessionFailed:self errorCode:httpResponse.statusCode];
+                });
+            }
+            
+        }];
         
         [[Analytics sharedClient] debugLog:@"Network - Delete One Record During Upload"];
-
-        [[RKClient sharedClient] delete:nextDeletePath
-                             usingBlock:^(RKRequest *request) {
-                                 request.delegate = self;
-                                 request.onDidLoadResponse = ^(RKResponse *response) {
-                                 };
-                             }];
     } else {
         self.syncingDeletes = NO;
         // notify finished with deletions
@@ -375,31 +673,10 @@
     self.syncingDeletes = NO;
     self.currentlyUploadingObservation = nil;
     
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.objectLoaders removeAllObjects];
-    });
+    [self.sessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark - RKRequestDelegate
-
-- (void)requestDidStartLoad:(RKRequest *)request {
-    // workaround for a bug where RestKit can release the objectLoader too soon in error conditions
-    if (![[self objectLoaders] containsObject:request]) {
-        [[self objectLoaders] addObject:request];
-    }
-}
-
-- (void)request:(RKRequest *)request didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
-    
-    if ([request isKindOfClass:[RKObjectLoader class]]) {
-        RKObjectLoader *loader = (RKObjectLoader *)request;
-        if ([[loader sourceObject] isKindOfClass:[ObservationPhoto class]]) {
-            ObservationPhoto *op = (ObservationPhoto *)[loader sourceObject];
-            [self.delegate uploadManager:self uploadProgress:((float)totalBytesWritten) / totalBytesExpectedToWrite for:op.observation];
-        }
-    }
-}
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
     // check for 401 unauthorized and 403 forbidden
@@ -410,21 +687,8 @@
         });
         return;
     }
-
+    
     if (request.method == RKRequestMethodDELETE) {
-        DeletedRecord *thisDelete = [self.recordsToDelete firstObject];
-        // update UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate uploadManager:self deleteSuccessFor:thisDelete];
-        });
-        // debug log
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"SYNC deleted %@", thisDelete]];
-        // update local work queue
-        [self.recordsToDelete removeObject:thisDelete];
-        // delete the backing local entity
-        [thisDelete deleteEntity];
-        // continue working on the work queue
-        [self syncNextDelete];
     } else {
         Observation *thisUpload = [self.observationsToUpload firstObject];
         INatModel *record = thisUpload.needsSync ? thisUpload : [thisUpload.childrenNeedingUpload firstObject];
@@ -445,23 +709,7 @@
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // if we've stopped uploading (ie due to an auth failure), ignore the object loader error
-    if (!self.isUploading) {
-        return;
-    }
     
-    // notify about failure
-    if (objectLoader.method == RKRequestMethodDELETE) {
-        DeletedRecord *failedDelete = [self.recordsToDelete firstObject];
-
-        [self stopUploadActivity];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate uploadManager:self deleteFailedFor:failedDelete error:error];
-        });
-        
-        return;
-    }
-       	    
     if ([objectLoader.sourceObject isKindOfClass:ProjectObservation.class] && objectLoader.response.statusCode == 422) {
         // server returns this code when the project validation fails
         // this is a non-fatal error - start working on the next observation.
@@ -505,25 +753,24 @@
             
             return;
         }
-        
     }
     
-   	[self stopUploadActivity];
-   	
-   	NSError *reportingError = nil;
-   	NSError *parseError = nil;
-   	NSDictionary *body = [objectLoader.response parsedBody:&parseError];
-   	if (!parseError && body && [body valueForKey:@"error"]) {
-   	   	NSDictionary *info = @{NSLocalizedDescriptionKey: [body valueForKey:@"error"] };
-   		reportingError = [NSError errorWithDomain:@"org.inaturalist.ios" code:objectLoader.response.statusCode userInfo:info];
-   	} else {
-   		reportingError = error;
-   	}
-   	
+    [self stopUploadActivity];
+    
+    NSError *reportingError = nil;
+    NSError *parseError = nil;
+    NSDictionary *body = [objectLoader.response parsedBody:&parseError];
+    if (!parseError && body && [body valueForKey:@"error"]) {
+        NSDictionary *info = @{NSLocalizedDescriptionKey: [body valueForKey:@"error"] };
+        reportingError = [NSError errorWithDomain:@"org.inaturalist.ios" code:objectLoader.response.statusCode userInfo:info];
+    } else {
+        reportingError = error;
+    }
+    
     Observation *failedObservation = [self.observationsToUpload firstObject];
     dispatch_async(dispatch_get_main_queue(), ^{
-   	    [self.delegate uploadManager:self uploadFailedFor:failedObservation error:reportingError];
-   	});
+        [self.delegate uploadManager:self uploadFailedFor:failedObservation error:reportingError];
+    });
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(INatModel *)object {
@@ -537,13 +784,13 @@
     if (uuid && [self.startTimesForPhotoUploads objectForKey:[uuid lowercaseString]]) {
         NSDate *startTime = self.startTimesForPhotoUploads[[uuid lowercaseString]];
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:startTime];
-
+        
         [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
     }
     
     NSError *error = nil;
     object.syncedAt = [NSDate date];
-
+    
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {
         [self stopUploadActivity];
@@ -580,19 +827,27 @@
 - (instancetype)init {
     if (self = [super init]) {
         // monitor reachability to trigger autoupload
-        self.reachabilityObserver = [[RKReachabilityObserver alloc] initWithHost:[[NSURL inat_baseURL] host]];
+        
+        self.reachabilityMgr = [AFNetworkReachabilityManager managerForDomain:[[NSURL inat_baseURL] host]];
+        [self.reachabilityMgr startMonitoring];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
-                                                     name:RKReachabilityDidChangeNotification
+                                                     name:AFNetworkingReachabilityDidChangeNotification
                                                    object:nil];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(loggedIn)
                                                      name:kINatLoggedInNotificationKey
                                                    object:nil];
-        self.objectLoaders = [NSMutableArray array];
         
         self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
         self.photoUploads = [[NSMutableDictionary alloc] init];
+        
+        self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+        [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+                                     forHTTPHeaderField:@"Authorization"];
+        
+        self.uploadTasksProgress = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -601,7 +856,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    [self.sessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark - NSNotification targets
@@ -623,7 +878,7 @@
 #pragma mark - Reachability Updates
 
 - (void)reachabilityChanged:(NSNotification *)note {
-    if ([note.object isEqual:self.reachabilityObserver]) {
+    if ([note.object isEqual:self.reachabilityMgr]) {
         if (self.shouldAutoupload) {
             [self autouploadPendingContent];
         }

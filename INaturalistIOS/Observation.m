@@ -391,6 +391,47 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+- (NSString *)presentableGeoprivacy {
+    
+    if ([self.geoprivacy isEqualToString:@"private"]) {
+        return NSLocalizedString(@"Private", @"private geoprivacy");
+    } else if ([self.geoprivacy isEqualToString:@"obscured"]) {
+        return NSLocalizedString(@"Obscured", @"obscured geoprivacy");
+    } else {
+        return NSLocalizedString(@"Open", @"open geoprivacy");
+    }
+    
+}
+
+- (NSArray *)sortedFaves {
+    NSSortDescriptor *dateSort = [NSSortDescriptor sortDescriptorWithKey:@"faveDate" ascending:NO];
+    return [self.faves sortedArrayUsingDescriptors:@[ dateSort ]];
+}
+
+- (NSArray *)sortedActivity {
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    NSArray *allActivities = [self.comments.allObjects arrayByAddingObjectsFromArray:self.identifications.allObjects];
+    return [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
+}
+
+- (ObsDataQuality)dataQuality {
+    if (self.recordID) {
+        if ([self.qualityGrade isEqualToString:@"research"]) {
+            return ObsDataQualityResearch;
+        } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
+            return ObsDataQualityNeedsID;
+        } else {
+            // must be casual?
+            return ObsDataQualityCasual;
+        }
+    } else {
+        // not uploaded yet
+        return ObsDataQualityNone;
+    }
+}
+
+#pragma mark - Uploadable protocol
+
 + (NSArray *)needingUpload {
     // all observations that need sync are upload candidates
     NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
@@ -455,43 +496,35 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return [NSArray arrayWithArray:recordsToUpload];
 }
 
-- (NSString *)presentableGeoprivacy {
+
+- (NSDictionary *)uploadableRepresentation {
+    NSDictionary *mapping = @{
+                              @"speciesGuess": @"observation[species_guess]",
+                              @"inatDescription": @"observation[description]",
+                              @"observedOnString": @"observation[observed_on_string]",
+                              @"placeGuess": @"observation[place_guess]",
+                              @"latitude": @"observation[latitude]",
+                              @"longitude": @"observation[longitude]",
+                              @"positionalAccuracy": @"observation[positional_accuracy]",
+                              @"taxonID": @"observation[taxon_id]",
+                              @"iconicTaxonID": @"observation[iconic_taxon_id]",
+                              @"idPlease": @"observation[id_please]",
+                              @"geoprivacy": @"observation[geoprivacy]",
+                              @"uuid": @"observation[uuid]",
+                              @"captive": @"observation[captive_flag]",
+                              @"ownersIdentificationFromVision": @"observation[owners_identification_from_vision]",
+                              };
     
-    if ([self.geoprivacy isEqualToString:@"private"]) {
-        return NSLocalizedString(@"Private", @"private geoprivacy");
-    } else if ([self.geoprivacy isEqualToString:@"obscured"]) {
-        return NSLocalizedString(@"Obscured", @"obscured geoprivacy");
-    } else {
-        return NSLocalizedString(@"Open", @"open geoprivacy");
-    }
-    
-}
-
-- (NSArray *)sortedFaves {
-    NSSortDescriptor *dateSort = [NSSortDescriptor sortDescriptorWithKey:@"faveDate" ascending:NO];
-    return [self.faves sortedArrayUsingDescriptors:@[ dateSort ]];
-}
-
-- (NSArray *)sortedActivity {
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    NSArray *allActivities = [self.comments.allObjects arrayByAddingObjectsFromArray:self.identifications.allObjects];
-    return [allActivities sortedArrayUsingDescriptors:@[sortDescriptor]];
-}
-
-- (ObsDataQuality)dataQuality {
-    if (self.recordID) {
-        if ([self.qualityGrade isEqualToString:@"research"]) {
-            return ObsDataQualityResearch;
-        } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
-            return ObsDataQualityNeedsID;
-        } else {
-            // must be casual?
-            return ObsDataQualityCasual;
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+    for (NSString *key in mapping) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = mapping[key];
+            mutableParams[mappedName] = [self valueForKey:key];
         }
-    } else {
-        // not uploaded yet
-        return ObsDataQualityNone;
     }
+    
+    // return an immutable copy
+    return [NSDictionary dictionaryWithDictionary:mutableParams];
 }
 
 #pragma mark - ObservationVisualization

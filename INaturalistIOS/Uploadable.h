@@ -13,5 +13,9 @@
 - (NSArray *)childrenNeedingUpload;
 - (BOOL)needsUpload;
 + (NSArray *)needingUpload;
+- (NSDictionary *)uploadableRepresentation;
+- (NSString *)uuid;
 
+@optional
+- (NSString *)fileUploadParameter;
 @end

@@ -10,10 +10,11 @@
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
 #import "INatPhoto.h"
+#import "Uploadable.h"
 
 @class Observation;
 
-@interface ObservationPhoto : INatModel <INatPhoto>
+@interface ObservationPhoto : INatModel <INatPhoto, Uploadable>
 
 @property (nonatomic, retain) NSString * largeURL;
 @property (nonatomic, retain) NSString * licenseCode;
