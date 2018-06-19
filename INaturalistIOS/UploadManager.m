@@ -935,7 +935,7 @@
 }
 
 - (BOOL)isNetworkAvailableForUpload {
-    return [self.reachabilityObserver isNetworkReachable];
+    return [self.reachabilityMgr isReachable];
 }
 
 - (BOOL)shouldNotifyAboutNetworkState {
